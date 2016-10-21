@@ -95,6 +95,7 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->layout()->setContentsMargins(0, 0, 0, 0);
 		filterWidget->SetAllowMultiselect(filter.isMultiselectAllowed);
 		filterWidget->ShowSelectAllButton(true);
+		filterWidget->ShowSearchFilter(true);
 		QStringList distinctValues;
 
 		for (const auto& inputField : filter.fields){

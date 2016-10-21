@@ -5,6 +5,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QListWidget>
+#include <QtWidgets/QLineEdit>
 
 namespace SynGlyphX {
 
@@ -34,7 +35,11 @@ namespace SynGlyphX {
 		QSizePolicy sizePolicy = m_selectAllButton->sizePolicy();
 		sizePolicy.setRetainSizeWhenHidden(true);
 		m_selectAllButton->setSizePolicy(sizePolicy);
-
+		m_search = new QLineEdit(this);
+		m_search->setClearButtonEnabled(true);
+		m_search->setPlaceholderText(tr("Search Filter"));
+		mainLayout->addWidget(m_search);
+		m_search->setVisible(false);
 		QFrame* hLine = new QFrame(this);
 		hLine->setFrameStyle(QFrame::HLine | QFrame::Plain);
 		hLine->setLineWidth(1);
@@ -53,6 +58,8 @@ namespace SynGlyphX {
 
 		QObject::connect(m_selectAllButton, &QPushButton::clicked, m_listWidget, &QListWidget::selectAll);
 		QObject::connect(m_listWidget, &QListWidget::currentRowChanged, this, &TitleListWidget::CurrentRowChanged);
+
+		QObject::connect(m_search, &QLineEdit::textChanged, this, &TitleListWidget::OnFilterTextChanged);
 	}
 
 	TitleListWidget::~TitleListWidget()
@@ -97,6 +104,10 @@ namespace SynGlyphX {
 		}
 	}
 
+	void TitleListWidget::ShowSearchFilter(bool show) {
+		m_search->setVisible(show);
+	}
+
 	bool TitleListWidget::AreAnyItemsSelected() const {
 
 		return !m_listWidget->selectedItems().isEmpty();
@@ -132,6 +143,15 @@ namespace SynGlyphX {
 		}
 
 		return items;
+	}
+	void TitleListWidget::OnFilterTextChanged(const QString& text) {
+
+		m_listWidget->item(0)->setHidden(true);
+		for (int row = 0 ; row < m_listWidget->count(); row++)
+			m_listWidget->item(row)->setHidden(true);
+		QList<QListWidgetItem*> matches(m_listWidget->findItems(text, Qt::MatchFlag::MatchContains));
+		for (QListWidgetItem* item : matches)
+			item->setHidden(false);
 	}
 
 } //namespace SynGlyphX

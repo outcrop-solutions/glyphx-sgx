@@ -23,6 +23,7 @@
 class QLabel;
 class QPushButton;
 class QListWidget;
+class QLineEdit;
 
 namespace SynGlyphX {
 
@@ -39,6 +40,7 @@ namespace SynGlyphX {
 		void SetTitle(const QString& title);
 		void SetItems(const QStringList& labels, const QStringList& tooltips = QStringList());
 
+		void ShowSearchFilter(bool show);
 		bool AreAnyItemsSelected() const;
 		bool AreAllItemsSelected() const;
 		void SelectItem(unsigned int index);
@@ -49,10 +51,14 @@ namespace SynGlyphX {
 	signals:
 		void CurrentRowChanged(int row);
 
+	private slots:
+		void OnFilterTextChanged(const QString& text);
+
 	private:
 		QLabel* m_titleLabel;
 		QPushButton* m_selectAllButton;
 		QListWidget* m_listWidget;
+		QLineEdit*	 m_search;
 	};
 
 } //namespace SynGlyphX
