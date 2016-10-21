@@ -81,7 +81,7 @@ namespace SynGlyphX
 			// if this assert hits, we have a LOT of different torus ratios in this vis; should be avoided as it
 			// can severely negatively impact performance
 			const unsigned int torus_error_threshold = 32u;
-			assert( torus_models.size() < torus_error_threshold );
+            hal::debug::_assert( torus_models.size() < torus_error_threshold, "too many torus models" );
 		}
 
 		for ( auto& entry : torus_models[ratio] )

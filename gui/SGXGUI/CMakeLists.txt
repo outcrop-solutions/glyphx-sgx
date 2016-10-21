@@ -29,7 +29,6 @@ TARGET_LINK_LIBRARIES(SGXGUI ${Boost_LIBRARIES}
 
 #Enable licensing if it is available
 IF (${LICENSING_FOUND})
-	message("Licensing found!")
 	TARGET_LINK_LIBRARIES(SGXGUI rlmez)
 	IF (${WIN32}) 
 		#Check if /SAFESEH:NO is needed with the newer 12.0 VS 2015 version of RLM-EZ (32 bit only)

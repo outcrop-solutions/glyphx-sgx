@@ -7,15 +7,26 @@
 # - Some way to change hardcoded paths (command line option? store in a .conf file?)
 # - Error handling (check for Qt, VM, etc and emit an error if not found)
 
+# Make sure we're in the same path as this script since it expects that.
+# (Only do this if it isn't already set since we might be calling this from another script that set it already.)
+if [ -z ${script_path+x} ]; then
+	cd "${0%/*}"
+	script_path="$(pwd)"
+fi
+
+cd $script_path
+
 build=None
 app=None
 java=8
 qt=5.6
 appcount=0
+do_build=0
+do_install=0
 
 # Process command-line options.
 
-while getopts "drvbmj:q:" opt; do
+while getopts "drvgbcimj:q:" opt; do
 	case "$opt" in
 		d)
 			build=Debug
@@ -27,13 +38,22 @@ while getopts "drvbmj:q:" opt; do
 			app=GlyphViewer
 			((appcount++))
 			;;
-		b)
+		g)
 			app=GlyphDesigner
 			((appcount++))
 			;;
 		m)
 			app=DataMapper
 			((appcount++))
+			;;
+		b)
+			do_build=1
+			;;
+		i)
+			do_install=1
+			;;
+		c)
+			clean_build=1
 			;;
 		j)
 			if [ $OPTARG = 7 ]; then 
@@ -71,6 +91,31 @@ fi
 if [ $quit = true ]; then
 	exit 1
 fi
+
+if [ $do_build = 1 ]; then
+	echo Building and deploying $app in $build configuration...
+fi
+
+# Build if asked
+if [ $do_build = 1 ]; then
+	echo Running cmake...
+	cd ../..
+	if [ $clean_build = 1 ]; then
+		echo Cleaning up any previous build files...
+		rm -rf cmake
+		rm -rf xcode
+	fi
+	mkdir xcode 2>/dev/null
+	cd xcode
+	rm CMakeCache.txt 2>/dev/null
+	cmake ../gui -G Xcode >/dev/null
+
+	echo Building...
+	xcodebuild -target $app -configuration $build >/dev/null
+fi
+
+# Return to script path since the rest of the script expects us to be there,
+cd $script_path
 
 echo Setting up $app bundle [$build] with JVM $java...
 mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
@@ -120,7 +165,7 @@ cp -R ../../DataEngine/JavaDataEngine/database-drivers ../../cmake/bin/OSX64/$bu
 cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 #cp -R ../../DataEngine/JavaDataEngine/libsqlite4java-osx.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
-echo Deploying installation files...
+echo Deploying miscellaneous data files...
 cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
 if [ $app = GlyphViewer ] || [ $app = DataMapper ]; then
@@ -138,5 +183,11 @@ cp ../../Misc/osx_resources/synglyphx_x.icns ../../cmake/bin/OSX64/$build/$app.a
 # Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
 rm -f ../../cmake/bin/OSX64/$build/*.jar
+
+if [ $do_install = 1 ]; then
+	echo Copying app bundle to desktop...
+	cd ../../cmake/bin/OSX64/$build
+	cp -R $app.app ~/Desktop
+fi
 
 echo Done!

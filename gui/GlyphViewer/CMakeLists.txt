@@ -87,7 +87,7 @@ if(${APPLE})
 #	find_library(APP_SERVICES_LIBRARY ApplicationServices)
 #	target_link_libraries(GlyphViewer ${APP_SERVICES_LIBRARY})
 
-	message("Setting custom Info.plist template for GlyphViewer...")
+	#message("Setting custom Info.plist template for GlyphViewer...")
 	set_target_properties(GlyphViewer PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/../../Misc/osx_resources/GV.Info.plist.in)
 endif()
 
