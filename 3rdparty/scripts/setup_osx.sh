@@ -111,7 +111,7 @@ if [ $do_build = 1 ]; then
 	cmake ../gui -G Xcode >/dev/null
 
 	echo Building...
-	xcodebuild -target $app -configuration $build >/dev/null
+	xcodebuild -target $app -configuration $build -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 >/dev/null
 fi
 
 # Return to script path since the rest of the script expects us to be there,
