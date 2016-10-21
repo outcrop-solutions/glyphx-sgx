@@ -47,7 +47,7 @@ namespace SynGlyphX {
 
 		QObject::connect(&s_recentFileList, &SettingsStoredFileList::FileListChanged, this, &MainWindow::UpdateRecentFileList);
 
-		userMenuBar = new QMenuBar(menuBar());
+		//userMenuBar = new QMenuBar(this);
     }
 
     MainWindow::~MainWindow()
@@ -201,17 +201,21 @@ namespace SynGlyphX {
 
 	void MainWindow::CreateLoginMenu() {
 
-		QString user = "Log In " + QString(QChar(0x23F7));
-		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+		//QString user = "Log In " + QString(QChar(0x23F7));
+		//menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+		m_loginMenu = menuBar()->addMenu(tr("User"));
+		m_loginMenu->menuAction()->setVisible(false);
 
 	}
 
 	void MainWindow::UpdateUserMenu(QString username){
 
-		userMenuBar->clear();
-
+		//userMenuBar->clear();
+		//m_loginMenu->setVisible(true);
 		QString user = username + " " + QString(QChar(0x23F7));
-		m_loginMenu = userMenuBar->addMenu(tr(user.toStdString().c_str()));
+		//m_loginMenu = userMenuBar->addMenu(tr(user.toStdString().c_str()));
+		m_loginMenu->setTitle(username);
+
 
 		m_userSettingsMenu = m_loginMenu->addAction("User Settings");
 		QObject::connect(m_userSettingsMenu, &QAction::triggered, this, &MainWindow::UserSettings);
@@ -220,7 +224,8 @@ namespace SynGlyphX {
 
 		m_logoutMenu = m_loginMenu->addAction("Log Out");
 
-		menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
+		m_loginMenu->menuAction()->setVisible(true);
+		//menuBar()->setCornerWidget(userMenuBar, Qt::TopRightCorner);
 	}
 
 	QAction* MainWindow::LogoutMenu(){
@@ -241,7 +246,8 @@ namespace SynGlyphX {
 
 	void MainWindow::UserLogOut(){
 
-		userMenuBar->clear();
+		//userMenuBar->clear();
+		m_loginMenu->clear();
 	}
 
 	bool MainWindow::HasOpenFile(){

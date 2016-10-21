@@ -335,7 +335,9 @@ void GlyphViewerWindow::CreateMenus() {
 	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
 	m_helpMenu->insertSeparator(m_aboutBoxAction);
 
+	menuBar()->addSeparator();
 	SynGlyphX::MainWindow::CreateLoginMenu();
+
 }
 
 void GlyphViewerWindow::CreateDockWidgets() {
