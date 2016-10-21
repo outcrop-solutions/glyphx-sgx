@@ -74,7 +74,16 @@ void SelectedSourceDataWidget::OnSelectionChanged(const QItemSelection& selected
 
 					indexesForTable.insert(*iT - range.first.GetMin());
 				}
-				m_selectedIndexesPerTable[range.second] = indexesForTable;
+
+				if (m_selectedIndexesPerTable.count(range.second) == 0) {
+
+					m_selectedIndexesPerTable[range.second] = indexesForTable;
+				}
+				else {
+
+					m_selectedIndexesPerTable[range.second].insert(indexesForTable.begin(), indexesForTable.end());
+				}
+
 				if (endOfTableRange != rootIndexRows.end()) {
 
 					startOfTableRange = endOfTableRange;
