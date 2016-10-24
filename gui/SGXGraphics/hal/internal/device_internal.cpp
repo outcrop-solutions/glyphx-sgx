@@ -321,7 +321,7 @@ namespace SynGlyphX
                     case hal::texture_format::rgb8: return 3u; break;
                     case hal::texture_format::rgba8: return 4u; break;
                     case hal::texture_format::d24: return 3u; break;
-                    default: hal::debug::_assert( false, "unknown texture format" );
+                    default: hal::debug::_assert( false, "unknown texture format" ); return 4u;
                 }
             }
 		}
