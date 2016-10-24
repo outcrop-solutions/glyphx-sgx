@@ -280,9 +280,17 @@ void SourceDataWidget::CreateSubsetVisualization() {
 			std::unordered_map<SynGlyphX::InputTable, std::wstring, SynGlyphX::InputTableHash> inputTableToCSVMap;
 			for (unsigned int i = 0; i < m_sourceDataTabs->count(); ++i) {
 
-				QString csvFile = csvFileDir + "data" + QString::number(i) + ".csv";
+				SynGlyphX::InputTable inputTable = m_tableInfoMap[m_sourceDataTabs->widget(i)->objectName()];
+				const auto& datasource = m_dataTransformMapping->GetDatasources().at(inputTable.GetDatasourceID());
+				QString csvFile = csvFileDir + QString::fromStdWString(datasource->GetFormattedName());
+				std::wstring tableName = inputTable.GetTable();
+				if (!tableName.empty() && (tableName != SynGlyphX::Datasource::SingleTableName)) {
+
+					csvFile += "_" + QString::fromStdWString(tableName);
+				}
+				csvFile += ".csv";
 				WriteToFile(dynamic_cast<QTableView*>(m_sourceDataTabs->widget(i)), csvFile);
-				inputTableToCSVMap[m_tableInfoMap[m_sourceDataTabs->widget(i)->objectName()]] = csvFile.toStdWString();
+				inputTableToCSVMap[inputTable] = csvFile.toStdWString();
 			}
 			
 			SynGlyphX::DataTransformMapping::ConstSharedPtr subsetDataMapping = m_dataTransformMapping->CreateSubsetMapping(inputTableToCSVMap);
