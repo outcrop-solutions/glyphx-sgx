@@ -23,6 +23,7 @@ qt=5.6
 appcount=0
 do_build=0
 do_install=0
+clean_build=0
 
 # Process command-line options.
 
@@ -98,13 +99,13 @@ fi
 
 # Build if asked
 if [ $do_build = 1 ]; then
-	echo Running cmake...
 	cd ../..
 	if [ $clean_build = 1 ]; then
 		echo Cleaning up any previous build files...
 		rm -rf cmake
 		rm -rf xcode
 	fi
+	echo Running cmake...
 	mkdir xcode 2>/dev/null
 	cd xcode
 	rm CMakeCache.txt 2>/dev/null
