@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "sgxglyphgui_global.h"
+#include "sgxdatatransformgui_global.h"
 #include "datamappingglyphgraph.h"
 #include <glm/glm.hpp>
 
@@ -29,7 +29,7 @@ namespace SynGlyphX {
 	class GlyphScene;
 	class PlacementPolicy;
 
-	class SGXGLYPHGUI_EXPORT Glyph3DSceneExport
+	class SGXDATATRANSFORMGUI_EXPORT Glyph3DSceneExport
 	{
 	public:
 		Glyph3DSceneExport();
