@@ -1,7 +1,11 @@
 
 #include "glyphnode.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <render/model.h>
 #include <render/model_loader.h>
 #include <render/torus_generator.h>
+#include <unordered_set>
+#include <stack>
 #include "placementpolicy.h"
 #include "glyphgeometrydb.h"
 

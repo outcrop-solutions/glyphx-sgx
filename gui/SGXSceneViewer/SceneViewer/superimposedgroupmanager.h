@@ -7,7 +7,7 @@
 
 namespace SynGlyphX
 {
-	namespace hal { class mesh; class effect; }
+    namespace hal { class mesh; class effect; class texture; class font; }
 	namespace render { class model; class perspective_camera; }
 	class GlyphScene;
 

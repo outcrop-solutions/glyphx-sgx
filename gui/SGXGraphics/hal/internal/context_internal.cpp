@@ -403,7 +403,7 @@ namespace SynGlyphX
 			set_blend_state( hal::blend_state::alpha );
 			bind( effect );
 
-			bind( 0, f->textures );
+            bind( 0, f->textures, { hal::texture_wrap::clamp, hal::texture_filter::linear } );
 			bind( get_uniform_block_index( effect, "instance_data" ), font_str.instance_data );
 
 			context::set_constant( effect, "shared_data", "color", color );
@@ -411,7 +411,7 @@ namespace SynGlyphX
 
 			draw_instanced( f->glyph_mesh, font_str.length );
 		}
-
+        
 		const hal::font_glyph& context_internal::get_glyph( hal::font* f, char c )
 		{
 			assert( f );
@@ -437,7 +437,9 @@ namespace SynGlyphX
 				g.advance_y = int16_t( glyph->advance.y >> 6 );
 
 				g.array_slice = f->next_slice++;
-				if ( glyph->bitmap.buffer )
+
+                device_internal::clear_array_slice( f->textures, g.array_slice );
+                if ( glyph->bitmap.buffer )
 				{
 					hal::pixel_rect rect{ 0u, 0u, glyph->bitmap.width, glyph->bitmap.rows };
 					device_internal::update_array_slice( f->textures, g.array_slice, rect, glyph->bitmap.buffer );

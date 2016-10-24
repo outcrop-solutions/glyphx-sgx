@@ -1,6 +1,7 @@
 /bin/
 /classes/
 /lib/
+/xcode/
 *.vc.db
 *.vc.opendb
 

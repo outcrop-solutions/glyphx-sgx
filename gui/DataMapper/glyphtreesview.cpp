@@ -51,7 +51,7 @@ public:
 		for (int row = 0; row < tv->m_sourceModel->rowCount(index); ++row)
 			SaveExpandedOnLevel(tv, index.child(row, 0));
 	}
-	void RestoreExpandedOnLevel(GlyphTreesView* tv, QModelIndex& index){
+	void RestoreExpandedOnLevel(GlyphTreesView* tv, const QModelIndex& index){
 
 		SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
 		if (treeNode){

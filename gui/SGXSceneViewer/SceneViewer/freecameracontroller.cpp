@@ -2,6 +2,7 @@
 #include "freecameracontroller.h"
 #include <render/perspective_camera.h>
 #include <glm/gtx/euler_angles.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace SynGlyphX
 {

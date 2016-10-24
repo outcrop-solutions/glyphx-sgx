@@ -19,10 +19,10 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 #	add_definitions(-DUSE_ZSPACE)
 #ENDIF()
 
-SET(SRC_ALL 	antzsingleglyphtreewidget.cpp
-				antzwidget.cpp
-				minmaxglyph3dwidget.cpp
-				minmaxglyphtreemodel.cpp)
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 
 ADD_LIBRARY(ANTzSingleGlyphGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(ANTzSingleGlyphGUI ${Boost_LIBRARIES} 

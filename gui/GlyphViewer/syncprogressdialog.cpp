@@ -1,5 +1,5 @@
 #include "syncprogressdialog.h"
-#include <QtWidgets\QProgressBar>
+#include <QtWidgets/QProgressBar>
 #include "SharedVisualizationsWidget.h"
 
 namespace SynGlyphX {

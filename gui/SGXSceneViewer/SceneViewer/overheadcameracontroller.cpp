@@ -2,11 +2,12 @@
 #include "overheadcameracontroller.h"
 #include <render/perspective_camera.h>
 #include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/compatibility.hpp>
 
 namespace SynGlyphX
 {
 	OverheadCameraController::OverheadCameraController( render::perspective_camera* _camera )
-		: camera( _camera ), turn_speed( 32.f ), move_speed( 32.f ), state( states::animating_in )
+		: camera( _camera ), move_speed( 32.f ), turn_speed( 32.f ), state( states::animating_in )
 	{
 	}
 

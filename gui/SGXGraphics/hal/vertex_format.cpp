@@ -1,5 +1,6 @@
 
 #include "vertex_format.h"
+#include <cassert>
 
 namespace SynGlyphX
 {

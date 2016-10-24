@@ -9,28 +9,11 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXImage
 							../../GUI/SGXGUI)
 
-SET(SRC_ALL 	allglyphpropertieswidget.cpp
-				colorconverter.cpp
-				colorminmaxwidget.cpp
-				defaultbaseimagescombobox.cpp
-				doubleminmaxwidget.cpp
-				glyphbuilderapplication.cpp
-				glyphdefaultswidget.cpp
-				glyphenumcombobox.cpp
-				glyphmimedata.cpp
-				glyphstructurewidget.cpp
-				glyphtemplatelibrarylistwidget.cpp
-				intminmaxwidget.cpp
-				itemfocusselectionmodel.cpp
-				linklessgraphmimedata.cpp
-				newglyphtreewizard.cpp
-				nonmappablegeometrywidget.cpp
-				scenepropertieswidget.cpp
-				singleglyphviewoptionswidget.cpp
-				surfaceradiobuttonwidget.cpp
-				textglyphpropertieswidget.cpp
-				treeeditview.cpp
-				visualglyphpropertieswidget.cpp)
+
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 
 ADD_LIBRARY(SGXGlyphGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXGlyphGUI ${Boost_LIBRARIES} ${QT_LIBRARIES} SGXUtility SGXFoundation SGXDataMapping SGXImage SGXGUI)

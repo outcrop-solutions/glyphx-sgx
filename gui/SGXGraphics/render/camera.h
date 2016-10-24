@@ -12,6 +12,8 @@ namespace SynGlyphX
 		class SGXGRAPHICS_API camera
 		{
 		public:
+            virtual ~camera() { }
+            
 			virtual const glm::mat4& get_view() const = 0;
 			virtual const glm::mat4& get_proj() const = 0;
 

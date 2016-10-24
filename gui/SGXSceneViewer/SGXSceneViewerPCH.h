@@ -1,4 +1,6 @@
 
+#ifdef WIN32
+
 #include <vector>
 #include <stack>
 #include <unordered_map>
@@ -10,3 +12,5 @@
 #include <render/model.h>
 #include <render/bounds.h>
 #include <glm/gtc/matrix_transform.hpp>
+
+#endif

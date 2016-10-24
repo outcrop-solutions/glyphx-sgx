@@ -28,7 +28,7 @@ namespace SynGlyphX {
 
 	class DataTransformModel::Command : public QUndoCommand{
 	public:
-		DataTransformModel::Command(DataTransformModel* dtm) : m_dtm(dtm){}
+		Command(DataTransformModel* dtm) : m_dtm(dtm){}
 		DataTransformMapping::SharedPtr GetDataMapping() { return m_dtm->m_dataMapping;  }
 		DataTransformModel* m_dtm;
 	};

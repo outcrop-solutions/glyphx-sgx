@@ -3,6 +3,7 @@
 
 #include "../platform.h"
 #include <glm/glm.hpp>
+#include <vector>
 
 namespace SynGlyphX
 {

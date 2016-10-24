@@ -600,4 +600,4 @@ void LinksDialog::accept() {
 		QDialog::accept();
 }
 
-#include "linksdialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog
+#include "LinksDialog.moc" //this is nesseasary to because there is no .h file for FunctionDialog

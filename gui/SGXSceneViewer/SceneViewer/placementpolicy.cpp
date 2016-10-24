@@ -1,5 +1,6 @@
 
 #include "placementpolicy.h"
+#include <glm/gtc/matrix_transform.hpp>
 #include "glyphnode.h"
 
 namespace SynGlyphX

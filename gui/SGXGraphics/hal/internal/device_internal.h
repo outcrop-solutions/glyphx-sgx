@@ -46,6 +46,7 @@ namespace SynGlyphX
 
 			static hal::texture_array* create_texture_array( unsigned int w, unsigned int h, unsigned int layers, hal::texture_format fmt );
 			static void update_array_slice( hal::texture_array* t, unsigned int layer, const hal::pixel_rect& rect, uint8_t* data );
+            static void clear_array_slice( hal::texture_array* t, unsigned int layer );
 
 			static hal::font* load_font( const char* file, unsigned int size );
 

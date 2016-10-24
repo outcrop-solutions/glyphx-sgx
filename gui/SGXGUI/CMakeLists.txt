@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
+							${STLPLUS_INCLUDE_DIR}
 							../../Core/SGXUtility)
 
 #Enable licensing if it is available						
@@ -9,40 +10,10 @@ IF (${LICENSING_FOUND})
 	add_definitions(-DUSE_LICENSING)
 ENDIF()
 
-SET(SRC_ALL 	application.cpp
-				browselineedit.cpp
-				checkboxheaderview.cpp
-				coloralphawidget.cpp
-				colorbutton.cpp
-				doublesizewidget.cpp
-				elasticlistmodel.cpp
-				elasticlistwidget.cpp
-				fixedaspectratioimagelabel.cpp
-				gridwidget.cpp
-				groupboxsinglewidget.cpp
-				horizontalformwidget.cpp
-				intsizewidget.cpp
-				labelline.cpp
-				licensingdialog.cpp
-				mainwindow.cpp
-				rangeslider.cpp
-				notemptyvalidator.cpp
-				radiobuttongroupwidget.cpp
-				replacefilenamedialog.cpp
-				richtexteditor.cpp
-				roledatafilterproxymodel.cpp
-				sharedactionlist.cpp
-				singlewidgetdialog.cpp
-				sizewidget.cpp
-				stretchsurroundedwidget.cpp
-				tablesubsetproxymodel.cpp
-				treeview.cpp
-				validatedopenfiledialog.cpp
-				verticaltabordertableview.cpp
-				verticalscrollarea.cpp
-				passwordlineedit.cpp
-				prefixsuffixvalidator.cpp
-				xyzwidget.cpp)
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 				
 SET(RESOURCES_SRC sgxgui.qrc)
 
@@ -51,11 +22,13 @@ TARGET_LINK_LIBRARIES(SGXGUI ${Boost_LIBRARIES}
 							 SGXUtility
 							 Qt5::Core
 							 Qt5::Gui
-							 Qt5::Widgets)
+							 Qt5::Widgets
+							 Qt5::WebEngine
+							 Qt5::WebEngineWidgets
+)
 
 #Enable licensing if it is available
 IF (${LICENSING_FOUND})
-	message("Licensing found!")
 	TARGET_LINK_LIBRARIES(SGXGUI rlmez)
 	IF (${WIN32}) 
 		#Check if /SAFESEH:NO is needed with the newer 12.0 VS 2015 version of RLM-EZ (32 bit only)

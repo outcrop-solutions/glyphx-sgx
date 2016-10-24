@@ -1,5 +1,9 @@
 
 #include "axisrenderer.h"
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <hal/device.h>
+#include <render/model.h>
 #include <render/model_loader.h>
 
 namespace SynGlyphX

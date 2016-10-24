@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "../platform.h"
 #include <hal/types.h>
 #include "bounds.h"

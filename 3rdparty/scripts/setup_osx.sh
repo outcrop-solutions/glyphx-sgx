@@ -7,15 +7,26 @@
 # - Some way to change hardcoded paths (command line option? store in a .conf file?)
 # - Error handling (check for Qt, VM, etc and emit an error if not found)
 
+# Make sure we're in the same path as this script since it expects that.
+# (Only do this if it isn't already set since we might be calling this from another script that set it already.)
+if [ -z ${script_path+x} ]; then
+	cd "${0%/*}"
+	script_path="$(pwd)"
+fi
+
+cd $script_path
+
 build=None
 app=None
-java=7
+java=8
 qt=5.6
 appcount=0
+do_build=0
+do_install=0
 
 # Process command-line options.
 
-while getopts "drvbmj:q:" opt; do
+while getopts "drvgbcimj:q:" opt; do
 	case "$opt" in
 		d)
 			build=Debug
@@ -27,13 +38,22 @@ while getopts "drvbmj:q:" opt; do
 			app=GlyphViewer
 			((appcount++))
 			;;
-		b)
+		g)
 			app=GlyphDesigner
 			((appcount++))
 			;;
 		m)
 			app=DataMapper
 			((appcount++))
+			;;
+		b)
+			do_build=1
+			;;
+		i)
+			do_install=1
+			;;
+		c)
+			clean_build=1
 			;;
 		j)
 			if [ $OPTARG = 7 ]; then 
@@ -72,14 +92,42 @@ if [ $quit = true ]; then
 	exit 1
 fi
 
+if [ $do_build = 1 ]; then
+	echo Building and deploying $app in $build configuration...
+fi
+
+# Build if asked
+if [ $do_build = 1 ]; then
+	echo Running cmake...
+	cd ../..
+	if [ $clean_build = 1 ]; then
+		echo Cleaning up any previous build files...
+		rm -rf cmake
+		rm -rf xcode
+	fi
+	mkdir xcode 2>/dev/null
+	cd xcode
+	rm CMakeCache.txt 2>/dev/null
+	cmake ../gui -G Xcode >/dev/null
+
+	echo Building...
+	xcodebuild -target $app -configuration $build -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 >/dev/null
+fi
+
+# Return to script path since the rest of the script expects us to be there,
+cd $script_path
+
 echo Setting up $app bundle [$build] with JVM $java...
+mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+
+echo Copying 3rd-party libraries into app bundle... 
+cp ../tools/graphics/OSX64/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # This shouldn't be necessary but I haven't been able to figure out how to get cmake to set up xcode
 # to drop the libraries in the bundle and link the app against them properly. So just moving them into
 # it before running macdeployqt does the trick.
-echo Moving libraries into app bundle...
-mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
-mv ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
+echo Copying sgx libraries into app bundle...
+cp ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # NOTE: We're piping all the macdeployqt output to /dev/null. It spams a LOT of unnecessary text. Run it
 # from the console if you need to see its output for some reason (or remove the two redirections starting
@@ -117,7 +165,7 @@ cp -R ../../DataEngine/JavaDataEngine/database-drivers ../../cmake/bin/OSX64/$bu
 cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 #cp -R ../../DataEngine/JavaDataEngine/libsqlite4java-osx.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
-echo Deploying installation files...
+echo Deploying miscellaneous data files...
 cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
 
 if [ $app = GlyphViewer ] || [ $app = DataMapper ]; then
@@ -135,5 +183,11 @@ cp ../../Misc/osx_resources/synglyphx_x.icns ../../cmake/bin/OSX64/$build/$app.a
 # Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
 rm -f ../../cmake/bin/OSX64/$build/*.jar
+
+if [ $do_install = 1 ]; then
+	echo Copying app bundle to desktop...
+	cd ../../cmake/bin/OSX64/$build
+	cp -R $app.app ~/Desktop
+fi
 
 echo Done!

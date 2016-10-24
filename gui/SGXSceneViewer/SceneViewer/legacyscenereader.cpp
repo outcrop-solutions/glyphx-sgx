@@ -220,22 +220,10 @@ namespace SynGlyphX
 			return atoi( dataline[index].c_str() );
 		}
 
-		glm::vec2 GetItemVec2( const std::vector<std::string>& dataline, const unsigned int first_component_index )
-		{
-			assert( first_component_index + 1 < dataline.size() );
-			return glm::vec2( atof( dataline[first_component_index].c_str() ), atof( dataline[first_component_index + 1].c_str() ) );
-		}
-
 		glm::vec3 GetItemVec3( const std::vector<std::string>& dataline, const unsigned int first_component_index )
 		{
 			assert( first_component_index + 2 < dataline.size() );
 			return glm::vec3( atof( dataline[first_component_index].c_str() ), atof( dataline[first_component_index + 1].c_str() ), atof( dataline[first_component_index + 2].c_str() ) );
-		}
-
-		glm::vec4 GetItemVec4( const std::vector<std::string>& dataline, const unsigned int first_component_index )
-		{
-			assert( first_component_index + 3 < dataline.size() );
-			return glm::vec4( atof( dataline[first_component_index].c_str() ), atof( dataline[first_component_index + 1].c_str() ), atof( dataline[first_component_index + 2].c_str() ), atof( dataline[first_component_index + 3].c_str() ) );
 		}
 
 		glm::vec4 GetItemColor( const std::vector<std::string>& dataline, const unsigned int first_component_index )
@@ -247,8 +235,6 @@ namespace SynGlyphX
 
 	namespace LegacySceneReader
 	{
-		const float BASE_SCALE = 1.f;	// temporary scale to make objects more visible until topo code available
-
 		SGXSCENEVIEWER_API bool LoadLegacyScene( GlyphScene& scene, const GlyphGeometryDB& db, BaseImageRenderer& base_images, render::grid_renderer& grids, hal::texture* default_base_texture, const char* mainCSV, const char* tagCSV, const std::vector<hal::texture*>& base_image_textures )
 		{
 			hal::debug::profile_timer timer;
@@ -400,7 +386,6 @@ namespace SynGlyphX
 							float cells_x = GetItemF( dataline, columns.grid_segments_x );
 							float cells_y = GetItemF( dataline, columns.grid_segments_y );
 							glm::vec2 size = glm::vec2( cell_w * cells_x, cell_h * cells_y );
-							glm::vec3 size3 = glm::vec3( size, 0.f );
 							glm::mat4 scale = glm::scale( glm::mat4(), GetItemVec3( dataline, columns.sx ) );
 							glm::mat4 translate = glm::translate( glm::mat4(), GetItemVec3( dataline, columns.x ) );
 							glm::vec3 rotatev( glm::radians( GetItemF( dataline, columns.rx ) ), glm::radians( GetItemF( dataline, columns.ry ) ), glm::radians( GetItemF( dataline, columns.rz ) ) );
@@ -409,7 +394,7 @@ namespace SynGlyphX
 							rotate = glm::rotate( rotate, rotatev.z, glm::vec3( 0.f, 0.f, -1.f ) );
 							glm::vec4 grid_color = GetItemColor( dataline, columns.r );
 
-							unsigned int tex_id = unsigned int( GetItemI( dataline, columns.texture_id ) );
+							unsigned int tex_id = static_cast<unsigned int>( GetItemI( dataline, columns.texture_id ) );
 							if ( tex_id != 0 )
 							{
 								hal::texture* tex = default_base_texture;

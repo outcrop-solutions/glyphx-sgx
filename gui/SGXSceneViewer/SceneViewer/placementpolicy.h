@@ -11,6 +11,7 @@ namespace SynGlyphX
 	class SGXSCENEVIEWER_API PlacementPolicy
 	{
 	public:
+        virtual ~PlacementPolicy() { }
 		virtual void repositionChildren( const Glyph3DNode& glyph, const glm::mat4& parentTransform ) = 0;
 	};
 

@@ -4,7 +4,10 @@
 #include "../platform.h"
 #include <functional>
 #include <stack>
+#include <vector>
 #include <glm/glm.hpp>
+#include "hal/debug.h"
+#include "render/bounds.h"
 
 namespace SynGlyphX
 {
@@ -92,7 +95,7 @@ namespace SynGlyphX
 
 		template<typename content_t>
 		octree_node<content_t>::octree_node( const box_bound& _bound, unsigned int _depth, const octree_settings& _settings ) :
-			bound( _bound ), loose_bound( _bound ), depth( _depth ), settings( _settings ), children( nullptr )
+			bound( _bound ), loose_bound( _bound ), depth( _depth ), children( nullptr ), settings( _settings )
 		{
 			loose_bound.dilate( loose_bound.get_size() * settings.looseness );
 		}

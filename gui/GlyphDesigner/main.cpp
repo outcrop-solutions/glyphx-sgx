@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
+#include <QtCore/QDir>
 #include "glyphbuilderapplication.h"
 #include "licensingdialog.h"
 #include <QtCore/QStandardPaths>

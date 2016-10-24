@@ -31,24 +31,10 @@ ENDIF()
 #	add_definitions(-DUSE_ZSPACE)
 #ENDIF()
 
-SET(SRC_ALL adddatabaseserverwizard.cpp
-			addfiledatasourcewizard.cpp
-			baseimagedialog.cpp
-			baseobjectlistview.cpp
-			databindingtableswidget.cpp
-			datamapperwindow.cpp
-			datamapping3dwidget.cpp
-			datasourcestatswidget.cpp
-			datasourcesview.cpp
-			glyphoptionswidget.cpp
-			glyphtagview.cpp
-			glyphtreesview.cpp
-			legendlistview.cpp
-			linksdialog.cpp
-			linkslistview.cpp
-			main.cpp
-			newmappingdefaultswidget.cpp
-			tablechoicewidget.cpp)
+file(GLOB SRC_ALL
+	"*.h"
+	"*.cpp"
+)
 				
 #SET(RESOURCES_SRC datamapperwindow.qrc)
 IF (${WIN32})

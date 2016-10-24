@@ -3,8 +3,13 @@
 
 #include "../platform.h"
 #include <glm/glm.hpp>
+#include <chrono>
 
 // #define HAL_BREAK_ON_ASSERT
+
+#ifndef UNREFERENCED_PARAMETER
+#define UNREFERENCED_PARAMETER(P) (P)
+#endif
 
 namespace SynGlyphX
 {
@@ -28,7 +33,7 @@ namespace SynGlyphX
 				unsigned int elapsed_ms();
 				void print_ms_to_debug( const char* message, ... );
 			private:
-				unsigned int start;
+				std::chrono::high_resolution_clock::time_point start;
 			};
 		}
 	}

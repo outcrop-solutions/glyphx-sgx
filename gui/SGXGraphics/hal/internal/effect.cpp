@@ -263,7 +263,7 @@ namespace SynGlyphX
 				glGenBuffers( 1, &block.buffer );
 				glBindBuffer( GL_UNIFORM_BUFFER, block.buffer );
 				block.backing_buffer = new char[block.size];
-				memset( block.backing_buffer, 0, sizeof( block.backing_buffer ) );
+				memset( block.backing_buffer, 0, sizeof( block.size ) );
 				glBufferData( GL_UNIFORM_BUFFER, block.size, block.backing_buffer, GL_DYNAMIC_DRAW );
 				glBindBuffer( GL_UNIFORM_BUFFER, 0 );
 
@@ -291,7 +291,7 @@ namespace SynGlyphX
 							return;
 						}
 						glGetActiveUniformsiv( _program, 1, &index, GL_UNIFORM_OFFSET, &offset );
-						memcpy_s( block.backing_buffer + offset, size, data, size );
+						memcpy( block.backing_buffer + offset, data, size );
 						block.dirty = true;
 						check_errors();
 					}
@@ -318,7 +318,7 @@ namespace SynGlyphX
 					if ( !block.external )
 					{
 						assert( size <= size_t( block.size ) );
-						memcpy_s( block.backing_buffer, block.size, data, size );
+						memcpy( block.backing_buffer, data, size );
 						block.dirty = true;
 					}
 					else

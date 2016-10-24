@@ -4,8 +4,8 @@
 #include "types_internal.h"
 #include "ref_counted.h"
 #include <string>
-#include <hash_map>
-#include <hash_set>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace SynGlyphX
 {
@@ -55,9 +55,9 @@ namespace SynGlyphX
 				cbuffer_usage usage;
 			};
 
-			std::hash_map<std::string, uniform_block> uniform_blocks;
+			std::unordered_map<std::string, uniform_block> uniform_blocks;
 			std::vector<std::string> forced_includes;
-			std::hash_set<std::string> external_uniform_block_names;
+			std::unordered_set<std::string> external_uniform_block_names;
 
 			void setup_external_uniform_blocks();
 

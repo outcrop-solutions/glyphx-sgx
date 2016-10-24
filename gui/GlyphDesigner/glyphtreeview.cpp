@@ -22,7 +22,7 @@ public:
 				SaveExpandedOnLevel(tv, index.child(row, 0));
 		}
 	}
-	void RestoreExpandedOnLevel(GlyphTreeView* tv, QModelIndex& index){
+	void RestoreExpandedOnLevel(GlyphTreeView* tv, const QModelIndex& index){
 		if (m_list.contains(index.data(Qt::UserRole).toUInt())) {
 			tv->setExpanded(index, true);
 			for (int row = 0; row < tv->m_model->rowCount(index); ++row)

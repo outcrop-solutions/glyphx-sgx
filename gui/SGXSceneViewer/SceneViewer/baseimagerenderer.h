@@ -5,6 +5,7 @@
 #include <vector>
 #include <hal/types.h>
 #include <render/renderer.h>
+#include <render/bounds.h>
 
 namespace SynGlyphX
 {

@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/color_space.hpp>
+#include <glm/gtx/compatibility.hpp>
 #include "hal/hal.h"
 #include "hal/vertex_format.h"
 #include "render/perspective_camera.h"
@@ -49,10 +50,9 @@ namespace SynGlyphX
 	unsigned int SceneViewer::active_viewer_count = 0u;
 
 	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
-		: QOpenGLWidget( parent ), glyph_renderer( nullptr ), renderer( nullptr ), wireframe( false ), enable_fly_to_object( false ), scene_axes_enabled( true ),
-		wheel_delta( 0.f ), hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), animation_enabled( true ), background_color( render::color::black() ),
-		initialized( false ), filtered_glyph_opacity( 0.5f ), free_selection_camera( false ), selection_effect_enabled( true ), item_focus_sm( nullptr ), scene( nullptr ),
-		mode( _mode ), m_overridePosition( 0.0f )
+		: QOpenGLWidget( parent ), initialized( false ), scene( nullptr ), free_selection_camera( false ), selection_effect_enabled( true ), wheel_delta( 0.f ), scene_axes_enabled( true ),
+        hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), enable_fly_to_object( false ), animation_enabled( true ), wireframe( false ), glyph_renderer( nullptr ),
+        renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), m_overridePosition( 0.0f ), mode( _mode )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -500,7 +500,6 @@ namespace SynGlyphX
 				else
 				{
 					auto single_root = scene->getSingleRoot();
-					auto selectionIndex = single_root ? single_root->getFilteringIndex() : 0u;
 					if ( single_root && single_root->getType() != Glyph3DNodeType::Link )
 					{
 						std::string positionHUD;
@@ -584,10 +583,15 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextF( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
 	{
-		static char buf[8192u];
+        const unsigned int buf_size = 8192u;
+		static char buf[buf_size];
 		va_list args;
 		va_start( args, string );
+#ifdef WIN32
 		vsprintf_s( buf, string, args );
+#else
+        vsnprintf( buf, buf_size, string, args );
+#endif
 		va_end( args );
 
 		auto transform = ui_camera->get_proj() * ui_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( glm::round( pos ), 0.f ) );
@@ -596,11 +600,16 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextCenteredF( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... )
 	{
-		static char buf[8192u];
+        const unsigned int buf_size = 8192u;
+		static char buf[buf_size];
 		va_list args;
 		va_start( args, string );
+#ifdef WIN32
 		vsprintf_s( buf, string, args );
-		va_end( args );
+#else
+        vsnprintf( buf, buf_size, string, args );
+#endif
+        va_end( args );
 
 		glm::vec2 text_size = context->measure_text( font, buf );
 		int imode = int( mode );
@@ -618,13 +627,7 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextCentered( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string )
 	{
-		static char buf[8192u];
-		va_list args;
-		va_start( args, string );
-		vsprintf_s( buf, string, args );
-		va_end( args );
-
-		glm::vec2 text_size = context->measure_text( font, buf );
+		glm::vec2 text_size = context->measure_text( font, string );
 		int imode = int( mode );
 		glm::vec2 adjustment( ( imode & int( CenterMode::X ) ) ? text_size.x * 0.5f : 0.f, ( imode & int( CenterMode::Y ) ) ? text_size.y * 0.5f : 0.f );
 
@@ -922,7 +925,6 @@ namespace SynGlyphX
 						if ( glm::length( proj_fwd ) > 0.f )
 						{
 							const float drag_motion_speed = 0.005f;
-							const float drag_turn_speed = 0.01f;
 							proj_fwd = glm::normalize( proj_fwd );
 							auto& drag = drag_info( button::right );
 							auto drag_motion = drag_motion_speed * glm::vec2( mouse_x - drag.drag_start_x, mouse_y - drag.drag_start_y );
@@ -933,9 +935,9 @@ namespace SynGlyphX
 					else  // otherwise, the standard free-camera movement
 					{
 						// Forward/back along camera axis.
-						if ( key_states['w'] )
+						if ( key_states[uint8_t('w')] )
 							motion += cam_fwd;
-						else if ( key_states['s'] )
+						else if ( key_states[uint8_t('s')] )
 							motion -= cam_fwd;
 
 						motion += cam_fwd * wheel_delta * wheel_zoom_speed;
@@ -953,17 +955,17 @@ namespace SynGlyphX
 					}
 
 					// Left-right along camera axis.
-					if ( key_states['d'] )
+					if ( key_states[uint8_t('d')] )
 						motion += cam_right;
-					else if ( key_states['a'] )
+					else if ( key_states[uint8_t('a')] )
 						motion -= cam_right;
 
 					// Move the camera up and down along the world vertical axis. (To move along the camera's local
 					// up/down axis instead, use get_up instead of get_world_up.)
 					glm::vec3 cam_up = camera->get_world_up();
-					if ( key_states['q'] )
+					if ( key_states[uint8_t('q')] )
 						motion -= cam_up;
-					else if ( key_states['e'] )
+					else if ( key_states[uint8_t('e')] )
 						motion += cam_up;
 
 					free_cam_control->move( motion * ( fast ? 5.f : 1.f ) );
@@ -1013,13 +1015,13 @@ namespace SynGlyphX
 
 					// Keyboard camera rotation
 					glm::vec2 orbit;
-					if ( key_states['d'] )
+					if ( key_states[uint8_t('d')] )
 						orbit.x -= 1.f;
-					else if ( key_states['a'] )
+					else if ( key_states[uint8_t('a')] )
 						orbit.x += 1.f;
-					if ( key_states['w'] )
+					if ( key_states[uint8_t('w')] )
 						orbit.y += 1.f;
-					else if ( key_states['s'] )
+					else if ( key_states[uint8_t('s')] )
 						orbit.y -= 1.f;
 
 					if ( !( drag_info( button::left ).dragging && drag_info( button::right ).dragging ) )

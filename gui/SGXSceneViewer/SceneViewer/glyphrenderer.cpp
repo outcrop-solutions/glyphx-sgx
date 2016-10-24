@@ -1,7 +1,10 @@
 
 #include "glyphrenderer.h"
+#include <hal/hal.h>
 #include <hal/debug.h>
+#include <render/model.h>
 #include <render/perspective_camera.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/compatibility.hpp>
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"
@@ -10,8 +13,6 @@ namespace SynGlyphX
 {
 	namespace
 	{
-		bool updates_done = false;	// used to track if instance buffers have been rebuilt for profiling purposes
-
 		enum bucket_flags
 		{
 			WIREFRAME = 1u,
@@ -29,7 +30,7 @@ namespace SynGlyphX
 	{
 		uint32_t bid = bucket_id, gid = group_id;
 		uint32_t bucket = bid | ( gid << 16 );
-		auto& it = buckets.find( bucket );
+		auto it = buckets.find( bucket );
 		if ( it == buckets.end() )
 			it = buckets.insert( std::make_pair( bucket, glyph_bucket() ) ).first;
 		return it->second;
@@ -164,9 +165,9 @@ namespace SynGlyphX
 		}
 	}
 
-	GlyphRenderer::GlyphRenderer( GlyphGeometryDB& _db ) : transform_binding_point( UINT_MAX ), material_binding_point( UINT_MAX ), selection_anim_max_scale( 64.f ),
-		animation( true ), global_wireframe( false ), scene( nullptr ), filter_alpha( 0.5f ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
-		bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ), sel_effect_enabled( true ), db( _db)
+	GlyphRenderer::GlyphRenderer( GlyphGeometryDB& _db ) : selection_anim_max_scale( 64.f ), bound_vis_enabled( false ), bound_vis_mode( GlyphRenderer::BoundVisMode::Individual ),
+        sel_effect_enabled( true ),global_wireframe( false ), animation( true ), filter_alpha( 0.5f ), scene( nullptr ), selection_animation_time( 0.f ), selection_animation_state( 0.f ),
+        db( _db)
 	{
 		glyph_effect = hal::device::load_effect( "shaders/glyph.vert", nullptr, "shaders/glyph.frag" );
 		selection_effect = hal::device::load_effect( "shaders/selection.vert", nullptr, "shaders/selection.frag" );
@@ -362,7 +363,7 @@ namespace SynGlyphX
 			const int speed_thresholds[] = { 0, 3, 6 };
 			const float speeds[] = { 0.5f, 0.25f, 0.15f };
 			float count;
-			float anim_state = modf( selection_animation_state, &count );
+			float anim_state = modff( selection_animation_state, &count );
 			float speed = 0.f;
 			for ( unsigned int i = 0; i < 3; ++i )
 				if ( count >= float( speed_thresholds[i] ) )
