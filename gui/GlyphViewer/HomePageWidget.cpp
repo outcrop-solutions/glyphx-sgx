@@ -286,7 +286,10 @@ void HomePageWidget::CreateDashboardWidget() {
 
 			logoImage->setPixmap(QPixmap(topLogo));
 		}
-		//logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png"));
+		else
+		{
+			logoImage->setPixmap( QPixmap( ":SGXGUI/Resources/synglyphx_logo_large.png" ) );
+		}
 	}
 
 	welcomeWidgetLayout->addWidget(logoImage);
