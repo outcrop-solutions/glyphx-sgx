@@ -590,7 +590,6 @@ void GlyphViewerWindow::Logout(){
 void GlyphViewerWindow::ClearAllData() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	m_viewer->setFilteredResults(SynGlyphX::IndexSet());
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->ClearAndReset();

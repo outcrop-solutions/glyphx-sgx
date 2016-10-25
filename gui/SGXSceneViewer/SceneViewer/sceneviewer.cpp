@@ -179,6 +179,7 @@ namespace SynGlyphX
 	{
 		if ( initialized )
 		{
+			setFilteredResults( IndexSet() );
 			scene->clear();
 			group_manager->clear();
 			base_images->clear();
