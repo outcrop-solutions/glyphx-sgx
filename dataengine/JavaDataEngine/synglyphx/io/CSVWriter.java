@@ -315,6 +315,7 @@ public class CSVWriter {
 			ArrayList<Integer> parent_ids = entry.getValue().linkParentID();
 			ArrayList<Integer> child_ids = entry.getValue().linkChildID();
 			int link_index = 0;
+			int base_index = index-1;
 			index += offset-1;
 			System.out.println(offset);
 			for(int i = 0; i < entry.getValue().linkCount(); i++){
@@ -342,7 +343,7 @@ public class CSVWriter {
 					out += color_r+","+color_g+","+color_b+","+entry.getValue().getAlpha()+",";
 					out += "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,16,0,0,0,0,"+index+",420\n";
 					bf.write(out);
-					bfw.write(entry.getValue().outputTag(link_index, index));
+					bfw.write(entry.getValue().outputTag(base_index+link_index, index, false));
 				}
 				link_index++;
 			}

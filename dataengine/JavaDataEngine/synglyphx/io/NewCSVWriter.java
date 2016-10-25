@@ -312,13 +312,13 @@ public class NewCSVWriter {
 					out += "0,0,0,"; // rotate_x, rotate_y, rotate_z
 					out += "1,1,1,"; // scale_x, scale_y, scale_z
 					out += color_r+","+color_g+","+color_b+","+entry.getValue().getAlpha()+","; //color r, g, b, a
-					out += entry.getValue().getGeo()+",0,0,0.1"; //geometry, topo, color_index, ratio
+					out += entry.getValue().getGeo()+",0,0,0.1,"; //geometry, topo, color_index, ratio
 					out += "0,0,0,"; // rotate_rate_x, rotate_rate_y, rotate_rate_z
 					out += "0,0,16,16,0"; // aux_a_x, aux_b_y, segments_x, segments_y, texture_id;
 					out += "\n";
 
 					bf.write(out);
-					bfw.write(entry.getValue().outputTag(link_index, index));
+					bfw.write(entry.getValue().outputTag(index, index, true));
 				}
 				link_index++;
 			}

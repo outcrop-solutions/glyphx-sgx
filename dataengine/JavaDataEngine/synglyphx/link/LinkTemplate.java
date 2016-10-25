@@ -154,10 +154,15 @@ public class LinkTemplate {
 		return out;
 	}
 
-	public String outputTag(int id, int record_id){
+	public String outputTag(int id, int record_id, boolean format){
 		String out = "";
-		out += String.valueOf(id)+","+String.valueOf(record_id)+",";
-		out += "0,\"Link "+String.valueOf(tag_index)+"\",\"\"\n";
+		if(format){
+			out += String.valueOf(record_id)+",";
+			out += "\"Link "+String.valueOf(tag_index)+"\",\"\"\n";
+		}else{
+			out += String.valueOf(id)+","+String.valueOf(record_id)+",";
+			out += "0,\"Link "+String.valueOf(tag_index)+"\",\"\"\n";
+		}
 		tag_index++;
 		return out;
 	}
