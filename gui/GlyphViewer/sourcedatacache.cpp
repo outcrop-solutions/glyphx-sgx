@@ -1059,10 +1059,13 @@ QList<QVariant> SourceDataCache::GetValuesForRow(const SynGlyphX::InputTable& ta
 	QString queryString = "SELECT ";
 	for (const auto& field : fields) {
 
-		queryString += "\"" + field + "\"";
-		if (field != fields.last()) {
+		if (!field.isEmpty()) {
 
-			queryString += ", ";
+			queryString += "\"" + field + "\"";
+			if (field != fields.last()) {
+
+				queryString += ", ";
+			}
 		}
 	}
 

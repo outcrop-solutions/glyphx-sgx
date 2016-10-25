@@ -27,6 +27,7 @@
 #include <render/types.h>
 #include <hal/hal.h>
 #include <set>
+#include <array>
 #include "glyphrenderer.h"
 #include "glyphgeometrydb.h"
 
@@ -117,7 +118,7 @@ namespace SynGlyphX
 		// todo: use Qt signals/slots mechanism for this?
 		void setOnSelectionChanged( std::function<void( bool )> fn ) { on_selection_changed = fn; }
 
-		void setOverridePositionXYZ(const glm::vec3& positionOverride);
+		void setOverridePositionXYZ(const std::array<std::string, 3>& positionOverride);
 
 	protected:
 		enum class CenterMode
@@ -244,7 +245,7 @@ namespace SynGlyphX
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();
 
-		glm::vec3 m_overridePosition;
+		std::array<std::string, 3> m_overridePosition;
 
 		// need to track how many viewers we have so we can manage shared init/shutdown
 		static unsigned int active_viewer_count;

@@ -104,20 +104,20 @@ private:
 	class HUDGenerationInfo {
 
 	public:
-		HUDGenerationInfo(const SynGlyphX::InputTable& table, const QStringList& fields, const QStringList& displayNames) :
+		HUDGenerationInfo(const SynGlyphX::InputTable& table, const QMap<unsigned int, QString>& fields, const QMap<unsigned int, QString>& displayNames) :
 			m_table(table), m_fields(fields), m_displayNames(displayNames) {}
 		HUDGenerationInfo(const HUDGenerationInfo& info) :
 			m_table(info.m_table), m_fields(info.m_fields), m_displayNames(info.m_displayNames) {}
 		~HUDGenerationInfo() {}
 
 		const SynGlyphX::InputTable& GetTable() const { return m_table; }
-		const QStringList& GetFields() const { return m_fields; }
-		const QStringList& GetDisplayNames() const { return m_displayNames; }
+		const QMap<unsigned int, QString>& GetFields() const { return m_fields; }
+		const QMap<unsigned int, QString>& GetDisplayNames() const { return m_displayNames; }
 
 	private:
 		SynGlyphX::InputTable m_table;
-		QStringList m_fields;
-		QStringList m_displayNames;
+		QMap<unsigned int, QString> m_fields;
+		QMap<unsigned int, QString> m_displayNames;
 	};
 	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
 	void LoadANTzCompatibilityVisualization(const QString& filename);

@@ -52,7 +52,7 @@ namespace SynGlyphX
 	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
 		: QOpenGLWidget( parent ), initialized( false ), scene( nullptr ), free_selection_camera( false ), selection_effect_enabled( true ), wheel_delta( 0.f ), scene_axes_enabled( true ),
         hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), enable_fly_to_object( false ), animation_enabled( true ), wireframe( false ), glyph_renderer( nullptr ),
-        renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), m_overridePosition( 0.0f ), mode( _mode )
+        renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), mode( _mode )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -513,7 +513,7 @@ namespace SynGlyphX
 									positionHUD += ", ";
 								}
 
-								positionHUD += axis_names[i] + ": " + std::to_string( m_overridePosition[i] );
+								positionHUD += axis_names[i] + ": " + m_overridePosition[i];
 							}
 						}
 						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
@@ -1072,7 +1072,7 @@ namespace SynGlyphX
 		axis_names[2] = std::string( "Z / " ) + Z;
 	}
 
-	void SceneViewer::setOverridePositionXYZ( const glm::vec3& positionOverride )
+	void SceneViewer::setOverridePositionXYZ(const std::array<std::string, 3>& positionOverride)
 	{
 		m_overridePosition = positionOverride;
 	}

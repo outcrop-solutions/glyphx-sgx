@@ -869,7 +869,7 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 	m_hudGenerationInfo.clear();
 	for (const auto& rootGlyph : dataTransformMapping->GetGlyphGraphs()) {
 
-		QStringList fields, displayNames;
+		QMap<unsigned int, QString> fields, displayNames;
 		SynGlyphX::InputTable table = dataTransformMapping->GetInputTable(rootGlyph.first);
 		std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
 		
@@ -879,20 +879,16 @@ void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::F
 			SynGlyphX::InputField field = ifm->GetInputField(posInputBinding.GetInputFieldID());
 			if (field.IsValid()) {
 
-				fields.push_back(QString::fromStdWString(field.GetField()).replace('_', ' '));
+				fields.insert(i, QString::fromStdWString(field.GetField()));
 				if (fieldToAliasMap.count(field.GetField()) == 0) {
 
-					displayNames.push_back(fields.last());
+					displayNames.insert(i, fields[i]);
+					displayNames[i].replace('_', ' ');
 				}
 				else {
 
-					displayNames.push_back(QString::fromStdWString(fieldToAliasMap[field.GetField()]));
+					displayNames.insert(i, QString::fromStdWString(fieldToAliasMap[field.GetField()]));
 				}
-			}
-			else {
-
-				fields.push_back("");
-				displayNames.push_back("");
 			}
 		}
 
@@ -920,9 +916,31 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 			else {
 
 				hudInfoIndex = indexes.get().first;
-				QList<QVariant> pos = m_sourceDataCache->GetValuesForRow(m_hudGenerationInfo[hudInfoIndex].GetTable(), 
-					m_hudGenerationInfo[hudInfoIndex].GetFields(), indexes.get().second);
-				m_viewer->setOverridePositionXYZ(glm::vec3(pos[0].toFloat(), pos[1].toFloat(), pos[2].toFloat()));
+				const QMap<unsigned int, QString>& fields = m_hudGenerationInfo[hudInfoIndex].GetFields();
+				QList<QVariant> posSourceDataVar = m_sourceDataCache->GetValuesForRow(m_hudGenerationInfo[hudInfoIndex].GetTable(), 
+					fields.values(), indexes.get().second);
+				std::array<std::string, 3> posSourceData;
+				unsigned int j = 0;
+				for (unsigned int i = 0; i < 3; ++i) {
+
+					if (fields.contains(i)) {
+
+						//Conversion is being done this way to allow formatting numbers
+
+						bool convertedToNumber = false;
+						float number = posSourceDataVar[j].toFloat(&convertedToNumber);
+						if (convertedToNumber) {
+
+							posSourceData[i] = std::to_string(number);
+						}
+						else {
+
+							posSourceData[i] = posSourceDataVar[j].toString().toStdString();
+						}
+						++j;
+					}
+				}
+				m_viewer->setOverridePositionXYZ(posSourceData);
 			}
 		}
 		catch (const std::exception& e) {
@@ -931,8 +949,10 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 		}
 	}
 
-	const QStringList& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
-	m_viewer->setAxisNames(displayNames[0].toStdString().c_str(), displayNames[1].toStdString().c_str(), displayNames[2].toStdString().c_str());
+	const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
+	m_viewer->setAxisNames(displayNames.contains(0) ? displayNames[0].toStdString().c_str() : "", 
+						   displayNames.contains(1) ? displayNames[1].toStdString().c_str() : "",
+						   displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
