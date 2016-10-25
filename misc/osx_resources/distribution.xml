@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="1">
+    <title>GlyphBuilder</title>
+    <license file="./LICENSE.rtf"/>
+    <readme file="./README.txt"/>
+    <pkg-ref id="com.synglyphx.GlyphViewer"/>
+    <pkg-ref id="com.synglyphx.GlyphDesigner"/>
+    <pkg-ref id="com.synglyphx.DataMapper"/>
+    <options customize="never" require-scripts="false"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.synglyphx.GlyphViewer"/>
+            <line choice="com.synglyphx.GlyphDesigner"/>
+            <line choice="com.synglyphx.DataMapper"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.synglyphx.GlyphViewer" visible="false">
+        <pkg-ref id="com.synglyphx.GlyphViewer"/>
+    </choice>
+    <pkg-ref id="com.synglyphx.GlyphViewer" version="0" onConclusion="none">GlyphViewer.pkg</pkg-ref>
+    <choice id="com.synglyphx.GlyphDesigner" visible="false">
+        <pkg-ref id="com.synglyphx.GlyphDesigner"/>
+    </choice>
+    <pkg-ref id="com.synglyphx.GlyphDesigner" version="0" onConclusion="none">GlyphDesigner.pkg</pkg-ref>
+    <choice id="com.synglyphx.DataMapper" visible="false">
+        <pkg-ref id="com.synglyphx.DataMapper"/>
+    </choice>
+    <pkg-ref id="com.synglyphx.DataMapper" version="0" onConclusion="none">DataMapper.pkg</pkg-ref>
+</installer-gui-script>

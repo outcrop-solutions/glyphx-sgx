@@ -28,4 +28,8 @@ done
 # Build an app package from the three packages we built.
 echo Building app package...
 cd ../../cmake/bin/OSX64/Release
-productbuild --package GlyphViewer.pkg --package GlyphDesigner.pkg --package DataMapper.pkg GlyphBuilder.pkg
+cp ../../../../misc/osx_resources/distribution.xml .
+cp ../../../../misc/osx_resources/readme.txt README.txt
+cp ../../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
+cp ../../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf DEMO_LICENSE.rtf
+productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilder.pkg
