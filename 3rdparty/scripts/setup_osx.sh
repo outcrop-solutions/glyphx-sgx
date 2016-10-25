@@ -186,9 +186,12 @@ echo Cleaning up executable path...
 rm -f ../../cmake/bin/OSX64/$build/*.jar
 
 if [ $do_install = 1 ]; then
-	echo Copying app bundle to desktop...
+#	echo Copying app bundle to desktop...
+#	cd ../../cmake/bin/OSX64/$build
+#	cp -R $app.app ~/Desktop
+	echo Creating OSX package...
 	cd ../../cmake/bin/OSX64/$build
-	cp -R $app.app ~/Desktop
+	pkgbuild --root $app.app --identifier com.synglyphx.$app --install-location /Applications/SynGlyphX/$app.app $app.pkg >/dev/null 2>/dev/null
 fi
 
 echo Done!
