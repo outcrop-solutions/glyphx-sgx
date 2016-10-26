@@ -24,10 +24,11 @@ appcount=0
 do_build=0
 do_install=0
 clean_build=0
+glyphed=0
 
 # Process command-line options.
 
-while getopts "drvgbcimj:q:" opt; do
+while getopts "drvegbcimj:q:" opt; do
 	case "$opt" in
 		d)
 			build=Debug
@@ -41,6 +42,11 @@ while getopts "drvgbcimj:q:" opt; do
 			;;
 		g)
 			app=GlyphDesigner
+			((appcount++))
+			;;
+		e)
+			app=GlyphViewer
+			glyphed=1
 			((appcount++))
 			;;
 		m)
@@ -85,7 +91,7 @@ fi
 
 if [ $appcount != 1 ]; then
 	echo Exactly one app parameter required [got $appcount]:
-	echo Specify -v for GlyphViewer, -b for GlyphDesigner, -m for DataMapper.
+	echo Specify -v for GlyphViewer, -b for GlyphDesigner, -m for DataMapper, -e for GlyphEd.
 	quit=true
 fi
 
@@ -191,7 +197,19 @@ if [ $do_install = 1 ]; then
 #	cp -R $app.app ~/Desktop
 	echo Creating OSX package...
 	cd ../../cmake/bin/OSX64/$build
-	pkgbuild --root $app.app --identifier com.synglyphx.$app --install-location /Applications/SynGlyphX/$app.app $app.pkg >/dev/null 2>/dev/null
+	install_path=/Applications/SynGlyphX/$app.app
+	pkg_name=$app.pkg
+	app_id=com.synglyphx.$app
+	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then
+		install_path=/Applications/SynGlyphX/GlyphED.app
+		pkg_name=GlyphEdGV.pkg
+		app_id=com.synglyphx.GlyphEd
+		mkdir ./GlyphViewer.app/Contents/MacOS/glyphed
+	fi
+	pkgbuild --root $app.app --identifier $app_id --install-location $install_path $pkg_name >/dev/null 2>/dev/null
+	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then
+		rmdir ./GlyphViewer.app/Contents/MacOS/glyphed
+	fi
 fi
 
 echo Done!

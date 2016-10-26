@@ -32,5 +32,14 @@ cp ../../../../misc/osx_resources/distribution.xml .
 cp ../../../../misc/osx_resources/readme.txt README.txt
 cp ../../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
 productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilder.pkg
+echo Building demo package...
 cp ../../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
 productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilderDemo.pkg
+
+# Build GlyphEd package.
+echo Building GlyphEd package...
+cd ../../../../3rdparty/scripts
+./setup_osx.sh -ebirj8
+cd ../../cmake/bin/OSX64/Release
+cp ../../../../misc/osx_resources/distribution_glyphed.xml .
+productbuild --distribution distribution_glyphed.xml --package-path . --resources . GlyphEd.pkg
