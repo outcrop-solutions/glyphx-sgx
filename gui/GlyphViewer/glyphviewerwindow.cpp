@@ -12,6 +12,7 @@
 #include <QtWidgets/QDockWidget>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QColorDialog>
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
@@ -321,6 +322,11 @@ void GlyphViewerWindow::CreateMenus() {
 
 	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
 	QObject::connect(optionsAction, &QAction::triggered, this, static_cast<void (GlyphViewerWindow::*)()>(&GlyphViewerWindow::ChangeOptions));
+
+	m_toolsMenu->addSeparator();
+
+	QAction* bcAction = m_toolsMenu->addAction(tr("Change Background Color"));
+	QObject::connect(bcAction, &QAction::triggered, this, &GlyphViewerWindow::ChangeBackgroundColor);
 
 	m_toolsMenu->addSeparator();
 
@@ -1042,6 +1048,17 @@ void GlyphViewerWindow::ChangeOptions() {
 
 			QMessageBox::warning(this, tr("Options Error"), tr("Options was not updated: ") + e.what());
 		}
+	}
+}
+
+void GlyphViewerWindow::ChangeBackgroundColor() {
+	QColor color = QColorDialog::getColor(Qt::black, this);
+	if (color.isValid())
+	{
+		auto r = color.redF();
+		auto g = color.greenF();
+		auto b = color.blueF();
+		if (m_viewer) m_viewer->setBackgroundColor(glm::vec4(float(r), float(g), float(b), 1.f));
 	}
 }
 

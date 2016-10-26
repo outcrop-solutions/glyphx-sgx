@@ -85,6 +85,7 @@ private slots:
 	void ChangeStereoMode();
 	void ImportFilesFromANTz();
 	void ChangeOptions();
+	void ChangeBackgroundColor();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void RemapRootPositionMappings();
