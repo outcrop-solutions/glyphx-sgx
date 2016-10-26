@@ -26,6 +26,7 @@ namespace SynGlyphX
 
 		void flyToTarget() { flying_to_target = true; }
 		void cancelFlyToTarget();
+		bool flyingToTarget() { return flying_to_target; }
 
 	protected:
 		void doActivate() override;

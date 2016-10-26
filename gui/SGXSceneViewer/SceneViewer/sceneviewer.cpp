@@ -1140,8 +1140,17 @@ namespace SynGlyphX
 
 	SceneViewer::camera_mode_t SceneViewer::camera_mode()
 	{
-		if ( ( scene->selectionEmpty() || free_selection_camera ) && mode == ViewerMode::Full )
+		// If fly-to-object is enabled, enable the orbit camera until we're done flying (or it's canceled).
+		// (The orbit camera is the one that implements the fly-to-object animation.)
+		if ( !scene->selectionEmpty() && enable_fly_to_object && orbit_cam_control->flyingToTarget() )
+			return camera_mode_t::orbit;
+
+		// Otherwise if we're in full viewer mode and either the user has chosen the free camera or there's no
+		// selection, choose the free camera.
+		else if ( ( scene->selectionEmpty() || free_selection_camera ) && mode == ViewerMode::Full )
 			return camera_mode_t::free;
+		
+		// Otherwise, orbit.
 		else
 			return camera_mode_t::orbit;
 	}
