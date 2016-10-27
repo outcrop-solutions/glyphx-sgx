@@ -45,19 +45,24 @@ public:
 	void AddInputField(const InputField& inputField)
 	{
 		SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransform = DMGlobal::Services()->GetDataTransformModel()->GetDataMapping();
-		QString formattedName = QString::fromStdWString(dataTransform->GetDatasources().at(inputField.GetDatasourceID())->GetFormattedName());
-		if (inputField.GetTable() != SynGlyphX::Datasource::SingleTableName)
+		auto dsid = inputField.GetDatasourceID();
+		auto dataSources = dataTransform->GetDatasources();
+		auto search = dataSources.find(dsid);
+		if (search != dataSources.end())
 		{
-			formattedName += ':' + QString::fromStdWString(inputField.GetTable());
+			QString formattedName = QString::fromStdWString(search->second->GetFormattedName());
+			if (inputField.GetTable() != SynGlyphX::Datasource::SingleTableName)
+			{
+				formattedName += ':' + QString::fromStdWString(inputField.GetTable());
+			}
+			formattedName += ':' + QString::fromStdWString(inputField.GetField());
+			auto item = new QListWidgetItem(formattedName, NULL);
+			insertItem(count(), item);
+			QVariant var;
+			var.setValue(inputField);
+			item->setData(Qt::UserRole, var);
+			m_tables.push_back(InputTable(inputField));
 		}
-		formattedName += ':' + QString::fromStdWString(inputField.GetField());
-		auto item = new QListWidgetItem(formattedName, NULL);
-		insertItem(count(), item);
-		QVariant var;
-		var.setValue(inputField);
-		item->setData(Qt::UserRole, var);
-		m_tables.push_back(InputTable(inputField));
-
 	}
 	void dragEnterEvent(QDragEnterEvent *event) override 
 	{

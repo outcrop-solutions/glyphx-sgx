@@ -621,6 +621,16 @@ namespace SynGlyphX {
 				}
 			}
 
+			for (int i = m_frontEndFilters.size() - 1; i >= 0; --i) //reverse order to preserve index
+				for (const auto& field : m_frontEndFilters[i].fields)
+				{ 
+					if (field.GetDatasourceID() == id)
+					{
+						m_frontEndFilters.erase(m_frontEndFilters.begin() + i);
+						break;
+					}
+				}
+					
 
 			for (const FieldGroupName& name : fieldGroupsToBeRemoved) {
 
