@@ -22,7 +22,9 @@ public class CSVReader {
 
 	private void parseCSV(String path) throws Exception{
 
-		com.opencsv.CSVReader reader = new com.opencsv.CSVReader(new FileReader(path));
+		InputStreamReader fr = new InputStreamReader(new FileInputStream(path), "UTF-8");
+		System.out.println(fr.getEncoding());
+		com.opencsv.CSVReader reader = new com.opencsv.CSVReader(fr);
 	    String [] nextLine;
 
      	while ((nextLine = reader.readNext()) != null) {
