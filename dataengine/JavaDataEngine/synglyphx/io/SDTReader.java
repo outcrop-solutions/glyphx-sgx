@@ -75,6 +75,7 @@ public class SDTReader {
 	public void generateGlyphs(){
 		
 		//double start = System.currentTimeMillis();
+		functionSetup();
 		Thread thread = new Thread(){
     		public void run(){
     			double start = System.currentTimeMillis();
@@ -199,7 +200,7 @@ public class SDTReader {
 				}
 
 			}
-			functionSetup();
+			//functionSetup();
 		}catch(Exception e){
 	        try{
 	            e.printStackTrace(ErrorHandler.getInstance().addError());
