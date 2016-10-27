@@ -68,7 +68,7 @@
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;SGXGlyphGUI_EXPORTS;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_SQL_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;QT_XML_LIB;SGXGLYPHGUI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);$(QTDIR)\include;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation\;..\..\Core\SGXDataMapping\;..\..\Core\SGXUtility\;..\..\GUI\SGXGUI\;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXImage\;..\..\DataEngine\DataEngine;..\..\DataEngine\jdk\include;..\..\DataEngine\jdk\include\win32;..\..\3rdparty\include\glm_0_9_7_5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat />
+      <DebugInformationFormat>None</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

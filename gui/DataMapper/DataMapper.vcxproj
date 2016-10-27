@@ -67,7 +67,7 @@
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\DataEngine\jdk\include\win32;..\..\DataEngine\jdk\include;..\..\DataEngine\DataEngine;.\GeneratedFiles;.;..\..\3rdParty\include\google_breakpad;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);..\..\Core\SGXFoundation;..\..\GUI\SGXGUI;..\..\Core\SGXDataTransform;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXDataMapping;..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\GUI\MapDownloading;..\..\ANTzPlus\ANTzSingleGlyphGUI;..\..\ANTzPlus\ANTzCore;..\..\GUI\SGXDataTransformGUI;..\..\Core\SGXUtility;..\..\GUI\SGXGlyphGUI;..\..\Core\SGXImage;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat />
+      <DebugInformationFormat>None</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

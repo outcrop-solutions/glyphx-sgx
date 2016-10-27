@@ -71,7 +71,7 @@
     <ClCompile>
       <PreprocessorDefinitions>USE_LICENSING;BOOST_ALL_DYN_LINK;UNICODE;WIN32;WIN64;QT_DLL;SGXGUI_EXPORTS;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;SGXGUI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXUtility\;..\..\3rdParty\include\rlm_ez_12_0;..\..\3rdParty\include\stlplus_3_11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat />
+      <DebugInformationFormat>None</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

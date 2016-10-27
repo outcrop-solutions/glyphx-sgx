@@ -79,7 +79,7 @@
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;USE_ZSPACE;USE_LICENSING;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_SQL_LIB;QT_OPENGL_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(QTDIR)\include;..\..\DataEngine\DataEngine;..\..\DataEngine\jdk\include\win32;..\..\DataEngine\jdk\include;.\GeneratedFiles;.;..\..\3rdParty\include\google_breakpad;.\GeneratedFiles\$(PlatformName)\$(ConfigurationName);..\..\ANTzPlus\ANTzBridge;..\..\3rdParty\include\boost_1_55_0;..\..\Core\SGXFoundation;..\..\3rdParty\include\stlplus_3_11;..\..\Core\SGXGeospatial;..\..\GUI\SGXGUI;..\..\GUI\MapDownloading;..\..\Core\SGXDataTransform;..\..\ANTzPlus\ANTzCore;..\..\GUI\SGXGlyphGUI;..\..\3rdParty\include\zSpace_3_0_0_318;..\..\ANTzPlus\ANTzGUI;..\..\Core\SGXUtility;..\..\3rdParty\include\glm_0_9_7_5;..\..\GUI\SGXzSpaceGUI;..\..\Core\SGXImage;..\..\Core\SGXDataMapping;..\..\GUI\SGXDataTransformGUI;..\..\3rdParty\include\assimp-3.1.1;..\..\GUI\SGXGraphics;..\..\GUI\SGXSceneViewer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>None</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
