@@ -566,4 +566,23 @@ namespace SynGlyphX
 			fn( g.nodes, i + 1 );
 		}
 	}
+
+	bool GlyphScene::anyGlyphInGroupVisible( unsigned int group ) const
+	{
+		if ( filter_mode == FilteredResultsDisplayMode::HideUnfiltered )
+		{
+			// If any one glyph in the group is visible, we'll consider the group visible.
+			auto& g = get_group( group );
+			for ( auto n : g.nodes )
+			{
+				if ( passedFilter( n ) )
+					return true;
+			}
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }

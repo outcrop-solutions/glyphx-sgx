@@ -17,7 +17,6 @@ namespace SynGlyphX
 		const float gadget_base_alpha = 0.25f;
 		glm::vec2 switch_fade_dist( 125.f, 150.f );
 		glm::vec2 bound_fade_dist( 450.f, 500.f );
-		//		unsigned int switch_rt_size_x = 256u, switch_rt_size_y = 256u;
 	}
 
 	SuperimposedGroupManager::SuperimposedGroupManager( GlyphScene& _scene ) : scene( _scene ), gadget_model( nullptr ), switch_model( nullptr ),
@@ -53,9 +52,6 @@ namespace SynGlyphX
 		switch_model = new render::model;
 		switch_model->add_part( switch_part );
 		switch_model->set_transform( glm::scale( glm::mat4(), glm::vec3( 0.5f, 0.5f, 0.5f ) ) );
-
-		// switch_camera = new render::ortho_camera( switch_rt_size_x, switch_rt_size_y, -1024.f, 1024.f );
-		// switch_camera->update_viewport_size( switch_rt_size_x, switch_rt_size_y );
 	}
 
 	SuperimposedGroupManager::~SuperimposedGroupManager()
@@ -66,7 +62,6 @@ namespace SynGlyphX
 		hal::device::release( font );
 		delete gadget_model;
 		delete switch_model;
-		// delete switch_camera;
 	}
 
 	void SuperimposedGroupManager::clear()
@@ -113,8 +108,6 @@ namespace SynGlyphX
 		g.exploded_offset = scale * 2.f;
 		g.scale = scale;
 		g.position = position;
-		//		g.texture = nullptr;
-		//		g.texture_rt = nullptr;
 		gadgets.insert( std::make_pair( group, g ) );
 	}
 
@@ -122,14 +115,6 @@ namespace SynGlyphX
 	{
 		auto root = scene.getSingleRoot();
 		return root ? ( root->getExplodedPositionGroup() == group ) : false;
-
-		// This will show gadgets for *ALL* selected objects (not just if a single one is selected).
-		// Superimposed group gadget rendering will need some optimization before this is practical.
-/*		bool in_selection = false;
-		scene.enumSelected( [&in_selection, group]( const Glyph3DNode& g ) {
-			if ( g.getExplodedPositionGroup() == group ) in_selection = true;
-		} );
-		return in_selection;*/
 	}
 
 	unsigned int SuperimposedGroupManager::selectedGroup()
@@ -151,11 +136,6 @@ namespace SynGlyphX
 		render::renderer renderer;
 		for ( auto& g : gadgets )
 		{
-#if RENDERED_GADGET_TEXTURE
-			if ( g.texture == nullptr )
-				setup_texture( context, g );
-#endif
-
 			if ( g.second.bound_alpha > 0.f )
 			{
 				auto gadget_transform = compute_gadget_transform( g.second );
@@ -209,21 +189,33 @@ namespace SynGlyphX
 
 	float SuperimposedGroupManager::compute_gadget_alpha( const gadget& g, const glm::vec3& cam_pos, const glm::vec2& fade_dist )
 	{
-		float gadget_alpha = 1.f;
-		if ( scene.getGroupStatus() != 0.f )
+		if ( scene.anyGlyphInGroupVisible( g.group ) )
 		{
-			if ( scene.getActiveGroup() != g.group )
-				gadget_alpha = 1.f - scene.getGroupStatus();
-		}
+			float gadget_alpha = 1.f;
 
-		if ( !groupInSelection( g.group ) )
+			// Group is exploded or animating, fade the bound accordingly.
+			if ( scene.getGroupStatus() != 0.f )
+			{
+				if ( scene.getActiveGroup() != g.group )
+					gadget_alpha = 1.f - scene.getGroupStatus();
+			}
+
+			// For groups that aren't currently selected, fade them out at a distance (for visual clarity
+			// and also performance).
+			if ( !groupInSelection( g.group ) )
+			{
+				float dist = glm::distance( cam_pos, g.position );
+				float a = 1.f - glm::clamp( ( dist - fade_dist.x ) / ( fade_dist.y - fade_dist.x ), 0.f, 1.f );
+				gadget_alpha *= a;
+			}
+
+			return gadget_alpha;
+		}
+		else
 		{
-			float dist = glm::distance( cam_pos, g.position );
-			float a = 1.f - glm::clamp( ( dist - fade_dist.x ) / ( fade_dist.y - fade_dist.x ), 0.f, 1.f );
-			gadget_alpha *= a;
+			// No glyph in the group is visible so don't show the bound.
+			return 0.f;
 		}
-
-		return gadget_alpha;
 	}
 
 	glm::mat4 SuperimposedGroupManager::compute_switch_transform( const render::perspective_camera* camera, const gadget& g )
@@ -235,26 +227,6 @@ namespace SynGlyphX
 		auto offset = glm::translate( glm::mat4(), switch_pos );
 
 		return compute_gadget_transform( g ) * rotate * offset;
-	}
-
-	void SuperimposedGroupManager::setup_texture( hal::context* context, gadget& g )
-	{
-#if RENDERED_GADGET_TEXTURE
-		// WIP - render glyph count
-		g.texture_rt = hal::device::create_render_target_set( switch_rt_size_x, switch_rt_size_y );
-		hal::device::add_color_target( g.texture_rt, hal::texture_format::rgba8 );
-		g.texture = hal::device::get_target_texture( g.texture_rt, 0u );
-		context->bind( g.texture_rt );
-		context->clear( hal::clear_type::color, render::color::black() );
-		char buf[64];
-		sprintf_s( buf, "%i", scene.getGroupSize( g.group ) );
-		auto text_pos = glm::vec2( 0.f );
-		auto transform = switch_camera->get_proj() * switch_camera->get_view() * glm::translate( glm::mat4(), glm::vec3( glm::round( text_pos ), 0.f ) );
-		context->set_depth_state( hal::depth_state::disabled );
-		context->set_blend_state( hal::blend_state::alpha );
-		context->draw( font, transform, render::color::white(), buf );
-		context->bind( ( hal::render_target_set* )nullptr );
-#endif
 	}
 
 	void SuperimposedGroupManager::update( render::perspective_camera* camera )

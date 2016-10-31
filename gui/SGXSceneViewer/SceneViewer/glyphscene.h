@@ -88,6 +88,7 @@ namespace SynGlyphX
 		bool isExploded( const Glyph3DNode* node ) const { return node->getRootParent()->getExplodedPositionGroup() == getActiveGroup() && group_status > 0.f; }
 		bool isExploded( unsigned int group ) const { return group != 0 && group == active_group && group_status > 0.f; }
 		void enumGroups( std::function<void( const std::vector< const Glyph3DNode*>&, unsigned int )> );
+		bool anyGlyphInGroupVisible( unsigned int group ) const;
 
 		void debugPrint( const Glyph3DNode* node );
 
