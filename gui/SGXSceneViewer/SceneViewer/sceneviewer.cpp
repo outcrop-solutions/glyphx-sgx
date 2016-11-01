@@ -529,7 +529,7 @@ namespace SynGlyphX
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
 				auto pos = glyph.getCachedPosition();
 				if ( scene->isExploded( &glyph ) ) pos += glyph.getExplodedPosition();
-				if ( glyph.getTag() ) renderText( hud_font, camera, glyph.getCachedPosition(), render::color::white(), glyph.getTag() );
+				if ( glyph.getTag() ) renderText( hud_font, camera, pos, render::color::white(), glyph.getTag() );
 			} );
 
 			// Draw axis names.
