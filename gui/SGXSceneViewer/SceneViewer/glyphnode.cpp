@@ -11,11 +11,6 @@
 
 namespace SynGlyphX
 {
-	namespace
-	{
-		std::unordered_set<std::string> tag_pool;
-	}
-
 	Glyph3DNode::~Glyph3DNode()
 	{
 		delete placement;
@@ -68,55 +63,9 @@ namespace SynGlyphX
 		}
 	}
 
-	namespace
-	{
-		// Quick and dirty function to strip surrounding quotes and XML stuff from tag.
-		// Just find the outermost >/< pair and return whatever's between them.
-		std::string strip_tag( const char* tag )
-		{
-			int len = strlen( tag );
-			int begin = -1, end = -1;
-			for ( int l = 0; l < len; ++l )
-			{
-				if ( tag[l] == '>' )
-				{
-					begin = l + 1;
-					break;
-				}
-			}
-			for ( int r = len - 1; r > begin; --r )
-			{
-				if ( tag[r] == '<' )
-				{
-					end = r;
-				}
-			}
-
-			std::string tagstr( tag );
-			if ( begin == -1 || end == -1 )
-				return tagstr;	// if we failed, just return the original tag
-			else
-				return tagstr.substr( begin, end - begin );
-		}
-	}
-
 	void Glyph3DNode::setTag( const char* _tag )
 	{
-		auto tagstr = strip_tag( _tag );
-		auto t = tag_pool.find( tagstr );
-		if ( t == tag_pool.end() )
-		{
-			tag_pool.insert( tagstr );
-			t = tag_pool.find( tagstr );
-		}
-
-		tag = t->c_str();
-	}
-
-	void Glyph3DNode::clearTagPool()
-	{
-		// Todo: ensure there are no Glyph3DNodes using the pool?
-		tag_pool.clear();
+		tag = _tag;
 	}
 
 	const Glyph3DNode* Glyph3DNode::getRootParent() const

@@ -365,51 +365,54 @@ namespace SynGlyphX
 
 		void context_internal::draw( hal::font* f, const glm::mat4& transform, const glm::vec4& color, const char* text )
 		{
-			auto it = f->string_cache.find( text );
-			if ( it == f->string_cache.end() )
+			if ( text && text[0] != '\0' )
 			{
-				hal::font_string new_str;
-				new_str.length = strlen( text );
-				new_str.instance_data = device_internal::create_cbuffer( sizeof( glm::vec4 ) * new_str.length );
-				glm::vec2 pen;
-				const char* prev = nullptr;
-				const char* c = text;
-				std::vector<glm::vec4> instances;
-				for ( unsigned int i = 0; i < new_str.length; ++i )
+				auto it = f->string_cache.find( text );
+				if ( it == f->string_cache.end() )
 				{
-					auto glyph = get_glyph( f, *c );
-					glm::vec2 kern;
-					if ( prev ) kern = get_kerning( f, *prev, *c );
-					pen += kern;
-					glm::vec3 origin( pen.x + glyph.origin_x, pen.y - glyph.origin_y, 0.f );
+					hal::font_string new_str;
+					new_str.length = strlen( text );
+					new_str.instance_data = device_internal::create_cbuffer( sizeof( glm::vec4 ) * new_str.length );
+					glm::vec2 pen;
+					const char* prev = nullptr;
+					const char* c = text;
+					std::vector<glm::vec4> instances;
+					for ( unsigned int i = 0; i < new_str.length; ++i )
+					{
+						auto glyph = get_glyph( f, *c );
+						glm::vec2 kern;
+						if ( prev ) kern = get_kerning( f, *prev, *c );
+						pen += kern;
+						glm::vec3 origin( pen.x + glyph.origin_x, pen.y - glyph.origin_y, 0.f );
 
-					instances.push_back( glm::vec4( origin.x, origin.y, glyph.array_slice, 0.f ) );
+						instances.push_back( glm::vec4( origin.x, origin.y, glyph.array_slice, 0.f ) );
 
-					pen += glm::vec2( glyph.advance_x, glyph.advance_y );
-					prev = c;
-					++c;
+						pen += glm::vec2( glyph.advance_x, glyph.advance_y );
+						prev = c;
+						++c;
+					}
+					assert( instances.size() == new_str.length );
+					update_constant_block( new_str.instance_data, &instances[0], instances.size() * sizeof( glm::vec4 ), hal::cbuffer_usage::static_draw );
+					it = f->string_cache.insert( std::make_pair( text, new_str ) ).first;
 				}
-				assert( instances.size() == new_str.length );
-				update_constant_block( new_str.instance_data, &instances[0], instances.size() * sizeof( glm::vec4 ), hal::cbuffer_usage::static_draw );
-				it = f->string_cache.insert( std::make_pair( text, new_str ) ).first;
+				auto& font_str = it->second;
+				font_str.last_use = device_internal::current_frame();
+
+				hal::rasterizer_state rast{ false, true, false, false };
+				set_rasterizer_state( rast );
+
+				auto effect = device_internal::get_text_effect();
+				set_blend_state( hal::blend_state::alpha );
+				bind( effect );
+
+				bind( 0, f->textures, { hal::texture_wrap::clamp, hal::texture_filter::linear } );
+				bind( get_uniform_block_index( effect, "instance_data" ), font_str.instance_data );
+
+				context::set_constant( effect, "shared_data", "color", color );
+				context::set_constant( effect, "shared_data", "transform", transform );
+
+				draw_instanced( f->glyph_mesh, font_str.length );
 			}
-			auto& font_str = it->second;
-			font_str.last_use = device_internal::current_frame();
-
-			hal::rasterizer_state rast{ false, true, false, false };
-			set_rasterizer_state( rast );
-
-			auto effect = device_internal::get_text_effect();
-			set_blend_state( hal::blend_state::alpha );
-			bind( effect );
-
-            bind( 0, f->textures, { hal::texture_wrap::clamp, hal::texture_filter::linear } );
-			bind( get_uniform_block_index( effect, "instance_data" ), font_str.instance_data );
-
-			context::set_constant( effect, "shared_data", "color", color );
-			context::set_constant( effect, "shared_data", "transform", transform );
-
-			draw_instanced( f->glyph_mesh, font_str.length );
 		}
         
 		const hal::font_glyph& context_internal::get_glyph( hal::font* f, char c )

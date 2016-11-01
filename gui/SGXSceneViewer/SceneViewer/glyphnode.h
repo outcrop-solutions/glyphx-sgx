@@ -89,15 +89,15 @@ namespace SynGlyphX
 		bool getWireframe() const { return wireframe; }
 		void setWireframe( bool _wireframe ) { wireframe = _wireframe; }
 
-		const char* getTag() const { return tag; }
+		// NOTE: this class doesn't keep its own copy of _tag; tags passed to this must be stored elsewhere
+		// (use GlyphScene::createTag to store them into the scene's tag pool)
 		void setTag( const char* _tag );
+		const char* getTag() const { return tag; }
 
 		int getID() const { return id; }
 		bool isRoot() const { return root; }
 
 		void enumNodes( std::function<bool( const Glyph3DNode& )> fn ) const;
-
-		static void clearTagPool();	// call when loading a new scene
 
 	private:
 		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), tag( nullptr ), id( _id ),

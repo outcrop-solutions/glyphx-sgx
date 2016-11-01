@@ -475,7 +475,7 @@ namespace SynGlyphX
 						int record_id = atoi( dataline[record_id_col].c_str() );
 						auto* glyph = scene.getGlyph3D( record_id );
 						hal::debug::_assert( glyph, "could not find glyph referenced by tag" );
-						if ( glyph ) glyph->setTag( dataline[title_col].c_str() );
+						if ( glyph ) glyph->setTag( scene.createTag( dataline[title_col].c_str() ) );
 					}
 				}
 			}

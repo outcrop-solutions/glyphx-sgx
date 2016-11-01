@@ -26,6 +26,7 @@ namespace SynGlyphX
 		void update( float timeDelta );
 
 		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1 );
+		const char* createTag( const char* text );
 
 		void beginAdding( unsigned int count );
 		void add( Glyph3DNode* glyph );
@@ -142,5 +143,7 @@ namespace SynGlyphX
 		GlyphGeometryDB& db;
 		char* glyph_storage;
 		unsigned int glyph_storage_next, glyph_storage_size;
+
+		std::unordered_set<std::string> tag_pool;
 	};
 }

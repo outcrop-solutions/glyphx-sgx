@@ -86,12 +86,13 @@ namespace SynGlyphX
 		glyphs_by_filtering_index.clear();
 		groups.clear();
 		selection.clear();
-		Glyph3DNode::clearTagPool();
 		delete octree;
 		explode_state = group_state::retracted;
 		active_group = 0u;
 		group_status = 0.f;
 		octree = nullptr;
+		tag_pool.clear();
+		tag_enabled.clear();
 	}
 
 	void GlyphScene::enumGlyphs( std::function<bool( const Glyph3DNode& )> fn, bool includeChildren ) const
@@ -584,5 +585,47 @@ namespace SynGlyphX
 		{
 			return true;
 		}
+	}
+
+	namespace
+	{
+		// Quick and dirty function to strip surrounding quotes and XML stuff from tag.
+		// Just find the outermost >/< pair and return whatever's between them.
+		std::string strip_tag( const char* tag )
+		{
+			int len = strlen( tag );
+			int begin = -1, end = -1;
+			for ( int l = 0; l < len; ++l )
+			{
+				if ( tag[l] == '>' )
+				{
+					begin = l + 1;
+					break;
+				}
+			}
+			for ( int r = len - 1; r > begin; --r )
+			{
+				if ( tag[r] == '<' )
+				{
+					end = r;
+				}
+			}
+
+			std::string tagstr( tag );
+			if ( begin == -1 || end == -1 )
+				return tagstr;	// if we failed, just return the original tag
+			else
+				return tagstr.substr( begin, end - begin );
+		}
+	}
+
+	const char* GlyphScene::createTag( const char* text )
+	{
+		auto tagstr = strip_tag( text );
+		auto t = tag_pool.find( tagstr );
+		if ( t == tag_pool.end() )
+			t = tag_pool.insert( tagstr ).first;
+
+		return t->c_str();
 	}
 }
