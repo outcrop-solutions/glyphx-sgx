@@ -84,7 +84,7 @@ namespace SynGlyphX
 				return false;
 			}
 			assert( !default_context );
-			while ( auto error = glGetError() );	// workaround in case GLEW threw up any GL errors in its init (it raises 'invalid enumerant' occasionally)
+			while ( glGetError() );	// workaround in case GLEW threw up any GL errors in its init (it raises 'invalid enumerant' occasionally)
 			glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &maximum_cbuffer_size );
 			default_context = new context_internal();
 			auto error = FT_Init_FreeType( &freetype );
