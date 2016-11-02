@@ -207,7 +207,7 @@ void SourceDataWidget::SaveCurrentTabToFile() {
 
 void SourceDataWidget::WriteToFile(QTableView* tableView, const QString& filename) {
 
-	SynGlyphX::CSVFileWriter csvFile(filename.toStdString());
+	SynGlyphX::CSVFileWriter csvFile(filename.toStdString().c_str());
 
 	SourceDataCache::TableColumns columns = m_sourceDataCache->GetColumnsForTable(m_tableInfoMap[tableView->objectName()]);
 

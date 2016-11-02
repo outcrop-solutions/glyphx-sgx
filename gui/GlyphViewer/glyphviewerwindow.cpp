@@ -19,7 +19,6 @@
 #include "data/npmapfile.h"
 //#include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
-#include "antzimportdialog.h"
 #include "singlewidgetdialog.h"
 #include "optionswidget.h"
 #include "userdefinedbaseimageproperties.h"
@@ -602,7 +601,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 
 	QFileInfo fileInfo(filename);
 	QString extension = fileInfo.suffix().toLower();
-	if ((extension != "sdt"))) {
+	if (extension != "sdt") {
 
 		throw std::runtime_error("File is not a recognized format");
 	}

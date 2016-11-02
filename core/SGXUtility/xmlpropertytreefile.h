@@ -23,10 +23,12 @@
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
+#ifdef WIN32
 // dllexport declarations for boost class specializations (to avoid warning 4251 on PC)
-template class SGXUTILITY_API std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
-template class SGXUTILITY_API boost::property_tree::basic_ptree<std::wstring, std::wstring, std::less<std::wstring>>;
-template class SGXUTILITY_API boost::property_tree::xml_parser::xml_writer_settings<wchar_t>;
+template class __declspec( dllexport ) std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
+template class __declspec( dllexport ) boost::property_tree::basic_ptree<std::wstring, std::wstring, std::less<std::wstring>>;
+template class __declspec( dllexport ) boost::property_tree::xml_parser::xml_writer_settings<wchar_t>;
+#endif
 
 namespace SynGlyphX {
 
