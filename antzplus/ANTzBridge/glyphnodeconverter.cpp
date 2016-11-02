@@ -100,7 +100,7 @@ namespace SynGlyphXANTz {
 
 		SynGlyphX::GlyphGraph::SharedPtr glyphGraph = std::make_shared<SynGlyphX::GlyphGraph>();
 
-		SynGlyphX::CSVFileReader csvReader(filename);
+		SynGlyphX::CSVFileReader csvReader(filename.c_str());
 
 		if (!AreHeadersCorrect(csvReader.GetHeaders())) {
 

@@ -206,7 +206,6 @@ void npCSVtoMap (FILE* file, int type, void*dataRef)
 	int byteCount = 0;
 	char* bufferIndex = 0;
 	
-	pData data = (pData) dataRef;
 	pNPnode node = NULL;
 
 

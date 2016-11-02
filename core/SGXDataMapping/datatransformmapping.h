@@ -23,6 +23,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <boost/property_tree/ptree_fwd.hpp>
 #include "uuid.h"
 #include "datamappingglyphgraph.h"
@@ -34,6 +35,16 @@
 #include "FrontEndFilter.h"
 
 namespace SynGlyphX {
+
+	//Hash function for boost uuid so that it can be used in STL classes like unordered_map
+	struct UUIDHash {
+		std::size_t operator()( const boost::uuids::uuid& uuid ) const
+		{
+			return boost::uuids::hash_value( uuid );
+		}
+	};
+
+	typedef std::unordered_set<boost::uuids::uuid, SynGlyphX::UUIDHash> UUIDUnorderedSet;
 
 	class Link;
 	class Legend;

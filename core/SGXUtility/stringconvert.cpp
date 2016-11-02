@@ -1,17 +1,14 @@
+
 #include "stringconvert.h"
+#include <locale>
+#include <codecvt>
 
 namespace SynGlyphX {
 
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> StringConvert::s_toStdString;
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> StringConvert::s_toStdWString;
-
-	StringConvert::StringConvert()
+	namespace
 	{
-	}
-
-
-	StringConvert::~StringConvert()
-	{
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> s_toStdString;
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> s_toStdWString;
 	}
 
 	std::string StringConvert::ToStdString(const std::wstring& str) {

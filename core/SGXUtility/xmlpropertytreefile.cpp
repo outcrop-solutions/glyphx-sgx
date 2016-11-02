@@ -1,3 +1,4 @@
+
 #include "xmlpropertytreefile.h"
 #include <chrono>
 #include <boost/lexical_cast.hpp>
@@ -58,7 +59,7 @@ namespace SynGlyphX {
 		boost::property_tree::write_xml(filename, propertyTree, std::locale(), GetWriteSettings());
 	}
 
-	bool XMLPropertyTreeFile::IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& originalPropertyTree) const {
+	bool XMLPropertyTreeFile::IsDifferentFromGivenPropertyTree(const boost::property_tree::wptree& /*originalPropertyTree*/) const {
 
 		return false;
 	}
@@ -77,4 +78,4 @@ namespace SynGlyphX {
 		return s_writeSettings;
 	}
 
-} //namesapce SynGlyphX
+}

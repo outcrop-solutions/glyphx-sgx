@@ -1,8 +1,13 @@
+
 #include "uuid.h"
+#include <boost/uuid/uuid_generators.hpp>
 
 namespace SynGlyphX {
 
-	boost::uuids::random_generator UUIDGenerator::s_randomUUIDGenerator;
+	namespace
+	{
+		boost::uuids::random_generator s_randomUUIDGenerator;
+	}
 
 	UUIDGenerator::UUIDGenerator() {
 

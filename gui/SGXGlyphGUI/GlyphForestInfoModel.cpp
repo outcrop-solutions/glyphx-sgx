@@ -128,7 +128,7 @@ namespace SynGlyphX {
 		std::unordered_map<unsigned long, GlyphTextProperties> id2GlyphTextProperties;
 		ReadTagCSV(tagCSVFile, id2GlyphTextProperties);
 
-		CSVFileReader csvReaderNode(nodeCSVFile.toStdString());
+		CSVFileReader csvReaderNode(nodeCSVFile.toStdString().c_str());
 		const CSVFileHandler::CSVValues& headers = csvReaderNode.GetHeaders();
 
 		unsigned int idIndex = FindHeaderIndex(headers, L"id");
@@ -177,7 +177,7 @@ namespace SynGlyphX {
 
 	void GlyphForestInfoModel::ReadTagCSV(const QString& filename, std::unordered_map<unsigned long, GlyphTextProperties>& id2GlyphTextProperties) {
 
-		CSVFileReader csvReaderTag(filename.toStdString());
+		CSVFileReader csvReaderTag(filename.toStdString().c_str());
 		const CSVFileHandler::CSVValues& headers = csvReaderTag.GetHeaders();
 
 		unsigned int idIndex = FindHeaderIndex(headers, L"record_id");

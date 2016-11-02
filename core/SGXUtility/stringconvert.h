@@ -14,31 +14,20 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+
 #pragma once
-#ifndef SYNGLYPHX_STRINGCONVERT_H
-#define SYNGLYPHX_STRINGCONVERT_H
 
 #include "sgxutility.h"
 #include <string>
-#include <locale>
-#include <codecvt>
 
 namespace SynGlyphX {
 
 	class SGXUTILITY_API StringConvert
 	{
 	public:
-		StringConvert();
-		~StringConvert();
-
 		static std::string ToStdString(const std::wstring& str);
 		static std::wstring ToStdWString(const std::string& str);
-
-	private:
-		static std::wstring_convert<std::codecvt_utf8<wchar_t>> s_toStdString;
-		static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> s_toStdWString;
 	};
 
 } //namespace SynGlyphX
 
-#endif //SYNGLYPHX_STRINGCONVERT_H

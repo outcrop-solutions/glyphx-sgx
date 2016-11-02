@@ -349,9 +349,6 @@ ANTZCORE_API void npSelectNode(pNPnode node, void* dataRef)
 	int rootIndex = 0;
 	pData data = (pData) dataRef;
 
-	pNPnode parent = NULL;
-//	char msg[256];																//zz-s
-
 	//return if NULL, not considered an err
 	if (node == NULL)
 	{
@@ -738,9 +735,6 @@ void npNodeUpdateBranchLevel (pNPnode node)
 //-----------------------------------------------------------------------------
 void npNodeMoveBranch (pNPnode node, pNPnode newParent, void* dataRef)
 {
-	int i = 0;
-	int childIndex = 0;
-	int parentIndex = 0;
 	char msg[256];
 
 	pData data = (pData) dataRef;
@@ -779,7 +773,6 @@ void npNodeMoveBranch (pNPnode node, pNPnode newParent, void* dataRef)
 void npMapSort(void* dataRef)
 {
 	int i = 0;
-	int parentIndex = 0;
 
 	pNPnode node = NULL;
 	pNPnode nodeParent = NULL;
@@ -850,14 +843,6 @@ void npMapSort(void* dataRef)
 void* npMapNodeAdd (int id, int type, int branchLevel, int parentID, 
 					 int format, void* dataRef)
 {
-	int i = 0, count = 0;
-	int curs = 0;				//Cursor position in Buffer parsing source
-//	int scanNumRet = 0;			//sscanf return value. Number of successfuly scanned elements
-	int numExpected = 0;		//Expected number for scanNumRet returned from sscanf
-	int nodeCount = 0;
-	int parentBranchLevel = 0;
-	int childIndex = 0;
-
 	//node tree pointers
 	pNPnode nodeParent = NULL;
 	pNPnode node = NULL;
@@ -958,8 +943,6 @@ void npSort (void* base, int count, int elementSize,
 	int threads = 0;
 	int subsetSize = 0;
 
-	pData data = (pData) dataRef;
-
 	if (0)											//zz debug (count > kNPOverhead)
 	{
 		//calculate the subsetSize
@@ -991,19 +974,6 @@ void npSort (void* base, int count, int elementSize,
 //-----------------------------------------------------------------------------
 void npTagSort (void* dataRef)
 {
-	pData data = (pData) dataRef;
-
-	if(1)//data->map.tagSortFlag)		//zz debug, check on input if already in order
-	{
-		printf ("Sort Tags... ");
-//		npTagSort(dataRef);
-	}
-
-	//sort newly imported tags and then merge sort with existing master list //zz debug
-	//this techniqe is useful for adding to existing lists of tags, nodes, etc
-
-	//process tags->sort and output to tags->id[]
-//	npSort(base, count, elementSize, npTagCompare);						//zz debug
 }
 
 //currently an unsorted list, update to HASH method,						 debug zz
@@ -1207,13 +1177,7 @@ int npQueDel( pNPque que, void* dataRef );
 //------------------------------------------------------------------------------
 int npQueDel( pNPque que, void* dataRef )
 {
-	int queID = 0;
-
-	pData data = (pData) dataRef;
-	
-	//process que item list by freeing the data associated with each element
-
-	return queID;
+	return 0;
 }
 
 int npQueNew( int queType, int itemCount, void* dataRef );
@@ -1253,9 +1217,6 @@ void npCmdQue( void* mapPtr, void* valuePtr, int type, void* dataRef );
 //------------------------------------------------------------------------------
 void npCmdQue( void* funcPtr, void* funcData, int type, void* dataRef )
 {//npAddItemToQue()
-
-	pData data = (pData) dataRef;
-	pNPque que = (pNPque)data->io.fifo.list[kNPqueItem];
 }
 
 struct NPfuncDesc {
@@ -1274,9 +1235,6 @@ int npCmdFuncNew (void* funcPtr, pNPfuncDesc descriptor, void* dataRef );
 //------------------------------------------------------------------------------
 int npCmdFuncNew( void* funcPtr, pNPfuncDesc descriptor, void* dataRef )
 {
-	pData data = (pData) dataRef;
-	pNPque que = (pNPque)data->io.fifo.list[kNPqueCmd]; 
-
 	return 0 ;	//funcID = 0 
 }
 
@@ -1284,13 +1242,6 @@ void npProcessQueItem( pNPqueItem item, void* dataRef );
 //------------------------------------------------------------------------------
 void npProcessQueItem( pNPqueItem item, void* dataRef )
 {
-	int i = 0;
-
-//	pData data = (pData) dataRef;
-
-//	pNPfloatXYZ floatXYZ = NULL;
-
-
 	switch( item->type )
 	{
 		case kNPfloat : *(float*)item->mapPtr = *(float*)item->data; break;
