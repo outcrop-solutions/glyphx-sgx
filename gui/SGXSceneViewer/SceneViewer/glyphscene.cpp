@@ -114,7 +114,7 @@ namespace SynGlyphX
 	{
 		// No scene yet, early out.
 		if ( empty() )
-			return { nullptr, FLT_MAX };
+			return{ nullptr, FLT_MAX };
 
 		hal::debug::profile_timer timer;
 
@@ -199,22 +199,32 @@ namespace SynGlyphX
 
 		timer.print_ms_to_debug( "picked against octree" );
 
-		return { best_glyph, best_dist };
+		return{ best_glyph, best_dist };
 	}
 
 	void GlyphScene::toggleExplode( unsigned int group )
 	{
 		active_group = group;
 		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-			explode_state = group_state::exploding;
+			explode( group );
 		else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
-			explode_state = group_state::retracting;
+			collapse( group );
 	}
 
 	void GlyphScene::collapse( unsigned int group )
 	{
 		if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
 			explode_state = group_state::retracting;
+
+		auto& g = groups[group - 1];
+		for ( auto& n : g.nodes )
+		{
+			n->enumNodes( [this]( const Glyph3DNode& node )
+			{
+				disableTag( &node );
+				return true;
+			} );
+		}
 	}
 
 	void GlyphScene::explode( unsigned int group )
@@ -269,7 +279,7 @@ namespace SynGlyphX
 			fn( *entry );
 	}
 
-	void GlyphScene::updateCachedTransforms( ) const
+	void GlyphScene::updateCachedTransforms() const
 	{
 		enumGlyphs( [this]( const Glyph3DNode& node ) {
 			if ( node.isRoot() )
@@ -423,7 +433,7 @@ namespace SynGlyphX
 		}
 
 		const float dist_threshold = 0.1f;
-		
+
 		// First pass: create initial groups.
 		auto it0 = ungrouped_glyphs.begin();
 		while ( it0 != ungrouped_glyphs.end() )
