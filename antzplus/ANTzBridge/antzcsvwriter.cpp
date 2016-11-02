@@ -63,13 +63,13 @@ namespace SynGlyphXANTz {
 
 		try {
 
-			SynGlyphX::CSVFileWriter nodeFile(filenames[s_nodeFilenameIndex]);
+			SynGlyphX::CSVFileWriter nodeFile(filenames[s_nodeFilenameIndex].c_str());
 			SynGlyphX::CSVFileWriter tagFile; 
 			std::wofstream redirectFile;
 			
 			if (!filenames[s_tagFilenameIndex].empty()) {
 
-				tagFile.Open(filenames[s_tagFilenameIndex]);
+				tagFile.Open(filenames[s_tagFilenameIndex].c_str());
 			}
 
 			//if ((!filenames[s_redirectFilenameIndex].empty()) && (platform == OutputPlatform::WindowsZSpace)) {
@@ -443,22 +443,22 @@ namespace SynGlyphXANTz {
 		return 0;
 	}
 
-	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetNodeHeaders() const {
+	const SynGlyphX::CSVFileHandler::CSVValues& ANTzCSVWriter::GetNodeHeaders() const {
 
 		return m_nodeHeaders;
 	}
 
-	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetTagHeaders() const {
+	const SynGlyphX::CSVFileHandler::CSVValues& ANTzCSVWriter::GetTagHeaders() const {
 
 		return m_tagHeaders;
 	}
 
-	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelHeaders() const {
+	const SynGlyphX::CSVFileHandler::CSVValues& ANTzCSVWriter::GetChannelHeaders() const {
 
 		return m_channelHeaders;
 	}
 
-	const SynGlyphX::CSVFileReader::CSVValues& ANTzCSVWriter::GetChannelMapHeaders() const {
+	const SynGlyphX::CSVFileHandler::CSVValues& ANTzCSVWriter::GetChannelMapHeaders() const {
 
 		return m_channelMapHeaders;
 	}

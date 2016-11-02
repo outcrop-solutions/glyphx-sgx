@@ -19,8 +19,6 @@
 #include "data/npmapfile.h"
 //#include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
-#include "antzimportdialog.h"
-#include "antzvisualizationfilelisting.h"
 #include "singlewidgetdialog.h"
 #include "optionswidget.h"
 #include "userdefinedbaseimageproperties.h"
@@ -238,13 +236,6 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_fileMenu->addSeparator();
 
-	//Import from ANTz is on hold so until more development is done, the menu option will not be added to the File menu
-
-	//QAction* importFromANTzAction = m_fileMenu->addAction(tr("Import From ANTz"));
-	//QObject::connect(importFromANTzAction, &QAction::triggered, this, &GlyphViewerWindow::ImportFilesFromANTz);
-
-	//m_fileMenu->addSeparator();
-
 	QAction* closeVisualizationAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
 	QIcon closeVizIcon;
 	//closeVizIcon.addFile(":GlyphViewer/Resources/icon-close-viz.png", QSize(), QIcon::Normal, QIcon::Off);
@@ -429,7 +420,7 @@ void GlyphViewerWindow::OpenProject() {
 
 void GlyphViewerWindow::OpenVisualisation() {
 
-	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt *.sav);;SynGlyphX Data Transform Files (*.sdt);;SynGlyphX ANTz Visualization Files (*.sav)"));
+	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt);;SynGlyphX Data Transform Files (*.sdt)"));
 	if (!openFile.isEmpty()) {
 
 		try {
@@ -610,7 +601,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 
 	QFileInfo fileInfo(filename);
 	QString extension = fileInfo.suffix().toLower();
-	if ((extension != "sdt") && (extension != "sav")) {
+	if (extension != "sdt") {
 
 		throw std::runtime_error("File is not a recognized format");
 	}
@@ -634,10 +625,6 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	if (extension == "sdt") {
 
 		LoadDataTransform(filename, filters);
-	}
-	else if (extension == "sav") {
-
-		LoadANTzCompatibilityVisualization(filename);
 	}
 
 	if (m_legendsWidget->HasLegends()) {
@@ -697,16 +684,6 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 	statusBar()->showMessage("Visualization successfully opened", 3000);
 
 	return true;
-}
-
-void GlyphViewerWindow::LoadANTzCompatibilityVisualization(const QString& filename) {
-
-	SynGlyphXANTz::ANTzVisualizationFileListing fileListing;
-	fileListing.ReadFromFile(filename.toStdString());
-	QStringList csvFiles;
-
-
-	//LoadFilesIntoModel(csvFiles, QString::fromStdWString(fileListing.GetBaseImageFilename()));
 }
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
@@ -998,21 +975,6 @@ void GlyphViewerWindow::ChangeStereoMode() {
 
 		m_stereoAction->setChecked(false);
 		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings to see if stereo is enabled and available for your hardware.  Contact the manufacturer of your GPU for assitance."));
-	}
-}
-
-void GlyphViewerWindow::ImportFilesFromANTz() {
-
-	ANTzImportDialog importDialog(this);
-	if (importDialog.exec() == QDialog::Accepted) {
-
-		SynGlyphXANTz::ANTzVisualizationFileListing antzVisualization(importDialog.GetANTzNodeFilename().toStdWString(),
-			importDialog.GetANTzTagFilename().toStdWString(),
-			importDialog.GetANTzChannelFilename().toStdWString(),
-			importDialog.GetANTzChannelMapFilename().toStdWString(),
-			importDialog.GetANTzTagFilename().toStdWString());
-
-		antzVisualization.WriteToFile(importDialog.GetOutputFilename().toStdString());
 	}
 }
 

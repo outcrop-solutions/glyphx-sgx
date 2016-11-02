@@ -984,7 +984,7 @@ bool SourceDataCache::ExportFilteredDataToCSV(const QString& filename, const QSt
 		throw std::runtime_error((QObject::tr("Failed to get filtered data from cache: ") + m_db.lastError().text()).toStdString().c_str());
 	}
 
-	SynGlyphX::CSVFileWriter csvFile(filename.toStdString());
+	SynGlyphX::CSVFileWriter csvFile(filename.toStdString().c_str());
 
 	SynGlyphX::CSVFileHandler::CSVValues headers;
 	for (const auto& columnName : columnNames) {

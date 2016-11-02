@@ -27,12 +27,12 @@ namespace SynGlyphX {
 	class SGXUTILITY_API CSVTFileReaderWriter : protected CSVFileReader
 	{
 	public:
-		CSVTFileReaderWriter(const std::string& filename);
+		CSVTFileReaderWriter(const char* filename);
 		~CSVTFileReaderWriter();
 
-		const CSVValues& GetTypes() const;
+		const CSVFileHandler::CSVValues& GetTypes() const;
 
-		static void WriteCSVTFile(const std::string& filename, const CSVValues& types);
+		static void WriteCSVTFile(const std::string& filename, const CSVFileHandler::CSVValues& types);
 	};
 
 } //namespace SynGlyphX

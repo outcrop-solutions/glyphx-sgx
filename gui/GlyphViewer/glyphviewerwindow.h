@@ -83,7 +83,6 @@ private slots:
 	void ChangeMapDownloadSettings();
 	void ShowOpenGLSettings();
 	void ChangeStereoMode();
-	void ImportFilesFromANTz();
 	void ChangeOptions();
 	void ChangeBackgroundColor();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);

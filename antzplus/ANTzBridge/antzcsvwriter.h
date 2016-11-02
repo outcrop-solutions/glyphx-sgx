@@ -56,10 +56,10 @@ namespace SynGlyphXANTz {
 
         static ANTzCSVWriter& GetInstance();
 
-		const SynGlyphX::CSVFileReader::CSVValues& GetNodeHeaders() const;
-		const SynGlyphX::CSVFileReader::CSVValues& GetTagHeaders() const;
-		const SynGlyphX::CSVFileReader::CSVValues& GetChannelHeaders() const;
-		const SynGlyphX::CSVFileReader::CSVValues& GetChannelMapHeaders() const;
+		const SynGlyphX::CSVFileHandler::CSVValues& GetNodeHeaders() const;
+		const SynGlyphX::CSVFileHandler::CSVValues& GetTagHeaders() const;
+		const SynGlyphX::CSVFileHandler::CSVValues& GetChannelHeaders() const;
+		const SynGlyphX::CSVFileHandler::CSVValues& GetChannelMapHeaders() const;
 
     private:
         static ANTzCSVWriter s_instance;
@@ -81,12 +81,12 @@ namespace SynGlyphXANTz {
 		SynGlyphX::GlyphColor m_predefinedColors[MaxPredefinedColors];
 		unsigned long m_numTagsWritten;
 
-		SynGlyphX::CSVFileReader::CSVValues m_nodeHeaders;
-		SynGlyphX::CSVFileReader::CSVValues m_tagHeaders;
-		SynGlyphX::CSVFileReader::CSVValues m_channelHeaders;
-		SynGlyphX::CSVFileReader::CSVValues m_channelMapHeaders;
+		SynGlyphX::CSVFileHandler::CSVValues m_nodeHeaders;
+		SynGlyphX::CSVFileHandler::CSVValues m_tagHeaders;
+		SynGlyphX::CSVFileHandler::CSVValues m_channelHeaders;
+		SynGlyphX::CSVFileHandler::CSVValues m_channelMapHeaders;
 
-		SynGlyphX::CSVFileReader::CSVValues m_cameras[5];
+		SynGlyphX::CSVFileHandler::CSVValues m_cameras[5];
 
 		std::unordered_map<SynGlyphX::GlyphGraph::Label, unsigned long> m_labelToANTzIDMap;
 		std::unordered_map<SynGlyphX::GlyphGraph::Label, unsigned int> m_labelToANTzBranchLevelMap;

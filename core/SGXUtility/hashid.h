@@ -1,8 +1,8 @@
 
-#ifndef SYNGLYPHX_HASH_ID_H
-#define SYNGLYPHX_HASH_ID_H
+#pragma once
 
 #include <cstdint>
+#include <string>
 #include "uuid.h"
 
 namespace SynGlyphX
@@ -89,5 +89,3 @@ namespace SynGlyphX
         seed ^= MakeHashID(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
 }
-
-#endif // SYNGLYPHX_HASH_ID_H

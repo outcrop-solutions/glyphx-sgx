@@ -1062,8 +1062,8 @@ void drawTorus(GLfloat r, GLfloat R, GLint nsides, GLint rings)
     GLfloat cosTheta1, sinTheta1;
     GLfloat ringDelta, sideDelta;
 
-    ringDelta = 2.0f * M_PI / rings;
-    sideDelta = 2.0f * M_PI / nsides;
+    ringDelta = 2.0f * (float)M_PI / rings;
+    sideDelta = 2.0f * (float)M_PI / nsides;
 
     theta = 0.0;
     cosTheta = 1.0;
@@ -1100,9 +1100,9 @@ void initDodecahedron()
 {
     GLfloat alpha, beta;
 
-    alpha = sqrt(2.0 / (3.0 + sqrt(5.0)));
-    beta = 1.0 + sqrt(6.0 / (3.0 + sqrt(5.0)) -
-        2.0 + 2.0 * sqrt(2.0 / (3.0 + sqrt(5.0))));
+    alpha = sqrtf(2.f / (3.f + sqrtf(5.f)));
+    beta = 1.f + sqrtf(6.f / (3.f + sqrtf(5.f)) -
+        2.f + 2.f * sqrtf(2.f / (3.f + sqrtf(5.f))));
     /* *INDENT-OFF* */
     dodec[0][0] = -alpha; dodec[0][1] = 0; dodec[0][2] = beta;
     dodec[1][0] = alpha; dodec[1][1] = 0; dodec[1][2] = beta;
@@ -1150,7 +1150,7 @@ void normalize(GLfloat v[3])
 {
     GLfloat d;
 
-    d = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    d = sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     if (d == 0.0) {
         v[0] = d = 1.0;
     }
@@ -1246,15 +1246,15 @@ void subdivide(GLfloat * v0, GLfloat * v1, GLfloat * v2, GLenum shadeType)
                 w2[n] = (i * v0[n] + (j + 1) * v1[n] + (k - 1) * v2[n])
                     / depth;
             }
-            l = sqrt(w0[0] * w0[0] + w0[1] * w0[1] + w0[2] * w0[2]);
+            l = sqrtf(w0[0] * w0[0] + w0[1] * w0[1] + w0[2] * w0[2]);
             w0[0] /= l;
             w0[1] /= l;
             w0[2] /= l;
-            l = sqrt(w1[0] * w1[0] + w1[1] * w1[1] + w1[2] * w1[2]);
+            l = sqrtf(w1[0] * w1[0] + w1[1] * w1[1] + w1[2] * w1[2]);
             w1[0] /= l;
             w1[1] /= l;
             w1[2] /= l;
-            l = sqrt(w2[0] * w2[0] + w2[1] * w2[1] + w2[2] * w2[2]);
+            l = sqrtf(w2[0] * w2[0] + w2[1] * w2[1] + w2[2] * w2[2]);
             w2[0] /= l;
             w2[1] /= l;
             w2[2] /= l;
@@ -1317,8 +1317,8 @@ void npSolidOctahedron()
 
 /* icosahedron data: These numbers are rigged to make an icosahedron of radius 1.0 */
 
-#define X .525731112119133606
-#define Z .850650808352039932
+#define X .525731112119133606f
+#define Z .850650808352039932f
 
 static GLfloat idata[12][3] =
 {
@@ -1381,7 +1381,7 @@ void npSolidIcosahedron()
 
 /* tetrahedron data: */
 
-#define T       1.73205080756887729
+#define T       1.73205080756887729f
 
 static GLfloat tdata[4][3] =
 {

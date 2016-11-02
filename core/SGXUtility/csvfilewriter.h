@@ -14,37 +14,30 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+
 #pragma once
-#ifndef SYNGLYPHX_CSVFILEWRITER_H
-#define SYNGLYPHX_CSVFILEWRITER_H
 
 #include "csvfilehandler.h"
-#include <string>
-#include <fstream>
 
 namespace SynGlyphX {
 
-	class SGXUTILITY_API CSVFileWriter : public CSVFileHandler
+	class SGXUTILITY_API CSVFileWriter
 	{
 	public:
 		CSVFileWriter(wchar_t separator = ',');
-		CSVFileWriter(const std::string& filename, wchar_t separator = ',');
+		CSVFileWriter(const char* filename, wchar_t separator = ',');
 		virtual ~CSVFileWriter();
 
-		void Open(const std::string& filename);
+		void Open(const char* filename);
 		virtual void Close();
 
 		bool IsOpen() const;
 
-		void WriteLine(const CSVValues& values);
+		void WriteLine(const CSVFileHandler::CSVValues& values);
 
 	private:
-		void SetupLocale();
-
-		std::wofstream m_filestream;
-		unsigned int m_numFields;
+		class impl;
+		impl* pimpl;
 	};
 
-} //namespace SynGlyphX
-
-#endif //SYNGLYPHX_CSVFILEWRITER_H
+}

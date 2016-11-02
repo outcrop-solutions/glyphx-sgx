@@ -14,39 +14,29 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+
 #pragma once
-#ifndef SYNGLYPHX_CSVFILEREADER_H
-#define SYNGLYPHX_CSVFILEREADER_H
 
 #include "csvfilehandler.h"
-#include <string>
-#include <boost/tokenizer.hpp>
-#include <fstream>
-#include <vector>
 
 namespace SynGlyphX {
 
-	class SGXUTILITY_API CSVFileReader : public CSVFileHandler
+	class SGXUTILITY_API CSVFileReader
 	{
 	public:
-		typedef boost::tokenizer< boost::escaped_list_separator<wchar_t>, std::wstring::const_iterator, std::wstring > Tokenizer;
-
-		CSVFileReader(const std::string& filename, wchar_t separator = ',');
+		CSVFileReader(const char* filename, wchar_t separator = ',');
 		virtual ~CSVFileReader();
 
-		const CSVValues& GetHeaders() const;
+		const CSVFileHandler::CSVValues& GetHeaders() const;
 
-		CSVValues GetValuesFromLine(bool trim = false);
+		CSVFileHandler::CSVValues GetValuesFromLine(bool trim = false);
 		bool IsAtEndOfFile() const;
 
 		virtual void Close();
 
 	protected:
-		boost::escaped_list_separator<wchar_t> m_separators;
-		CSVValues m_headers;
-		std::wifstream m_filestream;
+		class impl;
+		impl* pimpl;
 	};
 
-} //namespace SynGlyphX
-
-#endif //SYNGLYPHX_CSFFILEREADER_H
+}
