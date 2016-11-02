@@ -86,7 +86,6 @@ ProfilerImpl* ProfilerImpl::Instance()
 
 
 void ProfilerImpl::EnterBlock(const char * const file, const char * const function, const unsigned line)
-
 {
 	uint64_t endTime = GetTicks();
 	if (m_stack.size())
@@ -104,7 +103,6 @@ void ProfilerImpl::EnterBlock(const char * const file, const char * const functi
 }
 
 void ProfilerImpl::ExitBlock()
-
 {
 	uint64_t endTime = GetTicks();
 	auto lastStat = m_stack.rbegin();
@@ -128,7 +126,6 @@ uint64_t ProfilerImpl::GetTicks() const
 //#pragma warning(disable: 4996) //sprintf
 
 void ProfilerImpl::CreateReport(std::ostream &os)
-
 {
 	class ReportSort
 	{
