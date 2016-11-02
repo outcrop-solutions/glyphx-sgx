@@ -38,6 +38,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "LoadingFilterDialog.h"
 #include "GlyphForestInfoModel.h"
+#include "Profiler.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -49,6 +50,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_showHomePage(true),
 	m_dataEngineConnection(nullptr)
 {
+	SGX_PROFILE_SCOPE
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
@@ -643,7 +645,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
-
+	SGX_PROFILE_SCOPE
 	QString nativeFilename = QDir::toNativeSeparators(filename);
 	if (nativeFilename == m_currentFilename) {
 		
@@ -682,7 +684,6 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 	EnableLoadedVisualizationDependentActions(true);
 	
 	statusBar()->showMessage("Visualization successfully opened", 3000);
-
 	return true;
 }
 
@@ -809,9 +810,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
-
+		SGX_BEGIN_PROFILE(loadLegacyScene);
 		m_viewer->loadLegacyScene( outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), images );
-
+		SGX_END_PROFILE(loadLegacyScene);
 		QStringList qList;
 		for (int i = 0; i < images.size(); i++){
 			qList << images.at(i).c_str();

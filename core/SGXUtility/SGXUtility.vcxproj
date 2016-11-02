@@ -108,6 +108,7 @@
     <ClInclude Include="csvtfilereaderwriter.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="interval.h" />
+    <ClInclude Include="Profiler.h" />
     <ClInclude Include="runtimeloadedlibrary.h" />
     <ClInclude Include="sgxutility.h" />
     <ClInclude Include="stringconvert.h" />
@@ -131,6 +132,7 @@
     </ClCompile>
     <ClCompile Include="filesystem.cpp" />
     <ClCompile Include="interval.cpp" />
+    <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="runtimeloadedlibrary.cpp" />
     <ClCompile Include="stringconvert.cpp" />
     <ClCompile Include="uuid.cpp" />
