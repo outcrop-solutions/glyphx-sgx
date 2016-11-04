@@ -34,10 +34,6 @@ TARGET_LINK_LIBRARIES(DataEngine)
 
 Set_Windows_Properties(DataEngine)
 
-IF(${WIN32})
-	ADD_CUSTOM_COMMAND(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/DataEngine/Java DataEngine/dataengine.jar" $<TARGET_FILE_DIR:DataEngine>)
-ELSEIF(${APPLE})
-	# setup_osx.sh takes care of this for apple, not necessary here
-ELSE()
-	ADD_CUSTOM_COMMAND(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/DataEngine/Java DataEngine/dataengine.jar" $<TARGET_FILE_DIR:DataEngine>)
-ENDIF()
+#Custom build steps to build data engine JAR and copy to build path
+add_custom_command(TARGET DataEngine PRE_BUILD COMMAND python ${DEVELOPMENT_TOP_DIR}/dataengine/build.py WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)
+add_custom_command(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/classes/dataengine.jar" $<TARGET_FILE_DIR:DataEngine> WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)

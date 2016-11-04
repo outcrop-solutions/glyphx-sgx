@@ -87,7 +87,7 @@ namespace SynGlyphX
 		void enableAnimation( bool enabled ) { animation_enabled = enabled; }
 		bool animationEnabled() { return animation_enabled; }
 		bool stereoSupported() { return false; /* not yet implemented */ }
-		void setStereoMode( bool enable ) { hal::debug::_assert( false, "stereo mode not yet implemented" ); }
+		void setStereoMode( bool /* enable */ ) { hal::debug::_assert( false, "stereo mode not yet implemented" ); }
 		bool stereoMode() { return false; /* not yet implemented */ }
 		void enableFreeSelectionCamera( bool val ) { free_selection_camera = val; }
 		void enableSelectionEffect( bool val ) { selection_effect_enabled = val; glyph_renderer->resetSelectionAnimation(); }

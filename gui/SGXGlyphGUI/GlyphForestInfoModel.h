@@ -41,7 +41,7 @@ namespace SynGlyphX {
 		void LoadGlyphForestInfoLegacy(const QString& nodeCSVFile, const QString& tagCSVFile);
 
 		//Functions from QAbstractItemModel that need to be implemented
-		int columnCount(const QModelIndex& parent = QModelIndex()) const override { return 1; }
+		int columnCount(const QModelIndex& /*parent = QModelIndex() */) const override { return 1; }
 		QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 		QModelIndex	index(int row, int column = 0, const QModelIndex& parent = QModelIndex()) const override;
 		QModelIndex	parent(const QModelIndex& index) const override;

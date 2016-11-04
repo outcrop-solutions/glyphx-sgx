@@ -6,6 +6,7 @@
 
 #ifdef WIN32
 #pragma warning(disable: 4996)		// windows wants us to use strcat_s but osx doesn't have it
+#include "gl.h"
 #endif
 
 namespace SynGlyphX

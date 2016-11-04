@@ -14,8 +14,8 @@ namespace SynGlyphX
 		OverheadCameraController( render::perspective_camera* camera );
 		OverheadCameraController( const OverheadCameraController& ) = delete;
 
-		void turn( const glm::vec2& angleDelta ) override {}
-		void move( const glm::vec3& relativeMotion ) override {}
+		void turn( const glm::vec2& /* angleDelta */ ) override {}
+		void move( const glm::vec3& /* relativeMotion */ ) override {}
 
 		void setMovementSpeed( float speed ) override { move_speed = speed; }
 		void setTurnSpeed( float speed ) override { turn_speed = speed; }

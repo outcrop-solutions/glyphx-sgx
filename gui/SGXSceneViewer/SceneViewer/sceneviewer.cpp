@@ -840,7 +840,7 @@ namespace SynGlyphX
 							}
 						}
 						return true;
-					}, true );
+					} );
 
 					changed_selection = true;
 				}
@@ -873,7 +873,7 @@ namespace SynGlyphX
 				radius = glyph.getCachedCombinedBound().get_radius();
 				pos = glyph.getCachedPosition();
 				return false;
-			}, false );
+			} );
 			camera->set_position( pos + glm::vec3( 0.f, 0.f, -radius * 5.f ) );
 			orbit_cam_control->setOrbitTarget( pos, radius * 3.f, true );
 			set_cam_control( orbit_cam_control, true );

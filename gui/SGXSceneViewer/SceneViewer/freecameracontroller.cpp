@@ -11,8 +11,10 @@ namespace SynGlyphX
 	{
 	}
 
-	void FreeCameraController::doUpdate( float timeDelta )
+	void FreeCameraController::doUpdate( float /* timeDelta */ )
 	{
+		// todo: this should use timeDelta
+
 		auto pos_motion = posMotion();
 		auto angle_motion = angleMotion();
 

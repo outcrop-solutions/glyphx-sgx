@@ -222,7 +222,7 @@ namespace SynGlyphX
 					add_bound_to_bucket( glyph, get_bucket( WIREFRAME | ( passed_filter ? 0u : FILTER_FAIL ), 0u ) );
 			}
 			return true;
-		}, false );
+		} );
 	}
 
 	void GlyphRenderer::clear()
