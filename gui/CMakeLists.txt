@@ -20,7 +20,7 @@ IF (${WIN32})
 	#For 32 bit windows apps & libraries to be able to access 4GB of memory
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
 	SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
-	SET(CMAKE_CXX_FLAGS "/MP /Gm-")	# Enable multiprocess builds (and disable minimal rebuild since it's incompatible with /MP)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /Gm-")	# Enable multiprocess builds (and disable minimal rebuild since it's incompatible with /MP)
 
 	add_definitions( "/DUNICODE" )
 
@@ -33,7 +33,6 @@ IF (${WIN32})
 	#Suppress C4503 'decorated name lengths exceeded' because it doesn't tell us anything useful and boost::bimap emits a lot of it
 	#Suppress C4201 'nonstandard extension used : nameless struct/union' because GLM emits a lot of it
 	add_definitions( "/wd4251 /wd4503 /wd4201" )
-	add_definitions( "/DWIN32" )	# WIN32 define (shouldn't this be automatic?)
 	add_definitions( "/EHsc" )		# Enable unwind semantics (for exception handling)
 	SET(GUI_TYPE WIN32)
 ELSEIF (${APPLE})
