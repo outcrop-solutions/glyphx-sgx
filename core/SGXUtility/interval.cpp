@@ -150,11 +150,6 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_includedEndpoints != m_includedEndpoints) {
-
-			return false;
-		}
-
 		return true;
 	}
 
