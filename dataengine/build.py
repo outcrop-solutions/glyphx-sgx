@@ -1,4 +1,7 @@
 import os
+import platform
+
+print( "Building data engine..." )
 
 cd = os.getcwd()
 jp = cd+'/../JavaDataEngine'
@@ -6,10 +9,16 @@ jp = cd+'/../JavaDataEngine'
 if not os.path.exists(cd+'/DataEngine.vcxproj'):
 	jp = cd+'/JavaDataEngine'
 
-jcmd = jp+'/../jdk/bin'
+jcmd = jp+'/../jdk/bin/'
+sep = ';'
+
+if platform.system() == 'Darwin':
+	jcmd = ''
+	sep = ':'
+
 driver_path = jp+'/database-drivers/'
 
-classpath = jp+';'
+classpath = jp+sep
 driver_set = {'opencsv-3.7.jar',
 			'commons-lang3-3.1.jar',
 			'ojdbc7.jar',
@@ -19,9 +28,7 @@ driver_set = {'opencsv-3.7.jar',
 			'jsch-0.1.53.jar'}
 
 for driver in driver_set:
-	classpath += driver_path+driver+';'
-
-os.environ['CLASSPATH'] = classpath
+	classpath += driver_path+driver+sep
 
 outpath = jp+'/../../classes'
 package = outpath+'/synglyphx'
@@ -42,7 +49,7 @@ for directory in directories:
 		os.makedirs(directory)
 
 
-jcompile = jcmd+'/javac -d '+outpath+' '+jp+'/'
+jcompile = jcmd+'javac -d '+outpath+' '+jp+'/'
 
 javafiles = {'DataEngine.java',
 			'GlyphEngine.java',
@@ -57,11 +64,12 @@ javafiles = {'DataEngine.java',
 			'synglyphx/user/*.java'}
 
 for javafile in javafiles:
-	os.system(jcompile+javafile)
+	command = jcompile+javafile+" -classpath "+classpath
+	os.system(command)
 
 os.chdir(outpath)
 
-jar = jcmd+'/jar cf dataengine.jar ' 
+jar = jcmd+'jar cf dataengine.jar ' 
 jar += 'DataEngine.class ' 
 jar += 'GlyphEngine.class ' 
 jar += 'UserAccessControls.class ' 

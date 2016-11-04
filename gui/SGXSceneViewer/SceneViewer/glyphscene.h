@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <functional>
 #include <render/octree.h>
+#include <string>
 #include <unordered_set>
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"

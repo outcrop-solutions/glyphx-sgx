@@ -35,5 +35,11 @@ TARGET_LINK_LIBRARIES(DataEngine)
 Set_Windows_Properties(DataEngine)
 
 #Custom build steps to build data engine JAR and copy to build path
-add_custom_command(TARGET DataEngine PRE_BUILD COMMAND python ${DEVELOPMENT_TOP_DIR}/dataengine/build.py WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)
+if(${APPLE}})
+	set(PYTHON_CMD python3)
+else()
+	set(PYTHON_CMD python)
+endif()
+
+add_custom_command(TARGET DataEngine PRE_BUILD COMMAND ${PYTHON_CMD} ${DEVELOPMENT_TOP_DIR}/dataengine/build.py WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)
 add_custom_command(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/classes/dataengine.jar" $<TARGET_FILE_DIR:DataEngine> WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)
