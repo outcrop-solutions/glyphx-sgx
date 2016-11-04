@@ -19,6 +19,7 @@ namespace SynGlyphX
 		GlyphRenderer( GlyphGeometryDB& db );
 		GlyphRenderer( const GlyphRenderer& ) = delete;
 		virtual ~GlyphRenderer();
+		void operator=( const GlyphRenderer& ) = delete;
 
 		void setScene( GlyphScene* _scene ) { scene = _scene; }
 		void clear();

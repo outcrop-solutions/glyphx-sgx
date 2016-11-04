@@ -22,6 +22,7 @@ namespace SynGlyphX
 	public:
 		SuperimposedGroupManager( GlyphScene& scene );
 		SuperimposedGroupManager( const SuperimposedGroupManager& ) = delete;
+		void operator=( const SuperimposedGroupManager& ) = delete;
 		~SuperimposedGroupManager();
 
 		// returns {group id, distance}

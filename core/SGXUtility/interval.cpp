@@ -150,7 +150,7 @@ namespace SynGlyphX {
 			return false;
 		}
 
-		if (m_includedEndpoints != m_includedEndpoints) {
+		if (m_includedEndpoints != interval.m_includedEndpoints) {
 
 			return false;
 		}

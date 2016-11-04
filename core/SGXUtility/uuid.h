@@ -17,10 +17,7 @@
 #pragma once
 
 #include "sgxutility.h"
-#pragma warning(push)
-#pragma warning(disable : 4996)
 #include <boost/uuid/uuid.hpp>
-#pragma warning(pop)
 
 namespace SynGlyphX {
 

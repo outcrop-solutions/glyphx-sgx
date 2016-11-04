@@ -27,19 +27,19 @@ done
 
 # Build an app package from the three packages we built.
 echo Building app package...
-cd ../../cmake/bin/OSX64/Release
-cp ../../../../misc/osx_resources/distribution.xml .
-cp ../../../../misc/osx_resources/readme.txt README.txt
-cp ../../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
+cd ../../bin/OSX64/Release
+cp ../../../misc/osx_resources/distribution.xml .
+cp ../../../misc/osx_resources/readme.txt README.txt
+cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
 productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilder.pkg
 echo Building demo package...
-cp ../../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
+cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
 productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilderDemo.pkg
 
 # Build GlyphEd package.
 echo Building GlyphEd package...
-cd ../../../../3rdparty/scripts
+cd ../../../3rdparty/scripts
 ./setup_osx.sh -ebirj8
-cd ../../cmake/bin/OSX64/Release
-cp ../../../../misc/osx_resources/distribution_glyphed.xml .
+cd ../../bin/OSX64/Release
+cp ../../../misc/osx_resources/distribution_glyphed.xml .
 productbuild --distribution distribution_glyphed.xml --package-path . --resources . GlyphEd.pkg

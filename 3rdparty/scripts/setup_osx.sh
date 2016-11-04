@@ -125,78 +125,77 @@ fi
 cd $script_path
 
 echo Setting up $app bundle [$build] with JVM $java...
-mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+mkdir -p ../../bin/OSX64/$build/$app.app/Contents/Frameworks
 
 echo Copying 3rd-party libraries into app bundle... 
-cp ../tools/graphics/OSX64/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
+cp ../tools/graphics/OSX64/*.dylib ../../bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # This shouldn't be necessary but I haven't been able to figure out how to get cmake to set up xcode
 # to drop the libraries in the bundle and link the app against them properly. So just moving them into
 # it before running macdeployqt does the trick.
 echo Copying sgx libraries into app bundle...
-cp ../../cmake/bin/OSX64/$build/*.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
+cp ../../bin/OSX64/$build/*.dylib ../../bin/OSX64/$build/$app.app/Contents/Frameworks 2>/dev/null
 
 # NOTE: We're piping all the macdeployqt output to /dev/null. It spams a LOT of unnecessary text. Run it
 # from the console if you need to see its output for some reason (or remove the two redirections starting
 # with >).
 echo Deploying Qt...
-/Users/Shared/Qt$qt.0/$qt/clang_64/bin/macdeployqt ../../cmake/bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
+/Users/Shared/Qt$qt.0/$qt/clang_64/bin/macdeployqt ../../bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
 
 if [ $java = 7 ]; then
 	echo Deploying Java VM 1.7.0_79...
-	cp -R /Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
+	cp -R /Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk ../../bin/OSX64/$build/$app.app/Contents/Frameworks
 	echo Cleaning up unneeded Java files...
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/src.zip
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/man
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/db
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/bin
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/lib
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/include
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/src.zip
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/man
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/db
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/bin
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/lib
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.7.0_79.jdk/Contents/Home/include
 fi
 
 if [ $java = 8 ]; then
 	echo Deploying Java VM 1.8.0_92...
-	cp -R /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/src.zip
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/man
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/db
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/bin
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/lib
-	rm -rf ../../cmake/bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/include
+	cp -R /Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk ../../bin/OSX64/$build/$app.app/Contents/Frameworks
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/src.zip
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/man
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/db
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/bin
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/lib
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_92.jdk/Contents/Home/include
 fi
 
-echo Deploying Data Engine...
-mkdir -p ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp -R ../../DataEngine/JavaDataEngine/*.jar ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp -R ../../DataEngine/JavaDataEngine/database-drivers ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
-#cp -R ../../DataEngine/JavaDataEngine/libsqlite4java-osx.dylib ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+#echo Deploying Data Engine...
+mkdir -p ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
+cp ../../bin/OSX64/$build/dataengine.jar ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine 2>/dev/null
+cp -R ../../DataEngine/JavaDataEngine/database-drivers ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
+cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../bin/OSX64/$build/$app.app/Contents/MacOS
 
 echo Deploying miscellaneous data files...
-cp -R ../../Misc/InstallerFiles/* ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
+cp -R ../../Misc/InstallerFiles/* ../../bin/OSX64/$build/$app.app/Contents/MacOS
 
 if [ $app = GlyphViewer ] || [ $app = DataMapper ]; then
 	echo Deploying ANTz Templates to $app app bundle...
-	cp -R ../../ANTzPlus/ANTzMacTemplate ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
-	cp -R ../../ANTzPlus/ANTzTemplate ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
-	cp -R ../../ANTzPlus/ANTzzSpaceTemplate ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS
-	cp ../tools/vc120redist/*.dll ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS/ANTzTemplate
-	cp ../tools/vc120redist/*.dll ../../cmake/bin/OSX64/$build/$app.app/Contents/MacOS/ANTzzSpaceTemplate
+	cp -R ../../ANTzPlus/ANTzMacTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
+	cp -R ../../ANTzPlus/ANTzTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
+	cp -R ../../ANTzPlus/ANTzzSpaceTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
+	cp ../tools/vc120redist/*.dll ../../bin/OSX64/$build/$app.app/Contents/MacOS/ANTzTemplate
+	cp ../tools/vc120redist/*.dll ../../bin/OSX64/$build/$app.app/Contents/MacOS/ANTzzSpaceTemplate
 fi
 
 echo Copying icon into app bundle...
-cp ../../Misc/osx_resources/synglyphx_x.icns ../../cmake/bin/OSX64/$build/$app.app/Contents/Resources
+cp ../../Misc/osx_resources/synglyphx_x.icns ../../bin/OSX64/$build/$app.app/Contents/Resources
 
 # Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
-rm -f ../../cmake/bin/OSX64/$build/*.jar
+rm -f ../../bin/OSX64/$build/*.jar
 
 if [ $do_install = 1 ]; then
 #	echo Copying app bundle to desktop...
-#	cd ../../cmake/bin/OSX64/$build
+#	cd ../../bin/OSX64/$build
 #	cp -R $app.app ~/Desktop
 	echo Creating OSX package...
-	cd ../../cmake/bin/OSX64/$build
+	cd ../../bin/OSX64/$build
 	install_path=/Applications/SynGlyphX/$app.app
 	pkg_name=$app.pkg
 	app_id=com.synglyphx.$app

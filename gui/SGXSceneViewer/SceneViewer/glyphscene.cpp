@@ -95,7 +95,7 @@ namespace SynGlyphX
 		tag_enabled.clear();
 	}
 
-	void GlyphScene::enumGlyphs( std::function<bool( const Glyph3DNode& )> fn, bool includeChildren ) const
+	void GlyphScene::enumGlyphs( std::function<bool( const Glyph3DNode& )> fn ) const
 	{
 		for ( auto& entry : glyphs )
 		{
@@ -285,7 +285,7 @@ namespace SynGlyphX
 			if ( node.isRoot() )
 				node.updateCachedTransforms( db );
 			return true;
-		}, true );
+		} );
 	}
 
 	render::box_bound& GlyphScene::getBound() const

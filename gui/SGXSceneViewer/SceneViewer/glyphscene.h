@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <functional>
 #include <render/octree.h>
+#include <string>
 #include <unordered_set>
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"
@@ -22,6 +23,7 @@ namespace SynGlyphX
             glyph_storage( nullptr ), glyph_storage_next( 0u ) { }
 		~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
+		void operator=( const GlyphScene& ) = delete;
 
 		void update( float timeDelta );
 
@@ -38,7 +40,7 @@ namespace SynGlyphX
 		const Glyph3DNode* pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
 		std::pair<const Glyph3DNode*, float> pick_with_distance( const glm::vec3& ray_origin, const glm::vec3& ray_dir, bool include_filtered_out = true, bool active_group_only = false ) const;
 
-		void enumGlyphs( std::function<bool( const Glyph3DNode& )> fn, bool includeChildren ) const;
+		void enumGlyphs( std::function<bool( const Glyph3DNode& )> fn ) const;
 
 		void updateCachedTransforms() const;
 

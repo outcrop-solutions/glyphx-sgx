@@ -41,6 +41,7 @@ namespace SynGlyphX
 				root = new octree_node<content_t>( new_bound, 0u, settings );
 			}
 			octree( const octree& ) = delete;
+			void operator=( const octree& ) = delete;
 			~octree() { delete root; }
 
 			void insert( content_t* content, const sphere_bound& bound ) { root->insert( content, bound ); }
@@ -60,6 +61,7 @@ namespace SynGlyphX
 		public:
 			octree_node( const box_bound& bound, unsigned int depth, const octree_settings& settings );
 			octree_node( const octree_node& ) = delete;
+			void operator=( const octree_node& ) = delete;
 			~octree_node();
 
 			void insert( content_t* content, const sphere_bound& bound );
