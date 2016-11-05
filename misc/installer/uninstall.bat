@@ -1,0 +1,1 @@
+msiexec /x glyphit.msi
