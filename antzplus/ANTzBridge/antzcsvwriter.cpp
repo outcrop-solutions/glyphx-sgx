@@ -116,7 +116,7 @@ namespace SynGlyphXANTz {
 			tagFile.Close();
 			redirectFile.close();
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 			throw;
 		}
@@ -224,7 +224,7 @@ namespace SynGlyphXANTz {
 			globalsFile.close();
 
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 			throw;
 		}

@@ -415,6 +415,7 @@ namespace SynGlyphX {
 
 			return m_url.GetBinding();
 		}
+		throw( std::invalid_argument( "DataMappingGlyph::GetInputBinding: unknown field" ) );
 	}
 
 	MappingFunctionData::ConstSharedPtr DataMappingGlyph::GetMappingFunctionData(MappableField field) const {
@@ -495,6 +496,7 @@ namespace SynGlyphX {
 
 			return m_url.GetMappingFunctionData();
 		}
+		throw( std::invalid_argument( "DataMappingGlyph::GetMappingFunctionData: unknown field" ) );
 	}
 
 	void DataMappingGlyph::SetMappingFunctionData(MappableField field, MappingFunctionData::SharedPtr mappingData) {

@@ -160,7 +160,7 @@ namespace SynGlyphXANTz {
 		pNPnode childNode = CreateNodeFromTemplate(parent, minMaxGlyph);
 		m_labelToANTzNodeMap.insert(boost::bimap<SynGlyphX::DataMappingGlyphGraph::Label, int>::value_type(minMaxGlyph->first, childNode->id));
 
-		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
+		for (unsigned int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
 
 			CreateNewSubTree(childNode, m_model->GetMinMaxGlyphTree()->GetChild(minMaxGlyph, i));
 		}
@@ -237,7 +237,7 @@ namespace SynGlyphXANTz {
 
 	void ANTzSingleGlyphTreeWidget::RemoveNodeFromIDMap(pNPnode node) {
 
-		for (unsigned int i = 0; i < node->childCount; ++i) {
+		for (int i = 0; i < node->childCount; ++i) {
 
 			RemoveNodeFromIDMap(node->child[i]);
 		}
@@ -621,7 +621,7 @@ namespace SynGlyphXANTz {
 			UpdateAnimationValuesFromGlyph(node, minMaxGlyph->second.GetMaxGlyph());
 		}
 
-		for (int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
+		for (unsigned int i = 0; i < m_model->GetMinMaxGlyphTree()->ChildCount(minMaxGlyph); ++i) {
 
 			ResetAnimationValuesInTree(node->child[i], m_model->GetMinMaxGlyphTree()->GetChild(minMaxGlyph, i));
 		}

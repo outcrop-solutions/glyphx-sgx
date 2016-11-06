@@ -24,8 +24,8 @@ namespace SynGlyphX {
 			if (index.isValid()) {
 
 				QAbstractItemModel* currentModel = model();
-				unsigned int row = index.row();
-				unsigned int column = index.column();
+				int row = index.row();
+				int column = index.column();
 
 				if (next) {
 

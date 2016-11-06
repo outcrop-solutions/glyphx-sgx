@@ -178,7 +178,7 @@ namespace DataEngine
 		QString num;
 		QString file;
 		int offset = 2;
-		for (int i = 0; i < images.size(); i++){
+		for (unsigned int i = 0; i < images.size(); i++){
 			file = (images.at(i)).c_str();
 			if (i == 0 && images.at(i) == "World.png"){ offset = 1; }
 			if (application == "DataMapper"){
@@ -290,7 +290,7 @@ namespace DataEngine
 				setGeoBoundingBox(nw, se, downloader.getImageSize());
 				return true;
 			}
-			catch (const DownloadException& e) {
+			catch (const DownloadException&) {
 
 				downloadComplete = false;
 				GeographicBoundingBox m_overrideRootXYBoundingBox = GeographicBoundingBox(GeographicPoint(0.0, 0.0), 90.0, 180.0);

@@ -36,7 +36,7 @@ DataSourcesView::DataSourcesView(SynGlyphX::DataTransformModel* sourceModel, QWi
 
 	m_sharedActions.EnableActions(false);
 
-	addActions(m_sharedActions);
+	addActions(m_sharedActions.getActions());
 }
 
 DataSourcesView::~DataSourcesView()

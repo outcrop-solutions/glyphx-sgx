@@ -166,9 +166,9 @@ namespace SynGlyphX {
 		diffHSV.Set(maxHSV[0] - minHSV[0], maxHSV[1] - minHSV[1], maxHSV[2] - minHSV[2]);
 
 		GlyphColor outputHSV(GlyphColor::HSV);
-		outputHSV.Set(0, Interpolate(minHSV[0], diffHSV[0], inputMin, inputDiff, input));
-		outputHSV.Set(1, Interpolate(minHSV[1], diffHSV[1], inputMin, inputDiff, input));
-		outputHSV.Set(2, Interpolate(minHSV[2], diffHSV[2], inputMin, inputDiff, input));
+		outputHSV.Set(0, short( Interpolate(minHSV[0], diffHSV[0], inputMin, inputDiff, input)));
+		outputHSV.Set(1, short( Interpolate(minHSV[1], diffHSV[1], inputMin, inputDiff, input)));
+		outputHSV.Set(2, short( Interpolate(minHSV[2], diffHSV[2], inputMin, inputDiff, input)));
 
 		return GlyphColor::ConvertHSVtoRGB(outputHSV);
 	}

@@ -1,17 +1,16 @@
+
 #include "sharedactionlist.h"
 #include <QtCore/QObject>
 
 namespace SynGlyphX {
 
-	SharedActionList::SharedActionList(QObject *parent)
-		: QList<QAction*>(),
+	SharedActionList::SharedActionList(QObject *parent) :
 		m_parent(parent)
 	{
 
 	}
 
 	SharedActionList::SharedActionList(const SharedActionList& list) :
-		QList<QAction*>(list),
 		m_parent(list.m_parent) {
 
 
@@ -26,14 +25,14 @@ namespace SynGlyphX {
 
 		QAction* action = new QAction(text, m_parent);
 		action->setShortcut(shortcut);
-		push_back(action);
+		actions.push_back(action);
 
 		return action;
 	}
 
 	void SharedActionList::AddSeparator() {
 
-		push_back(CreateSeparator(m_parent));
+		actions.push_back(CreateSeparator(m_parent));
 	}
 
 	QAction* SharedActionList::CreateSeparator(QObject* parent) {
@@ -45,7 +44,7 @@ namespace SynGlyphX {
 
 	void SharedActionList::EnableActions(bool enable) {
 
-		Q_FOREACH(QAction* action, *this) {
+		Q_FOREACH(QAction* action, actions) {
 
 			action->setEnabled(enable);
 		}

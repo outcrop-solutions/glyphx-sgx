@@ -639,7 +639,7 @@ namespace SynGlyphX {
 
 			m_datasources.erase(id);
 		}
-		catch (const std::invalid_argument& e) {
+		catch (const std::invalid_argument&) {
 			
 			throw;
 		}
@@ -855,7 +855,7 @@ namespace SynGlyphX {
 				throw std::invalid_argument("ID does not exist in datasources for this data transform mapping.");
 			}
 		}
-		catch (const std::invalid_argument& e) {
+		catch (const std::invalid_argument&) {
 
 			throw;
 		}
@@ -943,7 +943,7 @@ namespace SynGlyphX {
 			newPosition = m_glyphTrees[treeId]->GetChild(parent, startingNumberOfChildren - 1)->second.GetMinGlyph().GetPosition();
 		}
 
-		for (int i = 0; i < numberOfChildren; ++i) {
+		for (unsigned int i = 0; i < numberOfChildren; ++i) {
 
 			SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph = m_glyphTrees[treeId]->AddChildGlyph(parent, glyphTemplate);
 

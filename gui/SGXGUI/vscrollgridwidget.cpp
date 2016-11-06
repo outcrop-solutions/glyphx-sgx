@@ -52,7 +52,7 @@ namespace SynGlyphX {
 			throw std::invalid_argument("VScrollGridWidget rows must match the number of headers");
 		}
 
-		for (int i = 0; i < columnCount; ++i) {
+		for (unsigned int i = 0; i < columnCount; ++i) {
 
 			m_scrollAreaLayout->addWidget(widgets[i], m_rowCountIncludingLines, 2 * i);
 		}
@@ -99,7 +99,7 @@ namespace SynGlyphX {
 
 	void VScrollGridWidget::ResizeColumns(QList<QWidget*> widgets) {
 
-		for (unsigned int i = 0; i < widgets.size() - 1; ++i) {
+		for (int i = 0; i < widgets.size() - 1; ++i) {
 
 			unsigned int gridColumnIndex = 2 * i;
 			unsigned int minNewWidgetWidth = widgets[i]->minimumSizeHint().width() + 8; //8 is to make sure that there is a margin for now.
@@ -124,7 +124,7 @@ namespace SynGlyphX {
 	void VScrollGridWidget::ResetHeaderSectionSizesToContents() {
 
 		m_headerView->resizeSections(QHeaderView::ResizeMode::ResizeToContents);
-		for (unsigned int i = 0; i < m_headerView->model()->columnCount() - 1; ++i) {
+		for (int i = 0; i < m_headerView->model()->columnCount() - 1; ++i) {
 
 			m_headerView->setSectionResizeMode(i, QHeaderView::ResizeMode::Fixed);
 			m_columnMinimumWidths[i] = m_headerView->sectionSize(i);

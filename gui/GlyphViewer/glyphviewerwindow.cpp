@@ -814,7 +814,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		m_viewer->loadLegacyScene( outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), images );
 		SGX_END_PROFILE(loadLegacyScene);
 		QStringList qList;
-		for (int i = 0; i < images.size(); i++){
+		for (unsigned int i = 0; i < images.size(); i++){
 			qList << images.at(i).c_str();
 		}
 		
@@ -836,7 +836,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception&) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
 		throw;
@@ -1362,7 +1362,7 @@ void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 		QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception&) {
 
 		throw;
 	}

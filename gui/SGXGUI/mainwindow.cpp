@@ -348,7 +348,7 @@ namespace SynGlyphX {
 		}
 
 		QStringList filenames = QFileDialog::getOpenFileNames(this, caption, initialDir, filter);
-		for (unsigned int i = 0; i < filenames.size(); ++i) {
+		for (int i = 0; i < filenames.size(); ++i) {
 
 			filenames[i] = QDir::toNativeSeparators(filenames[i]);
 		}

@@ -18,7 +18,7 @@ LegendListView::LegendListView(SynGlyphX::DataTransformModel* dataTransformModel
 	QObject::connect(m_propertiesAction, &QAction::triggered, this, &LegendListView::ShowLegendProperties);
 
 	m_sharedActions.EnableActions(false);
-	addActions(m_sharedActions);
+	addActions(m_sharedActions.getActions());
 }
 
 LegendListView::~LegendListView()

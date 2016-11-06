@@ -75,7 +75,7 @@ void SourceDataCache::Setup(const QString& filename) {
 
 			CreateNewTable(s_tableIndexName, "TableName TEXT NOT NULL PRIMARY KEY UNIQUE,\nFormattedName TEXT NOT NULL,\nTimestamp INTEGER NOT NULL");
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 			throw;
 		}
@@ -1078,7 +1078,7 @@ QList<QVariant> SourceDataCache::GetValuesForRow(const SynGlyphX::InputTable& ta
 	if (query.exec()) {
 
 		query.first();
-		for (unsigned int i = 0; i < fields.size(); ++i) {
+		for (int i = 0; i < fields.size(); ++i) {
 
 			values.push_back(query.value(i));
 		}

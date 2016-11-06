@@ -43,7 +43,7 @@ GeographicBoundingBox::GeographicBoundingBox(const std::vector<GeographicPoint>&
 	m_swCorner = points[0];
 	m_neCorner = points[0];
 
-	for (int i = 1; i < points.size(); ++i) {
+	for (unsigned int i = 1; i < points.size(); ++i) {
 		
 		if (points[i].get<0>() < m_swCorner.get<0>()) {
 			m_swCorner.set<0>(points[i].get<0>());

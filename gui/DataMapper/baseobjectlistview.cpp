@@ -18,7 +18,7 @@ BaseObjectListView::BaseObjectListView(SynGlyphX::DataTransformModel* dataTransf
 	QObject::connect(m_propertiesAction, &QAction::triggered, this, &BaseObjectListView::ShowBaseObjectProperties);
 
 	m_sharedActions.EnableActions(false);
-	addActions(m_sharedActions);
+	addActions(m_sharedActions.getActions());
 }
 
 BaseObjectListView::~BaseObjectListView()

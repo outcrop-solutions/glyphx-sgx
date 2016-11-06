@@ -55,7 +55,7 @@ namespace SynGlyphX {
 
 		if (m_maxFileCount > 0) {
 
-			while (m_files.size() > m_maxFileCount) {
+			while (m_files.size() > int( m_maxFileCount )) {
 				
 				m_files.removeLast();
 			}

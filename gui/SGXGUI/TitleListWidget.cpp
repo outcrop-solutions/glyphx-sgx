@@ -97,7 +97,7 @@ namespace SynGlyphX {
 
 		if (!tooltips.isEmpty()) {
 
-			for (unsigned int i = 0; i < labels.size(); ++i) {
+			for (int i = 0; i < labels.size(); ++i) {
 
 				m_listWidget->item(i)->setToolTip(tooltips[i]);
 			}

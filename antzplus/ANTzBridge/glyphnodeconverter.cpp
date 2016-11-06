@@ -171,9 +171,9 @@ namespace SynGlyphXANTz {
 		glyph.GetRotation()[1] = boost::lexical_cast<double>(csvValues[38]);
 		glyph.GetRotation()[2] = boost::lexical_cast<double>(csvValues[39]);
 
-		glyph.GetColor().Set(0, boost::lexical_cast<double>(csvValues[55]));
-		glyph.GetColor().Set(1, boost::lexical_cast<double>(csvValues[56]));
-		glyph.GetColor().Set(2, boost::lexical_cast<double>(csvValues[57]));
+		glyph.GetColor().Set(0, short( boost::lexical_cast<double>(csvValues[55])));
+		glyph.GetColor().Set(1, short( boost::lexical_cast<double>(csvValues[56])));
+		glyph.GetColor().Set(2, short( boost::lexical_cast<double>(csvValues[57])));
 		glyph.GetTransparency() = boost::lexical_cast<double>(csvValues[58]);
 
 		SynGlyphX::GlyphGeometryInfo::Shape shape;
@@ -209,7 +209,7 @@ namespace SynGlyphXANTz {
 			return false;
 		}
 
-		for (int i = 0; i < headersFromFile.size(); ++i) {
+		for (unsigned int i = 0; i < headersFromFile.size(); ++i) {
 
 			if (standardHeaders[i] != headersFromFile[i]) {
 

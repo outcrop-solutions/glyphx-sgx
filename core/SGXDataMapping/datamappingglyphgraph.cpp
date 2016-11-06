@@ -158,7 +158,7 @@ namespace SynGlyphX {
 		if (numChildren > 0) {
 
 			boost::property_tree::wptree& childrenPropertyTree = propertyTreeParent.add(L"Children", L"");
-			for (int i = 0; i < numChildren; ++i) {
+			for (unsigned int i = 0; i < numChildren; ++i) {
 
 				DataMappingGlyphGraph::ConstGlyphIterator iterator = child(parent, i);
 				boost::property_tree::wptree& newPropertyTree = iterator->second.ExportToPropertyTree(childrenPropertyTree);
@@ -262,7 +262,7 @@ namespace SynGlyphX {
 			AddGraphGlyphSubgraph(child, glyphGraphChild, graph);
 		}*/
 
-		for (int i = 0; i < graph.ChildCount(glyphGraphParent); ++i) {
+		for (unsigned int i = 0; i < graph.ChildCount(glyphGraphParent); ++i) {
 
 			const GlyphGraph::ConstGlyphIterator& child = graph.GetChild(glyphGraphParent, i);
 			DataMappingGlyph glyph(child->second);
@@ -377,7 +377,7 @@ namespace SynGlyphX {
 
 	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
 
-		for (int i = 0; i < children(parent); ++i) {
+		for (unsigned int i = 0; i < children(parent); ++i) {
 
 			const DataMappingGlyphGraph::ConstGlyphIterator& childNode = child(parent, i);
 

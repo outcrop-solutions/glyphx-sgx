@@ -202,7 +202,7 @@ SynGlyphX::InputField FieldGroupModel::GetInputFieldForRow(int row) const {
 	unsigned int i = 0;
 	for (; i < m_countOfFieldsPerTable.size(); ++i) {
 
-		if (row < m_countOfFieldsPerTable[i]) {
+		if (row < int(m_countOfFieldsPerTable[i])) {
 
 			break;
 		}
@@ -232,7 +232,7 @@ unsigned int FieldGroupModel::GetTableForRow(int row) const {
 	unsigned int i = 0;
 	for (; i < m_countOfFieldsPerTable.size(); ++i) {
 
-		if (row < m_countOfFieldsPerTable[i]) {
+		if (row < int(m_countOfFieldsPerTable[i])) {
 
 			break;
 		}

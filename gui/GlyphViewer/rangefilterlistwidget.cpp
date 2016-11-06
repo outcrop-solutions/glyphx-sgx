@@ -77,7 +77,7 @@ QWidget* RangeFilterListWidget::AddFilter(const QString& field, unsigned int spa
 FilteringParameters::ColumnRangeFilterMap RangeFilterListWidget::GatherRangesBeforeSpan(int span) {
 
 	FilteringParameters::ColumnRangeFilterMap rangeFilterMap;
-	for (unsigned int i = 0; i < span; ++i) {
+	for (auto i = 0; i < span; ++i) {
 
 		unsigned int rowSpan = m_filterGroups[m_currentTable].GetCountForGroup(i);
 		SynGlyphX::DegenerateIntervalUnion ranges;
@@ -112,7 +112,7 @@ void RangeFilterListWidget::GetFilteringParametersForTable(const QString& table,
 		}
 		filteringParameters.SetRangeFilters(rangeFilterMap);
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception&) {
 
 		throw;
 	}
@@ -122,7 +122,7 @@ void RangeFilterListWidget::OnRangesChanged() {
 
 	SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
 	
-	unsigned int row = 0;
+	int row = 0;
 	for (; row < m_filterListTableWidget->rowCount(); ++row) {
 
 		if (m_filterListTableWidget->cellWidget(row, 1) == updatedFilter) {
@@ -191,7 +191,7 @@ void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingSp
 		SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, columnIntervalMap);
 		
 		SynGlyphX::DegenerateIntervalUnion intervalUnion;
-		for (int k = 0; k < m_filterGroups[m_currentTable].GetCountForGroup(j); ++k) {
+		for (unsigned int k = 0; k < m_filterGroups[m_currentTable].GetCountForGroup(j); ++k) {
 
 			SynGlyphX::SingleNumericRangeFilterWidget* filter = GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(j, k));
 			filter->blockSignals(true);

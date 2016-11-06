@@ -83,7 +83,7 @@ void nposGetCWD (char* buffer, int* size)
 	int i = 0;
 	DWORD length = 256;
 	HINSTANCE hInstance = GetModuleHandle(NULL);
-	*size = GetModuleFileName(hInstance, (LPCH)buffer, length);
+	*size = GetModuleFileNameA(hInstance, (LPCH)buffer, length);
 //	char *chPtr = buffer;
 
 //	*size *= 2;   // debug, ll	//debug, zz //stereo 3D
@@ -130,7 +130,7 @@ void nposGetCWD (char* buffer, int* size)
 //-----------------------------------------------------------------------------
 void nposSetCWD (char* buffer)
 {
-	printf ("SetCWD: %d\n", SetCurrentDirectory((LPCSTR)buffer));
+	printf ("SetCWD: %d\n", SetCurrentDirectoryA((LPCSTR)buffer));
 }
 
 //-----------------------------------------------------------------------------

@@ -17,7 +17,7 @@ namespace SynGlyphX {
 		setOptions(QWizard::IndependentPages | QWizard::IgnoreSubTitles | QWizard::NoBackButtonOnStartPage);
 		setWindowTitle(tr("Create New Glyph Tree"));
 
-		for (int i = 0; i < numberOfBranches; ++i) {
+		for (unsigned int i = 0; i < numberOfBranches; ++i) {
 
 			QWizardPage* page = new QWizardPage(this);
 			QVBoxLayout* layout = new QVBoxLayout(this);
@@ -61,7 +61,7 @@ namespace SynGlyphX {
 
 		std::vector<SynGlyphX::Glyph> templates;
 		std::vector<unsigned int> instanceCounts;
-		for (int i = 1; i < m_glyphWidgets.size(); ++i) {
+		for (unsigned int i = 1; i < m_glyphWidgets.size(); ++i) {
 
 			SynGlyphX::Glyph glyph;
 			m_glyphWidgets[i]->SetGlyphFromWidget(glyph);

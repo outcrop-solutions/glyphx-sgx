@@ -40,6 +40,7 @@ namespace SynGlyphX {
 		GlyphColor& operator=(const GlyphColor& color);
 		void Set(unsigned int index, short value);
 		void Set(short red, short green, short blue);
+		void SetF( float r, float g, float b );
 		short operator[](unsigned int index) const;
 		bool operator==(const GlyphColor& color) const;
 		bool operator!=(const GlyphColor& color) const;

@@ -109,7 +109,7 @@ void HomePageWidget::CreateHomePageOptionsWidget() {
 	optionsLayout->setSpacing(20);
 	optionsLayout->addSpacing(30);
 
-	for (unsigned int i = 0; i < options.size(); ++i) {
+	for (int i = 0; i < options.size(); ++i) {
 
 		QPushButton* button = new QPushButton(options[i], this);
 		button->setCheckable(true);
@@ -514,7 +514,7 @@ void HomePageWidget::SetupGlyphEdViz() {
 	m_glyphEdTablesInDB << "Composition";
 	m_glyphEdTablesInDB << "Dashboard";
 
-	for (unsigned int i = 0; i < m_glyphEdTablesInDB.size(); ++i) {
+	for (auto i = 0; i < m_glyphEdTablesInDB.size(); ++i) {
 
 		ProduceGlyphEdCSV(m_glyphEdSDTFiles[i], m_glyphEdTablesInDB[i], i);
 	}

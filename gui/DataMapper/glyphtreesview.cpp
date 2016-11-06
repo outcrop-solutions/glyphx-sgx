@@ -111,9 +111,9 @@ GlyphTreesView::GlyphTreesView(SynGlyphX::DataTransformModel* sourceModel, QWidg
 	m_glyphActions.EnableActions(false);
 
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	addActions(m_glyphActions);
+	addActions(m_glyphActions.getActions());
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	addActions(m_editActions);
+	addActions(m_editActions.getActions());
 }
 
 GlyphTreesView::~GlyphTreesView()

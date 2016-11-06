@@ -37,10 +37,10 @@ void MultiTableElasticListsWidget::OnNewVisualization() {
 	SourceDataCache::ConstSharedPtr sourceDataCache = m_filteringManager->GetSourceDataCache();
 	if (sourceDataCache->IsValid()) {
 
-		for (unsigned int i = 0; i < m_sourceDataInfoModel->rowCount(); ++i) {
+		for (int i = 0; i < m_sourceDataInfoModel->rowCount(); ++i) {
 
 			QModelIndex datasourceIndex = m_sourceDataInfoModel->index(i, 0);
-			for (unsigned int j = 0; j < m_sourceDataInfoModel->rowCount(datasourceIndex); ++j) {
+			for (int j = 0; j < m_sourceDataInfoModel->rowCount(datasourceIndex); ++j) {
 
 				QModelIndex tableIndex = m_sourceDataInfoModel->index(j, 0, datasourceIndex);
 				QString sourceDataCacheTablename = SourceDataCache::CreateTablename(m_sourceDataInfoModel->data(datasourceIndex, SourceDataInfoModel::IDRole).toString(),
@@ -48,7 +48,7 @@ void MultiTableElasticListsWidget::OnNewVisualization() {
 
 				SingleTableElasticListsWidget::AliasAndFieldList aliasAndFieldList;
 
-				for (unsigned int k = 0; k < m_sourceDataInfoModel->rowCount(tableIndex); ++k) {
+				for (int k = 0; k < m_sourceDataInfoModel->rowCount(tableIndex); ++k) {
 
 					QModelIndex fieldIndex = m_sourceDataInfoModel->index(k, 0, tableIndex);
 					aliasAndFieldList.push_back(SingleTableElasticListsWidget::AliasAndField(m_sourceDataInfoModel->data(fieldIndex).toString(),

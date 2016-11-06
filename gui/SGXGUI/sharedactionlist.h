@@ -25,7 +25,7 @@ class QObject;
 
 namespace SynGlyphX {
 
-	class SGXGUI_EXPORT SharedActionList : public QList < QAction* >
+	class SGXGUI_EXPORT SharedActionList
 	{
 	public:
 		SharedActionList(QObject *parent = nullptr);
@@ -37,10 +37,13 @@ namespace SynGlyphX {
 
 		static QAction* CreateSeparator(QObject* parent);
 
+		const QList<QAction*>& getActions() const { return actions; }
+
 		void EnableActions(bool enable);
 
 	private:
 		QObject* m_parent;
+		QList<QAction*> actions;
 	};
 
 } //namespace SynGlyphX

@@ -33,7 +33,7 @@ namespace SynGlyphX {
 			if (parent.isValid()) {
 
 				GlyphInfoNode* parentNode = static_cast<GlyphInfoNode*>(parent.internalPointer());
-				if (row < parentNode->GetChildCount()) {
+				if (row < int(parentNode->GetChildCount())) {
 
 					return createIndex(row, 0, static_cast<void*>(parentNode->m_children[row]));
 				}
@@ -74,7 +74,7 @@ namespace SynGlyphX {
 
 					GlyphInfoNode* grandparentNode = parentNode->m_parent;
 
-					for (int i = 0; i < grandparentNode->GetChildCount(); ++i) {
+					for (int i = 0; i < int(grandparentNode->GetChildCount()); ++i) {
 
 						if (grandparentNode->m_children[i] == parentNode) {
 
@@ -279,6 +279,7 @@ namespace SynGlyphX {
 				return i;
 			}
 		}
+		throw( std::invalid_argument( "GlyphForestInfoModel::FindHeaderIndex: couldn't find header in list" ) );
 	}
 
 	QModelIndex GlyphForestInfoModel::IndexFromCSVID(int id) const {
@@ -290,7 +291,7 @@ namespace SynGlyphX {
 			if (!node->IsRoot()) {
 
 				GlyphInfoNode* parentNode = node->m_parent;
-				for (int i = 0; i < parentNode->GetChildCount(); ++i) {
+				for (int i = 0; i < int(parentNode->GetChildCount()); ++i) {
 
 					if (parentNode->m_children[i] == node) {
 

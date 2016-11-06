@@ -98,7 +98,7 @@ BaseImageDialog::BaseImageDialog(bool enablePositionAndOrientation, bool showDow
 
 	QGroupBox* presetGroupBox = new QGroupBox(tr("Position/Orientation Presets"), this);
 	QHBoxLayout* presetGroupBoxLayout = new QHBoxLayout(this);
-	for (int i = 0; i < s_presetNames.size(); ++i) {
+	for (unsigned int i = 0; i < s_presetNames.size(); ++i) {
 
 		QPushButton* presetButton = new QPushButton(tr(s_presetNames[i].c_str()), presetGroupBox);
 		presetGroupBoxLayout->addWidget(presetButton);

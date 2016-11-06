@@ -137,9 +137,9 @@ void DataMapperWindow::CreateCenterWidget() {
 	m_minMaxGlyph3DWidget->SetAllowMultiselect(true);
 
 	QList<QAction*> actions;
-	actions.append(m_glyphTreesView->GetGlyphActions());
+	actions.append(m_glyphTreesView->GetGlyphActions().getActions());
 	actions.push_back(SynGlyphX::SharedActionList::CreateSeparator(this));
-	actions.append(m_glyphTreesView->GetEditActions());
+	actions.append(m_glyphTreesView->GetEditActions().getActions());
 	m_minMaxGlyph3DWidget->AddActionsToMinMaxViews(actions);
 
 	QObject::connect(m_showAnimation, &QAction::toggled, m_minMaxGlyph3DWidget, &DataMapping3DWidget::EnableAnimation);
@@ -307,8 +307,8 @@ void DataMapperWindow::CreateDockWidgets() {
 	QDockWidget* leftDockWidgetGlyphTrees = new QDockWidget(tr("Glyph Trees"), this);
 
 	m_glyphTreesView = new GlyphTreesView(m_dataTransformModel, leftDockWidgetGlyphTrees);
-	m_glyphMenu->addActions(m_glyphTreesView->GetGlyphActions());
-	m_editMenu->addActions(m_glyphTreesView->GetEditActions());
+	m_glyphMenu->addActions(m_glyphTreesView->GetGlyphActions().getActions());
+	m_editMenu->addActions(m_glyphTreesView->GetEditActions().getActions());
 
 	QObject::connect(m_glyphTreesView, &GlyphTreesView::UpdateStatusBar, statusBar(), &QStatusBar::showMessage);
 
@@ -376,7 +376,7 @@ void DataMapperWindow::CreateDockWidgets() {
 
 	QDockWidget* rightDockWidgetDataSources = new QDockWidget(tr("Data Sources"), this);
 	m_dataSourcesView = new DataSourcesView(m_dataTransformModel, rightDockWidgetDataSources);
-	m_datasourceMenu->addActions(m_dataSourcesView->GetSharedActions());
+	m_datasourceMenu->addActions(m_dataSourcesView->GetSharedActions().getActions());
 
 	rightDockWidgetDataSources->setWidget(m_dataSourcesView);
 	m_dataSourcesView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
@@ -521,7 +521,7 @@ void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 			mapping->WriteToFile(mappingFilename.toStdString());
 		}
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception&) {
 
 		throw;
 	}
@@ -809,7 +809,7 @@ void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizat
 				QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
 				SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 			}
-			catch (const std::exception& e) {
+			catch (const std::exception&) {
 
 				throw;
 			}

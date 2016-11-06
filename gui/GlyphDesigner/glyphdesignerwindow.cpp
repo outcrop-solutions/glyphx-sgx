@@ -37,9 +37,9 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	CreateMenus();
 	CreateDockWidgets();
 
-	m_3dView->addActions(m_treeView->GetGlyphActions());
+	m_3dView->addActions(m_treeView->GetGlyphActions().getActions());
 	m_3dView->addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	m_3dView->addActions(m_treeView->GetEditActions());
+	m_3dView->addActions(m_treeView->GetEditActions().getActions());
 
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::modelReset, this, &GlyphDesignerWindow::OnModelChanged);
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::rowsInserted, this, &GlyphDesignerWindow::OnModelChanged);
@@ -161,8 +161,8 @@ void GlyphDesignerWindow::CreateDockWidgets() {
     QDockWidget* leftDockWidget = new QDockWidget("Glyph Tree", this);
 	m_treeView = new GlyphTreeView(m_glyphTreeModel, SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType::Max, leftDockWidget);
 	m_treeView->setSelectionModel(m_sharedSelectionModel);
-	m_editMenu->addActions(m_treeView->GetEditActions());
-	m_glyphMenu->addActions(m_treeView->GetGlyphActions());
+	m_editMenu->addActions(m_treeView->GetEditActions().getActions());
+	m_glyphMenu->addActions(m_treeView->GetGlyphActions().getActions() );
     
     leftDockWidget->setWidget(m_treeView);
     addDockWidget(Qt::LeftDockWidgetArea, leftDockWidget);

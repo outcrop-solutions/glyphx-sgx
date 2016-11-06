@@ -95,9 +95,9 @@ void GlyphTreeView::CreateContextMenuActions() {
 	QObject::connect(m_addChildrenAction, &QAction::triggered, this, &GlyphTreeView::AddChildren);
 
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	addActions(m_glyphActions);
+	addActions(m_glyphActions.getActions());
 	addAction(SynGlyphX::SharedActionList::CreateSeparator(this));
-	addActions(m_editActions);
+	addActions(m_editActions.getActions());
 	
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }

@@ -333,7 +333,7 @@ QStringList FilteringTable::Separate(const QString& datasourceTable) const {
 void FilteringTable::AddRow(const QString& alias, const QString& field) {
 
 	int span = 0;
-	for (; span < m_filterGroups[m_currentTable].GetNumberOfGroups(); ++span) {
+	for (; span < int(m_filterGroups[m_currentTable].GetNumberOfGroups()); ++span) {
 
 		if (m_filterGroups[m_currentTable].GetFields().at(span) == field) {
 
@@ -512,7 +512,7 @@ QWidget* FilteringTable::FilterWidgetGroupsManager::GetWidget(unsigned int index
 
 		return GetWidget(GetGroupedIndex(index));
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception&) {
 
 		throw;
 	}
@@ -552,7 +552,7 @@ void FilteringTable::FilterWidgetGroupsManager::RemoveWidget(unsigned int index)
 
 		RemoveWidget(GetGroupedIndex(index));
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception&) {
 
 		throw;
 	}

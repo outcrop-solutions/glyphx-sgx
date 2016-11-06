@@ -72,6 +72,13 @@ namespace SynGlyphX {
 		Set(2, blue);
 	}
 
+	void GlyphColor::SetF( float r, float g, float b )
+	{
+		Set( 0, short( r * 255.f ) );
+		Set( 1, short( g * 255.f ) );
+		Set( 2, short( b * 255.f ) );
+	}
+
 	short GlyphColor::operator[](unsigned int index) const {
 
 		if (index < 3) {
@@ -223,7 +230,7 @@ namespace SynGlyphX {
 		float saturation = color[1] / 255.0f;
 		float value = color[2] / 255.0f;
 
-		int i = std::floor(hue * 6);
+		float i = std::floor(hue * 6);
 		float f = (hue * 6) - i;
 		float p = value * (1.0f - saturation);
 		float q = value * (1.0f - f * saturation);
@@ -231,15 +238,15 @@ namespace SynGlyphX {
 
 		GlyphColor rgbColor;
 
-		switch (i % 6) {
+		switch (int( i ) % 6) {
 
 			//Copy alpha since it isn't a part of RGB->HSV conversion
-			case 0: rgbColor.Set(value * 255, t * 255, p * 255); break;
-			case 1: rgbColor.Set(q * 255, value * 255, p * 255); break;
-			case 2: rgbColor.Set(p * 255, value * 255, t * 255); break;
-			case 3: rgbColor.Set(p * 255, q * 255, value * 255); break;
-			case 4: rgbColor.Set(t * 255, p * 255, value * 255); break;
-			case 5: rgbColor.Set(value * 255, p * 255, q * 255); break;
+			case 0: rgbColor.SetF(value, t, p); break;
+			case 1: rgbColor.SetF(q, value, p); break;
+			case 2: rgbColor.SetF(p, value, t); break;
+			case 3: rgbColor.SetF(p, q, value); break;
+			case 4: rgbColor.SetF(t, p, value); break;
+			case 5: rgbColor.SetF(value, p, q); break;
 		}
 
 		return rgbColor;
@@ -257,7 +264,7 @@ namespace SynGlyphX {
 
 		try {
 
-			if ((firstComma > 0) && (secondComma > firstComma + 1) && (secondComma < (v.length() - 1))) {
+			if ((firstComma > 0) && (secondComma > firstComma + 1) && (secondComma < (int( v.length() ) - 1))) {
 
 				GlyphColor color;
 				color.Set(0, boost::lexical_cast<short>(v.substr(0, firstComma)));

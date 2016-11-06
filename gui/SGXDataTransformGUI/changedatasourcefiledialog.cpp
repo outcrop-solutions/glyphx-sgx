@@ -56,7 +56,7 @@ namespace SynGlyphX {
 				}
 			}
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 
 		}
@@ -71,7 +71,7 @@ namespace SynGlyphX {
 		QFileInfo fileInfo(sdtfilename);
 		std::wstring stdDir = fileInfo.canonicalPath().toStdWString();
 
-		for (int i = 0; i < datasources.size(); ++i) {
+		for (unsigned int i = 0; i < datasources.size(); ++i) {
 			auto dataSource = mapping->GetDatasources().at(datasources[i]);
 			std::wstring name;
 			if (dataSource->IsFile())

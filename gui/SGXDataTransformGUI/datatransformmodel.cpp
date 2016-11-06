@@ -471,10 +471,7 @@ namespace SynGlyphX {
 				return DataType::Links;
 			}
 		}
-		else {
-
-			return DataType::GlyphTrees;
-		}
+		return DataType::GlyphTrees;
 	}
 
 	QVariant DataTransformModel::GetGlyphData(const QModelIndex& index) const {
@@ -566,7 +563,7 @@ namespace SynGlyphX {
 				SynGlyphX::DataMappingGlyphGraph::ConstGlyphIterator grandparent = currentTree->GetParent(parent);
 				if (grandparent.valid()) {
 
-					for (int i = 0; i < currentTree->ChildCount(grandparent); ++i) {
+					for (unsigned int i = 0; i < currentTree->ChildCount(grandparent); ++i) {
 
 						if (currentTree->GetChild(grandparent, i) == parent) {
 							row = i;
@@ -1076,7 +1073,7 @@ namespace SynGlyphX {
 			unsigned int numberOfChildrenInNewParent = rowCount(index);
 			beginInsertRows(index, numberOfChildrenInNewParent, numberOfChildrenInNewParent + numberOfChildrenOfRootInSubgraph - 1);
 
-			for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
+			for (unsigned int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
 
 				m_dataMapping->AddChildTree(treeId, vertex, nonConstGraph.GetSubgraph(nonConstGraph.GetChild(nonConstGraph.GetRoot(), i), true));
 			}
@@ -1482,7 +1479,7 @@ namespace SynGlyphX {
 
 			m_dataEngineConnection->closeConnection();
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 			m_dataEngineConnection->closeConnection();
 			throw;

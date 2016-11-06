@@ -181,10 +181,10 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 	if (properties->GetGrayscale()) {
 
 		int depthInBytes = image.depth() / 8;
-		for (unsigned int y = 0; y < image.height(); ++y) {
+		for (int y = 0; y < image.height(); ++y) {
 
 			uchar* scanLine = image.scanLine(y);
-			for (unsigned int x = 0; x < image.width(); ++x) {
+			for (int x = 0; x < image.width(); ++x) {
 
 				QRgb* rgb = reinterpret_cast<QRgb*>(scanLine + x*depthInBytes);
 				unsigned int gray = qGray(*rgb);
@@ -238,14 +238,12 @@ unsigned int NetworkDownloader::GetZoomLevel(const GeographicBoundingBox& boundi
 			}
 		}
 	}
-	else {
 
-		double hZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (hDistanceInMeters / imageSize[0])) / std::log(2.0); // / cosineAtCenter);
-		double vZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (vDistanceInMeters / imageSize[1])) / std::log(2.0);
+	double hZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (hDistanceInMeters / imageSize[0])) / std::log(2.0); // / cosineAtCenter);
+	double vZoomLevel = std::log((MetersPerPixelAtZoom0 * cosineAtCenter) / (vDistanceInMeters / imageSize[1])) / std::log(2.0);
 
-		//Zoom level can never go above 18 on MapQuest Open
-		return std::min(static_cast<unsigned int>(std::min(hZoomLevel, vZoomLevel)), MaxZoomLevel);
-	}
+	//Zoom level can never go above 18 on MapQuest Open
+	return std::min(static_cast<unsigned int>(std::min(hZoomLevel, vZoomLevel)), MaxZoomLevel);
 }
 
 QString NetworkDownloader::GenerateMapQuestOpenString(const GeographicPoint& center, unsigned int zoomLevel, SynGlyphX::DownloadedMapProperties::ConstSharedPtr properties) {

@@ -112,7 +112,7 @@ namespace SynGlyphXANTz {
 				else {
 
 					SynGlyphX::DataMappingGlyphGraph::GlyphIterator grandParentIterator = m_minMaxGlyphTree->GetParent(parentIterator);
-					for (int i = 0; i < m_minMaxGlyphTree->ChildCount(grandParentIterator.constify()); ++i) {
+					for (unsigned int i = 0; i < m_minMaxGlyphTree->ChildCount(grandParentIterator.constify()); ++i) {
 
 						if (m_minMaxGlyphTree->GetChild(grandParentIterator, i).equal(parentIterator)) {
 
@@ -225,7 +225,7 @@ namespace SynGlyphXANTz {
 		}
 
 		beginInsertRows(parent, startingNumberOfChildren, startingNumberOfChildren + numberOfChildren - 1);
-		for (int i = 0; i < numberOfChildren; ++i) {
+		for (unsigned int i = 0; i < numberOfChildren; ++i) {
 
 			SynGlyphX::DataMappingGlyphGraph::GlyphIterator newChildGlyph = m_minMaxGlyphTree->AddChildGlyph(parentGlyph, glyph);
 
@@ -553,7 +553,7 @@ namespace SynGlyphXANTz {
 				throw std::runtime_error("File type not supported");
 			}
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 			throw;
 		}
@@ -618,7 +618,7 @@ namespace SynGlyphXANTz {
 			unsigned int numberOfChildrenInNewParent = m_minMaxGlyphTree->ChildCount(pasteGlyph.constify());
 			beginInsertRows(index, numberOfChildrenInNewParent, numberOfChildrenInNewParent + numberOfChildrenOfRootInSubgraph - 1);
 
-			for (int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
+			for (unsigned int i = 0; i < numberOfChildrenOfRootInSubgraph; ++i) {
 
 				m_minMaxGlyphTree->AddChildGlyphGraph(pasteGlyph, nonConstGraph.GetSubgraph(nonConstGraph.GetChild(nonConstGraph.GetRoot(), i), true));
 			}

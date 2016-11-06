@@ -228,7 +228,7 @@ void SourceDataWidget::WriteToFile(QTableView* tableView, const QString& filenam
 	while (query->next()) {
 
 		SynGlyphX::CSVFileHandler::CSVValues lineOfValues;
-		for (int i = 0; i < columns.size(); ++i) {
+		for (unsigned int i = 0; i < columns.size(); ++i) {
 
 			QVariant var = query->value(i);
 			if ((!var.isValid()) || var.isNull()) {
@@ -278,7 +278,7 @@ void SourceDataWidget::CreateSubsetVisualization() {
 				throw std::runtime_error("Failed to create directory for data files.");
 			}
 			std::unordered_map<SynGlyphX::InputTable, std::wstring, SynGlyphX::InputTableHash> inputTableToCSVMap;
-			for (unsigned int i = 0; i < m_sourceDataTabs->count(); ++i) {
+			for (auto i = 0; i < m_sourceDataTabs->count(); ++i) {
 
 				SynGlyphX::InputTable inputTable = m_tableInfoMap[m_sourceDataTabs->widget(i)->objectName()];
 				const auto& datasource = m_dataTransformMapping->GetDatasources().at(inputTable.GetDatasourceID());
