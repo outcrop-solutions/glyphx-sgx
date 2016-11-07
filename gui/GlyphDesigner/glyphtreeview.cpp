@@ -2,10 +2,11 @@
 #include "singlewidgetdialog.h"
 #include "visualglyphpropertieswidget.h"
 #include "GDGlobal.h"
+#include "GlyphTreeViewMementoBase.h"
 
-class GlyphTreeViewMemento {
+class GlyphTreeViewMementoImpl : public GlyphTreeViewMemento {
 public:
-	GlyphTreeViewMemento(const GlyphTreeView* tv) {
+	GlyphTreeViewMementoImpl(const GlyphTreeView* tv) {
 		m_tree = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(*tv->m_model->GetMinMaxGlyphTree());
 		for (int row = 0; row < tv->m_model->rowCount(); ++row)
 			SaveExpandedOnLevel(tv, tv->m_model->index(row, 0));
@@ -29,7 +30,7 @@ public:
 				RestoreExpandedOnLevel(tv, index.child(row, 0));
 		}
 	}
-	~GlyphTreeViewMemento() {
+	virtual ~GlyphTreeViewMementoImpl() {
 		//m_tree = nullptr;
 	}
 	SynGlyphX::DataMappingGlyphGraph::SharedPtr m_tree;	
@@ -64,10 +65,12 @@ GlyphTreeView::~GlyphTreeView()
 
 GlyphTreeViewMemento* GlyphTreeView::CreateMemento() const {
 
-	return new GlyphTreeViewMemento(this);
+	return new GlyphTreeViewMementoImpl(this);
 }
 
-void GlyphTreeView::ReinstateMemento(GlyphTreeViewMemento* m) {
+void GlyphTreeView::ReinstateMemento(GlyphTreeViewMemento* memento) {
+	GlyphTreeViewMementoImpl* m = dynamic_cast<GlyphTreeViewMementoImpl*>(memento);
+	Q_ASSERT(m);
 	m_model->SetMinMaxGlyphTree(m->m_tree);
 	setUpdatesEnabled(false);
 	for (int row = 0; row < m_model->rowCount(); ++row)

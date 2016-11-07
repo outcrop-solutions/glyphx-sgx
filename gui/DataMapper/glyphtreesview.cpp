@@ -11,12 +11,13 @@
 #include "datatransformmodel.h"
 #include "datatransformmapping.h"
 #include "DMGlobal.h"
+#include "GlyphTreesViewMementoBase.h"
 
 using namespace SynGlyphX;
-class GlyphTreesViewMemento {
+class GlyphTreesViewMementoImpl : public GlyphTreesViewMemento {
 public:
 	typedef  QPair<boost::uuids::uuid, unsigned long> TreeNode;
-	GlyphTreesViewMemento(const GlyphTreesView* tv) :
+	GlyphTreesViewMementoImpl(const GlyphTreesView* tv) :
 		m_selection(nullptr)
 	{
 		auto trees = tv->m_sourceModel->GetDataMapping()->GetGlyphGraphs();
@@ -63,7 +64,7 @@ public:
 			}
 		}
 	}
-	~GlyphTreesViewMemento() {
+	virtual ~GlyphTreesViewMementoImpl() {
 		//m_tree = nullptr;
 		if (!m_selection)
 			delete m_selection;
@@ -123,10 +124,12 @@ GlyphTreesView::~GlyphTreesView()
 
 GlyphTreesViewMemento* GlyphTreesView::CreateMemento() const {
 
-	return new GlyphTreesViewMemento(this);
+	return new GlyphTreesViewMementoImpl(this);
 }
 
-void GlyphTreesView::ReinstateMemento(GlyphTreesViewMemento* m) {
+void GlyphTreesView::ReinstateMemento(GlyphTreesViewMemento* memento) {
+	GlyphTreesViewMementoImpl* m = dynamic_cast<GlyphTreesViewMementoImpl*>(memento);
+	Q_ASSERT(m);
 	m_sourceModel->SetGlyphGraphMap(m->m_glyphTrees);
 	setUpdatesEnabled(false);
 	for (int row = 0; row < m_sourceModel->rowCount(); ++row)

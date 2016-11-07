@@ -2,7 +2,7 @@
 #include "glyphdesignerwindow.h"
 #include "GDGlobal.h"
 #include <QtWidgets/QUndoCommand>
-
+#include "GlyphTreeViewMementoBase.h"
 using namespace SynGlyphX;
 class TreeChangeCommand : public QUndoCommand {
 public:

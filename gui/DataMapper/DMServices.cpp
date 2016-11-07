@@ -5,7 +5,7 @@
 #include "datatransformmodel.h"
 #include "roledatafilterproxymodel.h"
 #include "Link.h"
-
+#include "GlyphTreesViewMementoBase.h"
 using namespace SynGlyphX;
 class TreeChangeCommand : public QUndoCommand 
 {
@@ -62,12 +62,12 @@ public:
 	std::vector<Link> m_newLinks;
 };
 
-
-class TreeSelection
+class TreeSelectionImpl : public TreeSelection
 {
 public:
 	typedef  QPair<boost::uuids::uuid, unsigned long> TreeNode;
 	QList<TreeNode > m_list;
+	virtual ~TreeSelectionImpl() {}
 };
 
 class DMServicesImpl 
@@ -129,7 +129,7 @@ public:
 
 	TreeSelection* CreateTreeSelection() 
 	{
-		TreeSelection* s = new TreeSelection;
+		TreeSelectionImpl* s = new TreeSelectionImpl;
 		SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(GetTreeView()->model());
 		auto selectIndexes = filterModel->mapSelectionToSource(GetTreeView()->selectionModel()->selection()).indexes();
 
@@ -139,19 +139,19 @@ public:
 			{
 				SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
 				SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(treeNode);
-				s->m_list << TreeSelection::TreeNode(m_w->m_dataTransformModel->GetTreeId(index), glyph->first);
+				s->m_list << TreeSelectionImpl::TreeNode(m_w->m_dataTransformModel->GetTreeId(index), glyph->first);
 			}
 		}
 		return s;
 	}
 
-	void GetSelectedOnLevel(const TreeSelection* s, QItemSelection* qs, const QModelIndex& index)
+	void GetSelectedOnLevel(const TreeSelectionImpl* s, QItemSelection* qs, const QModelIndex& index)
 	{
 		SynGlyphX::DataMappingGlyphGraph::Node* treeNode = static_cast<SynGlyphX::DataMappingGlyphGraph::Node*>(index.internalPointer());
 		if (treeNode)
 		{
 			SynGlyphX::DataMappingGlyphGraph::GlyphIterator glyph(treeNode);
-			if (s->m_list.contains(TreeSelection::TreeNode(m_w->m_dataTransformModel->GetTreeId(index), glyph->first))) {
+			if (s->m_list.contains(TreeSelectionImpl::TreeNode(m_w->m_dataTransformModel->GetTreeId(index), glyph->first))) {
 				qs->select(index, index);
 			}
 			for (int row = 0; row < m_w->m_dataTransformModel->rowCount(index); ++row)
@@ -164,7 +164,7 @@ public:
 		SynGlyphX::RoleDataFilterProxyModel* filterModel = dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(GetTreeView()->model());
 		QItemSelection qselection;
 		for (int row = 0; row < m_w->m_dataTransformModel->rowCount(); ++row)
-			GetSelectedOnLevel(&selection, &qselection, m_w->m_dataTransformModel->index(row, 0));
+			GetSelectedOnLevel(dynamic_cast<const TreeSelectionImpl*>(&selection), &qselection, m_w->m_dataTransformModel->index(row, 0));
 		GetTreeView()->selectionModel()->select(filterModel->mapSelectionFromSource(qselection), QItemSelectionModel::ClearAndSelect);
 	}
 

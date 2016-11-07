@@ -26,10 +26,11 @@ namespace SynGlyphX {
 }
 
 class GlyphTreesViewMemento;
+class GlyphTreesViewMementoImpl;
 
 class GlyphTreesView : public SynGlyphX::TreeEditView
 {
-	friend class GlyphTreesViewMemento;
+	friend class GlyphTreesViewMementoImpl;
 	Q_OBJECT
 
 public:
@@ -38,7 +39,7 @@ public:
 
 	//Memento lifetime is managed by undo command (deleted in command destructor), consider changing to shared_ptr
 	GlyphTreesViewMemento* CreateMemento() const;
-	void ReinstateMemento(GlyphTreesViewMemento* m);
+	void ReinstateMemento(GlyphTreesViewMemento* memento);
 
 	const SynGlyphX::SharedActionList& GetGlyphActions();
 

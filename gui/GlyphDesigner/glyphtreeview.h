@@ -22,10 +22,11 @@
 #include "minmaxglyphtreemodel.h"
 #include "sharedactionlist.h"
 
+class GlyphTreeViewMementoImpl;
 class GlyphTreeViewMemento;
 class GlyphTreeView : public SynGlyphX::TreeEditView
 {
-	friend class GlyphTreeViewMemento;
+	friend class GlyphTreeViewMementoImpl;
 	Q_OBJECT
 
 public:
@@ -35,7 +36,7 @@ public:
 	const SynGlyphX::SharedActionList& GetGlyphActions() const;
 	//Memento lifetime is managed by undo command (deleted in command destructor), consider changing to shared_ptr
 	GlyphTreeViewMemento* CreateMemento() const;
-	void ReinstateMemento(GlyphTreeViewMemento* m);
+	void ReinstateMemento(GlyphTreeViewMemento* memento);
 
 
 public slots:

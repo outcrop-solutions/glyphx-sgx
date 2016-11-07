@@ -10,8 +10,8 @@
 #include "AppGlobal.h"
 #include <QtWidgets/QUndoStack>
 #include "datatransformmodel.h" //refactor to exclude this
+#include "GlyphTreesViewMementoBase.h"
 
-class TreeSelection;
 class BindingLineEditChangeCommand : public QUndoCommand {
 public:
 	BindingLineEditChangeCommand(BindingLineEdit* ble, const QString& newInputField) : 
