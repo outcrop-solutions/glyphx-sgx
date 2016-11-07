@@ -1040,6 +1040,8 @@ namespace SynGlyphX {
 
 			return 0;
 		}
+
+		throw std::invalid_argument( "DataTransformModel::GetFirstIndexForDataType: invalid DataType parameter" );
 	}
 
 	void DataTransformModel::UpdateGlyph(const QModelIndex& index, const DataMappingGlyph& newGlyph) {
