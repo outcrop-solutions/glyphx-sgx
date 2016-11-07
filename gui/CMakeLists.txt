@@ -23,7 +23,7 @@ IF (${WIN32})
 	#For 32 bit windows apps & libraries to be able to access 4GB of memory
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
 	SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /Gm- /W3")	# Enable multiprocess builds (and disable minimal rebuild since it's incompatible with /MP)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /Gm- /W3 /WX")	# Enable multiprocess builds (and disable minimal rebuild since it's incompatible with /MP)
 
 	add_definitions( "/DUNICODE" )
 
@@ -47,6 +47,7 @@ ELSEIF (${APPLE})
 	set(MACOSX_BUNDLE_ICON_FILE synglyphx_x)
 	set(sgx_ICON ${CMAKE_CURRENT_SOURCE_DIR}/../Misc/osx_resources/synglyphx_x.icns)
 	set_source_files_properties(${sgx_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 ELSE()
 	SET(ARCH_DIR Linux64)
 ENDIF()

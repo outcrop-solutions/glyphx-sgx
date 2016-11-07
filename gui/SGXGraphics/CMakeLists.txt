@@ -25,9 +25,9 @@ file(GLOB SRC_ALL
 
 # Enable high warning level and warnings-as-errors.
 if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 endif()
 
 set(SGXGRAPHICS_LIBS SGXGraphics GLEW assimp freetype)
