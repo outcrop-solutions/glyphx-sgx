@@ -334,7 +334,7 @@ boost::optional<std::pair<unsigned int, unsigned long>> FilteringManager::GetGly
 
 		if (range.first.IsValueInInterval(rootID)) {
 
-			return std::pair<unsigned int, unsigned long>(index, rootID - range.first.GetMin());
+			return std::pair<unsigned int, unsigned long>(index, static_cast<unsigned long>(rootID - range.first.GetMin()));
 		}
 
 		++index;
