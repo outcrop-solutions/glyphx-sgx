@@ -49,7 +49,7 @@ void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexS
 			distinctValuesQuery->exec();
 			while (distinctValuesQuery->next()) {
 
-				elasticListData.push_back(SynGlyphX::ElasticListModel::DataWithCount(distinctValuesQuery->value(0), distinctValuesQuery->value(1).toULongLong()));
+				elasticListData.push_back(SynGlyphX::ElasticListModel::DataWithCount(distinctValuesQuery->value(0), distinctValuesQuery->value(1).toUInt()));
 			}
 
 			column.second->SetData(elasticListData);

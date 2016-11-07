@@ -894,9 +894,8 @@ bool SourceDataCache::DoesFileDatasourceNeedUpdate(const boost::uuids::uuid& id,
 
 			return true;
 		}
-
-		return false;
 	}
+	return false;
 }
 
 bool SourceDataCache::DoesFileDatabaseNeedUpdate(const boost::uuids::uuid& id, const SynGlyphX::FileDatasource& datasource) const {
