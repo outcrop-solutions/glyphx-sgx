@@ -53,7 +53,7 @@ void DataSourceStatsWidget::AddNewStatsViews() {
 				}
 			}
 		}
-		catch (const std::exception& e) {
+		catch (const std::exception&) {
 
 			ClearTabs();
 			throw;
