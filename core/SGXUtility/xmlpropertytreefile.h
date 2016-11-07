@@ -25,7 +25,7 @@
 // dllexport declarations for boost class specializations (to avoid warning 4251 on PC)
 template class __declspec( dllexport ) std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>;
 template class __declspec( dllexport ) boost::property_tree::basic_ptree<std::wstring, std::wstring, std::less<std::wstring>>;
-template class __declspec( dllexport ) boost::property_tree::xml_parser::xml_writer_settings<wchar_t>;
+//template class __declspec( dllexport ) boost::property_tree::xml_parser::xml_writer_settings<wchar_t>;
 #endif
 
 namespace SynGlyphX {
@@ -40,12 +40,7 @@ namespace SynGlyphX {
 		void WriteToFile(const std::string& filename) const;
 
 		static int GetReadFlags();
-
-#ifdef WIN32
-		static const boost::property_tree::xml_writer_settings<wchar_t>& GetWriteSettings();
-#else
         static const boost::property_tree::xml_writer_settings<std::wstring>& GetWriteSettings();
-#endif
 
 	protected:
 		virtual void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) = 0;
@@ -55,12 +50,7 @@ namespace SynGlyphX {
 	private:
 		bool m_includeTimestamp;
 		boost::property_tree::wptree m_originalPropertyTree;
-
-#ifdef WIN32
-		static boost::property_tree::xml_writer_settings<wchar_t> s_writeSettings;
-#else
 		static boost::property_tree::xml_writer_settings<std::wstring> s_writeSettings;
-#endif
 		static const std::wstring s_timestampName;
 	};
 

@@ -6,11 +6,7 @@
 
 namespace SynGlyphX {
 
-#ifdef WIN32
-	boost::property_tree::xml_writer_settings<wchar_t> XMLPropertyTreeFile::s_writeSettings(L'\t', 1);
-#else
     boost::property_tree::xml_writer_settings<std::wstring> XMLPropertyTreeFile::s_writeSettings(L'\t', 1);
-#endif
 	const std::wstring XMLPropertyTreeFile::s_timestampName = L"<xmlattr>.Timestamp";
 
 	XMLPropertyTreeFile::XMLPropertyTreeFile(bool includeTimestamp) :
@@ -69,11 +65,11 @@ namespace SynGlyphX {
 		return boost::property_tree::xml_parser::trim_whitespace;
 	}
 
-#ifdef WIN32
-	const boost::property_tree::xml_writer_settings<wchar_t>& XMLPropertyTreeFile::GetWriteSettings() {
-#else
+//#ifdef WIN32
+//	const boost::property_tree::xml_writer_settings<wchar_t>& XMLPropertyTreeFile::GetWriteSettings() {
+//#else
     const boost::property_tree::xml_writer_settings<std::wstring>& XMLPropertyTreeFile::GetWriteSettings() {
-#endif
+//#endif
 
 		return s_writeSettings;
 	}

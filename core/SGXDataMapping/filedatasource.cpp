@@ -159,7 +159,8 @@ namespace SynGlyphX {
 	FileDatasource::FileType FileDatasource::GetFileTypeForFile(const std::wstring& filename) {
 
 #ifdef WIN32
-		std::wstring extension = boost::filesystem::path(filename).extension().native();
+		auto path = boost::filesystem::path(filename);
+		std::wstring extension = path.extension().native();
 #else
         std::wstring extension = StringConvert::ToStdWString(boost::filesystem::path(filename).extension().native());
 #endif

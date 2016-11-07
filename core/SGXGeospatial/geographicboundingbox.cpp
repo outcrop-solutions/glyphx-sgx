@@ -170,7 +170,7 @@ void GeographicBoundingBox::WriteToKMLFile(const std::string& filename) const {
 	//This should probably use an KML library to write out the file eventually.  Right now just using this code for development speed
 
     const std::string pointNames[4] = { "NW Corner", "SW Corner", "SE Corner", "NE Corner" };
-    GeographicPoint ccwPoints[4];
+    //GeographicPoint ccwPoints[4];
 
     boost::filesystem::path kmlpath(filename);
 

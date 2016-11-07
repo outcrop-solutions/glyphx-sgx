@@ -10,9 +10,15 @@ namespace SynGlyphX {
 	}
 
 	DatasourceTable::DatasourceTable(const boost::property_tree::wptree& propertyTree) :
-		m_name(propertyTree.get_optional<std::wstring>(L"<xmlattr>.name").get_value_or(propertyTree.get<std::wstring>(L""))),
-		m_query(propertyTree.get_child_optional(L"Query").get_value_or(boost::property_tree::wptree())) {
-
+		m_name(propertyTree.get_optional<std::wstring>(L"<xmlattr>.name").get_value_or(propertyTree.get<std::wstring>(L"")))
+		//m_query(propertyTree.get_child_optional(L"Query").get_value_or(boost::property_tree::wptree())) //broken after upgrading to new boost version
+		//"binding rvalue references to optional lvalue references is disallowed"
+	{
+		auto query = propertyTree.get_child_optional(L"Query");
+		if (query.is_initialized())
+		{
+			m_query = query.get();
+		}
 	}
 
 	DatasourceTable::DatasourceTable(const DatasourceTable& table) :
