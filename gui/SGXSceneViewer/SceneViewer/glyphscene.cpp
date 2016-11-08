@@ -204,34 +204,43 @@ namespace SynGlyphX
 
 	void GlyphScene::toggleExplode( unsigned int group )
 	{
-		active_group = group;
-		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-			explode( group );
-		else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
-			collapse( group );
+		if ( group < groups.size() )
+		{
+			active_group = group;
+			if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+				explode( group );
+			else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+				collapse( group );
+		}
 	}
 
 	void GlyphScene::collapse( unsigned int group )
 	{
-		if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
-			explode_state = group_state::retracting;
-
-		auto& g = groups[group - 1];
-		for ( auto& n : g.nodes )
+		if ( group < groups.size() )
 		{
-			n->enumNodes( [this]( const Glyph3DNode& node )
+			if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+				explode_state = group_state::retracting;
+
+			auto& g = groups[group - 1];
+			for ( auto& n : g.nodes )
 			{
-				disableTag( &node );
-				return true;
-			} );
+				n->enumNodes( [this]( const Glyph3DNode& node )
+				{
+					disableTag( &node );
+					return true;
+				} );
+			}
 		}
 	}
 
 	void GlyphScene::explode( unsigned int group )
 	{
-		active_group = group;
-		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-			explode_state = group_state::exploding;
+		if ( group < groups.size() )
+		{
+			active_group = group;
+			if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+				explode_state = group_state::exploding;
+		}
 	}
 
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )
