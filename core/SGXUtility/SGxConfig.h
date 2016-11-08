@@ -26,9 +26,9 @@
 #endif
 
 #if defined(_MSC_VER)
-#define SGX_PRAGMA_WARNING_PUSH #pragma warning(push)
-#define SGX_PRAGMA_WARNING_POP	#pragma warning(pop)
-//#define SGX_PRAGMA_WARNING_DISABLE(x) #pragma warning(disable:x)
+#define SGX_PRAGMA_WARNING_PUSH _Pragma("warning(push)")
+#define SGX_PRAGMA_WARNING_POP	_Pragma("warning(pop)")
+//#define SGX_PRAGMA_WARNING_DISABLE(x) 
 #else
 #define SGX_PRAGMA_WARNING_PUSH 
 #define SGX_PRAGMA_WARNING_POP	
