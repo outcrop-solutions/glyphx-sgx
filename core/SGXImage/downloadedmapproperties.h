@@ -21,8 +21,11 @@
 #include "SGXImage.h"
 #include "baseimageproperties.h"
 #include <array>
+SGX_PRAGMA_WARNING_PUSH
+SGX_PRAGMA_WARNING_DISABLE(4512)
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <boost/bimap.hpp>
+SGX_PRAGMA_WARNING_POP
 #include "utilitytypes.h"
 
 namespace SynGlyphX {

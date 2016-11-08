@@ -22,7 +22,10 @@
 #include "utilitytypes.h"
 #include "baseimageproperties.h"
 #include "glyphcolor.h"
+SGX_PRAGMA_WARNING_PUSH
+SGX_PRAGMA_WARNING_DISABLE(4512)
 #include <boost/bimap.hpp>
+SGX_PRAGMA_WARNING_POP
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <memory>
 

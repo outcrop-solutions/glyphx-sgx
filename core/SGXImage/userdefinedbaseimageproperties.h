@@ -15,8 +15,6 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef USERDEFINEDBASEIMAGEPROPERTIES_H
-#define USERDEFINEDBASEIMAGEPROPERTIES_H
 
 #include "SGXImage.h"
 #include "baseimageproperties.h"
@@ -51,5 +49,3 @@ namespace SynGlyphX {
 	};
 
 } //namespace SynGlyphX
-
-#endif //USERDEFINEDBASEIMAGEPROPERTIES_H

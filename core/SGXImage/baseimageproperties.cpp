@@ -7,12 +7,12 @@ namespace SynGlyphX {
 	{
 	}
 
-	BaseImageProperties::BaseImageProperties(const boost::property_tree::wptree& propertyTree) {
+	BaseImageProperties::BaseImageProperties(const boost::property_tree::wptree& /*propertyTree*/) {
 
 
 	}
 
-	BaseImageProperties::BaseImageProperties(const BaseImageProperties& properties) {
+	BaseImageProperties::BaseImageProperties(const BaseImageProperties& /*properties*/) {
 
 
 	}

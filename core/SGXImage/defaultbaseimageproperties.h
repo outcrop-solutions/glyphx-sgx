@@ -15,12 +15,13 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H
-#define SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H
 
 #include "SGXImage.h"
 #include <boost/property_tree/ptree_fwd.hpp>
+SGX_PRAGMA_WARNING_PUSH
+SGX_PRAGMA_WARNING_DISABLE(4512)
 #include <boost/bimap.hpp>
+SGX_PRAGMA_WARNING_POP
 #include "baseimageproperties.h"
 
 namespace SynGlyphX {
@@ -64,5 +65,3 @@ namespace SynGlyphX {
 	};
 
 } //namespace SynGlyphX
-
-#endif //SYNGLYPHX_DEFAULTBASEIMAGEPROPERTIES_H
