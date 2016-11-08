@@ -1,10 +1,3 @@
-#pragma once
-class GlyphGeometryInfo
-{
-public:
-	
-};
-
 ///
 /// SynGlyphX Holdings Incorporated ("COMPANY") CONFIDENTIAL
 /// Copyright (c) 2013-2015 SynGlyphX Holdings Incorporated, All Rights Reserved.
@@ -22,12 +15,13 @@ public:
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_GLYPHGEOMETRYINFO_H
-#define SYNGLYPHX_GLYPHGEOMETRYINFO_H
 
 #include "sgxfoundation.h"
+SGX_PRAGMA_WARNING_PUSH
+SGX_PRAGMA_WARNING_DISABLE(4512)
 #include <boost/bimap.hpp>
 #include<boost/property_tree/ptree_fwd.hpp>
+SGX_PRAGMA_WARNING_POP
 
 namespace SynGlyphX {
 
@@ -113,5 +107,3 @@ namespace boost {
 		};
 	}
 } //namespace boost
-
-#endif //SYNGLYPHX_GLYPHGEOMETRYINFO_H

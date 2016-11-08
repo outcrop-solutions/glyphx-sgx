@@ -15,12 +15,12 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_VIRTUALTOPOLOGYINFO_H
-#define SYNGLYPHX_VIRTUALTOPOLOGYINFO_H
-
 #include "sgxfoundation.h"
+SGX_PRAGMA_WARNING_PUSH
+SGX_PRAGMA_WARNING_DISABLE(4512)
 #include <boost/bimap.hpp>
 #include<boost/property_tree/ptree_fwd.hpp>
+SGX_PRAGMA_WARNING_POP
 
 namespace SynGlyphX {
 
@@ -75,5 +75,3 @@ namespace boost {
 		};
 	}
 }  //namespace boost
-
-#endif //SYNGLYPHX_VIRTUALTOPOLOGYINFO_H

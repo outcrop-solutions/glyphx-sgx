@@ -160,9 +160,8 @@ namespace SynGlyphX {
 		if ((hexString.length() <= 10) && (hexString.length() % 2 == 0)) {
 
 			for (unsigned int i = 0; i < hexString.length(); i += 2) {
-
-				unsigned int num = std::stoul(hexString.substr(i, 2), nullptr, 16);
-				m_color[i/2] = num;
+				
+				m_color[i / 2]  = (unsigned short)std::stoul(hexString.substr(i, 2), nullptr, 16);
 			}
 		}
 		else {

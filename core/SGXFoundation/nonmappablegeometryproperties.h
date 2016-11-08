@@ -15,9 +15,6 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_NONMAPPABLEGEOMETRYPROPERTIES_H
-#define SYNGLYPHX_NONMAPPABLEGEOMETRYPROPERTIES_H
-
 #include "sgxfoundation.h"
 #include "glyphgeometryinfo.h"
 
@@ -46,5 +43,3 @@ namespace SynGlyphX {
 	};
 
 } //namespace SynGlyphX
-
-#endif //SYNGLYPHX_NONMAPPABLEGEOMETRYPROPERTIES_H
