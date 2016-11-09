@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="APPDIR">
+            <Directory Id="dirE87177686D768648E53FE0B019AAF4F4" Name="glyphed" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="GlyphEdExeComponentGroupID">
+            <Component Id="cmp4998E1575A71C0AFC32CDD7B3857298D" Directory="APPDIR" Guid="{B2EBAD51-3D6D-4D58-9311-464D748FE1FF}">
+                <File Id="fil2F9A46DE688D5A86EFA2C50A97979BA9" KeyPath="yes" Source="SourceDir\GlyphViewer.exe" />
+            </Component>
+            <Component Id="cmp2C6EB52A34409A7F6FEB14B5C14F711A" Directory="dirE87177686D768648E53FE0B019AAF4F4" Guid="{0B4C6082-DA8E-4314-A108-79F281458F16}">
+                <File Id="filA72E80254197AA4ACF87EC83B6406A7C" KeyPath="yes" Source="SourceDir\glyphed\empty.txt" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="APPDIR" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="GlyphItExeComponentGroupID">
+            <Component Id="DataMapper.exe" Directory="APPDIR" Guid="{714D12AC-D6C0-4CD3-9060-BB154072EAE0}">
+                <File Id="filC03C7516BDA84437BAC4F0506FFC65EF" KeyPath="yes" Source="SourceDir\DataMapper.exe" />
+            </Component>
+            <Component Id="GlyphDesigner.exe" Directory="APPDIR" Guid="{9D6EAC4A-DE7A-4A59-8C2A-12BC706A8923}">
+                <File Id="filA45AABD9D1E31AB3DD78EDB7E4502E4D" KeyPath="yes" Source="SourceDir\GlyphDesigner.exe" />
+            </Component>
+            <Component Id="GlyphViewer.exe" Directory="APPDIR" Guid="{CE1D5785-1230-425D-B5A9-CEE1F1B26461}">
+                <File Id="fil2F9A46DE688D5A86EFA2C50A97979BA9" KeyPath="yes" Source="SourceDir\GlyphViewer.exe" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

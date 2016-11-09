@@ -1,0 +1,32 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Product Id="*" UpgradeCode="1302adea-85b4-4f5d-9d53-ec1164b69344" 
+            Name="GlyphIT" Version="0.0.1" Manufacturer="SynGlyphX" Language="1033">
+      <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package"/>
+      <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
+ 
+      <WixVariable Id="WixUIBannerBmp" Value="banner.png" />
+      <WixVariable Id="WixUIDialogBmp" Value="background.png" />
+      <WixVariable Id="WixUILicenseRtf" Value="../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf" />
+
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFilesFolder">
+            <Directory Id="COMPANYDIR" Name="SynGlyphX">
+               <Directory Id="APPDIR" Name="GlyphIT">
+                  <Component Id="ApplicationFiles" Guid="75cdb87c-3ec2-40cd-b023-cea03aecbbf7">
+                  	<CreateFolder />
+                  </Component>
+               </Directory>
+            </Directory>
+         </Directory>
+     </Directory>
+ 
+      <Feature Id="GlyphEd" Level="1">
+         <ComponentRef Id="ApplicationFiles"/>
+         <ComponentGroupRef Id="GlyphSharedComponentGroupID" />  
+         <ComponentGroupRef Id="GlyphEdExeComponentGroupID" />  
+      </Feature>
+      <UIRef Id="WixUI_InstallDir" />
+
+      <Property Id="WIXUI_INSTALLDIR" Value="APPDIR" />
+   </Product>
+</Wix>

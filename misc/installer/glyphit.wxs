@@ -1,5 +1,5 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-   <Product Id="*" UpgradeCode="fecc5572-2da9-40f8-90bc-cd165ceb98d3" 
+   <Product Id="*" UpgradeCode="88bee1de-9ebd-4095-98d0-7e232f68145d" 
             Name="GlyphIT" Version="0.0.1" Manufacturer="SynGlyphX" Language="1033">
       <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package"/>
       <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
@@ -12,19 +12,47 @@
          <Directory Id="ProgramFilesFolder">
             <Directory Id="COMPANYDIR" Name="SynGlyphX">
                <Directory Id="APPDIR" Name="GlyphIT">
-                  <Component Id="ApplicationFiles" Guid="b406c5d4-ef41-4aa0-b374-fb5428bf931b">
+                  <Component Id="ApplicationFiles" Guid="8dcfeb1f-cb31-4639-8fc2-263fa09fe187">
                   	<CreateFolder />
                   </Component>
                </Directory>
             </Directory>
          </Directory>
+         <Directory Id="ProgramMenuFolder">
+            <Directory Id="ApplicationProgramsFolder" Name="SynGlyphX"/>
+         </Directory>
      </Directory>
- 
+
+
       <Feature Id="GlyphIT" Level="1">
          <ComponentRef Id="ApplicationFiles"/>
-         <ComponentGroupRef Id="GlyphITComponentGroupID" />  
+         <ComponentRef Id="ApplicationShortcut"/>
+         <ComponentGroupRef Id="GlyphSharedComponentGroupID" />  
+         <ComponentGroupRef Id="GlyphItExeComponentGroupID" />  
       </Feature>
       <UIRef Id="WixUI_InstallDir" />
+
+      <DirectoryRef Id="ApplicationProgramsFolder">
+         <Component Id="ApplicationShortcut" Guid="4e665217-f5a1-48b3-95d7-a31b2588c0aa">
+            <Shortcut Id="GlyphViewerShortcut" 
+                        Name="GlyphViewer"
+                        Description="SynGlyphX GlyphViewer"
+                        Target="[#GlyphViewer.exe]"
+                        WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+            <Shortcut Id="GlyphDesignerShortcut" 
+                        Name="GlyphDesigner"
+                        Description="SynGlyphX GlyphDesigner"
+                        Target="[#GlyphDesigner.exe]"
+                        WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+            <Shortcut Id="DataMapperShortcut" 
+                        Name="DataMapper"
+                        Description="SynGlyphX DataMapper"
+                        Target="[#DataMapper.exe]"
+                        WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+              <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+              <RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+      </DirectoryRef>
 
       <Property Id="WIXUI_INSTALLDIR" Value="APPDIR" />
    </Product>
