@@ -952,9 +952,18 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 
 	settings += tr( "Stereo Support" ) + " = ";
 	if ( m_viewer->stereoSupported() )
-		settings += tr( "enabled" );
+		settings += tr( "enabled\n" );
 	else
-		settings += tr( "disabled" );
+		settings += tr( "disabled\n" );
+
+	auto vendor = glGetString( GL_VENDOR );
+	auto renderer = glGetString( GL_RENDERER );
+	auto version = glGetString( GL_VERSION );
+	const char* cc_uninit = "uninitialized";
+	const GLubyte* gl_uninit = reinterpret_cast<const GLubyte*>( cc_uninit );
+	char buf[2048];
+	sprintf_s( buf, "Device reports:\n\tVendor: %s\n\tRenderer: %s\n\tVersion: %s", vendor ? vendor : gl_uninit, renderer ? renderer : gl_uninit, version ? version : gl_uninit );
+	settings += buf;
 
 	QMessageBox::information(this, tr("OpenGL Settings"), settings);
 }
