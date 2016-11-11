@@ -39,6 +39,7 @@
 #include "LoadingFilterDialog.h"
 #include "GlyphForestInfoModel.h"
 #include "Profiler.h"
+#include <hal/hal.h>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -125,7 +126,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	CreateInteractionToolbar();
 
-	centerWidgetsContainer->setCurrentIndex(0);
+	centerWidgetsContainer->setCurrentIndex(1);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 
@@ -956,13 +957,9 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 	else
 		settings += tr( "disabled\n" );
 
-	auto vendor = glGetString( GL_VENDOR );
-	auto renderer = glGetString( GL_RENDERER );
-	auto version = glGetString( GL_VERSION );
-	const char* cc_uninit = "uninitialized";
-	const GLubyte* gl_uninit = reinterpret_cast<const GLubyte*>( cc_uninit );
+	auto device_info = SynGlyphX::hal::device::get_device_info();
 	char buf[2048];
-	sprintf_s( buf, "Device reports:\n\tVendor: %s\n\tRenderer: %s\n\tVersion: %s", vendor ? vendor : gl_uninit, renderer ? renderer : gl_uninit, version ? version : gl_uninit );
+	sprintf_s( buf, "Device reports:\n\tVendor: %s\n\tRenderer: %s\n\tVersion: %s", device_info.vendor, device_info.renderer, device_info.version );
 	settings += buf;
 
 	QMessageBox::information(this, tr("OpenGL Settings"), settings);

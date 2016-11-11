@@ -117,5 +117,14 @@ namespace SynGlyphX
 		{
 			unsigned int x, y, w, h;
 		};
+
+		struct device_info
+		{
+			bool initialized;
+			const char* vendor;
+			const char* renderer;
+			const char* version;
+			unsigned int version_major, version_minor;
+		};
 	}
 }

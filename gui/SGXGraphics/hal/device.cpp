@@ -11,6 +11,11 @@ namespace SynGlyphX
 			return hal_gl::device_internal::init();
 		}
 
+		device_info device::get_device_info()
+		{
+			return hal_gl::device_internal::get_device_info();
+		}
+
 		void device::set_external_default_render_target( unsigned int rt )
 		{
 			hal_gl::device_internal::set_external_default_render_target( rt );

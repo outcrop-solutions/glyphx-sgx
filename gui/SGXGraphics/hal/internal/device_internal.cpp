@@ -37,6 +37,10 @@ namespace SynGlyphX
 			FT_Library freetype;
 			hal::vertex_format text_format;
 
+			std::string gl_vendor, gl_renderer, gl_version;
+
+			bool initialized = false;
+
 			const char* text_vert =
 				"#version 330 core\n"
 				"layout( std140 ) uniform shared_data\n"
@@ -69,6 +73,19 @@ namespace SynGlyphX
 				"}\n";
 		}
 
+		hal::device_info device_internal::get_device_info()
+		{
+			gl_vendor = initialized ? std::string( reinterpret_cast<const char*>( glGetString( GL_VENDOR ) ) ) : "uninitialized";
+			gl_renderer = initialized ? std::string( reinterpret_cast<const char*>( glGetString( GL_RENDERER ) ) ) : "uninitialized";
+			gl_version = initialized ? std::string( reinterpret_cast<const char*>( glGetString( GL_VERSION ) ) ) : "uninitialized";
+
+			GLint major, minor;
+			glGetIntegerv( GL_MAJOR_VERSION, &major );
+			glGetIntegerv( GL_MINOR_VERSION, &minor );
+
+			return hal::device_info{ initialized, gl_vendor.c_str(), gl_renderer.c_str(), gl_version.c_str(), major, minor };
+		}
+
 		bool device_internal::init()
 		{
 			glewExperimental = GL_TRUE;
@@ -94,6 +111,7 @@ namespace SynGlyphX
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 			text_format.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 			default_render_target = 0u;
+			initialized = true;
 			return true;
 		}
 
@@ -103,6 +121,7 @@ namespace SynGlyphX
 			FT_Done_FreeType( freetype );
 			delete default_context;
 			default_context = nullptr;
+			initialized = false;
 		}
 
 		void device_internal::end_frame()

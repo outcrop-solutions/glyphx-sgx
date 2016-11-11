@@ -15,6 +15,8 @@ namespace SynGlyphX
 			static bool init();
 			static void shutdown();
 
+			static device_info get_device_info();
+
 			static void set_external_default_render_target( unsigned int rt );	// horrible hack to deal with Qt's default render target
 
 			static void begin_frame();
