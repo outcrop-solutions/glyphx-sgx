@@ -18,6 +18,7 @@
 #include "helpdialog.h"
 #include <boost/uuid/uuid_io.hpp>
 #include <QtWidgets/QFormLayout>
+#include <QtWebEngineWidgets/QWebEngineView>
 #include "syncprogressdialog.h"
 
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
@@ -235,7 +236,7 @@ void HomePageWidget::CreateHelpWidget() {
 
 	QVBoxLayout* helpLayout = new QVBoxLayout(this);
 	helpLayout->setContentsMargins(0, 0, 0, 0);
-	helpLayout->addWidget(new SynGlyphX::HelpDialog(970, 850, helpWidget));
+	helpLayout->addWidget(SynGlyphX::createHelpDialog(970, 850, helpWidget));
 	helpWidget->setLayout(helpLayout);
 
 	mainLayout->addWidget(helpWidget, 0, 0, 0, 0);

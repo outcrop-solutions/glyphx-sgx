@@ -3,7 +3,6 @@
 rem This script is for copying 3rdParty\bin and other files to the directory where everything is built
 
 SET basedir=..\..\bin
-SET copyhelp=false
 SET antztemplate=ANTzTemplate
 SET antzzspacetemplate=ANTzzSpaceTemplate
 SET antzmactemplate=ANTzMacTemplate
@@ -14,18 +13,6 @@ SET shaders=shaders
 SET fonts=fonts
 SET textures=textures
 SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
-
-if "%1%." == "/h." (
-	SET copyhelp=true
-	if not "%2%." == "." (
-		SET basedir=%2
-	)
-) else if not "%1%." == "." (
-	SET basedir=%1
-	if "%2%." == "/h." (
-		SET copyhelp=true
-	)
-)
 
 if not exist %basedir% (mkdir %basedir%)
 
@@ -65,6 +52,7 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%fonts% %basedir%\%%p\%%c\%fonts%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%textures% %basedir%\%%p\%%c\%textures%
+		robocopy /z /e ..\..\Misc\Help %basedir%\%%p\%%c\help
 
 		mkdir %basedir%\%%p\%%c\jre
 		mkdir %basedir%\%%p\%%c\jre\bin
@@ -101,9 +89,4 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 
 		robocopy /z /e ..\tools\graphics\%%p\ %basedir%\%%p\%%c
 	)
-)
-
-if %copyhelp%==true (
-	mkdir "C:\ProgramData\SynGlyphX\Help"
-	robocopy /z /e ..\..\misc\Help "C:\ProgramData\SynGlyphX\Help"
 )

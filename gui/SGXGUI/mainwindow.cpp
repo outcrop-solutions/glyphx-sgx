@@ -14,6 +14,7 @@
 #include <QtWidgets/QUndoStack>
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QToolButton>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 namespace SynGlyphX {
 
@@ -266,7 +267,7 @@ namespace SynGlyphX {
 
 	void MainWindow::ShowTutorial() {
 
-		SingleWidgetDialog* helpDialog = new SingleWidgetDialog(QDialogButtonBox::StandardButton::Close, new SynGlyphX::HelpDialog(970, 920, this), this);
+		SingleWidgetDialog* helpDialog = new SingleWidgetDialog(QDialogButtonBox::StandardButton::Close, SynGlyphX::createHelpDialog( 970, 920, this ), this);
 		helpDialog->setWindowTitle(tr("Help"));
 		helpDialog->show();
 	}
