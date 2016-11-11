@@ -2,6 +2,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QtGlobal>
 #include <QtGui/QIcon>
+#include <QtCore/QDebug>
 
 namespace SynGlyphX {
 
@@ -71,8 +72,8 @@ namespace SynGlyphX {
 
 	bool GlyphBuilderApplication::IsGlyphEd() {
 
-		QString glyphEdDir = QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::applicationDirPath()) + "/GlyphEd";
-		return QDir(glyphEdDir).exists();
+		auto appfile = QFileInfo( QCoreApplication::applicationFilePath() ).fileName();
+		return appfile.contains( "GlyphEd" );
 	}
 
 } //namespace SynGlyphX
