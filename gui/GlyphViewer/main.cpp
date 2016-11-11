@@ -55,11 +55,6 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
 
-	// Note: there seems to be a Qt bug on Intel chipsets where Qt's internal shaders won't compile if you specifically
-	// request a 3.3 context (even in compat profile!), causing the app to crash on startup. Instead we'll use the
-	// default (which gets us the latest available compat profile and doesn't expose the bug, for reasons that are
-	// somewhat unclear to me). This unfortunately means we can only use Core profiles in testing-- hopefully future Qt
-	// or Intel graphics driver versions will fix this.
 	QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
 	fmt.setMajorVersion( 3 );
 	fmt.setMinorVersion( 3 );
@@ -74,7 +69,7 @@ int main(int argc, char *argv[])
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.8.03.0");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Viewer", "0.8.04.0");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
