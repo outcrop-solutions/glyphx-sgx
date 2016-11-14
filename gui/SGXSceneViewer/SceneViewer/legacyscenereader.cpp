@@ -150,7 +150,7 @@ namespace SynGlyphX
 			std::ifstream in( csv );
 			hal::debug::profile_timer timer;
 			unsigned int count = 0u;
-			while ( !in.eof() )
+			while ( in && !in.eof() )
 			{
 				std::string line;
 				std::getline( in, line );

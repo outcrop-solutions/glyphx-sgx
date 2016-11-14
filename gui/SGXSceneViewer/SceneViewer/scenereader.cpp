@@ -10,6 +10,7 @@
 #include <render/grid_renderer.h>
 #include "baseimagerenderer.h"
 #include "legacyglyphplacement.h"
+#include "glyphscene.h"
 
 namespace SynGlyphX
 {
@@ -98,7 +99,12 @@ namespace SynGlyphX
 
 	void SceneReader::read( const char* filename, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )
 	{
+		// TEMP, replace these with real geomDB and scene when this function is done!
+		GlyphGeometryDB db;
+		GlyphScene scene( db );
+
 		file = fopen( filename, "rb" );
+		hal::debug::profile_timer timer;
 		if ( file )
 		{
 			// First 4 bytes : magic number
@@ -108,7 +114,8 @@ namespace SynGlyphX
 			// First, get counts.
 			auto base_image_count = read_int();
 			auto node_count = read_int();
-			hal::debug::print( "Reading %i glyph elements and %i base images.", node_count, base_image_count );
+			auto link_count = 0u;	// TODO
+			hal::debug::print( "Reading %i glyph elements, %i links, and %i base images.", node_count, link_count, base_image_count );
 
 			// Next, read base images.
 			for ( auto i = 0; i < base_image_count; ++i )
@@ -139,6 +146,9 @@ namespace SynGlyphX
 				}
 			}
 
+			// Set up the scene...
+			scene.beginAdding( node_count + link_count );
+
 			// Then, read glyph elements.
 			for ( auto i = 0; i < node_count; ++i )
 			{
@@ -158,7 +168,15 @@ namespace SynGlyphX
 
 			}
 
+			// Read links.
+
+			// Read tags.
+
+			// Done adding.
+			scene.finishAdding();
+
 			fclose( file );
 		}
+		timer.print_ms_to_debug( "read binary scene" );
 	}
 }
