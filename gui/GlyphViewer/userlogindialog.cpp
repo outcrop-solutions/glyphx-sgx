@@ -53,8 +53,17 @@ namespace SynGlyphX {
 		formLayout->addRow(m_usernameLineEdit);
 		formLayout->addRow(password);
 		formLayout->addRow(m_passwordLineEdit);
-		formLayout->addRow(stayLoggedInCheckBox);
 
+		QLabel* chgpw = new QLabel(tr("<a href='http://localhost:9999/synglyphx/password.jsp'>Change Password</a>"), this);
+		chgpw->setOpenExternalLinks(true);
+		chgpw->setLayoutDirection(Qt::LeftToRight);
+		chgpw->setStyleSheet("font-size:14px;margin-left: 50px;");
+
+		QHBoxLayout* hboxlayout = new QHBoxLayout;
+		hboxlayout->addWidget(chgpw);
+		hboxlayout->addWidget(stayLoggedInCheckBox);
+
+		formLayout->addRow(hboxlayout);
 		layout->addLayout(formLayout);
 
 		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);

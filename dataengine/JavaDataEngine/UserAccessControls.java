@@ -2,6 +2,7 @@
 import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
+import java.security.MessageDigest;
 import synglyphx.user.User;
 import synglyphx.user.UserFile;
 import synglyphx.user.PathBuilder;
@@ -32,16 +33,23 @@ public class UserAccessControls {
 	
 	public static int validateCredentials(String username, String password){
 
+		if(username.contains(" ")){
+			return 0;
+		}
+		
 		try{
 		    String query = "SELECT * FROM ";
 		    query += "(UserAccounts INNER JOIN Institutions ON (UserAccounts.Institution=Institutions.ID)) ";
-		    query += "WHERE UserAccounts.Username='"+username+"' && UserAccounts.Password='"+password+"';";
+		    query += "WHERE UserAccounts.Username='"+username+"';";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 	        ResultSet rs = pstmt.executeQuery();
 
 	        if(rs.next()){
-	        	loggedInUser = new User(rs.getInt("UserAccounts.ID"),rs.getString("UserAccounts.Name"),rs.getInt("UserAccounts.Group"),rs.getTimestamp("UserAccounts.LastModified"));
-				loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
+	        	String pw = rs.getString("UserAccounts.Password");
+	        	if(pw.equals(password) || pw.equals(hashPassword(password))){
+	        		loggedInUser = new User(rs.getInt("UserAccounts.ID"),rs.getString("UserAccounts.Name"),rs.getInt("UserAccounts.Group"),rs.getTimestamp("UserAccounts.LastModified"));
+					loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
+				}
 			}
 			rs.close();
 			pstmt.close();
@@ -126,6 +134,21 @@ public class UserAccessControls {
 		}
 		pb.resetSharedVisualizationPaths(userFiles);
 	}
+
+	private static String hashPassword(String new_pw) throws Exception {
+
+  		MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+  		md.update(new_pw.getBytes());
+        byte[] byteData = md.digest();
+
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < byteData.length; i++) {
+         	sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
+  	}
 
 	public static void main(String [] args){
 

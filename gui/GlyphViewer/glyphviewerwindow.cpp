@@ -335,7 +335,9 @@ void GlyphViewerWindow::CreateMenus() {
 	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
 	m_helpMenu->insertSeparator(m_aboutBoxAction);
 
+#ifdef __APPLE__
 	menuBar()->addSeparator();
+#endif
 	SynGlyphX::MainWindow::CreateLoginMenu();
 
 }

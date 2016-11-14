@@ -84,8 +84,11 @@ namespace SynGlyphX {
 		QString de_version;
 		QMenu* m_viewMenu;
         QMenu* m_helpMenu;
-		//QMenuBar* userMenuBar;
+#ifdef WIN32
+		QMenuBar* userMenuBar;
+#elif __APPLE__
 		QMenu* m_userMenu;
+#endif
 		QMenu* m_loginMenu;
 
 		QMenu* m_editMenu;
