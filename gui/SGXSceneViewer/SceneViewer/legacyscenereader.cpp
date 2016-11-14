@@ -272,7 +272,6 @@ namespace SynGlyphX
 				columns.a = GetHeaderIndex( headers, "color_a" );
 				columns.geom = GetHeaderIndex( headers, "geometry" );
 				columns.topo = GetHeaderIndex( headers, "topo" );
-				columns.color_idx = GetHeaderIndex( headers, "color_index" );
 				columns.ratio = GetHeaderIndex( headers, "ratio" );
 				columns.rotate_rate_x = GetHeaderIndex( headers, "rotate_rate_x" );
 				columns.rotate_rate_y = GetHeaderIndex( headers, "rotate_rate_y" );
@@ -305,7 +304,6 @@ namespace SynGlyphX
 							data.pos = GetItemVec3( dataline, columns.x );
 							data.rot = GetItemVec3( dataline, columns.rx );
 							data.scale = GetItemVec3( dataline, columns.sx );
-							data.color_index = GetItemI( dataline, columns.color_idx );
 							data.geom_type = GetItemI( dataline, columns.geom );
 							data.topo = GetItemI( dataline, columns.topo );
 							data.ratio = GetItemF( dataline, columns.ratio );
@@ -378,36 +376,6 @@ namespace SynGlyphX
 								glyph_parent->setChild( glyphnode );
 							}
 							scene.add( glyphnode );
-						}
-						else if ( type == EntryType::BASE_IMAGE )
-						{
-							float cell_w = GetItemF( dataline, columns.grid_cell_width );
-							float cell_h = GetItemF( dataline, columns.grid_cell_height );
-							float cells_x = GetItemF( dataline, columns.grid_segments_x );
-							float cells_y = GetItemF( dataline, columns.grid_segments_y );
-							glm::vec2 size = glm::vec2( cell_w * cells_x, cell_h * cells_y );
-							glm::mat4 scale = glm::scale( glm::mat4(), GetItemVec3( dataline, columns.sx ) );
-							glm::mat4 translate = glm::translate( glm::mat4(), GetItemVec3( dataline, columns.x ) );
-							glm::vec3 rotatev( glm::radians( GetItemF( dataline, columns.rx ) ), glm::radians( GetItemF( dataline, columns.ry ) ), glm::radians( GetItemF( dataline, columns.rz ) ) );
-							auto rotate = glm::rotate( glm::mat4(), rotatev.y, glm::vec3( 0.f, 0.f, -1.f ) );
-							rotate = glm::rotate( rotate, rotatev.x, glm::vec3( -1.f, 0.f, 0.f ) );
-							rotate = glm::rotate( rotate, rotatev.z, glm::vec3( 0.f, 0.f, -1.f ) );
-							glm::vec4 grid_color = GetItemColor( dataline, columns.r );
-
-							unsigned int tex_id = static_cast<unsigned int>( GetItemI( dataline, columns.texture_id ) );
-							if ( tex_id != 0 )
-							{
-								hal::texture* tex = default_base_texture;
-								if ( tex_id > 1u )	// 1 = use default texture
-								{
-									auto offset_tex_id = tex_id - 2u;	// offset to account for 0 = none, 1 = default
-									if ( offset_tex_id < base_image_textures.size() ) tex = base_image_textures[offset_tex_id];
-								}
-								base_images.add( tex, translate * rotate * scale, size );
-							}
-
-							if ( cells_x >= 2 || cells_y >= 2 )
-								grids.add( translate * rotate * scale, size, cells_x, cells_y, grid_color );
 						}
 						else if ( type == EntryType::LINK )
 						{

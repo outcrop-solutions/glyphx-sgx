@@ -12,6 +12,8 @@ import synglyphx.util.BaseObject;
 import synglyphx.glyph.CoordinateMap;
 import synglyphx.link.LinkTemplate;
 import synglyphx.util.ErrorHandler;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class NewCSVWriter {
 	
@@ -121,7 +123,6 @@ public class NewCSVWriter {
 		nodeName = "antz.csv";
 		tagName = "antztag.csv";
 
-		createBaseObjectStrings(app);
 		System.out.println("entering try catch");
 
 		try{
@@ -131,6 +132,13 @@ public class NewCSVWriter {
 			//FileWriter f = new FileWriter("C:/Users/Bryan/Desktop/Test on Antz/usr/csv/ANTzTag0001.csv"); 
 			FileWriter f = new FileWriter(outDir+tagName);  
 			BufferedWriter bfw = new BufferedWriter(f);
+
+//			File fbinout = new File(outDir+testbin);
+//			fbinout.createNewFile(); // if file already exists will do nothing 
+			FileOutputStream oFile = new FileOutputStream(outDir+"glyphs.sgc", false); 
+			BufferedOutputStream bufout = new BufferedOutputStream(oFile);
+			DataOutputStream data = new DataOutputStream(bufout);
+			data.writeInt(0xa042bc3f);	// magic number
 
 			Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
 			noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"/nourl.html";
@@ -151,14 +159,70 @@ public class NewCSVWriter {
 	        //bf.write(line4);
 	        //bf.write(line5);
 	        
-	        for(int i=0; i < baseObjectLines.size(); i++){
-	        	bf.write(baseObjectLines.get(i));
-	        }
-
-	        int global_offset = 5+baseObjectLines.size();
+	        int global_offset = 5;
 
 	        Logger.getInstance().add(String.valueOf(nodeCount)+" nodes printing...");
 
+			// write base image count
+	        data.writeInt( base_objects.size() );
+
+			// count glyph nodes and write result
+	        int nodes = 0;
+	        boolean pr = true;
+	        int froot = 1;
+	        for(int j = 1; j< nodeCount; j++)
+	        {
+	        	Node n = allNodes.get(j);
+	        	String xyz = "";
+	        	if(rootCoords.get(froot).toMerge()){
+	        		xyz = String.valueOf(n.getX())+String.valueOf(n.getY())+String.valueOf(n.getZ());
+	        		if(rootCoords.get(froot).containsXYZ(xyz)){
+	        			if(rootCoords.get(froot).getFirstRootID(xyz) != j){
+	        				pr = false;
+	        			}	        		}
+	        	}
+	        	if(pr && isScaleGTZero(n)){
+	        		++nodes;
+	        	}
+	        }
+	        data.writeInt( nodes );
+
+	        // write base images
+			boolean world = true;
+			int offset = 2;
+			File ftest = new File(imageDir);
+			if(ftest.exists()){world = false;}	// todo: comment this. what is it for?
+			for(int i = 0; i < base_objects.size(); ++i)
+			{
+				BaseObject bo = base_objects.get(i);
+				String[] color = bo.getGridColor();
+				int number = i + offset;
+				if(i == 0 && (bo.getName().equals("World") || (bo.getType().equals("Downloaded Map") && world))){number = 1;offset = 1;}
+
+				// write texture id
+				data.writeInt( number );
+
+				// write transform (todo: why are these stored as strings?! slow af)
+				data.writeFloat( Float.parseFloat( bo.getPosition( 0 ) ) );
+				data.writeFloat( Float.parseFloat( bo.getPosition( 1 ) ) );
+				data.writeFloat( Float.parseFloat( bo.getPosition( 2 ) ) );
+				data.writeFloat( Float.parseFloat( bo.getRotation( 0 ) ) );
+				data.writeFloat( Float.parseFloat( bo.getRotation( 1 ) ) );
+				data.writeFloat( Float.parseFloat( bo.getRotation( 2 ) ) );
+
+				// write color
+				data.writeInt( Integer.parseInt( color[0] ) );
+				data.writeInt( Integer.parseInt( color[1] ) );
+				data.writeInt( Integer.parseInt( color[2] ) );
+
+				// write grid parameters
+				data.writeFloat( (float)bo.getGridLineCount( 0 ) );
+				data.writeFloat( (float)bo.getGridLineCount( 1 ) );
+				data.writeInt( bo.getGridSegmentsX() );
+				data.writeInt( bo.getGridSegmentsY() );
+			}
+
+			// write glyph nodes
 	        boolean print = true;
 	        String lastRootXYZ = "";
 	        int firstRoot = 1;
@@ -182,6 +246,10 @@ public class NewCSVWriter {
 	        		}
 	        	}
 	        	if(print && isScaleGTZero(temp)){
+
+	        		data.writeInt( i + global_offset );
+
+
 			        //tag += String.valueOf(i-1) +",";
 			        tag += String.valueOf(i+global_offset) +",";
 			        //tag += "0,";
@@ -192,11 +260,14 @@ public class NewCSVWriter {
 			        line += String.valueOf(i+global_offset) +",";//id
 			        if(temp.getParent()==0){
 			        	line += String.valueOf(temp.getParent()) +",";//parent_id
+			        	data.writeInt( temp.getParent() );
 			        }else{
 			        	if(rotation_lookup.containsKey(temp.getParent()) && rootCoords.get(firstRoot).toMerge()){
 			        		line += String.valueOf(rootCoords.get(firstRoot).getFirstRootID(lastRootXYZ)+global_offset) +",";//parent_id
+			        		data.writeInt(rootCoords.get(firstRoot).getFirstRootID(lastRootXYZ)+global_offset);
 			        	}else{
 			        		line += String.valueOf(temp.getParent()+global_offset) +",";//parent_id
+			        		data.writeInt(temp.getParent()+global_offset);
 			        	}
 			        }
 			        line += "0,";					//child_id
@@ -208,35 +279,62 @@ public class NewCSVWriter {
 			        }
 			        //TRANSLATE
 			        if(rootCoords.get(firstRoot).toMerge() && rotation_lookup.containsKey(temp.getParent())){
-			        	if(rotation_lookup.get(temp.getParent()) == 0){line += String.valueOf(temp.getX())+",";}//translate_x
-			        	else{line += String.valueOf(rotation_lookup.get(temp.getParent()))+",";}//translate_x
+			        	if(rotation_lookup.get(temp.getParent()) == 0){
+				        	line += String.valueOf(temp.getX())+",";//translate_x
+				        	data.writeFloat((float)temp.getX());
+				        }
+				        else
+				        {
+				        	line += String.valueOf(rotation_lookup.get(temp.getParent()))+",";//translate_x
+				        	data.writeFloat((float)rotation_lookup.get(temp.getParent()).doubleValue());
+				        }
 			        }else{
 			        	line += String.valueOf(temp.getX())+",";//translate_x
+			        	data.writeFloat((float)temp.getX());
 			        }
 			        line += String.valueOf(temp.getY())+",";//translate_y
 			        line += String.valueOf(temp.getZ())+",";//translate_z
+			        data.writeFloat((float)temp.getY());
+			        data.writeFloat((float)temp.getZ());
 			        //ROTATE
 			        line += String.valueOf(temp.getRX())+",";//rotate_x
 			        line += String.valueOf(temp.getRY())+",";//rotate_y
 			        line += String.valueOf(temp.getRZ())+",";//rotate_z
+			        data.writeFloat((float)temp.getRX());
+			        data.writeFloat((float)temp.getRY());
+			        data.writeFloat((float)temp.getRZ());
 			        //SCALE
 			        line += String.valueOf(temp.getSX())+",";//scale_x
 			        line += String.valueOf(temp.getSY())+",";//scale_y
 			        line += String.valueOf(temp.getSZ())+",";//scale_z
+			        data.writeFloat((float)temp.getSX());
+			        data.writeFloat((float)temp.getSY());
+			        data.writeFloat((float)temp.getSZ());
 			        //COLOR
 			        line += String.valueOf(temp.getCR())+",";//color_r
 			        line += String.valueOf(temp.getCG())+",";//color_g
 			        line += String.valueOf(temp.getCB())+",";//color_b
 			        line += String.valueOf(temp.getAlpha())+",";//color_a
+			        data.writeInt(temp.getCR());
+			        data.writeInt(temp.getCG());
+			        data.writeInt(temp.getCB());
+			        data.writeInt(temp.getAlpha());
 
 			        line += String.valueOf(temp.getGeo())+",";//geometry
+			        data.writeInt(temp.getGeo());
 			        line += String.valueOf(temp.getTopo())+",";//topo
+			        data.writeInt(temp.getTopo());
 			        line += String.valueOf(ci.getIndex(temp.getCR(),temp.getCG(),temp.getCB()) +",");//color_index
 			        line += String.valueOf(temp.getRatio())+",";//ratio
+			        data.writeFloat((float)temp.getRatio().doubleValue());
+
 			        //ROTATE RATE
 			        line += String.valueOf(temp.getRRX())+",";//rotate_rate_x
 			        line += String.valueOf(temp.getRRY())+",";//rotate_rate_y
 			        line += String.valueOf(temp.getRRZ())+",";//rotate_rate_z
+			        data.writeFloat((float)temp.getRRX());
+			        data.writeFloat((float)temp.getRRY());
+			        data.writeFloat((float)temp.getRRZ());
 			        
 			        line += "0,"; //aux_a_x
 			        line += "0,"; //aux_a_y
@@ -261,6 +359,10 @@ public class NewCSVWriter {
 
 	        bf.close();
 	        bfw.close();
+
+			data.close();
+			bufout.close();
+
 	        ErrorHandler.getInstance().csvWriterCompleted();
 	    }catch(Exception e){
 	        try{
@@ -443,63 +545,5 @@ public class NewCSVWriter {
 	        }catch(Exception ex){}
 	        e.printStackTrace();
 	    }
-	}
-
-	public void createBaseObjectStrings(String app){
-
-		baseObjectLines = new ArrayList<String>();
-		String parentID = "0";
-		String branchLevel = "0";
-		String childCount = String.valueOf(base_objects.size());
-		double[] logo_pos = new double[2];
-		boolean world = true;
-		int offset = 2;
-		File f = new File(imageDir);
-		if(f.exists()){world = false;}
-		//Logger.getInstance().add(String.valueOf(world));
-
-		for(int i = 0; i < base_objects.size(); i++){
-			String out = "";
-			BaseObject bo = base_objects.get(i);
-			String[] color = bo.getGridColor();
-			String number = String.valueOf(i+offset);
-			if(i == 0 && (bo.getName().equals("World") || (bo.getType().equals("Downloaded Map") && world))){number = "1";offset = 1;}
-
-			out += String.valueOf(i+6)+","+parentID+",0,6,"+childCount+","; //id, parent_id, child_id, type, child_count
-			out += bo.getPosition(0)+","+bo.getPosition(1)+","+bo.getPosition(2)+","; // translate_x, translate_y, translate_z
-			out += bo.getRotation(0)+","+bo.getRotation(1)+","+bo.getRotation(2)+","; // rotate_x, rotate_y, rotate_z
-			out += "1,1,1,"; // scale_x, scale_y, scale_z
-			out += color[0]+","+color[1]+","+color[2]+",255,"; //color r, g, b, a
-			out += "0,0,0,0.1,"; //geometry, topo, color_index, ratio
-			out += "0,0,0,"; // rotate_rate_x, rotate_rate_y, rotate_rate_z
-			out += bo.getGLCount(0)+","+bo.getGLCount(1)+","+bo.getGLSegX()+","+bo.getGLSegY()+","+number; // aux_a_x, aux_b_y, segments_x, segments_y, texture_id;
-			out += "\n";
-
-			baseObjectLines.add(out);
-			parentID = "6";
-			branchLevel = "1";
-			childCount = "0";
-			if(i == 0){
-				logo_pos[0] = bo.getLogoPos()[0];
-				logo_pos[1] = bo.getLogoPos()[1];
-			}
-		}
-
-		if(app.equals("GlyphViewer")){
-			BaseObject bo = base_objects.get(0);
-			if(bo.getType().equals("Downloaded Map")){
-				try{
-					FileWriter file = new FileWriter(outDir+"DownloadedImageSpecs.txt");
-					BufferedWriter bf = new BufferedWriter(file);
-					bf.write(bo.getUpdateCheckString());
-					bf.close();
-				}catch(Exception e){
-			        try{
-			            e.printStackTrace(ErrorHandler.getInstance().addError());
-			        }catch(Exception ex){}
-			        e.printStackTrace();
-			    }
-			}
-		}
 	}
 }

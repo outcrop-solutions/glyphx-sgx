@@ -204,19 +204,16 @@ namespace SynGlyphX
 
 	void GlyphScene::toggleExplode( unsigned int group )
 	{
-		if ( group < groups.size() )
-		{
-			active_group = group;
-			if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-				explode( group );
-			else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
-				collapse( group );
-		}
+		active_group = group;
+		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+			explode( group );
+		else if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
+			collapse( group );
 	}
 
 	void GlyphScene::collapse( unsigned int group )
 	{
-		if ( group < groups.size() )
+		if ( group <= groups.size() && group > 0u )
 		{
 			if ( explode_state == group_state::exploded || explode_state == group_state::exploding )
 				explode_state = group_state::retracting;
@@ -235,12 +232,9 @@ namespace SynGlyphX
 
 	void GlyphScene::explode( unsigned int group )
 	{
-		if ( group < groups.size() )
-		{
-			active_group = group;
-			if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
-				explode_state = group_state::exploding;
-		}
+		active_group = group;
+		if ( explode_state == group_state::retracted || explode_state == group_state::retracting )
+			explode_state = group_state::exploding;
 	}
 
 	void GlyphScene::setSelected( const Glyph3DNode* glyph )

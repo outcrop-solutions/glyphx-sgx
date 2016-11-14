@@ -814,7 +814,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
 		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
 		SGX_BEGIN_PROFILE(loadLegacyScene);
-		m_viewer->loadLegacyScene( outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), images );
+
+		m_viewer->loadScene( ( localOutputDir + "glyphs.sgc" ).toStdString().c_str(), images );
+		m_viewer->loadLegacyScene( outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str() );
 		SGX_END_PROFILE(loadLegacyScene);
 		QStringList qList;
 		for (unsigned int i = 0; i < images.size(); i++){

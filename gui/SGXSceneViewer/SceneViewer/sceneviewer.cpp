@@ -30,6 +30,7 @@
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
 #include "superimposedgroupmanager.h"
+#include "scenereader.h"
 
 //temp
 #include <QtCore/qitemselectionmodel.h>
@@ -146,9 +147,9 @@ namespace SynGlyphX
 			hal::device::shutdown();
 	}
 
-	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile, std::vector<std::string> baseImages )
+	void SceneViewer::loadScene( const char* file, std::vector<std::string> baseImages )
 	{
-		hal::debug::profile_timer timer;
+		UNREFERENCED_PARAMETER( file );
 
 		makeCurrent();
 
@@ -165,6 +166,14 @@ namespace SynGlyphX
 			}
 			base_textures.push_back( texture );
 		}
+
+		SceneReader r;
+		r.read( file, *base_images, base_textures, default_base_texture, *grids );
+	}
+
+	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile )
+	{
+		makeCurrent();
 
 		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 		resetCamera();

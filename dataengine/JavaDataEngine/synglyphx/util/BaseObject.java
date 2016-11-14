@@ -154,12 +154,36 @@ public class BaseObject {
 		return "0";
 	}
 
+	public double getGridLineCount(int i){
+
+		if(bestfit.equals("false")){
+			if(i == 0){
+				return gridLineCount[1];
+			}else if(i == 1){
+				return gridLineCount[0];
+			}
+		}else{
+			if(i == 0 || i == 1){
+				return gridLineCount[i];
+			}
+		}
+		return 0;
+	}
+
 	public String getGLSegX(){
 		return String.valueOf(gridSegments[1]);
 	}
 
 	public String getGLSegY(){
 		return String.valueOf(gridSegments[0]);
+	}
+
+	public int getGridSegmentsX(){
+		return gridSegments[1];
+	}
+
+	public int getGridSegmentsY(){
+		return gridSegments[0];
 	}
 
 	public BoundingBox getBoundingBox(){
