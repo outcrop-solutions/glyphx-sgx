@@ -16,10 +16,11 @@ namespace SynGlyphX
 	class SceneReader
 	{
 	public:
-		void read( const char* filename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids );
+		void read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids );
 	private:
 		void read_base_image( BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids );
 		void read_glyph_element(GlyphScene& scene);
+		void read_link( GlyphScene& scene );
 		
 		int read_int();
 		float read_float();
@@ -30,6 +31,6 @@ namespace SynGlyphX
 		FILE* file;
 
 		unsigned int root_count;
-		int next_filtering_index;
+		int next_filtering_index, next_id;
 	};
 }

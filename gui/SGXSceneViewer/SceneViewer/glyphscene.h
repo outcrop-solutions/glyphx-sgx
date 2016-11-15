@@ -99,6 +99,8 @@ namespace SynGlyphX
 		void explode( unsigned int group );
 		void collapse( unsigned int group );
 
+		const GlyphGeometryDB& getGeomDB() { return db; }
+
 		static const unsigned int NO_GROUP = 0u;
 
 	private:

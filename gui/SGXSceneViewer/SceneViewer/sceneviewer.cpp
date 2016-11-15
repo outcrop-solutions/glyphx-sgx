@@ -147,10 +147,8 @@ namespace SynGlyphX
 			hal::device::shutdown();
 	}
 
-	void SceneViewer::loadScene( const char* file, std::vector<std::string> baseImages )
+	void SceneViewer::loadScene( const char* sceneFile, const char* countFile, std::vector<std::string> baseImages )
 	{
-		UNREFERENCED_PARAMETER( file );
-
 		hal::debug::profile_timer timer;
 
 		makeCurrent();
@@ -170,7 +168,7 @@ namespace SynGlyphX
 		}
 
 		SceneReader r;
-		r.read( file, *scene, *base_images, base_textures, default_base_texture, *grids );
+		r.read( sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids );
 
 		resetCamera();
 

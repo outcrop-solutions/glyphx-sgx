@@ -133,8 +133,6 @@ public class NewCSVWriter {
 			FileWriter f = new FileWriter(outDir+tagName);  
 			BufferedWriter bfw = new BufferedWriter(f);
 
-//			File fbinout = new File(outDir+testbin);
-//			fbinout.createNewFile(); // if file already exists will do nothing 
 			FileOutputStream oFile = new FileOutputStream(outDir+"glyphs.sgc", false); 
 			BufferedOutputStream bufout = new BufferedOutputStream(oFile);
 			DataOutputStream data = new DataOutputStream(bufout);
@@ -160,32 +158,9 @@ public class NewCSVWriter {
 	        //bf.write(line5);
 	        
 	        int global_offset = 5;
+	        int glyph_node_count = 0, base_image_count = 0, link_count = 0, tag_count = 0;
 
 	        Logger.getInstance().add(String.valueOf(nodeCount)+" nodes printing...");
-
-			// write base image count
-	        data.writeInt( base_objects.size() );
-
-			// count glyph nodes and write result
-	        int nodes = 0;
-	        boolean pr = true;
-	        int froot = 1;
-	        for(int j = 1; j< nodeCount; j++)
-	        {
-	        	Node n = allNodes.get(j);
-	        	String xyz = "";
-	        	if(rootCoords.get(froot).toMerge()){
-	        		xyz = String.valueOf(n.getX())+String.valueOf(n.getY())+String.valueOf(n.getZ());
-	        		if(rootCoords.get(froot).containsXYZ(xyz)){
-	        			if(rootCoords.get(froot).getFirstRootID(xyz) != j){
-	        				pr = false;
-	        			}	        		}
-	        	}
-	        	if(pr && isScaleGTZero(n)){
-	        		++nodes;
-	        	}
-	        }
-	        data.writeInt( nodes );
 
 	        // write base images
 			boolean world = true;
@@ -220,6 +195,8 @@ public class NewCSVWriter {
 				data.writeFloat( (float)bo.getGridLineCount( 1 ) );
 				data.writeInt( bo.getGridSegmentsX() );
 				data.writeInt( bo.getGridSegmentsY() );
+
+				++base_image_count;
 			}
 
 			// write glyph nodes
@@ -228,8 +205,7 @@ public class NewCSVWriter {
 	        int firstRoot = 1;
 	        excluded = new ArrayList<Integer>();
 	        HashMap<Integer,Double> rotation_lookup = new HashMap<Integer,Double>();
-	        int i;
-	        for(i = 1; i< nodeCount; i++){
+	        for(int i = 1; i< nodeCount; i++){
 	        	String line = "";
 	        	String tag = "";
 	        	Node temp = allNodes.get(i);
@@ -345,6 +321,8 @@ public class NewCSVWriter {
 
 			        bf.write(line);
 			        bfw.write(tag);
+
+			        ++glyph_node_count;
 			    }else{
 			    	excluded.add(i);
 			    }
@@ -355,13 +333,61 @@ public class NewCSVWriter {
 		    	print = true;
 	        }
 
-	        printLinks(bf, bfw, i, global_offset);
+			for(Map.Entry<Integer, LinkTemplate> entry : link_temps.entrySet()){
+				ArrayList<Integer> parent_ids = entry.getValue().linkParentID();
+				ArrayList<Integer> child_ids = entry.getValue().linkChildID();
+				int link_index = 0;
+				for(int i = 0; i < entry.getValue().linkCount(); i++){
+					int p_id = evaluateID(parent_ids.get(link_index));
+					int c_id = evaluateID(child_ids.get(link_index));
+		
+					if(p_id != 0 && c_id != 0)
+					{
+						data.writeInt(parent_ids.get(link_index)+global_offset);	//id0
+						data.writeInt(child_ids.get(link_index)+global_offset);	//id1
+
+						data.writeInt(Integer.parseInt(entry.getValue().getGeo()));
+
+						int cr, cg, cb;
+						if(entry.getValue().inheritColor()){ //Capture color from parent
+							Node temp = allNodes.get(parent_ids.get(link_index));
+							cr = temp.getCR();
+							cg = temp.getCG();
+							cb = temp.getCB();
+						}
+						else
+						{
+							cr = Integer.parseInt(entry.getValue().getCR());
+							cg = Integer.parseInt(entry.getValue().getCG());
+							cb = Integer.parseInt(entry.getValue().getCB());
+						}
+						data.writeInt(cr);
+						data.writeInt(cg);
+						data.writeInt(cb);
+						data.writeInt(Integer.parseInt(entry.getValue().getAlpha()));
+
+						++link_count;
+					}
+					link_index++;
+				}
+			}
 
 	        bf.close();
 	        bfw.close();
 
 			data.close();
 			bufout.close();
+
+			// Write out our counts to make pre allocating storage easier on the C++ side.
+			FileOutputStream countfile = new FileOutputStream(outDir+"glyphs.sgn", false); 
+			BufferedOutputStream countfileout = new BufferedOutputStream(countfile);
+			DataOutputStream countdata = new DataOutputStream(countfileout);
+			countdata.writeInt(0x294ee1ac);	// magic number
+			countdata.writeInt(base_image_count);
+			countdata.writeInt(glyph_node_count);
+			countdata.writeInt(link_count);
+			countdata.writeInt(tag_count);
+			countdata.close();
 
 	        ErrorHandler.getInstance().csvWriterCompleted();
 	    }catch(Exception e){
@@ -378,52 +404,6 @@ public class NewCSVWriter {
 		}
 		else{
 			return id;
-		}
-	}
-
-	public void printLinks(BufferedWriter bf, BufferedWriter bfw, int index, int offset) throws IOException {
-
-		for(Map.Entry<Integer, LinkTemplate> entry : link_temps.entrySet()){
-			ArrayList<Integer> parent_ids = entry.getValue().linkParentID();
-			ArrayList<Integer> child_ids = entry.getValue().linkChildID();
-			int link_index = 0;
-			index += offset-1;
-			System.out.println(offset);
-			for(int i = 0; i < entry.getValue().linkCount(); i++){
-				index++;
-				int p_id = evaluateID(parent_ids.get(link_index));
-				int c_id = evaluateID(child_ids.get(link_index));
-	
-				if(p_id != 0 && c_id != 0){
-					String out = ""; 
-					String key_node_id = String.valueOf(parent_ids.get(link_index)+offset);
-					String value_node_id = String.valueOf(child_ids.get(link_index)+offset);
-					String color_r = entry.getValue().getCR();
-					String color_g = entry.getValue().getCG();
-					String color_b = entry.getValue().getCB();
-					if(entry.getValue().inheritColor()){ //Capture color from parent
-						Node temp = allNodes.get(parent_ids.get(link_index));
-						color_r = String.valueOf(temp.getCR());
-						color_g = String.valueOf(temp.getCG());
-						color_b = String.valueOf(temp.getCB());
-					}
-					//System.out.println(key_node_id+", "+value_node_id);
-
-					out += index+","+key_node_id+","+value_node_id+",7,0,"; //id, parent_id, child_id, type, child_count
-					out += "0,0,0,"; // translate_x, translate_y, translate_z
-					out += "0,0,0,"; // rotate_x, rotate_y, rotate_z
-					out += "1,1,1,"; // scale_x, scale_y, scale_z
-					out += color_r+","+color_g+","+color_b+","+entry.getValue().getAlpha()+","; //color r, g, b, a
-					out += entry.getValue().getGeo()+",0,0,0.1,"; //geometry, topo, color_index, ratio
-					out += "0,0,0,"; // rotate_rate_x, rotate_rate_y, rotate_rate_z
-					out += "0,0,16,16,0"; // aux_a_x, aux_b_y, segments_x, segments_y, texture_id;
-					out += "\n";
-
-					bf.write(out);
-					bfw.write(entry.getValue().outputTag(index, index, true));
-				}
-				link_index++;
-			}
 		}
 	}
 

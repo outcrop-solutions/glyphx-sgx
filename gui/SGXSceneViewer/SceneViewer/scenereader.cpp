@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cassert>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <endian.h>
 #include <hal/hal.h>
 #include <render/grid_renderer.h>
@@ -16,7 +18,8 @@ namespace SynGlyphX
 {
 	namespace
 	{
-		const uint32_t MAGIC_NUMBER = 0xa042bc3f;
+		const uint32_t SCENE_FILE_MAGIC_NUMBER = 0xa042bc3f;
+		const uint32_t COUNT_FILE_MAGIC_NUMBER = 0x294ee1ac;
 
 		template<typename T> T read32_endian( FILE* f )
 		{
@@ -175,7 +178,7 @@ namespace SynGlyphX
 		glm::vec4 result;
 		result.x = static_cast<float>( read_int() / 255.f );
 		result.y = static_cast<float>( read_int() / 255.f );
-		result.z = static_cast<float>( read_int() / 255.f ); 
+		result.z = static_cast<float>( read_int() / 255.f );
 		result.a = 1.f;
 		return result;
 	}
@@ -300,46 +303,92 @@ namespace SynGlyphX
 			glyph_parent->setChild( glyphnode );
 		}
 		scene.add( glyphnode );
+
+		if ( data.id >= next_id )
+			next_id = data.id + 1;
 	}
 
-	void SceneReader::read( const char* filename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )
+	void SceneReader::read_link( GlyphScene& scene )
+	{
+		int id0 = read_int();
+		int id1 = read_int();
+		auto* glyph0 = scene.getGlyph3D( id0 );
+		auto* glyph1 = scene.getGlyph3D( id1 );
+
+		auto geom_type = read_int();
+		glm::vec4 color = read_color();
+		const float thickness = 0.1f;
+
+		LinkProfile profile = ( geom_type == int( GeomType::CYLINDER ) ) ? LinkProfile::Circle : LinkProfile::Square;
+		hal::debug::_assert( glyph0 && glyph1, "can't find glyph referenced by link" );
+
+		if ( glyph0 && glyph1 )
+		{
+			// need linked glyphs to awwwhave up-to-date transforms so we know where to put the link
+			glyph0->getRootParent()->updateCachedTransforms( scene.getGeomDB() );
+			glyph1->getRootParent()->updateCachedTransforms( scene.getGeomDB() );
+			auto pt0 = glyph0->getCachedPosition();
+			auto pt1 = glyph1->getCachedPosition();
+			glm::vec3 origin = ( pt0 + pt1 ) * 0.5f;
+			auto translate = glm::translate( glm::mat4(), origin );
+			auto direction = glm::normalize( pt1 - pt0 );
+			auto up = glm::vec3( 0.f, 0.f, 1.f );
+			// workaround for glm::orientation glitch when direction is almost but not QUITE the same as up
+			// (oddly it works fine if they're exactly the same)
+			if ( fabs( glm::dot( direction, up ) ) > 0.9999f ) direction = up;
+			auto rotate = glm::orientation( direction, up );
+			float length = glm::length( pt0 - pt1 );
+			auto scale = glm::scale( glm::mat4(), glm::vec3( thickness, thickness, length ) );
+
+			Glyph3DNode* linknode = scene.allocGlyph( next_id++, true, Glyph3DNodeType::Link );
+			linknode->setCachedTransform( translate * rotate * scale );
+			linknode->setVisualScale( glm::vec3( 1.f, 1.f, 1.f ) );
+			linknode->setColor( color );
+			linknode->setGeometry( profile == LinkProfile::Circle ? GlyphShape::Link_Cylinder : GlyphShape::Link_Cube );
+			linknode->setLinkTargets( glyph0, glyph1 );
+			scene.add( linknode );
+		}
+	}
+
+	void SceneReader::read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )
 	{
 		root_count = 0u;
 		int next_filtering_index = 0;
+		int next_id = 0;
 
-		file = fopen( filename, "rb" );
 		hal::debug::profile_timer timer;
-		if ( file )
+
+		FILE* countfile = fopen( countfilename, "rb" );
+
+		file = fopen( scenefilename, "rb" );
+		if ( countfile && file )
 		{
-			// First 4 bytes : magic number
+			// Read counts from count file.
+			int count_magic = read32_endian<int>( countfile );
+			assert( count_magic == COUNT_FILE_MAGIC_NUMBER );
+			int base_image_count = read32_endian<int>( countfile );
+			int glyph_count = read32_endian<int>( countfile );
+			int link_count = read32_endian<int>( countfile );
+			int tag_count = read32_endian<int>( countfile );
+
 			auto magic = read32_endian<int>( file );
-			assert( magic == MAGIC_NUMBER );
+			assert( magic == SCENE_FILE_MAGIC_NUMBER );
 
-			// First, get counts.
-			auto base_image_count = read_int();
-			auto node_count = read_int();
-			auto link_count = 0u;	// TODO
-			hal::debug::print( "Reading %i glyph elements, %i links, and %i base images.", node_count, link_count, base_image_count );
+			scene.beginAdding( glyph_count + link_count );
 
-			// Next, read base images.
-			for ( auto i = 0; i < base_image_count; ++i )
+			for ( int i = 0; i < base_image_count; ++i )
 				read_base_image( base_images, base_image_textures, default_base_texture, grids );
-
-			// Set up the scene...
-			scene.beginAdding( node_count + link_count );
-
-			// Then, read glyph elements.
-			for ( auto i = 0; i < node_count; ++i )
+			for ( int i = 0; i < glyph_count; ++i )
 				read_glyph_element( scene );
-
-			// Read links.
-
-			// Read tags.
+			for ( int i = 0; i < link_count; ++i )
+				read_link( scene );
 
 			// Done adding; finish scene setup and clean up.
 			scene.finishAdding();
-			fclose( file );
-			timer.print_ms_to_debug( "read binary scene with %i objects (%i roots)", node_count, root_count );
+			timer.print_ms_to_debug( "read binary scene with %i objects (%i roots), %i links", glyph_count, root_count, link_count );
 		}
+
+		if ( file ) fclose( file );
+		if ( countfile ) fclose( countfile );
 	}
 }
