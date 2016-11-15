@@ -54,7 +54,7 @@ namespace SynGlyphX {
 		formLayout->addRow(password);
 		formLayout->addRow(m_passwordLineEdit);
 
-		QLabel* chgpw = new QLabel(tr("<a href='http://localhost:9999/synglyphx/password.jsp'>Change Password</a>"), this);
+		QLabel* chgpw = new QLabel(tr("<a href='http://sample-env.zccmpffgqr.us-west-2.elasticbeanstalk.com/password.jsp'>Change Password</a>"), this);
 		chgpw->setOpenExternalLinks(true);
 		chgpw->setLayoutDirection(Qt::LeftToRight);
 		chgpw->setStyleSheet("font-size:14px;margin-left: 50px;");
