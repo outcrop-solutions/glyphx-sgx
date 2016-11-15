@@ -151,6 +151,8 @@ namespace SynGlyphX
 	{
 		UNREFERENCED_PARAMETER( file );
 
+		hal::debug::profile_timer timer;
+
 		makeCurrent();
 
 		clearScene();
@@ -179,7 +181,7 @@ namespace SynGlyphX
 			group_manager->create( group_idx, pos, radius );
 		} );
 
-		timer.print_ms_to_debug( "full legacy scene read" );
+		timer.print_ms_to_debug( "full scene read" );
 	}
 
 	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile )

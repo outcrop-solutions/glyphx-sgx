@@ -161,30 +161,33 @@ namespace SynGlyphX
 	glm::vec4 SceneReader::read_color()
 	{
 		// colors are stored as integers, read and normalize to float
-		return glm::vec4(
-			static_cast<float>( read_int() / 255.f ),
-			static_cast<float>( read_int() / 255.f ),
-			static_cast<float>( read_int() / 255.f ),
-			static_cast<float>( read_int() / 255.f ) );
+		glm::vec4 result;
+		result.x = static_cast<float>( read_int() / 255.f );
+		result.y = static_cast<float>( read_int() / 255.f );
+		result.z = static_cast<float>( read_int() / 255.f );
+		result.a = static_cast<float>( read_int() / 255.f );
+		return result;
 	}
 
 	glm::vec4 SceneReader::read_solid_color()
 	{
 		// colors are stored as integers, read and normalize to float
-		return glm::vec4(
-			static_cast<float>( read_int() / 255.f ),
-			static_cast<float>( read_int() / 255.f ),
-			static_cast<float>( read_int() / 255.f ),
-			1.f );
+		glm::vec4 result;
+		result.x = static_cast<float>( read_int() / 255.f );
+		result.y = static_cast<float>( read_int() / 255.f );
+		result.z = static_cast<float>( read_int() / 255.f ); 
+		result.a = 1.f;
+		return result;
 	}
 
 	glm::vec3 SceneReader::read_vec3()
 	{
 		// colors are stored as integers, read and normalize to float
-		return glm::vec3(
-			static_cast<float>( read_float() ),
-			static_cast<float>( read_float() ),
-			static_cast<float>( read_float() ) );
+		glm::vec3 result;
+		result.r = static_cast<float>( read_float() );
+		result.g = static_cast<float>( read_float() );
+		result.b = static_cast<float>( read_float() );
+		return result;
 	}
 
 	void SceneReader::read_base_image( BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )

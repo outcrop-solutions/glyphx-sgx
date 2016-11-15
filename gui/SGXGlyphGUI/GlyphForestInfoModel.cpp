@@ -122,6 +122,9 @@ namespace SynGlyphX {
 
 	void GlyphForestInfoModel::LoadGlyphForestInfoLegacy(const QString& nodeCSVFile, const QString& tagCSVFile) {
 
+		// todo: replace this with either reading the data from the new-format file or getting the info from
+		// the glyphscene somehow
+
 		beginResetModel();
 		Clear();
 
