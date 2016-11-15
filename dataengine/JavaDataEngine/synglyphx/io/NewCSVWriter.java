@@ -319,6 +319,10 @@ public class NewCSVWriter {
 			        line += "0"; //texture_id
 			        line += "\n";
 
+			        data.writeUTF(temp.getTag());
+			        data.writeUTF(temp.getURL());
+			        data.writeUTF(temp.getDesc());
+
 			        bf.write(line);
 			        bfw.write(tag);
 

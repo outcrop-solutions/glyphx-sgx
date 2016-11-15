@@ -236,12 +236,18 @@ namespace SynGlyphX
 		data.ratio = read_float();
 		data.rotation_rates = read_vec3();
 
+		std::string tag = read_string();
+		std::string url = read_string();
+		std::string desc = read_string();
+		// todo: store url and desc (so we don't have to write/read the CSVs at all anymore)
+
 		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D( data.parent_id ) : nullptr;
 		data.is_root = ( data.parent_id == 0 ) || !parent;
 		hal::debug::_assert( data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id );
 
 		auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1 );
 		SetupGeometry( data.geom_type, *glyphnode );
+		glyphnode->setTag( scene.createTag( tag.c_str() ) );
 		glyphnode->setColor( data.color );
 		glyphnode->setPlacementPolicy( ChoosePlacementPolicy( data ) );
 
