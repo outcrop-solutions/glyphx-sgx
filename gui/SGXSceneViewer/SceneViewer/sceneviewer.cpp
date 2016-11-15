@@ -168,14 +168,8 @@ namespace SynGlyphX
 		}
 
 		SceneReader r;
-		r.read( file, *base_images, base_textures, default_base_texture, *grids );
-	}
+		r.read( file, *scene, *base_images, base_textures, default_base_texture, *grids );
 
-	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile )
-	{
-		makeCurrent();
-
-		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
 		resetCamera();
 
 		auto scene_ptr = scene;
@@ -186,6 +180,10 @@ namespace SynGlyphX
 		} );
 
 		timer.print_ms_to_debug( "full legacy scene read" );
+	}
+
+	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile )
+	{
 	}
 
 	void SceneViewer::clearScene()
