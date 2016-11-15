@@ -148,6 +148,8 @@ namespace SynGlyphX
 
 	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile, std::vector<std::string> baseImages )
 	{
+		hal::debug::profile_timer timer;
+
 		makeCurrent();
 
 		clearScene();
@@ -173,6 +175,8 @@ namespace SynGlyphX
 			float radius = nodes[0]->getCachedCombinedBound().get_radius();
 			group_manager->create( group_idx, pos, radius );
 		} );
+
+		timer.print_ms_to_debug( "full legacy scene read" );
 	}
 
 	void SceneViewer::clearScene()
