@@ -18,8 +18,9 @@ namespace SynGlyphX
 {
 	namespace
 	{
-		const uint32_t SCENE_FILE_MAGIC_NUMBER = 0xa042bc3f;
-		const uint32_t COUNT_FILE_MAGIC_NUMBER = 0x294ee1ac;
+		const int32_t FORMAT_VERSION = 1;
+		const int32_t SCENE_FILE_MAGIC_NUMBER = 0xa042bc3f;
+		const int32_t COUNT_FILE_MAGIC_NUMBER = 0x294ee1ac;
 
 		template<typename T> T read32_endian( FILE* f )
 		{
@@ -177,7 +178,7 @@ namespace SynGlyphX
 
 	render::packed_color SceneReader::read_packed_solid_color()
 	{
-		render::packed_color c = render::pack_color( 0, 0, 0, 1 );
+		render::packed_color c = render::pack_color( 0, 0, 0, 255 );
 		fread( &c, 3, 1, file );
 		return c;
 	}
@@ -356,6 +357,20 @@ namespace SynGlyphX
 		}
 	}
 
+	// quick and dirty class to add some RAII to FILE* so the handles get closed if read() throws
+	namespace
+	{
+		class cfile
+		{
+		public:
+			cfile( const char* name ) { f = fopen( name, "rb" ); }
+			~cfile() { if ( f ) fclose( f ); }
+			FILE* get() { return f; }
+		private:
+			FILE* f;
+		};
+	}
+
 	void SceneReader::read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )
 	{
 		root_count = 0u;
@@ -364,22 +379,29 @@ namespace SynGlyphX
 
 		hal::debug::profile_timer timer;
 
-		FILE* countfile = fopen( countfilename, "rb" );
+		cfile count_file( countfilename );
+		FILE* countfile = count_file.get();
+		cfile scene_file( scenefilename );
+		file = scene_file.get();
 
-		file = fopen( scenefilename, "rb" );
 		if ( countfile && file )
 		{
 			// Read counts from count file.
 			int count_magic = read32_endian<int>( countfile );
 			if ( count_magic != COUNT_FILE_MAGIC_NUMBER )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
+			int count_format_version = read32_endian<int>( countfile );
+			if ( count_format_version != FORMAT_VERSION )
+				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 			int base_image_count = read32_endian<int>( countfile );
 			int glyph_count = read32_endian<int>( countfile );
 			int link_count = read32_endian<int>( countfile );
-			int tag_count = read32_endian<int>( countfile );
 
 			auto magic = read32_endian<int>( file );
 			if ( magic != SCENE_FILE_MAGIC_NUMBER )
+				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
+			int format_version = read32_endian<int>( file );
+			if ( format_version != FORMAT_VERSION )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 
 			scene.beginAdding( glyph_count + link_count );
@@ -393,9 +415,6 @@ namespace SynGlyphX
 
 			// Done adding; finish scene setup and clean up.
 			scene.finishAdding();
-			fclose( file );
-			fclose( countfile );
-
 			timer.print_ms_to_debug( "read binary scene with %i objects (%i roots), %i links", glyph_count, root_count, link_count );
 		}
 		else

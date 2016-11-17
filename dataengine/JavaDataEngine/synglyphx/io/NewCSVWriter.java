@@ -16,6 +16,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 public class NewCSVWriter {
+
+	// increment when data format changes. if you change this you have to change
+	// the corresponding constant in scenereader.cpp as well (in addition to changing
+	// that class to read the new format).
+	public static final int FORMAT_VERSION = 1;
 	
 	private int nodeCount;
 	private Map<Integer,Node> allNodes;
@@ -26,17 +31,6 @@ public class NewCSVWriter {
 	private HashMap<Integer, CoordinateMap> rootCoords;
 	private Map<Integer, LinkTemplate> link_temps;
 	private ArrayList<Integer> excluded;
-	private String antzHeader; //94 Columns...
-	private String thru10_25;
-	private String thru41_50;
-	private String thru65_92;
-	private String line1;
-	private String line2;
-	private String line3;
-	private String line4;
-	private String line5;
-	private String line6;
-	private String line7;
 	private String outDir;
 	private String imageDir;
 	private String noURLLocation;
@@ -55,8 +49,8 @@ public class NewCSVWriter {
 		this.link_temps = link_temps;
 
 		Logger.getInstance().add(outDir);
-		this.outDir = outDir+"/antz/";
-		this.imageDir = outDir+"/antz/base_image_2.png";
+		this.outDir = outDir+"/scene/";
+		this.imageDir = outDir+"/scene/base_image_2.png";
 
 		String os = System.getProperty("os.name");
         String w = "windows";
@@ -113,6 +107,7 @@ public class NewCSVWriter {
 			BufferedOutputStream bufout = new BufferedOutputStream(oFile);
 			DataOutputStream data = new DataOutputStream(bufout);
 			data.writeInt(0xa042bc3f);	// magic number
+			data.writeInt(FORMAT_VERSION);
 
 			Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
 			noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"/nourl.html";
@@ -123,10 +118,9 @@ public class NewCSVWriter {
 		    if(!nourl.exists()){
 		       	createNoUrl();
 		    }
-
         
 	        int global_offset = 5;
-	        int glyph_node_count = 0, base_image_count = 0, link_count = 0, tag_count = 0;
+	        int glyph_node_count = 0, base_image_count = 0, link_count = 0;
 
 	        // write base images
 			boolean world = true;
@@ -297,10 +291,10 @@ public class NewCSVWriter {
 			BufferedOutputStream countfileout = new BufferedOutputStream(countfile);
 			DataOutputStream countdata = new DataOutputStream(countfileout);
 			countdata.writeInt(0x294ee1ac);	// magic number
+			countdata.writeInt(FORMAT_VERSION);
 			countdata.writeInt(base_image_count);
 			countdata.writeInt(glyph_node_count);
 			countdata.writeInt(link_count);
-			countdata.writeInt(tag_count);
 			countdata.close();
 
 	        ErrorHandler.getInstance().csvWriterCompleted();
@@ -375,47 +369,6 @@ public class NewCSVWriter {
 		}
 
 		return place;
-	}
-
-	public void antzGlobals(String[] colorStr){
-
-		String cr = String.format("%.6f", Double.parseDouble(colorStr[0]) / 255.0);
-		String cg = String.format("%.6f", Double.parseDouble(colorStr[1]) / 255.0);
-		String cb = String.format("%.6f",Double.parseDouble(colorStr[2]) / 255.0);
-
-		try{
-			FileWriter file = new FileWriter(outDir+"antzglobals.csv");
-			BufferedWriter bf = new BufferedWriter(file);
-
-			bf.write("np_globals_id,map_path,item_id,element,type,permisions,name,desc,value\n");
-			bf.write("1,\"np_gl\",1,\"alpha_mode\",\"i\",0,\"\",\"\",\"1\"\n");
-			bf.write("2,\"np_gl\",1,\"background_rgba\",\"ffff\",0,\"\",\"\",\""+cr+","+cg+","+cb+",1.000000\"\n");
-			bf.write("3,\"np_gl\",1,\"fullscreen\",\"i\",0,\"\",\"\",\"1\"\n");
-			bf.write("4,\"np_gl\",1,\"window_size_xy\",\"ii\",0,\"\",\"\",\"800, 510\"\n");
-			bf.write("5,\"np_gl\",1,\"position_xy\",\"ii\",0,\"\",\"\",\"40, 40\"\n");
-			bf.write("6,\"np_gl\",1,\"hud_level\",\"i\",0,\"\",\"\",\"2\"\n");
-			bf.write("7,\"np_gl\",1,\"subsample\",\"i\",0,\"\",\"\",\"1\"\n");
-			bf.write("8,\"np_mouse\",1,\"tool\",\"i\",0,\"\",\"\",\"4\"\n");
-			bf.write("9,\"np_mouse\",1,\"cam_mode\",\"i\",0,\"\",\"\",\"0\"\n");
-			bf.write("10,\"np_mouse\",1,\"pick_mode\",\"i\",0,\"\",\"\",\"3\"\n");
-			bf.write("11,\"np_db\",1,\"host_ip\",\"s\",0,\"\",\"\",\"127.0.0.1\"\n");
-			bf.write("12,\"np_db\",1,\"user\",\"s\",0,\"\",\"\",\"root\"\n");
-			bf.write("13,\"np_db\",1,\"password\",\"s\",0,\"\",\"\",\"admin\"\n");
-			bf.write("14,\"np_db\",1,\"db_type\",\"s\",0,\"\",\"\",\"mysql\"\n");
-			bf.write("15,\"np_osc\",1,\"tx_ip\",\"s\",0,\"\",\"\",\"127.0.0.1\"\n");
-			bf.write("16,\"np_osc\",1,\"rx_ip\",\"s\", 0,\"\",\"\",\"127.0.0.1\"\n");
-			bf.write("17,\"np_osc\",1,\"tx_port\",\"i\",0,\"\",\"\",\"8000\"\n");
-			bf.write("18,\"np_osc\",1,\"rx_port\",\"i\",0,\"\",\"\",\"9000\"\n");
-			bf.write("19,\"np_browser\",1,\"url\",\"s\",0,\"\",\"\",\"http://openantz.com/docs/id.html?id=\"\n");
-			bf.write("20 \"np_globals\",1,\"item_count\",\"i\",1,\"\",\"\",\"20\"");
-
-			bf.close();
-	    }catch(Exception e){
-	        try{
-	            e.printStackTrace(ErrorHandler.getInstance().addError());
-	        }catch(Exception ex){}
-	        e.printStackTrace();
-	    }
 	}
 
 	public void createNoUrl(){

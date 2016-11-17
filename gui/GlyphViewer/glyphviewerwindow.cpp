@@ -804,15 +804,8 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		}
 		std::vector<std::string> images = ge.getBaseImages();
 		
-		QStringList cacheFiles;
-		QString localOutputDir = QString::fromStdString(dirPath + "antz/");
-		cacheFiles.push_back(localOutputDir + "antz.csv");
-		cacheFiles.push_back(localOutputDir + "antztag.csv");
-		cacheFiles.push_back(QString::fromStdString(dirPath + "sourcedata.db"));
+		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
 
-		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
-		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
-		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
 		SGX_BEGIN_PROFILE(loadScene);
 		m_viewer->loadScene( ( localOutputDir + "glyphs.sgc" ).toStdString().c_str(), ( localOutputDir + "glyphs.sgn" ).toStdString().c_str(), images );
 		SGX_END_PROFILE(loadScene);
@@ -821,7 +814,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 			qList << images.at(i).c_str();
 		}
 		
-		m_sourceDataCache->Setup(cacheFiles[2]);
+		m_sourceDataCache->Setup( QString::fromStdString( dirPath + "sourcedata.db" ) );
 		m_columnsModel->Reset();
 
 		//This must be done before LoadFilesIntoModel is called
