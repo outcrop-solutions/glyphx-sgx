@@ -151,10 +151,10 @@ public class NewCSVWriter {
 				data.writeFloat( Float.parseFloat( bo.getRotation( 1 ) ) );
 				data.writeFloat( Float.parseFloat( bo.getRotation( 2 ) ) );
 
-				// write color
-				data.writeInt( Integer.parseInt( color[0] ) );
-				data.writeInt( Integer.parseInt( color[1] ) );
-				data.writeInt( Integer.parseInt( color[2] ) );
+				// write color (byte x 3)
+				data.write( Integer.parseInt( color[0] ) );
+				data.write( Integer.parseInt( color[1] ) );
+				data.write( Integer.parseInt( color[2] ) );
 
 				// write grid parameters
 				data.writeFloat( (float)bo.getGridLineCount( 0 ) );
@@ -221,10 +221,10 @@ public class NewCSVWriter {
 			        data.writeFloat((float)temp.getSY());
 			        data.writeFloat((float)temp.getSZ());
 			        //COLOR
-			        data.writeInt(temp.getCR());
-			        data.writeInt(temp.getCG());
-			        data.writeInt(temp.getCB());
-			        data.writeInt(temp.getAlpha());
+			        data.write(temp.getCR());
+			        data.write(temp.getCG());
+			        data.write(temp.getCB());
+			        data.write(temp.getAlpha());
 
 			        data.writeInt(temp.getGeo());
 			        data.writeInt(temp.getTopo());
@@ -278,10 +278,10 @@ public class NewCSVWriter {
 							cg = Integer.parseInt(entry.getValue().getCG());
 							cb = Integer.parseInt(entry.getValue().getCB());
 						}
-						data.writeInt(cr);
-						data.writeInt(cg);
-						data.writeInt(cb);
-						data.writeInt(Integer.parseInt(entry.getValue().getAlpha()));
+						data.write(cr);
+						data.write(cg);
+						data.write(cb);
+						data.write(Integer.parseInt(entry.getValue().getAlpha()));
 
 						++link_count;
 					}

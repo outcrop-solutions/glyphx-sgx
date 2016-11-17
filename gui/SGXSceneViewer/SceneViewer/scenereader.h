@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <render/types.h>
 
 namespace SynGlyphX
 {
@@ -26,8 +27,8 @@ namespace SynGlyphX
 		float read_float();
 		std::string read_string();
 		glm::vec3 read_vec3();
-		glm::vec4 read_color();
-		glm::vec4 read_solid_color();
+		render::packed_color read_packed_color();
+		render::packed_color read_packed_solid_color();
 		FILE* file;
 
 		unsigned int root_count;

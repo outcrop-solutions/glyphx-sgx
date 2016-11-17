@@ -93,6 +93,7 @@ namespace SynGlyphX
 
 		glm::vec4 getColor() const { return render::unpack_color( color ); }
 		void setColor( const glm::vec4& _color ) { color = render::pack_color( _color ); }
+		void setColor( const render::packed_color& _color ) { color = _color; }
 
 		bool getWireframe() const { return wireframe; }
 		void setWireframe( bool _wireframe ) { wireframe = _wireframe; }

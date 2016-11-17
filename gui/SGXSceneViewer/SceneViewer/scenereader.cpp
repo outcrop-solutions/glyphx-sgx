@@ -161,26 +161,18 @@ namespace SynGlyphX
 		return read_str( file );
 	}
 
-	glm::vec4 SceneReader::read_color()
+	render::packed_color SceneReader::read_packed_color()
 	{
-		// colors are stored as integers, read and normalize to float
-		glm::vec4 result;
-		result.x = static_cast<float>( read_int() / 255.f );
-		result.y = static_cast<float>( read_int() / 255.f );
-		result.z = static_cast<float>( read_int() / 255.f );
-		result.a = static_cast<float>( read_int() / 255.f );
-		return result;
+		render::packed_color c;
+		fread( &c, 4, 1, file );
+		return c;
 	}
 
-	glm::vec4 SceneReader::read_solid_color()
+	render::packed_color SceneReader::read_packed_solid_color()
 	{
-		// colors are stored as integers, read and normalize to float
-		glm::vec4 result;
-		result.x = static_cast<float>( read_int() / 255.f );
-		result.y = static_cast<float>( read_int() / 255.f );
-		result.z = static_cast<float>( read_int() / 255.f );
-		result.a = 1.f;
-		return result;
+		render::packed_color c = render::pack_color( 0, 0, 0, 1 );
+		fread( &c, 3, 1, file );
+		return c;
 	}
 
 	glm::vec3 SceneReader::read_vec3()
@@ -199,7 +191,7 @@ namespace SynGlyphX
 		glm::vec3 pos, rot;
 		pos.x = read_float(); pos.y = read_float(); pos.z = read_float();
 		rot.x = glm::radians( read_float() ); rot.y = glm::radians( read_float() ); rot.z = glm::radians( read_float() );
-		auto color = read_solid_color();
+		auto color = read_packed_solid_color();
 		float grid_cell_w = read_float(), grid_cell_h = read_float();
 		int grid_cells_x = read_int(), grid_cells_y = read_int();
 
@@ -217,20 +209,20 @@ namespace SynGlyphX
 			base_images.add( tex, transform, size );
 
 			if ( grid_cells_x >= 2 || grid_cells_y >= 2 )
-				grids.add( transform, size, grid_cells_x, grid_cells_y, color );
+				grids.add( transform, size, grid_cells_x, grid_cells_y, render::unpack_color( color ) );
 		}
 	}
 
 	void SceneReader::read_glyph_element( GlyphScene& scene )
 	{
-		GlyphCSVData data;
+		GlyphPlacementData data;
 
 		data.id = read_int();
 		data.parent_id = read_int();
 		data.pos = read_vec3();
 		data.rot = read_vec3();
 		data.scale = read_vec3();
-		data.color = read_color();
+		data.color = read_packed_color();
 		data.geom_type = read_int();
 		data.topo = read_int();
 		data.ratio = read_float();
@@ -306,7 +298,7 @@ namespace SynGlyphX
 		else
 		{
 			auto glyph_parent = scene.getGlyph3D( data.parent_id );
-			assert( glyph_parent );	// this expects CSV to always have parents before children
+			assert( glyph_parent );	// this expects the file to always have parents before children
 			glyph_parent->setChild( glyphnode );
 		}
 		scene.add( glyphnode );
@@ -323,7 +315,7 @@ namespace SynGlyphX
 		auto* glyph1 = scene.getGlyph3D( id1 );
 
 		auto geom_type = read_int();
-		glm::vec4 color = read_color();
+		auto color = read_packed_color();
 		const float thickness = 0.1f;
 
 		LinkProfile profile = ( geom_type == int( GeomType::CYLINDER ) ) ? LinkProfile::Circle : LinkProfile::Square;
@@ -372,14 +364,16 @@ namespace SynGlyphX
 		{
 			// Read counts from count file.
 			int count_magic = read32_endian<int>( countfile );
-			assert( count_magic == COUNT_FILE_MAGIC_NUMBER );
+			if ( count_magic != COUNT_FILE_MAGIC_NUMBER )
+				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 			int base_image_count = read32_endian<int>( countfile );
 			int glyph_count = read32_endian<int>( countfile );
 			int link_count = read32_endian<int>( countfile );
 			int tag_count = read32_endian<int>( countfile );
 
 			auto magic = read32_endian<int>( file );
-			assert( magic == SCENE_FILE_MAGIC_NUMBER );
+			if ( magic != SCENE_FILE_MAGIC_NUMBER )
+				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 
 			scene.beginAdding( glyph_count + link_count );
 
@@ -392,10 +386,14 @@ namespace SynGlyphX
 
 			// Done adding; finish scene setup and clean up.
 			scene.finishAdding();
+			fclose( file );
+			fclose( countfile );
+
 			timer.print_ms_to_debug( "read binary scene with %i objects (%i roots), %i links", glyph_count, root_count, link_count );
 		}
-
-		if ( file ) fclose( file );
-		if ( countfile ) fclose( countfile );
+		else
+		{
+			throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
+		}
 	}
 }
