@@ -67,7 +67,6 @@ public class NewCSVWriter {
         }
 
 		Logger.getInstance().add(this.outDir);
-		setAntz();
 		newBegin(app);
 
 	}
@@ -103,36 +102,13 @@ public class NewCSVWriter {
 
 	}
 
-	private void setAntz(){
-
-		antzHeader = "id,"+"parent_id,"+"child_id,"+"type,"+"child_count,";
-		antzHeader += "translate_x,"+"translate_y,"+"translate_z,";
-		antzHeader += "rotate_x,"+"rotate_y,"+"rotate_z,";
-		antzHeader += "scale_x,"+"scale_y,"+"scale_z,";
-		antzHeader += "color_r,"+"color_g,"+"color_b,"+"color_a,";
-		antzHeader += "geometry,"+"topo,"+"color_index,"+"ratio,";
-		antzHeader += "rotate_rate_x,"+"rotate_rate_y,"+"rotate_rate_z,";
-		antzHeader += "aux_a_x,"+"aux_a_y,"+"segments_x,"+"segments_y,"+"texture_id\n";
-	}
-
 	public void newBegin(String app){
 
 		ColorIndex ci = new ColorIndex();
-		String nodeName = "";
-		String tagName = "";
-		nodeName = "antz.csv";
-		tagName = "antztag.csv";
 
 		System.out.println("entering try catch");
 
 		try{
-			//FileWriter file = new FileWriter("C:/Users/Bryan/Desktop/Test on Antz/usr/csv/ANTZ0001.csv");  
-			FileWriter file = new FileWriter(outDir+nodeName);
-			BufferedWriter bf = new BufferedWriter(file);
-			//FileWriter f = new FileWriter("C:/Users/Bryan/Desktop/Test on Antz/usr/csv/ANTzTag0001.csv"); 
-			FileWriter f = new FileWriter(outDir+tagName);  
-			BufferedWriter bfw = new BufferedWriter(f);
-
 			FileOutputStream oFile = new FileOutputStream(outDir+"glyphs.sgc", false); 
 			BufferedOutputStream bufout = new BufferedOutputStream(oFile);
 			DataOutputStream data = new DataOutputStream(bufout);
@@ -148,19 +124,9 @@ public class NewCSVWriter {
 		       	createNoUrl();
 		    }
 
-			//bfw.write("id,record_id,table_id,title,description\n");
-			bfw.write("record_id,title,description\n");
-	        bf.write(antzHeader);
-	        //bf.write(line1);
-	        //bf.write(line2);
-	        //bf.write(line3);
-	        //bf.write(line4);
-	        //bf.write(line5);
-	        
+        
 	        int global_offset = 5;
 	        int glyph_node_count = 0, base_image_count = 0, link_count = 0, tag_count = 0;
-
-	        Logger.getInstance().add(String.valueOf(nodeCount)+" nodes printing...");
 
 	        // write base images
 			boolean world = true;
@@ -206,8 +172,6 @@ public class NewCSVWriter {
 	        excluded = new ArrayList<Integer>();
 	        HashMap<Integer,Double> rotation_lookup = new HashMap<Integer,Double>();
 	        for(int i = 1; i< nodeCount; i++){
-	        	String line = "";
-	        	String tag = "";
 	        	Node temp = allNodes.get(i);
 	        	String xyz = "";
 	        	if(rootCoords.get(firstRoot).toMerge()){
@@ -225,106 +189,55 @@ public class NewCSVWriter {
 
 	        		data.writeInt( i + global_offset );
 
-
-			        //tag += String.valueOf(i-1) +",";
-			        tag += String.valueOf(i+global_offset) +",";
-			        //tag += "0,";
-			        tag += "\"<a href=\""+temp.getURL()+"\">"+temp.getTag()+"</a>\",";
-			        tag += "\""+temp.getDesc() +"\"";
-			        tag += "\n";
-
-			        line += String.valueOf(i+global_offset) +",";//id
 			        if(temp.getParent()==0){
-			        	line += String.valueOf(temp.getParent()) +",";//parent_id
 			        	data.writeInt( temp.getParent() );
 			        }else{
 			        	if(rotation_lookup.containsKey(temp.getParent()) && rootCoords.get(firstRoot).toMerge()){
-			        		line += String.valueOf(rootCoords.get(firstRoot).getFirstRootID(lastRootXYZ)+global_offset) +",";//parent_id
 			        		data.writeInt(rootCoords.get(firstRoot).getFirstRootID(lastRootXYZ)+global_offset);
 			        	}else{
-			        		line += String.valueOf(temp.getParent()+global_offset) +",";//parent_id
 			        		data.writeInt(temp.getParent()+global_offset);
 			        	}
-			        }
-			        line += "0,";					//child_id
-			        line += "5,";					//type
-			        if(rootCoords.get(firstRoot).toMerge() && temp.getParent()==0){
-			        	line += String.valueOf(rootCoords.get(firstRoot).getFirstRootChildCount(lastRootXYZ) +",");//child_count
-			        }else{
-			        	line += String.valueOf(temp.getNumChildren() +",");//child_count
 			        }
 			        //TRANSLATE
 			        if(rootCoords.get(firstRoot).toMerge() && rotation_lookup.containsKey(temp.getParent())){
 			        	if(rotation_lookup.get(temp.getParent()) == 0){
-				        	line += String.valueOf(temp.getX())+",";//translate_x
 				        	data.writeFloat((float)temp.getX());
 				        }
 				        else
 				        {
-				        	line += String.valueOf(rotation_lookup.get(temp.getParent()))+",";//translate_x
 				        	data.writeFloat((float)rotation_lookup.get(temp.getParent()).doubleValue());
 				        }
 			        }else{
-			        	line += String.valueOf(temp.getX())+",";//translate_x
 			        	data.writeFloat((float)temp.getX());
 			        }
-			        line += String.valueOf(temp.getY())+",";//translate_y
-			        line += String.valueOf(temp.getZ())+",";//translate_z
 			        data.writeFloat((float)temp.getY());
 			        data.writeFloat((float)temp.getZ());
 			        //ROTATE
-			        line += String.valueOf(temp.getRX())+",";//rotate_x
-			        line += String.valueOf(temp.getRY())+",";//rotate_y
-			        line += String.valueOf(temp.getRZ())+",";//rotate_z
 			        data.writeFloat((float)temp.getRX());
 			        data.writeFloat((float)temp.getRY());
 			        data.writeFloat((float)temp.getRZ());
 			        //SCALE
-			        line += String.valueOf(temp.getSX())+",";//scale_x
-			        line += String.valueOf(temp.getSY())+",";//scale_y
-			        line += String.valueOf(temp.getSZ())+",";//scale_z
 			        data.writeFloat((float)temp.getSX());
 			        data.writeFloat((float)temp.getSY());
 			        data.writeFloat((float)temp.getSZ());
 			        //COLOR
-			        line += String.valueOf(temp.getCR())+",";//color_r
-			        line += String.valueOf(temp.getCG())+",";//color_g
-			        line += String.valueOf(temp.getCB())+",";//color_b
-			        line += String.valueOf(temp.getAlpha())+",";//color_a
 			        data.writeInt(temp.getCR());
 			        data.writeInt(temp.getCG());
 			        data.writeInt(temp.getCB());
 			        data.writeInt(temp.getAlpha());
 
-			        line += String.valueOf(temp.getGeo())+",";//geometry
 			        data.writeInt(temp.getGeo());
-			        line += String.valueOf(temp.getTopo())+",";//topo
 			        data.writeInt(temp.getTopo());
-			        line += String.valueOf(ci.getIndex(temp.getCR(),temp.getCG(),temp.getCB()) +",");//color_index
-			        line += String.valueOf(temp.getRatio())+",";//ratio
 			        data.writeFloat((float)temp.getRatio().doubleValue());
 
 			        //ROTATE RATE
-			        line += String.valueOf(temp.getRRX())+",";//rotate_rate_x
-			        line += String.valueOf(temp.getRRY())+",";//rotate_rate_y
-			        line += String.valueOf(temp.getRRZ())+",";//rotate_rate_z
 			        data.writeFloat((float)temp.getRRX());
 			        data.writeFloat((float)temp.getRRY());
 			        data.writeFloat((float)temp.getRRZ());
-			        
-			        line += "0,"; //aux_a_x
-			        line += "0,"; //aux_a_y
-			        line += "16,"; //segments_x
-			        line += "16,"; //segments_y
-			        line += "0"; //texture_id
-			        line += "\n";
 
 			        data.writeUTF(temp.getTag());
 			        data.writeUTF(temp.getURL());
 			        data.writeUTF(temp.getDesc());
-
-			        bf.write(line);
-			        bfw.write(tag);
 
 			        ++glyph_node_count;
 			    }else{
@@ -375,9 +288,6 @@ public class NewCSVWriter {
 					link_index++;
 				}
 			}
-
-	        bf.close();
-	        bfw.close();
 
 			data.close();
 			bufout.close();
