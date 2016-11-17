@@ -239,7 +239,6 @@ namespace SynGlyphX
 		std::string tag = read_string();
 		std::string url = read_string();
 		std::string desc = read_string();
-		// todo: store url and desc (so we don't have to write/read the CSVs at all anymore)
 
 		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D( data.parent_id ) : nullptr;
 		data.is_root = ( data.parent_id == 0 ) || !parent;
@@ -247,7 +246,9 @@ namespace SynGlyphX
 
 		auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1 );
 		SetupGeometry( data.geom_type, *glyphnode );
-		glyphnode->setTag( scene.createTag( tag.c_str() ) );
+		glyphnode->setString( GlyphStringType::Tag, scene.createString( tag.c_str() ) );
+		glyphnode->setString( GlyphStringType::Url, scene.createString( url.c_str() ) );
+		glyphnode->setString( GlyphStringType::Desc, scene.createString( desc.c_str() ) );
 		glyphnode->setColor( data.color );
 		glyphnode->setPlacementPolicy( ChoosePlacementPolicy( data ) );
 
@@ -359,7 +360,7 @@ namespace SynGlyphX
 	void SceneReader::read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )
 	{
 		root_count = 0u;
-		int next_filtering_index = 0;
+		next_filtering_index = 0;
 		int next_id = 0;
 
 		hal::debug::profile_timer timer;

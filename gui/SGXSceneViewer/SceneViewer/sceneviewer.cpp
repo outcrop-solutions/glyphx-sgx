@@ -25,7 +25,6 @@
 #include "placementpolicy.h"
 #include "axisrenderer.h"
 #include "baseimagerenderer.h"
-#include "legacyscenereader.h"
 #include "freecameracontroller.h"
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
@@ -180,10 +179,6 @@ namespace SynGlyphX
 		} );
 
 		timer.print_ms_to_debug( "full scene read" );
-	}
-
-	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile )
-	{
 	}
 
 	void SceneViewer::clearScene()
@@ -540,7 +535,7 @@ namespace SynGlyphX
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
 				auto pos = glyph.getCachedPosition();
 				if ( scene->isExploded( &glyph ) ) pos += glyph.getExplodedPosition();
-				if ( glyph.getTag() ) renderText( hud_font, camera, pos, render::color::white(), glyph.getTag() );
+				if ( glyph.getString( GlyphStringType::Tag ) ) renderText( hud_font, camera, pos, render::color::white(), glyph.getString( GlyphStringType::Tag ) );
 			} );
 
 			// Draw axis names.
@@ -1136,7 +1131,7 @@ namespace SynGlyphX
 				int id = node.getRootParent()->getID();
 				if ( ids.find( id ) == ids.end() )
 				{
-					QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( node.getID() );
+					QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( id );
 					selected.select( modelIndex, modelIndex );
 					ids.insert( id );
 				}

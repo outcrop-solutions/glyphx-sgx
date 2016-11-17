@@ -23,6 +23,7 @@
 #include <unordered_map>
 #include "csvfilereader.h"
 #include <memory>
+#include "loadedglyphdatainterface.h"
 
 namespace SynGlyphX {
 
@@ -38,7 +39,7 @@ namespace SynGlyphX {
 		~GlyphForestInfoModel();
 
 		void ClearAndReset();
-		void LoadGlyphForestInfoLegacy(const QString& nodeCSVFile, const QString& tagCSVFile);
+		void LoadGlyphForestInfo( const LoadedGlyphDataInterface& glyphdata );
 
 		//Functions from QAbstractItemModel that need to be implemented
 		int columnCount(const QModelIndex& /*parent = QModelIndex() */) const override { return 1; }
@@ -56,6 +57,7 @@ namespace SynGlyphX {
 		const GlyphTextProperties& GetGlyphTextProperties(const QModelIndex& index) const;
 
 	private:
+		class GlyphInfoTree;
 		class GlyphInfoNode {
 
 		public:
@@ -80,6 +82,7 @@ namespace SynGlyphX {
 			GlyphTextProperties m_properties;
 			std::vector<GlyphInfoNode*> m_children;
 			GlyphInfoNode* m_parent;
+			GlyphInfoTree* m_tree;
 		};
 
 		class GlyphInfoTree {
@@ -98,11 +101,11 @@ namespace SynGlyphX {
 			GlyphInfoTree& operator=(const GlyphInfoTree& tree) = delete;
 			
 			GlyphInfoNode* m_root;
+			int index;
 		};
 		
 		void Clear();
 		unsigned int FindHeaderIndex(const CSVFileHandler::CSVValues& headers, const std::wstring& header) const;
-		void ReadTagCSV(const QString& filename, std::unordered_map<unsigned long, GlyphTextProperties>& id2GlyphTextProperties);
 		QString GetTag(const std::wstring& title) const;
 		QString GetURL(const std::wstring& title) const;
 

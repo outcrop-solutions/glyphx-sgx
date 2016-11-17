@@ -91,7 +91,7 @@ namespace SynGlyphX
 		active_group = 0u;
 		group_status = 0.f;
 		octree = nullptr;
-		tag_pool.clear();
+		string_pool.clear();
 		tag_enabled.clear();
 	}
 
@@ -328,7 +328,7 @@ namespace SynGlyphX
 
 	void GlyphScene::disableTag( const Glyph3DNode* glyph ) const
 	{
-		if ( glyph->getTag() )
+		if ( glyph->getString( GlyphStringType::Tag ) )
 		{
 			auto it = tag_enabled.find( glyph );
 			if ( it != tag_enabled.end() )
@@ -600,45 +600,25 @@ namespace SynGlyphX
 		}
 	}
 
-	namespace
+	const char* GlyphScene::createString( const char* text )
 	{
-		// Quick and dirty function to strip surrounding quotes and XML stuff from tag.
-		// Just find the outermost >/< pair and return whatever's between them.
-		std::string strip_tag( const char* tag )
-		{
-			int len = strlen( tag );
-			int begin = -1, end = -1;
-			for ( int l = 0; l < len; ++l )
-			{
-				if ( tag[l] == '>' )
-				{
-					begin = l + 1;
-					break;
-				}
-			}
-			for ( int r = len - 1; r > begin; --r )
-			{
-				if ( tag[r] == '<' )
-				{
-					end = r;
-				}
-			}
-
-			std::string tagstr( tag );
-			if ( begin == -1 || end == -1 )
-				return tagstr;	// if we failed, just return the original tag
-			else
-				return tagstr.substr( begin, end - begin );
-		}
-	}
-
-	const char* GlyphScene::createTag( const char* text )
-	{
-		auto tagstr = strip_tag( text );
-		auto t = tag_pool.find( tagstr );
-		if ( t == tag_pool.end() )
-			t = tag_pool.insert( tagstr ).first;
+		auto t = string_pool.find( text );
+		if ( t == string_pool.end() )
+			t = string_pool.insert( text ).first;
 
 		return t->c_str();
+	}
+
+	void GlyphScene::enumGlyphStrings( std::function<void( int id, int parent_id, int filtering_idx, const char* tag, const char* url, const char* desc )> fn ) const
+	{
+		for ( auto& g : glyphs )
+		{
+			auto glyph = g.second;
+			if ( glyph->getType() == Glyph3DNodeType::GlyphElement )
+			{
+				int parent_id = glyph->getParent() ? glyph->getParent()->getID() : 0;
+				fn( glyph->getID(), parent_id, glyph->getFilteringIndex(), glyph->getString( GlyphStringType::Tag ), glyph->getString( GlyphStringType::Url ), glyph->getString( GlyphStringType::Desc ) );
+			}
+		}
 	}
 }

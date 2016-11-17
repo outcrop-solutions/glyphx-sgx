@@ -6,6 +6,7 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXFoundation
 							../../GUI/SGXGraphics
 							../../GUI/SGXGlyphGUI
+							../../GUI/SGXGUI
 )
 
 
@@ -33,6 +34,7 @@ TARGET_LINK_LIBRARIES(SGXSceneViewer
 	SGXUtility 
 	SGXFoundation
 	SGXGlyphGUI
+	SGXGUI
 	SGXGraphics
 )
 

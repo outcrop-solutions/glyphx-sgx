@@ -112,7 +112,6 @@ namespace SynGlyphX
 
 		void clearScene();
 		void loadScene( const char* sceneFile, const char* countFile, std::vector<std::string> baseImages );
-		void loadLegacyScene( const char* nodeFile, const char* tagFile );
 
 		void setBackgroundColor( const glm::vec4& color ) { background_color = color; }
 
