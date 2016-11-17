@@ -141,7 +141,7 @@ public class NewCSVWriter {
 				if(i == 0 && (bo.getName().equals("World") || (bo.getType().equals("Downloaded Map") && world))){number = 1;offset = 1;}
 
 				// write texture id
-				data.writeInt( number );
+				data.write( number );
 
 				// write transform (todo: why are these stored as strings?! slow af)
 				data.writeFloat( Float.parseFloat( bo.getPosition( 0 ) ) );
@@ -226,8 +226,8 @@ public class NewCSVWriter {
 			        data.write(temp.getCB());
 			        data.write(temp.getAlpha());
 
-			        data.writeInt(temp.getGeo());
-			        data.writeInt(temp.getTopo());
+			        data.write(temp.getGeo());
+			        data.write(temp.getTopo());
 			        data.writeFloat((float)temp.getRatio().doubleValue());
 
 			        //ROTATE RATE
@@ -263,7 +263,7 @@ public class NewCSVWriter {
 						data.writeInt(parent_ids.get(link_index)+global_offset);	//id0
 						data.writeInt(child_ids.get(link_index)+global_offset);	//id1
 
-						data.writeInt(Integer.parseInt(entry.getValue().getGeo()));
+						data.write(Integer.parseInt(entry.getValue().getGeo()));
 
 						int cr, cg, cb;
 						if(entry.getValue().inheritColor()){ //Capture color from parent

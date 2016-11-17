@@ -146,6 +146,13 @@ namespace SynGlyphX
 		}
 	}
 
+	uint8_t SceneReader::read_byte()
+	{
+		uint8_t byte;
+		fread( &byte, 1, 1, file );
+		return byte;
+	}
+
 	int SceneReader::read_int()
 	{
 		return read32_endian<int>( file );
@@ -187,7 +194,7 @@ namespace SynGlyphX
 
 	void SceneReader::read_base_image( BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids )
 	{
-		auto tex_id = read_int();
+		auto tex_id = read_byte();
 		glm::vec3 pos, rot;
 		pos.x = read_float(); pos.y = read_float(); pos.z = read_float();
 		rot.x = glm::radians( read_float() ); rot.y = glm::radians( read_float() ); rot.z = glm::radians( read_float() );
@@ -223,8 +230,8 @@ namespace SynGlyphX
 		data.rot = read_vec3();
 		data.scale = read_vec3();
 		data.color = read_packed_color();
-		data.geom_type = read_int();
-		data.topo = read_int();
+		data.geom_type = read_byte();
+		data.topo = read_byte();
 		data.ratio = read_float();
 		data.rotation_rates = read_vec3();
 
@@ -314,7 +321,7 @@ namespace SynGlyphX
 		auto* glyph0 = scene.getGlyph3D( id0 );
 		auto* glyph1 = scene.getGlyph3D( id1 );
 
-		auto geom_type = read_int();
+		auto geom_type = read_byte();
 		auto color = read_packed_color();
 		const float thickness = 0.1f;
 

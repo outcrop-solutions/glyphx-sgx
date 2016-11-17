@@ -25,6 +25,7 @@ namespace SynGlyphX
 		
 		int read_int();
 		float read_float();
+		uint8_t read_byte();
 		std::string read_string();
 		glm::vec3 read_vec3();
 		render::packed_color read_packed_color();
