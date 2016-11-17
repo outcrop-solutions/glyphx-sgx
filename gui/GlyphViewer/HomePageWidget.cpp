@@ -386,14 +386,12 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 		QWidget* loggedOutWidget = new QWidget(m_dashboardWidget);
 		QGridLayout* loggedOutLayout = new QGridLayout(loggedOutWidget);
-		loggedOutLayout->setContentsMargins(0, 0, 0, 0);
 		loggedOutLayout->setSpacing(15);
 
 		loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
 		loginWidget->setMidLineWidth(3);
-		loginWidget->setMaximumWidth(500);
 		loginWidget->setStyleSheet("background-color: white;");
 		QObject::connect(loginWidget, &SynGlyphX::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
 

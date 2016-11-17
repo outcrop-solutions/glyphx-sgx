@@ -20,12 +20,12 @@ namespace SynGlyphX {
 		QHBoxLayout* titleLayout = new QHBoxLayout(titleWidget);
 
 		m_titleLabel = new QLabel(titleWidget);
-		m_titleLabel->setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;");
+		m_titleLabel->setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 24px;");
 		titleLayout->addWidget(m_titleLabel);
 		titleLayout->addStretch(1);
 
 		QPushButton* selectAllButton = new QPushButton(tr("Select All"), titleWidget);
-		selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 14px; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid gray; border-left: 0.5px solid gray;} QPushButton:hover{background-color: #68cff5;}");
+		selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 13pt; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid gray; border-left: 0.5px solid gray;} QPushButton:hover{background-color: #68cff5;}");
 		titleLayout->addWidget(selectAllButton);
 
 		titleWidget->setLayout(titleLayout);
@@ -44,7 +44,7 @@ namespace SynGlyphX {
 		mainLayout->addWidget(hLine);
 
 		m_treeWidget = new QTreeWidget(this);
-		m_treeWidget->setStyleSheet("QTreeWidget{font-size: 14px;background-color: #eff2f7;} QTreeWidget::item:selected {background-color: #4acaf8;color: white;}");
+		m_treeWidget->setStyleSheet("QTreeWidget{font-size: 11pt;background-color: #eff2f7;} QTreeWidget::item:selected {background-color: #4acaf8;color: white;}");
 		m_treeWidget->setFrameStyle(QFrame::NoFrame);
 		m_treeWidget->setSortingEnabled(false);
 		m_treeWidget->header()->close();

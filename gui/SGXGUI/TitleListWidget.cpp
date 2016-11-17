@@ -21,12 +21,12 @@ namespace SynGlyphX {
 		QHBoxLayout* titleLayout = new QHBoxLayout(titleWidget);
 
 		m_titleLabel = new QLabel(titleWidget);
-		m_titleLabel->setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;");
+		m_titleLabel->setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 12pt; line-height: 24px;");
 		titleLayout->addWidget(m_titleLabel);
 		titleLayout->addStretch(1);
 
 		m_selectAllButton = new QPushButton(tr("Select All"), titleWidget);
-		m_selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 14px; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid #c3c5c5; border-left: 0.5px solid #c3c5c5;} QPushButton:hover{background-color: #68cff5;}");
+		m_selectAllButton->setStyleSheet("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e9edf3, stop: 1 #f3f5f8); border-radius: 8px; font-size: 12pt; padding: 4px; border-top: 0.5px solid #fff; border-right: 1px outset #fff; border-bottom: 1px solid #c3c5c5; border-left: 0.5px solid #c3c5c5;} QPushButton:hover{background-color: #68cff5;}");
 		titleLayout->addWidget(m_selectAllButton);
 
 		titleWidget->setLayout(titleLayout);
@@ -38,6 +38,7 @@ namespace SynGlyphX {
 		m_search = new QLineEdit(this);
 		m_search->setClearButtonEnabled(true);
 		m_search->setPlaceholderText(tr("Search Filter"));
+		m_search->setStyleSheet("QLineEdit{font-size: 11pt;}");
 		mainLayout->addWidget(m_search);
 		m_search->setVisible(false);
 		QFrame* hLine = new QFrame(this);
@@ -48,7 +49,7 @@ namespace SynGlyphX {
 		mainLayout->addWidget(hLine);
 
 		m_listWidget = new QListWidget(this);
-		m_listWidget->setStyleSheet("QListWidget{font-size: 14px;background-color: #eff2f7;} QListWidget::item:selected {background-color: #4acaf8;color: white;}");
+		m_listWidget->setStyleSheet("QListWidget{font-size: 11pt;background-color: #eff2f7;} QListWidget::item:selected {background-color: #4acaf8;color: white;}");
 		m_listWidget->setFrameStyle(QFrame::NoFrame);
 		m_listWidget->setSortingEnabled(false);
 

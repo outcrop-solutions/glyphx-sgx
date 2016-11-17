@@ -34,7 +34,7 @@ namespace SynGlyphX {
 			" color:rgb(0, 0, 0); "
 			" background-color: rgb(255, 255, 255); "
 			" border-color: gray; "
-			" font-size: 14px; "
+			" font-size: 11pt; "
 			" margin-left: 50px; "
 			" margin-right: 50px; "
 			" min-height: 40px; } ");
@@ -42,13 +42,13 @@ namespace SynGlyphX {
 		m_passwordLineEdit->setStyleSheet(line);
 		stayLoggedInCheckBox = new QCheckBox("Keep me logged in", this);
 		stayLoggedInCheckBox->setLayoutDirection(Qt::RightToLeft);
-		stayLoggedInCheckBox->setStyleSheet("font-size:14px;margin-right:50px;");
+		stayLoggedInCheckBox->setStyleSheet("font-size:11pt;margin-right:50px;");
 		QFormLayout* formLayout = new QFormLayout(this);
 		formLayout->setContentsMargins(-1, -1, -1, 0);
 		QLabel* username = new QLabel(tr("Username: "), this);
 		QLabel* password = new QLabel(tr("Password: "), this);
-		username->setStyleSheet("font-size:14px;margin-left: 50px;");
-		password->setStyleSheet("font-size:14px;margin-left: 50px;");
+		username->setStyleSheet("font-size:11pt;margin-left: 50px;");
+		password->setStyleSheet("font-size:11pt;margin-left: 50px;");
 		formLayout->addRow(username);
 		formLayout->addRow(m_usernameLineEdit);
 		formLayout->addRow(password);
@@ -57,7 +57,7 @@ namespace SynGlyphX {
 		QLabel* chgpw = new QLabel(tr("<a href='http://sample-env.zccmpffgqr.us-west-2.elasticbeanstalk.com/password.jsp'>Change Password</a>"), this);
 		chgpw->setOpenExternalLinks(true);
 		chgpw->setLayoutDirection(Qt::LeftToRight);
-		chgpw->setStyleSheet("font-size:14px;margin-left: 50px;");
+		chgpw->setStyleSheet("font-size:11pt;margin-left: 50px;");
 
 		QHBoxLayout* hboxlayout = new QHBoxLayout;
 		hboxlayout->addWidget(chgpw);

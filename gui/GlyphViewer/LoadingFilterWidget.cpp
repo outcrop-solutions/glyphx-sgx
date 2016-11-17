@@ -61,7 +61,7 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 		else{
 			SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(title, splitter, this);
 			groupBox->setContentsMargins(0, 0, 0, 0);
-			groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 16px; line-height: 24px;}");
+			groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 24px;}");
 			innerWidgetLayout->addWidget(groupBox);
 		}
 	//}
