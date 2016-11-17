@@ -65,8 +65,11 @@ namespace SynGlyphX
 
 		hal::debug::profile_timer timer3;
 		compute_groups();
-		update_groups();
 		timer3.print_ms_to_debug( "computed groups" );
+
+		hal::debug::profile_timer timer4;
+		update_groups();
+		timer4.print_ms_to_debug( "updated groups" );
 	}
 
 	void GlyphScene::clear()
