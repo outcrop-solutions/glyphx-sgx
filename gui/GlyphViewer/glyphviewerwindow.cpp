@@ -804,30 +804,23 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		}
 		std::vector<std::string> images = ge.getBaseImages();
 		
-		QStringList cacheFiles;
-		QString localOutputDir = QString::fromStdString(dirPath + "antz/");
-		cacheFiles.push_back(localOutputDir + "antz.csv");
-		cacheFiles.push_back(localOutputDir + "antztag.csv");
-		cacheFiles.push_back(QString::fromStdString(dirPath + "sourcedata.db"));
+		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
 
-		SynGlyphXANTz::ANTzCSVWriter::FilenameList outputfiles;
-		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex] = cacheFiles[0].toStdString();
-		outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex] = cacheFiles[1].toStdString();
-		SGX_BEGIN_PROFILE(loadLegacyScene);
-		m_viewer->loadLegacyScene( outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_nodeFilenameIndex].c_str(), outputfiles[SynGlyphXANTz::ANTzCSVWriter::s_tagFilenameIndex].c_str(), images );
-		SGX_END_PROFILE(loadLegacyScene);
+		SGX_BEGIN_PROFILE(loadScene);
+		m_viewer->loadScene( ( localOutputDir + "glyphs.sgc" ).toStdString().c_str(), ( localOutputDir + "glyphs.sgn" ).toStdString().c_str(), images );
+		SGX_END_PROFILE(loadScene);
 		QStringList qList;
 		for (unsigned int i = 0; i < images.size(); i++){
 			qList << images.at(i).c_str();
 		}
 		
-		m_sourceDataCache->Setup(cacheFiles[2]);
+		m_sourceDataCache->Setup( QString::fromStdString( dirPath + "sourcedata.db" ) );
 		m_columnsModel->Reset();
 
 		//This must be done before LoadFilesIntoModel is called
 		m_filteringWidget->OnNewVisualization();
 
-		LoadFilesIntoModel(outputfiles, qList);
+		LoadFilesIntoModel();
 		
 		auto bgcolor = m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor();
 		if ( m_viewer ) m_viewer->setBackgroundColor( glm::vec4( float( bgcolor[0] ) / 255.f, float( bgcolor[1] ) / 255.f, float( bgcolor[2] ) / 255.f, 1.f ) );
@@ -846,9 +839,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 	}
 }
 
-void GlyphViewerWindow::LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames) {
+void GlyphViewerWindow::LoadFilesIntoModel() {
 
-	m_glyphForestModel->LoadGlyphForestInfoLegacy(QString::fromStdString(filesToLoad[0]), QString::fromStdString(filesToLoad[1]));
+	m_glyphForestModel->LoadGlyphForestInfo( m_viewer->getScene() );
 	
 	SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping = m_mappingModel->GetDataMapping();
 	auto ifm = std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataTransformMapping)->GetInputFieldManager();

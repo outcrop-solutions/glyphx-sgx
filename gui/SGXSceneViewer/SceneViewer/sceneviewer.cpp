@@ -25,11 +25,11 @@
 #include "placementpolicy.h"
 #include "axisrenderer.h"
 #include "baseimagerenderer.h"
-#include "legacyscenereader.h"
 #include "freecameracontroller.h"
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
 #include "superimposedgroupmanager.h"
+#include "scenereader.h"
 
 //temp
 #include <QtCore/qitemselectionmodel.h>
@@ -146,7 +146,7 @@ namespace SynGlyphX
 			hal::device::shutdown();
 	}
 
-	void SceneViewer::loadLegacyScene( const char* nodeFile, const char* tagFile, std::vector<std::string> baseImages )
+	void SceneViewer::loadScene( const char* sceneFile, const char* countFile, std::vector<std::string> baseImages )
 	{
 		hal::debug::profile_timer timer;
 
@@ -166,7 +166,9 @@ namespace SynGlyphX
 			base_textures.push_back( texture );
 		}
 
-		SynGlyphX::LegacySceneReader::LoadLegacyScene( getScene(), geomDB, *base_images, *grids, default_base_texture, nodeFile, tagFile, base_textures );
+		SceneReader r;
+		r.read( sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids );
+
 		resetCamera();
 
 		auto scene_ptr = scene;
@@ -176,7 +178,7 @@ namespace SynGlyphX
 			group_manager->create( group_idx, pos, radius );
 		} );
 
-		timer.print_ms_to_debug( "full legacy scene read" );
+		timer.print_ms_to_debug( "full scene read" );
 	}
 
 	void SceneViewer::clearScene()
@@ -533,7 +535,7 @@ namespace SynGlyphX
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
 				auto pos = glyph.getCachedPosition();
 				if ( scene->isExploded( &glyph ) ) pos += glyph.getExplodedPosition();
-				if ( glyph.getTag() ) renderText( hud_font, camera, pos, render::color::white(), glyph.getTag() );
+				if ( glyph.getString( GlyphStringType::Tag ) ) renderText( hud_font, camera, pos, render::color::white(), glyph.getString( GlyphStringType::Tag ) );
 			} );
 
 			// Draw axis names.
@@ -1129,7 +1131,7 @@ namespace SynGlyphX
 				int id = node.getRootParent()->getID();
 				if ( ids.find( id ) == ids.end() )
 				{
-					QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( node.getID() );
+					QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID( id );
 					selected.select( modelIndex, modelIndex );
 					ids.insert( id );
 				}

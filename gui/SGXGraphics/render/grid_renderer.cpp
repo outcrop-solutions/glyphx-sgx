@@ -1,8 +1,6 @@
 
 #include "grid_renderer.h"
-#include <hal/device.h>
-#include <hal/context.h>
-#include <hal/vertex_format.h>
+#include <hal/hal.h>
 #include "camera.h"
 
 namespace SynGlyphX

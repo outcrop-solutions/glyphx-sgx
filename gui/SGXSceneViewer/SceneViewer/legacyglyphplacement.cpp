@@ -6,7 +6,7 @@
 
 namespace SynGlyphX
 {
-	PlacementPolicy* ChoosePlacementPolicy( const GlyphCSVData& glyphData )
+	PlacementPolicy* ChoosePlacementPolicy( const GlyphPlacementData& glyphData )
 	{
 		SynGlyphXANTz::ANTzPlacementPolicy::TopologyType topo = static_cast<SynGlyphXANTz::ANTzPlacementPolicy::TopologyType>(glyphData.topo);
 		if (topo == SynGlyphXANTz::ANTzPlacementPolicy::TopologyType::Cube) {

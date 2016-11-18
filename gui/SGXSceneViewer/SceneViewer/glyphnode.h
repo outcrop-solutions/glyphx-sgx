@@ -21,6 +21,14 @@ namespace SynGlyphX
 		Link,
 	};
 
+	enum class GlyphStringType
+	{
+		Tag,
+		Url,
+		Desc,
+		Count,
+	};
+
 	class SGXSCENEVIEWER_API Glyph3DNode
 	{
 	public:
@@ -85,14 +93,15 @@ namespace SynGlyphX
 
 		glm::vec4 getColor() const { return render::unpack_color( color ); }
 		void setColor( const glm::vec4& _color ) { color = render::pack_color( _color ); }
+		void setColor( const render::packed_color& _color ) { color = _color; }
 
 		bool getWireframe() const { return wireframe; }
 		void setWireframe( bool _wireframe ) { wireframe = _wireframe; }
 
 		// NOTE: this class doesn't keep its own copy of _tag; tags passed to this must be stored elsewhere
-		// (use GlyphScene::createTag to store them into the scene's tag pool)
-		void setTag( const char* _tag );
-		const char* getTag() const { return tag; }
+		// (use GlyphScene::createTag to store them into the scene's string pool)
+		void setString( GlyphStringType type, const char* _str );
+		const char* getString( GlyphStringType type ) const { return strings[int(type)]; }
 
 		int getID() const { return id; }
 		bool isRoot() const { return root; }
@@ -100,9 +109,11 @@ namespace SynGlyphX
 		void enumNodes( std::function<bool( const Glyph3DNode& )> fn ) const;
 
 	private:
-		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), tag( nullptr ), id( _id ),
+		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), id( _id ),
 			filtering_index( _filtering_index ), exploded_position_group( 0.f ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ), root( _isRoot ), type( _type ), animation_root( false ),
-            animation_child( false ) { }
+			animation_child( false ) {
+			for ( auto i = 0; i < int( GlyphStringType::Count ); ++i ) strings[i] = nullptr;
+		}
 
 		PlacementPolicy* placement;
 
@@ -115,7 +126,7 @@ namespace SynGlyphX
 		std::vector<Glyph3DNode*> children;
 		const Glyph3DNode* link_a, *link_b;
 		Glyph3DNode* parent;
-		const char* tag;
+		const char* strings[int(GlyphStringType::Count)];
 		unsigned int id;
 		int filtering_index;
 

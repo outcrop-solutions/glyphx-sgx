@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"
+#include "loadedglyphdatainterface.h"
 
 namespace SynGlyphX
 {
@@ -15,7 +16,7 @@ namespace SynGlyphX
 	const Glyph3DHandle INVALID_GLYPH_HANDLE = 0u;
 	class GlyphGeometryDB;
 
-	class SGXSCENEVIEWER_API GlyphScene
+	class SGXSCENEVIEWER_API GlyphScene : public LoadedGlyphDataInterface
 	{
 	public:
 		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), explode_state( group_state::retracted ), group_status( 0.f ), active_group( 0 ), filter_applied( false ),
@@ -28,7 +29,7 @@ namespace SynGlyphX
 		void update( float timeDelta );
 
 		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1 );
-		const char* createTag( const char* text );
+		const char* createString( const char* text );
 
 		void beginAdding( unsigned int count );
 		void add( Glyph3DNode* glyph );
@@ -99,6 +100,10 @@ namespace SynGlyphX
 		void explode( unsigned int group );
 		void collapse( unsigned int group );
 
+		const GlyphGeometryDB& getGeomDB() { return db; }
+
+		void enumGlyphStrings( std::function<void( int id, int parent_id, int filtering_idx, const char* tag, const char* url, const char* desc )> fn ) const override;
+
 		static const unsigned int NO_GROUP = 0u;
 
 	private:
@@ -146,6 +151,6 @@ namespace SynGlyphX
 		char* glyph_storage;
 		unsigned int glyph_storage_next, glyph_storage_size;
 
-		std::unordered_set<std::string> tag_pool;
+		std::unordered_set<std::string> string_pool;
 	};
 }

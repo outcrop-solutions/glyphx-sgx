@@ -63,9 +63,9 @@ namespace SynGlyphX
 		}
 	}
 
-	void Glyph3DNode::setTag( const char* _tag )
+	void Glyph3DNode::setString( GlyphStringType type, const char* _str )
 	{
-		tag = _tag;
+		strings[int( type )] = _str;
 	}
 
 	const Glyph3DNode* Glyph3DNode::getRootParent() const

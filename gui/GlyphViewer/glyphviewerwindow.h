@@ -123,7 +123,7 @@ private:
 	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters);
 	void ValidateDataMappingFile(SynGlyphX::DataTransformMapping::SharedPtr mapping, const QString& filename);
-	void LoadFilesIntoModel(const SynGlyphXANTz::ANTzCSVWriter::FilenameList& filesToLoad, const QStringList& baseImageFilenames);
+	void LoadFilesIntoModel();
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);

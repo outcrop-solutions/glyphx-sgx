@@ -104,8 +104,8 @@ namespace DataEngine
 
 	void GlyphEngine::createCacheDirectory() {
 
-		if (!boost::filesystem::exists(baseOutputDir + "/antz")){
-			if (!boost::filesystem::create_directories(baseOutputDir + "/antz")) {
+		if (!boost::filesystem::exists(baseOutputDir + "/scene")){
+			if (!boost::filesystem::create_directories(baseOutputDir + "/scene")) {
 
 				throw std::invalid_argument("CopyDirectory: Unable to create destination directory");
 			}
@@ -152,7 +152,7 @@ namespace DataEngine
 					std::string name(str);
 					std::string dl = "downloadedMap.jpg";
 					if (name == dl && downloadComplete){
-						images.push_back(baseOutputDir + "antz/base_image_2.png");
+						images.push_back(baseOutputDir + "scene/base_image_2.png");
 					}
 					else if (boost::filesystem::exists(boost::filesystem::path(baseImageDir + name))){
 						images.push_back(baseImageDir + name);
@@ -200,10 +200,10 @@ namespace DataEngine
 				if (images.size() > 1 && i > 0){
 					num = "base_image_" + QString::number(i + offset) + ".png";
 					if (boost::filesystem::exists(boost::filesystem::path(baseImageDir + images.at(i)))){
-						QFile::copy((baseImageDir).c_str() + file, bod + "antz/" + num);
+						QFile::copy((baseImageDir).c_str() + file, bod + "scene/" + num);
 					}
 					else if (boost::filesystem::exists(boost::filesystem::path(images.at(i)))){
-						QFile::copy((images.at(i)).c_str(), bod + "antz/" + num);
+						QFile::copy((images.at(i)).c_str(), bod + "scene/" + num);
 					}
 				}
 			}
@@ -250,7 +250,7 @@ namespace DataEngine
 					downloadedImageFilename = QString((baseOutputDir + "usr/images/downloadedMap.jpg").c_str());
 				}
 				else if (application == "GlyphViewer"){
-					downloadedImageFilename = QString((baseOutputDir + "antz/base_image_2.png").c_str());
+					downloadedImageFilename = QString((baseOutputDir + "scene/base_image_2.png").c_str());
 				}
 				return downloadBaseImage(baseImage, downloadedImageFilename);
 			}
