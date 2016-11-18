@@ -426,68 +426,94 @@ namespace SynGlyphX
 
 	void GlyphScene::compute_groups()
 	{
-		// todo: this is O(n^2) -- using the octree would make it O(nlogn)
-		// (although even in the most expensive vis I have it only takes ~50ms so maybe
-		// it's ok)
 		assert( groups.size() == 0 );
-
-		std::vector<Glyph3DNode*> ungrouped_glyphs;
-		for ( auto& g : glyphs )
-		{
-			if ( g.second->isRoot() && g.second->getType() != Glyph3DNodeType::Link )
-				ungrouped_glyphs.push_back( g.second );
-		}
-
 		const float dist_threshold = 0.1f;
 
-		// First pass: create initial groups.
-		auto it0 = ungrouped_glyphs.begin();
-		while ( it0 != ungrouped_glyphs.end() )
+		std::vector<const Glyph3DNode*> ungrouped;
+
+		for ( auto& g : glyphs )
+			if ( g.second->isRoot() )
+				ungrouped.push_back( g.second );
+
+		// First pass : quickly, roughly group nodes into groups.
+		hal::debug::profile_timer timer0;
+		unsigned int group_idx = 1;
+		for ( auto& glyph0 : ungrouped )
 		{
-			bool new_group = false;
-
-			auto glyph0 = *it0;
-			superimposed_group group;
-			group.nodes.push_back( glyph0 );
-
-			auto it1 = ungrouped_glyphs.begin();
-			while ( it1 != ungrouped_glyphs.end() )
+			if ( !glyph0->grouped )
 			{
-				auto glyph1 = *it1;
-				if ( glyph0 != glyph1 && glm::distance( glyph0->getCachedPosition(), glyph1->getCachedPosition() ) < dist_threshold )
+				superimposed_group group;
+				group.nodes.push_back( glyph0 );
+				bool create_group = false;
+
+				// check the glyph's bound against the rest of the scene...
+				octree->overlap( glyph0->getCachedCombinedBound(), [&group, &create_group, glyph0, dist_threshold]( Glyph3DNode* glyph1 ) {
+					if ( !glyph1->grouped )
+					{
+						auto dist = glm::distance( glyph0->getCachedPosition(), glyph1->getCachedPosition() );
+						if ( glyph0 != glyph1 && dist < glyph0->getCachedCombinedBound().get_radius() )
+						{
+							// if there's at least one glyph below the threshold ( = VERY close to the test glyph), create a group.
+							// (but - add any glyphs that fall within the bound if so, not just the close ones; that way exploding the
+							// group will show you anything that's visually inside its bound)
+							if ( dist < dist_threshold )
+								create_group = true;
+							group.nodes.push_back( glyph1 );
+						}
+					}
+				} );
+
+				if ( create_group )
 				{
-					group.nodes.push_back( glyph1 );
-					it1 = ungrouped_glyphs.erase( it1 );
-					new_group = true;
+					for ( auto g : group.nodes ) g->grouped = true;
+					groups.push_back( group );
+				}
+			}
+		}
+		timer0.print_ms_to_debug( "grouping first pass" );
+
+		// Second pass: for each grouped node, check if any of the other groups are a better fit for it (i.e., its center
+		// is closer to the center of the group than the group it was initially assigned to).
+		// (This is faster to do here than as part of the first pass, since now that we already know the groupings
+		// we only have to check against every existing GROUP, not every existing NODE.)
+		hal::debug::profile_timer timer1;
+		for ( auto& group0 : groups )
+		{
+			auto it = group0.nodes.begin();
+			++it;	// start at second element (first defines the bounds of the group)
+			while ( it != group0.nodes.end() )
+			{
+				auto node = *it;
+				superimposed_group* best_group = nullptr;
+				float best_dist = glm::distance( node->getCachedPosition(), group0.nodes[0]->getCachedPosition() );
+
+				// check against each other group to see if it's a better fit for the node
+				for ( auto& group1 : groups )
+				{
+					if ( &group0 != &group1 )
+					{
+						float new_dist = glm::distance( node->getCachedPosition(), group1.nodes[0]->getCachedPosition() );
+						if ( new_dist < best_dist )
+						{
+							best_group = &group1;
+							best_dist = new_dist;
+						}
+					}
+				}
+
+				// if we found a better group move, the glyph to it
+				if ( best_group != nullptr )
+				{
+					best_group->nodes.push_back( node );
+					it = group0.nodes.erase( it );
 				}
 				else
-					++it1;
-			}
-
-			if ( new_group )
-			{
-				groups.push_back( group );
-				it0 = ungrouped_glyphs.erase( it0 );
-			}
-			else
-			{
-				++it0;
-			}
-		}
-
-		// Second pass: find any glyphs whose centers fall inside one of our groups and add them as well.
-		for ( unsigned int i = 0; i < groups.size(); ++i )
-		{
-			auto& group = groups[i];
-			auto test_glyph = *group.nodes.begin();
-			for ( auto g : ungrouped_glyphs )
-			{
-				if ( glm::distance( g->getCachedPosition(), test_glyph->getCachedPosition() ) < test_glyph->getCachedCombinedBound().get_radius() )
 				{
-					group.nodes.push_back( g );
+					++it;
 				}
 			}
 		}
+		timer1.print_ms_to_debug( "grouping second pass" );
 
 		hal::debug::print( "computed %i superimposed groups", groups.size() );
 	}

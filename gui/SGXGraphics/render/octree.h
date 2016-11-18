@@ -47,6 +47,7 @@ namespace SynGlyphX
 			void insert( content_t* content, const sphere_bound& bound ) { root->insert( content, bound ); }
 
 			void pick( const glm::vec3& ray_origin, const glm::vec3& ray_dir, std::function<void( content_t* )> fn );
+			void overlap( const sphere_bound& bound, std::function<void( content_t* )> fn );
 
 			void gather_stats_DEBUG();
 
@@ -250,6 +251,36 @@ namespace SynGlyphX
 					if ( children )
 					{
 						for ( unsigned int i = 0; i < 8; ++i )
+							nodes.push( children[i] );
+					}
+				}
+			}
+		}
+
+		// calls fn for every content_t that may overlap the passed bound
+		template<typename content_t>
+		void octree<content_t>::overlap( const sphere_bound& bound, std::function<void( content_t* )> fn )
+		{
+			std::stack<octree_node<content_t>*> nodes;
+			nodes.push( root );
+			while ( !nodes.empty() )
+			{
+				octree_node<content_t>* node = nodes.top();
+				nodes.pop();
+
+				auto content = node->get_contents();
+				for ( auto& c : content )
+				{
+					if ( intersects( bound, c.bound ) )
+						fn( c.object );
+				}
+
+				auto children = node->get_children();
+				if ( children )
+				{
+					for ( unsigned int i = 0; i < 8; ++i )
+					{
+						if ( intersects( bound, children[i]->get_loose_bound() ) )
 							nodes.push( children[i] );
 					}
 				}

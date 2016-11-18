@@ -57,5 +57,6 @@ namespace SynGlyphX
 
 		SGXGRAPHICS_API box_bound combine_bounds( const box_bound& b, const sphere_bound& s );
 		SGXGRAPHICS_API box_bound combine_bounds( const box_bound& a, const box_bound& b );
+		SGXGRAPHICS_API bool intersects( const sphere_bound& s, const box_bound& b );
 	}
 }

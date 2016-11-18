@@ -217,5 +217,48 @@ namespace SynGlyphX
 		{
 			return box_bound( glm::min( a.get_min(), b.get_min() ), glm::max( a.get_max(), b.get_max() ) );
 		}
+
+		namespace
+		{
+			float dist_squared_to_box( const glm::vec3& p, const box_bound& b )
+			{
+				auto check = [&](
+					const float pn,
+					const float bmin,
+					const float bmax )
+				{
+					float out = 0.f;
+					float v = pn;
+
+					if ( v < bmin )
+					{
+						float val = ( bmin - v );
+						out += val * val;
+					}
+
+					if ( v > bmax )
+					{
+						float val = ( v - bmax );
+						out += val * val;
+					}
+
+					return out;
+				};
+
+				auto min = b.get_min(), max = b.get_max();
+				float sq = 0.f;
+				sq += check( p.x, min.x, max.s );
+				sq += check( p.y, min.y, max.y );
+				sq += check( p.z, min.z, max.z );
+
+				return sq;
+			}
+		}
+
+		bool intersects( const sphere_bound& s, const box_bound& b )
+		{
+			float sq_dist = dist_squared_to_box( s.get_center(), b );
+			return sq_dist < ( s.get_radius() * s.get_radius() );
+		}
 	}
 }

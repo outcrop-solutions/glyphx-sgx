@@ -111,7 +111,7 @@ namespace SynGlyphX
 	private:
 		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), id( _id ),
 			filtering_index( _filtering_index ), exploded_position_group( 0.f ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ), root( _isRoot ), type( _type ), animation_root( false ),
-			animation_child( false ) {
+			animation_child( false ), grouped( false ) {
 			for ( auto i = 0; i < int( GlyphStringType::Count ); ++i ) strings[i] = nullptr;
 		}
 
@@ -146,6 +146,7 @@ namespace SynGlyphX
 		Glyph3DNodeType type : 1;
 		mutable bool animation_root : 1;
 		mutable bool animation_child : 1;
+		mutable bool grouped : 1;
 
 		friend class GlyphScene;	// so glyphscene can instantiate
 	};
