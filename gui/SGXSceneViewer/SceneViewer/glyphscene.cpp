@@ -424,10 +424,23 @@ namespace SynGlyphX
 		return single_parent;
 	}
 
+	namespace
+	{
+		bool close_enough_to_create_group( const Glyph3DNode* g, const Glyph3DNode* n )
+		{
+			// if the ratio of the distance between the two glyphs' centers to the larger of their bound radii is smaller than radius_ratio,
+			// they pass the threshold to create a group. (this is pretty much just a test to check if they're really close together without
+			// using a fixed threshold that wouldn't vary with the glyph's scales.)
+			const float radius_ratio = 0.05f;
+			float larger_radius = glm::max( g->getCachedCombinedBound().get_radius(), n->getCachedCombinedBound().get_radius() );
+			float center_dist = glm::distance( g->getCachedPosition(), n->getCachedPosition() );
+			return ( center_dist / larger_radius < radius_ratio );
+		}
+	}
+
 	void GlyphScene::compute_groups()
 	{
 		assert( groups.size() == 0 );
-		const float dist_threshold = 0.1f;
 
 		std::vector<const Glyph3DNode*> ungrouped;
 
@@ -447,16 +460,16 @@ namespace SynGlyphX
 				bool create_group = false;
 
 				// check the glyph's bound against the rest of the scene...
-				octree->overlap( glyph0->getCachedCombinedBound(), [&group, &create_group, glyph0, dist_threshold]( Glyph3DNode* glyph1 ) {
+				// we want to add glyphs to a group if their centers call within its bound, BUT the test for actually creating
+				// a group to begin with (close_enough_to_create_group) is stricter to prevent us from creating groups around
+				// glyphs that just have barely touching bounds.
+				octree->overlap( glyph0->getCachedCombinedBound(), [&group, &create_group, glyph0]( Glyph3DNode* glyph1 ) {
 					if ( !glyph1->grouped )
 					{
 						auto dist = glm::distance( glyph0->getCachedPosition(), glyph1->getCachedPosition() );
 						if ( glyph0 != glyph1 && dist < glyph0->getCachedCombinedBound().get_radius() )
 						{
-							// if there's at least one glyph below the threshold ( = VERY close to the test glyph), create a group.
-							// (but - add any glyphs that fall within the bound if so, not just the close ones; that way exploding the
-							// group will show you anything that's visually inside its bound)
-							if ( dist < dist_threshold )
+							if ( close_enough_to_create_group( glyph0, glyph1 ) )
 								create_group = true;
 							group.nodes.push_back( glyph1 );
 						}
