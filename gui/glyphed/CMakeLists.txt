@@ -48,7 +48,7 @@ file(GLOB SRC_ALL
 				
 SET(RESOURCES_SRC ../GlyphViewer/glyphviewer.qrc)
 IF (${WIN32})
-	LIST(APPEND ${RESOURCES_SRC} GlyphEd.rc)
+	LIST(APPEND RESOURCES_SRC GlyphEd.rc)
 ENDIF()
 
 ADD_EXECUTABLE(GlyphEd ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})

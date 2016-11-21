@@ -36,10 +36,9 @@ file(GLOB SRC_ALL
 	"*.cpp"
 )
 				
-#SET(RESOURCES_SRC datamapperwindow.qrc)
+SET(RESOURCES_SRC datamapperwindow.qrc)
 IF (${WIN32})
-#	LIST(APPEND ${RESOURCES_SRC} DataMapper.rc)
-	SET(RESOURCES_SRC DataMapper.rc)
+	LIST(APPEND RESOURCES_SRC DataMapper.rc)
 ENDIF()
 
 ADD_EXECUTABLE(DataMapper ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})
