@@ -292,6 +292,9 @@ void GlyphViewerWindow::CreateMenus() {
 	m_viewMenu->addSeparator();
 
 	m_resetCameraToDefaultPosition = CreateMenuAction(m_viewMenu, tr("Reset Camera To Starting Position"));
+	QIcon resetCamIcon;
+	resetCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-reset-camera.png", QSize(), QIcon::Normal, QIcon::On );
+	m_resetCameraToDefaultPosition->setIcon( resetCamIcon );
 	m_loadedVisualizationDependentActions.push_back(m_resetCameraToDefaultPosition);
 
 	m_viewMenu->addSeparator();
@@ -1434,6 +1437,8 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->addAction(m_remapRootPositionMappingsAction);
 
 	m_interactionToolbar->addSeparator();
+
+	m_interactionToolbar->addAction( m_resetCameraToDefaultPosition );
 
 	m_enableDisableFlyToObjectAction = new QAction( tr( "Enable/Disable Fly-to-Object" ), m_interactionToolbar );
 	m_enableDisableFlyToObjectAction->setCheckable( true );
