@@ -502,7 +502,7 @@ namespace SynGlyphX
 				if ( scene->selectionEmpty() )
 				{
 					auto campos = camera->get_position();
-					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %f, Y: %f, Z: %f", campos.x, campos.y, campos.z );
+					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %.2f, Y: %.2f, Z: %.2f", campos.x, campos.y, campos.z );
 				}
 				else
 				{
@@ -526,7 +526,7 @@ namespace SynGlyphX
 					}
 					else
 					{
-						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %f, Y: %f, Z: %f", orbit_center.x, orbit_center.y, orbit_center.z );
+						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %.2f, Y: %.2f, Z: %.2f", orbit_center.x, orbit_center.y, orbit_center.z );
 					}
 				}
 			}

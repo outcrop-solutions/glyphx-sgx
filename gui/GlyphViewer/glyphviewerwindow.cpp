@@ -912,9 +912,20 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 
 						bool convertedToNumber = false;
 						float number = posSourceDataVar[j].toFloat(&convertedToNumber);
-						if (convertedToNumber) {
 
-							posSourceData[i] = std::to_string(number);
+						if (convertedToNumber) {
+							// Show numbers with no integral parts as ints for readability
+							float temp = 0.f;
+							float frac = fmodf( number, 1.f );
+							if ( frac != 0.f )
+							{
+								// use sprintf so we can control significant digits (std::to_string can be unpredictable with floats)
+								char buf[128];
+								sprintf( buf, "%.3f", number );
+								posSourceData[i] = buf;
+							}
+							else
+								posSourceData[i] = std::to_string( static_cast<int>( number ) );
 						}
 						else {
 
