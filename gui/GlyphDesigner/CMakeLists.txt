@@ -23,9 +23,10 @@ file(GLOB SRC_ALL
 	"*.cpp"
 )
 				
-SET(RESOURCES_SRC glyphdesignerwindow.qrc)
+#SET(RESOURCES_SRC glyphdesignerwindow.qrc)
 IF (${WIN32})
-	LIST(APPEND RESOURCES_SRC GlyphDesigner.rc)
+	#LIST(APPEND RESOURCES_SRC GlyphDesigner.rc)
+	SET(RESOURCES_SRC GlyphDesigner.rc)
 ENDIF()
 
 ADD_EXECUTABLE(GlyphDesigner ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})
