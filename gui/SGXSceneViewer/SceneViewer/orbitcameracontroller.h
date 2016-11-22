@@ -24,7 +24,7 @@ namespace SynGlyphX
 		void setOrbitMinDistance( const float dist ) { orbit_min_dist = dist; }
 		void setOrbitMaxDistance( const float dist ) { orbit_max_dist = dist; }
 
-		void flyToTarget() { flying_to_target = true; }
+		void flyToTarget();
 		void cancelFlyToTarget();
 		bool flyingToTarget() { return flying_to_target; }
 
@@ -37,8 +37,11 @@ namespace SynGlyphX
 		glm::vec3 orbit_target;
 		float orbit_min_dist, orbit_max_dist;
 		float orbit_cur_dist;
-		bool flying_to_target;
 		float move_speed, turn_speed;
+
+		glm::vec3 flight_origin, flight_destination;
+		bool begin_flying_to_target, flying_to_target;
+		float flight_param;
 
 		bool sliding_to_target;
 		float slide_state;

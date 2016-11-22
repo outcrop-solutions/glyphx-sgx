@@ -994,12 +994,12 @@ namespace SynGlyphX
 					{
 						scene->enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
 							orbit_center += glyph.getCachedPosition();
-							if ( glyph.getType() != Glyph3DNodeType::Link && glyph.getCachedBound().get_radius() > largest_bound ) largest_bound = glyph.getCachedBound().get_radius();
+							if ( glyph.getType() != Glyph3DNodeType::Link && glyph.getRootParent()->getCachedCombinedBound().get_radius() > largest_bound ) largest_bound = glyph.getRootParent()->getCachedCombinedBound().get_radius();
 							if ( glyph.getType() == Glyph3DNodeType::GlyphElement ) glyphs_selected = true;
 							++count;
 						} );
 						if ( count > 0u ) orbit_center /= static_cast<float>( count );
-						selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getCachedBound().get_radius() : 0.f );
+						selection_radius = 2.f * ( scene->getSingleSelection() ? scene->getSingleSelection()->getRootParent()->getCachedCombinedBound().get_radius() : 0.f );
 						// account for the glyph possibly being in an exploded group
 						glm::vec3 explosion_offset;
 						auto single_selection = scene->getSingleSelection();

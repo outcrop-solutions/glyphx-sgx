@@ -4,11 +4,27 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/compatibility.hpp>
+#include <glm/gtx/spline.hpp>
+#include <hal/debug.h>
 
 namespace SynGlyphX
 {
+	namespace
+	{
+		const float fly_target_dist_mult = 2.5f;
+
+		float smootherstep( float edge0, float edge1, float x )
+		{
+			// Scale, and clamp x to 0..1 range
+			x = glm::clamp( ( x - edge0 ) / ( edge1 - edge0 ), 0.f, 1.f );
+			// Evaluate polynomial
+			return x*x*x*( x*( x * 6.f - 15.f ) + 10.f );
+		}
+	}
+
 	OrbitCameraController::OrbitCameraController( render::perspective_camera* _camera )
-		: camera( _camera ), orbit_max_dist( 1000.f ), flying_to_target( false ), move_speed( 32.f ), turn_speed( 32.f ), sliding_to_target( false )
+		: camera( _camera ), orbit_max_dist( 1000.f ), begin_flying_to_target( false ), flying_to_target( false ), move_speed( 32.f ),
+		turn_speed( 32.f ), sliding_to_target( false )
 	{
 	}
 
@@ -36,16 +52,21 @@ namespace SynGlyphX
 			auto interp = glm::normalize( glm::lerp( fwd, desired_fwd, 0.075f ) );
 			camera->set_forward( interp );
 
-			float fly_target_dist = orbit_min_dist * 10.f;
+			float fly_target_dist = orbit_min_dist * fly_target_dist_mult;
 			glm::vec3 camera_to_object = -glm::normalize( cam_pos - orbit_target );
-			float dist_to_travel = orbit_cur_dist - fly_target_dist;
-			if ( dist_to_travel > 0.f )	// don't go backward
-				camera->set_position( camera->get_position() + camera_to_object * ( dist_to_travel * 0.1f ) );
+			float dist_left_to_travel = orbit_cur_dist - fly_target_dist;
+			if ( flight_param <= 1.f )
+			{
+				float eased_flight_param = smootherstep( 0.f, 1.f, flight_param );
+				camera->set_position( glm::lerp( flight_origin, flight_destination, eased_flight_param ) );
+				const float fly_time = 1200.f;	// in ms
+				flight_param += ( 1.f / fly_time ) * timeDelta;
+			}
 
 			float dist_to_target = glm::length( camera->get_position() - orbit_target );
 			float angle_to_target = acosf( glm::dot( desired_fwd, fwd ) );
 
-			if ( dist_to_target < ( fly_target_dist + 0.1f ) && angle_to_target < 0.0001f )
+			if ( flight_param >= 1.f && angle_to_target < 0.0001f )
 				cancelFlyToTarget();
 		}
 		else if ( sliding_to_target )
@@ -78,6 +99,11 @@ namespace SynGlyphX
 			camera->set_position( orbit_target + new_unit_target_to_camera * orbit_new_dist );
 			camera->set_forward( -new_unit_target_to_camera );
 		}
+	}
+
+	void OrbitCameraController::flyToTarget()
+	{
+		begin_flying_to_target = true;
 	}
 
 	void OrbitCameraController::turn( const glm::vec2& angleDelta )
@@ -118,10 +144,21 @@ namespace SynGlyphX
 				target_dist = std::max( glm::distance( camera->get_position(), old_orbit_target ), orbit_min_dist );
 			camera_slide_target = orbit_target + -camera->get_forward() * target_dist;
 		}
+
+		if ( begin_flying_to_target )
+		{
+			flying_to_target = true;
+			flight_origin = camera->get_position();
+			float distance_to_fly = glm::distance( camera->get_position(), orbit_target ) - ( orbit_min_dist * fly_target_dist_mult );
+			flight_destination = orbit_target + glm::normalize( flight_origin - orbit_target ) * ( orbit_min_dist * fly_target_dist_mult );
+			begin_flying_to_target = false;
+			flight_param = 0.f;
+		}
 	}
 
 	void OrbitCameraController::cancelFlyToTarget()
 	{
+		begin_flying_to_target = false;
 		flying_to_target = false;
 		sliding_to_target = false;
 	}
