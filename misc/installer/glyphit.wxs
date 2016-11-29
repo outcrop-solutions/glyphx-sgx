@@ -1,59 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-   <Product Id="*" UpgradeCode="88bee1de-9ebd-4095-98d0-7e232f68145d" 
-            Name="GlyphIT" Version="0.0.1" Manufacturer="SynGlyphX" Language="1033">
-      <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package"/>
-      <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
- 
-      <WixVariable Id="WixUIBannerBmp" Value="banner.png" />
-      <WixVariable Id="WixUIDialogBmp" Value="background.png" />
-      <WixVariable Id="WixUILicenseRtf" Value="../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf" />
+    <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
+    <Product Id="*" UpgradeCode="{60300ed8-be8c-4915-aaae-98de51954b98}" Version="0.8.0.4" Language="1033" Name="GlyphIt" Manufacturer="SynGlyphX">
+        <Package InstallerVersion="300" Compressed="yes"/>
+        <Media Id="1" Cabinet="glyphit.cab" EmbedCab="yes" />
 
-      <Directory Id="TARGETDIR" Name="SourceDir">
-         <Directory Id="ProgramFilesFolder">
-            <Directory Id="COMPANYDIR" Name="SynGlyphX">
-               <Directory Id="APPDIR" Name="GlyphIT">
-                  <Component Id="ApplicationFiles" Guid="8dcfeb1f-cb31-4639-8fc2-263fa09fe187">
-                  	<CreateFolder />
-                  </Component>
-               </Directory>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="SGXFolder" Name="SynGlyphX">
+                    <Directory Id="APPDIR" Name="GlyphIt"/>
+                </Directory>
             </Directory>
-         </Directory>
-         <Directory Id="ProgramMenuFolder">
-            <Directory Id="ApplicationProgramsFolder" Name="SynGlyphX"/>
-         </Directory>
-     </Directory>
+            <!-- Step 1: Define the directory structure -->
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="SGXProgramsFolder" Name="SynGlyphX">
+                    <Directory Id="ApplicationProgramsFolder" Name="GlyphIt"/>
+                </Directory>
+            </Directory>
+        </Directory>
 
+        <DirectoryRef Id="APPDIR">
+            <Component Id="glyphviewer.exe" Guid="*">
+                <File Id="glyphviewer.exe" Source="GlyphViewer.exe" KeyPath="yes" Checksum="yes"/>
+            </Component>
+            <Component Id="datamapper.exe" Guid="*">
+                <File Id="datamapper.exe" Source="DataMapper.exe" KeyPath="yes" Checksum="yes"/>
+            </Component>
+            <Component Id="glyphdesigner.exe" Guid="*">
+                <File Id="glyphdesigner.exe" Source="GlyphDesigner.exe" KeyPath="yes" Checksum="yes"/>
+            </Component>
+        </DirectoryRef>
 
-      <Feature Id="GlyphIT" Level="1">
-         <ComponentRef Id="ApplicationFiles"/>
-         <ComponentRef Id="ApplicationShortcut"/>
-         <ComponentGroupRef Id="GlyphSharedComponentGroupID" />  
-         <ComponentGroupRef Id="GlyphItExeComponentGroupID" />  
-      </Feature>
-      <UIRef Id="WixUI_InstallDir" />
+        <!-- Step 2: Add the shortcut to your installer package -->
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcuts" Guid="*">
+                <Shortcut Id="GDStartMenuShortcut" 
+                     Name="GlyphDesigner" 
+                   Description="SynGlyphX GlyphDesigner"
+                    Target="[#glyphdesigner.exe]"
+                          WorkingDirectory="APPDIR"/>
+                <Shortcut Id="DMStartMenuShortcut" 
+                     Name="DataMapper" 
+                   Description="SynGlyphX DataMapper"
+                    Target="[#datamapper.exe]"
+                          WorkingDirectory="APPDIR"/>
+                <Shortcut Id="GVStartMenuShortcut" 
+                     Name="GlyphViewer" 
+                   Description="SynGlyphX GlyphViewer"
+                    Target="[#glyphviewer.exe]"
+                          WorkingDirectory="APPDIR"/>
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RemoveFolder Id="SGXProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\SynGlyphX\GlyphDesigner" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+           </Component>
+        </DirectoryRef>
 
-      <DirectoryRef Id="ApplicationProgramsFolder">
-         <Component Id="ApplicationShortcut" Guid="4e665217-f5a1-48b3-95d7-a31b2588c0aa">
-            <Shortcut Id="GlyphViewerShortcut" 
-                        Name="GlyphViewer"
-                        Description="SynGlyphX GlyphViewer"
-                        Target="[#GlyphViewer.exe]"
-                        WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
-            <Shortcut Id="GlyphDesignerShortcut" 
-                        Name="GlyphDesigner"
-                        Description="SynGlyphX GlyphDesigner"
-                        Target="[#GlyphDesigner.exe]"
-                        WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
-            <Shortcut Id="DataMapperShortcut" 
-                        Name="DataMapper"
-                        Description="SynGlyphX DataMapper"
-                        Target="[#DataMapper.exe]"
-                        WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
-              <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-              <RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-          </Component>
-      </DirectoryRef>
+        <Feature Id="GlyphIt" Title="Main Application" Level="1">
+            <ComponentRef Id="glyphdesigner.exe" />
+            <ComponentRef Id="datamapper.exe" />
+            <ComponentRef Id="glyphviewer.exe" />
+            <ComponentGroupRef Id="SharedFilesID" />
+            <!-- Step 3: Tell WiX to install the shortcut -->
+            <ComponentRef Id="ApplicationShortcuts" />   
+        </Feature>
 
-      <Property Id="WIXUI_INSTALLDIR" Value="APPDIR" />
-   </Product>
+        <UIRef Id="WixUI_InstallDir" />
+        <Property Id="WIXUI_INSTALLDIR" Value="APPDIR" />
+        <WixVariable Id="WixUIBannerBmp" Value="banner.png" />
+        <WixVariable Id="WixUIDialogBmp" Value="background.png" />
+        <WixVariable Id="WixUILicenseRtf" Value="../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf" />
+
+    </Product>
 </Wix>

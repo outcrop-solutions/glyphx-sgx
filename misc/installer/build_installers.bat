@@ -1,9 +1,0 @@
-
-echo Compiling WiX inputs...
-candle glyphit.wxs glyphed.wxs glyphit_executables.wxs glyphed_executables.wxs harvest_shared.wxs
-
-echo Building GlyphIT installer from WiX objects...
-light -ext WixUIExtension -cultures:en-us glyphit.wixobj glyphit_executables.wixobj harvest_shared.wixobj -o output/glyphit.msi -b ..\..\bin\Win32\Release\
-
-rem echo Building GlyphEd installer from WiX objects...
-rem light -ext WixUIExtension -cultures:en-us glyphit.wixobj glyphed_executables.wixobj harvest_shared.wixobj -o output/glyphit.msi -b ..\..\bin\Win32\Release\

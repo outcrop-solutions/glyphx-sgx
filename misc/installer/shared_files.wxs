@@ -1,0 +1,1878 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="APPDIR">
+            <Directory Id="dir25188EC9049549DEDE1E86197333D63B" Name="ANTzMacTemplate" />
+            <Directory Id="dirFC173A5B855460DC5054C6E89E87D8D5" Name="ANTzTemplate" />
+            <Directory Id="dir548B2BFBDB763CB54A2E482E2F835C58" Name="ANTzzSpaceTemplate" />
+            <Directory Id="dir92E109B6D00D53B1CBCC1716FBB876BC" Name="database-drivers" />
+            <Directory Id="dir067EB4EAAAF470F7557EF8FA2D451DC7" Name="DefaultBaseImages" />
+            <Directory Id="dir5CA73EAC6930FEDC84A5F2F703D80761" Name="fonts" />
+            <Directory Id="dir58C1EF176B33985D40140CE4D76DCA09" Name="GlyphTemplates" />
+            <Directory Id="dir6DC156336536C64A87909EBAB5FB7717" Name="help" />
+            <Directory Id="dirC260ABA59AFA6905CF0E8115738C7AE4" Name="jre" />
+            <Directory Id="dirCCAEBE1269551C0F1D0E180DD6EFD907" Name="meshes" />
+            <Directory Id="dir8967C0B5A4EE777AF33BE15F88F668F6" Name="qt_plugins" />
+            <Directory Id="dir7F024F5F77FFCADEB991BC5937EBD037" Name="shaders" />
+            <Directory Id="dirCB10BBBB0B07232639C1AEA4DC530FE4" Name="textures" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="SharedFilesID">
+            <Component Id="cmp57CEDBD84650D55EB41C28BCD9C19568" Directory="APPDIR" Guid="{B8514182-1A71-4C84-BD92-98A25B94DD36}">
+                <File Id="fil4A2CC32795FE24E432916F59D163273E" KeyPath="yes" Source="SourceDir\ANTzBridge.dll" />
+            </Component>
+            <Component Id="cmp507A36033000BFF5CFDB4895E715C8AB" Directory="APPDIR" Guid="{67F1BD21-B50A-4750-A528-62061D7B92D1}">
+                <File Id="filCB108C860A24B28E210BE5243A8946AB" KeyPath="yes" Source="SourceDir\ANTzCore.dll" />
+            </Component>
+            <Component Id="cmpA1C47FED61218BD2C96DEFFFAFC88632" Directory="APPDIR" Guid="{12B2EFCE-DF90-476F-89BF-AE1D549A45C7}">
+                <File Id="filE6D609C217E29C23C85C6377E32E5161" KeyPath="yes" Source="SourceDir\ANTzSingleGlyphGUI.dll" />
+            </Component>
+            <Component Id="cmpF9EA73C6EB2EA1FCFDEF0A1127594D34" Directory="APPDIR" Guid="{B5B70834-4E42-4F61-A8CD-4B9699D5DAC2}">
+                <File Id="fil61997B1B5AFEADFE746BB2CFA8556837" KeyPath="yes" Source="SourceDir\assimp.dll" />
+            </Component>
+            <Component Id="cmp52E210925F356F2C389B5C44B2C4D258" Directory="APPDIR" Guid="{E8237E34-27E6-463D-983B-11896D784EE3}">
+                <File Id="filAA9A635CB43B98EE73298655053CB1B5" KeyPath="yes" Source="SourceDir\boost_filesystem-vc120-mt-1_55.dll" />
+            </Component>
+            <Component Id="cmpB1F99640B9C14749737B7C81D8988D24" Directory="APPDIR" Guid="{65ABEF48-3B53-4EF0-9594-F9FA1AEF1C04}">
+                <File Id="fil4035296D5FCD9631EE58F1208BCBB65F" KeyPath="yes" Source="SourceDir\boost_filesystem-vc120-mt-1_62.dll" />
+            </Component>
+            <Component Id="cmp54F2BB92C468664636CE9ADAE8F18105" Directory="APPDIR" Guid="{A2BADDFB-2F91-44B3-9B2A-1F33E42077DA}">
+                <File Id="fil22F4035A3F6848A12C6CBA6A20CCC871" KeyPath="yes" Source="SourceDir\boost_filesystem-vc140-mt-1_59.dll" />
+            </Component>
+            <Component Id="cmp7BA6A5E3342A91B83E0B078ADF1CBAD1" Directory="APPDIR" Guid="{51514DCC-65F3-45C1-9CA9-4A837628A3B5}">
+                <File Id="filDEE685D95A5D9696B7738DD0BA53BD3E" KeyPath="yes" Source="SourceDir\boost_system-vc120-mt-1_55.dll" />
+            </Component>
+            <Component Id="cmp247E9363037FBA839BD41CC96299FAB2" Directory="APPDIR" Guid="{92F31288-9CD2-4FFF-8BC1-AA853A8FD2CB}">
+                <File Id="fil27707EBE32A074AC599409296C04F512" KeyPath="yes" Source="SourceDir\boost_system-vc120-mt-1_62.dll" />
+            </Component>
+            <Component Id="cmp1AFAD19E8981B2B96889E9F061774390" Directory="APPDIR" Guid="{B70E744C-4AC9-4FCD-8BD2-59C4DA2A36A8}">
+                <File Id="fil92723477411067912F1D4F4C7291E294" KeyPath="yes" Source="SourceDir\boost_system-vc140-mt-1_59.dll" />
+            </Component>
+            <Component Id="cmp57C77568A713D04CCBEA72AF1CB816C3" Directory="APPDIR" Guid="{64A90D3F-3EDF-4FF1-B077-5995F260954C}">
+                <File Id="filCC241C759020AF45CEB19DB3DD8E9E1A" KeyPath="yes" Source="SourceDir\ConvertHash.dll" />
+            </Component>
+            <Component Id="cmpBB94E152088DD6DAE1B4925DE352B3FB" Directory="APPDIR" Guid="{3986F727-6608-4D8A-9474-9C9FECB2B23B}">
+                <File Id="fil2BE57A0427E67A30814581A5441F1A47" KeyPath="yes" Source="SourceDir\DataEngine.dll" />
+            </Component>
+            <Component Id="cmpE7EDB97B1C41705BFA04E2C84FA28635" Directory="APPDIR" Guid="{6F011080-8B93-4959-852D-1D937C045BE6}">
+                <File Id="fil38D4A1CF460AD59ED6FAF956DBDE0F06" KeyPath="yes" Source="SourceDir\dataengine.jar" />
+            </Component>
+            <Component Id="cmp3BBC201E1D280F64818BDF6B411FA1AC" Directory="APPDIR" Guid="{B9886DFE-6BF9-4D35-B1A2-75F8139B9458}">
+                <File Id="filC23C10181CDF3989257DBD5392B8CCA8" KeyPath="yes" Source="SourceDir\glew32.dll" />
+            </Component>
+            <Component Id="cmp9C78BE23750043F80FD628F181C4D869" Directory="APPDIR" Guid="{64ED49E9-9806-471E-8B23-07AA18CA5D14}">
+                <File Id="fil982C694840B9091677F99547320C6296" KeyPath="yes" Source="SourceDir\icudtl.dat" />
+            </Component>
+            <Component Id="cmp0EAC46E929DD02E199FC46E3DB197B1B" Directory="APPDIR" Guid="{C4EA7C14-BE75-443C-A0AD-CC182FFD146A}">
+                <File Id="fil90A1553DF555253DC754739568E27619" KeyPath="yes" Source="SourceDir\MapDownloading.dll" />
+            </Component>
+            <Component Id="cmp9819A4CD8F7CF8044519748601629882" Directory="APPDIR" Guid="{75EB746B-FFED-4A19-9259-E3261B25C405}">
+                <File Id="fil178A8198A2F7B2F69028EDE53984A3A5" KeyPath="yes" Source="SourceDir\Qt5Core.dll" />
+            </Component>
+            <Component Id="cmp0FFFD5BB8B5FD9ECD4C638AB37532B89" Directory="APPDIR" Guid="{CBB3A16B-7EAA-4688-8A79-D1F736AB88AD}">
+                <File Id="fil34D01ADC9B9078D19F451E272EDC07CB" KeyPath="yes" Source="SourceDir\Qt5Gui.dll" />
+            </Component>
+            <Component Id="cmpC3BAC997F1F11669C0257903CDD3FCF2" Directory="APPDIR" Guid="{AD0ECBFB-3AB4-412F-B8F6-F421EC9D9598}">
+                <File Id="filD90BBB443B8926DF60B344C18C46E447" KeyPath="yes" Source="SourceDir\Qt5Network.dll" />
+            </Component>
+            <Component Id="cmp4DDABBDA4D3B4B54ED255B9206146DC4" Directory="APPDIR" Guid="{C6C18F5B-3C0F-4CC1-A87F-5B0FB2DEDDCA}">
+                <File Id="filA12A3C080ED81A9E4951BEDEA9A80CE0" KeyPath="yes" Source="SourceDir\Qt5OpenGL.dll" />
+            </Component>
+            <Component Id="cmpB5FF3C012ED55F4058FE212B43FEB590" Directory="APPDIR" Guid="{0F1DFD0A-206B-482C-8749-4D6562D76572}">
+                <File Id="filECC27F6C0D2D96F7DB7E70BEFE93F7CD" KeyPath="yes" Source="SourceDir\Qt5Qml.dll" />
+            </Component>
+            <Component Id="cmp2238C52C649707347A66B67DEF623C6B" Directory="APPDIR" Guid="{3B22EC9A-AEE3-46FF-8A97-872E908DC53A}">
+                <File Id="fil2CDB6B8DC78411C6ED229643965E2C24" KeyPath="yes" Source="SourceDir\Qt5Quick.dll" />
+            </Component>
+            <Component Id="cmp4BEA38BC706AAEE3CB7D780490B67D55" Directory="APPDIR" Guid="{55F4B8AF-8EFE-4020-B4ED-E78A6ED269C0}">
+                <File Id="fil30EF29E8B7A5A7D491A819E294EB8E00" KeyPath="yes" Source="SourceDir\Qt5Sql.dll" />
+            </Component>
+            <Component Id="cmpCA87911256E300F6FE6CE9A52E0699D1" Directory="APPDIR" Guid="{FA2EDF87-D814-4EA4-AE9A-72CDF80FA3BC}">
+                <File Id="fil911739496DF711537930AD8DCE0A466F" KeyPath="yes" Source="SourceDir\Qt5WebChannel.dll" />
+            </Component>
+            <Component Id="cmp5B977C537C226978821B1F8E4D3C98A2" Directory="APPDIR" Guid="{1D364573-9F04-47BF-B930-B64D64582706}">
+                <File Id="filD6995EBFE61B8620A3267E8776F36448" KeyPath="yes" Source="SourceDir\Qt5WebEngine.dll" />
+            </Component>
+            <Component Id="cmp3D7B92CAFF5C34C109A46641863E496C" Directory="APPDIR" Guid="{0DCA95D4-43D3-42CD-9727-825FEB976A97}">
+                <File Id="fil70C915F5E5CF3847E2C0383E1B53FC0F" KeyPath="yes" Source="SourceDir\Qt5WebEngineCore.dll" />
+            </Component>
+            <Component Id="cmp51E657D9AAA8ACE58019D58E5352CE95" Directory="APPDIR" Guid="{273C9BF0-A69F-4853-9FAC-F00DB0E2628D}">
+                <File Id="filA3E5062DA2C0136CDF9ABADF6CEA87D3" KeyPath="yes" Source="SourceDir\Qt5WebEngineWidgets.dll" />
+            </Component>
+            <Component Id="cmpB5127E8C5B3AFF2F8386007F781E6C5A" Directory="APPDIR" Guid="{F5BF984F-06F2-45AD-BB25-7792C4E5D4CD}">
+                <File Id="fil3EFE34197F61C2C293E5A6D495663546" KeyPath="yes" Source="SourceDir\Qt5Widgets.dll" />
+            </Component>
+            <Component Id="cmp9C98D4DDDFF0A6C08AFEC5124C9B351A" Directory="APPDIR" Guid="{47F5A6AE-08AB-4D9C-9B61-B76B4C85215D}">
+                <File Id="fil58AF14810814270931DB6E7D2EDFB645" KeyPath="yes" Source="SourceDir\QtWebEngineProcess.exe" />
+            </Component>
+            <Component Id="cmp1E98856629E94124E0391AE29FB8B997" Directory="APPDIR" Guid="{DDCD311E-C80A-4155-A222-40C25E42F93D}">
+                <File Id="fil4645A9912B0F8509F152344E8049C809" KeyPath="yes" Source="SourceDir\qtwebengine_resources.pak" />
+            </Component>
+            <Component Id="cmpCF3BEFD367011C6F0729E1A527956580" Directory="APPDIR" Guid="{693E91AB-1743-445A-A21A-21E2AEAC57C1}">
+                <File Id="fil4F5A3A968514E68EDB6974B4733F8295" KeyPath="yes" Source="SourceDir\qtwebengine_resources_100p.pak" />
+            </Component>
+            <Component Id="cmp50F5CB6F85C9B2C5B768F211862C32C2" Directory="APPDIR" Guid="{20F6DD57-65EA-4273-9FA2-C1E6C50CAE1A}">
+                <File Id="fil93E3C19E27C28D8AC5C6CBC0A179351B" KeyPath="yes" Source="SourceDir\qtwebengine_resources_200p.pak" />
+            </Component>
+            <Component Id="cmpF6B4C512FABCF16325F6BD2BF6A71503" Directory="APPDIR" Guid="{51A23366-D251-409D-9FA5-BD971F602CEC}">
+                <File Id="fil5A602A5DE9EE13B28026FCD8A4EE2184" KeyPath="yes" Source="SourceDir\SGXDataMapping.dll" />
+            </Component>
+            <Component Id="cmp49369BF8FCE98D61DCBA642E54FC43E8" Directory="APPDIR" Guid="{5A794044-80AC-4780-8F59-0AE237B480B4}">
+                <File Id="filA7A2A16ECEF5756E50475433948AE505" KeyPath="yes" Source="SourceDir\SGXDataTransformGUI.dll" />
+            </Component>
+            <Component Id="cmpD246EA9C1C21620D04BB53EE133A0311" Directory="APPDIR" Guid="{947523DC-775A-487E-8D41-9CA98FDB9F72}">
+                <File Id="fil98F333BC69512B7DA1955E746C71A7EC" KeyPath="yes" Source="SourceDir\SGXFoundation.dll" />
+            </Component>
+            <Component Id="cmp3EBF131940437E4AB1A2C97857DA55C0" Directory="APPDIR" Guid="{ED95309A-13EE-422C-B062-D69958457BA6}">
+                <File Id="filD477E5847B9A9D07ADAE0A72C17C2100" KeyPath="yes" Source="SourceDir\SGXGeospatial.dll" />
+            </Component>
+            <Component Id="cmpAB093DECA9BF8FAB9F22965D6AF869C4" Directory="APPDIR" Guid="{3099579E-A070-43B1-89E7-5D8596041FCE}">
+                <File Id="fil81813DABB43B24A564BBE1586D5CAD0D" KeyPath="yes" Source="SourceDir\SGXGlyphGUI.dll" />
+            </Component>
+            <Component Id="cmp8595BF758BB1335B693BDDEA043143C5" Directory="APPDIR" Guid="{E2233EE0-F2BD-4BDB-AB15-755A64465620}">
+                <File Id="fil49F19500E8C2682C95FF54F7C9CD9582" KeyPath="yes" Source="SourceDir\SGXGraphics.dll" />
+            </Component>
+            <Component Id="cmp8E2414F3F82CE273F52260B7E80BF340" Directory="APPDIR" Guid="{ECA30D3B-DEBC-4D5C-B215-FD3D926D258A}">
+                <File Id="fil200603F669B494778F59523942336886" KeyPath="yes" Source="SourceDir\SGXGUI.dll" />
+            </Component>
+            <Component Id="cmp52A69A9E3C7D2D27368E163E9E2EA077" Directory="APPDIR" Guid="{D983B9A2-758E-4956-8B83-C1128C833066}">
+                <File Id="fil5BF951E21F5D2A3FFD949005E76387DF" KeyPath="yes" Source="SourceDir\SGXImage.dll" />
+            </Component>
+            <Component Id="cmp650B4079292008046838C5B5B9A0CA67" Directory="APPDIR" Guid="{61CCA211-81EA-4911-92AE-7358C16BC36E}">
+                <File Id="fil21C2A77719CBFF8D559C6BEC05EDC458" KeyPath="yes" Source="SourceDir\SGXSceneViewer.dll" />
+            </Component>
+            <Component Id="cmp4D96873958CFDA43B7042DD26F5F09D1" Directory="APPDIR" Guid="{69DDEFDF-4AC9-4270-AAF3-12A9B2683FF6}">
+                <File Id="fil39534A89316BCF3D11D1425F4CEF1CA6" KeyPath="yes" Source="SourceDir\SGXUtility.dll" />
+            </Component>
+            <Component Id="cmpF8271FA4254660A50FFBBF1FADB948ED" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{009680E9-FCE5-47F4-B071-59AA264FB83D}">
+                <File Id="filAE6F059834753FCAC9ABD02BF852799F" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\cheatsheet_2014-06-29.txt" />
+            </Component>
+            <Component Id="cmp4F443FE5F8D19C9771B60FB4BE2099D7" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{516FCA95-C439-4E67-A0E6-074E08982724}">
+                <File Id="fil7725F1B249BA980265F268551BD59ED6" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\Glyph_Viewer_(Portable)_mac" />
+            </Component>
+            <Component Id="cmp82206208B1991558EB5DB0C7A27323A3" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{82888001-214D-4D2C-8D5F-530C2DCFAC23}">
+                <File Id="fil70B404C8236BB6483C33F1066D713727" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\libmysqlclient.18.64.dylib" />
+            </Component>
+            <Component Id="cmp413FF6B965515B21FFEB1FC963F89E69" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{8AD6C86B-452D-4840-AD9A-6BBBE66C1246}">
+                <File Id="filBCE7366E544D634F58A4E3EC6D21AB96" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\libmysqlclient.18.dylib" />
+            </Component>
+            <Component Id="cmp83FC686F420FB7F81CEBCECBFEBD5F8F" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{4F3B5F73-AD8B-496D-85D5-9498789C0033}">
+                <File Id="fil5F14C3CCEE4DCD2BF1EC8D6D16800432" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\LICENSE.txt" />
+            </Component>
+            <Component Id="cmpC2E3162BAEC7DB09619DD2F81CDCEE7A" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{8DAC546B-8C4D-47AA-A577-100A59BBDA88}">
+                <File Id="fil6CEC2A96E3CA46D28E0FACE7D5363E19" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\README.md" />
+            </Component>
+            <Component Id="cmp34E5457B7B5237B8374E041F26DA9CA2" Directory="dir25188EC9049549DEDE1E86197333D63B" Guid="{FD2AF313-9B07-4C58-AA77-1685288A9BE3}">
+                <File Id="filE87BB33E0FCCD421559EA6220A589406" KeyPath="yes" Source="SourceDir\ANTzMacTemplate\release_2014-06-29.txt" />
+            </Component>
+            <Component Id="cmp8D7F5707A086908804713DE8E64C6F2C" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{8E01B818-9239-4F91-A449-501196AC8F06}">
+                <File Id="filA8160E34591344CE9688A3D9EF29FB6E" KeyPath="yes" Source="SourceDir\ANTzTemplate\antz_release_2015-12-15.txt" />
+            </Component>
+            <Component Id="cmp0EC8292EAEEC7D97737DD9F398F065C4" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{5BAEE320-F8DC-4788-BE79-9CB9929672E3}">
+                <File Id="fil45CDC9E309AAB29C189CF0DB03085075" KeyPath="yes" Source="SourceDir\ANTzTemplate\cheatsheet_2015-11-17.txt" />
+            </Component>
+            <Component Id="cmp2EF85F740D549383A2EFBF2E4441BFF6" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{A9714832-056B-4922-B0F7-8B5C89CB004A}">
+                <File Id="fil33CBC7F2C5B864258AE709931AF8C66D" KeyPath="yes" Source="SourceDir\ANTzTemplate\freeglut.dll" />
+            </Component>
+            <Component Id="cmpE8BDE0B5D9692260CD5B8C042B7B6A48" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{FEF2C1C3-5E94-439B-AA62-A5661FEA632A}">
+                <File Id="filB5CFDFB1674B82650E95D983466F050D" KeyPath="yes" Source="SourceDir\ANTzTemplate\FreeImage.dll" />
+            </Component>
+            <Component Id="cmp9D5D43B323B6DAF4D96D3C49A4FC7AA5" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{4A66F8D0-99E0-445B-8CEE-3B3E32CA85BD}">
+                <File Id="filE07FC9E33D1E9C1E8C0B53137E4BBD7E" KeyPath="yes" Source="SourceDir\ANTzTemplate\glut32.dll" />
+            </Component>
+            <Component Id="cmpDF201D1F37032633A8CEE370CC55A72D" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{39BEC85B-8A74-4C76-BC92-C2799C815FAA}">
+                <File Id="fil4FCFF62BDD23C318B7E40D3C0D928365" KeyPath="yes" Source="SourceDir\ANTzTemplate\Glyph_Viewer_(Portable)_win.exe" />
+            </Component>
+            <Component Id="cmp3EB47CA3A7BEAB36C532E3886B57ECFF" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{87F5EFBB-8937-4C95-8280-9155574EA85B}">
+                <File Id="fil37BFE0823638811D2135E35E36B35570" KeyPath="yes" Source="SourceDir\ANTzTemplate\libcurl.dll" />
+            </Component>
+            <Component Id="cmpF75318BE08064F83B2AFEFACDA9D40FD" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{AB65A035-A1B5-4B97-A2E1-849EAB0CAFCC}">
+                <File Id="filB2F4EDAFAD013DCC6BF8896E4C852B42" KeyPath="yes" Source="SourceDir\ANTzTemplate\libmysql.dll" />
+            </Component>
+            <Component Id="cmpD4BA2B71C56E1C2B2783F8315E2E06B7" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{AC9EACCF-A592-4B50-A055-C13DD8D9B648}">
+                <File Id="fil6D67352140993DD25820BA53CA3D6C91" KeyPath="yes" Source="SourceDir\ANTzTemplate\LICENSE.txt" />
+            </Component>
+            <Component Id="cmp32B86E4DDC51AABCC41BB581929C8F6F" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{726DA313-562B-46E5-B998-4E834CCE7626}">
+                <File Id="fil57C8AE651B15FAD6692F8F3490D0FA1B" KeyPath="yes" Source="SourceDir\ANTzTemplate\msvcp120.dll" />
+            </Component>
+            <Component Id="cmp6C38F0F5030A4A3258783194ECD9F464" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{E20EDC1A-275D-4374-858C-0A26DED12DA9}">
+                <File Id="filA68C0086990BEDE5BBA1BBFE3BE876CB" KeyPath="yes" Source="SourceDir\ANTzTemplate\msvcr100.dll" />
+            </Component>
+            <Component Id="cmp5060CD7F83B2A4F45A12EF1EC534B64F" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{76ED3AD0-0A45-4E18-A9FF-7EC8C94F7A72}">
+                <File Id="filE62B2E42A8606A950C448EE72FA62A6C" KeyPath="yes" Source="SourceDir\ANTzTemplate\msvcr120.dll" />
+            </Component>
+            <Component Id="cmpA2374DCDCC00B0CE86163BCF5666769F" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{83EC3A33-5DAB-4C10-9D99-1C7D790B7A2B}">
+                <File Id="fil514D916B615707DCFCF89059AFBD4041" KeyPath="yes" Source="SourceDir\ANTzTemplate\nourl.html" />
+            </Component>
+            <Component Id="cmp00A6B4585962FFA6F59F40CF8D1E24F4" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{E39C32FD-F2CC-4724-9B62-C915E7176373}">
+                <File Id="fil229C592E7E4A2C6C27856CF8A21F5646" KeyPath="yes" Source="SourceDir\ANTzTemplate\README.md" />
+            </Component>
+            <Component Id="cmp2AC92DCB220A15E6ECB325C6E6A1050B" Directory="dirFC173A5B855460DC5054C6E89E87D8D5" Guid="{613A3ADB-1E50-4B3A-951C-F175119AAFC7}">
+                <File Id="filF021563C06BAE98A77AEF38F1320C117" KeyPath="yes" Source="SourceDir\ANTzTemplate\vccorlib120.dll" />
+            </Component>
+            <Component Id="cmp6AB00C82CA284D43CF245B076FF647B9" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{92785494-27B9-4D1B-8C12-7C805AB46851}">
+                <File Id="filACC2A54E3CC56800FCB54B4C424E5363" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\antz_release_2015-02-16.txt" />
+            </Component>
+            <Component Id="cmp6EFDEF5F11696D8724E1B757E4A27E5F" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{D8CC7E84-94A7-478D-813E-00DD6788252C}">
+                <File Id="fil56A38712F626A9B9BB19CD4624CC53DE" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\cheatsheet_2015-02-16.txt" />
+            </Component>
+            <Component Id="cmp3B1A0B076F9BE26B482D8BCACB0DF3A9" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{8D7E8374-92FE-4A01-8BCE-32FF6F486D88}">
+                <File Id="fil9BB441B429CAAA6ED4F69E6DB6A1E3C8" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\freeglut.dll" />
+            </Component>
+            <Component Id="cmp0EF20A6855109DB34031EF54975C980D" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{CAF0C28C-5AA8-4D52-BD5A-F90B33653CC7}">
+                <File Id="fil4757D8CB898BA60DC41BC9BDD1883A2B" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\glut32.dll" />
+            </Component>
+            <Component Id="cmpB07A194F7360F01FC1698F8448DA89E8" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{510E82EB-6F22-4071-9647-41AC3DBEE332}">
+                <File Id="filE01C227A3C9452956FDAB9E775A98B97" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\Glyph_Viewer_(Portable)_Z.exe" />
+            </Component>
+            <Component Id="cmp3342A3111590DC6F71176EC01A7F1D6D" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{A4522A4E-5803-4202-9012-4DD69B710EF0}">
+                <File Id="fil5C1E5436150AF34F72B3987964976590" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\libmysql.dll" />
+            </Component>
+            <Component Id="cmp6567A65E54C2DAE4D06C87B942A664AF" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{733EC9A7-D642-4143-9FDB-9E61FC4557C4}">
+                <File Id="fil90564B624A3E2D218AA8276F8D7C68E9" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\LICENSE.txt" />
+            </Component>
+            <Component Id="cmp1A71750FF3B1491C30B7A9810C4B4FFB" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{82A2569D-A89D-4DF8-9D22-880818A654A9}">
+                <File Id="fil1AA9C1176550ABB3E8D0A5102C6AF987" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\msvcp120.dll" />
+            </Component>
+            <Component Id="cmp7473D2F611C2DFCA6FBCDBDB5822FD15" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{0ABD20FF-1B6C-47D3-B354-B23E1C793A79}">
+                <File Id="filF04FADDB72C72CDAC30C9FA1F32B5449" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\msvcr100.dll" />
+            </Component>
+            <Component Id="cmp5FEB81060AF5ED260C4F8E1D20839F80" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{976B052E-D13E-4DFE-B06A-8A15E09CC35E}">
+                <File Id="fil21CBD829FC07DFC5092D2753324B85E6" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\msvcr120.dll" />
+            </Component>
+            <Component Id="cmp47643BB94BC8150B11C2E5B43703E887" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{89D94F6B-0462-4C9C-ACCF-C920CF449D40}">
+                <File Id="fil398110AB6755E37B7B3D13CD3EA858A5" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\nourl.html" />
+            </Component>
+            <Component Id="cmpAB30F60DF6410825914192BD3F9CB227" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{AE5644C7-0C50-4721-A048-62A6049C1E26}">
+                <File Id="fil2108C6B3320A69F02F4DCA01A8B4C53F" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\README.md" />
+            </Component>
+            <Component Id="cmp5EB84C5CA44D5FC3F22AD5B9D3964AFE" Directory="dir548B2BFBDB763CB54A2E482E2F835C58" Guid="{E8992EDF-5BAF-4890-BF68-A6F38C9CDD20}">
+                <File Id="fil346EB1EED893C64906CAAD28084B657F" KeyPath="yes" Source="SourceDir\ANTzzSpaceTemplate\vccorlib120.dll" />
+            </Component>
+            <Component Id="cmpA52ADBC20E790AFBF82482B5634F7FE3" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{8A23DDC6-DA7A-4839-B7C8-DBE74E0CD005}">
+                <File Id="filC5E5F307DC521F722D5BB7F2269995A3" KeyPath="yes" Source="SourceDir\database-drivers\commons-lang3-3.1.jar" />
+            </Component>
+            <Component Id="cmp0404B7F6075E3F527BB3F327153C33EA" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{14C3C437-ED92-4F06-9E51-5E0002B7C135}">
+                <File Id="fil54AD37C07021E5FFB47AF602147F964B" KeyPath="yes" Source="SourceDir\database-drivers\jsch-0.1.53.jar" />
+            </Component>
+            <Component Id="cmp72B9373DC238C5C3EE5448ED9B48BAC3" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{D3F83A4D-0DAC-4DF0-88FA-9A10624D5B30}">
+                <File Id="fil8437048BFF4E31F1BBFC631023953FD2" KeyPath="yes" Source="SourceDir\database-drivers\mysql-connector-java-5.1.38-bin.jar" />
+            </Component>
+            <Component Id="cmp7CE9766F2221FFBD0F37477384458D48" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{88A164E0-0C26-4E83-91DC-E9F2A875BC6E}">
+                <File Id="filF3514231306A762779B06C514E3266EE" KeyPath="yes" Source="SourceDir\database-drivers\ojdbc7.jar" />
+            </Component>
+            <Component Id="cmpE667D9AB91E23B284E434E7B17218BD6" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{3F57781D-67B1-4F5F-A53F-A932B8878DE8}">
+                <File Id="fil10EC00209A5B9059CA726FDAC27AB7A1" KeyPath="yes" Source="SourceDir\database-drivers\opencsv-3.7.jar" />
+            </Component>
+            <Component Id="cmp434A939DF9B30EF47C445C6584C11DC6" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{43498D78-28AA-4FE6-A17D-63ED32ACABC3}">
+                <File Id="fil4298A5FD16097CEB3279486A9EE2EEA4" KeyPath="yes" Source="SourceDir\database-drivers\postgresql-9.4.1207.jre7.jar" />
+            </Component>
+            <Component Id="cmp44CA36A42283D00B48F2CCEF3D0F7D59" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{2F7E1E5D-10DD-4ABC-8F2F-CEDFFA91C13B}">
+                <File Id="filC00C156D6B5D596E8876AE20C5812226" KeyPath="yes" Source="SourceDir\database-drivers\sqlite-jdbc-3.8.11.2.jar" />
+            </Component>
+            <Component Id="cmp14A8C1A6EEACADFC45CEE41EDF6692FF" Directory="dir92E109B6D00D53B1CBCC1716FBB876BC" Guid="{2F052793-8E95-4825-9413-6F444BF486A4}">
+                <File Id="filB2F86A6F72D983E1B187F83715A0F902" KeyPath="yes" Source="SourceDir\database-drivers\vertica-jdbc-7.2.1-0.jar" />
+            </Component>
+            <Component Id="cmp1C62EDE231C091F9C72E582B04DFCE17" Directory="dir067EB4EAAAF470F7557EF8FA2D451DC7" Guid="{CBACAB29-3124-4B59-B728-E76476EB07C3}">
+                <File Id="filAF941A2F061F74CFC85FBA1F56C01D3B" KeyPath="yes" Source="SourceDir\DefaultBaseImages\Black.png" />
+            </Component>
+            <Component Id="cmp12E81F6D83B5AB8DD3584BE8BA669CE7" Directory="dir067EB4EAAAF470F7557EF8FA2D451DC7" Guid="{F7DA598A-7A0B-4339-92E5-3F21FA01DCBA}">
+                <File Id="fil5EBCCE410085DB4AEA40F3921274841C" KeyPath="yes" Source="SourceDir\DefaultBaseImages\Clear.png" />
+            </Component>
+            <Component Id="cmp52481DE8128089F32399DA3ED44D9712" Directory="dir067EB4EAAAF470F7557EF8FA2D451DC7" Guid="{B45DB818-E60E-417B-A2C2-56E191860CC5}">
+                <File Id="filE0507768A998F0D8221314111E2E6869" KeyPath="yes" Source="SourceDir\DefaultBaseImages\Gray.png" />
+            </Component>
+            <Component Id="cmpB342B2EA946BBC367D085066DC42653E" Directory="dir067EB4EAAAF470F7557EF8FA2D451DC7" Guid="{B14FB992-4D20-4979-9AE6-BAD845A667CD}">
+                <File Id="fil57467D00BA52ACEE8DD74F499697211B" KeyPath="yes" Source="SourceDir\DefaultBaseImages\White.png" />
+            </Component>
+            <Component Id="cmpE72462125E23201CF9704B46D6AFAD42" Directory="dir067EB4EAAAF470F7557EF8FA2D451DC7" Guid="{451F350E-74CD-42D3-A39B-387F02668ECB}">
+                <File Id="fil03B597A6D9F2FC21ADEE213161E7B6A4" KeyPath="yes" Source="SourceDir\DefaultBaseImages\World.png" />
+            </Component>
+            <Component Id="cmp8593D7E2C4D290A38E10BD11DC8AAFC8" Directory="dir067EB4EAAAF470F7557EF8FA2D451DC7" Guid="{F6751C48-EF70-4380-BEED-D9F5724FD23C}">
+                <File Id="fil3429296C7150716341E4A3D07B536741" KeyPath="yes" Source="SourceDir\DefaultBaseImages\WorldGrayscale.png" />
+            </Component>
+            <Component Id="cmpA2148DB1BA6ED6D48C31A3EAC974D653" Directory="dir5CA73EAC6930FEDC84A5F2F703D80761" Guid="{AC80AB02-ECE2-4983-B6A0-CE99343BA1E4}">
+                <File Id="fil548EF3C27BF79CCAA0D156E367BBBA5F" KeyPath="yes" Source="SourceDir\fonts\OpenSans-Regular.ttf" />
+            </Component>
+            <Component Id="cmpA9CF30D3720555E2C8629D7A96DA2385" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{C3179F73-DD18-4663-AFD9-37D9A863C747}">
+                <File Id="fil2ED9709FA5A93F367D1868F940F2AF33" KeyPath="yes" Source="SourceDir\GlyphTemplates\1_to_18 Arm Template.sgt" />
+            </Component>
+            <Component Id="cmp454734FD4CCE982FE5754670C6368C9E" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{18C2B57B-1896-468B-ABE7-3076179F8C59}">
+                <File Id="fil96332EED2FE96D0823B4020FBA475A3B" KeyPath="yes" Source="SourceDir\GlyphTemplates\1_to_18 Torus Base Sweep.sgt" />
+            </Component>
+            <Component Id="cmpD484C61BA2D569B38D4A624ED3AC1848" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{394FFEAC-C50D-4072-AA12-3D5483936E87}">
+                <File Id="fil279811408F875E5B78FD8EC17F1E45B3" KeyPath="yes" Source="SourceDir\GlyphTemplates\Ball.sgt" />
+            </Component>
+            <Component Id="cmp0F19A3441BAC53DD3BE6DF6862A02D11" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{9DCFB755-2078-4733-A4F9-D8BBFFE234C9}">
+                <File Id="fil981E960F12E7E1D9CC78451C3E79F299" KeyPath="yes" Source="SourceDir\GlyphTemplates\Boat.sgt" />
+            </Component>
+            <Component Id="cmp348D532EA9879CFC7057E93DEBC9BCBD" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{6E25416C-14C2-49B9-9AB2-EF259789F680}">
+                <File Id="fil1AA4CAA81B17BD3ECF407FA823FFB628" KeyPath="yes" Source="SourceDir\GlyphTemplates\Box.sgt" />
+            </Component>
+            <Component Id="cmpE5B80EF251D6C687A670AE356B1EA9F6" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{677AFCEB-040A-4DC3-AE52-3620821C9258}">
+                <File Id="filE9E96FFD5C3C309A13FA1C7C1E090622" KeyPath="yes" Source="SourceDir\GlyphTemplates\Complex Tree.sgt" />
+            </Component>
+            <Component Id="cmp136316B7575ABB442D9AF2EA0A5A8B50" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{61F33CAD-7830-45BA-BC61-4C0D081C1AD9}">
+                <File Id="filD5E0418E2AFFC5A8584C748CA11B764E" KeyPath="yes" Source="SourceDir\GlyphTemplates\Cufflink.sgt" />
+            </Component>
+            <Component Id="cmpFE4D4FA3CB48E6C5DB85913DB661E4A4" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{2344F52B-B26C-46C4-9748-290E910C9D6D}">
+                <File Id="filF116BEC69964549EF969E1C956214CD6" KeyPath="yes" Source="SourceDir\GlyphTemplates\Eyeball.sgt" />
+            </Component>
+            <Component Id="cmp16687152B08B2AC3202B4BE4BC73CF30" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{FEE9D894-AFC2-47C1-8ED0-69E9A1EB3D68}">
+                <File Id="fil8E733A97DB0508CB77EE43297B3C9B59" KeyPath="yes" Source="SourceDir\GlyphTemplates\Lollypop.sgt" />
+            </Component>
+            <Component Id="cmp98DC477421946B0DE86FB90034807034" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{14C5D8CB-7983-45F2-B4B9-E7262202A75A}">
+                <File Id="fil908453E59D334ED38BF88A20981A158A" KeyPath="yes" Source="SourceDir\GlyphTemplates\Plane.sgt" />
+            </Component>
+            <Component Id="cmp12F9DF1CF2F4049AC06B245FE76B7918" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{20BCA92A-FFBC-4F56-89D2-8357F78B384A}">
+                <File Id="fil67DB7F10C06499CAEF40C9F2B96EA8F5" KeyPath="yes" Source="SourceDir\GlyphTemplates\Sacred Circles 1.sgt" />
+            </Component>
+            <Component Id="cmpE4CB2C3412226A82214DA6664DA93587" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{B0C21B64-C413-4C08-B85F-F13E715ED331}">
+                <File Id="fil28AC790D18C52510C26A39E03CD71B99" KeyPath="yes" Source="SourceDir\GlyphTemplates\Sacred Circles 3.sgt" />
+            </Component>
+            <Component Id="cmpC7FB741BD34682589FE780121DD23AF7" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{A86EBE51-91E3-4E3F-BDC8-59196DD481E4}">
+                <File Id="fil08C312DBEF72BC0CBBBC212FD36C15E7" KeyPath="yes" Source="SourceDir\GlyphTemplates\Sacred Circles 4.sgt" />
+            </Component>
+            <Component Id="cmpE53584A88F33D7BF153D8D330AC5AAC0" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{8DD03B88-803E-4AD4-BEB9-56941B6276AE}">
+                <File Id="fil0750506310FDC446931BF9715DF71B5D" KeyPath="yes" Source="SourceDir\GlyphTemplates\Single Arm for Rotation Offset.sgt" />
+            </Component>
+            <Component Id="cmp63331A1936CDF65ABA949A98ECD7109D" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{EBD9B568-5ED7-4487-9CC8-BBD0DD1FEEFA}">
+                <File Id="fil1F0C847D5D0284FB9F62455D913DF4EB" KeyPath="yes" Source="SourceDir\GlyphTemplates\Solar System.sgt" />
+            </Component>
+            <Component Id="cmp4F7431A4059B6A4D444B35BF123377EF" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{8D604804-E9DD-4C0E-9819-EE70A1783D0E}">
+                <File Id="fil47762F3CE83028C5485B448740783F3A" KeyPath="yes" Source="SourceDir\GlyphTemplates\Stacked Bar Graph Template.sgt" />
+            </Component>
+            <Component Id="cmpAE6CCADCFB4774550C8397F3606500EF" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{2CDEFD59-E8E8-42E8-B06E-318DE19B5D52}">
+                <File Id="fil3440767E0EACE5FA70CEEDB363F9B1A4" KeyPath="yes" Source="SourceDir\GlyphTemplates\Torus and 4 Spheres.sgt" />
+            </Component>
+            <Component Id="cmpF3BFBCEDD8EF7F5141CA15D1F5F5DEC7" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{2289ACB1-7AE3-41DA-8A05-69CC9E3BA9DB}">
+                <File Id="fil858A62BF4554DFAE9AB9EE7FD520DC92" KeyPath="yes" Source="SourceDir\GlyphTemplates\Tree With Spheres.sgt" />
+            </Component>
+            <Component Id="cmp30A4A62D51F3B1A3DE15CFBF4401A7B9" Directory="dir58C1EF176B33985D40140CE4D76DCA09" Guid="{16F94F67-9ABD-4A00-9851-3412711907B1}">
+                <File Id="fil166AC60F74A0B87AC5A5660411F9DB90" KeyPath="yes" Source="SourceDir\GlyphTemplates\Tree.sgt" />
+            </Component>
+            <Component Id="cmp17EACA701B54DCADA85B1FF38B605138" Directory="dir6DC156336536C64A87909EBAB5FB7717" Guid="{6FBAC361-DD3D-44F3-AC00-611B78906F1C}">
+                <File Id="filED54558AE242A9D1CFBBB2B954D68A06" KeyPath="yes" Source="SourceDir\help\index.htm" />
+            </Component>
+            <Component Id="cmp534CB6459BDDB2AC24EB320D387E0A81" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{5B57798C-53B9-44B4-86D2-298172ABAE13}">
+                <File Id="filAF4EE3DB5D623927BDE4584E42473E3A" KeyPath="yes" Source="SourceDir\help\images\dynamicxyz.png" />
+            </Component>
+            <Component Id="cmp0D7146E93052C89D9A8C2DE4B30615DA" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{D2CBCA3D-8EA3-415E-896E-8DEC3383A852}">
+                <File Id="filDFFDDE2FBAB279D4A115A952B4FD1C2A" KeyPath="yes" Source="SourceDir\help\images\elastic_filter.png" />
+            </Component>
+            <Component Id="cmpCC517A0AC28F0BE00A0FDCE34F42F6F8" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{35C650FA-FDA2-40AA-B4DB-0A6502A1F837}">
+                <File Id="fil44D2D6109B995550DAA242892DA47446" KeyPath="yes" Source="SourceDir\help\images\filtering.png" />
+            </Component>
+            <Component Id="cmp4980B358C0D2662970833408CE681632" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{1DA91714-295F-4C2D-B574-49314986A092}">
+                <File Id="fil9398444BADAA1F641126CAE31E710A56" KeyPath="yes" Source="SourceDir\help\images\fourarrows.png" />
+            </Component>
+            <Component Id="cmpC26EF890CE4E780E3833218C9883CADA" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{E186FDCB-B6D5-48B9-AE32-0B276B9ADD74}">
+                <File Id="fil7D12268268D098E1442BD7DAC5CE32AF" KeyPath="yes" Source="SourceDir\help\images\frontend.png" />
+            </Component>
+            <Component Id="cmp22A91940A6CF7EE1478A61F30CB8699A" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{56F0075B-7A60-43E7-AC7A-CD44DB2E3027}">
+                <File Id="fil7D5C29452A77DF7FD165DFF9F6CA854F" KeyPath="yes" Source="SourceDir\help\images\home.jpg" />
+            </Component>
+            <Component Id="cmp4F10D13ACF125D749EC3D45F4D4BCDE6" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{0CF6AA56-27AE-41BA-BBBE-5762912FFD82}">
+                <File Id="filABF2FF37B185476BE8440ECFE25733BD" KeyPath="yes" Source="SourceDir\help\images\homeheader.jpg" />
+            </Component>
+            <Component Id="cmp7F581FD7497E392DB9CD0C360F57610C" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{B8AA4A0A-30EC-4AAE-9DFE-7CF68D8DCAC9}">
+                <File Id="filA9EDF20A29C31E640723EA3EF7E1394E" KeyPath="yes" Source="SourceDir\help\images\hudaxis.png" />
+            </Component>
+            <Component Id="cmp2A97712FC1DC3BAADCA3037EDFF23C41" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{850D4943-16DE-41AB-8987-ECB80A8B1138}">
+                <File Id="filCB499D245AA6D8BBBFFF9B00E4272491" KeyPath="yes" Source="SourceDir\help\images\image008.png" />
+            </Component>
+            <Component Id="cmpC072E42783455FBB756F04017D96323D" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{30A0E7D5-2B35-413D-A5E8-794B50526672}">
+                <File Id="fil537A96141D30D8303CE95C4CD6A76A40" KeyPath="yes" Source="SourceDir\help\images\image009.png" />
+            </Component>
+            <Component Id="cmpF5E05FAC51439021DC206F6404171D81" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{FADEA85A-796A-48DC-95D7-617DE56B0D03}">
+                <File Id="fil10CC01662CB6D58B960BCCFAA14388BD" KeyPath="yes" Source="SourceDir\help\images\image010.png" />
+            </Component>
+            <Component Id="cmpAFDCF35FD3C4723674701535CF5149F4" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{58AFC8AD-13D4-4B22-BA07-8E8BB865A5C1}">
+                <File Id="fil19E7BACBF20CD7E8A0BEF6F627331EB0" KeyPath="yes" Source="SourceDir\help\images\image011.jpg" />
+            </Component>
+            <Component Id="cmp868F34FD43A86623B21F7F09DD67688F" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{C0ED8D03-14EB-4E2D-BB57-FDCC46FF0649}">
+                <File Id="filEECE04DB3E919AAA906BB3A1CFDBEAA6" KeyPath="yes" Source="SourceDir\help\images\image016.png" />
+            </Component>
+            <Component Id="cmp678DAC4E403971E03D2DF30EE230210A" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{99BC1E11-0DB7-4EFD-8695-B60477B2C8BA}">
+                <File Id="filE835DC0DA5BEAE80BD2632ED727469FA" KeyPath="yes" Source="SourceDir\help\images\image018.png" />
+            </Component>
+            <Component Id="cmp47E39BF70F59B6842484E2EC3DD0EB64" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{D18BF552-58FE-4E16-B9FA-59B01E0AA78A}">
+                <File Id="filB5F26423FD3D2842C3DE233305FDE94D" KeyPath="yes" Source="SourceDir\help\images\image020.png" />
+            </Component>
+            <Component Id="cmpEB2C92F667CEBB69AE90ED9E1CF6E734" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{B355B0ED-98CF-4F0A-905C-BDAC71AC8012}">
+                <File Id="filD6D0EC1F54BBC05B77B66B2337A501E8" KeyPath="yes" Source="SourceDir\help\images\image022.jpg" />
+            </Component>
+            <Component Id="cmpF712166C5A4A586EED1A5A1128BB32FD" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{13D40787-4B07-44C9-9D66-D884CD795E9E}">
+                <File Id="filD4D2CDAD85BFF27F9D30B8DC8A45AB02" KeyPath="yes" Source="SourceDir\help\images\image024.png" />
+            </Component>
+            <Component Id="cmp514D21D7E6A1AB9B28A1703CC9F51BFF" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{D55802D8-A2CD-4366-9678-7B5BBD33630E}">
+                <File Id="filC73791FD7F93F3A453A1F6EFA7890B01" KeyPath="yes" Source="SourceDir\help\images\image026.png" />
+            </Component>
+            <Component Id="cmpCDFC1C66D7A39C1A49E75EF947D48B36" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{CAB2E799-D4F7-4BBD-9D1A-9B090C25DE96}">
+                <File Id="filC2D4D316B699E88A66ACC46F0A2E8348" KeyPath="yes" Source="SourceDir\help\images\image027.png" />
+            </Component>
+            <Component Id="cmpE06C50260DCAE23C2CC7A5B298FEE2DF" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{48CC669E-7F06-40B1-B0FD-82A2507D5C2F}">
+                <File Id="fil6BF9B79004F83361C6D606F419047DFC" KeyPath="yes" Source="SourceDir\help\images\image028.png" />
+            </Component>
+            <Component Id="cmp05ABD0C4E57C9E0375A07F2E5FA81BBF" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{053B8690-734D-4897-8C3A-0B8AAE595216}">
+                <File Id="fil2AFF8940B23D474E5712FD73CFE2791D" KeyPath="yes" Source="SourceDir\help\images\image029.png" />
+            </Component>
+            <Component Id="cmp0CB62A0A3AA4967A8EDF444CFD0EC9CD" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{026DF473-CBCC-465F-960E-4E7BB17C5696}">
+                <File Id="fil925B9B51B8F3B436F752AF4EC44D5823" KeyPath="yes" Source="SourceDir\help\images\keyword_filter.png" />
+            </Component>
+            <Component Id="cmp64AD1F388820DFE9CF2438A8041892DE" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{2008299C-69F4-4AC8-8737-22608CFFC119}">
+                <File Id="filF1FF0EC7DBFBDDFECD6E2B85029B968B" KeyPath="yes" Source="SourceDir\help\images\legendsbox_ac.png" />
+            </Component>
+            <Component Id="cmp2719EF621400489A6F08CDAA00A5CAED" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{3A0F0267-2F97-4CF8-861F-84C2ABF07156}">
+                <File Id="fil20DA2994B9976ACB51C9433919F0F2C9" KeyPath="yes" Source="SourceDir\help\images\legendsbox_cc.png" />
+            </Component>
+            <Component Id="cmp2043725961DD0FDFC085B184552CA19D" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{02744026-208C-4760-A192-8FBC2B08154F}">
+                <File Id="fil8254CE32863FEB4522E4A22DAC21142C" KeyPath="yes" Source="SourceDir\help\images\legendsbox_ga.png" />
+            </Component>
+            <Component Id="cmpE7C3295D64FCC8018AA166F9269666EB" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{388343ED-44B8-4150-BE67-3FFF5D6E0F7A}">
+                <File Id="fil2B997D410CF42D2101CD01D622DA8EA8" KeyPath="yes" Source="SourceDir\help\images\legendsbox_hs.png" />
+            </Component>
+            <Component Id="cmp90CF3E357A9688C661F4E9AFC8F1B12F" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{F171E179-26C0-4397-A257-EAD674ABACA1}">
+                <File Id="fil16577F0FD96DD6F3E6349609A0F55353" KeyPath="yes" Source="SourceDir\help\images\logo.png" />
+            </Component>
+            <Component Id="cmp200EDA7BBEDB7202912C1C7855494698" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{A7E815FC-5E99-4C85-9222-8762B74EF561}">
+                <File Id="fil6D48624363398A07337FFC5363E242B2" KeyPath="yes" Source="SourceDir\help\images\mainscreen.png" />
+            </Component>
+            <Component Id="cmpCD3181DAD84150A96A69EA39C1C60F5D" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{309C1658-BBCB-4509-9FAA-AF224B14F69E}">
+                <File Id="filE87E6EC7DDA9D1E8A58D63728694929E" KeyPath="yes" Source="SourceDir\help\images\navigationarrows.png" />
+            </Component>
+            <Component Id="cmpB72F379A59BF328542164C6131A790AE" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{DA2BE42C-2136-47BF-961C-7BFED2A05C34}">
+                <File Id="fil9082356789A138EFA0CA507B8816E150" KeyPath="yes" Source="SourceDir\help\images\new_tp_img.png" />
+            </Component>
+            <Component Id="cmpCC472316B90A05E511A002886AFA9AA6" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{1370202C-3654-4081-874B-95131028279B}">
+                <File Id="fil0A537C2A340783FEC0B153A194F10B36" KeyPath="yes" Source="SourceDir\help\images\range_filter.png" />
+            </Component>
+            <Component Id="cmp30EDAE86F47BF0F6C58B0E6FBD03E193" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{1843BD10-CA12-4F3A-A2BD-B0CD2C582C8A}">
+                <File Id="fil5941A7128FC68144FEDC6438F97A72F3" KeyPath="yes" Source="SourceDir\help\images\textproperties.png" />
+            </Component>
+            <Component Id="cmp347932530BA571F15D45514D03D2025A" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{977D896A-B0D5-4E76-860E-20A3016ACB34}">
+                <File Id="fil7E060DF206CF0F5FC8FAADEC5552DA0C" KeyPath="yes" Source="SourceDir\help\images\timeanimation.png" />
+            </Component>
+            <Component Id="cmpCA92DDE7A0F4EC136104B6DD5CF1780A" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{C0039A77-D5AB-4B35-916D-8FB258577C65}">
+                <File Id="fil68471528A19D0143068B8D08440A470A" KeyPath="yes" Source="SourceDir\help\images\toolbar.png" />
+            </Component>
+            <Component Id="cmp0E1B23B87F27E830193509775A5EA363" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{AC59B4B0-06EA-4931-968B-35DE0647D892}">
+                <File Id="fil78870505E9A55A02166DFE445B0D26C3" KeyPath="yes" Source="SourceDir\help\images\updownarrows.png" />
+            </Component>
+            <Component Id="cmpCDF030CCF19419226076C29FB6C54F9B" Directory="dirF1958ECCFA026D61D521700BCB66349F" Guid="{7E324EB1-614F-4C6B-B512-D94C03CE71F2}">
+                <File Id="fil07A0C4B6C4797A5C64A2FF8B8BC7A43C" KeyPath="yes" Source="SourceDir\help\images\zoombuttons.png" />
+            </Component>
+            <Component Id="cmp54306651B6C3B4805711C204F5011FE6" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{8B3D49B6-0E4E-49D1-9D03-6F1AB1867056}">
+                <File Id="filEC75DAB2645D8344C0403ACF76BE53E0" KeyPath="yes" Source="SourceDir\help\images\icons\a_icon.jpg" />
+            </Component>
+            <Component Id="cmp3864FCBA916D4E64623DFEA9DA46826D" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{478CFE05-D8DF-4B0D-AF84-1281B9461521}">
+                <File Id="filD79FD65872054F91FD2DBBD624D19A0A" KeyPath="yes" Source="SourceDir\help\images\icons\cr_icon.jpg" />
+            </Component>
+            <Component Id="cmp04C169D43262886581B9C4DAEB3D5354" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{C2FF9A3A-E6BF-4FE2-94B8-6C809FDE1B6A}">
+                <File Id="fil8503FA67FFD95048F15DA63EBD469047" KeyPath="yes" Source="SourceDir\help\images\icons\fp_icon.jpg" />
+            </Component>
+            <Component Id="cmp19422126FD35327355C5F40DDE47991A" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{073655C1-66A8-4CC5-B251-2075802539EF}">
+                <File Id="fil79AB836DE8E80021A36724685C84B163" KeyPath="yes" Source="SourceDir\help\images\icons\l_icon.jpg" />
+            </Component>
+            <Component Id="cmp02EFA27C74E716051D9FE1D5A63A7066" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{B4D85262-3384-4255-9EB1-BB64E80C3615}">
+                <File Id="fil96CB0F298C68CF7A881C5621BD4125A0" KeyPath="yes" Source="SourceDir\help\images\icons\tp_icon.jpg" />
+            </Component>
+            <Component Id="cmpBB84A28E80C863D2CDC6B5AA647FD698" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{BC777ACB-356D-4F04-AA1D-9DD7FDD67B61}">
+                <File Id="fil6AE4523F27A8294518FF26A7A346A5E3" KeyPath="yes" Source="SourceDir\help\images\icons\t_icon.jpg" />
+            </Component>
+            <Component Id="cmpD56C486248112EE0DC6408592F20E56A" Directory="dir862746AD4B9E213E692A813002BF2705" Guid="{0855507E-CF06-4B98-9E80-4A4FF1DCC7D9}">
+                <File Id="fil6B8E179D56275B1AC66B4474CBC2C289" KeyPath="yes" Source="SourceDir\help\images\icons\xyz_icon.jpg" />
+            </Component>
+            <Component Id="cmpAACCDB5E83A2DCA654552ED3E0F72FD6" Directory="dir797417DF66B09EDF60EB27F3105A2F53" Guid="{346D2CF0-F0AA-4DE4-B82C-8740CE7BB3C2}">
+                <File Id="filB3A1910476067878EB2D574F82F70EB1" KeyPath="yes" Source="SourceDir\help\jquery-1.7.2\jquery-1.7.2.min.js" />
+            </Component>
+            <Component Id="cmp32D344D2E92739D673DDE803740192B3" Directory="dir797417DF66B09EDF60EB27F3105A2F53" Guid="{768B9CDE-302D-4AA4-A3E1-95F311B90538}">
+                <File Id="fil8A5FCF5B0826715359FCA0975F34231E" KeyPath="yes" Source="SourceDir\help\jquery-1.7.2\jquery-3.1.0.min.js" />
+            </Component>
+            <Component Id="cmpD52B2C9CAA7DD8EC8CE1BE1D3CB79F85" Directory="dirD5465C3D3026F693FE59AF339C77C57F" Guid="{9294A021-1BD2-46E0-BEB4-01761FFAEF87}">
+                <File Id="fil1F275673F972C3AEE697083AA310D457" KeyPath="yes" Source="SourceDir\help\pages\global.css" />
+            </Component>
+            <Component Id="cmp90784092D015E7886ED794F195949D34" Directory="dirD5465C3D3026F693FE59AF339C77C57F" Guid="{9F7E11EB-2388-47C0-A3DD-AAEB5EA97CEC}">
+                <File Id="filD04D05AB87892D84F6FD24AB4CB5FCF6" KeyPath="yes" Source="SourceDir\help\pages\home.htm" />
+            </Component>
+            <Component Id="cmp8A5181F716B322DB652093CE587668E1" Directory="dir05A70DDA66895C7F1981BE8F875FD189" Guid="{A601C6F4-EA74-420C-927C-07585068CE08}">
+                <File Id="fil9747022F824FBFFC46B9B7ECA3822846" KeyPath="yes" Source="SourceDir\help\pages\Filters\filters_ac.htm" />
+            </Component>
+            <Component Id="cmpACDAD533AE3D9E721A5B26B5BEA807E7" Directory="dir05A70DDA66895C7F1981BE8F875FD189" Guid="{2BF26660-61B4-4EE5-8FFF-E92E4903AE47}">
+                <File Id="fil45B489DA17B2980CB6C574502296B375" KeyPath="yes" Source="SourceDir\help\pages\Filters\filters_cc.htm" />
+            </Component>
+            <Component Id="cmpFB3D44856DBFC1DDD63FE4E3A35CD869" Directory="dir05A70DDA66895C7F1981BE8F875FD189" Guid="{3ED4098D-DD31-4E12-AE02-7414E3CC4797}">
+                <File Id="fil7688AE5B666E0BF2F9D5B88DD7B763E5" KeyPath="yes" Source="SourceDir\help\pages\Filters\filters_ga.htm" />
+            </Component>
+            <Component Id="cmp52AE3D57608E5117F01AACF1A178941D" Directory="dir05A70DDA66895C7F1981BE8F875FD189" Guid="{5C5B41A4-415D-4BA3-A896-21BC3583CBC0}">
+                <File Id="fil2E79045D45A6F1878A7C30B871A83737" KeyPath="yes" Source="SourceDir\help\pages\Filters\filters_gd.htm" />
+            </Component>
+            <Component Id="cmpEF54FA491FDC9F707C80DE719C7967F8" Directory="dir05A70DDA66895C7F1981BE8F875FD189" Guid="{AA684218-ECB0-4BDC-A17E-D47E139EB838}">
+                <File Id="filC32CCE8A324382B7B0EAD17647FB7FDC" KeyPath="yes" Source="SourceDir\help\pages\Filters\filters_hs.htm" />
+            </Component>
+            <Component Id="cmp0941ED581990FA1C423E13AE2A1F114D" Directory="dir492DFC5368D9FA69D568096392DBAC58" Guid="{9FB29485-E642-45AB-93D9-F16C13A70BC6}">
+                <File Id="fil526E88BBCA313986BD10C7BDE7CCBB86" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\selectionmenu.htm" />
+            </Component>
+            <Component Id="cmp0B26A538B0BF176065550FC98F0E3A6F" Directory="dir3BFD55F5B9E7121D08FA9290F1967826" Guid="{D2E47FF2-B7CA-47E5-B847-C7A42CAA9BE5}">
+                <File Id="fil5D9FDF78B4675A25977B520180019890" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Navigating the Viewer\basics.htm" />
+            </Component>
+            <Component Id="cmp1F49AC0B0D2A273490CFA99D5A7957D6" Directory="dir3BFD55F5B9E7121D08FA9290F1967826" Guid="{D30F4B7C-5A3E-443B-953A-13C49DD281B4}">
+                <File Id="fil886AEE1C5626B254C5EC1C918CB12E5C" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Navigating the Viewer\shortcutkeys.htm" />
+            </Component>
+            <Component Id="cmpD774F5D0B76BB6558434AE0810C3C6A1" Directory="dir3BFD55F5B9E7121D08FA9290F1967826" Guid="{076B688C-3A97-4D03-8E4C-34A3F7F6F7AD}">
+                <File Id="fil57C6515244AA62D37A74FF734D288402" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Navigating the Viewer\tagsshortcuts.htm" />
+            </Component>
+            <Component Id="cmpF9DE2B180C0255791922BF5BFD539295" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{4309EE88-1692-49A0-A6EF-C68D4B697D95}">
+                <File Id="filE5B4D1958FB1861D6B091DA5FCDD9706" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\axislabel.htm" />
+            </Component>
+            <Component Id="cmpA7F55A2C9753F877C3C843473E0BD4C3" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{499C1E3D-8A6A-42D6-A40C-DA6EFF6443A5}">
+                <File Id="fil86B5D6193CE99FE1306BC3B81FC79CA0" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\compassrose.htm" />
+            </Component>
+            <Component Id="cmpA3DF0831EF4DE1B5617106C2A38F783B" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{6B89F5EB-80F3-47A1-8F2F-0ECD57EBCCB5}">
+                <File Id="filCF0CB72D93F8D38AC7D24F3385769980" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\dynamicxyz.htm" />
+            </Component>
+            <Component Id="cmpA7A0157AD3F15BC83799019E950502D3" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{EF972DE8-6BFA-4565-9B7D-B5B3F988231D}">
+                <File Id="fil51D60FB22141D944A000FF24F610C6E0" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\legendbox.htm" />
+            </Component>
+            <Component Id="cmp067B744B1241CCB1C00AD19470CABE16" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{AABC337A-D9EF-482B-B362-7D30FC80DE4E}">
+                <File Id="filE31AD7A3CF88BD2E6F5BEFC755AE6847" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\textproperties.htm" />
+            </Component>
+            <Component Id="cmp56C3CF1BCF423139829C50DD16E89BBB" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{9D53DC7C-B9DE-40C9-A7E9-57598609CEDA}">
+                <File Id="fil60203D76F3671397CE628A73B2365CAC" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\timeanimation.htm" />
+            </Component>
+            <Component Id="cmp4F39037537E45E5B5F3416A1EEA21380" Directory="dir37B58FF9287DE49A8EB421071160C274" Guid="{DC99F74A-2847-488D-8C94-191BD60F2A3F}">
+                <File Id="filEFFB1261EAF941101C8C8722378974F1" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\toolbar.htm" />
+            </Component>
+            <Component Id="cmp15E833B13F0D7D90E7E797A1EABCFA50" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{05F2681C-0884-4B2A-AAEC-D4A0857D71F0}">
+                <File Id="fil4C006C484A49256DEE291C7812772DA4" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\elasticfilter.htm" />
+            </Component>
+            <Component Id="cmp39A2663314D7AFC9C7F2A0E455DF989B" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{3E660DCC-E3DF-40E6-A80A-0CFC6B68E970}">
+                <File Id="filA38B163545DBCC83CCB86ACAA3919E64" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\filtereddata.htm" />
+            </Component>
+            <Component Id="cmpD67468BBC6FA0AC39B63B268CA538E01" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{EB0D6197-A207-4A7B-8006-61DF7100DF75}">
+                <File Id="fil6C5C1043541ACEAEB61CD813C99AA98F" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\filtereddataoptions.htm" />
+            </Component>
+            <Component Id="cmp030856A68E9B3130490DC018E8D2D01E" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{67EAC914-D605-4195-A0E7-657994D5C3E9}">
+                <File Id="fil005DB88E5385C45D3754406CB892E635" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\keywordfilter.htm" />
+            </Component>
+            <Component Id="cmp16A81C4DA19024C1AFD42C2D4041D44D" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{05069235-087E-4F35-90D7-AD6A15394B5E}">
+                <File Id="fil33160D43C86907E3902A1276527F410A" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\rangefilter.htm" />
+            </Component>
+            <Component Id="cmpF044067515BDA2EDE30422B3E3E7A219" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{ADCB2282-F718-4469-B232-7D44BD39B0BE}">
+                <File Id="fil1B42F95A06B2ADEC678DE26E2EB667D8" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\selecteddata.htm" />
+            </Component>
+            <Component Id="cmp68C1884BAD1CF0907E0513EEB80C2C08" Directory="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Guid="{A156FAF4-FF74-41B2-BE07-2E7B08C81794}">
+                <File Id="fil7474F688B8655D350A14B47CC5265AD0" KeyPath="yes" Source="SourceDir\help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\subsetvisualization.htm" />
+            </Component>
+            <Component Id="cmpBB7342AA184D238E926B38A75BAB7537" Directory="dir841EF51720086B78E127E22385BD40E1" Guid="{09FCDB0C-E376-4CE7-940A-C2514272495A}">
+                <File Id="filFF109A0DF54968A01391E86DFCCCFA33" KeyPath="yes" Source="SourceDir\help\pages\Legends\legend_ac.htm" />
+            </Component>
+            <Component Id="cmp3144C28FDCF1AFFE5BDCB992051ED106" Directory="dir841EF51720086B78E127E22385BD40E1" Guid="{111C446D-EAA4-4AA8-97B3-AB9EFFFA257B}">
+                <File Id="filB5D9508935D4F88539E5CD9C860ADFC7" KeyPath="yes" Source="SourceDir\help\pages\Legends\legend_cc.htm" />
+            </Component>
+            <Component Id="cmp57B5C58FE69702B8D28C0A7D394832E2" Directory="dir841EF51720086B78E127E22385BD40E1" Guid="{F5FB17AB-8C9F-451D-8959-D8B8B0A95783}">
+                <File Id="filBC766816F9296CDA9D6FBB8C730BD0D8" KeyPath="yes" Source="SourceDir\help\pages\Legends\legend_ga.htm" />
+            </Component>
+            <Component Id="cmp62D456FE95BFF071E47AEFFE960F5439" Directory="dir841EF51720086B78E127E22385BD40E1" Guid="{39EE5772-3D9A-4971-8A91-732BFF1B9D99}">
+                <File Id="filA6844897A944B50821CD54F4E461CCAB" KeyPath="yes" Source="SourceDir\help\pages\Legends\legend_gd.htm" />
+            </Component>
+            <Component Id="cmpF7748BA1EF1194444E4651F26F3061A3" Directory="dir841EF51720086B78E127E22385BD40E1" Guid="{742E4723-2298-4017-A59A-B8B982E26664}">
+                <File Id="filA369D381986961F297C6019B46135D43" KeyPath="yes" Source="SourceDir\help\pages\Legends\legend_hs.htm" />
+            </Component>
+            <Component Id="cmp78C11CD109E0625100C8CB0B23BCB11A" Directory="dir62DB4CAE0439ECC38D50AB4A38645867" Guid="{E697169F-704D-4872-B0CB-AF9815CF5635}">
+                <File Id="fil86270A994FAFAD66D4FBAE5C7623312F" KeyPath="yes" Source="SourceDir\help\w2ui-1.4.2\w2ui-1.4.2.css" />
+            </Component>
+            <Component Id="cmp6B0A44C9534A7140337257B89F758D2A" Directory="dir62DB4CAE0439ECC38D50AB4A38645867" Guid="{CB5AC054-C867-47E5-8948-1DAAF38EE721}">
+                <File Id="filF5E511EB0C7E8C53D7D5680AE5905AAD" KeyPath="yes" Source="SourceDir\help\w2ui-1.4.2\w2ui-1.4.2.js" />
+            </Component>
+            <Component Id="cmp305B9D0168B8D8ACFA510CE2611DEE70" Directory="dir62DB4CAE0439ECC38D50AB4A38645867" Guid="{61710078-822D-4A84-B9E4-4EDC50BC2EB3}">
+                <File Id="fil779649347992BA4193DC9DE8E54D73A3" KeyPath="yes" Source="SourceDir\help\w2ui-1.4.2\w2ui-1.4.2.min.css" />
+            </Component>
+            <Component Id="cmp27087E0D8EEA8E52D8668C7527222CAD" Directory="dir62DB4CAE0439ECC38D50AB4A38645867" Guid="{FF4EB1E5-EA1B-4B04-A392-04D0274F77F3}">
+                <File Id="filCCCF7DC894CBDA93F9AB89946919CAFA" KeyPath="yes" Source="SourceDir\help\w2ui-1.4.2\w2ui-1.4.2.min.js" />
+            </Component>
+            <Component Id="cmp7665A1BEBB8F1BB8F3F1B0172B2B4E6B" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{7CF7DE2C-701B-47CA-A0A9-3A4406179AC5}">
+                <File Id="fil9A555FC99A1E9CB0BF21E9E36EB06063" KeyPath="yes" Source="SourceDir\jre\bin\attach.dll" />
+            </Component>
+            <Component Id="cmp772B5946B9394CC85FF11B135833C8C3" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{4B2B9B18-8FF8-4472-A67D-CCDFDDBA64E0}">
+                <File Id="fil7EA6A2BD061865E2A2981A61C2D9EB49" KeyPath="yes" Source="SourceDir\jre\bin\awt.dll" />
+            </Component>
+            <Component Id="cmp4CB5E8BB236731E7CD7CB35C253B5C2B" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{9E9E557B-A0F0-4F5E-A394-68B43DC6F4F5}">
+                <File Id="filCDC31AB63D154E83DBE910481F0617EE" KeyPath="yes" Source="SourceDir\jre\bin\bci.dll" />
+            </Component>
+            <Component Id="cmp31101838CABFB09FE562633127AB1F1D" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{662FF001-8A1B-48A3-AA4B-F3CA8B9FC0CE}">
+                <File Id="filEBD78FDC03E66052FA1B86C09C47897C" KeyPath="yes" Source="SourceDir\jre\bin\dcpr.dll" />
+            </Component>
+            <Component Id="cmpFD5FDCD79EC91FD7B88E0FA0DD483EA4" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{6C2E50EC-5C06-4EC6-A907-49FA1E77941F}">
+                <File Id="fil5FE008A322F1C806CA91946C15403E0E" KeyPath="yes" Source="SourceDir\jre\bin\decora_sse.dll" />
+            </Component>
+            <Component Id="cmp0B4E6DFDF18DFA7D46913427BABD07BF" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{ADA83FF5-72C9-447B-84D6-4501276E136E}">
+                <File Id="filAE125BDBF8824FDF47202EAC8CB95715" KeyPath="yes" Source="SourceDir\jre\bin\deploy.dll" />
+            </Component>
+            <Component Id="cmp4F113DFF9AC75BCCF19711F3A2735F71" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{FEC46556-B6CB-4E1E-9E9A-CE3DD6624555}">
+                <File Id="fil6806A0A9279922DC423155CFD028335D" KeyPath="yes" Source="SourceDir\jre\bin\dt_shmem.dll" />
+            </Component>
+            <Component Id="cmp383B5D87FB7E77C0D22CD679B2A69549" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{45E456C0-4DE4-4D9D-ABDA-5E2C21802516}">
+                <File Id="filBE238A4E31480E96F60551474FFBACED" KeyPath="yes" Source="SourceDir\jre\bin\dt_socket.dll" />
+            </Component>
+            <Component Id="cmpCEA33438DEE63E797A9C715DDEC48210" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{32837793-EC5D-4C2F-ACD2-0E89BE5AB727}">
+                <File Id="fil4749E77FBD371E1A1762466BABFB9F0D" KeyPath="yes" Source="SourceDir\jre\bin\eula.dll" />
+            </Component>
+            <Component Id="cmpC35AE476244BCA978D22F45D02D5D83C" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{4D295893-C86A-42F8-BB47-AACC4DFF48B7}">
+                <File Id="fil2E2D978BEC69DEE696228877DFD0E3A3" KeyPath="yes" Source="SourceDir\jre\bin\fontmanager.dll" />
+            </Component>
+            <Component Id="cmp1BD92ED90A7F02FEC4AF2A6840A3245C" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{DC2ACAF9-2E8E-4C21-A5D3-5427F84D4022}">
+                <File Id="filE449B936F7D420D2B9B9A30A7C9AE8BA" KeyPath="yes" Source="SourceDir\jre\bin\fxplugins.dll" />
+            </Component>
+            <Component Id="cmpF502C46633AF7C32F03CDCD4AB70F63D" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{7C2214F4-E601-4EA0-BC4E-1BB930CFA641}">
+                <File Id="fil37194E150D8805C36F8B2919BB712BB8" KeyPath="yes" Source="SourceDir\jre\bin\glass.dll" />
+            </Component>
+            <Component Id="cmp02420C47A2E5C26F5F67348F593C5F89" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{C8F2570B-29F8-42BA-A0DB-CF814CB3AD60}">
+                <File Id="filCD099EA93824887E554CD6752EBA59C2" KeyPath="yes" Source="SourceDir\jre\bin\glib-lite.dll" />
+            </Component>
+            <Component Id="cmpFCA717638210D0CC5F2DDE5A08F8C676" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{46545988-A3FE-44C2-9A8B-D22DD2B8390E}">
+                <File Id="filEF8C9CE67D2DAF1DA6E6AED94EA5EABA" KeyPath="yes" Source="SourceDir\jre\bin\gstreamer-lite.dll" />
+            </Component>
+            <Component Id="cmpD1CB92AF1B958EEFD988C2EDC0F3ECF1" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{464880B5-B3DC-4481-A94C-294B73FC40C3}">
+                <File Id="fil8AB37A6142A741F95C0B436B6C04F05B" KeyPath="yes" Source="SourceDir\jre\bin\hprof.dll" />
+            </Component>
+            <Component Id="cmp3899B04C6DF1065FEEE5A03108CD6FAE" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{022FE814-A5CB-40DB-BD6F-299350EC5D58}">
+                <File Id="filC57F90DD5EBDE65E7E89CB99EE18F090" KeyPath="yes" Source="SourceDir\jre\bin\instrument.dll" />
+            </Component>
+            <Component Id="cmp987AF4AFDABDEDE32764BFD512F86186" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{8DA3BC26-8F7F-40F6-832D-CFB4AB7319CE}">
+                <File Id="fil05C150F879B4FE06A1D51E92E5664F83" KeyPath="yes" Source="SourceDir\jre\bin\j2pcsc.dll" />
+            </Component>
+            <Component Id="cmpB66803EB6E89E354796792F7F8B5A4C0" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{993A8850-D347-4DBF-8CA5-1D2CB355F183}">
+                <File Id="fil83C7F75E33C0DA22783CE346BD7A39C4" KeyPath="yes" Source="SourceDir\jre\bin\j2pkcs11.dll" />
+            </Component>
+            <Component Id="cmp5A8A22A4FBF3B1D671ACC693AA66FC94" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{87512885-5DCE-42EF-9E62-3EF2F8F24E97}">
+                <File Id="fil1DDBE4150D388FE6FBB0A5FBF5BDB67A" KeyPath="yes" Source="SourceDir\jre\bin\jaas_nt.dll" />
+            </Component>
+            <Component Id="cmp93A1F5E5ED22B0F3C9D10FDE92342B3A" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{58AE3601-830F-4FA6-9D85-34538F18DAEE}">
+                <File Id="fil5242ED48750D4AF3950A402B1323C128" KeyPath="yes" Source="SourceDir\jre\bin\java.dll" />
+            </Component>
+            <Component Id="cmpFEAE6D7A804AA0C0175D38941C201CCD" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{091BE81C-ED27-48E2-8EC6-A4EEDD79BA29}">
+                <File Id="filADD5F350A5D15C061FFE51C177FC7A09" KeyPath="yes" Source="SourceDir\jre\bin\JavaAccessBridge-32.dll" />
+            </Component>
+            <Component Id="cmp37B6247E342181D4B0856964A427B7D9" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{A7C9267A-66AB-4C5E-9D1F-7029AD8E3EB2}">
+                <File Id="fil85ACCC1E9BB5626F0696B391F020B30D" KeyPath="yes" Source="SourceDir\jre\bin\javafx_font.dll" />
+            </Component>
+            <Component Id="cmp619436F844827403449836502E4B1D22" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{C2EBA2EF-1269-4407-8D4F-89514BD92F03}">
+                <File Id="fil77DEA390D4B711791F6BCFBD12F6C6FE" KeyPath="yes" Source="SourceDir\jre\bin\javafx_font_t2k.dll" />
+            </Component>
+            <Component Id="cmpC9649BE4BE557967BBD1D2E0666E2112" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{DA80BB36-7B4E-4A9B-A936-70B5C73968BC}">
+                <File Id="filC348B470F2F10E0375E05E2E1613F1CF" KeyPath="yes" Source="SourceDir\jre\bin\javafx_iio.dll" />
+            </Component>
+            <Component Id="cmpD5AD0DB295674E83C9F8F038F4A799B5" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{B8C7E56F-B564-4C14-A7E3-C2999DDE5CC3}">
+                <File Id="filE164C9B26D1AA4785072FB076BB741AC" KeyPath="yes" Source="SourceDir\jre\bin\java_crw_demo.dll" />
+            </Component>
+            <Component Id="cmpD8968F3744855CB7D59A65CBA910A40D" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{8AAE09FF-BD5A-4E64-BF5E-4533459B1096}">
+                <File Id="filAD310A337533B8C304B2C7339D38A87D" KeyPath="yes" Source="SourceDir\jre\bin\jawt.dll" />
+            </Component>
+            <Component Id="cmp5F6EAC605109D93C7D9F9B71F8851A50" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{74C9D723-483E-4BCB-B9D9-DC52E335287B}">
+                <File Id="fil3F57F3A4599F3F7CB5C1BC760B2FA634" KeyPath="yes" Source="SourceDir\jre\bin\JAWTAccessBridge-32.dll" />
+            </Component>
+            <Component Id="cmpEEAC618DA7E02FA8BEBC3D89EF95D929" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{D6DA3ADB-2E60-4B49-8431-0CCD81A95D33}">
+                <File Id="fil4BC9C9752BB2EC3A47BE0B314D254305" KeyPath="yes" Source="SourceDir\jre\bin\jdwp.dll" />
+            </Component>
+            <Component Id="cmp340D31808A5C25F6DFF51270076F1DDE" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{A72A86FA-62CD-4733-983F-A21D625A183D}">
+                <File Id="filF27029D8583A6C3D95817875037D00A6" KeyPath="yes" Source="SourceDir\jre\bin\jfr.dll" />
+            </Component>
+            <Component Id="cmp93FE3CF0DE05EF926ECA39F9DD0DDDF2" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{331CAC5C-3D1B-4491-A5B7-6B46E7AD40CB}">
+                <File Id="fil3C33411D8B951C637ADC28C6E84DA234" KeyPath="yes" Source="SourceDir\jre\bin\jfxmedia.dll" />
+            </Component>
+            <Component Id="cmpA9E578948F435AB5F55F3E1D8180B39B" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{D9786881-77A8-4F73-8315-DB685EE79032}">
+                <File Id="fil49199590A02560FF0A75AFA0F4738276" KeyPath="yes" Source="SourceDir\jre\bin\jfxwebkit.dll" />
+            </Component>
+            <Component Id="cmp15ED5976CF9D42A9E0A811BCF39C0ECE" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{3482BC17-5646-4A4F-B325-F872FC1EFF51}">
+                <File Id="filDEE7086D9267743A459D386D4C450FE1" KeyPath="yes" Source="SourceDir\jre\bin\jli.dll" />
+            </Component>
+            <Component Id="cmp32BBAC6E05AE5F5471D6FB1603568190" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{1507C1FF-9355-4C0D-91B4-21D084807922}">
+                <File Id="fil97B3EB745B2C62B36B1B538394F4AFD1" KeyPath="yes" Source="SourceDir\jre\bin\jp2iexp.dll" />
+            </Component>
+            <Component Id="cmpC3BEEBD817CFC2AA0CC9FB80C98E68B3" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{DA1C1C2D-4258-40DD-B7EE-DBBD87DF8CCF}">
+                <File Id="fil14C992B9531B7FCDAAED631030675928" KeyPath="yes" Source="SourceDir\jre\bin\jp2native.dll" />
+            </Component>
+            <Component Id="cmp524AF8B91D2AF44AE27A94D8DE88310B" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{3D741B1F-7F58-410F-99C2-7501D5714F8A}">
+                <File Id="fil8071E06B89C86D5AA56EA2ADC47D1F7A" KeyPath="yes" Source="SourceDir\jre\bin\jp2ssv.dll" />
+            </Component>
+            <Component Id="cmp993D3A7064B9B4FD0AF6F4D2E84E26CD" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{9A7CD792-1AF3-4587-93CB-50F5E6916A0E}">
+                <File Id="fil42CAB4E4E05EF95E2AEA119FD8B10E97" KeyPath="yes" Source="SourceDir\jre\bin\jpeg.dll" />
+            </Component>
+            <Component Id="cmpCD3D8E03475791E4C90AEDAB9C50974C" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{165A92D2-6AD9-4444-BBA4-77FFC446AD55}">
+                <File Id="filEEC79DE1A6DA8302E045AD6CA14787D2" KeyPath="yes" Source="SourceDir\jre\bin\jsdt.dll" />
+            </Component>
+            <Component Id="cmpE59E9DB71EBA05C12B51E6FFD4387B64" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{09675E0C-262B-485E-92BA-E6E82E1696EA}">
+                <File Id="fil2B42E00D82DF90BA0BF242DAF07248E3" KeyPath="yes" Source="SourceDir\jre\bin\jsound.dll" />
+            </Component>
+            <Component Id="cmp180C4C9198357AB4E2A9C89EAF7346BB" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{FADB59FF-AEC4-49DD-BEFE-55E3B7CF93BD}">
+                <File Id="fil8D05FF3782EAD0EF519E66FA07AEBA6D" KeyPath="yes" Source="SourceDir\jre\bin\jsoundds.dll" />
+            </Component>
+            <Component Id="cmpE2229CD5592D662A3B0A6C3AE1AC64CF" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{E0DA8616-6097-42A3-800B-06BFC12AA97B}">
+                <File Id="filF930D7415E74F40E290DE9EB8BCB4607" KeyPath="yes" Source="SourceDir\jre\bin\kcms.dll" />
+            </Component>
+            <Component Id="cmp2170207EE428704B3C90954EB72F2E4E" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{7C4B5EAC-D661-40B9-9D3A-07BFCC771154}">
+                <File Id="fil8A5310565272C1A94186954972554038" KeyPath="yes" Source="SourceDir\jre\bin\lcms.dll" />
+            </Component>
+            <Component Id="cmp094545820AED196096DDE1DF7C1BCF97" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{F9568809-86BE-4C0E-AB76-8496B407D1DF}">
+                <File Id="fil9B4EAA19EAC562024EA1F5406DE1940D" KeyPath="yes" Source="SourceDir\jre\bin\management.dll" />
+            </Component>
+            <Component Id="cmp323A62FEC63FB257B8EA71E4AAE0DD1E" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{E37D6980-256F-476C-80DF-358082CF06DC}">
+                <File Id="fil0BB4F798907C2BBDE5D418645F74E70D" KeyPath="yes" Source="SourceDir\jre\bin\mlib_image.dll" />
+            </Component>
+            <Component Id="cmpC5793F2768CA20C886EBD246E7EF9AC9" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{3E65CCC9-4E6C-4504-B571-38603108ED06}">
+                <File Id="fil209A1A64BA6EF06EC3FE0E6042E7B13B" KeyPath="yes" Source="SourceDir\jre\bin\msvcp120.dll" />
+            </Component>
+            <Component Id="cmpF2E2F2D1FE1268079F95218BC633D983" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{FCAA7A90-B9EA-40B0-9B3B-4B70ADFCDBD9}">
+                <File Id="fil7CAD4F7CC6AD7F717BF00317E4A518A0" KeyPath="yes" Source="SourceDir\jre\bin\msvcr100.dll" />
+            </Component>
+            <Component Id="cmpED00335CDCC33F55E6B73795BD221551" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{E7EFA5F2-6D09-4618-856F-D987C06C0221}">
+                <File Id="fil243A7F75BFA2DE0C40567CCDB3467D6B" KeyPath="yes" Source="SourceDir\jre\bin\msvcr120.dll" />
+            </Component>
+            <Component Id="cmp5F7A2CFC6E5DC1029FCC72D3FF7F463C" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{93D6B35D-CF19-483E-B49C-12CF5CDAE74A}">
+                <File Id="filB9005BCA4E13B894854717C4E57462E2" KeyPath="yes" Source="SourceDir\jre\bin\net.dll" />
+            </Component>
+            <Component Id="cmpA040DAE8C6AC821CF586ED07965716AB" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{39370C1F-DB25-4ED5-8D51-1FC17583D587}">
+                <File Id="filDC33CE20F64A78E5F6B073F9AE23E32E" KeyPath="yes" Source="SourceDir\jre\bin\nio.dll" />
+            </Component>
+            <Component Id="cmpA9A6EBE55D5C4EA1EEB43082EEF56C8D" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{6B00654F-BED5-495F-9D8C-4430DE2027E9}">
+                <File Id="fil8D9F2D7F3EC057CBB4EDE79EDF55723E" KeyPath="yes" Source="SourceDir\jre\bin\npt.dll" />
+            </Component>
+            <Component Id="cmp74E1F2E4E99AD07C5205A0CB184EECE9" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{FA3F9305-B709-42F3-A97B-1348E5571DEC}">
+                <File Id="fil810D115F08B23237B2DB35FEEBBFCD3C" KeyPath="yes" Source="SourceDir\jre\bin\prism_common.dll" />
+            </Component>
+            <Component Id="cmpE1EA3615103077F7BF858437769F19DF" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{9826D2C6-2D13-4C59-ACDF-97CAF7EEF0F9}">
+                <File Id="filFA18E095CFEC864A4A468AB22C3564F7" KeyPath="yes" Source="SourceDir\jre\bin\prism_d3d.dll" />
+            </Component>
+            <Component Id="cmp4095A627FD42789144E63F88F6D9E81A" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{1FD860C4-25AD-41F0-9789-6FFCE6D41E7D}">
+                <File Id="fil0E47B35D006AF4B45AFD6E6A4B22A189" KeyPath="yes" Source="SourceDir\jre\bin\prism_sw.dll" />
+            </Component>
+            <Component Id="cmpD261D530F8D36F0CFCFCC1F5A4E97188" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{719FBCEB-A2B8-4814-BE49-EAA73D88AF02}">
+                <File Id="fil1503985D1C3284B3918CB3A570876FC1" KeyPath="yes" Source="SourceDir\jre\bin\resource.dll" />
+            </Component>
+            <Component Id="cmp19D76AE5C5FA5ED8509034E96179735C" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{34781B9A-D299-43B3-AC50-785ABC3ADFB5}">
+                <File Id="fil5A4A7167377AC01B7B918323C905E88B" KeyPath="yes" Source="SourceDir\jre\bin\sawindbg.dll" />
+            </Component>
+            <Component Id="cmp6EAC2B5714EC2489A3E17528D4E5A693" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{643DAECC-A8DF-499A-BE89-A9A590AB8D31}">
+                <File Id="fil497BA6FC7EFE6CBFE919105A5D06ED47" KeyPath="yes" Source="SourceDir\jre\bin\splashscreen.dll" />
+            </Component>
+            <Component Id="cmpC7CF6C5F3A5344FC5590F20126E0128D" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{BF479195-2CB1-437A-8401-4EAEE48A26B5}">
+                <File Id="fil2516C1A676C98272214B1466DE0A6642" KeyPath="yes" Source="SourceDir\jre\bin\ssv.dll" />
+            </Component>
+            <Component Id="cmpAADD19222CB8FCF02BA1CAB926B42294" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{5DCE2D21-D654-4B10-AEFA-9A04A5B6A9BD}">
+                <File Id="fil2A0A5FDDABFEFE61D28FF374630AD7F4" KeyPath="yes" Source="SourceDir\jre\bin\sunec.dll" />
+            </Component>
+            <Component Id="cmp3238BF298AD3BB01579BB61DE51E9B89" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{4D36FEA4-B000-42F7-A6DE-F25B755176E1}">
+                <File Id="filCB4CA1E78309EE47BAC4E0BD603DACD5" KeyPath="yes" Source="SourceDir\jre\bin\sunmscapi.dll" />
+            </Component>
+            <Component Id="cmp524A47B46E66A903A9016D5B7C01C80A" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{129804CC-1C83-41EF-8359-A68AAA1D39D7}">
+                <File Id="fil988767BAD4F7208A3150E99131C6637F" KeyPath="yes" Source="SourceDir\jre\bin\t2k.dll" />
+            </Component>
+            <Component Id="cmp4192F6167C2CB56BBAA8E713ACCC030A" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{F556B18A-9367-494E-9621-4C11C13DD1E6}">
+                <File Id="filCBC590D539B5C347FC3E6B92A80BE256" KeyPath="yes" Source="SourceDir\jre\bin\unpack.dll" />
+            </Component>
+            <Component Id="cmpC8C120047CA3F914017F323582D00F61" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{2B0DFDA8-6E94-46C4-994B-6A82C2B2D9F1}">
+                <File Id="filA2FCB762F1BE05A49BBD3D80ACA4C0A5" KeyPath="yes" Source="SourceDir\jre\bin\verify.dll" />
+            </Component>
+            <Component Id="cmp150D7C53D145C79EC7727A0689A4A64D" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{F765C176-38EC-4EF9-A0B1-C2130C23C480}">
+                <File Id="filCE452F65975C1BEC51675E52F7167902" KeyPath="yes" Source="SourceDir\jre\bin\w2k_lsa_auth.dll" />
+            </Component>
+            <Component Id="cmp7FCC6ECC90E643C9274DE2E0E2618641" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{B3752EC0-3E97-404D-B94F-F17A9579A383}">
+                <File Id="fil3F20244F592BC5DE15F3249B6E044093" KeyPath="yes" Source="SourceDir\jre\bin\WindowsAccessBridge-32.dll" />
+            </Component>
+            <Component Id="cmpFCB09C9201DFB08D3CF9A1699206E7EC" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{EF09126A-5EB4-49B0-B1F0-47ACAF772FEB}">
+                <File Id="fil9644E92FA80014671F8C634C7155EDF4" KeyPath="yes" Source="SourceDir\jre\bin\wsdetect.dll" />
+            </Component>
+            <Component Id="cmp6F2C9EB3CBF8A97DDD7F5E6CE730CF87" Directory="dir2F86C55E107762ACCA1A8B34E8696CA1" Guid="{64F157E9-CC4B-49D0-94E7-339957C92379}">
+                <File Id="fil5713A0629F88FB8495CC1F2E6A9B6BE0" KeyPath="yes" Source="SourceDir\jre\bin\zip.dll" />
+            </Component>
+            <Component Id="cmpACA09B9B31DBD97BDA26017EABF63487" Directory="dirE4EA7CE2FF6E57CCF884416B85619ECF" Guid="{86DC55B7-706F-405F-B9BB-B8998C80FC81}">
+                <File Id="filF1BD487FA45945345B7BCD41A0AB7E93" KeyPath="yes" Source="SourceDir\jre\bin\client\jvm.dll" />
+            </Component>
+            <Component Id="cmpBB9B15C9F01F3755E5B0C7AB60984257" Directory="dir0DA09616A28871519CC177278EBF0F2D" Guid="{D055E434-5ECB-460F-BA80-979EEE8826E4}">
+                <File Id="fil8D2CB76B6810970FB92DD95E1288B71E" KeyPath="yes" Source="SourceDir\jre\bin\dtplugin\deployJava1.dll" />
+            </Component>
+            <Component Id="cmp2DD381D7BB05137475252A02D379181F" Directory="dir0DA09616A28871519CC177278EBF0F2D" Guid="{FDCD4FBB-732C-4866-862F-0A0E6BA43362}">
+                <File Id="fil404AACB37CA0DBDC4912BE0DF613627A" KeyPath="yes" Source="SourceDir\jre\bin\dtplugin\npdeployJava1.dll" />
+            </Component>
+            <Component Id="cmp0EB45A7E66A70F289625238CD455912C" Directory="dirA5667895C3D32E79FFD643F45A996470" Guid="{CA60210E-0697-46B0-9238-A11D30E59694}">
+                <File Id="filE1D3E0E60305997A377B301C0FB5BA95" KeyPath="yes" Source="SourceDir\jre\bin\plugin2\msvcr100.dll" />
+            </Component>
+            <Component Id="cmp60D96B6EF282E7AB4790827279EC2863" Directory="dirA5667895C3D32E79FFD643F45A996470" Guid="{47314403-7A54-4C2E-B2D2-20D5D3372B39}">
+                <File Id="fil9782C070AF1A939980C2890D479BBA7E" KeyPath="yes" Source="SourceDir\jre\bin\plugin2\npjp2.dll" />
+            </Component>
+            <Component Id="cmpC9FBD61A603D62B133474B0947F01807" Directory="dir8C6A3858DC34E82C362FE18F50107809" Guid="{6C70FE98-BA84-4890-B961-6278F5B0356D}">
+                <File Id="fil189073773E49AE2D63D777F8A862D80A" KeyPath="yes" Source="SourceDir\jre\bin\server\jvm.dll" />
+            </Component>
+            <Component Id="cmp98E57560C79380D2F3F63BDA540DCC3C" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{378CB717-4D6D-47D5-9FB9-0D028C16CC3A}">
+                <File Id="filCCB49E4D250369928C44B3CFA3971BE5" KeyPath="yes" Source="SourceDir\jre\lib\accessibility.properties" />
+            </Component>
+            <Component Id="cmp91954C820DE1BA45D47071D3EB8E3172" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{4EA991E4-3585-4147-80EF-A7615554B8BA}">
+                <File Id="fil213F90E0BA970F353676E8A55676197A" KeyPath="yes" Source="SourceDir\jre\lib\calendars.properties" />
+            </Component>
+            <Component Id="cmp568BD2EEEE29A5C46C5D39BC7C316045" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{45173C4D-8484-4F29-A630-8E91AA5AFC71}">
+                <File Id="fil53C861651F26B634B75796442271BF71" KeyPath="yes" Source="SourceDir\jre\lib\charsets.jar" />
+            </Component>
+            <Component Id="cmp49D32E4F54A9D723518AD0967CB7DAD6" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{81A481DC-0340-4EA1-BD6A-2E3447074073}">
+                <File Id="fil7FF4104F534E12BB976BEB0B5105BBFA" KeyPath="yes" Source="SourceDir\jre\lib\classlist" />
+            </Component>
+            <Component Id="cmp72372BABDBB4C27F157D3D1329CD14C3" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{3B064939-F886-4F66-A94B-3AEB63415DC2}">
+                <File Id="filB5044E4230A4CD579764684F97124CAA" KeyPath="yes" Source="SourceDir\jre\lib\content-types.properties" />
+            </Component>
+            <Component Id="cmp9556198AF3E377F9760560EF3A91F6C8" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{1BABA498-8484-46D6-83B5-3796640BDA00}">
+                <File Id="fil5C00EAFD9972067FDD11684E3F6BBC8C" KeyPath="yes" Source="SourceDir\jre\lib\currency.data" />
+            </Component>
+            <Component Id="cmp5A24D2D7FA5ECEF3C8361B3BA2F10916" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{46E59079-83ED-4553-B96E-487F0D34DB6F}">
+                <File Id="fil7C376997D7D5634EF5BC0A08ACEED054" KeyPath="yes" Source="SourceDir\jre\lib\deploy.jar" />
+            </Component>
+            <Component Id="cmp886845E20B237390E50C174D92C8A05C" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{CEF36BDA-C827-42CA-9AAB-0C048255FD91}">
+                <File Id="fil247C3117D21B681C9C037F61EFD76DDE" KeyPath="yes" Source="SourceDir\jre\lib\flavormap.properties" />
+            </Component>
+            <Component Id="cmp2D401E48B748D9553C2094030FB31B99" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{BF7AF5A0-085C-40C9-8AD0-2027F30014CF}">
+                <File Id="filB955F14CF6364810CD51A4F2063AFD90" KeyPath="yes" Source="SourceDir\jre\lib\fontconfig.bfc" />
+            </Component>
+            <Component Id="cmp4BBEBA0D96E3B0D81FB5731743A07BF3" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{722A2FD2-529A-4B05-9753-482D462DF5EA}">
+                <File Id="filAFFA80CE54A0938E4610C37F795C31B0" KeyPath="yes" Source="SourceDir\jre\lib\fontconfig.properties.src" />
+            </Component>
+            <Component Id="cmp894AD56171671B7AFDCC1978479699DA" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{16115C5D-3EF6-4C40-96E8-85218C76B99B}">
+                <File Id="fil47741DE4A12EC0A83C22436C125A5EAE" KeyPath="yes" Source="SourceDir\jre\lib\hijrah-config-umalqura.properties" />
+            </Component>
+            <Component Id="cmp11DCF36DC475E1361BC7CC1716ACE6F2" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{0D7A3153-069E-4626-8609-34607637FD57}">
+                <File Id="filFEE833CB9FBB0F276413C2D8419DB09D" KeyPath="yes" Source="SourceDir\jre\lib\javafx.properties" />
+            </Component>
+            <Component Id="cmpADE5AC4E06788F5C829417D526929AC8" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{BC0B0B09-2C5F-4488-A559-6FF3D35D85BC}">
+                <File Id="fil90077C7C9080E8B0AA1BBAAD86DE5CB1" KeyPath="yes" Source="SourceDir\jre\lib\javaws.jar" />
+            </Component>
+            <Component Id="cmpCF1B3E131B3EDBEAF0DC0A825DC5CAE8" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{4E154D05-2BBC-4893-8CD8-0E983E3840B2}">
+                <File Id="fil0DA27058E452AD7F32046B6FD5443F2A" KeyPath="yes" Source="SourceDir\jre\lib\jce.jar" />
+            </Component>
+            <Component Id="cmpE9E00819933F741F562D07A17ED922B2" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{349A781B-12BF-4346-A9FE-A7364399E905}">
+                <File Id="fil79F2D60ECBDDF9270DB468863C578DD4" KeyPath="yes" Source="SourceDir\jre\lib\jfr.jar" />
+            </Component>
+            <Component Id="cmp39268485C044459F924C26EF6E85F191" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{AFBBB858-A7A7-4808-8E6E-A83B241FC291}">
+                <File Id="fil08D5FF1A84307DF8A084EEAB042377C8" KeyPath="yes" Source="SourceDir\jre\lib\jfxswt.jar" />
+            </Component>
+            <Component Id="cmpDCFA9C839BB085FFC7B6959ED9C2379D" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{28409CAC-6504-416B-B90F-BC90B28BCC1A}">
+                <File Id="fil576E2DDCD6BB615E2D581B74B0A99CF8" KeyPath="yes" Source="SourceDir\jre\lib\jsse.jar" />
+            </Component>
+            <Component Id="cmpF42F440C8B004E014D7045B46F7063D6" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{F0566B2A-BA1E-4A2A-ACFA-1BB59FD093B3}">
+                <File Id="fil54D98888AEDE200625C9E7FB41D46B56" KeyPath="yes" Source="SourceDir\jre\lib\jvm.hprof.txt" />
+            </Component>
+            <Component Id="cmp933610CD9C2A6678D0943CDC9F37E47D" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{904310AC-A978-4D21-8B5B-28B9D773C4CE}">
+                <File Id="fil2AED0472A7127F5937C04210BCF34240" KeyPath="yes" Source="SourceDir\jre\lib\logging.properties" />
+            </Component>
+            <Component Id="cmpBE6645D3B2B97C890D0E579D62905661" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{07ACCEEF-4F86-49B3-A9F2-1F59C09FFB7E}">
+                <File Id="filF41BC7F3B813815B3DADF97B5D84F8AD" KeyPath="yes" Source="SourceDir\jre\lib\management-agent.jar" />
+            </Component>
+            <Component Id="cmpBC4CED36DEDE0BBCD15E8833A8A21F59" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{694F26AF-5A21-4145-BAA4-7B1F07CCA026}">
+                <File Id="filAE30F15AF7DAE9B9443950C7C84B0E6C" KeyPath="yes" Source="SourceDir\jre\lib\meta-index" />
+            </Component>
+            <Component Id="cmp1BA30C14DA5D4B973F54DB0CA29AED30" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{AECB4080-1914-4F74-A680-F1B006487DE7}">
+                <File Id="fil2FD4E36A826767EBBC5EB32428AEB282" KeyPath="yes" Source="SourceDir\jre\lib\net.properties" />
+            </Component>
+            <Component Id="cmp53DD0DBC6C372AAB340E532F0A7BD9EA" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{4C0B4EAD-2527-42B0-BFDD-2DDE1D7CDCAE}">
+                <File Id="fil4F6AEBA89B2992748560F1B420B43EBD" KeyPath="yes" Source="SourceDir\jre\lib\plugin.jar" />
+            </Component>
+            <Component Id="cmp57ED3AE608E7492B31FEC19B42C80185" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{FFB4C2A1-1C53-4086-BD53-9F50CC56B2F6}">
+                <File Id="fil7C661F07361E64382D11FFF53429FE27" KeyPath="yes" Source="SourceDir\jre\lib\psfont.properties.ja" />
+            </Component>
+            <Component Id="cmpF92A6C51D7037CB864B0D8419A2A4B67" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{84DB7FAA-81AD-4DA9-9388-679AA58077C8}">
+                <File Id="fil40F5DF62C8BC3F753DC2BD5B6D0FB602" KeyPath="yes" Source="SourceDir\jre\lib\psfontj2d.properties" />
+            </Component>
+            <Component Id="cmp5A4875A01D81E10F56202512EEDAB6D5" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{C7A5A9BA-D811-49A4-A962-BC1189894B8E}">
+                <File Id="fil8D8E08F8B52810ED601C4F9A8B50AF79" KeyPath="yes" Source="SourceDir\jre\lib\resources.jar" />
+            </Component>
+            <Component Id="cmp7FF44C0F678C9CCDB696802C4ED195D8" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{171A834F-65D6-4022-8BD0-5D0E2B292A2F}">
+                <File Id="fil20143EDD98F9D8E804C3C4976911B12C" KeyPath="yes" Source="SourceDir\jre\lib\rt.jar" />
+            </Component>
+            <Component Id="cmp345266DA15C3EB66C5A17984956D8A56" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{6C122E3D-1615-4A6F-8EEF-6594B5C5FD2F}">
+                <File Id="filFAD001866CDE413086A2D52EA8B544DA" KeyPath="yes" Source="SourceDir\jre\lib\sound.properties" />
+            </Component>
+            <Component Id="cmpD00D3292A9870051F2BC7193120843AF" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{810E5B5E-7533-42FE-BB6A-EC04764DE4FB}">
+                <File Id="filE6114A8EAADA0BEF68B51F555990D686" KeyPath="yes" Source="SourceDir\jre\lib\tzdb.dat" />
+            </Component>
+            <Component Id="cmp08654F1D2831B70D718FDC0E7946D8B7" Directory="dir182C7A988B53431E6AC74AFDA517D035" Guid="{775EF32B-55F8-4867-B5D8-5B1C48C6549D}">
+                <File Id="fil9B6625542365F2AFE14067F2B360F9D6" KeyPath="yes" Source="SourceDir\jre\lib\tzmappings" />
+            </Component>
+            <Component Id="cmp076DCA6736D42E87660A9B9697179086" Directory="dir4B957DD804B561FC73773573849D4054" Guid="{53962CB3-2277-466C-B45B-CC895E322726}">
+                <File Id="fil3A9D60E84B085111F554B14672F79AE7" KeyPath="yes" Source="SourceDir\jre\lib\cmm\CIEXYZ.pf" />
+            </Component>
+            <Component Id="cmpCED834C9A82DE30CD33680216ADA6093" Directory="dir4B957DD804B561FC73773573849D4054" Guid="{9A76BC27-AD31-4A1B-9545-2B9710923C79}">
+                <File Id="filE4FA5D540157CD520D0934A0CE7EA0EE" KeyPath="yes" Source="SourceDir\jre\lib\cmm\GRAY.pf" />
+            </Component>
+            <Component Id="cmpAE48962A7FBEE054B05841C8336E0990" Directory="dir4B957DD804B561FC73773573849D4054" Guid="{79492399-552C-43E3-A574-FD26CCDEA77A}">
+                <File Id="fil6B279FD126E5C099EE82631631F0C177" KeyPath="yes" Source="SourceDir\jre\lib\cmm\LINEAR_RGB.pf" />
+            </Component>
+            <Component Id="cmpB7B0DF725DBAF27EF51412CE85F7429D" Directory="dir4B957DD804B561FC73773573849D4054" Guid="{48D6C274-FEB7-406D-A8C6-2862455B896A}">
+                <File Id="fil5809A6830D79DC932860525B84C602DA" KeyPath="yes" Source="SourceDir\jre\lib\cmm\PYCC.pf" />
+            </Component>
+            <Component Id="cmp1E5BC9C95D3D97FEA8F0672D826D6033" Directory="dir4B957DD804B561FC73773573849D4054" Guid="{B9B26098-0A48-49DF-A45B-2E1F9F49D5E6}">
+                <File Id="filFC65BF169C7BB3063B4E7C55150E658A" KeyPath="yes" Source="SourceDir\jre\lib\cmm\sRGB.pf" />
+            </Component>
+            <Component Id="cmpB556429986B052142EFB283C9BF83D4B" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{64756771-0FCB-414A-A9F1-F5F58590D822}">
+                <File Id="fil017175211378108CA3C867CCC9FB7FAD" KeyPath="yes" Source="SourceDir\jre\lib\deploy\ffjcext.zip" />
+            </Component>
+            <Component Id="cmp26D4C3D963463B8503CD5DBD1BC3C29E" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{F8D28885-F6EE-42B9-A90F-734EA14F9680}">
+                <File Id="fil3AA8051BD90FB55A665D4088EE2996D0" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages.properties" />
+            </Component>
+            <Component Id="cmpDBA5BF388BF1456981C7802907047AC3" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{85204263-B64B-45CE-97B6-C925F357E1E9}">
+                <File Id="filF3F0BDEE8B364CB58F52A4981C48F7EA" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_de.properties" />
+            </Component>
+            <Component Id="cmpED2F32E6EB8869A230EDB8B7326F10E0" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{BAE2D660-19EF-4EAA-BCDA-B3930C2C34CF}">
+                <File Id="fil10274FC08DB952184817EB72BD20BD56" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_es.properties" />
+            </Component>
+            <Component Id="cmp568B97FA9BA51215A7959267F9559F4F" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{863E8FD7-0118-476B-A1CA-AB674E265AAA}">
+                <File Id="filA3285A614DD69CC56044033ECA08ADB4" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_fr.properties" />
+            </Component>
+            <Component Id="cmpAA465BC29823B34882BED95EE62151E5" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{611282EF-BE0A-4A60-91FF-0F51DDF25A7C}">
+                <File Id="filCA8A87309C5C8117939D5CC6BFB89C0D" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_it.properties" />
+            </Component>
+            <Component Id="cmp437E0E020D3CE4F4BCECBDF018B8775C" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{05DE6055-F4AA-453F-B485-E96D01E55BD1}">
+                <File Id="filBE0A7801438484250F61CD172043AB50" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_ja.properties" />
+            </Component>
+            <Component Id="cmp5E2FB8EDECB4BEC077D1D75229E9F4D3" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{A2404216-F446-4503-A607-C2AC12B5C7FC}">
+                <File Id="fil59AF4518990C95C6EAB21F71A9446A89" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_ko.properties" />
+            </Component>
+            <Component Id="cmpCAE0FE2A2E9D3DC6C68BCCC2475C77C0" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{16556EF7-87C0-4CFF-8678-63051598C882}">
+                <File Id="fil1D4BB64BFAECB5E11263A2569249AB50" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_pt_BR.properties" />
+            </Component>
+            <Component Id="cmp327C11C13C1678B2B0329481C94FEF14" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{DBAF9438-966E-4F89-AD28-85975D5A083E}">
+                <File Id="filFEB8AFF2A7DC8E3D6808EF56B48823F5" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_sv.properties" />
+            </Component>
+            <Component Id="cmpB8397AD4071CC759A916C297EB7962ED" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{3B6B5BBE-A70F-43F4-A47B-3F69686A666B}">
+                <File Id="fil94D6FA09FDD4C45420C44364457F79F5" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_zh_CN.properties" />
+            </Component>
+            <Component Id="cmpA442A126EECBC30B40A7E26515BA15B7" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{CF25E67C-1812-4B04-B318-F28D0436DDAC}">
+                <File Id="filB19332939D1E6AA0C15DB25EAFDB9550" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_zh_HK.properties" />
+            </Component>
+            <Component Id="cmpDB511F6F5F34BC761A7310BD0C40ECBD" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{B832FF37-2586-4484-BC10-6DB61D21075B}">
+                <File Id="fil3D2554441FCBEE1FBA232E136FC42A8E" KeyPath="yes" Source="SourceDir\jre\lib\deploy\messages_zh_TW.properties" />
+            </Component>
+            <Component Id="cmp9F56EBA151751BAC49AED0C4C67A972F" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{F76D61B8-F278-4CCD-82F2-24A62F3A2064}">
+                <File Id="filE5782F6AFC608FADFECD214416DEB455" KeyPath="yes" Source="SourceDir\jre\lib\deploy\splash.gif" />
+            </Component>
+            <Component Id="cmpC952AA58C546BDE379EA5B9D343DEBF4" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{4BA372F0-B3D0-4693-AE30-C4084608FAAD}">
+                <File Id="fil444FDCF52A04CEA847E1B56C31D232C2" KeyPath="yes" Source="SourceDir\jre\lib\deploy\splash@2x.gif" />
+            </Component>
+            <Component Id="cmp5B6161C1A0B1C8A4AD8643D6B2128A8F" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{AAC3AD3B-6A04-41B4-A369-E4B68A3F8DE6}">
+                <File Id="filC3CD80AD295929FF069E6E1A28AFFFF6" KeyPath="yes" Source="SourceDir\jre\lib\deploy\splash_11-lic.gif" />
+            </Component>
+            <Component Id="cmp3D6BB1FAB8B32200D9E90D65566EEE3A" Directory="dir4FBF5C54921858AA69490E802317B72C" Guid="{EF5D6E1C-BFDD-4BBE-8A7E-A303F7162C03}">
+                <File Id="filB254BA0D803327080B818D03618DC08B" KeyPath="yes" Source="SourceDir\jre\lib\deploy\splash_11@2x-lic.gif" />
+            </Component>
+            <Component Id="cmp60425F236C26DBDF3DDE3AC47A5CD543" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{3FB2450A-24E4-4723-82B9-04E164F5C92A}">
+                <File Id="filCB572AD2E062CE941645E16327CCEAC4" KeyPath="yes" Source="SourceDir\jre\lib\ext\access-bridge-32.jar" />
+            </Component>
+            <Component Id="cmp5D654F35903DE37838811D22D2B95F60" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{0CFEB5BE-9E23-4AD2-B21C-96F51E710FDC}">
+                <File Id="filA856C4E8292CB03D7FDFFAD86C73F757" KeyPath="yes" Source="SourceDir\jre\lib\ext\cldrdata.jar" />
+            </Component>
+            <Component Id="cmpFEBCE0E25E87FBA41E847855D67114C6" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{6016AFA4-8F98-414F-B42D-8241DE8795FC}">
+                <File Id="filD4E2017A0991F848F057B575BA8053E2" KeyPath="yes" Source="SourceDir\jre\lib\ext\dnsns.jar" />
+            </Component>
+            <Component Id="cmp60B55863EB61AFF8EC76899070B99E60" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{C35018DD-5EC5-4591-B1D1-C7D5261A3C52}">
+                <File Id="filCC3FDEC172B2865798F0C9E30CB3B88E" KeyPath="yes" Source="SourceDir\jre\lib\ext\jaccess.jar" />
+            </Component>
+            <Component Id="cmpB544DACDA732F42A1BBE16B57E352706" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{F652EEA9-2103-4CCC-9795-DB833F36E683}">
+                <File Id="fil5995FD14BD5C21805A0DF288E56B6773" KeyPath="yes" Source="SourceDir\jre\lib\ext\jfxrt.jar" />
+            </Component>
+            <Component Id="cmp8042DDE210C9252E51D295A8BCF7B515" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{8BC373F7-8943-4BDB-9B8A-B840876F36A1}">
+                <File Id="fil91108754069A816E988057EFC00A5305" KeyPath="yes" Source="SourceDir\jre\lib\ext\localedata.jar" />
+            </Component>
+            <Component Id="cmpFDD7FBBCF8FB261FBDF0E896DF36A40E" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{78C726D4-EA0D-4678-96C6-CE434BB4D0D2}">
+                <File Id="fil3AC7B27C77B86AC935DF7F5109ABB565" KeyPath="yes" Source="SourceDir\jre\lib\ext\meta-index" />
+            </Component>
+            <Component Id="cmpB553DB950786F46F28C5909B2A1C2AED" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{D8BA6D0B-65FC-4000-8A5D-22D4658AB7E1}">
+                <File Id="fil376B646A955600955FBF72B364AE14AE" KeyPath="yes" Source="SourceDir\jre\lib\ext\nashorn.jar" />
+            </Component>
+            <Component Id="cmpD646B6F210701B79B4F4855EF907A2FA" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{2F4B9B01-B1B5-4CB5-B38A-8EB42B4889C7}">
+                <File Id="fil77B0E135267534C8316BC547013C4B13" KeyPath="yes" Source="SourceDir\jre\lib\ext\sunec.jar" />
+            </Component>
+            <Component Id="cmp4B095CFF00DCE09356CBC5B4502AEBE4" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{EE15C445-2FD0-464D-9D59-6307DEE969F4}">
+                <File Id="filF6AEA2D7FBA2C905A809602809684C99" KeyPath="yes" Source="SourceDir\jre\lib\ext\sunjce_provider.jar" />
+            </Component>
+            <Component Id="cmpF94AC4A044E1BE6E5ED675BC20B45275" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{11356259-6BB9-45D7-915A-E274AE05FC0B}">
+                <File Id="fil0013D1C7677CFD489097856B95348E93" KeyPath="yes" Source="SourceDir\jre\lib\ext\sunmscapi.jar" />
+            </Component>
+            <Component Id="cmp2A1F8B4FC80526DDA883D52DE055ACFF" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{A656BC0D-5402-4192-8E23-A3F27AAC4CBD}">
+                <File Id="fil1185A4F1C0998A63F767830EDE99CE7D" KeyPath="yes" Source="SourceDir\jre\lib\ext\sunpkcs11.jar" />
+            </Component>
+            <Component Id="cmp84518EE738A65B9D878B341A4DABEAFD" Directory="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Guid="{101029EB-2A38-468B-9339-A69AED4704AB}">
+                <File Id="fil1613428E5614D2AC072CF5C3425A5983" KeyPath="yes" Source="SourceDir\jre\lib\ext\zipfs.jar" />
+            </Component>
+            <Component Id="cmpAC83803901086E8D713FD4B6F68B797C" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{66CA9A99-55E1-4C56-B943-0A798B24693D}">
+                <File Id="fil9686ECDF57EC39ABCE475A25E743176C" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaBrightDemiBold.ttf" />
+            </Component>
+            <Component Id="cmpD4ABB30E86F6F871A469C509707A38BA" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{96E165B2-9744-47A5-AA0C-D0C95D97863D}">
+                <File Id="filA2A9DE1D67F0EADC30DC69F4E5B368F2" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaBrightDemiItalic.ttf" />
+            </Component>
+            <Component Id="cmp269CDB448F8E376DED74CB91A8689DB7" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{5B319D89-C4A1-4C3F-BB35-4808DEFCB32B}">
+                <File Id="filF065E0115A516D8280BB29781BDB712E" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaBrightItalic.ttf" />
+            </Component>
+            <Component Id="cmpE8B88189279F7A27ED67C1CE92FCDE17" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{98519A36-B5CC-472D-AF02-8833C0BD2ADB}">
+                <File Id="filE8D891134DA066DDA7DFC52EBFFC64E7" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaBrightRegular.ttf" />
+            </Component>
+            <Component Id="cmp40A31F55CE0E1BBD92E883F94229B894" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{49901AEA-D987-4D3C-A65E-A0E3D35302D5}">
+                <File Id="filBBC982009588DC161AFCFED2450819F8" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaSansDemiBold.ttf" />
+            </Component>
+            <Component Id="cmp65891B5863AC969DBCAC995345770589" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{3C0FF088-05DC-4572-AB24-5054205FF202}">
+                <File Id="fil03278B2EA34AE5B9060EA9B364D00DBB" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaSansRegular.ttf" />
+            </Component>
+            <Component Id="cmp8FE861C83400B8469FA2C4F9C73D71E4" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{4E3F8DCC-ECAF-4C25-B02D-E23AA75E105B}">
+                <File Id="filCFEF8D111A3AEA82A1F5A755C405BAA4" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaTypewriterBold.ttf" />
+            </Component>
+            <Component Id="cmpD58D0FC535171275FD2F426F1A65DA57" Directory="dirC6C90F56480A3182EC05594D29233894" Guid="{FB1C6134-399B-454A-8CB1-81301C55419B}">
+                <File Id="filC74EEA919ECC2907C2DA6D2AFC0206C5" KeyPath="yes" Source="SourceDir\jre\lib\fonts\LucidaTypewriterRegular.ttf" />
+            </Component>
+            <Component Id="cmpA0222F122E524D2EDAB2AA8D2A22038E" Directory="dir2B060C928A3637A5C63C760BDCECF903" Guid="{13E843CC-0541-4887-AC04-C63583783D5A}">
+                <File Id="fil1AA4362EAA3E05C962EF05F38457A479" KeyPath="yes" Source="SourceDir\jre\lib\i386\jvm.cfg" />
+            </Component>
+            <Component Id="cmpA3433F079E11FF12D69D0EEA600BE568" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{2AFACBEC-81D1-4CC5-A8EB-F1E316659272}">
+                <File Id="fil7651B6DECD5FB372B8779AE2CE8E3BC9" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\cursors.properties" />
+            </Component>
+            <Component Id="cmp5CE4C2B2F8A2821430A6EF3EB39A9565" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{1FA52B79-A387-42E2-AB3E-44FF16A17FD4}">
+                <File Id="fil5BBDD1B97033260E09934EDA79766304" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\invalid32x32.gif" />
+            </Component>
+            <Component Id="cmpDA075E7B6FC11E51D01CC5C03610EB30" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{B48A58FD-C41C-41DE-A384-691D4B368583}">
+                <File Id="fil011CB3D427E8AEC5C1E80D87D4EC71A2" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\win32_CopyDrop32x32.gif" />
+            </Component>
+            <Component Id="cmp6EB7886058DBCEAE61F8CC76BEEDC547" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{95382E4B-20AF-4096-992F-876AEC87B53F}">
+                <File Id="fil02308613FB3F5DF29A8030CB52D1486E" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\win32_CopyNoDrop32x32.gif" />
+            </Component>
+            <Component Id="cmp081D9C88074378BD09ECDF860FF2F5B0" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{FEBA09F6-79EE-4699-9CF1-0536A1BA4BD1}">
+                <File Id="fil50987B5C3F460BB5E70E02BF45126478" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\win32_LinkDrop32x32.gif" />
+            </Component>
+            <Component Id="cmpCAD619C5579836510E572EF560775582" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{1CAC1D57-2144-4319-B9EE-1478E629051A}">
+                <File Id="fil5509CEAB0EEB79CCA14000CE6DAF74CF" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\win32_LinkNoDrop32x32.gif" />
+            </Component>
+            <Component Id="cmpA92077E0563F56751D41EE89158AAEBB" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{E7680AE7-5EDE-4416-9B68-2928CE479E3C}">
+                <File Id="fil3C14C26F9CEFF05B0384D0EE44E7C5B3" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\win32_MoveDrop32x32.gif" />
+            </Component>
+            <Component Id="cmp1AEACA0F8E105ECE78CB285EB0F5637F" Directory="dir068F6D05959C545B5E8A6A649E4CF5B1" Guid="{03D2A040-8D9A-46FB-9251-F1283CC388BD}">
+                <File Id="fil44514F3FA4F8392F30B652F59AD821FD" KeyPath="yes" Source="SourceDir\jre\lib\images\cursors\win32_MoveNoDrop32x32.gif" />
+            </Component>
+            <Component Id="cmp0E522B7CF07B8CD41F9D6B4855B2E41F" Directory="dir6257270F0E6E66BF4252A6D35D7B8AE8" Guid="{98A3ADEE-B774-4759-A3B0-90D3A2A6678E}">
+                <File Id="fil5E8D8554829391EA6D6EBB3C6F37BDB6" KeyPath="yes" Source="SourceDir\jre\lib\jfr\default.jfc" />
+            </Component>
+            <Component Id="cmpDE4863BC31D603CE14FCEF98DC8718FB" Directory="dir6257270F0E6E66BF4252A6D35D7B8AE8" Guid="{03571CBB-BB0A-4C98-96EB-80DADF672F45}">
+                <File Id="filDF4CE9DAD2EDAD32DE2F28BA149CD9DE" KeyPath="yes" Source="SourceDir\jre\lib\jfr\profile.jfc" />
+            </Component>
+            <Component Id="cmp051F08D373583DE379465BA310495D6B" Directory="dirE4E660DB3441E4F1F2BB4ED1B7AEB613" Guid="{430DCA7D-67E0-4205-96A1-009BF40A2817}">
+                <File Id="filCCA14DF5E66D7BDCB7393B4EE88C37B5" KeyPath="yes" Source="SourceDir\jre\lib\management\jmxremote.access" />
+            </Component>
+            <Component Id="cmpE42B329EC9608FC98BF5CB72D7C1D1ED" Directory="dirE4E660DB3441E4F1F2BB4ED1B7AEB613" Guid="{8C9BF892-E765-4BDC-8F6E-887DC68C37D2}">
+                <File Id="fil3EF27D5948E47078A35E830762BE7684" KeyPath="yes" Source="SourceDir\jre\lib\management\jmxremote.password.template" />
+            </Component>
+            <Component Id="cmp9CB51926EB7CC78F7321847864B5EFDF" Directory="dirE4E660DB3441E4F1F2BB4ED1B7AEB613" Guid="{96EE8C58-39EA-484B-82C5-3DCF1677CC78}">
+                <File Id="filE3D124775AEC98AF5641B65C6BC06453" KeyPath="yes" Source="SourceDir\jre\lib\management\management.properties" />
+            </Component>
+            <Component Id="cmp1B3A6E9234640A2F0EA7904C0A5FA7BC" Directory="dirE4E660DB3441E4F1F2BB4ED1B7AEB613" Guid="{772AA84C-A420-4480-AAAD-5D46A94656C5}">
+                <File Id="fil2F031F23F7D45BFAD4E737F1BF901535" KeyPath="yes" Source="SourceDir\jre\lib\management\snmp.acl.template" />
+            </Component>
+            <Component Id="cmp5E247AE478F4AD0EBAB2CB65BF2121C1" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{5791A7F1-D7D0-4BE9-B4E9-8133A10ED293}">
+                <File Id="fil6F07DE0F6C7BFADF9BAFD673BCBD3B61" KeyPath="yes" Source="SourceDir\jre\lib\security\blacklist" />
+            </Component>
+            <Component Id="cmp458E01FDEB0267501322B9ADA12414CC" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{092072EE-7253-4366-8C01-EBAAA4EBD697}">
+                <File Id="fil444ABA788EF473457F0F1EF3E79EA6AA" KeyPath="yes" Source="SourceDir\jre\lib\security\blacklisted.certs" />
+            </Component>
+            <Component Id="cmpC31634FC60143EAE92EF268C23C3A0E8" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{A9BFC674-15C6-4907-A289-72DADFD9114E}">
+                <File Id="filDDE03BFE0E7B4D67D1816607521A5690" KeyPath="yes" Source="SourceDir\jre\lib\security\cacerts" />
+            </Component>
+            <Component Id="cmp4E5B7F61556B131FC1D2210E9EDC64B3" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{59D30B82-5D0B-4D4B-A52C-EDC0D5DAD627}">
+                <File Id="filA92DCD2EDC661F27DBA6F11AE2812200" KeyPath="yes" Source="SourceDir\jre\lib\security\java.policy" />
+            </Component>
+            <Component Id="cmpE17F39368CD23565246F0FFA9AA20628" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{A06BA323-E127-4303-84E5-3FCDDE963942}">
+                <File Id="fil59956AF88B0260C015DDE9B02990C029" KeyPath="yes" Source="SourceDir\jre\lib\security\java.security" />
+            </Component>
+            <Component Id="cmpCB6614F9CF7DCEE35224282A9D6AA964" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{FB280568-0AFD-4931-AC67-11CEDDB64EDE}">
+                <File Id="filFB1A6F368DD425FCF83150B64D93FC86" KeyPath="yes" Source="SourceDir\jre\lib\security\javaws.policy" />
+            </Component>
+            <Component Id="cmpF0501C696E74177934D427B9D1D75262" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{7B353175-5207-472D-A49F-8A8847F0117A}">
+                <File Id="filFE5371E9952DE4B27DC2F2EC5F099BD1" KeyPath="yes" Source="SourceDir\jre\lib\security\local_policy.jar" />
+            </Component>
+            <Component Id="cmp6FE345A37AD5054C0D8BE7875C1038F1" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{EB09D763-2E11-4631-A04C-6F199E3F0870}">
+                <File Id="fil334F97E85E50459B3EC28CE75F498C5D" KeyPath="yes" Source="SourceDir\jre\lib\security\trusted.libraries" />
+            </Component>
+            <Component Id="cmp1FDDFBFC3CBE5BB978F0FE82BC97A18C" Directory="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Guid="{C3A30D63-D9A3-4691-9825-6EFAC48BDEE9}">
+                <File Id="fil1FE76FB5D25DE5E4A35FE8C371B96FD2" KeyPath="yes" Source="SourceDir\jre\lib\security\US_export_policy.jar" />
+            </Component>
+            <Component Id="cmpDB950982AA1A9FCE3616F969B2E0CC97" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{277966D4-C08B-4959-8F14-1A385528FBCE}">
+                <File Id="fil23E7EDE1900FD4E8751F573188DCBB99" KeyPath="yes" Source="SourceDir\meshes\axis_cone.dae" />
+            </Component>
+            <Component Id="cmp4F9CAEAC1CDC2B01D3F435843FABD327" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{0A2CC5BA-2180-4F2E-8869-DA92F7613A84}">
+                <File Id="fil1E09808C8E8B7902C8BBF8AD1E80769D" KeyPath="yes" Source="SourceDir\meshes\axis_cylinder.dae" />
+            </Component>
+            <Component Id="cmp112E6257C06B2C9950FDC8E8C6005EF3" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{9B50C814-A888-46E7-A8FD-E4A8A420ADBF}">
+                <File Id="filEEC057E818F43D66C8B7E6522191C114" KeyPath="yes" Source="SourceDir\meshes\cone_0.dae" />
+            </Component>
+            <Component Id="cmp0CBFF6FEE605BBCA8FEC3D7375415089" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{8B8E9DB2-0490-4E70-83F1-C9CAA94781F9}">
+                <File Id="filF32C38A705C4D846CA86489A89C19935" KeyPath="yes" Source="SourceDir\meshes\cube_0.dae" />
+            </Component>
+            <Component Id="cmp931FB15FCD52C3D7871847603F8936E4" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{E2222C9D-2BAA-448C-9B2F-089D5ADCA40D}">
+                <File Id="fil42D43D77F14AB564102EBA3E389A417A" KeyPath="yes" Source="SourceDir\meshes\cylinder_0.dae" />
+            </Component>
+            <Component Id="cmpB4EDCC5AC296D0747CFC84820D4134D6" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{B3A8ADD4-92F3-4CB6-917D-579904954301}">
+                <File Id="fil85CC36688D7068932E01DCB94846E33B" KeyPath="yes" Source="SourceDir\meshes\dodecahedron_0.dae" />
+            </Component>
+            <Component Id="cmp9826CC143C3A36473D982BA461B3080C" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{B83928AE-AFBE-495D-A05A-FD8E09D1BA5E}">
+                <File Id="fil21388AF89DA3D4D920DD0D483BDFD4A5" KeyPath="yes" Source="SourceDir\meshes\icosahedron_0.dae" />
+            </Component>
+            <Component Id="cmpD3260EED73B5DFF2C16F3BFDC358F29A" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{F4C9F2C8-F475-419B-AFF9-05A7CAEBC771}">
+                <File Id="filCA600CD57C57C5DA1481B39A2B9DF45F" KeyPath="yes" Source="SourceDir\meshes\link_cube.dae" />
+            </Component>
+            <Component Id="cmp78D083C369B1327B3C05F3BF19660002" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{F33340D8-EEA9-460D-9B0F-CBBF4552F49A}">
+                <File Id="fil996F6F89C491D5FB9178F00694448E92" KeyPath="yes" Source="SourceDir\meshes\link_cylinder.dae" />
+            </Component>
+            <Component Id="cmp1ADA59EA49102481B1F7A109AC9CBD1C" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{AEC60ECA-44A3-4F8C-9A17-70138C971EFF}">
+                <File Id="filABE610F5C5790B0D74501EA204AE10CA" KeyPath="yes" Source="SourceDir\meshes\octahedron_0.dae" />
+            </Component>
+            <Component Id="cmp32F9E0D8E771E3559E5D4D29C6596396" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{D745C8B0-AC2C-49CE-9139-4EE6A4DEA056}">
+                <File Id="fil6235B499A08864F424AB776DC7D25FD0" KeyPath="yes" Source="SourceDir\meshes\pin_1.dae" />
+            </Component>
+            <Component Id="cmpE8A8FF573E3AE831E8D977A24C61EBE6" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{10CC309F-EA97-436E-89D9-7B5976212597}">
+                <File Id="filB614A8C2242C4B76F2D60F3A220C37B4" KeyPath="yes" Source="SourceDir\meshes\sphere_0.dae" />
+            </Component>
+            <Component Id="cmp6FD42BEEF9F909A79C74A932A02EA35A" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{400AE4FF-1402-41D0-8938-59CD33C9B967}">
+                <File Id="fil5AEEDCBCD291A1C322894F0D63FF74FA" KeyPath="yes" Source="SourceDir\meshes\sphere_1.dae" />
+            </Component>
+            <Component Id="cmp67CEBF924620518296854AFE97CCF3E7" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{DB25F6EC-1E3C-4F71-B1A0-86757689083C}">
+                <File Id="filB1913AFCB92B6AE6FEF2B1CA11EA4E9E" KeyPath="yes" Source="SourceDir\meshes\sphere_2.dae" />
+            </Component>
+            <Component Id="cmp9A7FC073FEE2B09F9BC070646DA9E0BE" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{7F62E2B3-A936-44EF-9918-E06C46CBF2A5}">
+                <File Id="fil03DCA27AAFEA6B5E10662791FC0D3389" KeyPath="yes" Source="SourceDir\meshes\sphere_3.dae" />
+            </Component>
+            <Component Id="cmpACDC0D8CD32D51232523DC0B1C916789" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{5269DE05-E108-406C-98DF-6E944D6E47BA}">
+                <File Id="fil3C881AE7A2B971BFB9EDFF6CF10879CC" KeyPath="yes" Source="SourceDir\meshes\tetrahedron_0.dae" />
+            </Component>
+            <Component Id="cmpF1406B07B9F1CAEB9FE96FDF94F88788" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{EEA2A08E-FAE0-41EE-8C41-0FE9FC1D3C6B}">
+                <File Id="filD0251F8699F8C0F8B9D61CDF0E3A5A57" KeyPath="yes" Source="SourceDir\meshes\torus_0.dae" />
+            </Component>
+            <Component Id="cmp4102BA33D4D8F04F19790591A5FA99BD" Directory="dirCCAEBE1269551C0F1D0E180DD6EFD907" Guid="{43EDB7B8-398F-462A-84D7-8860BCC2D5AF}">
+                <File Id="filD60D4165F069164F3A0155C1C08AB6FD" KeyPath="yes" Source="SourceDir\meshes\torus_1.dae" />
+            </Component>
+            <Component Id="cmp4A35445166CF43043DF02457D3B09DB5" Directory="dirD2B5D6F3F297CDECF7BAEA5AE7787256" Guid="{AC20DE4D-6094-438C-B321-560295EDD16A}">
+                <File Id="filEA8CC2F5B0BB8BB42F9F2060090EED61" KeyPath="yes" Source="SourceDir\qt_plugins\audio\qtaudio_windows.dll" />
+            </Component>
+            <Component Id="cmp45B3ACEDB1A739AE92969A3ADC4D412B" Directory="dirD2B5D6F3F297CDECF7BAEA5AE7787256" Guid="{23FDD60C-2C52-49BF-BCAA-568DF7F66C4B}">
+                <File Id="fil3BC42962F8623D0CD6CF7E561A871A30" KeyPath="yes" Source="SourceDir\qt_plugins\audio\qtaudio_windowsd.dll" />
+            </Component>
+            <Component Id="cmp7E9DB654C928558615296065245BE179" Directory="dirD2B5D6F3F297CDECF7BAEA5AE7787256" Guid="{31FD9F96-596A-4003-A103-16B8EB52E938}">
+                <File Id="fil867FF480014C195942DF777515D2682B" KeyPath="yes" Source="SourceDir\qt_plugins\audio\qtaudio_windowsd.pdb" />
+            </Component>
+            <Component Id="cmp7443DC8262D875F12432E3170377BE65" Directory="dirA874BE9574A5FCE08B9941B5B48ACFC9" Guid="{73FB25D5-71DB-4E4F-9524-C7F90B75CBAF}">
+                <File Id="fil697F3123819854B0E74CF567701EC2ED" KeyPath="yes" Source="SourceDir\qt_plugins\bearer\qgenericbearer.dll" />
+            </Component>
+            <Component Id="cmp659D19430275E77D49CC8DF97D388773" Directory="dirA874BE9574A5FCE08B9941B5B48ACFC9" Guid="{76EAD786-5318-4487-B03D-945A83497AEE}">
+                <File Id="fil14351F8FC7E7FA6060188546BD91D6D9" KeyPath="yes" Source="SourceDir\qt_plugins\bearer\qgenericbearerd.dll" />
+            </Component>
+            <Component Id="cmp8A956D72517DC2A3C767A8627291D972" Directory="dirA874BE9574A5FCE08B9941B5B48ACFC9" Guid="{1A03C959-27DB-4918-AA01-1C029756EE2A}">
+                <File Id="filCFAB27164716D5CAD8D840014B102815" KeyPath="yes" Source="SourceDir\qt_plugins\bearer\qgenericbearerd.pdb" />
+            </Component>
+            <Component Id="cmpDE6C09075282E806B6709E7E886226D8" Directory="dirA874BE9574A5FCE08B9941B5B48ACFC9" Guid="{74178770-E331-4CB0-AC2D-24236A5B8FB4}">
+                <File Id="filA2A33A059C9E371B37F3D670BD86D717" KeyPath="yes" Source="SourceDir\qt_plugins\bearer\qnativewifibearer.dll" />
+            </Component>
+            <Component Id="cmpE758A195B59248546B80C1691F5A450C" Directory="dirA874BE9574A5FCE08B9941B5B48ACFC9" Guid="{25BAD85B-502A-45DC-8AC3-0FA0B1FD103D}">
+                <File Id="fil1992169A368786727583FC991959BC09" KeyPath="yes" Source="SourceDir\qt_plugins\bearer\qnativewifibearerd.dll" />
+            </Component>
+            <Component Id="cmpAC7B3916CF7C69CC4EF497C02FCAE2F3" Directory="dirA874BE9574A5FCE08B9941B5B48ACFC9" Guid="{720DED08-C334-47FC-9F9C-02E927F6C6DD}">
+                <File Id="fil8269D1D59A410D453A2BB60AAC62A066" KeyPath="yes" Source="SourceDir\qt_plugins\bearer\qnativewifibearerd.pdb" />
+            </Component>
+            <Component Id="cmp187005046EF948BCC571BC0F0D8C6565" Directory="dirC3AE05EBEB105FD0ED172DC61912C940" Guid="{0AF652BD-E633-4A59-B021-7B738FC93F58}">
+                <File Id="filB594338E234870CDCAE250C4D6FAF609" KeyPath="yes" Source="SourceDir\qt_plugins\canbus\qtpeakcanbus.dll" />
+            </Component>
+            <Component Id="cmp0CD3507ACAB35D86362F07052296DAE7" Directory="dirC3AE05EBEB105FD0ED172DC61912C940" Guid="{EB92A76A-B846-41AB-A826-8E3F6A461BEA}">
+                <File Id="fil9E88005106C10F6FAADF9CD3D64FC7C8" KeyPath="yes" Source="SourceDir\qt_plugins\canbus\qtpeakcanbusd.dll" />
+            </Component>
+            <Component Id="cmpF94BA2490229147A210791E69C87A9CF" Directory="dirC3AE05EBEB105FD0ED172DC61912C940" Guid="{33462880-82BF-4EB1-A134-55DD06A52F17}">
+                <File Id="fil3F1CCD16401BC00BFCE7C30C0978D377" KeyPath="yes" Source="SourceDir\qt_plugins\canbus\qtpeakcanbusd.pdb" />
+            </Component>
+            <Component Id="cmp12191D34571D5FE299C91748B22CE1BA" Directory="dirC3AE05EBEB105FD0ED172DC61912C940" Guid="{A65058EB-56E7-4EF4-BA2A-40315050E2AB}">
+                <File Id="filA76556A99C130230D727F8DA7C9FC814" KeyPath="yes" Source="SourceDir\qt_plugins\canbus\qttinycanbus.dll" />
+            </Component>
+            <Component Id="cmp2103333CACD85EDB159F529F13BDBA5B" Directory="dirC3AE05EBEB105FD0ED172DC61912C940" Guid="{6F0956B6-EABE-40BB-AC7F-0F254A7DF92B}">
+                <File Id="filAF887360816C4FB2526327D578D44CC7" KeyPath="yes" Source="SourceDir\qt_plugins\canbus\qttinycanbusd.dll" />
+            </Component>
+            <Component Id="cmp257056BDCA680DA46D71CEADE21A7027" Directory="dirC3AE05EBEB105FD0ED172DC61912C940" Guid="{CE533D66-A70C-4B6A-92A5-69D873B910E2}">
+                <File Id="filA790574306DDA6D5AD8871CBCA75251D" KeyPath="yes" Source="SourceDir\qt_plugins\canbus\qttinycanbusd.pdb" />
+            </Component>
+            <Component Id="cmp5449CE151E89FABDF7CD80A4940AB74F" Directory="dir9ED2EC63AF46EE6759D84D8DE2D3B09E" Guid="{430B2F29-6AF0-4EF5-9EC4-B789ED9E6216}">
+                <File Id="filB758C364C7535398059D0A1F5CAECD4D" KeyPath="yes" Source="SourceDir\qt_plugins\designer\qaxwidget.dll" />
+            </Component>
+            <Component Id="cmpBBDE71F9269161E1BE02D508B54396F2" Directory="dir9ED2EC63AF46EE6759D84D8DE2D3B09E" Guid="{9A5837AC-D7E5-47F2-BAC9-857D7344801C}">
+                <File Id="fil57E7F81A907F5DCC73D382A83ABEC9C6" KeyPath="yes" Source="SourceDir\qt_plugins\designer\qquickwidget.dll" />
+            </Component>
+            <Component Id="cmp868B947CB6BECF7853356ADA00D6D627" Directory="dir3631FD2091B8C08AD8874E098A72F367" Guid="{718B6C6B-AF0F-422C-8A06-EBEE6D520653}">
+                <File Id="fil674BC8E5C057E94EE49B9C223EA463A0" KeyPath="yes" Source="SourceDir\qt_plugins\generic\qtuiotouchplugin.dll" />
+            </Component>
+            <Component Id="cmpF2A6D8F6BD05C945EF61E2C79B238F7D" Directory="dir3631FD2091B8C08AD8874E098A72F367" Guid="{992641B3-BA10-4434-833F-84A91B33FD7C}">
+                <File Id="filE7C40919A1ED9723414A2EADC2F47B41" KeyPath="yes" Source="SourceDir\qt_plugins\generic\qtuiotouchplugind.dll" />
+            </Component>
+            <Component Id="cmp889571FFBC6CA2F020BB58F4DA42E37D" Directory="dir3631FD2091B8C08AD8874E098A72F367" Guid="{8DD234CF-4BED-44EC-99B2-A1CDC58C1BBC}">
+                <File Id="fil3434479523A1329F57B391A77165620B" KeyPath="yes" Source="SourceDir\qt_plugins\generic\qtuiotouchplugind.pdb" />
+            </Component>
+            <Component Id="cmpFB5CD477E979E45CAD664315374FCAD7" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{1995FC1B-83B9-450E-8E78-A6BDF9890F42}">
+                <File Id="fil12C49C5CE860BDCFDC0EDFDEABA8C1A9" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_mapbox.dll" />
+            </Component>
+            <Component Id="cmpD6B79266C02A12251C27E5B56BC6E74C" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{C2B73BCB-AABA-4545-BF2F-27A3C76A7DDB}">
+                <File Id="fil07F9F44788BF13F849583056B8F23466" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_mapboxd.dll" />
+            </Component>
+            <Component Id="cmpACBA242643534E8D6558198359EEB844" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{90975503-341B-4EFC-BF25-C6B391D73ACC}">
+                <File Id="fil8C427E835AB8E668FEE8285CB1CDE04E" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_mapboxd.pdb" />
+            </Component>
+            <Component Id="cmp5EF535EC145C0FCCE53BA67A181560A1" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{08F6877B-23E1-428D-A648-41C08DDA826F}">
+                <File Id="filE107FD1CA5BCF0D238CD6244740B7B93" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_nokia.dll" />
+            </Component>
+            <Component Id="cmpC5CD7F02DA19A3092CD8DC2872BE8F3E" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{E6A07CD2-6533-4B02-AAC1-D38C66016AD4}">
+                <File Id="fil3F064BF2B869EB2CF245CDA97469C133" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_nokiad.dll" />
+            </Component>
+            <Component Id="cmpCCE1794F235D93263FF71665B84B5779" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{587C2332-67D2-4A28-B5E4-4C1BD14086D6}">
+                <File Id="fil4562DB92A26E3C63E7A29DB45A6C36B1" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_nokiad.pdb" />
+            </Component>
+            <Component Id="cmpDF9F4442C448F683C16B94C93592DA37" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{BD540DF3-3796-4DA6-97E9-1FFCB5D8CF54}">
+                <File Id="filCA97CC4F4A6CECBDAFB02AC58076B327" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_osm.dll" />
+            </Component>
+            <Component Id="cmpB02DEB0B150810A7AE0B20DB21514FCF" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{B0829E90-C85D-4C9B-B9E1-7FE009DE7851}">
+                <File Id="fil0B78D9B7AF8D1C22DDCF98C02AC58259" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_osmd.dll" />
+            </Component>
+            <Component Id="cmpE1D5021CDEDE514D44F11B52558A93F8" Directory="dir7B95976EB58B77B9DB06D59D565C8BE3" Guid="{08F07928-FC5C-4970-9662-67EDCE60B32F}">
+                <File Id="fil9825DAEA8DB893CB42A0B0AE0FFAAEFB" KeyPath="yes" Source="SourceDir\qt_plugins\geoservices\qtgeoservices_osmd.pdb" />
+            </Component>
+            <Component Id="cmp6EDB8D94408D73A494356F301895601B" Directory="dirB9CDDA97BC3E5FB8A36DED4B911B63C3" Guid="{06FBA08D-1C1C-473B-A7B3-826CA113F1A0}">
+                <File Id="filDE3DB653C87050874E7AE3EB7A64FF46" KeyPath="yes" Source="SourceDir\qt_plugins\iconengines\qsvgicon.dll" />
+            </Component>
+            <Component Id="cmp388AF84F3D63DAB7B688FEC4B4833182" Directory="dirB9CDDA97BC3E5FB8A36DED4B911B63C3" Guid="{F100F9CF-BB01-4338-BBF0-9D76153FD2D6}">
+                <File Id="fil6B7A41CA46CE9C9FA8C3548EE3982356" KeyPath="yes" Source="SourceDir\qt_plugins\iconengines\qsvgicond.dll" />
+            </Component>
+            <Component Id="cmp1DF75C60821E60EB522346EABEA26628" Directory="dirB9CDDA97BC3E5FB8A36DED4B911B63C3" Guid="{76ACE507-3BCA-4DB4-9A38-8C73EFE7BB05}">
+                <File Id="fil7D471BAAB4077176A8C869BB7DCA08B1" KeyPath="yes" Source="SourceDir\qt_plugins\iconengines\qsvgicond.pdb" />
+            </Component>
+            <Component Id="cmp1EDFC285C0E5A73D531EBA490226D794" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{B5535BDB-3AB5-472A-8301-3DB5522F8429}">
+                <File Id="fil0A37A9A5AE62E766197F2C23AE4F9B67" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qdds.dll" />
+            </Component>
+            <Component Id="cmpAC7A3C6B115904CE7FDCD8FAA69A6DFC" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{9E6F7A39-01C2-4276-9CD0-C7BC54D9820D}">
+                <File Id="filA0B44335EDE1E08298E0FD0253A45282" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qddsd.dll" />
+            </Component>
+            <Component Id="cmp9F114B9A0609B972ABFD8EE00D33A182" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{0190A3BF-FC62-42F8-BF46-5D2337D04D49}">
+                <File Id="filF83F2628FC6045788C341033BFB15F62" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qddsd.pdb" />
+            </Component>
+            <Component Id="cmpCE6F707D5B0DFCD499D9C8174C83566C" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{E76E5AEE-4115-4091-9113-178251473F77}">
+                <File Id="fil8357724D8543E5EE235396CBC943F2AA" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qgif.dll" />
+            </Component>
+            <Component Id="cmp34970F6A901161F69EA9CB66D58F7216" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{231C8BFB-EC8A-4F89-B699-03B9DFA5203B}">
+                <File Id="fil950BF9489CFC1A7E330FAA14A4E045E8" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qgifd.dll" />
+            </Component>
+            <Component Id="cmp7BA2955A814670D90B73F863BD6D169E" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{56BDC25E-7862-45F1-ADB0-C07CD691A4CE}">
+                <File Id="fil95AE521990D6E2AEB47CF69B3210FD16" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qgifd.pdb" />
+            </Component>
+            <Component Id="cmp0F91E1F4DAC5B9D22110A73E30E932E6" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{04F98120-2A8D-44A6-A8D3-E1DC53534010}">
+                <File Id="fil2DC5873B2164601F4BD0B451D9F7B587" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qicns.dll" />
+            </Component>
+            <Component Id="cmpE8B1002313E794A54A11A2311751E655" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{6E221E5A-8E60-4CF1-87C3-51AFE776902B}">
+                <File Id="fil49FD721DCBBC44F2117030120E824E1E" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qicnsd.dll" />
+            </Component>
+            <Component Id="cmp25A46F392597FA6B31A3604D69CE2A9F" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{B5C32617-BFF6-4626-A773-A4E5AF7EAD87}">
+                <File Id="fil96201781EED19EF05C241F155B2413FC" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qicnsd.pdb" />
+            </Component>
+            <Component Id="cmpE0C8668607410AB8444E2FF42C5CAE15" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{13A5261B-D0A1-46D7-B274-54B76BDFC89F}">
+                <File Id="fil1F0FC23679142B67731E6188D7A86818" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qico.dll" />
+            </Component>
+            <Component Id="cmp6E65657A184068BDCBCBF52E9BA62E41" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{3CF82EB5-BA12-4AFD-93F7-B591DA69ED66}">
+                <File Id="filFAD281B3BD1382A82ABD892356BA225C" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qicod.dll" />
+            </Component>
+            <Component Id="cmpE4F44E6B8877AEB2659633DEFBFA44E3" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{49898783-5164-42A4-84B0-78410C05223B}">
+                <File Id="filEBAA8150E9FBAE5ACAFEFC69F5569B03" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qicod.pdb" />
+            </Component>
+            <Component Id="cmp823C2E250DA6102DECDC3202CEF3FC15" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{EC089A60-ED78-4583-950A-FEFCDDAD9D07}">
+                <File Id="filA8A334E559532382BCBF7A7123E9CE1C" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qjpeg.dll" />
+            </Component>
+            <Component Id="cmpF88D6D6DD0E117CB1E7F9919F846510A" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{3177F314-5979-483F-A023-55DD2FA6C7A4}">
+                <File Id="filD525946D7D72B5B983C540F616B6546A" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qjpegd.dll" />
+            </Component>
+            <Component Id="cmpE452BF23BE78785F432AB0E9CBD9A702" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{2AAE4F13-4062-4BBF-A829-F3E0A4E5BC72}">
+                <File Id="fil92DC4427154329638B2C67A020024D1C" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qjpegd.pdb" />
+            </Component>
+            <Component Id="cmpF2EC0950FF382718DD1F448F423DDBED" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{24DC5B42-6BA0-4769-A1A3-C7ABB64224F1}">
+                <File Id="filFB6CEC3BC593E89A1B079AA85636F570" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qsvg.dll" />
+            </Component>
+            <Component Id="cmp200F73822EC6CD9047E9D2850CA8CABB" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{AB006036-C94C-46DF-B91B-99133E1D20EB}">
+                <File Id="fil08357FA8C7A8AD575EE6567C1AF05EDD" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qsvgd.dll" />
+            </Component>
+            <Component Id="cmp39EAE2098FF164A76BA6166AB239A4AB" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{EC1A8E59-11B1-4E42-B57C-09187510B662}">
+                <File Id="fil6D79C4F4D81A8795896173E4A961A0A9" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qsvgd.pdb" />
+            </Component>
+            <Component Id="cmp7C6372971048BC15269E8C60A6A0343B" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{6344ED22-257E-4DB0-8508-9F2680CFDE07}">
+                <File Id="fil7892AE0AFBE3980A71A02A6E22C3C5A6" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qtga.dll" />
+            </Component>
+            <Component Id="cmp34CC9C624E350EDE9BFBA4D5AEF5930D" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{01D7AC75-F4E5-4EED-A020-73AFC23EA68F}">
+                <File Id="fil930C7C94C6DBC7240BB5BD42C8A73242" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qtgad.dll" />
+            </Component>
+            <Component Id="cmp44D3949F9C8B547440684C988E0BF5C0" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{5CEEF026-6F4D-49FE-B0C2-158AD8A15CA1}">
+                <File Id="filB7979653E3A67BA7A929CA01C1E93B32" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qtgad.pdb" />
+            </Component>
+            <Component Id="cmpEB1FEC4DE0B9E5CFBA02B288C5F64DA3" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{62B9A735-64EC-49EE-BC0C-0989D5B2DDBE}">
+                <File Id="fil273382C888621924E4D579AE6FC161C5" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qtiff.dll" />
+            </Component>
+            <Component Id="cmpAA7A22AF56DBF5CE9F2BB850428DE201" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{737335EF-0031-4C7F-A0A4-2A44354EC00D}">
+                <File Id="fil04BB9BAAD5461514849A36A9C92382D9" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qtiffd.dll" />
+            </Component>
+            <Component Id="cmpAC5E178A718ECE39B7EA79B7A9102D81" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{DFEEA54F-9F67-46AE-A03C-C75C9B58AF36}">
+                <File Id="filDFD89EA8E7B7B9304EAF998FB3E48C47" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qtiffd.pdb" />
+            </Component>
+            <Component Id="cmp12C8948177959C62E624BAAB03CD1806" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{21DEF26D-8262-4E33-BC9C-BA53BEACF6FE}">
+                <File Id="filD2CDA825896159FA6E046995B21566C5" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qwbmp.dll" />
+            </Component>
+            <Component Id="cmpA92E75D866C3E0C11F73E9B9E9131D5B" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{9C4C5E09-D63A-4798-A5C0-4AA800BA9AB2}">
+                <File Id="fil9B046FCAF6379F028365AA1B5FA28D19" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qwbmpd.dll" />
+            </Component>
+            <Component Id="cmpFD3AE3339827F1ABE810A00A9D401881" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{D9C7C22E-73E2-4F34-80EA-B9430CB59982}">
+                <File Id="filADD84802F2D5F6ECB3EE8564EFBFBA80" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qwbmpd.pdb" />
+            </Component>
+            <Component Id="cmp2DC6D8EA377882DC7677FDD6609C95DA" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{BB2B39FD-2F59-4495-A222-209966028F4B}">
+                <File Id="fil7083E53D56544334FA4C21DA2CAD5760" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qwebp.dll" />
+            </Component>
+            <Component Id="cmpFB8FCD006A2F7D41D16E65115EA98E2F" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{FF269712-7071-4915-92F3-813AAA6707D8}">
+                <File Id="filFA19630815FCAEDB70FB49F4FF37D6DB" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qwebpd.dll" />
+            </Component>
+            <Component Id="cmp53682668ADED0345DAA61694546F5D80" Directory="dir13EE39516B66285D23BB9986AB1C96BF" Guid="{6405C7F4-A1BB-4AA6-956D-2C98ACF73102}">
+                <File Id="filFD112C1AD2713C8D44C68DAA613A81AC" KeyPath="yes" Source="SourceDir\qt_plugins\imageformats\qwebpd.pdb" />
+            </Component>
+            <Component Id="cmp28E16AF40BC508D6FF1BEDF4675916C5" Directory="dir2E683CBBE1E66C98F03A1037ADC8681D" Guid="{C704FCA4-12AA-43DF-820F-64863473BD68}">
+                <File Id="fil6BB0301A54E60DB31D106E111FD24BCF" KeyPath="yes" Source="SourceDir\qt_plugins\mediaservice\dsengine.dll" />
+            </Component>
+            <Component Id="cmpB1CA43CD3356B919F2082FFEF7E4D951" Directory="dir2E683CBBE1E66C98F03A1037ADC8681D" Guid="{A9ADC06E-E76D-4F85-AF34-D22506F1282E}">
+                <File Id="fil57D6C61AE7AD3A2361C451B84AA43CDB" KeyPath="yes" Source="SourceDir\qt_plugins\mediaservice\dsengined.dll" />
+            </Component>
+            <Component Id="cmp42CEDCBC9CAD8D596F21394426AD4F8C" Directory="dir2E683CBBE1E66C98F03A1037ADC8681D" Guid="{8AEAAC3F-6380-4BA0-8CA2-2DA3BA7801B1}">
+                <File Id="fil32FC5FB0A8905221CE6EBEB0FD8035AD" KeyPath="yes" Source="SourceDir\qt_plugins\mediaservice\dsengined.pdb" />
+            </Component>
+            <Component Id="cmpAF8E80134D96C3DF144F588D78A2D2FB" Directory="dir2E683CBBE1E66C98F03A1037ADC8681D" Guid="{82622AB5-95E7-4E41-9A1B-616FAA3E2618}">
+                <File Id="fil095C4106390BF96362EB1073A6002D67" KeyPath="yes" Source="SourceDir\qt_plugins\mediaservice\qtmedia_audioengine.dll" />
+            </Component>
+            <Component Id="cmpB359C753D72F365E61560B694878B2DB" Directory="dir2E683CBBE1E66C98F03A1037ADC8681D" Guid="{39F2D51C-FF63-40E0-884C-439CEF9C6FC6}">
+                <File Id="fil3F83713345F65D7B7E4B3867003ECF6E" KeyPath="yes" Source="SourceDir\qt_plugins\mediaservice\qtmedia_audioengined.dll" />
+            </Component>
+            <Component Id="cmp0AC96747C6C5702E5E17E0079D5AF3FA" Directory="dir2E683CBBE1E66C98F03A1037ADC8681D" Guid="{0CEA9612-2C5D-4048-AA25-EED407160D54}">
+                <File Id="fil3C8E1D4CD57D4EC204EABB1D4C4EB785" KeyPath="yes" Source="SourceDir\qt_plugins\mediaservice\qtmedia_audioengined.pdb" />
+            </Component>
+            <Component Id="cmp41CF700971CDBA69532C209FF09FFC93" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{3665F097-9373-4AFF-BC70-9ADF9F7C1FCA}">
+                <File Id="filBCF4EAD0F0294EE95D0E5058C30CC9C1" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qminimal.dll" />
+            </Component>
+            <Component Id="cmpD922EE08F90A41B1F17A7EBF3C5699D0" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{B219443C-AE28-4494-823B-1C1469EF582E}">
+                <File Id="filFFB5C68A2DF94F730FC69A1D37C3A5BE" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qminimald.dll" />
+            </Component>
+            <Component Id="cmpA27AF1A83F6728752F1FB8C0AA3EE25A" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{EEC7852D-DE25-45DF-B624-7D277941640C}">
+                <File Id="filFA848F1E12830F8395D8117128C361DA" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qminimald.pdb" />
+            </Component>
+            <Component Id="cmpF96DC2784CEBBEEFDEA92A37A9ECE39F" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{A7655774-53A0-454A-938A-D297169432F5}">
+                <File Id="fil6A27E405FED44F895667D97793BE273D" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qoffscreen.dll" />
+            </Component>
+            <Component Id="cmp7714E8C1DD0D6D38A2A0E5B9A6EE4D55" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{24D6D424-AF53-4613-A1BB-8BF8A29A7831}">
+                <File Id="filB6FF14C77D5229181BE933068EE24BDC" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qoffscreend.dll" />
+            </Component>
+            <Component Id="cmp00C0E8A227869FD14CDA19815724DB4E" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{DCC7DB24-3768-452F-AE2F-E06569035891}">
+                <File Id="fil15F4EF8842F5434BA02F0118BB77ED99" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qoffscreend.pdb" />
+            </Component>
+            <Component Id="cmpE760128514069BD30C712218D603107E" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{8AA96EA1-541F-48E8-97B9-82ADF20874A4}">
+                <File Id="fil4A05BFD88F6F54E4427583EF2C116116" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qwindows.dll" />
+            </Component>
+            <Component Id="cmpF8B6DFBBC19C7543CE755D5F6B02C7E0" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{8925050B-2CB1-4A1D-B1C4-F9CF317AB484}">
+                <File Id="filC81C69983D27D05BEB9D23FC0AF750AA" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qwindowsd.dll" />
+            </Component>
+            <Component Id="cmpEED17ECC7DA5859787644B977A42D978" Directory="dirBE1443B98B38453BC62CB3A59F0BF2AB" Guid="{7746E714-6237-423E-8589-3D14C7076370}">
+                <File Id="fil28A6E0C48916187AA5CC90294F927553" KeyPath="yes" Source="SourceDir\qt_plugins\platforms\qwindowsd.pdb" />
+            </Component>
+            <Component Id="cmpD3FB3729F54A3D27DD6181636A339941" Directory="dir3859BBBDE5FEE7838552505C709CC9B0" Guid="{893FA8B6-7164-4F01-A7F1-39D83AEE2FB6}">
+                <File Id="fil6C4A1371599B261A6525F6AE1F331F10" KeyPath="yes" Source="SourceDir\qt_plugins\playlistformats\qtmultimedia_m3u.dll" />
+            </Component>
+            <Component Id="cmp0AB2F74F70B618EB248E822A3151F85C" Directory="dir3859BBBDE5FEE7838552505C709CC9B0" Guid="{CCB2D730-F425-4F47-956D-DE8EE43887CB}">
+                <File Id="fil444CA50CB1FBF3359D5384A3D3E49D26" KeyPath="yes" Source="SourceDir\qt_plugins\playlistformats\qtmultimedia_m3ud.dll" />
+            </Component>
+            <Component Id="cmp62C91FE7330135B465917BF4329CF829" Directory="dir3859BBBDE5FEE7838552505C709CC9B0" Guid="{A828331A-7102-496E-93C0-EBE84562B598}">
+                <File Id="filAD75A9CC1AB117C7844FD5BDD99E1B54" KeyPath="yes" Source="SourceDir\qt_plugins\playlistformats\qtmultimedia_m3ud.pdb" />
+            </Component>
+            <Component Id="cmp1FA8824424E84CACB9B16DCF6C822325" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{E7F4D642-9699-4474-BF9A-C5F1989837A6}">
+                <File Id="fil6E5E619EA7FE8D0E4E0B7C2DA573C790" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_geoclue.dll" />
+            </Component>
+            <Component Id="cmp2BBC63339B855F18A32017121C40E518" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{9CC9825E-DCF4-440A-8869-1041C8D4CC81}">
+                <File Id="fil0218A6521FC4D42D8FC01BE2369AC2C2" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_geoclued.dll" />
+            </Component>
+            <Component Id="cmpF3F6787B111D5ED0D664A18BEECD45DD" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{967A2583-EE33-4B99-9652-1E2EED64D6FD}">
+                <File Id="filE8740C757F645DAC9D2188DF2748152D" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_geoclued.pdb" />
+            </Component>
+            <Component Id="cmpE13D16EB2903E474013EEBB4468CFD68" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{7963A5DE-4C64-45BA-A5D5-294D9DA175C3}">
+                <File Id="fil4F0223B937425A4B2147249AF301B91E" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_positionpoll.dll" />
+            </Component>
+            <Component Id="cmp031A533B3456A72E5D7BF5D01895EB50" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{3EADBFE9-3FDE-4B9D-A515-86C31A46D48A}">
+                <File Id="filDE4E1DBA30F50D2905846ED87F61E1A1" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_positionpolld.dll" />
+            </Component>
+            <Component Id="cmp42FD6CB8F0D43759B58D3140B526F655" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{BCA26EF9-BDC8-4E50-8CFE-F28CAB460176}">
+                <File Id="fil3ABE7D21BFF9BD08148DE9353B8829EF" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_positionpolld.pdb" />
+            </Component>
+            <Component Id="cmp1645702E4CE8E906A92AA4D916ECE7C1" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{AA242B17-DFA1-435E-A726-D69803C49EC6}">
+                <File Id="filE348BC0C92140E04DA25DC76FB16A1E2" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_serialnmea.dll" />
+            </Component>
+            <Component Id="cmp176A09FCCB7E984B769F7A1650072D8D" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{4A639A73-9A07-40FF-A019-2E9741818954}">
+                <File Id="fil9BEFF342F4B9F2B05085CE56DB89BE8E" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_serialnmead.dll" />
+            </Component>
+            <Component Id="cmp38C2BD0E8AEF4467FD0EB5A87DB31B7C" Directory="dirDA97236EE400E5CD9E1359E9F172829A" Guid="{66865C97-1981-4012-92A1-0A1A4183A371}">
+                <File Id="fil774C72B35F4EDE00EA7B43129E85F3CC" KeyPath="yes" Source="SourceDir\qt_plugins\position\qtposition_serialnmead.pdb" />
+            </Component>
+            <Component Id="cmpF7164A259062D5FA15B234B5FA072681" Directory="dir72374E4060DBA6973EE5EABAF4BDCC94" Guid="{BFA77033-5EF3-4468-9615-2ABD2786E7D2}">
+                <File Id="fil154AA4C46689E868AF6331AE64D7D110" KeyPath="yes" Source="SourceDir\qt_plugins\printsupport\windowsprintersupport.dll" />
+            </Component>
+            <Component Id="cmp020EFC0BC1E65DF359DF5B6B744E9CAA" Directory="dir72374E4060DBA6973EE5EABAF4BDCC94" Guid="{D5027BA6-3E4E-4AD2-BD5C-BD1135E6D602}">
+                <File Id="filB27C94DBEE834C96D1BF8D13BCB94B7F" KeyPath="yes" Source="SourceDir\qt_plugins\printsupport\windowsprintersupportd.dll" />
+            </Component>
+            <Component Id="cmpD7EE757B9AE8534E1D4571CA82DD51F5" Directory="dir72374E4060DBA6973EE5EABAF4BDCC94" Guid="{C79CE62F-8F97-45AE-B5F3-FADA61DD9EFF}">
+                <File Id="fil1B3AD7D7B6FE3465DDE01E02372170C7" KeyPath="yes" Source="SourceDir\qt_plugins\printsupport\windowsprintersupportd.pdb" />
+            </Component>
+            <Component Id="cmpD43D8915B825BC540B8FEFB60D057DBE" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{4CF712B2-FDAA-4CBA-A5E5-D4BF46BEDAF7}">
+                <File Id="fil527C5841EC562420E07EF4010B0162AD" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_debugger.dll" />
+            </Component>
+            <Component Id="cmp2AF73F13E2D4E83DFBBDBD9186709AB8" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{45BE3706-E645-44A4-8845-146B42C1F57B}">
+                <File Id="fil23AE76EAA0E64875B0DE2FC5625CC9E7" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_debuggerd.dll" />
+            </Component>
+            <Component Id="cmpB563F3D3C66B9771D326BCD4DA3869A7" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{8A5332C3-B411-431D-8B35-486AE059805B}">
+                <File Id="fil01A146FB2DCB9FFD6B69F9498FF95C41" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_debuggerd.pdb" />
+            </Component>
+            <Component Id="cmpDA729608E5077E919E1CAA175A22A3BB" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{9A2B04E0-672E-4F42-A122-0629D43ACE05}">
+                <File Id="fil2CF83A8681A80F0BA9DC960861386F9C" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_inspector.dll" />
+            </Component>
+            <Component Id="cmpE4E28A47C94B1A852AAFC5C74D820BFD" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{F5DD4A68-C5D3-43E8-9CF9-01C0689723DF}">
+                <File Id="filD7AF482663AEE0516DACD13EE4F36D69" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_inspectord.dll" />
+            </Component>
+            <Component Id="cmpA32CD8CA49C27C87B237D1FC4860B250" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{D2305EC1-5D3B-46BC-B1C2-BE80B5097411}">
+                <File Id="fil8AFBDAC3CE4205E65E46757B9EA71C73" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_inspectord.pdb" />
+            </Component>
+            <Component Id="cmp2D153C18FC8EBE7B8DB8F59270E426DE" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{AC864E9F-9305-4ACD-9CA8-2CC3783AB426}">
+                <File Id="fil90AA8D3D1F369FB39BA1F44C32A1C745" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_local.dll" />
+            </Component>
+            <Component Id="cmpF38BCECA2457BC8657BCDD6CA7EB5264" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{03EBEF6E-52D1-49A8-AAD6-580C87402EBB}">
+                <File Id="fil3D42BA6DD912FBA2EF94F0FA084C72E6" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_locald.dll" />
+            </Component>
+            <Component Id="cmpBA7DA264121D1316BD2BAE4A2EB7E59E" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{F7FBA9B9-2058-4896-B4A9-F39DC31D61D4}">
+                <File Id="filEE0BE2187974A3D992E1FB073A8ECD39" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_locald.pdb" />
+            </Component>
+            <Component Id="cmpE7B75FF992EAE17355CFF73CEE28900F" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{715F6956-8949-47CE-8DED-E1E1F6E4F08E}">
+                <File Id="filF29224236B5D1F1C3C53B77C5D2394A2" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_native.dll" />
+            </Component>
+            <Component Id="cmp546E9BC61AA22B164685FE60D1B1BFB6" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{D834395D-99BA-476D-B0D4-CE3AD94AA183}">
+                <File Id="fil26EB199F1CEFBF330F612FDC0DAE7F22" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_natived.dll" />
+            </Component>
+            <Component Id="cmp0B851A34EF7F952763D997B7C2DB731E" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{AA946078-8CAF-4AC9-99E1-55340D1AD367}">
+                <File Id="filB1920C5994223B5C1C0CCCD1CE966C92" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_natived.pdb" />
+            </Component>
+            <Component Id="cmpBD8660D2187106A7C3FEDE6EFD7B2CF7" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{62B74539-2B76-4B68-BFC3-506869FE0230}">
+                <File Id="filDAE3C0C668C4990E0C0D80E63B83ECB4" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_profiler.dll" />
+            </Component>
+            <Component Id="cmp17C64BEB697F303892F6E952F24FF032" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{A08B0F97-39BD-4396-9D83-BEBFEF037556}">
+                <File Id="fil6201E8E2D0A20A654F662A42F383326B" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_profilerd.dll" />
+            </Component>
+            <Component Id="cmp71C22AB23191051588B8DD1E6FEDA7C5" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{B396A26B-0C9B-4E78-B34B-BB5290DB5956}">
+                <File Id="filB9C6ADE8ED55D7FDB319D302FB6176A1" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_profilerd.pdb" />
+            </Component>
+            <Component Id="cmp38F9F78E90A0E30BA6053CA1698BB236" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{DABAE5E7-B6DA-4EE2-A6D0-A8AB128D9165}">
+                <File Id="fil90A7BE162A972F6EA5F994F0CAF6020A" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_server.dll" />
+            </Component>
+            <Component Id="cmp1C5EEC432F2990BD7D684144D3E2FA33" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{991F9B65-D248-4084-AC44-6E7D9568B42F}">
+                <File Id="fil1F517DA7BE4DE04FEFE0F735DF6C4AD1" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_serverd.dll" />
+            </Component>
+            <Component Id="cmp4BD4899905C3A0852CA6CEBBD6D4D144" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{008D6617-A8AF-48D5-B15B-C44DDE68191A}">
+                <File Id="filF226C439C325A79EDA94ECB5EF0FD6AD" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_serverd.pdb" />
+            </Component>
+            <Component Id="cmp55DFF1EEC325A4BA60197ED34AB25F57" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{4E9C0701-E8A9-44CD-8F7B-8DC217B469CC}">
+                <File Id="fil93E9FC8D2F2EF80CDBAC1DEFD771D10C" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_tcp.dll" />
+            </Component>
+            <Component Id="cmp0F7FB60C6096DF95596EF83031509677" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{4D14473B-D956-4800-A79A-30FBD2E31AC3}">
+                <File Id="fil2A1B5F548F3BD790FB12C26570C05D54" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_tcpd.dll" />
+            </Component>
+            <Component Id="cmpFB0CC66BB3507E9FF899B0BC5CABA8BD" Directory="dir00BDF1F58C5854455FF455920929469F" Guid="{EE88288A-BE6E-435E-9995-06594AF7C19A}">
+                <File Id="filD6D08B12AC21FEF717913B1020AD6E41" KeyPath="yes" Source="SourceDir\qt_plugins\qmltooling\qmldbg_tcpd.pdb" />
+            </Component>
+            <Component Id="cmpDA532AF2A773C4F74DADEF3A4CDC7A9B" Directory="dirFAC3870DD293F980FB2BB77AD62C8388" Guid="{9B4A36D4-CED4-43F6-8D82-7E2EE5C16AD6}">
+                <File Id="fil2F3C61D483DBFF8C79D60F09E6B36773" KeyPath="yes" Source="SourceDir\qt_plugins\sceneparsers\assimpsceneparser.dll" />
+            </Component>
+            <Component Id="cmpE09DFDF4EC5477231B9A1704538FEC71" Directory="dirFAC3870DD293F980FB2BB77AD62C8388" Guid="{0EB6D153-D521-4C9D-89EC-225F602211B4}">
+                <File Id="fil1F1D773B93DABEE57C78D89763C3DF24" KeyPath="yes" Source="SourceDir\qt_plugins\sceneparsers\assimpsceneparserd.dll" />
+            </Component>
+            <Component Id="cmpA0ECDFCBE9D57890DD9A3F00EF982C28" Directory="dirFAC3870DD293F980FB2BB77AD62C8388" Guid="{02E1E9B7-FC91-49CC-BEC7-423863C08ADA}">
+                <File Id="filEB2418222ED9A240ACFD3A6E8F585EFB" KeyPath="yes" Source="SourceDir\qt_plugins\sceneparsers\assimpsceneparserd.pdb" />
+            </Component>
+            <Component Id="cmpF4042E28563F6DA557929CB4E2D7335A" Directory="dirFAC3870DD293F980FB2BB77AD62C8388" Guid="{F8629AFE-5179-4F40-BC94-1E711706CEE2}">
+                <File Id="filB13C5FEDB67AF2067D9D8F189AF716F1" KeyPath="yes" Source="SourceDir\qt_plugins\sceneparsers\gltfsceneparser.dll" />
+            </Component>
+            <Component Id="cmp9D8D4931D5A11E13F5FA28699D99BEBB" Directory="dirFAC3870DD293F980FB2BB77AD62C8388" Guid="{897666C1-9F14-4E74-8F65-01310C739509}">
+                <File Id="filADD83EE6B0B48AEA709C5762E220D5E3" KeyPath="yes" Source="SourceDir\qt_plugins\sceneparsers\gltfsceneparserd.dll" />
+            </Component>
+            <Component Id="cmp00F48C3761FF0453A644A8A1DC133209" Directory="dirFAC3870DD293F980FB2BB77AD62C8388" Guid="{59366E38-C047-4E84-A2D0-537E7A30489A}">
+                <File Id="fil2619BF9A7E391AB14235AF6D4BC6334F" KeyPath="yes" Source="SourceDir\qt_plugins\sceneparsers\gltfsceneparserd.pdb" />
+            </Component>
+            <Component Id="cmpECCA769A8B5C784D09774006E105E098" Directory="dir1D5B581AFFF6EE1906AAE183BBC218F5" Guid="{FB738837-6C95-43B5-A0DC-92D6C3BA0744}">
+                <File Id="filE081B6B0BD83A9D7B113CEEBD0DB56F4" KeyPath="yes" Source="SourceDir\qt_plugins\sensorgestures\qtsensorgestures_plugin.dll" />
+            </Component>
+            <Component Id="cmpEF24D76CECE99618CEDBA07D0DA4187A" Directory="dir1D5B581AFFF6EE1906AAE183BBC218F5" Guid="{70E4CA29-D4EC-41FF-81E9-70E79F6C8319}">
+                <File Id="fil8CEBC9130C771B455C8497CFB56918AD" KeyPath="yes" Source="SourceDir\qt_plugins\sensorgestures\qtsensorgestures_plugind.dll" />
+            </Component>
+            <Component Id="cmpAFE0FE4C42CCDB107A93DA1C127D65C7" Directory="dir1D5B581AFFF6EE1906AAE183BBC218F5" Guid="{1C87DFD1-53DF-4B6B-B02B-B00F2FD04076}">
+                <File Id="filB9BDE99FB52BF561045B67F08A2F7CBE" KeyPath="yes" Source="SourceDir\qt_plugins\sensorgestures\qtsensorgestures_plugind.pdb" />
+            </Component>
+            <Component Id="cmp70D3749ED89E281DA0A3C14CCE864435" Directory="dir1D5B581AFFF6EE1906AAE183BBC218F5" Guid="{BB1A8C77-255E-42C2-B936-E23B0333C862}">
+                <File Id="fil068F4E4CB0D8A19C9E2C5A96EF808FCA" KeyPath="yes" Source="SourceDir\qt_plugins\sensorgestures\qtsensorgestures_shakeplugin.dll" />
+            </Component>
+            <Component Id="cmpDA890D221E63B10A1AA163374FF3220F" Directory="dir1D5B581AFFF6EE1906AAE183BBC218F5" Guid="{02D916AA-81A7-4BE9-93C8-47950FB34985}">
+                <File Id="fil417D701154E185D3CE419CE76543DF93" KeyPath="yes" Source="SourceDir\qt_plugins\sensorgestures\qtsensorgestures_shakeplugind.dll" />
+            </Component>
+            <Component Id="cmpE53D39DFD32E4192E460F6AEBEA4A147" Directory="dir1D5B581AFFF6EE1906AAE183BBC218F5" Guid="{D0D6317B-9EAE-4E35-8BCE-8AD5618F58B8}">
+                <File Id="fil348CE17B1D50F342962999DE4972B0C2" KeyPath="yes" Source="SourceDir\qt_plugins\sensorgestures\qtsensorgestures_shakeplugind.pdb" />
+            </Component>
+            <Component Id="cmp5B89EDDDBF8C9F5AEF50C895D952CF2A" Directory="dir93ED656C586FC73D45C996CA299EC86A" Guid="{EB058096-3F91-430D-B74D-E727AB0EC428}">
+                <File Id="fil82B30E6AE3635F55EA25B17AF1B68FF9" KeyPath="yes" Source="SourceDir\qt_plugins\sensors\qtsensors_generic.dll" />
+            </Component>
+            <Component Id="cmp7870A4FA68588A197864369E430437C2" Directory="dir93ED656C586FC73D45C996CA299EC86A" Guid="{F34B9928-46DC-4C4C-8B74-63246BA14C1E}">
+                <File Id="fil97167CB40B455F4ECE748470500D5897" KeyPath="yes" Source="SourceDir\qt_plugins\sensors\qtsensors_genericd.dll" />
+            </Component>
+            <Component Id="cmp0E7F5C93541ED5DB88C1D65FB6158B2F" Directory="dir93ED656C586FC73D45C996CA299EC86A" Guid="{3C7BBA2E-3750-4E1B-B1DC-E260CCD17C8E}">
+                <File Id="fil12A7E24307F961AED432C1FCCE1F18D8" KeyPath="yes" Source="SourceDir\qt_plugins\sensors\qtsensors_genericd.pdb" />
+            </Component>
+            <Component Id="cmp82D9DCE2CD28420FB7DE9C5DE472A4EA" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{F152EF70-979A-46A2-993F-1D89634B59AA}">
+                <File Id="filD760F0E892CC91A3E04C562D2DF94EEB" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlite.dll" />
+            </Component>
+            <Component Id="cmpFE1DAF8C079332765C9C142C5EE9A065" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{74EB774A-68F0-49D6-BFDC-F39D2CDB1A8D}">
+                <File Id="fil8FADFD2168DBC51587051514DCFDBC26" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlited.dll" />
+            </Component>
+            <Component Id="cmpB29E254048C8EA211503A56788C4E054" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{BE16150B-B61E-4016-9644-979C37E528D8}">
+                <File Id="fil9F66105B0B5A34E8A8D387BA6A802358" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlited.pdb" />
+            </Component>
+            <Component Id="cmp81E24D7DDFFDFD33935AA0D3466A39ED" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{6AF9E2D6-2E18-4C05-883A-7C1201D53A4C}">
+                <File Id="filA0E088866FC76584F76405D9811A824D" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlmysql.dll" />
+            </Component>
+            <Component Id="cmpCF8533463F32F6F2D0D09A9EF4A4C99B" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{C1234345-6C6B-409E-AD4C-B02AFFBAC492}">
+                <File Id="fil5E708195B82717E9DA92339FF97DA9E2" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlmysqld.dll" />
+            </Component>
+            <Component Id="cmp28127F6ABDF6D0C3F95AD53DB19C3A3C" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{929D54CB-D33D-44BE-86F3-B3367C18897A}">
+                <File Id="filD92063311013523ABC4726A18934198B" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlmysqld.pdb" />
+            </Component>
+            <Component Id="cmpCEB339ED6094187AC72C5E2D09F64776" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{3E221EF0-6C7C-4A09-B861-C8CCA80F9AB5}">
+                <File Id="fil592944E936D6A611220EE73C8AA6B09D" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlpsql.dll" />
+            </Component>
+            <Component Id="cmp3F1D598B8D55601D0A8111C6A1859FC7" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{147D6F95-A439-4B5E-A0BB-A9A2E80302C8}">
+                <File Id="filBCD8CC24B7B4F84D412E7AFA259F3A81" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlpsqld.dll" />
+            </Component>
+            <Component Id="cmp9834AD8D6C633ABA8CC4D632A7F94DD0" Directory="dir8C7951E2831B664E188A73EE64B0201B" Guid="{595D1815-7E89-4E56-BBB4-F54F670DEAC0}">
+                <File Id="filE842EE8FCDAA7C86206986AC24EF2FCB" KeyPath="yes" Source="SourceDir\qt_plugins\sqldrivers\qsqlpsqld.pdb" />
+            </Component>
+            <Component Id="cmp2F94D28F12CCA7F60339DBA634830E37" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{A4FFB03B-722E-4BB9-9F39-CF1BD8254337}">
+                <File Id="filA470F7A651331A717AFCF764F606B54A" KeyPath="yes" Source="SourceDir\shaders\drag_select.frag" />
+            </Component>
+            <Component Id="cmp6D53862C84D3BB64C625AA04D9FE21E7" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{222EF2DB-362B-4C5B-A41D-85CF711F76D7}">
+                <File Id="filB1E653E1C0EAAF4718A9B6DAFDAE7FBD" KeyPath="yes" Source="SourceDir\shaders\drag_select.vert" />
+            </Component>
+            <Component Id="cmpD301F9E9ABE5EA89B60CD508C46F7773" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{D73A47C1-9BF2-4F8E-97E8-454C8A9A759A}">
+                <File Id="filB8516F6AA923756D8775CA6246874530" KeyPath="yes" Source="SourceDir\shaders\gadget.frag" />
+            </Component>
+            <Component Id="cmp52EEE34D618027E51B50ADABFBAF0364" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{D33AA4FC-63CD-43FF-9BEA-51F55C2AA60F}">
+                <File Id="fil30F9360A93026614E1D0745B00A76293" KeyPath="yes" Source="SourceDir\shaders\gadget.vert" />
+            </Component>
+            <Component Id="cmp1AB39E905F403C786C30FF98E92EC028" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{B3610503-477F-43B2-BA3C-338C89B85FD2}">
+                <File Id="filDADA044B39ECBA49890783DDDED2D104" KeyPath="yes" Source="SourceDir\shaders\gadget_bound.frag" />
+            </Component>
+            <Component Id="cmp1593C9D23A36FE1835902B85394B5F93" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{D930947B-AC73-45D1-975F-A5384EFDFF4A}">
+                <File Id="fil0B27A1AAE926C9B92A46199B2C37A3E4" KeyPath="yes" Source="SourceDir\shaders\gadget_bound.vert" />
+            </Component>
+            <Component Id="cmpE75CB48CFB1F962E88F43EE069BDC2D4" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{017A15C5-0775-4C4E-B61C-D0160FDAD30A}">
+                <File Id="filE60E5EEAE79A037E1C0DB0D287D2FC86" KeyPath="yes" Source="SourceDir\shaders\glyph.frag" />
+            </Component>
+            <Component Id="cmp31EE4881F05D6DB0473FAC642B04912B" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{D4475199-BE8A-4B90-BDE7-0B019C5B50F6}">
+                <File Id="fil75E28647D66769204C385880D431FA4E" KeyPath="yes" Source="SourceDir\shaders\glyph.vert" />
+            </Component>
+            <Component Id="cmpF2DAE4CB3A9DC7EA6AC385BE0B1B0B51" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{7AAB341E-7AF5-4E0E-B805-6E1F787F9161}">
+                <File Id="filFE1CF9B4D9A871873BB2E5D3F43044DC" KeyPath="yes" Source="SourceDir\shaders\header.h" />
+            </Component>
+            <Component Id="cmp701C0EA69FA03123C4580D8C1F53E27A" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{03F196A5-85FA-4BB5-B699-B64EF9CBE1B7}">
+                <File Id="filF8742B49B4A46E2296C5CA21A2CFC504" KeyPath="yes" Source="SourceDir\shaders\line.frag" />
+            </Component>
+            <Component Id="cmp78160095957850732CC5B1BBDEAAD8B1" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{5BD14180-8CD3-4E2F-98EB-33A08C5BDE33}">
+                <File Id="filE63D546A0A62E8165A320CEC769784EB" KeyPath="yes" Source="SourceDir\shaders\line.vert" />
+            </Component>
+            <Component Id="cmp33C9586123553065D315A3DF4D207BF2" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{91796408-6158-4512-AA3F-61B0DE3B32CE}">
+                <File Id="filFD4A8E650EBF3C7334178EB2544FE2BF" KeyPath="yes" Source="SourceDir\shaders\selection.frag" />
+            </Component>
+            <Component Id="cmpAC0BD5F9388773BD265EFEF8C89599C6" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{BC795BCE-8880-4B72-934C-C576FAA87773}">
+                <File Id="filCF57A9B0A503437386E8FAA3CA4DA4CE" KeyPath="yes" Source="SourceDir\shaders\selection.vert" />
+            </Component>
+            <Component Id="cmp2FA59A04E9EB598F553088A1DDF69898" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{791C947C-4045-4D4F-B526-368DB4F68CD7}">
+                <File Id="filC8CA82F20F6F612B908012695CF486D9" KeyPath="yes" Source="SourceDir\shaders\solid.frag" />
+            </Component>
+            <Component Id="cmp7B850AD3859C5F79E5C7C6EEA865EEEC" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{7E41EE0B-9664-4F81-AFFA-71DB579A9C1D}">
+                <File Id="filAAEFEA0D997484D3C3764555EE5D01AD" KeyPath="yes" Source="SourceDir\shaders\solid.vert" />
+            </Component>
+            <Component Id="cmp5B3F6FF634FA0499CDA771BBD2F6AC9B" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{16FCA404-FA94-4A9C-9DF9-37E8655AF77A}">
+                <File Id="fil844371631D889052633C1C60195E0475" KeyPath="yes" Source="SourceDir\shaders\texture.frag" />
+            </Component>
+            <Component Id="cmp05EC19244E59BA99A64D635CF22C2FF9" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{4A30E570-A29B-4B78-85C7-C09B56E8CB43}">
+                <File Id="filCD87ABF9D35F4183FEDBA768A9596127" KeyPath="yes" Source="SourceDir\shaders\texture.vert" />
+            </Component>
+            <Component Id="cmpD2397A8E60BD27D0C55DA9BF3B4A2063" Directory="dir7F024F5F77FFCADEB991BC5937EBD037" Guid="{814EA1C9-2B01-429C-8B33-6B77A8FD69B4}">
+                <File Id="fil0CBAAEB6A6A6C64DD366427F41B1B7E3" KeyPath="yes" Source="SourceDir\shaders\util.h" />
+            </Component>
+            <Component Id="cmp070CD51BA5696316376D1A442A6D88BA" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{A81861C6-90E9-40FA-9768-C4EC3B129046}">
+                <File Id="fil2FEBEE8060F389973A2A2A9F654771B0" KeyPath="yes" Source="SourceDir\textures\compress-16.tga" />
+            </Component>
+            <Component Id="cmp01D9C9117422E56B51BB3AE609BFEF40" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{3DD0CC1C-ED93-48D1-ABEE-063EB5EBB249}">
+                <File Id="fil1223D0AC8E1EF8579AB199A010CC88FE" KeyPath="yes" Source="SourceDir\textures\compress-32.tga" />
+            </Component>
+            <Component Id="cmp550F2DFD22A1C5C19AF059F8CB4EA690" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{8B149244-F80B-44B2-87E6-89948871649E}">
+                <File Id="fil3759B57CC75B0D44980F0FB837950D47" KeyPath="yes" Source="SourceDir\textures\compress-4.tga" />
+            </Component>
+            <Component Id="cmp29250529B6003CC41BEBD514B76ABF1B" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{22329986-C1B6-4CE1-B995-BF89FBC189D8}">
+                <File Id="fil332B370EFC1C800827FC062AB11AB5FB" KeyPath="yes" Source="SourceDir\textures\compress-64.tga" />
+            </Component>
+            <Component Id="cmpBEB3BA1A604BBCE72B0AB201DA86000D" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{BB8EE2FF-5BDA-425D-9004-CE6B97983823}">
+                <File Id="filE7D621B9B3AA878CEEBD10269A218A51" KeyPath="yes" Source="SourceDir\textures\compress-8.tga" />
+            </Component>
+            <Component Id="cmp991507E921D319138778539915277DF6" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{C98EC983-996B-4241-B864-9E2F30DD0A6A}">
+                <File Id="filD3EA52BCDF27D47D2EC81B7698543D5E" KeyPath="yes" Source="SourceDir\textures\expand-16.tga" />
+            </Component>
+            <Component Id="cmp698E2071DDE9CF074CAEA283BD330383" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{851C3368-0B8B-4B29-BA54-DE503DCBA7B1}">
+                <File Id="fil18F29B41E6F0E3B06EEB60959200F09D" KeyPath="yes" Source="SourceDir\textures\expand-32.tga" />
+            </Component>
+            <Component Id="cmp9A78E870E568A6E2AA51BB1718D4A52A" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{8A7843DB-8DC4-4EAE-9FF4-FAC77894E3C8}">
+                <File Id="fil4EBE1F76A35A5F2E81B540380A5D5C73" KeyPath="yes" Source="SourceDir\textures\expand-4.tga" />
+            </Component>
+            <Component Id="cmp44AF6A760BC2E3EF9E8CA4B63E39CDA2" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{0275831E-4138-4A33-BDDA-827A96D9F8B1}">
+                <File Id="fil8C335EEC86592EC3790E9B14DDE6BB2C" KeyPath="yes" Source="SourceDir\textures\expand-64.tga" />
+            </Component>
+            <Component Id="cmp139B865B11B7CBC36E8FE8B5ADB2AB1C" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{1DCC1F3B-7F3A-4741-B06F-E64517E0CD92}">
+                <File Id="filA443C7ACF194573558FDC7BBF764B446" KeyPath="yes" Source="SourceDir\textures\expand-8.tga" />
+            </Component>
+            <Component Id="cmp5F83AF530085BA037B2F8F14E4551DC3" Directory="dirCB10BBBB0B07232639C1AEA4DC530FE4" Guid="{5E69FFA0-2A10-4D5A-8B8D-889CB03BFD8A}">
+                <File Id="fil9A4EB79739B6686453D4F492FEF88D04" KeyPath="yes" Source="SourceDir\textures\logo.png" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir00BDF1F58C5854455FF455920929469F" Name="qmltooling" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirD5465C3D3026F693FE59AF339C77C57F">
+            <Directory Id="dir05A70DDA66895C7F1981BE8F875FD189" Name="Filters" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirA1A6DE6B683F41C34511D0D39F5235A1">
+            <Directory Id="dir068F6D05959C545B5E8A6A649E4CF5B1" Name="cursors" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir2F86C55E107762ACCA1A8B34E8696CA1">
+            <Directory Id="dir0DA09616A28871519CC177278EBF0F2D" Name="dtplugin" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dir0DD5EF08DEE9F1D88CA855DAF26DE029" Name="security" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir13EE39516B66285D23BB9986AB1C96BF" Name="imageformats" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirC260ABA59AFA6905CF0E8115738C7AE4">
+            <Directory Id="dir182C7A988B53431E6AC74AFDA517D035" Name="lib" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir1D5B581AFFF6EE1906AAE183BBC218F5" Name="sensorgestures" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dir2B060C928A3637A5C63C760BDCECF903" Name="i386" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir2E683CBBE1E66C98F03A1037ADC8681D" Name="mediaservice" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirC260ABA59AFA6905CF0E8115738C7AE4">
+            <Directory Id="dir2F86C55E107762ACCA1A8B34E8696CA1" Name="bin" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir3631FD2091B8C08AD8874E098A72F367" Name="generic" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dir37AF513C8B2BD2C1345C5E1DDDC13D3D" Name="ext" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir492DFC5368D9FA69D568096392DBAC58">
+            <Directory Id="dir37B58FF9287DE49A8EB421071160C274" Name="Understanding the Viewer" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir3859BBBDE5FEE7838552505C709CC9B0" Name="playlistformats" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir492DFC5368D9FA69D568096392DBAC58">
+            <Directory Id="dir3BFD55F5B9E7121D08FA9290F1967826" Name="Navigating the Viewer" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirD5465C3D3026F693FE59AF339C77C57F">
+            <Directory Id="dir492DFC5368D9FA69D568096392DBAC58" Name="Front End Navigation Guide" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dir4B957DD804B561FC73773573849D4054" Name="cmm" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dir4FBF5C54921858AA69490E802317B72C" Name="deploy" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dir6257270F0E6E66BF4252A6D35D7B8AE8" Name="jfr" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir6DC156336536C64A87909EBAB5FB7717">
+            <Directory Id="dir62DB4CAE0439ECC38D50AB4A38645867" Name="w2ui-1.4.2" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir37B58FF9287DE49A8EB421071160C274">
+            <Directory Id="dir6CFE5D5B9EBA6402CE2139EBD8D7941E" Name="Filtering Pane" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir72374E4060DBA6973EE5EABAF4BDCC94" Name="printsupport" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir6DC156336536C64A87909EBAB5FB7717">
+            <Directory Id="dir797417DF66B09EDF60EB27F3105A2F53" Name="jquery-1.7.2" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir7B95976EB58B77B9DB06D59D565C8BE3" Name="geoservices" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirD5465C3D3026F693FE59AF339C77C57F">
+            <Directory Id="dir841EF51720086B78E127E22385BD40E1" Name="Legends" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF1958ECCFA026D61D521700BCB66349F">
+            <Directory Id="dir862746AD4B9E213E692A813002BF2705" Name="icons" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir2F86C55E107762ACCA1A8B34E8696CA1">
+            <Directory Id="dir8C6A3858DC34E82C362FE18F50107809" Name="server" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir8C7951E2831B664E188A73EE64B0201B" Name="sqldrivers" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir93ED656C586FC73D45C996CA299EC86A" Name="sensors" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dir9ED2EC63AF46EE6759D84D8DE2D3B09E" Name="designer" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dirA1A6DE6B683F41C34511D0D39F5235A1" Name="images" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir2F86C55E107762ACCA1A8B34E8696CA1">
+            <Directory Id="dirA5667895C3D32E79FFD643F45A996470" Name="plugin2" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirA874BE9574A5FCE08B9941B5B48ACFC9" Name="bearer" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirB9CDDA97BC3E5FB8A36DED4B911B63C3" Name="iconengines" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirBE1443B98B38453BC62CB3A59F0BF2AB" Name="platforms" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirC3AE05EBEB105FD0ED172DC61912C940" Name="canbus" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dirC6C90F56480A3182EC05594D29233894" Name="fonts" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirD2B5D6F3F297CDECF7BAEA5AE7787256" Name="audio" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir6DC156336536C64A87909EBAB5FB7717">
+            <Directory Id="dirD5465C3D3026F693FE59AF339C77C57F" Name="pages" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirDA97236EE400E5CD9E1359E9F172829A" Name="position" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir182C7A988B53431E6AC74AFDA517D035">
+            <Directory Id="dirE4E660DB3441E4F1F2BB4ED1B7AEB613" Name="management" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir2F86C55E107762ACCA1A8B34E8696CA1">
+            <Directory Id="dirE4EA7CE2FF6E57CCF884416B85619ECF" Name="client" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir6DC156336536C64A87909EBAB5FB7717">
+            <Directory Id="dirF1958ECCFA026D61D521700BCB66349F" Name="images" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir8967C0B5A4EE777AF33BE15F88F668F6">
+            <Directory Id="dirFAC3870DD293F980FB2BB77AD62C8388" Name="sceneparsers" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>
