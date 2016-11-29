@@ -33,15 +33,20 @@ namespace SynGlyphX {
         statusBar();
 
         //Add an additional 
-		for (int i = 0; i < MaxRecentFileMenuEntries + 1; ++i) {
-            QAction* recentFileAction = new QAction(this);
-            recentFileAction->setVisible(false);
-            if (i != 0) {
-                QObject::connect(recentFileAction, &QAction::triggered, this, &MainWindow::OnRecentFileSelected);
-            }
-            m_recentFileActions.push_back(recentFileAction);
-        }
-        m_recentFileActions[0]->setSeparator(true);
+		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+		if (!appfile.contains("GlyphEd")){
+
+			for (int i = 0; i < MaxRecentFileMenuEntries + 1; ++i) {
+				QAction* recentFileAction = new QAction(this);
+				recentFileAction->setVisible(false);
+				if (i != 0) {
+					QObject::connect(recentFileAction, &QAction::triggered, this, &MainWindow::OnRecentFileSelected);
+				}
+				m_recentFileActions.push_back(recentFileAction);
+			}
+			m_recentFileActions[0]->setSeparator(true);
+
+		}
 
 		ClearCurrentFile();
 		m_undoStack = new QUndoStack(this);
@@ -130,18 +135,20 @@ namespace SynGlyphX {
 		const QStringList& files = s_recentFileList.GetFiles();
 
 		int numRecentFiles = qMin(files.size(), static_cast<int>(MaxRecentFileMenuEntries));
+		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+		if (!appfile.contains("GlyphEd")){
+			for (int i = 1; i < numRecentFiles + 1; ++i) {
+				QString text = tr("&%1 %2").arg(i).arg(QFileInfo(files[i - 1]).fileName());
+				m_recentFileActions[i]->setText(text);
+				m_recentFileActions[i]->setData(files[i - 1]);
+				m_recentFileActions[i]->setVisible(true);
+			}
+			for (int j = numRecentFiles + 1; j < MaxRecentFileMenuEntries + 1; ++j)
+				m_recentFileActions[j]->setVisible(false);
 
-        for (int i = 1; i < numRecentFiles + 1; ++i) {
-            QString text = tr("&%1 %2").arg(i).arg(QFileInfo(files[i - 1]).fileName());
-            m_recentFileActions[i]->setText(text);
-            m_recentFileActions[i]->setData(files[i - 1]);
-            m_recentFileActions[i]->setVisible(true);
-        }
-		for (int j = numRecentFiles + 1; j < MaxRecentFileMenuEntries + 1; ++j)
-            m_recentFileActions[j]->setVisible(false);
-
-        //If there are any files in the recent file list make the separator visible
-        m_recentFileActions[0]->setVisible(numRecentFiles > 0);
+			//If there are any files in the recent file list make the separator visible
+			m_recentFileActions[0]->setVisible(numRecentFiles > 0);
+		}
     }
 
 	void MainWindow::UpdateFilenameWindowTitle(const QString& title) {
