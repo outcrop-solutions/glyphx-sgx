@@ -33,7 +33,6 @@ public class NewCSVWriter {
 	private ArrayList<Integer> excluded;
 	private String outDir;
 	private String imageDir;
-	private String noURLLocation;
 	private boolean win;
 	private boolean remove_scale_zero;
 
@@ -110,14 +109,6 @@ public class NewCSVWriter {
 			data.writeInt(FORMAT_VERSION);
 
 			Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
-			noURLLocation = Paths.get(".").toAbsolutePath().normalize().toString()+"/nourl.html";
-
-		    Logger.getInstance().add(noURLLocation);
-
-		    File nourl = new File(noURLLocation);
-		    if(!nourl.exists()){
-		       	createNoUrl();
-		    }
         
 	        int global_offset = 5;
 	        int glyph_node_count = 0, base_image_count = 0, link_count = 0;
@@ -369,28 +360,5 @@ public class NewCSVWriter {
 		}
 
 		return place;
-	}
-
-	public void createNoUrl(){
-
-		try{
-			FileWriter file = new FileWriter(noURLLocation);  
-			BufferedWriter nourl = new BufferedWriter(file);
-			
-			nourl.write("<html>");
-			nourl.write("<head>");
-			nourl.write("</head>");
-			nourl.write("<body>");
-			nourl.write("<p><b>No URL is associated with this object.</b></p>");
-			nourl.write("</body>");
-			nourl.write("</html>");
-
-			nourl.close();
-		}catch(Exception e){
-	        try{
-	            e.printStackTrace(ErrorHandler.getInstance().addError());
-	        }catch(Exception ex){}
-	        e.printStackTrace();
-	    }
 	}
 }
