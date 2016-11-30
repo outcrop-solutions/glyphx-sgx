@@ -445,7 +445,7 @@ namespace SynGlyphX
 		std::vector<const Glyph3DNode*> ungrouped;
 
 		for ( auto& g : glyphs )
-			if ( g.second->isRoot() )
+			if ( g.second->isRoot() && g.second->getType() == Glyph3DNodeType::GlyphElement )
 				ungrouped.push_back( g.second );
 
 		// First pass : quickly, roughly group nodes into groups.
@@ -464,7 +464,7 @@ namespace SynGlyphX
 				// a group to begin with (close_enough_to_create_group) is stricter to prevent us from creating groups around
 				// glyphs that just have barely touching bounds.
 				octree->overlap( glyph0->getCachedCombinedBound(), [&group, &create_group, glyph0]( Glyph3DNode* glyph1 ) {
-					if ( !glyph1->grouped )
+					if ( !glyph1->grouped && glyph1->getType() == Glyph3DNodeType::GlyphElement )
 					{
 						auto dist = glm::distance( glyph0->getCachedPosition(), glyph1->getCachedPosition() );
 						if ( glyph0 != glyph1 && dist < glyph0->getCachedCombinedBound().get_radius() )
