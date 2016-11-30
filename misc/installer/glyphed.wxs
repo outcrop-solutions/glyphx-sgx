@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
-    <Product Id="*" UpgradeCode="{f5a32348-7df6-48ef-84ac-89e863efaa03}" Version="0.8.0.4" Language="1033" Name="GlyphEd" Manufacturer="SynGlyphX">
+    <Product Id="*" UpgradeCode="{f5a32348-7df6-48ef-84ac-89e863efaa03}" Version="0.8.4.0" Language="1033" Name="GlyphEd" Manufacturer="GlyphEd">
         <Package InstallerVersion="300" Compressed="yes"/>
         <Media Id="1" Cabinet="glyphed.cab" EmbedCab="yes" />
 
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
-                <Directory Id="SGXFolder" Name="SynGlyphX">
-                    <Directory Id="APPDIR" Name="GlyphEd"/>
-                </Directory>
+                <Directory Id="APPDIR" Name="GlyphEd"/>
             </Directory>
             <!-- Step 1: Define the directory structure -->
             <Directory Id="ProgramMenuFolder">
-                <Directory Id="SGXProgramsFolder" Name="SynGlyphX">
+                <Directory Id="SGXProgramsFolder" Name="GlyphEd">
                     <Directory Id="ApplicationProgramsFolder" Name="GlyphEd"/>
                 </Directory>
             </Directory>
@@ -30,12 +28,12 @@
             <Component Id="ApplicationShortcut" Guid="*">
                 <Shortcut Id="ApplicationStartMenuShortcut" 
                      Name="GlyphEd" 
-                   Description="SynGlyphX GlyphEd"
+                   Description="GlyphEd"
                     Target="[#glyphed.exe]"
                           WorkingDirectory="APPDIR"/>
                 <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
                 <RemoveFolder Id="SGXProgramsFolder" On="uninstall"/>
-                <RegistryValue Root="HKCU" Key="Software\Microsoft\SynGlyphX\GlyphEd" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+                <RegistryValue Root="HKCU" Key="Software\GlyphEd\GlyphEd" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
            </Component>
         </DirectoryRef>
 
