@@ -450,7 +450,6 @@ namespace SynGlyphX
 
 		// First pass : quickly, roughly group nodes into groups.
 		hal::debug::profile_timer timer0;
-		unsigned int group_idx = 1;
 		for ( auto& glyph0 : ungrouped )
 		{
 			if ( !glyph0->grouped )

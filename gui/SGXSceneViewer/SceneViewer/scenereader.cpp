@@ -375,7 +375,6 @@ namespace SynGlyphX
 	{
 		root_count = 0u;
 		next_filtering_index = 0;
-		int next_id = 0;
 
 		hal::debug::profile_timer timer;
 

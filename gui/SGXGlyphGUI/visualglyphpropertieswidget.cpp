@@ -93,8 +93,7 @@ namespace SynGlyphX {
 		GroupBoxSingleWidget* translateGroupBox = new GroupBoxSingleWidget(tr("Position"), m_translateWidget, this);
 
 		//Degree symbol gets displayed incorrectly unless we use QChar
-		QChar degree = QChar('°');
-		QString degreeSuffix = degree;
+		QString degreeSuffix = "\u00b0";
 
 		m_rotateWidget = new XYZWidget(false, this);
 		m_rotateWidget->SetRange(-180.0, 180.0);

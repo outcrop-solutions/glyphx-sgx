@@ -23,8 +23,8 @@ namespace SynGlyphX
 	}
 
 	OrbitCameraController::OrbitCameraController( render::perspective_camera* _camera )
-		: camera( _camera ), orbit_max_dist( 1000.f ), begin_flying_to_target( false ), flying_to_target( false ), move_speed( 32.f ),
-		turn_speed( 32.f ), sliding_to_target( false )
+		: camera( _camera ), orbit_max_dist( 1000.f ), move_speed( 32.f ),
+		turn_speed( 32.f ), begin_flying_to_target( false ), flying_to_target( false ), sliding_to_target( false )
 	{
 	}
 
@@ -52,9 +52,6 @@ namespace SynGlyphX
 			auto interp = glm::normalize( glm::lerp( fwd, desired_fwd, 0.075f ) );
 			camera->set_forward( interp );
 
-			float fly_target_dist = orbit_min_dist * fly_target_dist_mult;
-			glm::vec3 camera_to_object = -glm::normalize( cam_pos - orbit_target );
-			float dist_left_to_travel = orbit_cur_dist - fly_target_dist;
 			if ( flight_param <= 1.f )
 			{
 				float eased_flight_param = smootherstep( 0.f, 1.f, flight_param );
@@ -63,7 +60,6 @@ namespace SynGlyphX
 				flight_param += ( 1.f / fly_time ) * timeDelta;
 			}
 
-			float dist_to_target = glm::length( camera->get_position() - orbit_target );
 			float angle_to_target = acosf( glm::dot( desired_fwd, fwd ) );
 
 			if ( flight_param >= 1.f && angle_to_target < 0.0001f )
@@ -149,7 +145,6 @@ namespace SynGlyphX
 		{
 			flying_to_target = true;
 			flight_origin = camera->get_position();
-			float distance_to_fly = glm::distance( camera->get_position(), orbit_target ) - ( orbit_min_dist * fly_target_dist_mult );
 			flight_destination = orbit_target + glm::normalize( flight_origin - orbit_target ) * ( orbit_min_dist * fly_target_dist_mult );
 			begin_flying_to_target = false;
 			flight_param = 0.f;
