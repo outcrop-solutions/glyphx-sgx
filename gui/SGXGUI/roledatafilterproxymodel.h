@@ -37,7 +37,7 @@ namespace SynGlyphX {
 		void Clear();
 
 	protected:
-		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+		virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 		virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 		virtual bool HasMatch(const QVariant& var) const = 0;
 		virtual void RemoveFilterData() = 0;

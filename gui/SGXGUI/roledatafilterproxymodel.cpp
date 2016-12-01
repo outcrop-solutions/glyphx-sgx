@@ -47,7 +47,7 @@ namespace SynGlyphX {
 
 		Q_ASSERT(leftData.type() == rightData.type());
 
-		if (leftData.type() == QMetaType::QString)
+		if (leftData.type() == QVariant::String)
 		{
 			//try to see if String is acually a number or a date
 			// ideally we need to sourceModel to have the correct type to avoid costly conversion here

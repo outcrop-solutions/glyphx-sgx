@@ -7,9 +7,9 @@ namespace SynGlyphX {
 
 	RangeSlider::RangeSlider(Qt::Orientation orientation, QWidget *parent)
 		: QSlider(orientation, parent),
-		m_lowerHandleState(QStyle::SC_None),
-		m_upperHandleState(QStyle::SC_None),
-		m_lastPressedHandle(NoHandle)
+		m_lastPressedHandle(NoHandle),
+        m_lowerHandleState(QStyle::SC_None),
+        m_upperHandleState(QStyle::SC_None)
 	{
 		SetLowerPosition(minimum());
 		SetUpperPosition(maximum());

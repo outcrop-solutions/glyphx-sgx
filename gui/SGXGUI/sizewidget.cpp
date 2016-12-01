@@ -7,10 +7,10 @@ namespace SynGlyphX {
 
 	SizeWidget::SizeWidget(bool showLockRatioCheckBox, QWidget *parent)
 		: HorizontalFormWidget(parent),
-		m_lockRatioCheckBox(nullptr),
-		m_widthSpinBox(nullptr),
-		m_heightSpinBox(nullptr),
-		m_ratio(0.0)
+		m_ratio(0.0),
+        m_lockRatioCheckBox(nullptr),
+        m_widthSpinBox(nullptr),
+        m_heightSpinBox(nullptr)
     {
 		if (showLockRatioCheckBox) {
 

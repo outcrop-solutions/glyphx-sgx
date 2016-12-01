@@ -95,8 +95,8 @@ namespace SynGlyphX {
 
 	DataTransformMapping::DataTransformMapping() :
 		XMLPropertyTreeFile(true),
-		m_id(UUIDGenerator::GetNewRandomUUID()),
-		m_inputFieldManager(this)
+		m_inputFieldManager(this),
+        m_id(UUIDGenerator::GetNewRandomUUID())
     {
 		//There will always be at least one base object
 		m_baseObjects.push_back(BaseImage(nullptr));
@@ -104,17 +104,17 @@ namespace SynGlyphX {
 
 	DataTransformMapping::DataTransformMapping(const DataTransformMapping& mapping) :
 		XMLPropertyTreeFile(true),
-		m_id(UUIDGenerator::GetNewRandomUUID()),
+        m_sceneProperties(mapping.m_sceneProperties),
+        m_defaults(mapping.m_defaults),
 		m_datasources(mapping.m_datasources),
 		m_glyphTrees(mapping.m_glyphTrees), 
 		m_baseObjects(mapping.m_baseObjects),
-		m_defaults(mapping.m_defaults),
-		m_sceneProperties(mapping.m_sceneProperties),
 		m_fieldGroups(mapping.m_fieldGroups),
 		m_legends(mapping.m_legends),
 		m_links(mapping.m_links),
 		m_inputFieldManager(mapping.m_inputFieldManager),
-		m_frontEndFilters(mapping.m_frontEndFilters) {
+		m_frontEndFilters(mapping.m_frontEndFilters),
+        m_id(UUIDGenerator::GetNewRandomUUID()) {
 
 	}
 
@@ -282,7 +282,6 @@ namespace SynGlyphX {
 				if (frontEndFieldsPropertyTree.is_initialized()) {
 
 					// legacy single table filters
-					boost::optional<const boost::property_tree::wptree&> filterFieldPropertyTree = glyphPropertyTree.second.get_child_optional(L"FilterField");
 					if (frontEndFieldsPropertyTree.is_initialized()) {
 
 						for (const boost::property_tree::wptree::value_type& frontEndfieldProperties : frontEndFieldsPropertyTree.get()) {

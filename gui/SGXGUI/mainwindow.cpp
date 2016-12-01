@@ -26,8 +26,8 @@ namespace SynGlyphX {
 
 	MainWindow::MainWindow(unsigned int stateVersion, QWidget *parent)
         : QMainWindow(parent),
-		m_stateVersion(stateVersion),
-		m_needToReadSettings(true)
+		m_needToReadSettings(true),
+        m_stateVersion(stateVersion)
     {
         //Make sure Status Bar gets created for all applications
         statusBar();

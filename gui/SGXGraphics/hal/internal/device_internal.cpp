@@ -83,7 +83,7 @@ namespace SynGlyphX
 			glGetIntegerv( GL_MAJOR_VERSION, &major );
 			glGetIntegerv( GL_MINOR_VERSION, &minor );
 
-			return hal::device_info{ initialized, gl_vendor.c_str(), gl_renderer.c_str(), gl_version.c_str(), major, minor };
+			return hal::device_info{ initialized, gl_vendor.c_str(), gl_renderer.c_str(), gl_version.c_str(), static_cast<unsigned int>( major ), static_cast<unsigned int>( minor ) };
 		}
 
 		bool device_internal::init()

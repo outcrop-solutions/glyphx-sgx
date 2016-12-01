@@ -23,7 +23,6 @@ namespace SynGlyphX {
 		layout->addRow(tr("New:"), m_newDatasourceFileLineEdit);
 
 		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, this);
-		QPushButton* nextOkButton = dialogButtonBox->addButton(acceptButtonText, QDialogButtonBox::ButtonRole::AcceptRole);
 		layout->addWidget(dialogButtonBox);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &ReplaceFilenameDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &ReplaceFilenameDialog::reject);

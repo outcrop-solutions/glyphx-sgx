@@ -5,8 +5,8 @@ namespace SynGlyphX {
 
 	ResizeableImageLabel::ResizeableImageLabel(bool fixedImageRatio, QWidget *parent)
 		: QLabel(parent),
-		m_fixedImageRatio(fixedImageRatio),
-		m_imageRatio(0.0)
+        m_imageRatio(0.0),
+		m_fixedImageRatio(fixedImageRatio)
 	{
 		setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 		setScaledContents(false);

@@ -22,7 +22,6 @@ namespace SynGlyphX {
 		// This works because QScrollArea::setWidget installs an eventFilter on the widget
 		if (o && o == widget() && e->type() == QEvent::Resize) {
 
-			int w = widget()->minimumSizeHint().width();
 			setMinimumWidth(widget()->minimumSizeHint().width() + verticalScrollBar()->width());
 		}
 

@@ -17,8 +17,8 @@ namespace SynGlyphX {
 	}
 
 	Legend::Legend(const boost::property_tree::wptree& propertyTree) :
-		m_filename(propertyTree.get_value<std::wstring>()), 
 		m_title(propertyTree.get<std::wstring>(L"<xmlattr>.Title")),
+        m_filename(propertyTree.get_value<std::wstring>()),
 		m_type(s_typeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.Type"))) {
 
 

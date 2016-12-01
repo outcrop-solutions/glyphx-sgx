@@ -73,7 +73,6 @@ namespace SynGlyphX {
 
 		setLayout(mainLayout);
 
-		QMargins margins = contentsMargins();
 		setMinimumWidth(16);
 		m_dataAndCountView->setMinimumHeight(m_dataAndCountView->verticalHeader()->defaultSectionSize());
 		m_dataAndCountView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
@@ -240,7 +239,6 @@ namespace SynGlyphX {
 			if (ev->type() == QEvent::KeyRelease) {
 
 				QKeyEvent *keyEvent = static_cast<QKeyEvent*>(ev);
-				Qt::KeyboardModifiers keyboardModifiers = keyEvent->modifiers();
 				if (((keyEvent->key() == Qt::Key_Shift) || (keyEvent->key() == Qt::Key_Control)) && m_hasUserChangedSelectedItemsInTable) {
 
 					OnNewUserSelection();
