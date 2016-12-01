@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="1">
-    <title>GlyphEd</title>
+    <title>GlyphViewer</title>
     <license file="./LICENSE.rtf"/>
     <readme file="./README.txt"/>
-    <pkg-ref id="com.synglyphx.GlyphEd"/>
+    <pkg-ref id="com.synglyphx.GlyphViewer"/>
     <options customize="never" require-scripts="false"/>
     <choices-outline>
         <line choice="default">
-            <line choice="com.synglyphx.GlyphEd"/>
+            <line choice="com.synglyphx.GlyphViewer"/>
         </line>
     </choices-outline>
     <choice id="default"/>
-    <choice id="com.synglyphx.GlyphEd" visible="false">
-        <pkg-ref id="com.synglyphx.GlyphEd"/>
+    <choice id="com.synglyphx.GlyphViewer" visible="false">
+        <pkg-ref id="com.synglyphx.GlyphViewer"/>
     </choice>
-    <pkg-ref id="com.synglyphx.GlyphEd" version="0" onConclusion="none">GlyphEdGV.component.pkg</pkg-ref>
+    <pkg-ref id="com.synglyphx.GlyphViewer" version="0" onConclusion="none">GlyphViewer.component.pkg</pkg-ref>
 </installer-gui-script>

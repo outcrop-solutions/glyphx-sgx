@@ -62,10 +62,10 @@ class ChangeAliasFieldCommand : public QUndoCommand
 	// we cannot store pointer to the widget, because undoing add/remove alias will recreate the widgets
 public:
 	ChangeAliasFieldCommand(AliasTableWidget* tw, int row, const SynGlyphX::InputField& inputField) :
-		m_tw(tw),
-		m_row(row),
-		m_oldInputField(dynamic_cast<AliasLineEdit*>(tw->cellWidget(row, 1))->m_inputField),
-		m_newInputField(inputField)
+		m_newInputField(inputField),
+        m_oldInputField(dynamic_cast<AliasLineEdit*>(tw->cellWidget(row, 1))->m_inputField),
+        m_tw(tw),
+        m_row(row)
 	{
 		DMGlobal::Services()->SetModified();
 	}
@@ -98,8 +98,8 @@ public:
 AliasLineEdit::AliasLineEdit(QTableWidgetItem* nameItem, int row, AliasTableWidget* parent) :
 QLineEdit(parent),
 m_nameItem(nameItem),
-m_row(row),
-m_tw(parent)
+m_tw(parent),
+m_row(row)
 {
 	setContextMenuPolicy(Qt::NoContextMenu);
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);

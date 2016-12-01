@@ -23,20 +23,6 @@
 #include "glyphrolestablemodel.h"
 #include "datamapping3dwidget.h"
 
-static void print_tree(boost::property_tree::wptree const& pt)
-{
-#ifdef WIN32
-	using boost::property_tree::wptree;
-	wptree::const_iterator end = pt.end();
-	for (wptree::const_iterator it = pt.begin(); it != end; ++it) {
-		std::wstringstream ss;
-		ss << it->first << ": " << it->second.get_value<std::wstring>() << std::endl;
-		OutputDebugStringW(ss.str().c_str());
-		print_tree(it->second);
-	}
-#endif
-}
-
 class LinkLineEdit : public QLineEdit
 {
 public:
@@ -357,12 +343,12 @@ LinksDialog::LinksDialog(SynGlyphX::DataTransformModel* dataTransformModel, QWid
 	glyphLayout->addWidget(m_toGlyphTree, 1, 1);
 
 	m_fromGlyph3DView = new DataMapping3DWidget(m_dataTransformModel, this);
-	m_fromGlyph3DView->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_fromGlyphTree->model()), m_fromGlyphTree->selectionModel());
+	m_fromGlyph3DView->SetModelRDFP(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_fromGlyphTree->model()), m_fromGlyphTree->selectionModel());
 	m_fromGlyph3DView->SetAllowMultiselect(true);
 	m_fromGlyph3DView->EnableAnimation(false);
 	m_fromGlyph3DView->setMinimumSize(300, 300);
 	m_toGlyph3DView = new DataMapping3DWidget(m_dataTransformModel, this);
-	m_toGlyph3DView->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_toGlyphTree->model()), m_toGlyphTree->selectionModel());
+	m_toGlyph3DView->SetModelRDFP(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_toGlyphTree->model()), m_toGlyphTree->selectionModel());
 	m_toGlyph3DView->SetAllowMultiselect(true);
 	m_toGlyph3DView->EnableAnimation(false);
 	m_toGlyph3DView->setMinimumSize(300, 300);
@@ -544,7 +530,6 @@ void LinksDialog::SetNode(const SynGlyphX::LinkNode& node, GlyphTreesView* treeV
 	//	}
 	//}
 	lineEdit->SetInputField(node.m_inputFieldId);
-	int nRows = m_dataTransformModel->GetDataMapping()->GetGlyphGraphs().size();
 	
 	SelectGlyph(QModelIndex(), treeView, node);
 	//for (const auto& glyph : glyphGraphs) {

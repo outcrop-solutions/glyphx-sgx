@@ -34,7 +34,7 @@ public:
 	DataMapping3DWidget(SynGlyphX::DataTransformModel* model, QWidget *parent = 0);
 	~DataMapping3DWidget();
 
-	virtual void SetModel(SynGlyphX::RoleDataFilterProxyModel* model, QItemSelectionModel* selectionModel);
+	void SetModelRDFP(SynGlyphX::RoleDataFilterProxyModel* model, QItemSelectionModel* selectionModel);
 
 private slots:
 	void OnInternalSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);

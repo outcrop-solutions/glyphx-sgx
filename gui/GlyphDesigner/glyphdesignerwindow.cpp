@@ -20,9 +20,9 @@
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
-    m_treeView(nullptr),
-	m_glyphTreeModel(nullptr),
 	m_3dView(nullptr),
+    m_treeView(nullptr),
+    m_glyphTreeModel(nullptr),
 	m_isFileLoadingOrDefaultGlyphSet(false)
 {
 	m_glyphTreeModel = new SynGlyphXANTz::MinMaxGlyphTreeModel(this);

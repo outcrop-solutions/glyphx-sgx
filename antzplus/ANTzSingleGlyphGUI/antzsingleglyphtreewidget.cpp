@@ -16,15 +16,15 @@ namespace SynGlyphXANTz {
 
 	ANTzSingleGlyphTreeWidget::ANTzSingleGlyphTreeWidget(MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
 		: ANTzWidget(parent),
-		m_glyphTreeType(glyphTreeType),
-		m_clipboardGlyph(),
 		m_rootGlyph(nullptr),
+        m_baseImageTextureID(0),
+        m_clipboardGlyph(),
+        m_glyphTreeType(glyphTreeType),
+        m_editingMode(Move),
+        m_selectionEdited(false),
+        m_allowMultiSelection(false),
 		m_model(nullptr),
 		m_selectionModel(nullptr),
-		m_editingMode(Move),
-		m_selectionEdited(false),
-		m_allowMultiSelection(false),
-		m_baseImageTextureID(0),
 		m_animationEnabled(true),
 		m_lockZPositionToZero(true),
 		m_updateCameraAfterDraw(false)

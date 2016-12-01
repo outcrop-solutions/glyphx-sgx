@@ -48,15 +48,15 @@
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
+    m_baseObjectsModel(nullptr),
 	m_baseObjectsView(nullptr),
 	m_glyphTreesView(nullptr),
 	m_dataSourceStats(nullptr),
+    m_dataSourcesView(nullptr),
 	m_dataBindingWidget(nullptr),
 	m_glyphRolesTableModel(nullptr),
-	m_dataTransformModel(nullptr),
-	m_minMaxGlyph3DWidget(nullptr),
-	m_baseObjectsModel(nullptr),
-	m_dataSourcesView(nullptr),
+    m_dataTransformModel(nullptr),
+    m_minMaxGlyph3DWidget(nullptr),
 	m_dataEngineConnection(nullptr)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -133,7 +133,7 @@ void DataMapperWindow::closeJVM(){
 void DataMapperWindow::CreateCenterWidget() {
 	
 	m_minMaxGlyph3DWidget = new DataMapping3DWidget(m_dataTransformModel, this);
-	m_minMaxGlyph3DWidget->SetModel(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
+	m_minMaxGlyph3DWidget->SetModelRDFP(dynamic_cast<SynGlyphX::RoleDataFilterProxyModel*>(m_glyphTreesView->model()), m_glyphTreesView->selectionModel());
 	m_minMaxGlyph3DWidget->SetAllowMultiselect(true);
 
 	QList<QAction*> actions;
@@ -676,7 +676,7 @@ void DataMapperWindow::AddFileDataSource() {
 
 		try {
 
-			boost::uuids::uuid newDBID = m_dataTransformModel->AddFileDatasource(fileDatasource);
+			m_dataTransformModel->AddFileDatasource(fileDatasource);
 
 			m_dataSourceStats->AddNewStatsViews();
 			EnableProjectDependentActions(true);

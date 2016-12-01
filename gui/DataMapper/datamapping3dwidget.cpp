@@ -5,12 +5,12 @@
 
 DataMapping3DWidget::DataMapping3DWidget(SynGlyphX::DataTransformModel* model, QWidget *parent)
 	: SynGlyphXANTz::MinMaxGlyph3DWidget(parent),
-	m_internalModel(nullptr),
-	m_internalSelectionModel(nullptr),
-	m_externalModel(nullptr),
-	m_externalSelectionModel(nullptr),
-	m_glyphTreeIndex(-1),
-	m_dataTransformModel(model)
+	m_dataTransformModel(model),
+    m_internalModel(nullptr),
+    m_internalSelectionModel(nullptr),
+    m_externalModel(nullptr),
+    m_externalSelectionModel(nullptr),
+    m_glyphTreeIndex(-1)
 {
 	m_internalModel = new SynGlyphXANTz::MinMaxGlyphTreeModel(this);
 	m_internalSelectionModel = new QItemSelectionModel(m_internalModel, this);
@@ -23,7 +23,7 @@ DataMapping3DWidget::~DataMapping3DWidget()
 
 }
 
-void DataMapping3DWidget::SetModel(SynGlyphX::RoleDataFilterProxyModel* model, QItemSelectionModel* selectionModel) {
+void DataMapping3DWidget::SetModelRDFP(SynGlyphX::RoleDataFilterProxyModel* model, QItemSelectionModel* selectionModel) {
 
 	m_externalModel = model;
 	m_externalSelectionModel = selectionModel;

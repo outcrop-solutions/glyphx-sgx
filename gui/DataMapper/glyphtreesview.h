@@ -54,11 +54,11 @@ signals:
 	void UpdateStatusBar(const QString& message, int timeout);
 
 protected:
-	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-	virtual void EnableActions(const QItemSelection& selection);
-	virtual SynGlyphX::DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren);
-	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
-	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph);
+	virtual void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
+	virtual void EnableActions(const QItemSelection& selection) override;
+	virtual SynGlyphX::DataMappingGlyphGraph GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) override;
+	virtual void OverwriteGlyph(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) override;
+	virtual void AddGlyphsAsChildren(const QModelIndex& index, const SynGlyphX::DataMappingGlyphGraph& graph) override;
 	
 private slots:
 	void AddChildren();

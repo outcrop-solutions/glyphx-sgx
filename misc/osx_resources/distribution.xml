@@ -18,13 +18,13 @@
     <choice id="com.synglyphx.GlyphViewer" visible="false">
         <pkg-ref id="com.synglyphx.GlyphViewer"/>
     </choice>
-    <pkg-ref id="com.synglyphx.GlyphViewer" version="0" onConclusion="none">GlyphViewer.pkg</pkg-ref>
+    <pkg-ref id="com.synglyphx.GlyphViewer" version="0" onConclusion="none">GlyphViewer.component.pkg</pkg-ref>
     <choice id="com.synglyphx.GlyphDesigner" visible="false">
         <pkg-ref id="com.synglyphx.GlyphDesigner"/>
     </choice>
-    <pkg-ref id="com.synglyphx.GlyphDesigner" version="0" onConclusion="none">GlyphDesigner.pkg</pkg-ref>
+    <pkg-ref id="com.synglyphx.GlyphDesigner" version="0" onConclusion="none">GlyphDesigner.component.pkg</pkg-ref>
     <choice id="com.synglyphx.DataMapper" visible="false">
         <pkg-ref id="com.synglyphx.DataMapper"/>
     </choice>
-    <pkg-ref id="com.synglyphx.DataMapper" version="0" onConclusion="none">DataMapper.pkg</pkg-ref>
+    <pkg-ref id="com.synglyphx.DataMapper" version="0" onConclusion="none">DataMapper.component.pkg</pkg-ref>
 </installer-gui-script>

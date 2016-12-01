@@ -82,7 +82,7 @@ public:
 
 	}
 
-	void dragMoveEvent(QDragMoveEvent *event)
+	void dragMoveEvent(QDragMoveEvent *event) override
 	{
 		event->accept();
 	}
@@ -193,7 +193,7 @@ public:
 
 		}
 
-		void dragMoveEvent(QDragMoveEvent *event)
+		void dragMoveEvent(QDragMoveEvent *event) override
 		{
 			int row = rowAt(event->pos().y());
 			if (row == -1)

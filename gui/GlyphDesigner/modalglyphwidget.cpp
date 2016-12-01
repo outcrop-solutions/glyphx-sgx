@@ -5,8 +5,8 @@
 
 ModalGlyphWidget::ModalGlyphWidget(SynGlyphXANTz::MinMaxGlyphTreeModel::GlyphType glyphTreeType, QWidget *parent)
 	: SynGlyphX::VisualGlyphPropertiesWidget(true, SynGlyphX::VisualGlyphPropertiesWidget::ShowOnBottom | SynGlyphX::VisualGlyphPropertiesWidget::AddChildrenButton, parent),
-    m_model(nullptr),
 	m_glyphTreeType(glyphTreeType),
+    m_model(nullptr),
     m_selectionModel(nullptr)
 {
     ConnectWidgetSignals();

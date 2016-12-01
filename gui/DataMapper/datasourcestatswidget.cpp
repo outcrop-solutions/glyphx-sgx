@@ -103,7 +103,6 @@ void DataSourceStatsWidget::CreateTableView(SynGlyphX::DataStatsModel* model, co
 
 void DataSourceStatsWidget::OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end) {
 
-	bool rebuildStatsViews = false;
 	if (!parent.isValid()) {
 
 		for (int i = start; i <= end; ++i) {

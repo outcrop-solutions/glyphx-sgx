@@ -35,7 +35,7 @@ public:
 	AliasesWidget(QWidget *parent = 0);
 	~AliasesWidget();
 
-	QSize sizeHint() const;
+	QSize sizeHint() const override;
 	void removeAlias();
 	void Clear();
 	void Refresh();

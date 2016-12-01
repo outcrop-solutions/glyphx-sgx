@@ -8,8 +8,8 @@
 class RemoveLinkCommand : public QUndoCommand{
 public:
 	RemoveLinkCommand(SynGlyphX::DataTransformModel* dtm, int index) :
-		m_dtm(dtm),
-		m_index(index)
+		m_index(index),
+        m_dtm(dtm)
 	{
 		m_link = dtm->GetDataMapping()->GetLinks()[index];
 	}

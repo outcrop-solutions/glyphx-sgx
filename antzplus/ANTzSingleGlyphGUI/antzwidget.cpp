@@ -13,8 +13,8 @@ namespace SynGlyphXANTz {
 
     ANTzWidget::ANTzWidget(QWidget *parent)
 		: QOpenGLWidget(parent),
-		m_logoTextureID(0),
-		m_antzData(nullptr)
+		m_antzData(nullptr),
+        m_logoTextureID(0)
 	{
 		m_antzData = static_cast<pData>(npInitData(0, NULL));
 		InitIO();
@@ -213,7 +213,8 @@ namespace SynGlyphXANTz {
 		glPushMatrix();
 		glLoadIdentity();
 
-		gluOrtho2D(0, width(), 0.0, height());
+	//	gluOrtho2D(0, width(), 0.0, height());
+        glOrtho(0, width(), 0, height(), -1.f, 1.f);
 
 		QPoint lowerLeft(width() - m_logoSize.width() - 10, height() - m_logoSize.height() - 10);
 		QPoint upperRight(width() - 10, height() - 10);

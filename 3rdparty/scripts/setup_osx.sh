@@ -197,13 +197,12 @@ if [ $do_install = 1 ]; then
 	echo Creating OSX package...
 	cd ../../bin/OSX64/$build
 	install_path=/Applications/SynGlyphX/$app.app
-	pkg_name=$app.pkg
+	pkg_name=$app.component.pkg
 	app_id=com.synglyphx.$app
 	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then
 		install_path=/Applications/SynGlyphX/GlyphED.app
-		pkg_name=GlyphEdGV.pkg
+		pkg_name=GlyphEdGV.component.pkg
 		app_id=com.synglyphx.GlyphEd
-		mkdir ./GlyphViewer.app/Contents/MacOS/glyphed
 	fi
 	pkgbuild --root $app.app --identifier $app_id --install-location $install_path $pkg_name >/dev/null 2>/dev/null
 	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then

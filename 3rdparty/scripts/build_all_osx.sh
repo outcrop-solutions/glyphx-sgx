@@ -26,15 +26,25 @@ done
 ./setup_osx.sh -v$opts
 
 # Build an app package from the three packages we built.
-echo Building app package...
+echo Building GlyphIt app package...
 cd ../../bin/OSX64/Release
 cp ../../../misc/osx_resources/distribution.xml .
 cp ../../../misc/osx_resources/readme.txt README.txt
 cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
-productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilder.pkg
+productbuild --distribution distribution.xml --package-path . --resources . GlyphIt.pkg
 echo Building demo package...
 cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
-productbuild --distribution distribution.xml --package-path . --resources . GlyphBuilderDemo.pkg
+productbuild --distribution distribution.xml --package-path . --resources . GlyphItDemo.pkg
+
+# Build an app package from the three packages we built.
+echo Building GlyphViewer app package...
+cp ../../../misc/osx_resources/distribution_glyphviewer.xml .
+cp ../../../misc/osx_resources/readme.txt README.txt
+cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
+productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewer.pkg
+echo Building demo package...
+cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
+productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewerDemo.pkg
 
 # Build GlyphEd package.
 echo Building GlyphEd package...
