@@ -5,9 +5,9 @@
 #include <boost/filesystem.hpp>
 
 GeographicBoundingBox::GeographicBoundingBox() :
-	m_center(0.0, 0.0),
 	m_swCorner(0.0, 0.0),
 	m_neCorner(0.0, 0.0),
+    m_center(0.0, 0.0),
 	m_westCenter(0.0, 0.0),
 	m_eastCenter(0.0, 0.0),
 	m_northCenter(0.0, 0.0),
@@ -15,21 +15,10 @@ GeographicBoundingBox::GeographicBoundingBox() :
 
 }
 
-GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& swCorner, const GeographicPoint& neCorner) :
-    m_swCorner(swCorner),
-    m_neCorner(neCorner),
-    m_center(((swCorner.get<0>() + neCorner.get<0>()) / 2.0, (swCorner.get<1>() + neCorner.get<1>()) / 2.0)),
-    m_westCenter(swCorner.get<0>(), m_center.get<1>()),
-    m_eastCenter(neCorner.get<0>(), m_center.get<1>()),
-    m_northCenter(m_center.get<0>(), neCorner.get<1>()),
-    m_southCenter(m_center.get<0>(), swCorner.get<1>())
-{
-}
-
 GeographicBoundingBox::GeographicBoundingBox(const GeographicPoint& center, double latRadius, double lonRadius) :
-    m_center(center),
     m_swCorner(center.get<0>() - lonRadius, center.get<1>() - latRadius),
     m_neCorner(center.get<0>() + lonRadius, center.get<1>() + latRadius),
+    m_center(center),
     m_westCenter(center.get<0>() - lonRadius, center.get<1>()),
     m_eastCenter(center.get<0>() + lonRadius, center.get<1>()),
     m_northCenter(center.get<0>(), center.get<1>() + latRadius),
@@ -77,9 +66,9 @@ GeographicBoundingBox::GeographicBoundingBox(const std::vector<GeographicPoint>&
 }
 
 GeographicBoundingBox::GeographicBoundingBox(const GeographicBoundingBox& boundingBox) :
-	m_center(boundingBox.m_center),
 	m_swCorner(boundingBox.m_swCorner),
 	m_neCorner(boundingBox.m_neCorner),
+    m_center(boundingBox.m_center),
 	m_westCenter(boundingBox.m_westCenter),
 	m_eastCenter(boundingBox.m_eastCenter),
 	m_northCenter(boundingBox.m_northCenter),

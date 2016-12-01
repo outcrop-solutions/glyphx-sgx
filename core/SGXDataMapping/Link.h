@@ -101,5 +101,5 @@ namespace SynGlyphX {
 
 } //namespace SynGlyphX
 
-#endif SYNGLYPHX_Link_H
+#endif // SYNGLYPHX_Link_H
 

@@ -11,14 +11,14 @@ namespace SynGlyphX {
 	const GlyphColor GlyphColor::s_white(GlyphColor::ColorArray({ { 255, 255, 255 } }));
 
 	GlyphColor::GlyphColor(Space space) :
-		m_space(space),
-		m_color(GlyphColor::ColorArray({ { 0, 0, 0 } }))
+        m_color(GlyphColor::ColorArray({ { 0, 0, 0 } })),
+		m_space(space)
 	{
 	}
 
 	GlyphColor::GlyphColor(const ColorArray& color, Space space) :
-		m_space(space),
-		m_color(color) {
+		m_color(color),
+        m_space(space) {
 
 	}
 
@@ -29,8 +29,8 @@ namespace SynGlyphX {
 	}*/
 
 	GlyphColor::GlyphColor(const GlyphColor& color) : 
-		m_space(color.m_space),
-		m_color(color.m_color) {
+        m_color(color.m_color),
+        m_space(color.m_space) {
 
 	}
 

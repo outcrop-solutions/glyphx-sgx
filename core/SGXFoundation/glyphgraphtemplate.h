@@ -63,8 +63,8 @@ namespace SynGlyphX {
 
 		GlyphGraphTemplate(const GlyphGraphTemplate& graph) :
 			stlplus::ntree<std::pair<unsigned long, GlyphType>>(graph),
-			m_nextLabel(graph.m_nextLabel),
-			m_linkGlyphs(graph.m_linkGlyphs) {
+            m_linkGlyphs(graph.m_linkGlyphs),
+			m_nextLabel(graph.m_nextLabel) {
 
 		}
 

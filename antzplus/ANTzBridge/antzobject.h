@@ -51,11 +51,11 @@ namespace SynGlyphXANTz {
 		bool GetVisible() const;
 
 	protected:
-		SynGlyphX::Vector3 m_rotation;
 		SynGlyphX::Vector3 m_scale;
 		SynGlyphX::Vector3 m_position;
+        SynGlyphX::Vector3 m_rotation;
+        bool m_visible;
 		SynGlyphX::GlyphColor m_color;
-		bool m_visible;
 	};
 
 } //namespace SynGlyphXANTz

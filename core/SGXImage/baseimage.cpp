@@ -16,8 +16,8 @@ namespace SynGlyphX {
 	BaseImage::BaseImage(BaseImageProperties::ConstSharedPtr properties) :
 		m_position({ {0.0, 0.0, 0.0} }),
 		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
+        m_type(Type::Default),
 		m_properties(nullptr),
-		m_type(Type::Default),
 		m_worldSize({ {360.0, 180.0} }),
 		m_gridLineCounts({ { 0, 0 } }),
 		m_gridLinesColor(GlyphColor::s_black)
@@ -26,10 +26,10 @@ namespace SynGlyphX {
 	}
 
 	BaseImage::BaseImage(const BaseImage::PropertyTree& propertyTree) :
+        m_position({ { 0.0, 0.0, 0.0 } }),
+        m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
 		m_type(s_baseImageTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
 		m_properties(nullptr),
-		m_position({ { 0.0, 0.0, 0.0 } }),
-		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
 		m_worldSize({ { 360.0, 180.0 } }),
 		m_gridLineCounts({ { 0, 0 } }),
 		m_gridLinesColor(GlyphColor::s_black) {
@@ -93,9 +93,9 @@ namespace SynGlyphX {
 
 	BaseImage::BaseImage(const BaseImage& baseImage) :
 		m_position(baseImage.m_position),
+        m_rotationAngles(baseImage.m_rotationAngles),
 		m_type(baseImage.m_type),
 		m_properties(nullptr),
-		m_rotationAngles(baseImage.m_rotationAngles),
 		m_worldSize(baseImage.m_worldSize),
 		m_gridLineCounts(baseImage.m_gridLineCounts),
 		m_gridLinesColor(baseImage.m_gridLinesColor) {

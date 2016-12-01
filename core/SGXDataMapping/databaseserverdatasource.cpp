@@ -18,8 +18,8 @@ namespace SynGlyphX {
 
 	DatabaseServerDatasource::DatabaseServerDatasource(DBType type, const std::wstring& connection, const std::wstring& schema, const std::wstring& username, const std::wstring& password) :
 		Datasource(connection, username, password),
-		m_schema(schema),
-		m_dbType(type)
+        m_dbType(type),
+        m_schema(schema)
 	{
 	}
 
