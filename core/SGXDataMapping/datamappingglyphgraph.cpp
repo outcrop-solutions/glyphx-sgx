@@ -418,11 +418,6 @@ namespace SynGlyphX {
 		GetRoot()->second.GetPosition()[1].GetValue() = DoubleMinDiff(-90.0, 180.0);
 	}
 
-	DataMappingGlyphGraph::GlyphIterator DataMappingGlyphGraph::AddChildGlyphGraph(const GlyphIterator& vertex, const DataMappingGlyphGraph& graph) {
-		// source checking is done by caller
-		return GlyphGraphTemplate<DataMappingGlyph>::AddChildGlyphGraph(vertex, graph);
-	}
-
 
 	bool DataMappingGlyphGraph::IsTransformable() const {
 
