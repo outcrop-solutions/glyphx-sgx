@@ -22,7 +22,7 @@ namespace SynGlyphX
 		GlyphScene( GlyphGeometryDB& _db ) : octree( nullptr ), explode_state( group_state::retracted ), group_status( 0.f ), active_group( 0 ), filter_applied( false ),
             scene_changed( true ), selection_changed( false ), filter_mode( FilteredResultsDisplayMode::TranslucentUnfiltered ), has_animation( false ), db( _db ),
             glyph_storage( nullptr ), glyph_storage_next( 0u ) { }
-		~GlyphScene();
+		virtual ~GlyphScene();
 		GlyphScene( const GlyphScene& ) = delete;
 		void operator=( const GlyphScene& ) = delete;
 
