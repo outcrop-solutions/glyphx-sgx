@@ -8,9 +8,9 @@ FilteringParameters::FilteringParameters() :
 
 FilteringParameters::FilteringParameters(const FilteringParameters& filters) :
 	DistinctValueFilteringParameters(filters),
-	m_rangeFilters(filters.m_rangeFilters),
-	m_keywordFilters(filters.m_keywordFilters) {
-
+	m_keywordFilters(filters.m_keywordFilters),
+    m_rangeFilters(filters.m_rangeFilters)
+{
 }
 
 FilteringParameters::~FilteringParameters()

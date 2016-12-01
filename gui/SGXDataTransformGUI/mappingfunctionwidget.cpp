@@ -11,11 +11,11 @@ const QStringList MappingFunctionWidget::s_enumerationFunctions = MappingFunctio
 
 MappingFunctionWidget::MappingFunctionWidget(KeyType keyType, GlyphRolesTableModel* model, int row, QWidget *parent)
 	: QWidget(parent),
-	m_keyType(keyType),
 	m_model(model),
 	m_row(row),
 	m_dialogOutputMin(-100000.0),
-	m_dialogOutputMax(100000.0)
+	m_dialogOutputMax(100000.0),
+    m_keyType(keyType)
 {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 

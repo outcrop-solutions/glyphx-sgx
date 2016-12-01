@@ -46,10 +46,10 @@ QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_r
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
-	m_viewer( nullptr ),
 	m_showErrorFromTransform(true),
 	m_showHomePage(true),
-	m_dataEngineConnection(nullptr)
+    m_viewer( nullptr ),
+    m_dataEngineConnection(nullptr)
 {
 	SGX_PROFILE_SCOPE
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -915,7 +915,6 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 
 						if (convertedToNumber) {
 							// Show numbers with no integral parts as ints for readability
-							float temp = 0.f;
 							float frac = fmodf( number, 1.f );
 							if ( frac != 0.f )
 							{
@@ -968,7 +967,7 @@ void GlyphViewerWindow::ShowOpenGLSettings() {
 
 	auto device_info = SynGlyphX::hal::device::get_device_info();
 	char buf[2048];
-	sprintf_s( buf, "Device reports:\n\tVendor: %s\n\tRenderer: %s\n\tVersion: %s", device_info.vendor, device_info.renderer, device_info.version );
+	sprintf( buf, "Device reports:\n\tVendor: %s\n\tRenderer: %s\n\tVersion: %s", device_info.vendor, device_info.renderer, device_info.version );
 	settings += buf;
 
 	QMessageBox::information(this, tr("OpenGL Settings"), settings);

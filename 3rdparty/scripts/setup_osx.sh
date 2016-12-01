@@ -167,7 +167,7 @@ fi
 
 #echo Deploying Data Engine...
 mkdir -p ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
-cp ../../bin/OSX64/$build/dataengine.jar ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine 2>/dev/null
+cp ../../classes/dataengine.jar ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine 2>/dev/null
 cp -R ../../DataEngine/JavaDataEngine/database-drivers ../../bin/OSX64/$build/$app.app/Contents/Resources/DataEngine
 cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../bin/OSX64/$build/$app.app/Contents/MacOS
 

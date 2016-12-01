@@ -15,16 +15,16 @@
 
 ValueMappingDialog::ValueMappingDialog(InputType input, OutputType output, QWidget *parent)
 	: QDialog(parent),
-	m_input(input),
-	m_output(output),
+    m_table(nullptr),
 	m_defaultDoubleWidget(nullptr),
 	m_defaultColorWidget(nullptr),
-	m_table(nullptr),
 	m_inputRangeWidget(nullptr),
 	m_inputDoubleWidget(nullptr),
 	m_inputTextWidget(nullptr),
 	m_outputSpinBoxMin(-100000.0),
-	m_outputSpinBoxMax(100000.0)
+	m_outputSpinBoxMax(100000.0),
+    m_input(input),
+    m_output(output)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 

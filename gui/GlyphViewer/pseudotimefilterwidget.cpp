@@ -11,9 +11,9 @@ unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
 PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, QWidget *parent)
 	: QWidget(parent),
-	m_filterState(FilterState::Inactive),
-	m_filteringManager(filteringManager),
-	m_columnsModel(columnsModel)
+	m_columnsModel(columnsModel),
+    m_filterState(FilterState::Inactive),
+    m_filteringManager(filteringManager)
 {
 	m_playTimer.setSingleShot(false);
 

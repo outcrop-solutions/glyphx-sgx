@@ -14,8 +14,8 @@
 
 GlyphRolesTableModel::GlyphRolesTableModel(SynGlyphX::DataTransformModel* dataTransformModel, QObject *parent)
 	: QAbstractTableModel(parent),
-	m_isAnySelectedGlyphRoot(false),
-	m_dataTransformModel(dataTransformModel)
+	m_dataTransformModel(dataTransformModel),
+    m_isAnySelectedGlyphRoot(false)
 {
 	m_propertyHeaders.push_back(tr("Position X"));
 	m_propertyHeaders.push_back(tr("Position Y"));

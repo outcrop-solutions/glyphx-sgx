@@ -18,13 +18,13 @@
 
 FilteringTable::FilteringTable(SourceDataInfoModel* columnsModel, FilteringManager* filteringManager, SynGlyphX::InputField::Type fieldType, const QString& label, bool includeMoveUpDown, QWidget *parent)
 	: QWidget(parent),
+    m_removeSelectedContextMenuAction(nullptr),
+    m_moveRowUpContextMenuAction(nullptr),
+    m_moveRowDownContextMenuAction(nullptr),
 	m_columnsModel(columnsModel),
 	m_filteringManager(filteringManager),
-	m_fieldType(fieldType),
-	m_removeSelectedContextMenuAction(nullptr),
-	m_moveRowUpContextMenuAction(nullptr),
-	m_moveRowDownContextMenuAction(nullptr),
-	m_currentTable("")
+    m_currentTable(""),
+	m_fieldType(fieldType)
 {
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	mainLayout->setContentsMargins(0, 0, 0, 0);

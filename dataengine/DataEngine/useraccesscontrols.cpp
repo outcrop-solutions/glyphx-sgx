@@ -4,8 +4,8 @@ namespace DataEngine
 {
 	UserAccessControls::UserAccessControls(JNIEnv *env) :
 		jniEnv(env),
-		synced(false),
-		validConnection(false)
+		validConnection(false),
+        synced(false)
 	{
 		jcls = jniEnv->FindClass("UserAccessControls");
 	}
@@ -156,7 +156,7 @@ namespace DataEngine
 		synced = true;
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"fileSyncSetup", "(Ljava/lang/String;)I");
-		int count;
+		int count = 0;
 		if (methodId != NULL) {
 			jstring fp = jniEnv->NewStringUTF(path.toStdString().c_str());
 			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, fp);
@@ -171,7 +171,7 @@ namespace DataEngine
 	int UserAccessControls::VisualizationsToSync(){
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"visualizationsToSync", "()I");
-		int count;
+		int count = 0;
 		if (methodId != NULL) {
 			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {
@@ -200,7 +200,7 @@ namespace DataEngine
 	int UserAccessControls::FilesSynced(){
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"filesSynced", "()I");
-		int count;
+		int count = 0;
 		if (methodId != NULL) {
 			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
 			if (jniEnv->ExceptionCheck()) {

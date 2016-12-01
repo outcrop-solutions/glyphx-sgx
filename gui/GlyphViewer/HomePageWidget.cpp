@@ -24,8 +24,8 @@
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QFrame(parent),
 	m_mainWindow(mainWindow),
-	m_dataEngineConnection(dataEngineConnection),
-	loggedOn(false)
+	loggedOn(false),
+    m_dataEngineConnection(dataEngineConnection)
 {
 	setFrameStyle(QFrame::Box | QFrame::Sunken);
 	
@@ -675,7 +675,6 @@ void HomePageWidget::OnLoadVisualization() {
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	unsigned int whichFilteringWidget = m_homePageWidgetsLayout->currentIndex();
-	SharedVisualizationsWidget* currentLoadingFilterWidget = nullptr;
 	if (whichFilteringWidget == 1) {
 
 		if (!m_allViewsFilteringWidget->DoCurrentNecessaryFiltersHaveSelection()) {

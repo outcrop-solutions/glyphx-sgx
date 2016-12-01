@@ -44,7 +44,7 @@ namespace DataEngine
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"size", "()I");
-		jint itr;
+		jint itr = 0;
 		if (methodId != NULL) {
 			std::cout << "Returning size..." << std::endl;
 			itr = jniEnv->CallStaticIntMethod(jcls, methodId);
@@ -61,7 +61,7 @@ namespace DataEngine
 
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"getTableCount", "()I");
-		jint itr;
+		jint itr = 0;
 		if (methodId != NULL) {
 			//qDebug() << "Returning count...";
 			itr = jniEnv->CallStaticIntMethod(jcls, methodId);

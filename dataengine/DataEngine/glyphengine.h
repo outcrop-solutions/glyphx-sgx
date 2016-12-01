@@ -41,7 +41,6 @@ namespace DataEngine
 		std::string baseImageDir;
 		std::string baseFilename;
 		std::string application;
-		const unsigned int NumberOfDefaultBaseImages = 1;
 		bool downloadComplete = true;
 		std::vector<std::string> images;
 		void prepare();

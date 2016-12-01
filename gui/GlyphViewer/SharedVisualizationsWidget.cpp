@@ -179,8 +179,6 @@ void SharedVisualizationsWidget::ClearAll() {
 	m_loadingFilterWidgetsStack = new QStackedWidget(this);
 	addWidget(m_loadingFilterWidgetsStack);
 
-	bool visualizationsAdded = false;
-
 	m_viewListWidget->blockSignals(false);
 
 	m_loadingFilterWidgetsStack->setVisible(false);

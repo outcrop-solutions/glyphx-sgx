@@ -131,10 +131,8 @@ namespace DataEngine
 
 				jthrowable exc;
 				exc = jniEnv->ExceptionOccurred();
-				jboolean isCopy = false;
 				jmethodID toString = jniEnv->GetMethodID( jniEnv->FindClass( "java/lang/Object" ), "toString", "()Ljava/lang/String;" );
-				jstring s = (jstring)( jniEnv )->CallObjectMethod( exc, toString );
-				const char* utf = ( jniEnv )->GetStringUTFChars( s, &isCopy );
+				jniEnv->CallObjectMethod( exc, toString );
 
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
@@ -240,7 +238,6 @@ namespace DataEngine
 	bool GlyphEngine::getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages){
 		
 		prepare();
-		unsigned int nextTextureID = NumberOfDefaultBaseImages + 1;
 		for (const SynGlyphX::BaseImage& baseImage : baseImages) {
 
 			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {

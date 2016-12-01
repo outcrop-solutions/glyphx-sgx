@@ -97,7 +97,7 @@ namespace DataEngine
 
 		ifile.close();
 		options[0].optionString = const_cast<char*>(jarFilesOptionString.c_str());
-        options[1].optionString = "-Xmx1g"; //Max of 1G
+        options[1].optionString = const_cast<char*>("-Xmx1g"); //Max of 1G
 
         vmArgs.version = JNI_VERSION_1_8;
 		vmArgs.options = options;
@@ -500,7 +500,7 @@ namespace DataEngine
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"sizeOfQuery", "(Ljava/lang/String;)I");
 
-		jint count;
+		jint count = 0;
 		if (methodId != NULL) {
 			jstring name = jniEnv->NewStringUTF(query.toStdString().c_str());
 			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, name);

@@ -8,8 +8,8 @@ namespace SynGlyphX {
 		QDialog(parent),
 		value(0),
 		viz_count(0),
-		m_dataEngineConnection(dataEngineConnection),
-		m_allViewsFilteringWidget(allViewsFilteringWidget)
+        m_allViewsFilteringWidget(allViewsFilteringWidget),
+		m_dataEngineConnection(dataEngineConnection)
 	{
 		timer = new QTimer();
 		timer->start(250);

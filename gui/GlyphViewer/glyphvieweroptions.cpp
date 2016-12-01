@@ -6,34 +6,34 @@
 
 GlyphViewerOptions::GlyphViewerOptions() :
 	m_cacheDirectory(GetDefaultCacheDirectory()),
-	m_hideUnselectedGlyphTrees(false),
-	m_showHUDAxisObject(true),
-	m_sceneAxisHUDObjectLocation(SynGlyphX::HUDAxesLocation::TopLeft),
+    m_showHUDAxisObject(true),
+    m_sceneAxisHUDObjectLocation(SynGlyphX::HUDAxesLocation::TopLeft),
 	m_showSceneAxisObject(true),
-	m_showMessageWhenImagesDidNotDownload(true),
-	m_showHomePage(true),
-	m_defaultProject(QString()),
+    m_hideUnselectedGlyphTrees(false),
 	m_loadSubsetVisualization(true),
 	m_loadSubsetVisualizationInNewInstance(true),
-	m_FilteredGlyphOpacity(0.5f) {
+	m_FilteredGlyphOpacity(0.5f),
+    m_showMessageWhenImagesDidNotDownload(true),
+    m_showHomePage(true),
+    m_defaultProject(QString()) {
 	
 }
 
 GlyphViewerOptions::GlyphViewerOptions(const GlyphViewerOptions& options) :
 	m_cacheDirectory(options.m_cacheDirectory),
-	m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
-	m_showHUDAxisObject(options.m_showHUDAxisObject),
+    m_showHUDAxisObject(options.m_showHUDAxisObject),
 	m_sceneAxisHUDObjectLocation(options.m_sceneAxisHUDObjectLocation),
 	m_showSceneAxisObject(options.m_showSceneAxisObject),
+    m_hideUnselectedGlyphTrees(options.m_hideUnselectedGlyphTrees),
 #ifdef USE_ZSPACE
 	m_zSpaceOptions(options.m_zSpaceOptions),
 #endif
-	m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload),
-	m_showHomePage(options.m_showHomePage),
-	m_defaultProject(options.m_defaultProject),
 	m_loadSubsetVisualization(options.m_loadSubsetVisualization),
 	m_loadSubsetVisualizationInNewInstance(options.m_loadSubsetVisualizationInNewInstance),
-	m_FilteredGlyphOpacity(options.m_FilteredGlyphOpacity) {
+	m_FilteredGlyphOpacity(options.m_FilteredGlyphOpacity),
+    m_showMessageWhenImagesDidNotDownload(options.m_showMessageWhenImagesDidNotDownload),
+    m_showHomePage(options.m_showHomePage),
+    m_defaultProject(options.m_defaultProject) {
 
 }
 

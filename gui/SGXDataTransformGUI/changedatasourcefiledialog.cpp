@@ -11,8 +11,8 @@ namespace SynGlyphX {
 
 	ChangeDatasourceFileDialog::ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 		: ReplaceFilenameDialog(QString::fromStdWString(oldDatasourceFile.GetDBName()), acceptButtonText, parent),
-		m_fileDatasource(oldDatasourceFile),
-		m_dataEngineConnection(dataEngineConnection)
+		m_dataEngineConnection(dataEngineConnection),
+        m_fileDatasource(oldDatasourceFile)
 	{
 		setWindowTitle(tr("Change Datasource File"));
 
