@@ -320,7 +320,10 @@ namespace SynGlyphX
 			context->set_rasterizer_state( filled );
 			context->bind( glyph_effect );
 			draw_buckets( context, BLENDED, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			hal::rasterizer_state wire{ true, true, true };
+			context->set_rasterizer_state( wire );
 			draw_buckets( context, WIREFRAME | BLENDED, render_group, exclude_group, transform_binding_point, material_binding_point, anim_binding_point, alt_pos_binding_point );
+			context->set_rasterizer_state( filled );
 			auto filter_mode = scene->getFilterMode();
 			if ( filter_mode == FilteredResultsDisplayMode::ShowUnfiltered )
 			{
