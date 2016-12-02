@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
-    <Product Id="*" UpgradeCode="{f5a32348-7df6-48ef-84ac-89e863efaa03}" Version="0.8.4.0" Language="1033" Name="GlyphEd" Manufacturer="GlyphEd">
+    <Product Id="*" UpgradeCode="{f5a32348-7df6-48ef-84ac-89e863efaa03}" Version="0.8.4.1" Language="1033" Name="GlyphEd" Manufacturer="GlyphEd">
         <Package InstallerVersion="300" Compressed="yes"/>
         <Media Id="1" Cabinet="glyphed.cab" EmbedCab="yes" />
 
