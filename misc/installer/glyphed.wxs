@@ -61,7 +61,7 @@
         <Property Id="WIXUI_INSTALLDIR" Value="APPDIR" />
         <WixVariable Id="WixUIBannerBmp" Value="glyphed_banner.png" />
         <WixVariable Id="WixUIDialogBmp" Value="glyphed_background.png" />
-        <WixVariable Id="WixUILicenseRtf" Value="../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf" />
+        <WixVariable Id="WixUILicenseRtf" Value="../../misc/InstallerFiles/Docs/EULA/license_agreement_glyphed.rtf" />
 
     </Product>
 </Wix>
