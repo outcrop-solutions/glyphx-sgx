@@ -39,7 +39,7 @@ productbuild --distribution distribution.xml --package-path . --resources . Glyp
 # Build an app package from the three packages we built.
 echo Building GlyphViewer app package...
 cp ../../../misc/osx_resources/distribution_glyphviewer.xml .
-cp ../../../misc/osx_resources/readme.txt README.txt
+cp ../../../misc/osx_resources/readme_gv.txt README.txt
 cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
 productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewer.pkg
 echo Building demo package...
