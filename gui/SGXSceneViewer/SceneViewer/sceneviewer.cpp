@@ -51,8 +51,8 @@ namespace SynGlyphX
 
 	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
 		: QOpenGLWidget( parent ), initialized( false ), scene( nullptr ), free_selection_camera( false ), selection_effect_enabled( true ), wheel_delta( 0.f ), scene_axes_enabled( true ),
-        hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), enable_fly_to_object( false ), animation_enabled( true ), wireframe( false ), glyph_renderer( nullptr ),
-        renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), mode( _mode )
+		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), enable_fly_to_object( false ), animation_enabled( true ), wireframe( false ), glyph_renderer( nullptr ),
+		renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), mode( _mode )
 	{
 		memset( key_states, 0, sizeof( key_states ) );
 
@@ -590,14 +590,14 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextF( hal::font* font, const glm::vec2& pos, const glm::vec4& color, const char* string, ... )
 	{
-        const unsigned int buf_size = 8192u;
+		const unsigned int buf_size = 8192u;
 		static char buf[buf_size];
 		va_list args;
 		va_start( args, string );
 #ifdef WIN32
 		vsprintf_s( buf, string, args );
 #else
-        vsnprintf( buf, buf_size, string, args );
+		vsnprintf( buf, buf_size, string, args );
 #endif
 		va_end( args );
 
@@ -607,16 +607,16 @@ namespace SynGlyphX
 
 	void SceneViewer::renderTextCenteredF( hal::font* font, const glm::vec2& pos, CenterMode mode, const glm::vec4& color, const char* string, ... )
 	{
-        const unsigned int buf_size = 8192u;
+		const unsigned int buf_size = 8192u;
 		static char buf[buf_size];
 		va_list args;
 		va_start( args, string );
 #ifdef WIN32
 		vsprintf_s( buf, string, args );
 #else
-        vsnprintf( buf, buf_size, string, args );
+		vsnprintf( buf, buf_size, string, args );
 #endif
-        va_end( args );
+		va_end( args );
 
 		glm::vec2 text_size = context->measure_text( font, buf );
 		int imode = int( mode );
@@ -835,12 +835,15 @@ namespace SynGlyphX
 							{
 								if ( glm::dot( pos - camera->get_position(), camera->get_forward() ) > 0.f )	// make sure it's not behind the camera
 								{
-									if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+									if ( node.getColor().a > 0.f )
 									{
-										if ( !alt )
-											scene->setSelected( &node );
-										else
-											scene->setUnSelected( &node );
+										if ( scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter( &node ) )
+										{
+											if ( !alt )
+												scene->setSelected( &node );
+											else
+												scene->setUnSelected( &node );
+										}
 									}
 								}
 							}
@@ -942,9 +945,9 @@ namespace SynGlyphX
 					else  // otherwise, the standard free-camera movement
 					{
 						// Forward/back along camera axis.
-						if ( key_states[uint8_t('w')] )
+						if ( key_states[uint8_t( 'w' )] )
 							motion += cam_fwd;
-						else if ( key_states[uint8_t('s')] )
+						else if ( key_states[uint8_t( 's' )] )
 							motion -= cam_fwd;
 
 						motion += cam_fwd * wheel_delta * wheel_zoom_speed;
@@ -962,17 +965,17 @@ namespace SynGlyphX
 					}
 
 					// Left-right along camera axis.
-					if ( key_states[uint8_t('d')] )
+					if ( key_states[uint8_t( 'd' )] )
 						motion += cam_right;
-					else if ( key_states[uint8_t('a')] )
+					else if ( key_states[uint8_t( 'a' )] )
 						motion -= cam_right;
 
 					// Move the camera up and down along the world vertical axis. (To move along the camera's local
 					// up/down axis instead, use get_up instead of get_world_up.)
 					glm::vec3 cam_up = camera->get_world_up();
-					if ( key_states[uint8_t('q')] )
+					if ( key_states[uint8_t( 'q' )] )
 						motion -= cam_up;
-					else if ( key_states[uint8_t('e')] )
+					else if ( key_states[uint8_t( 'e' )] )
 						motion += cam_up;
 
 					free_cam_control->move( motion * ( fast ? 5.f : 1.f ) );
@@ -1022,13 +1025,13 @@ namespace SynGlyphX
 
 					// Keyboard camera rotation
 					glm::vec2 orbit;
-					if ( key_states[uint8_t('d')] )
+					if ( key_states[uint8_t( 'd' )] )
 						orbit.x -= 1.f;
-					else if ( key_states[uint8_t('a')] )
+					else if ( key_states[uint8_t( 'a' )] )
 						orbit.x += 1.f;
-					if ( key_states[uint8_t('w')] )
+					if ( key_states[uint8_t( 'w' )] )
 						orbit.y += 1.f;
-					else if ( key_states[uint8_t('s')] )
+					else if ( key_states[uint8_t( 's' )] )
 						orbit.y -= 1.f;
 
 					if ( !( drag_info( button::left ).dragging && drag_info( button::right ).dragging ) )
@@ -1078,7 +1081,7 @@ namespace SynGlyphX
 		axis_names[2] = std::string( "Z / " ) + Z;
 	}
 
-	void SceneViewer::setOverridePositionXYZ(const std::array<std::string, 3>& positionOverride)
+	void SceneViewer::setOverridePositionXYZ( const std::array<std::string, 3>& positionOverride )
 	{
 		m_overridePosition = positionOverride;
 	}
@@ -1155,7 +1158,7 @@ namespace SynGlyphX
 		// selection, choose the free camera.
 		else if ( ( scene->selectionEmpty() || free_selection_camera ) && mode == ViewerMode::Full )
 			return camera_mode_t::free;
-		
+
 		// Otherwise, orbit.
 		else
 			return camera_mode_t::orbit;

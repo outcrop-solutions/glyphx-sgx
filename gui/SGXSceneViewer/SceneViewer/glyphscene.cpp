@@ -171,7 +171,7 @@ namespace SynGlyphX
 				glm::vec3 q_;
 				int intersect_local = bound.intersects_ray( ray_origin, ray_dir, t, q_ );
 				int intersect_combined = combined_bound.intersects_ray( ray_origin, ray_dir, t, q_ );
-				if ( intersect_local > 0 )
+				if ( node->getColor().a > 0.f && intersect_local > 0 )
 				{
 					// We intersected the sphere bound, so pick against the actual model.
 					auto model = db.get( node->getGeometry() );
