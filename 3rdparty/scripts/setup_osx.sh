@@ -45,8 +45,7 @@ while getopts "drvegbcimj:q:" opt; do
 			((appcount++))
 			;;
 		e)
-			app=GlyphViewer
-			glyphed=1
+			app=GlyphEd
 			((appcount++))
 			;;
 		m)
@@ -174,7 +173,7 @@ cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../bin
 echo Deploying miscellaneous data files...
 cp -R ../../Misc/InstallerFiles/* ../../bin/OSX64/$build/$app.app/Contents/MacOS
 
-if [ $app = GlyphViewer ] || [ $app = DataMapper ]; then
+if [ $app = GlyphViewer ] || [ $app = DataMapper ] || [ $app = GlyphEd ]; then
 	echo Deploying ANTz Templates to $app app bundle...
 	cp -R ../../ANTzPlus/ANTzMacTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
 	cp -R ../../ANTzPlus/ANTzTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
@@ -199,11 +198,6 @@ if [ $do_install = 1 ]; then
 	install_path=/Applications/SynGlyphX/$app.app
 	pkg_name=$app.component.pkg
 	app_id=com.synglyphx.$app
-	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then
-		install_path=/Applications/SynGlyphX/GlyphED.app
-		pkg_name=GlyphEdGV.component.pkg
-		app_id=com.synglyphx.GlyphEd
-	fi
 	pkgbuild --root $app.app --identifier $app_id --install-location $install_path $pkg_name >/dev/null 2>/dev/null
 	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then
 		rmdir ./GlyphViewer.app/Contents/MacOS/glyphed
