@@ -54,6 +54,8 @@ namespace SynGlyphX
 		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), enable_fly_to_object( false ), animation_enabled( true ), wireframe( false ), glyph_renderer( nullptr ),
 		renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), mode( _mode )
 	{
+		setLogoFile("textures/logo.png");
+
 		memset( key_states, 0, sizeof( key_states ) );
 
 		setMouseTracking( true );
@@ -281,7 +283,8 @@ namespace SynGlyphX
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 3, hal::stream_semantic::position, 0 ) );
 		fmt.add_stream( hal::stream_info( hal::stream_type::float32, 2, hal::stream_semantic::texcoord, 0 ) );
 
-		sgx_logo = hal::device::load_texture( "textures/logo.png" );
+		if( logo_file.length() > 0 )
+			sgx_logo = hal::device::load_texture( logo_file.c_str() );
 
 		auto plane_mesh = hal::device::create_mesh( fmt, hal::primitive_type::triangle_list, 4, square, 2, square_indices );
 

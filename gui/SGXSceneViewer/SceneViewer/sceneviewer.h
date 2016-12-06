@@ -120,6 +120,8 @@ namespace SynGlyphX
 
 		void setOverridePositionXYZ(const std::array<std::string, 3>& positionOverride);
 
+		void setLogoFile(const char* file) { logo_file = file; }
+
 	protected:
 		enum class CenterMode
 		{
@@ -148,6 +150,7 @@ namespace SynGlyphX
 		QElapsedTimer elapsed_timer;
 
 		// Logo texture.
+		std::string logo_file;
 		hal::texture* sgx_logo;
 
 		// Input handling.
