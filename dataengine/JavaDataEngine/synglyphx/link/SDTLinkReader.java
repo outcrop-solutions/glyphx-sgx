@@ -109,7 +109,7 @@ public class SDTLinkReader {
 
 			}
 		}
-		System.out.println("Links have been loaded...");
+		//System.out.println("Links have been loaded...");
 	}
 
 	private int getDataPathForTemplate(String field, String code){
@@ -211,7 +211,7 @@ public class SDTLinkReader {
 			//link_temp.getLinkFunction().addKeyValuePair(getValue("Key", pair), getValue("Value", pair));
 			String k = pair.getAttribute("key");
 			String v = pair.getAttribute("value");
-			System.out.println(k+", "+v);
+			//System.out.println(k+", "+v);
 			link_temp.getLinkFunction().addKeyValuePair(k, v);
 		}
 	}

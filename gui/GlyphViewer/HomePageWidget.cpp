@@ -289,7 +289,7 @@ void HomePageWidget::CreateDashboardWidget() {
 		}
 		else
 		{
-			logoImage->setPixmap( QPixmap( ":SGXGUI/Resources/synglyphx_logo_large.png" ) );
+			logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png"));
 		}
 	}
 
@@ -382,23 +382,31 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	m_stackedDashboardLayout->addWidget(loggedInWidget);
 
 	//m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
-	
+
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 		QWidget* loggedOutWidget = new QWidget(m_dashboardWidget);
 		QGridLayout* loggedOutLayout = new QGridLayout(loggedOutWidget);
-		loggedOutLayout->setContentsMargins(575, 0, 575, 0);
+		loggedOutLayout->setContentsMargins(0, 0, 0, 0);
+		//loggedOutLayout->setColumnMinimumWidth(1, 550);
+		loggedOutLayout->setRowStretch(0, 1);
+		loggedOutLayout->setRowStretch(1, 1);
+		//loggedOutLayout->setRowStretch(2, 1);
+		loggedOutLayout->setColumnStretch(0, 1);
+		loggedOutLayout->setColumnStretch(1, 1);
+		loggedOutLayout->setColumnStretch(2, 1);
 		loggedOutLayout->setSpacing(15);
 
 		loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
 		loginWidget->setMidLineWidth(3);
-		loginWidget->setMinimumWidth(550);
+		loginWidget->setMinimumHeight(250);
 		loginWidget->setStyleSheet("background-color: white;");
 		QObject::connect(loginWidget, &SynGlyphX::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
 
-		loggedOutLayout->addWidget(loginWidget, 0, 1, 1, 1);
-		loggedOutLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 2, 1);
+		loginWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+		loggedOutLayout->addWidget(loginWidget, 0, 1, 1, 1);//, Qt::AlignCenter | Qt::AlignTop); //1,1
+		loggedOutLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 1, 1);//, Qt::AlignCenter | Qt::AlignTop);//2,1
 
 		loggedOutWidget->setLayout(loggedOutLayout);
 		m_stackedDashboardLayout->addWidget(loggedOutWidget);
@@ -422,11 +430,13 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 		lowerRightLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		lowerRightLabel->setLineWidth(2);
 		lowerRightLabel->setMidLineWidth(3);
+		//lowerRightLabel->setMinimumWidth(550);
 		lowerRightLabel->setWordWrap(true);
 		lowerRightLabel->setTextFormat(Qt::RichText);
+		lowerRightLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 		lowerRightLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 		lowerRightLabel->setOpenExternalLinks(true);
-		lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white;");
+		lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white; padding: 10px;");
 
 		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd\u2122 is data visualization software designed to help the Enrollment Management "
 			L"Office more quickly make sense of all the available data.  You are viewing a Beta version of the software.  We appreciate you taking the "
@@ -449,7 +459,7 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 
 			lowerRightDashboardImage->SetPixmap(QPixmap(lowerRightLogo));
 		}
-		
+
 		return lowerRightDashboardImage;
 	}
 }

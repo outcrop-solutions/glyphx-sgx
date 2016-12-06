@@ -33,7 +33,7 @@ public class BasicTable extends Table {
 		this.name = name;
 		this.query = query;
 		this.end_of_query = query.split("FROM")[1]; //(?i)
-        System.out.println(end_of_query);
+        //System.out.println(end_of_query);
 		setColumnNames();
 		createDataStats();
 	}

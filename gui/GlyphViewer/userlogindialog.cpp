@@ -23,7 +23,7 @@ namespace SynGlyphX {
 		welcomeLabel->setWordWrap(true);
 		welcomeLabel->setTextFormat(Qt::RichText);
 		welcomeLabel->setStyleSheet("QLabel{font-size: 12.5pt; font-weight: bold; background-color: white;}");
-		layout->addWidget(welcomeLabel, 0, Qt::AlignTop);
+		//layout->addWidget(welcomeLabel, 0, Qt::AlignTop);
 
 		m_usernameLineEdit = new QLineEdit(this);
 		m_passwordLineEdit = new QLineEdit(this);
@@ -45,10 +45,12 @@ namespace SynGlyphX {
 		stayLoggedInCheckBox->setStyleSheet("font-size:11pt;margin-right:50px;");
 		QFormLayout* formLayout = new QFormLayout(this);
 		formLayout->setContentsMargins(-1, -1, -1, 0);
+		formLayout->setFormAlignment(Qt::AlignCenter);
 		QLabel* username = new QLabel(tr("Username: "), this);
 		QLabel* password = new QLabel(tr("Password: "), this);
 		username->setStyleSheet("font-size:11pt;margin-left: 50px;");
 		password->setStyleSheet("font-size:11pt;margin-left: 50px;");
+		formLayout->addRow(welcomeLabel);
 		formLayout->addRow(username);
 		formLayout->addRow(m_usernameLineEdit);
 		formLayout->addRow(password);
@@ -64,18 +66,18 @@ namespace SynGlyphX {
 		hboxlayout->addWidget(stayLoggedInCheckBox);
 
 		formLayout->addRow(hboxlayout);
-		layout->addLayout(formLayout);
 
 		QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
 
 		loginButton = new QPushButton(tr("Log In"), this);
-		loginButton->setMaximumWidth(100);
+		loginButton->setMinimumWidth(80);
 		QString style("QPushButton{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #a5d9eb, stop: 1 #e8f3eb);border-radius: 8px;border-top: 0.5px solid #fff;border-right: 1px outset #fff;border-bottom: 1px solid gray;border-left: 0.5px solid gray;padding: 5px;font-size: 14pt;}");
 		QString hover("QPushButton:hover{background-color: qlineargradient(x1 : 0, y1 : 0, x2 : 0, y2 : 1, stop : 0 #1ec1fd, stop: 1 #b3e8fb);}");
 		loginButton->setStyleSheet(style + hover);
-		buttonsLayout->addWidget(loginButton);
+		buttonsLayout->addWidget(loginButton, 0, Qt::AlignCenter);
 
-		layout->addLayout(buttonsLayout);
+		formLayout->addRow(buttonsLayout);
+		layout->addLayout(formLayout);
 
 		setLayout(layout);
 

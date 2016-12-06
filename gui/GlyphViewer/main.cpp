@@ -4,14 +4,13 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
 #include "licensingdialog.h"
-#include <QtCore/QDir>
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
 #endif
 
 #include <QtCore/QStandardPaths>
-#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDesktopWidget>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
@@ -68,6 +67,8 @@ int main(int argc, char *argv[])
 /*	fmt.setOption( QSurfaceFormat::StereoBuffers );
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
+
+	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.1");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
@@ -138,7 +139,11 @@ int main(int argc, char *argv[])
 		QString styleSheet = QLatin1String(file.readAll());
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
-		w.resize(1200, 700);
+		QRect screen = QApplication::desktop()->availableGeometry();
+		//w.resize(1200, 700);
+		w.resize(screen.width(), screen.height());
+		w.setMinimumHeight(screen.height() - 25);
+		w.setMinimumWidth(screen.width());
 
 		GVGlobal::Init(new GVServices(&w));
 

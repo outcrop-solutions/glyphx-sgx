@@ -165,7 +165,7 @@ public class SQLiteWriter {
 				}
 			}
 			pstmt.addBatch();
-			if(i+1 % 100 == 0){
+			if((i+1) % 5000 == 0){
 				int[] updates = pstmt.executeBatch();
 				conn.commit();
 			}
