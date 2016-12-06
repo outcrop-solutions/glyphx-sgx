@@ -29,7 +29,7 @@ NetworkDownloader NetworkDownloader::s_instance;
 const char* NetworkDownloader::ImageFormat("PNG");
 
 NetworkDownloader::NetworkDownloader() :
-	m_distanceStrategy(EarthRadiusInMeters)
+	m_distanceStrategy(EarthRadiusInMeters), mqKeySettingName("MapQuestOpenSettings")
 {
     ReadSettings();
 
@@ -45,9 +45,10 @@ NetworkDownloader::~NetworkDownloader()
 }
 
 void NetworkDownloader::ReadSettings() {
+	assert(mqKeySettingName.size() > 0);
 
     QSettings settings("SynGlyphX", "MapDownloading");
-    settings.beginGroup("MapQuestOpenSettings");
+    settings.beginGroup(mqKeySettingName.c_str());
 
     m_mapQuestOpenKey = settings.value("AppKey", "").toString();
 
@@ -56,9 +57,10 @@ void NetworkDownloader::ReadSettings() {
 }
 
 void NetworkDownloader::WriteSettings() {
+	assert(mqKeySettingName.size() > 0);
 
     QSettings settings("SynGlyphX", "MapDownloading");
-    settings.beginGroup("MapQuestOpenSettings");
+    settings.beginGroup(mqKeySettingName.c_str());
     settings.setValue("AppKey", m_mapQuestOpenKey);
     //settings.setValue("AddPOIs", m_showPointsInMap);
     settings.endGroup();

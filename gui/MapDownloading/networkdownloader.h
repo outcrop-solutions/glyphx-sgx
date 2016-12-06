@@ -50,6 +50,8 @@ public:
     void SetMapQuestOpenKey(const QString& key);
     const QString& GetMapQuestOpenKey() const;
 
+	void SetKeySettingName(const char* name) { mqKeySettingName = name; ReadSettings(); }
+
 	std::vector<double> getImageSize();
     //void SetGoogleMapsKey(const QString& key);
     //const QString& GetGoogleMapsKey() const;
@@ -68,6 +70,7 @@ private:
 
 	QString m_mapQuestOpenKey;
     //QString m_googlemapsOpenKey;
+	std::string mqKeySettingName;
 
 	std::map<unsigned int, double> m_mapQuestMetersPerPixelAtEquator;
 };

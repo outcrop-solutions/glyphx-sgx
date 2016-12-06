@@ -39,6 +39,7 @@
 #include "LoadingFilterDialog.h"
 #include "GlyphForestInfoModel.h"
 #include "Profiler.h"
+#include "networkdownloader.h"
 #include <hal/hal.h>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
@@ -81,6 +82,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	centerWidgetsContainer->setContentsMargins(0, 0, 0, 0);
 	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setCentralWidget(centerWidgetsContainer);
+
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
+		NetworkDownloader::Instance().SetKeySettingName("MapQuestOpenSettings_GlyphEd");
 
 	try {
 
