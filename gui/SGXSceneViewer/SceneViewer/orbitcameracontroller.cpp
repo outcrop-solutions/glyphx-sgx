@@ -11,7 +11,7 @@ namespace SynGlyphX
 {
 	namespace
 	{
-		const float fly_target_dist_mult = 2.5f;
+		const float fly_target_dist_mult = 3.5f;
 
 		float smootherstep( float edge0, float edge1, float x )
 		{
