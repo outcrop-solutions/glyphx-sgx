@@ -129,11 +129,11 @@ public class SDTReader {
 			getBaseObjects(doc);
 			System.out.print("Datasource count: ");
 			System.out.println(dataPaths.size());
-
+/*
 			if(!timestamp.equals("") && app.equals("GlyphViewer")){
 				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
 			}
-
+*/
 			continueInitXML();
 
 		}catch(Exception e){

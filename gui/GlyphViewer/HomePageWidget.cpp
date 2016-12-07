@@ -366,6 +366,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	upperRightDashboardImage->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	upperRightDashboardImage->setLineWidth(2);
 	upperRightDashboardImage->setMidLineWidth(3);
+	upperRightDashboardImage->setContentsMargins(10,10,10,10);
 	upperRightDashboardImage->setStyleSheet("QLabel{background-color: white;}");
 
 	//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
@@ -418,6 +419,8 @@ void HomePageWidget::SetCustomerLogo() {
 	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 	if (QFileInfo::exists(upperRightLogo)) {
 
+		QPixmap p(upperRightLogo);
+
 		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
 	}
 }
@@ -436,12 +439,19 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 		lowerRightLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 		lowerRightLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 		lowerRightLabel->setOpenExternalLinks(true);
-		lowerRightLabel->setStyleSheet("font-size: 12pt; background-color: white; padding: 10px;");
-
+		lowerRightLabel->setStyleSheet("font-size: 10pt; background-color: white; padding: 10px;");
+		/*
 		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd\u2122 is data visualization software designed to help the Enrollment Management "
-			L"Office more quickly make sense of all the available data.  You are viewing a Beta version of the software.  We appreciate you taking the "
-			L"time to review what we are doing - and we welcome your feedback.</p>"
-			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:mark@GlyphEd.co\">mark@GlyphEd.co</a></p>"));
+			L"Office more quickly make sense of all the available data.  This is the 1.0 release of GlyphEd – we welcome your feedback and "
+			L"suggestions as we work to enhance the tool.</p>"
+			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:support@GlyphEd.co\">support@GlyphEd.co</a></p>"));
+		*/
+		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd’s Enrollment Management GlyphKIT\u2122 is data visualization software designed "
+			L"to help the Enrollment Management Office benefit from the breadth and depth of available Enrollment Management data. "
+			L"We welcome your interest and input on product direction.</p>"
+			L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@GlyphEd.co\">Support@GlyphEd.co</a></p>"
+			L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a></p>"
+			L"<p>If you prefer to call, we can be reached at:  571.733.9469 during normal business hours, Eastern Time.</p>"));
 
 		return lowerRightLabel;
 	}
