@@ -352,7 +352,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	m_recentViewsFilteringWidget = new QListWidget(recentViewsWidget);
 	m_recentViewsFilteringWidget->setFrameStyle(QFrame::NoFrame);
 	m_recentViewsFilteringWidget->setSortingEnabled(false);
-	m_recentViewsFilteringWidget->setStyleSheet("font-size: 18px;");
+	m_recentViewsFilteringWidget->setStyleSheet("font-size: 11pt;");
 	m_recentViewsFilteringWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	recentViewsLayout->addWidget(m_recentViewsFilteringWidget, 1);
 	recentViewsWidget->setLayout(recentViewsLayout);

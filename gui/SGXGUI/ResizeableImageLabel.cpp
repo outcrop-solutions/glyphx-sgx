@@ -49,11 +49,11 @@ namespace SynGlyphX {
 				double widgetAspectRatio = boundingSize.height() / static_cast<double>(boundingSize.width());
 				if (widgetAspectRatio < m_imageRatio) {
 
-					setPixmap(m_pixmap.scaledToHeight(boundingSize.height()-20, Qt::SmoothTransformation));
+					setPixmap(m_pixmap.scaledToHeight(boundingSize.height()-50, Qt::SmoothTransformation));
 				}
 				else {
 
-					setPixmap(m_pixmap.scaledToWidth(boundingSize.width()-20, Qt::SmoothTransformation));
+					setPixmap(m_pixmap.scaledToWidth(boundingSize.width()-50, Qt::SmoothTransformation));
 				}
 			}
 			else {
