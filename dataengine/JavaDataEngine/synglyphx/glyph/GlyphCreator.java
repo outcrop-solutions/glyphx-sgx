@@ -180,7 +180,7 @@ public class GlyphCreator {
 				double y1 = ranges.get(fieldNames.get(i)).get(0);
 				double y3 = ranges.get(fieldNames.get(i)).get(1);
 				double x2 = csvData.get(currData).getDataFrame().getPercentRank(input.get(fieldNames.get(i)),cursor.get(input.get(fieldNames.get(i))));
-				System.out.println(cursor.get(input.get(fieldNames.get(i)))+": "+Functions.linearInterpolation(0,1,y1,y3,x2));
+				//System.out.println(cursor.get(input.get(fieldNames.get(i)))+": "+Functions.linearInterpolation(0,1,y1,y3,x2));
 				setValues.put(fieldNames.get(i), Functions.linearInterpolation(0,1,y1,y3,x2));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Grid")){

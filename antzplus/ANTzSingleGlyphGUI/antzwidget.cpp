@@ -7,6 +7,7 @@
 #include "io/npgl.h"
 #include "io/gl/nptags.h"
 #include <QtCore/QDir>
+#include "application.h"
 #include "glyphbuilderapplication.h"
 
 namespace SynGlyphXANTz {
@@ -116,8 +117,8 @@ namespace SynGlyphXANTz {
 		npInitTags(m_antzData);
 
 		QImage image(SynGlyphX::GlyphBuilderApplication::GetLogoLocation(SynGlyphX::GlyphBuilderApplication::WhiteBorder));
-		m_logoSize = image.size();
-		m_logoTextureID = new QOpenGLTexture(image.mirrored());
+		m_logoSize = SynGlyphX::Application::DynamicQSize(image.size().width(), image.size().height());
+		m_logoTextureID = new QOpenGLTexture(image.scaled(m_logoSize).mirrored());
 	}
 
 	void ANTzWidget::resizeGL(int w, int h) {

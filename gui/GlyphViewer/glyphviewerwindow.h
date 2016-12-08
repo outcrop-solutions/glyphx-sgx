@@ -169,6 +169,7 @@ private:
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 	QDockWidget* m_rightDockWidget;
+	QDockWidget* m_bottomDockWidget;
 
 	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;

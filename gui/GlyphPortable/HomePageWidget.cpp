@@ -39,11 +39,11 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	logoLabel->setAlignment(Qt::AlignCenter);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png").scaled(SynGlyphX::Application::DynamicQSize(135, 25)));
 	}
 	else {
 
-		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_white_border.png"));
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_white_border.png").scaled(SynGlyphX::Application::DynamicQSize(178, 40)));
 	}
 	m_mainLayout->addWidget(logoLabel, 0, 0);
 

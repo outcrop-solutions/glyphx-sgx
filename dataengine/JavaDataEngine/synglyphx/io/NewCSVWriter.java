@@ -99,7 +99,7 @@ public class NewCSVWriter {
 
 		ColorIndex ci = new ColorIndex();
 
-		System.out.println("entering try catch");
+		//System.out.println("entering try catch");
 
 		try{
 			FileOutputStream oFile = new FileOutputStream(outDir+"glyphs.sgc", false); 

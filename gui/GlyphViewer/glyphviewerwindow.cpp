@@ -6,6 +6,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QDesktopWidget>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
@@ -35,6 +36,7 @@
 #include "baseimage.h"
 #include "sharedactionlist.h"
 #include "GVGlobal.h"
+#include "application.h"
 #include <boost/uuid/uuid_io.hpp>
 #include "LoadingFilterDialog.h"
 #include "GlyphForestInfoModel.h"
@@ -68,7 +70,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_fileToolbar = addToolBar(tr("File"));
 	m_fileToolbar->setFloatable(true);
 	m_fileToolbar->setMovable(true);
-	m_fileToolbar->setIconSize(QSize(42, 32));
+	m_fileToolbar->setIconSize(SynGlyphX::Application::DynamicQSize(42, 32));
 
 	m_showHideToolbar = addToolBar(tr("Show/Hide Widgets"));
 	m_showHideToolbar->setObjectName("main_toolbar");
@@ -238,7 +240,8 @@ void GlyphViewerWindow::CreateMenus() {
 
 	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
 	QIcon refreshVizIcon;
-	refreshVizIcon.addFile( ":SGXGUI/Resources/Icons/icon-refresh.png", QSize(), QIcon::Normal, QIcon::On );
+	QPixmap refresh(":SGXGUI/Resources/Icons/icon-refresh.png");
+	refreshVizIcon.addPixmap(refresh.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	refreshVisualizationAction->setIcon( refreshVizIcon );
 	QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
 	m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
@@ -248,7 +251,9 @@ void GlyphViewerWindow::CreateMenus() {
 	QAction* closeVisualizationAction = CreateMenuAction(m_fileMenu, tr("Close Visualization"), QKeySequence::Close);
 	QIcon closeVizIcon;
 	//closeVizIcon.addFile(":GlyphViewer/Resources/icon-close-viz.png", QSize(), QIcon::Normal, QIcon::Off);
-	closeVizIcon.addFile(":GlyphViewer/Resources/icon-close-viz.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap close(":GlyphViewer/Resources/icon-close-viz.png");
+	closeVizIcon.addPixmap(close.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	//closeVizIcon.addFile(":GlyphViewer/Resources/icon-close-viz.png", QSize(), QIcon::Normal, QIcon::On);
 	closeVisualizationAction->setIcon(closeVizIcon);
 	QObject::connect(closeVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::CloseVisualization);
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
@@ -299,7 +304,8 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_resetCameraToDefaultPosition = CreateMenuAction(m_viewMenu, tr("Reset Camera To Starting Position"));
 	QIcon resetCamIcon;
-	resetCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-reset-camera.png", QSize(), QIcon::Normal, QIcon::On );
+	QPixmap camera(":SGXGUI/Resources/Icons/icon-reset-camera.png");
+	resetCamIcon.addPixmap(camera.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_resetCameraToDefaultPosition->setIcon( resetCamIcon );
 	m_loadedVisualizationDependentActions.push_back(m_resetCameraToDefaultPosition);
 
@@ -315,8 +321,10 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_remapRootPositionMappingsAction = m_toolsMenu->addAction(tr("Change X, Y, Z Position Axes"));
 	QIcon remapIcon;
-	remapIcon.addFile(":SGXGUI/Resources/Icons/icon-xyz.png", QSize(), QIcon::Normal, QIcon::Off);
-	remapIcon.addFile(":SGXGUI/Resources/Icons/icon-xyz-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap xyz_off(":SGXGUI/Resources/Icons/icon-xyz.png");
+	QPixmap xyz_on(":SGXGUI/Resources/Icons/icon-xyz-a.png");
+	remapIcon.addPixmap(xyz_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	remapIcon.addPixmap(xyz_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_remapRootPositionMappingsAction->setIcon(remapIcon);
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
@@ -363,10 +371,12 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->setAllowedAreas(Qt::NoDockWidgetArea);
 	m_legendsDockWidget->setWidget(m_legendsWidget);
 	m_legendsDockWidget->setFloating(true);
-	m_showHideToolbar->setIconSize(QSize(42, 32));
+	m_showHideToolbar->setIconSize(SynGlyphX::Application::DynamicQSize(42, 32));
 	QIcon legendIcon;
-	legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend.png", QSize(), QIcon::Normal, QIcon::Off);
-	legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-legend.png");
+	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-legend-a.png");
+	legendIcon.addPixmap(legend_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	legendIcon.addPixmap(legend_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	QAction* act = m_legendsDockWidget->toggleViewAction();
 	//act->setIconVisibleInMenu(false);
 	act->setIcon(legendIcon);
@@ -374,7 +384,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 	m_legendsDockWidget->move(100, 100);
-	m_legendsDockWidget->resize(400, 280);
+	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
 
 	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
@@ -385,8 +395,10 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	act = textPropertiesDockWidget->toggleViewAction();
 	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon textIcon;
-	textIcon.addFile(":SGXGUI/Resources/Icons/icon-text.png", QSize(), QIcon::Normal, QIcon::Off);
-	textIcon.addFile(":SGXGUI/Resources/Icons/icon-text-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap text_off(":SGXGUI/Resources/Icons/icon-text.png");
+	QPixmap text_on(":SGXGUI/Resources/Icons/icon-text-a.png");
+	textIcon.addPixmap(text_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	textIcon.addPixmap(text_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	act->setIcon(textIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
@@ -400,8 +412,10 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	act = m_rightDockWidget->toggleViewAction();
 	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon filterIcon;
-	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter.png", QSize(), QIcon::Normal, QIcon::Off);
-	filterIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
+	QPixmap filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
+	filterIcon.addPixmap(filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	filterIcon.addPixmap(filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	act->setIcon(filterIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
@@ -409,21 +423,23 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 	QObject::connect(m_filteringWidget, &FilteringWidget::LoadSubsetVisualization, this, [this](QString filename){ LoadNewVisualization(filename); }, Qt::QueuedConnection);
 
-	QDockWidget* bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
-	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, bottomDockWidget);
-	bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
-	addDockWidget(Qt::BottomDockWidgetArea, bottomDockWidget);
-	act = bottomDockWidget->toggleViewAction();
+	m_bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
+	m_pseudoTimeFilterWidget = new PseudoTimeFilterWidget(m_columnsModel, m_filteringManager, m_bottomDockWidget);
+	m_bottomDockWidget->setWidget(m_pseudoTimeFilterWidget);
+	addDockWidget(Qt::BottomDockWidgetArea, m_bottomDockWidget);
+	act = m_bottomDockWidget->toggleViewAction();
 	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon filterTimeIcon;
-	filterTimeIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-time.png", QSize(), QIcon::Normal, QIcon::Off);
-	filterTimeIcon.addFile(":SGXGUI/Resources/Icons/icon-filter-time-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap time_off(":SGXGUI/Resources/Icons/icon-filter-time.png");
+	QPixmap time_on(":SGXGUI/Resources/Icons/icon-filter-time-a.png");
+	filterTimeIcon.addPixmap(time_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	filterTimeIcon.addPixmap(time_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	act->setIcon(filterTimeIcon);
 	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
-	bottomDockWidget->hide();}
+	m_bottomDockWidget->hide();}
 
 void GlyphViewerWindow::OpenProject() {
 	QString openFile = GetFileNameOpenDialog("ProjectDir", tr("Open Project"), "", tr("SynGlyphX Project Files (*.xdt)"));
@@ -528,6 +544,10 @@ void GlyphViewerWindow::CloseVisualization() {
 	if (m_rightDockWidget->isVisible()){
 
 		m_rightDockWidget->hide();
+	}
+	if (m_bottomDockWidget->isVisible()){
+
+		m_bottomDockWidget->hide();
 	}
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
@@ -1426,13 +1446,15 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->setObjectName("main_toolbar");
 	m_interactionToolbar->setFloatable(true);
 	m_interactionToolbar->setMovable(true);
-	m_interactionToolbar->setIconSize(QSize(42, 32));
+	m_interactionToolbar->setIconSize(SynGlyphX::Application::DynamicQSize(42, 32));
 
 	m_showHideHUDAxisAction = new QAction(tr("Show/Hide HUD Axis"), m_interactionToolbar);
 	m_showHideHUDAxisAction->setCheckable(true);
 	QIcon hudAxisIcon;
-	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud.png", QSize(), QIcon::Normal, QIcon::Off);
-	hudAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-hud-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap axis_off(":SGXGUI/Resources/Icons/icon-axis-hud.png");
+	QPixmap axis_on(":SGXGUI/Resources/Icons/icon-axis-hud-a.png");
+	hudAxisIcon.addPixmap(axis_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	hudAxisIcon.addPixmap(axis_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_showHideHUDAxisAction->setIcon(hudAxisIcon);
 	//Replace with scene viewer function when available
 	QObject::connect(m_showHideHUDAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideHUDAxis);
@@ -1442,8 +1464,10 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_showHideSceneAxisAction = new QAction(tr("Show/Hide Scene Axis"), m_interactionToolbar);
 	m_showHideSceneAxisAction->setCheckable(true);
 	QIcon sceneAxisIcon;
-	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene.png", QSize(), QIcon::Normal, QIcon::Off);
-	sceneAxisIcon.addFile(":SGXGUI/Resources/Icons/icon-axis-scene-a.png", QSize(), QIcon::Normal, QIcon::On);
+	QPixmap scene_off(":SGXGUI/Resources/Icons/icon-axis-scene.png");
+	QPixmap scene_on(":SGXGUI/Resources/Icons/icon-axis-scene-a.png");
+	sceneAxisIcon.addPixmap(scene_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	sceneAxisIcon.addPixmap(scene_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_showHideSceneAxisAction->setIcon(sceneAxisIcon);
 	//Replace with scene viewer function when available
 	QObject::connect(m_showHideSceneAxisAction, &QAction::toggled, this, &GlyphViewerWindow::OnShowHideSceneAxis);
@@ -1459,8 +1483,10 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableFlyToObjectAction = new QAction( tr( "Enable/Disable Fly-to-Object" ), m_interactionToolbar );
 	m_enableDisableFlyToObjectAction->setCheckable( true );
 	QIcon flyToObjectIcon;
-	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-flyby.png", QSize(), QIcon::Normal, QIcon::Off );
-	flyToObjectIcon.addFile( ":SGXGUI/Resources/Icons/icon-flyby-a.png", QSize(), QIcon::Normal, QIcon::On );
+	QPixmap flyby_off(":SGXGUI/Resources/Icons/icon-flyby.png");
+	QPixmap flyby_on(":SGXGUI/Resources/Icons/icon-flyby-a.png");
+	flyToObjectIcon.addPixmap(flyby_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	flyToObjectIcon.addPixmap(flyby_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_enableDisableFlyToObjectAction->setIcon( flyToObjectIcon );
 	QObject::connect( m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFlyToObjectAction );
 	m_interactionToolbar->addAction( m_enableDisableFlyToObjectAction );
@@ -1470,8 +1496,10 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableFreeSelectionCameraAction->setCheckable( true );
 	m_enableDisableFreeSelectionCameraAction->setChecked( true );
 	QIcon freeSelCamIcon;
-	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit.png", QSize(), QIcon::Normal, QIcon::Off );
-	freeSelCamIcon.addFile( ":SGXGUI/Resources/Icons/icon-orbit-a.png", QSize(), QIcon::Normal, QIcon::On );
+	QPixmap orbit_off(":SGXGUI/Resources/Icons/icon-orbit.png");
+	QPixmap orbit_on(":SGXGUI/Resources/Icons/icon-orbit-a.png");
+	freeSelCamIcon.addPixmap(orbit_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	freeSelCamIcon.addPixmap(orbit_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_enableDisableFreeSelectionCameraAction->setIcon( freeSelCamIcon );
 	QObject::connect( m_enableDisableFreeSelectionCameraAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableFreeSelectionCamera );
 	m_interactionToolbar->addAction( m_enableDisableFreeSelectionCameraAction );
@@ -1481,8 +1509,10 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableSelEffectAction->setCheckable( true );
 	m_enableDisableSelEffectAction->setChecked( true );
 	QIcon selEffIcon;
-	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink.png", QSize(), QIcon::Normal, QIcon::Off );
-	selEffIcon.addFile( ":SGXGUI/Resources/Icons/icon-blink-a.png", QSize(), QIcon::Normal, QIcon::On );
+	QPixmap blink_off(":SGXGUI/Resources/Icons/icon-blink.png");
+	QPixmap blink_on(":SGXGUI/Resources/Icons/icon-blink-a.png");
+	selEffIcon.addPixmap(blink_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	selEffIcon.addPixmap(blink_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_enableDisableSelEffectAction->setIcon( selEffIcon );
 	QObject::connect( m_enableDisableSelEffectAction, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSelEffect );
 	m_interactionToolbar->addAction( m_enableDisableSelEffectAction );
@@ -1492,8 +1522,10 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_enableDisableSuperimposedGlyphGadgets->setCheckable( true );
 	m_enableDisableSuperimposedGlyphGadgets->setChecked( false );
 	QIcon sggIcon;
-	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-show-groups.png", QSize(), QIcon::Normal, QIcon::Off );
-	sggIcon.addFile( ":SGXGUI/Resources/Icons/icon-show-groups-a.png", QSize(), QIcon::Normal, QIcon::On );
+	QPixmap groups_off(":SGXGUI/Resources/Icons/icon-show-groups.png");
+	QPixmap groups_on(":SGXGUI/Resources/Icons/icon-show-groups-a.png");
+	sggIcon.addPixmap(groups_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	sggIcon.addPixmap(groups_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_enableDisableSuperimposedGlyphGadgets->setIcon( sggIcon );
 	QObject::connect( m_enableDisableSuperimposedGlyphGadgets, &QAction::toggled, this, &GlyphViewerWindow::OnEnableDisableSuperimposedGadgets );
 	m_interactionToolbar->addAction( m_enableDisableSuperimposedGlyphGadgets );
@@ -1623,3 +1655,4 @@ QString GlyphViewerWindow::GetApplicationDisplayName() const {
 		return SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
 	}
 }
+

@@ -40,7 +40,7 @@ public class SQLiteReader {
 				return true;
 
 			if(Double.parseDouble(ts) <= Double.parseDouble(lastChanged)){ 
-				System.out.println("No update needed");
+				//System.out.println("No update needed");
 				Logger.getInstance().add("No update needed");
 				conn.close();
 				return false; 

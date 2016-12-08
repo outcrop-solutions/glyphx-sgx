@@ -4,14 +4,14 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
 #include "licensingdialog.h"
-#include <QtCore/QDir>
+#include "application.h"
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
 #endif
 
 #include <QtCore/QStandardPaths>
-#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDesktopWidget>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
@@ -68,6 +68,8 @@ int main(int argc, char *argv[])
 /*	fmt.setOption( QSurfaceFormat::StereoBuffers );
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
+
+	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     
 	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.1");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
@@ -118,9 +120,10 @@ int main(int argc, char *argv[])
 	}
 #endif
 
+	QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(QCursor::pos()));
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
-	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	QSplashScreen splash(pixmap.scaled(SynGlyphX::Application::DynamicQSize(720,138)), Qt::WindowStaysOnTopHint);
 	splash.show();
 
 	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
@@ -138,7 +141,10 @@ int main(int argc, char *argv[])
 		QString styleSheet = QLatin1String(file.readAll());
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
-		w.resize(1200, 700);
+		//w.resize(1200, 700);
+		w.resize(screen.width(), screen.height());
+		w.setMinimumHeight(screen.height() - 25);
+		w.setMinimumWidth(screen.width());
 
 		GVGlobal::Init(new GVServices(&w));
 

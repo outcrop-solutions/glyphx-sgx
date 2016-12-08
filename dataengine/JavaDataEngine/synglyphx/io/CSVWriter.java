@@ -150,7 +150,7 @@ public class CSVWriter {
 		Logger.getInstance().add(app);
 
 		createBaseObjectStrings(app);
-		System.out.println("entering try catch");
+		//System.out.println("entering try catch");
 
 		try{
 			//FileWriter file = new FileWriter("C:/Users/Bryan/Desktop/Test on Antz/usr/csv/ANTZ0001.csv");  
@@ -317,7 +317,7 @@ public class CSVWriter {
 			int link_index = 0;
 			int base_index = index-1;
 			index += offset-1;
-			System.out.println(offset);
+			//System.out.println(offset);
 			for(int i = 0; i < entry.getValue().linkCount(); i++){
 				index++;
 				int p_id = evaluateID(parent_ids.get(link_index));

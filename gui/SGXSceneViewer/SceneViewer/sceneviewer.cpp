@@ -1,5 +1,6 @@
 
 #include "sceneviewer.h"
+#include "application.h"
 #include <cstdarg>
 #include <ctime>
 #include <QtCore/QDebug>
@@ -64,19 +65,19 @@ namespace SynGlyphX
 		if ( mode == ViewerMode::Full )
 		{
 			m_upRotateButton = CreateNavigationButton( tr( "Rotate Up" ), true );
-			m_upRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_up.png" ) );
+			m_upRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_up.png"));
 			QObject::connect( m_upRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( 0.f, -buttonRotateRate ) ); } );
 
 			m_leftRotateButton = CreateNavigationButton( tr( "Rotate Left" ), true );
-			m_leftRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_left.png" ) );
+			m_leftRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_left.png"));
 			QObject::connect( m_leftRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( -buttonRotateRate, 0.f ) ); } );
 
 			m_rightRotateButton = CreateNavigationButton( tr( "Rotate Right" ), true );
-			m_rightRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_right.png" ) );
+			m_rightRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_right.png"));
 			QObject::connect( m_rightRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( buttonRotateRate, 0.f ) ); } );
 
 			m_downRotateButton = CreateNavigationButton( tr( "Rotate Down" ), true );
-			m_downRotateButton->setIcon( QIcon( ":GlyphViewer/Resources/rotate_down.png" ) );
+			m_downRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_down.png"));
 			QObject::connect( m_downRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn( glm::vec2( 0.f, buttonRotateRate ) ); } );
 
 			auto move = [&]( const glm::vec3& dir, float amt )
@@ -204,7 +205,8 @@ namespace SynGlyphX
 	QToolButton* SceneViewer::CreateNavigationButton( const QString& toolTip, bool autoRepeat ) {
 
 		QToolButton* navButton = new QToolButton( this );
-		navButton->setFixedSize( navigationButtonSize, navigationButtonSize );
+		QSize icon_size(Application::DynamicQSize(navigationButtonSize, navigationButtonSize));
+		navButton->setFixedSize(icon_size.width(), icon_size.height());
 		navButton->setAutoRepeat( autoRepeat );
 		navButton->setToolTip( toolTip );
 		navButton->setAutoRepeatDelay( 10 );
@@ -323,8 +325,9 @@ namespace SynGlyphX
 
 		if ( mode == ViewerMode::Full )
 		{
-			auto logo_w = hal::device::get_texture_width( sgx_logo );
-			auto logo_h = hal::device::get_texture_height( sgx_logo );
+			QSize logo_size(Application::DynamicQSize(hal::device::get_texture_width(sgx_logo), hal::device::get_texture_height(sgx_logo)));
+			auto logo_w = logo_size.width();//hal::device::get_texture_width( sgx_logo );
+			auto logo_h = logo_size.height();//hal::device::get_texture_height( sgx_logo );
 
 			auto logo_rotate = glm::rotate( glm::mat4(), glm::half_pi<float>(), glm::vec3( 1.f, 0.f, 0.f ) );
 			auto logo_translate = glm::translate( glm::mat4(), glm::vec3( float( w - logo_w ), float( logo_h ), 0.f ) );
@@ -334,28 +337,30 @@ namespace SynGlyphX
 
 			checkErrors();
 
-			unsigned int leftPosOfButtonsInHCenter = w - 10 - ( 2 * navigationButtonSize );
+			unsigned int nav_button_size = QSize(Application::DynamicQSize(navigationButtonSize, navigationButtonSize)).width();
+
+			unsigned int leftPosOfButtonsInHCenter = w - 10 - (2 * nav_button_size);
 			unsigned int topPositionOfButton = logo_h + ( 2 * 10 );
 
 			m_upRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-			topPositionOfButton += navigationButtonSize;
-			m_leftRotateButton->move( QPoint( leftPosOfButtonsInHCenter - navigationButtonSize, topPositionOfButton ) );
-			m_rightRotateButton->move( QPoint( leftPosOfButtonsInHCenter + navigationButtonSize, topPositionOfButton ) );
+			topPositionOfButton += nav_button_size;
+			m_leftRotateButton->move(QPoint(leftPosOfButtonsInHCenter - nav_button_size, topPositionOfButton));
+			m_rightRotateButton->move(QPoint(leftPosOfButtonsInHCenter + nav_button_size, topPositionOfButton));
 
-			topPositionOfButton += navigationButtonSize;
+			topPositionOfButton += nav_button_size;
 			m_downRotateButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-			topPositionOfButton += ( 2 * navigationButtonSize );
+			topPositionOfButton += (2 * nav_button_size);
 			m_moveForwardButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-			topPositionOfButton += navigationButtonSize;
+			topPositionOfButton += nav_button_size;
 			m_moveBackwardButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-			topPositionOfButton += ( 2 * navigationButtonSize );
+			topPositionOfButton += (2 * nav_button_size);
 			m_moveUpButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 
-			topPositionOfButton += navigationButtonSize;
+			topPositionOfButton += nav_button_size;
 			m_moveDownButton->move( QPoint( leftPosOfButtonsInHCenter, topPositionOfButton ) );
 		}
 	}

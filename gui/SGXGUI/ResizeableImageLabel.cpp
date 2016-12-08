@@ -1,5 +1,6 @@
 #include "ResizeableImageLabel.h"
 #include <QtGui/QResizeEvent>
+#include "application.h"
 
 namespace SynGlyphX {
 
@@ -19,7 +20,7 @@ namespace SynGlyphX {
 
 	QSize ResizeableImageLabel::sizeHint() const {
 
-		return QSize(250, 125);
+		return Application::DynamicQSize(250, 125); //QSize(250, 125);
 	}
 
 	void ResizeableImageLabel::SetPixmap(const QPixmap& pixmap) {
@@ -49,11 +50,11 @@ namespace SynGlyphX {
 				double widgetAspectRatio = boundingSize.height() / static_cast<double>(boundingSize.width());
 				if (widgetAspectRatio < m_imageRatio) {
 
-					setPixmap(m_pixmap.scaledToHeight(boundingSize.height(), Qt::SmoothTransformation));
+					setPixmap(m_pixmap.scaledToHeight(boundingSize.height()-50, Qt::SmoothTransformation));
 				}
 				else {
 
-					setPixmap(m_pixmap.scaledToWidth(boundingSize.width(), Qt::SmoothTransformation));
+					setPixmap(m_pixmap.scaledToWidth(boundingSize.width()-50, Qt::SmoothTransformation));
 				}
 			}
 			else {
