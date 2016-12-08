@@ -1,5 +1,6 @@
 #include "ResizeableImageLabel.h"
 #include <QtGui/QResizeEvent>
+#include "application.h"
 
 namespace SynGlyphX {
 
@@ -19,7 +20,7 @@ namespace SynGlyphX {
 
 	QSize ResizeableImageLabel::sizeHint() const {
 
-		return QSize(250, 125);
+		return Application::DynamicQSize(250, 125); //QSize(250, 125);
 	}
 
 	void ResizeableImageLabel::SetPixmap(const QPixmap& pixmap) {

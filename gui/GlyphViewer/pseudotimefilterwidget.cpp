@@ -6,6 +6,7 @@
 #include <QtWidgets/QTreeView>
 #include "singlewidgetdialog.h"
 #include <boost/uuid/uuid_io.hpp>
+#include "application.h"
 
 unsigned int PseudoTimeFilterWidget::s_buttonSize = 24;
 
@@ -48,24 +49,24 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 
 	m_repeatButton = new QPushButton(this);
 	m_repeatButton->setIcon(QIcon(":SGXGUI/Resources/Video/repeat.png"));
-	m_repeatButton->setIconSize(QSize(s_buttonSize, s_buttonSize));
-	m_repeatButton->setFixedSize(s_buttonSize, s_buttonSize);
+	m_repeatButton->setIconSize(SynGlyphX::Application::DynamicQSize(s_buttonSize, s_buttonSize));
+	m_repeatButton->setFixedSize(SynGlyphX::Application::DynamicQSize(s_buttonSize, s_buttonSize));
 	m_repeatButton->setCheckable(true);
 	m_repeatButton->setToolTip(tr("Repeat"));
 	buttonsLayoutLeft->addWidget(m_repeatButton);
 
 	m_stopButton = new QPushButton(this);
 	m_stopButton->setIcon(QIcon(":SGXGUI/Resources/Video/stop.png"));
-	m_stopButton->setIconSize(QSize(s_buttonSize, s_buttonSize));
-	m_stopButton->setFixedSize(s_buttonSize, s_buttonSize);
+	m_stopButton->setIconSize(SynGlyphX::Application::DynamicQSize(s_buttonSize, s_buttonSize));
+	m_stopButton->setFixedSize(SynGlyphX::Application::DynamicQSize(s_buttonSize, s_buttonSize));
 	m_stopButton->setToolTip(tr("Stop"));
 	QObject::connect(m_stopButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnStop);
 	buttonsLayoutLeft->addWidget(m_stopButton);
 
 	m_goToStartButton = new QPushButton(this);
 	m_goToStartButton->setIcon(QIcon(":SGXGUI/Resources/Video/start.png"));
-	m_goToStartButton->setIconSize(QSize(1.5 * s_buttonSize, s_buttonSize));
-	m_goToStartButton->setFixedSize(1.5 * s_buttonSize, s_buttonSize);
+	m_goToStartButton->setIconSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
+	m_goToStartButton->setFixedSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
 	m_goToStartButton->setToolTip(tr("Go To Start"));
 	QObject::connect(m_goToStartButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnGoToStart);
 	buttonsLayoutLeft->addWidget(m_goToStartButton);
@@ -77,8 +78,8 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 	buttonsLayoutCenter->setSizeConstraint(QLayout::SetFixedSize);
 
 	m_playPauseButton = new QPushButton(this);
-	m_playPauseButton->setFixedSize(2 * s_buttonSize, 2 * s_buttonSize);
-	m_playPauseButton->setIconSize(QSize(2 * s_buttonSize, 2 * s_buttonSize));
+	m_playPauseButton->setFixedSize(SynGlyphX::Application::DynamicQSize(2 * s_buttonSize, 2 * s_buttonSize));
+	m_playPauseButton->setIconSize(SynGlyphX::Application::DynamicQSize(2 * s_buttonSize, 2 * s_buttonSize));
 	QObject::connect(m_playPauseButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnPlayPause);
 	buttonsLayoutCenter->addWidget(m_playPauseButton);
 
@@ -89,8 +90,8 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 
 	m_goToEndButton = new QPushButton(this);
 	m_goToEndButton->setIcon(QIcon(":SGXGUI/Resources/Video/end.png"));
-	m_goToEndButton->setIconSize(QSize(1.5 * s_buttonSize, s_buttonSize));
-	m_goToEndButton->setFixedSize(1.5 * s_buttonSize, s_buttonSize);
+	m_goToEndButton->setIconSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
+	m_goToEndButton->setFixedSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
 	m_goToEndButton->setToolTip(tr("Go To End"));
 	QObject::connect(m_goToEndButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnGoToEnd);
 	buttonsLayoutRight->addWidget(m_goToEndButton);

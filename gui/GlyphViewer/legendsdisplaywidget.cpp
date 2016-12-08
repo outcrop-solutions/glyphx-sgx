@@ -1,6 +1,7 @@
 #include "legendsdisplaywidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include "ResizeableImageLabel.h"
+#include "application.h"
 
 LegendsDisplayWidget::LegendsDisplayWidget(QWidget *parent)
 	: QWidget(parent)
@@ -28,7 +29,7 @@ void LegendsDisplayWidget::SetLegends(const std::vector<SynGlyphX::Legend>& lege
 		SynGlyphX::ResizeableImageLabel* legendLabel = new SynGlyphX::ResizeableImageLabel(true, m_legendTabs);
 
 		QPixmap pixmap(QString::fromStdWString(legend.GetFilename()));
-		legendLabel->SetPixmap(pixmap);
+		legendLabel->SetPixmap(pixmap.scaled(SynGlyphX::Application::DynamicQSize(pixmap.width(), pixmap.height())));
 		
 		m_legendTabs->addTab(legendLabel, QString::fromStdWString(legend.GetTitle()));
 	}

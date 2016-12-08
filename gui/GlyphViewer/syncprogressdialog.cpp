@@ -1,6 +1,7 @@
 #include "syncprogressdialog.h"
 #include <QtWidgets/QProgressBar>
 #include "SharedVisualizationsWidget.h"
+#include "application.h"
 
 namespace SynGlyphX {
 
@@ -13,7 +14,7 @@ namespace SynGlyphX {
 	{
 		timer = new QTimer();
 		timer->start(250);
-		setMinimumSize(400, 150);
+		setMinimumSize(Application::DynamicQSize(400, 150));
 
 		layout = new QVBoxLayout(this);
 

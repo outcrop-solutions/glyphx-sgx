@@ -137,7 +137,6 @@ private:
 	void CreateLoadingScreen();
 	void CreateInteractionToolbar();
 	void UpdateAxisNamesAndSourceDataPosition();
-	QSize DynamicIconSize();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -170,6 +169,7 @@ private:
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 	QDockWidget* m_rightDockWidget;
+	QDockWidget* m_bottomDockWidget;
 
 	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;

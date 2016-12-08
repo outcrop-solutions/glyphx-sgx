@@ -20,6 +20,7 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "syncprogressdialog.h"
+#include <QtWidgets/QDesktopWidget>
 
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QFrame(parent),
@@ -39,11 +40,11 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	logoLabel->setAlignment(Qt::AlignCenter);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png"));
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png").scaled(SynGlyphX::Application::DynamicQSize(135, 25)));
 	}
 	else {
 
-		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_white_border.png"));
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_white_border.png").scaled(SynGlyphX::Application::DynamicQSize(178,40)));
 	}
 	m_mainLayout->addWidget(logoLabel, 0, 0);
 
@@ -270,7 +271,7 @@ void HomePageWidget::CreateDashboardWidget() {
 
 	QLabel* welcomeLabel = new QLabel(tr("Welcome to"), welcomeWidget);
 	welcomeLabel->setAlignment(Qt::AlignCenter);
-	welcomeLabel->setStyleSheet("QLabel{font-size: 48pt; font-weight: bold; background-color: white;}");
+	welcomeLabel->setStyleSheet("QLabel{font-size: 36pt; font-weight: bold; background-color: white;}");
 	welcomeWidgetLayout->addWidget(welcomeLabel);
 
 	QLabel* logoImage = new QLabel(m_dashboardWidget);
@@ -278,7 +279,7 @@ void HomePageWidget::CreateDashboardWidget() {
 	logoImage->setStyleSheet("QLabel{background-color: white;}");
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		logoImage->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_large.png"));
+		logoImage->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_large.png").scaled(SynGlyphX::Application::DynamicQSize(584,110)));//584,110
 	}
 	else {
 
@@ -289,7 +290,7 @@ void HomePageWidget::CreateDashboardWidget() {
 		}
 		else
 		{
-			logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png"));
+			logoImage->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_large.png").scaled(SynGlyphX::Application::DynamicQSize(670, 130)));
 		}
 	}
 
@@ -401,7 +402,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
 		loginWidget->setMidLineWidth(3);
-		loginWidget->setMinimumHeight(250);
+		//loginWidget->setMinimumHeight(250);
 		loginWidget->setStyleSheet("background-color: white;");
 		QObject::connect(loginWidget, &SynGlyphX::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
 
@@ -494,6 +495,7 @@ void HomePageWidget::Login(){
 
 void HomePageWidget::SyncFilesAndLoadViews(){
 
+	//QRect test = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
