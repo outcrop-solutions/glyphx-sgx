@@ -45,33 +45,33 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const Q
 int main(int argc, char *argv[])
 {
 #ifdef __APPLE__
-    // Mac: Add plugin path in package.
-    // 'macdeployqt' needs to be run on the app package after building for this to work.
-    QDir dir(argv[0]); // e.g. appdir/Contents/MacOS/appname
-    dir.cdUp();
-    dir.cdUp();
-    dir.cd("PlugIns"); // e.g. appdir/Contents/PlugIns
-    QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
-    printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
+	// Mac: Add plugin path in package.
+	// 'macdeployqt' needs to be run on the app package after building for this to work.
+	QDir dir(argv[0]); // e.g. appdir/Contents/MacOS/appname
+	dir.cdUp();
+	dir.cdUp();
+	dir.cd("PlugIns"); // e.g. appdir/Contents/PlugIns
+	QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
+	printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
 
 	QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
-	fmt.setMajorVersion( 3 );
-	fmt.setMinorVersion( 3 );
+	fmt.setMajorVersion(3);
+	fmt.setMinorVersion(3);
 
 	// Now that we have our own font rendering instead of relying on QPainter, we can use a core profile!
-	fmt.setProfile( QSurfaceFormat::OpenGLContextProfile::CoreProfile );
+	fmt.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
 
-	fmt.setDepthBufferSize( 24 );
-	fmt.setSwapBehavior( QSurfaceFormat::SwapBehavior::DoubleBuffer );
-	fmt.setSamples( 4 );
-/*	fmt.setOption( QSurfaceFormat::StereoBuffers );
-	fmt.setStereo( true );*/
-	QSurfaceFormat::setDefaultFormat( fmt );
+	fmt.setDepthBufferSize(24);
+	fmt.setSwapBehavior(QSurfaceFormat::SwapBehavior::DoubleBuffer);
+	fmt.setSamples(4);
+	/*	fmt.setOption( QSurfaceFormat::StereoBuffers );
+		fmt.setStereo( true );*/
+	QSurfaceFormat::setDefaultFormat(fmt);
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.1");
+
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.2");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 	QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(QCursor::pos()));
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
-	QSplashScreen splash(pixmap.scaled(SynGlyphX::Application::DynamicQSize(720,138)), Qt::WindowStaysOnTopHint);
+	QSplashScreen splash(pixmap.scaled(SynGlyphX::Application::DynamicQSize(720, 138)), Qt::WindowStaysOnTopHint);
 	splash.show();
 
 	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
@@ -141,10 +141,7 @@ int main(int argc, char *argv[])
 		QString styleSheet = QLatin1String(file.readAll());
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
-		//w.resize(1200, 700);
-		w.resize(screen.width(), screen.height());
-		w.setMinimumHeight(screen.height() - 25);
-		w.setMinimumWidth(screen.width());
+		w.resize(std::min(screen.width(), 1200), std::min(screen.height(), 700));
 
 		GVGlobal::Init(new GVServices(&w));
 
@@ -171,7 +168,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	catch (...) {
-		
+
 		QMessageBox::critical(nullptr, QObject::tr("Unknown Error"), QObject::tr("Unknown Error: ") + "\n\n" + QObject::tr("Application is shutting down."), QMessageBox::StandardButton::Ok);
 		return 1;
 	}
