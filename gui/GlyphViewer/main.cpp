@@ -71,11 +71,13 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.2");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.3");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
+		QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
+		commonDataDir.mkdir("GlyphEd");
 	}
 
 	//qInstallMessageHandler(myMessageHandler);
@@ -132,6 +134,7 @@ int main(int argc, char *argv[])
 
 	try {
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
+
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		GlyphViewerWindow w;
@@ -142,6 +145,8 @@ int main(int argc, char *argv[])
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
 		w.resize(std::min(screen.width(), 1200), std::min(screen.height(), 700));
+		w.setMinimumWidth(screen.width());
+		w.setMinimumHeight(screen.height() - 25);
 
 		GVGlobal::Init(new GVServices(&w));
 

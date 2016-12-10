@@ -21,7 +21,6 @@ public class GlyphEngine {
 		sdtPath = sdt;
 		outDir = out;
 		app = application;
-		f_setup = false;
 		FilterSetup.getInstance().closeDriverIfOpen();
 		try{
 			sdtReader = new SDTReader(sdtPath, outDir, application);
@@ -34,7 +33,6 @@ public class GlyphEngine {
 	}
 
 	public static void filterSetup(final String sdt){
-		f_setup = true;
 		FilterSetup.getInstance().addSDTFile(sdt);
 	}
 
@@ -59,7 +57,7 @@ public class GlyphEngine {
 	public static String[] distinctValuesForField(final String id, final String table, final String field){
 
 		String[] distincts;
-		if(f_setup){
+		if(FilterSetup.getInstance().active()){
 			distincts = FilterSetup.getInstance().getDistinctValuesForField(id,table,field);
 		}else{
 			distincts = sdtReader.distinctValuesForField(id,table,field);
@@ -179,6 +177,9 @@ public class GlyphEngine {
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
+	 	String first = "C:/ProgramData/SynGlyphX/GlyphEd/Dev/Admissions Officer/Applicants.sdt";
+	 	String second = "C:/ProgramData/SynGlyphX/GlyphEd/Spectrum/Spectrum/spectrum.sdt";
+
 	 	String expDir = "DataMapper";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
@@ -192,7 +193,21 @@ public class GlyphEngine {
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	//s[0] = 471.0; s[1] = 634.0;
-	 	int err = start.initiate(sdtPath, outDir, expDir);
+	 	//int err = start.initiate(sdtPath, outDir, expDir);
+
+	 	start.filterSetup(first);
+	 	String id = "0e10b5e1-60fb-4fbc-8e53-0988839dc495";
+	 	String table = "ReaderView";
+	 	String field = "StaffAssigned";
+	 	System.out.println("Distinct Viz1: "+start.distinctValuesForField(id, table, field).length);
+	 	int err = start.initiate(first, outDir, expDir);
+
+	 	start.filterSetup(second);
+	 	id = "1e88527e-7da4-4ffd-90cc-d5cf0614ee45";
+	 	table = "WGSData";
+	 	field = "Frequency";
+	 	System.out.println("Distinct Viz2: "+start.distinctValuesForField(id, table, field).length);
+	 	err = start.initiate(second, outDir, expDir);
 
 	 	//double[] nwse = start.getNWandSE();
 /*
@@ -260,15 +275,15 @@ public class GlyphEngine {
 		}
 */
 	 	if(start.isUpdateNeeded()){
-		 	double[] nwse = start.getNWandSE();
+		 	//double[] nwse = start.getNWandSE();
 		 	//start.hasImageBeenUpdated();
 		 	start.setBoundingBox(nw,se,s);
 		 	
-		 	err = start.beginGlyphGeneration();
+		 	//err = start.beginGlyphGeneration();
 
 		}
-		String[] images = start.getBaseImages();
-		System.out.println(images.length);
+		//String[] images = start.getBaseImages();
+		//System.out.println(images.length);
 
 		if(err > 0){
 			String [] errors = start.getErrors();

@@ -1,6 +1,5 @@
 
 #include "sceneviewer.h"
-#include "application.h"
 #include <cstdarg>
 #include <ctime>
 #include <QtCore/QDebug>
@@ -205,7 +204,7 @@ namespace SynGlyphX
 	QToolButton* SceneViewer::CreateNavigationButton( const QString& toolTip, bool autoRepeat ) {
 
 		QToolButton* navButton = new QToolButton( this );
-		QSize icon_size(Application::DynamicQSize(navigationButtonSize, navigationButtonSize));
+		QSize icon_size(navigationButtonSize, navigationButtonSize);
 		navButton->setFixedSize(icon_size.width(), icon_size.height());
 		navButton->setAutoRepeat( autoRepeat );
 		navButton->setToolTip( toolTip );
@@ -325,7 +324,7 @@ namespace SynGlyphX
 
 		if ( mode == ViewerMode::Full )
 		{
-			QSize logo_size(Application::DynamicQSize(hal::device::get_texture_width(sgx_logo), hal::device::get_texture_height(sgx_logo)));
+			QSize logo_size(hal::device::get_texture_width(sgx_logo), hal::device::get_texture_height(sgx_logo));
 			auto logo_w = logo_size.width();//hal::device::get_texture_width( sgx_logo );
 			auto logo_h = logo_size.height();//hal::device::get_texture_height( sgx_logo );
 
@@ -337,7 +336,7 @@ namespace SynGlyphX
 
 			checkErrors();
 
-			unsigned int nav_button_size = QSize(Application::DynamicQSize(navigationButtonSize, navigationButtonSize)).width();
+			unsigned int nav_button_size = QSize(navigationButtonSize, navigationButtonSize).width();
 
 			unsigned int leftPosOfButtonsInHCenter = w - 10 - (2 * nav_button_size);
 			unsigned int topPositionOfButton = logo_h + ( 2 * 10 );

@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import synglyphx.user.User;
 import synglyphx.user.UserFile;
 import synglyphx.user.PathBuilder;
+import synglyphx.user.FilterSetup;
 import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
 
@@ -84,6 +85,7 @@ public class UserAccessControls {
 
 	public static void logOutCurrentUser(){
 		loggedInUser = null;
+		FilterSetup.getInstance().closeDriverIfOpen();
 	}
 
 	public static String getGlyphEdPath(){

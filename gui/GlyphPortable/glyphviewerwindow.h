@@ -132,6 +132,7 @@ private:
 	void CreateExportToPortableVisualizationSubmenu();
 	void CreateInteractionToolbar();
 	void UpdateAxisNamesAndSourceDataPosition();
+	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;

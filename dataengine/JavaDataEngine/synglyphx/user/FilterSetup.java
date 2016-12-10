@@ -142,8 +142,14 @@ public class FilterSetup {
             if(!driver.getConnection().isClosed()){
                  driver.getConnection().close();
             }
+            first = true;
+            driver = null;
         }catch(Exception e){
             e.printStackTrace();
         }
+   }
+
+   public static boolean active(){
+   		return (driver != null);
    }
 }

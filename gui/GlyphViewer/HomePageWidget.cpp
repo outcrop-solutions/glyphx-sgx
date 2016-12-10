@@ -235,9 +235,11 @@ void HomePageWidget::CreateHelpWidget() {
 	helpWidget->setMidLineWidth(3);
 	helpWidget->setStyleSheet("background-color: white;");
 
-	QVBoxLayout* helpLayout = new QVBoxLayout(this);
+	QHBoxLayout* helpLayout = new QHBoxLayout(this);
 	helpLayout->setContentsMargins(0, 0, 0, 0);
+	helpLayout->addStretch();
 	helpLayout->addWidget(SynGlyphX::createHelpDialog(970, 850, helpWidget));
+	helpLayout->addStretch();
 	helpWidget->setLayout(helpLayout);
 
 	mainLayout->addWidget(helpWidget, 0, 0, 0, 0);
