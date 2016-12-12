@@ -127,14 +127,14 @@ public class SDTReader {
 			timestamp = tf.getAttribute("Timestamp");
 			getDataPaths(doc);
 			getBaseObjects(doc);
-			System.out.print("Datasource count: ");
-			System.out.println(dataPaths.size());
+			//System.out.print("Datasource count: ");
+			//System.out.println(dataPaths.size());
 /*
 			if(!timestamp.equals("") && app.equals("GlyphViewer")){
 				updateNeeded = SQLiteReader.isAntzUpdateNeeded(timestamp, outDir, dataPaths);
 			}
 */
-			continueInitXML();
+			//continueInitXML();
 
 		}catch(Exception e){
 	        try{
@@ -145,13 +145,18 @@ public class SDTReader {
 
 	}
 
-	public void continueInitXML() throws Exception{
-		if(updateNeeded){
+	public void continueInitXML() {
+		try{
+		//if(updateNeeded){
 			Logger.getInstance().add("Absorbing XML...");
 			absorbXML();
 			Logger.getInstance().add("Creating SDTLinkReader...");
 			linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
-			System.out.println("Link Reader created");
+			//System.out.println("Link Reader created");
+		//}
+		}
+		catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
@@ -178,7 +183,7 @@ public class SDTReader {
 
 			boolean needsFE = true;
 			Node transform = doc.getElementsByTagName("Transform").item(0);
-			System.out.println("Front end: "+((Element)transform).getElementsByTagName("FrontEnd").getLength());
+			//System.out.println("Front end: "+((Element)transform).getElementsByTagName("FrontEnd").getLength());
 			if(((Element)transform).getElementsByTagName("FrontEnd").getLength() != 0){
 				setFrontEnd(transform);
 				needsFE = false;
@@ -210,6 +215,7 @@ public class SDTReader {
 	}
 
 	public void finishLoading() throws Exception{
+		continueInitXML();
 		getDefaultsAndProperties(doc);
 		Logger.getInstance().add("Set defaults and properties...");
 		setRootAndLastIDs();
@@ -1001,11 +1007,11 @@ public class SDTReader {
 	public void setQueryForDatasource(String id, String table, String query){
 		for(SourceDataInfo sdi : dataPaths){
 			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
-				checkIfXMLAbsorbed();
+				//checkIfXMLAbsorbed();
 				sdi.setQuery(query);
-				System.out.println("Before: " + sdi.getDataFrame().size());
+				//System.out.println("Before: " + sdi.getDataFrame().size());
 				setupDataFrame(sdi);
-				System.out.println("After: " + sdi.getDataFrame().size());
+				//System.out.println("After: " + sdi.getDataFrame().size());
 				break;
 			}
 		}

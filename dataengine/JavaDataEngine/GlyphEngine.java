@@ -180,7 +180,7 @@ public class GlyphEngine {
 	 	String first = "C:/ProgramData/SynGlyphX/GlyphEd/Dev/Admissions Officer/Applicants.sdt";
 	 	String second = "C:/ProgramData/SynGlyphX/GlyphEd/Spectrum/Spectrum/spectrum.sdt";
 
-	 	String expDir = "DataMapper";
+	 	String expDir = "GlyphViewer";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
 	 	nw[0] = -180.0; nw[1] = 90.0;
@@ -194,20 +194,23 @@ public class GlyphEngine {
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	//s[0] = 471.0; s[1] = 634.0;
 	 	//int err = start.initiate(sdtPath, outDir, expDir);
-
+/*
 	 	start.filterSetup(first);
 	 	String id = "0e10b5e1-60fb-4fbc-8e53-0988839dc495";
 	 	String table = "ReaderView";
 	 	String field = "StaffAssigned";
 	 	System.out.println("Distinct Viz1: "+start.distinctValuesForField(id, table, field).length);
 	 	int err = start.initiate(first, outDir, expDir);
-
+*/
 	 	start.filterSetup(second);
-	 	id = "1e88527e-7da4-4ffd-90cc-d5cf0614ee45";
-	 	table = "WGSData";
-	 	field = "Frequency";
+	 	String id = "1e88527e-7da4-4ffd-90cc-d5cf0614ee45";
+	 	String table = "WGSData";
+	 	String field = "Frequency";
+	 	String query = "SELECT * FROM WGSData WHERE Frequency IN (100.01)";
 	 	System.out.println("Distinct Viz2: "+start.distinctValuesForField(id, table, field).length);
-	 	err = start.initiate(second, outDir, expDir);
+	 	int err = start.initiate(second, outDir, expDir);
+	 	System.out.println("sizeOfQuery: "+start.sizeOfQuery(id, table, query));
+	 	start.setQueryForDatasource(id, table, query);
 
 	 	//double[] nwse = start.getNWandSE();
 /*
@@ -279,7 +282,7 @@ public class GlyphEngine {
 		 	//start.hasImageBeenUpdated();
 		 	start.setBoundingBox(nw,se,s);
 		 	
-		 	//err = start.beginGlyphGeneration();
+		 	err = start.beginGlyphGeneration();
 
 		}
 		//String[] images = start.getBaseImages();
