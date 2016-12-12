@@ -387,23 +387,26 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
 
-	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-	QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
-	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
-	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
-	act = textPropertiesDockWidget->toggleViewAction();
-	m_loadedVisualizationDependentActions.push_back(act);
-	QIcon textIcon;
-	QPixmap text_off(":SGXGUI/Resources/Icons/icon-text.png");
-	QPixmap text_on(":SGXGUI/Resources/Icons/icon-text-a.png");
-	textIcon.addPixmap(text_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
-	textIcon.addPixmap(text_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	act->setIcon(textIcon);
-	m_viewMenu->addAction(act);
-	m_showHideToolbar->addAction(act);
-	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
-	textPropertiesDockWidget->hide();
+		m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
+
+		QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
+		textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
+		addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
+		act = textPropertiesDockWidget->toggleViewAction();
+		m_loadedVisualizationDependentActions.push_back(act);
+		QIcon textIcon;
+		QPixmap text_off(":SGXGUI/Resources/Icons/icon-text.png");
+		QPixmap text_on(":SGXGUI/Resources/Icons/icon-text-a.png");
+		textIcon.addPixmap(text_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+		textIcon.addPixmap(text_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+		act->setIcon(textIcon);
+		m_viewMenu->addAction(act);
+		m_showHideToolbar->addAction(act);
+		m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
+		textPropertiesDockWidget->hide();
+	}
 
 	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);

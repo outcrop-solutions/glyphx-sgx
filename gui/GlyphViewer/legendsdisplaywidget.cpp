@@ -29,7 +29,7 @@ void LegendsDisplayWidget::SetLegends(const std::vector<SynGlyphX::Legend>& lege
 		SynGlyphX::ResizeableImageLabel* legendLabel = new SynGlyphX::ResizeableImageLabel(true, m_legendTabs);
 
 		QPixmap pixmap(QString::fromStdWString(legend.GetFilename()));
-		legendLabel->SetPixmap(pixmap.scaled(SynGlyphX::Application::DynamicQSize(pixmap.width(), pixmap.height())));
+		legendLabel->SetPixmap(pixmap);
 		
 		m_legendTabs->addTab(legendLabel, QString::fromStdWString(legend.GetTitle()));
 	}

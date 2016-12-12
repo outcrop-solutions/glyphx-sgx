@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.3");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.32");
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 	QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(QCursor::pos()));
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
-	QSplashScreen splash(pixmap.scaled(SynGlyphX::Application::DynamicQSize(720, 138)), Qt::WindowStaysOnTopHint);
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
 	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);

@@ -318,6 +318,10 @@ void HomePageWidget::SwitchDashboardLayout() {
 		loggedOn = true;
 		SetCustomerLogo();
 		m_stackedDashboardLayout->setCurrentIndex(0);
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+			m_mainWindow->setMinimumWidth(1200);
+			m_mainWindow->setMinimumHeight(700);
+		}
 	}
 	else {
 
@@ -423,8 +427,9 @@ void HomePageWidget::SetCustomerLogo() {
 	if (QFileInfo::exists(upperRightLogo)) {
 
 		QPixmap p(upperRightLogo);
-
 		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+		upperRightDashboardImage->AddPadding(25, 0, 25, 0);
+		
 	}
 }
 
@@ -483,10 +488,6 @@ void HomePageWidget::Login(){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
 		SyncFilesAndLoadViews();
-		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-			m_mainWindow->setMinimumWidth(1200);
-			m_mainWindow->setMinimumHeight(700);
-		}
 	}
 	else{
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
