@@ -9,7 +9,7 @@ namespace SynGlyphX {
 	class CSVFileWriter::impl
 	{
 	public:
-		impl( wchar_t _sep ) : m_separator( _sep ) { }
+		impl( wchar_t _sep ) : m_separator( _sep ), m_numFields(0) { }
 
 		void SetupLocale()
 		{

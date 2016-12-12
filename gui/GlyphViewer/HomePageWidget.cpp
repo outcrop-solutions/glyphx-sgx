@@ -483,6 +483,10 @@ void HomePageWidget::Login(){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
 		SyncFilesAndLoadViews();
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+			m_mainWindow->setMinimumWidth(1200);
+			m_mainWindow->setMinimumHeight(700);
+		}
 	}
 	else{
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);

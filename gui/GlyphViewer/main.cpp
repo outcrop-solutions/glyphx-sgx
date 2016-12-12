@@ -144,9 +144,7 @@ int main(int argc, char *argv[])
 		QString styleSheet = QLatin1String(file.readAll());
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
-		w.resize(std::min(screen.width(), 1200), std::min(screen.height(), 700));
-		w.setMinimumWidth(screen.width());
-		w.setMinimumHeight(screen.height() - 25);
+		w.resize(1200, 700);
 
 		GVGlobal::Init(new GVServices(&w));
 
