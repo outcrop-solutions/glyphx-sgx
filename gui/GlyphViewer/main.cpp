@@ -16,6 +16,7 @@
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
 #include "GVGlobal.h"
+#include "version.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.32");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getAppVersionString());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

@@ -7,6 +7,7 @@
 #include "doubleminmaxwidget.h"
 #include "intminmaxwidget.h"
 #include "colorminmaxwidget.h"
+#include "version.h"
 
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
     
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", "0.8.04.3");
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Data Mapper", SynGlyphX::getAppVersionString());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD

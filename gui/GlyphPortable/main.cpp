@@ -16,6 +16,7 @@
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
 #include "GVGlobal.h"
+#include "version.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Portable", "0.8.04.2");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Portable", SynGlyphX::getAppVersionString());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	//qInstallMessageHandler(myMessageHandler);
