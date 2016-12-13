@@ -317,7 +317,7 @@ namespace SynGlyphX {
 
 		m_viewMenu = menuBar()->addMenu(tr("View"));
 
-		QAction* restoreLayoutAction = CreateMenuAction(m_viewMenu, tr("Restore Original Layout"));
+		QAction* restoreLayoutAction = CreateMenuAction(m_viewMenu, tr("Restore Toolbars"));
 		QObject::connect(restoreLayoutAction, &QAction::triggered, this, &MainWindow::RestoreOriginalLayout);
 
         m_fullScreenAction = CreateMenuAction(m_viewMenu, tr("Full Screen"), QKeySequence::FullScreen);
