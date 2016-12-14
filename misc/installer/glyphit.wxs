@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
-    <Product Id="*" UpgradeCode="{60300ed8-be8c-4915-aaae-98de51954b98}" Version="0.8.05" Language="1033" Name="GlyphIt" Manufacturer="SynGlyphX">
+    <Product Id="*" UpgradeCode="{60300ed8-be8c-4915-aaae-98de51954b98}" Version="1.0.00" Language="1033" Name="GlyphIt" Manufacturer="SynGlyphX">
         <Package InstallerVersion="300" Compressed="yes"/>
         <Media Id="1" Cabinet="glyphit.cab" EmbedCab="yes" />
 
