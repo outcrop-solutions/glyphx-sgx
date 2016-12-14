@@ -238,7 +238,12 @@ void HomePageWidget::CreateHelpWidget() {
 	QHBoxLayout* helpLayout = new QHBoxLayout(this);
 	helpLayout->setContentsMargins(0, 0, 0, 0);
 	helpLayout->addStretch();
-	helpLayout->addWidget(SynGlyphX::createHelpDialog(970, 850, helpWidget));
+	QRect screen = QApplication::desktop()->availableGeometry();
+	int width = 970;
+	if (screen.width() > 1920){
+		width = 970 * (screen.width() / 1920);
+	}
+	helpLayout->addWidget(SynGlyphX::createHelpDialog(width, 850, helpWidget));
 	helpLayout->addStretch();
 	helpWidget->setLayout(helpLayout);
 
