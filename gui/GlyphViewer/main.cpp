@@ -123,7 +123,6 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(QCursor::pos()));
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);

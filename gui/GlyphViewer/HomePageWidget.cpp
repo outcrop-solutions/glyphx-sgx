@@ -454,7 +454,7 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 			L"suggestions as we work to enhance the tool.</p>"
 			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:support@GlyphEd.co\">support@GlyphEd.co</a></p>"));
 		*/
-		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd’s Enrollment Management GlyphKIT\u2122 is data visualization software designed "
+		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd's Enrollment Management GlyphKIT\u2122 is data visualization software designed "
 			L"to help the Enrollment Management Office benefit from the breadth and depth of available Enrollment Management data. "
 			L"We welcome your interest and input on product direction.</p>"
 			L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@GlyphEd.co\">Support@GlyphEd.co</a></p>"
