@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?include version.wxi ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
-    <Product Id="*" UpgradeCode="{bd2bb2cd-529f-4b65-bbd3-3d00d522d520}" Version="1.0.00" Language="1033" Name="GlyphViewer" Manufacturer="SynGlyphX">
+    <Product Id="*" UpgradeCode="{bd2bb2cd-529f-4b65-bbd3-3d00d522d520}" Version="$(var.version)" Language="1033" Name="GlyphViewer" Manufacturer="SynGlyphX">
         <Package InstallerVersion="300" Compressed="yes"/>
         <Media Id="1" Cabinet="glyphviewer.cab" EmbedCab="yes" />
 
