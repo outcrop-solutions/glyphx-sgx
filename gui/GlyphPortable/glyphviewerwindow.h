@@ -23,9 +23,6 @@
 #include "datatransformmodel.h"
 #include "cachemanager.h"
 #include "glyphvieweroptions.h"
-#include "sourcedatacache.h"
-#include "filteringwidget.h"
-#include "pseudotimefilterwidget.h"
 #include "linkedwidgetsmanager.h"
 #include "itemfocusselectionmodel.h"
 #include "antzcsvwriter.h"
@@ -33,7 +30,6 @@
 #include "dataengineconnection.h"
 #include "glyphengine.h"
 #include "legendsdisplaywidget.h"
-#include "DistinctValueFilteringParameters.h"
 #include "SettingsStoredFileList.h"
 
 class HomePageWidget;
@@ -55,24 +51,18 @@ public:
 	bool IsUserLoggedIn();
 	void UpdateUserMenu();
 
-	static const SynGlyphX::SettingsStoredFileList& GetSubsetFileListInstance();
-	static void ClearSubsetFileList() { s_subsetFileList.ClearFiles(); }
-	static void ClearRecentFileList();
-	static void AddSubsetVisualization(const QString& filename);
-
 public slots:
-	bool LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
+	bool LoadNewVisualization(const QString& filename);
 
 protected:
-	void ReadSettings() override;
-	void WriteSettings() override;
-
 	void closeEvent(QCloseEvent* event) override;
 
 	bool DoesHelpExist() const override;
 
 	void UpdateFilenameWindowTitle(const QString& title) override;
 	QString GetApplicationDisplayName() const override;
+
+	virtual bool LoadRecentFile(const QString& filename) override { return true; };
 
 private slots:
 	void OpenVisualisation();
@@ -82,7 +72,6 @@ private slots:
 	void ChangeMapDownloadSettings();
 	void ShowOpenGLSettings();
 	void ChangeStereoMode();
-	void ChangeOptions();
 	void ChangeBackgroundColor();
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void RemapRootPositionMappings();
@@ -95,7 +84,6 @@ private slots:
 	void OnEnableDisableSuperimposedGadgets( bool enable );
 	void OnOpenURLs();
 	void OnPropertiesActivated();
-	bool LoadRecentFile(const QString& filename) override;
 	void Logout();
 
 private:
@@ -117,21 +105,19 @@ private:
 		QMap<unsigned int, QString> m_fields;
 		QMap<unsigned int, QString> m_displayNames;
 	};
-	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
-	void LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters);
+	void LoadVisualization(const QString& filename);
+	void LoadDataTransform(const QString& filename);
 	void ValidateDataMappingFile(SynGlyphX::DataTransformMapping::SharedPtr mapping, const QString& filename);
 	void LoadFilesIntoModel();
 	void CreateMenus();
 	void CreateDockWidgets();
 	void EnableLoadedVisualizationDependentActions(bool enable);
-	void ChangeOptions(const GlyphViewerOptions& oldOptions, const GlyphViewerOptions& newOptions);
 	void ClearAllData();
 	void CreateANTzWidget();
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
 	void CreateInteractionToolbar();
-	void UpdateAxisNamesAndSourceDataPosition();
 	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
@@ -161,7 +147,6 @@ private:
 
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
-	QDockWidget* m_rightDockWidget;
 
 	SynGlyphX::DataTransformModel* m_mappingModel;
 	CacheManager m_cacheManager;
@@ -175,19 +160,11 @@ private:
 	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	SynGlyphX::SceneViewer* m_viewer;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
-	SourceDataCache::SharedPtr m_sourceDataCache;
-	FilteringWidget* m_filteringWidget;
-	FilteringManager* m_filteringManager;
-	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-	SourceDataInfoModel* m_columnsModel;
 
 	HomePageWidget* m_homePage;
 
 	std::vector<HUDGenerationInfo> m_hudGenerationInfo;
-
-	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
-	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 };
 
 #endif // GLYPHVIEWERWINDOW_H
