@@ -60,7 +60,7 @@ namespace SynGlyphX
 		Q_OBJECT
 
 	public:
-		SceneViewer( QWidget *parent, ViewerMode mode );
+		SceneViewer( QWidget *parent, ViewerMode mode, bool autoLoadDefaultScene = false );
 		SceneViewer( const SceneViewer& ) = delete;
 		~SceneViewer();
 
@@ -254,5 +254,7 @@ namespace SynGlyphX
 		static unsigned int active_viewer_count;
 		unsigned int viewer_id;
 		ViewerMode mode;
+
+		bool auto_load_default_scene;
 	};
 }

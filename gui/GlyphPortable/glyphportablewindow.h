@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 
-#ifndef GLYPHVIEWERWINDOW_H
-#define GLYPHVIEWERWINDOW_H
+#ifndef GLYPHPORTABLEWINDOW_H
+#define GLYPHPORTABLEWINDOW_H
 
 #include <QtWidgets/QMainWindow>
 #include "mainwindow.h"
@@ -32,27 +32,18 @@
 #include "legendsdisplaywidget.h"
 #include "SettingsStoredFileList.h"
 
-class HomePageWidget;
 namespace SynGlyphX
 {
 	class SceneViewer;
-	class GlyphForestInfoModel;
 }
 
-class GlyphViewerWindow : public SynGlyphX::MainWindow
+class GlyphPortableWindow : public SynGlyphX::MainWindow
 {
 	Q_OBJECT
 
 public:
-	GlyphViewerWindow(QWidget *parent = 0);
-	~GlyphViewerWindow();
-	void closeJVM();
-
-	bool IsUserLoggedIn();
-	void UpdateUserMenu();
-
-public slots:
-	bool LoadNewVisualization(const QString& filename);
+	GlyphPortableWindow(QWidget *parent = 0);
+	~GlyphPortableWindow();
 
 protected:
 	void closeEvent(QCloseEvent* event) override;
@@ -62,19 +53,10 @@ protected:
 	void UpdateFilenameWindowTitle(const QString& title) override;
 	QString GetApplicationDisplayName() const override;
 
-	virtual bool LoadRecentFile(const QString& filename) override { return true; };
-
 private slots:
-	void OpenVisualisation();
-	void OpenProject();
-	void RefreshVisualization();
-	void CloseVisualization();
-	void ChangeMapDownloadSettings();
 	void ShowOpenGLSettings();
 	void ChangeStereoMode();
 	void ChangeBackgroundColor();
-	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-	void RemapRootPositionMappings();
 	void OnStereoSetup(bool stereoEnabled);
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);
@@ -82,9 +64,6 @@ private slots:
 	void OnEnableDisableFreeSelectionCamera( bool enable );
 	void OnEnableDisableSelEffect( bool enable );
 	void OnEnableDisableSuperimposedGadgets( bool enable );
-	void OnOpenURLs();
-	void OnPropertiesActivated();
-	void Logout();
 
 private:
 	class HUDGenerationInfo {
@@ -118,7 +97,6 @@ private:
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
 	void CreateInteractionToolbar();
-	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -143,7 +121,6 @@ private:
 	QAction* m_enableDisableSuperimposedGlyphGadgets;
 
 	QAction* m_openURLAction;
-	QAction* m_propertiesAction;
 
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
@@ -156,15 +133,10 @@ private:
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
-	SynGlyphX::GlyphForestInfoModel* m_glyphForestModel;
-	SynGlyphX::ItemFocusSelectionModel* m_glyphForestSelectionModel;
 	SynGlyphX::SceneViewer* m_viewer;
 	GlyphPropertiesWidgetsContainer* m_glyphPropertiesWidgetContainer;
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
-
-	HomePageWidget* m_homePage;
 
 	std::vector<HUDGenerationInfo> m_hudGenerationInfo;
 };
 
-#endif // GLYPHVIEWERWINDOW_H
+#endif // GLYPHPORTABLEWINDOW_H

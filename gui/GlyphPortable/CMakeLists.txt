@@ -56,20 +56,14 @@ TARGET_LINK_LIBRARIES(GlyphPortable ${Boost_LIBRARIES}
 									Qt5::OpenGL 
 									Qt5::Widgets 
 									Qt5::Sql
-									ANTzCore 
-									ANTzBridge 
 									SGXUtility 
 									SGXFoundation 
-									SGXDataMapping 
 									SGXImage 
 									SGXGUI 
 									SGXGlyphGUI
-									SGXDataTransformGUI
-									SGXGeospatial
 									SGXGraphics
 									SGXSceneViewer
-									MapDownloading
-									DataEngine)
+									MapDownloading)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphPortable ${BREAKPAD_LIBRARIES})

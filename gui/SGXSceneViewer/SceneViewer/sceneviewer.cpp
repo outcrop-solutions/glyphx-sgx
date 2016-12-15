@@ -49,10 +49,10 @@ namespace SynGlyphX
 
 	unsigned int SceneViewer::active_viewer_count = 0u;
 
-	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode )
+	SceneViewer::SceneViewer( QWidget *parent, ViewerMode _mode, bool autoLoadDefaultScene )
 		: QOpenGLWidget( parent ), initialized( false ), scene( nullptr ), free_selection_camera( false ), selection_effect_enabled( true ), wheel_delta( 0.f ), scene_axes_enabled( true ),
 		hud_axes_enabled( true ), hud_axes_location( HUDAxesLocation::TopLeft ), enable_fly_to_object( false ), animation_enabled( true ), wireframe( false ), glyph_renderer( nullptr ),
-		renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), mode( _mode )
+		renderer( nullptr ), background_color( render::color::black() ), filtered_glyph_opacity( 0.5f ), item_focus_sm( nullptr ), mode( _mode ), auto_load_default_scene( autoLoadDefaultScene )
 	{
 		setLogoFile("textures/logo.png");
 
@@ -312,6 +312,12 @@ namespace SynGlyphX
 		hud_font = hal::device::load_font( "fonts/OpenSans-Regular.ttf", 16 );
 
 		group_manager = new SuperimposedGroupManager( *scene );
+
+		if (auto_load_default_scene)
+		{
+			std::vector<std::string> images;
+			loadScene("glyphs.sgc", "glyphs.sgn", images);
+		}
 	}
 
 	void SceneViewer::resizeGL( int w, int h )
