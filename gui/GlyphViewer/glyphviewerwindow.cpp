@@ -1323,10 +1323,15 @@ void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
 
 	if (m_portableVisualizationExport.DoAnyPlatformsHaveSourceDirectories()) {
 
+		m_exportGlyphPortableAction = new QAction(tr("GlyphPortable"), this);
+		m_loadedVisualizationDependentActions.push_back(m_exportGlyphPortableAction);
+
 		m_fileMenu->addSeparator();
 		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
+		portableVisualizationMenu->addAction(m_exportGlyphPortableAction);
+		QMenu* antzExportMenu = portableVisualizationMenu->addMenu(tr("Legacy (ANTz)"));
 
-		m_portableVisualizationExport.CreateSubmenu(portableVisualizationMenu);
+		m_portableVisualizationExport.CreateSubmenu(antzExportMenu);
 		QObject::connect(&m_portableVisualizationExport, &SynGlyphX::PortableVisualizationExport::CreatePortableVisualization, this, &GlyphViewerWindow::CreatePortableVisualization);
 
 		for (auto action : portableVisualizationMenu->actions()) {

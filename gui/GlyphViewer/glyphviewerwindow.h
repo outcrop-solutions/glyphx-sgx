@@ -154,6 +154,7 @@ private:
 	QAction* m_resetCameraToDefaultPosition;
 	QAction* m_remapRootPositionMappingsAction;
 	QAction* m_enableDisableSelEffectActionMenu;
+	QAction* m_exportGlyphPortableAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QAction* m_showHideHUDAxisAction;

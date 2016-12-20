@@ -316,7 +316,7 @@ namespace SynGlyphX
 		if (auto_load_default_scene)
 		{
 			std::vector<std::string> images;
-			loadScene("glyphs.sgc", "glyphs.sgn", images);
+			loadScene("scene/glyphs.sgc", "scene/glyphs.sgn", images);
 		}
 	}
 
