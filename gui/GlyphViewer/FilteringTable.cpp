@@ -388,6 +388,7 @@ void FilteringTable::OnAddFilters() {
 		fieldSelectorWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
 		fieldSelectorWidget->setRootIndex(rootIndex);
 		SynGlyphX::SingleWidgetDialog dialog(QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel, fieldSelectorWidget, this);
+		dialog.setMinimumSize(320, 480);
 		if (m_fieldType == SynGlyphX::InputField::Type::Text){
 			dialog.setWindowTitle(tr("Select Field(s) For Keyword Filter(s)"));
 		}
