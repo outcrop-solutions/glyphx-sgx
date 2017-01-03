@@ -1425,7 +1425,8 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
 void GlyphViewerWindow::RemapRootPositionMappings() {
 
-	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
+	//RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
+	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_sourceDataCache->GetConnectionID(), this);
 	remapDialog.SetSaveFilename(m_currentFilename);
 
 	if (remapDialog.exec() == QDialog::Accepted) {

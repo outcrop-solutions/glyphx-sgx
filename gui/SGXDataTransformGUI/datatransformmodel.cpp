@@ -2,6 +2,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/lexical_cast.hpp>
 #include "application.h"
 #include "downloadedmapproperties.h"
 #include "userdefinedbaseimageproperties.h"
@@ -97,6 +98,11 @@ namespace SynGlyphX {
 	void DataTransformModel::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection){
 	
 		m_dataEngineConnection = dataEngineConnection;
+	}
+
+	void DataTransformModel::SetConnectionID(boost::uuids::uuid connectionID){
+
+		m_connectionID = connectionID;
 	}
 
 	bool DataTransformModel::setData(const QModelIndex& index, const QVariant& value, int role) {
@@ -814,17 +820,37 @@ namespace SynGlyphX {
 		Clear();
 		beginResetModel();
 		m_dataMapping.reset(new DataTransformMapping(mapping));
-		CreateAdditionalData();
+		CreateDataStatsFromSource();
 		endResetModel();
 	}
 
-	void DataTransformModel::LoadDataTransformFile(const QString& filename) {
+	void DataTransformModel::LoadDataTransformFile(const QString& filename, bool data) {
 
 		Clear();
 		beginResetModel();
 		m_dataMapping->ReadFromFile(filename.toStdString());
-		CreateAdditionalData();
+		if (data){
+			CreateAdditionalData();
+		}
 		endResetModel();
+	}
+
+	void DataTransformModel::CreateDataStatsFromSource() {
+
+		//just need m_connectionID from sourcedatacache and good to go
+		QSqlDatabase db = QSqlDatabase::database(QString::fromStdWString(boost::uuids::to_wstring(m_connectionID)));
+		//QStringList tables = db.tables();
+		const DataTransformMapping::DatasourceMap& datasources = m_dataMapping->GetDatasources();
+		SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator iT = datasources.begin();
+		for (; iT != datasources.end(); ++iT) {
+
+			std::vector<std::wstring> tables = iT->second->GetTableNames();
+			for (unsigned int i = 0; i < tables.size(); ++i) {
+
+				GenerateStats(SynGlyphX::InputTable(iT->first, tables.at(i)), QSqlQuery(db));
+			}
+			//AddDatasourceInfoFromDataEngine(iT->first, iT->second);
+		}
 	}
 
 	void DataTransformModel::CreateAdditionalData() {
@@ -1417,10 +1443,10 @@ namespace SynGlyphX {
 						m_dataEngineConnection->setQueryTables(QString::fromStdWString(tablesQueryIterator->second.GetQuery()));
 						chosenTables << QString::fromStdWString(tablesQueryIterator->first);
 					}
-					else*/ {
+					else {*/
 
 						chosenTables = GetChosenTables("", fileDatasource->GetTableNames());
-					}
+					//}
 
 				}
 				else if (fileDatasource->GetFileType() == FileDatasource::FileType::CSV) {
@@ -1431,18 +1457,6 @@ namespace SynGlyphX {
 				}
 			}
 			else if (datasource->GetSourceType() == Datasource::SourceType::DatabaseServer) {
-
-				//std::vector<DataEngineConnection::ForeignKey> fkeys = dec->getForeignKeys(//table_name);
-				//fkeys.at(0).key;
-				//fkeys.at(0).origin;
-				//fkeys.at(0).value;
-				//dec->setChosenTables(chosenTables);
-				/*
-				QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
-				query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
-				query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
-				query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
-				query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";*/
 
 				SynGlyphX::DatabaseServerDatasource::SharedPtr dbmsDatasource = std::dynamic_pointer_cast<SynGlyphX::DatabaseServerDatasource>(datasource);
 				sourceTypeString = QString::fromStdWString(SynGlyphX::DatabaseServerDatasource::s_dbTypePrefixes.left.at(dbmsDatasource->GetDBType()));
@@ -1464,14 +1478,6 @@ namespace SynGlyphX {
 						dbmsDatasource->GetTableNames());
 				//}
 
-				//QString query = "SELECT City.Population, Country.Code FROM (City INNER JOIN Country ON (City.CountryCode=Country.Code))";
-				/*
-				QString query = "SELECT inventory_fact.qty_in_stock, product_dimension.product_price, ";
-				query += "date_dimension.day_of_week, warehouse_dimension.warehouse_name FROM (inventory_fact ";
-				query += "INNER JOIN product_dimension ON (inventory_fact.product_key=product_dimension.product_key) ";
-				query += "INNER JOIN date_dimension ON (inventory_fact.date_key=date_dimension.date_key) ";
-				query += "INNER JOIN warehouse_dimension ON (inventory_fact.warehouse_key=warehouse_dimension.warehouse_key))";
-				dec->setQueryTables(query);*/
 			}
 
 			for (int i = 0; i < chosenTables.size(); ++i) {
@@ -1533,6 +1539,64 @@ namespace SynGlyphX {
 		m_dataEngineConnection->setChosenTables(chosenTables);
 
 		return chosenTables;
+	}
+
+	void DataTransformModel::GenerateStats(const InputTable inputTable, QSqlQuery query) {
+
+		SynGlyphX::DataStatsModel::TableStats tableStats;
+
+		std::string d_ID = boost::lexical_cast<std::string>(inputTable.GetDatasourceID());
+		std::string table(inputTable.GetTable().begin(), inputTable.GetTable().end());
+		std::string formattedName = d_ID + ':' + table;
+
+		QStringList fieldNames;
+		QStringList fieldTypes;
+		QString count;
+
+		SynGlyphX::WStringVector numericCols;
+
+		query.prepare("PRAGMA table_info(\"" + QString(formattedName.c_str()) + "\")");
+		if (query.exec()) {
+			while (query.next()){
+				fieldNames << query.value(1).toString();
+				fieldTypes << query.value(2).toString();
+				if (query.value(2).toString() == "REAL") {
+					numericCols.push_back(query.value(1).toString().toStdWString());
+				}
+			}
+		}
+		query.finish();
+
+		query.prepare("SELECT COUNT(*) FROM \"" + QString(formattedName.c_str()) + "\"");
+		if (query.exec()) {
+			while (query.next()){
+				count = query.value(0).toString();
+			}
+		}
+		query.finish();
+
+		for (int i = 0; i < fieldNames.size(); i++){
+			query.prepare("SELECT MIN(" + fieldNames.at(i) + "), MAX(" + fieldNames.at(i) + "), COUNT(DISTINCT(" + fieldNames.at(i) + ")) FROM \"" + QString(formattedName.c_str()) + "\"");
+			if (query.exec()) {
+				while (query.next()){
+					QStringList fieldStats;
+					fieldStats.append(fieldNames.at(i));
+					fieldStats.append(fieldTypes.at(i));
+					fieldStats.append(query.value(0).toString());
+					fieldStats.append(query.value(1).toString());
+					fieldStats.append("-");
+					fieldStats.append(count);
+					fieldStats.append(query.value(2).toString());
+					tableStats.append(fieldStats);
+				}
+			}
+			query.finish();
+		}
+
+		if (!numericCols.empty()) {
+			m_numericFields.emplace(inputTable, numericCols);
+		}
+		m_tableStatsMap.emplace(inputTable, tableStats);
 	}
 
 	void DataTransformModel::GenerateStats(const InputTable inputTable, int place, const QString& sourceTypeString) {
