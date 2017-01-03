@@ -70,6 +70,8 @@ protected:
 	QMap<QString, QSqlQueryModel*> m_sqlModels;
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
+
+	virtual const char* getDefaultExportedDataFileName() const { return "selectedsourcedata.csv"; }
 };
 
 #endif // SOURCEDATAWIDGET_H

@@ -50,6 +50,11 @@ public class UserAccessControls {
 	        	if(pw.equals(password) || pw.equals(hashPassword(password))){
 	        		loggedInUser = new User(rs.getInt("UserAccounts.ID"),rs.getString("UserAccounts.Name"),rs.getInt("UserAccounts.Group"),rs.getTimestamp("UserAccounts.LastModified"));
 					loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
+					String update = "UPDATE UserAccounts SET "+
+									"LoginCount = "+String.valueOf(rs.getInt("UserAccounts.LoginCount")+1)+", "+
+									"LastModified = '"+(new Timestamp(System.currentTimeMillis())).toString()+"' "+
+									"WHERE ID = "+String.valueOf(loggedInUser.getID());
+					conn.prepareStatement(update).executeUpdate();
 				}
 			}
 			rs.close();
@@ -155,10 +160,10 @@ public class UserAccessControls {
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("test","test"));
+		System.out.println(UserAccessControls.validateCredentials("devtest","devtest"));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
-
+/*
 		System.out.println("");
 		String[] vizNames = UserAccessControls.visualizationNames();
 		for(int i = 0; i < vizNames.length; i++){
@@ -197,6 +202,6 @@ public class UserAccessControls {
 		}
 
 		System.out.println("Done syncing");
-
+*/
 	}
 }

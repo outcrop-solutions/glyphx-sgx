@@ -15,6 +15,7 @@ public class FileSyncer {
 	private static String USER = "ec2-user";
 	private static int PORT = 22;
 	private File ppk = null;
+	private File pub = null;
 	private ArrayList<UserFile> userFiles = null;
 	private ArrayList<UserFile> needToSync = null;
 	private Hashtable<File, Long> toUpdateTS = null;
@@ -65,10 +66,25 @@ public class FileSyncer {
 		+"8GTl7Q35hubk/GSCKosY+wWuN0Qt34pxB/TpGHeF98W67bE="+System.lineSeparator()
 		+"Private-MAC: cdb63829162a8a6bd5024f0463866472474c0383"+System.lineSeparator();
 
+		String pubkey = "---- BEGIN SSH2 PUBLIC KEY ----"+System.lineSeparator()
+		+ "Comment: \"imported-openssh-key\""+System.lineSeparator()
+		+ "AAAAB3NzaC1yc2EAAAADAQABAAABAQDFasQ7Wttz2u1ffCtnFvi1qT599ArvIgTZ"+System.lineSeparator()
+		+ "kgIBIjNTpCJ91iDJrkDehNGYrjGUf26162DxuoLoZBBOkxf33JdvmITQpksDWKw8"+System.lineSeparator()
+		+ "zDKCXnX9HENHLC2tQC2hL8416yK8rr0F+XUpNZFDiR5yEUVJmQtDEIx+jDGoukTY"+System.lineSeparator()
+		+ "70Kt6xf2XlgE/bT8GnEAq9rtUPDxJJixP+KDaUqzBKCD2M7c9A71PF1ozkqcUhIe"+System.lineSeparator()
+		+ "JZdeWtwSDjae9T0Q8wd3+7rCj5BHQ8m4/S6904RK0HsqU7jplnrATQkTZZmO71FU"+System.lineSeparator()
+		+ "6Otl8NwDicIOF1x4PQgXTDOD4j5EapljtvNcHTv5OiJrppXPY+51"+System.lineSeparator()
+		+ "---- END SSH2 PUBLIC KEY ----"+System.lineSeparator();
+
 		try{
 			ppk = File.createTempFile("sgxinstancekey",".ppk");
 			FileOutputStream fos = new FileOutputStream(ppk.getAbsolutePath());
 			fos.write(ppkey.getBytes());
+			fos.close();
+
+			pub = File.createTempFile("sgxinstancekey",".pub");
+			fos = new FileOutputStream(pub.getAbsolutePath());
+			fos.write(pubkey.getBytes());
 			fos.close();
 		}
 		catch(Exception e){

@@ -60,6 +60,8 @@ public:
 	TableColumns GetColumnsForTable(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
 	TableColumns GetColumnsForTable(const SynGlyphX::InputTable& inputTable) const;
 
+	boost::uuids::uuid GetConnectionID() const;
+
 	bool IsTableInCache(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const;
 	bool IsTableInCache(const SynGlyphX::InputTable& inputTable) const;
 

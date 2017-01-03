@@ -238,7 +238,12 @@ void HomePageWidget::CreateHelpWidget() {
 	QHBoxLayout* helpLayout = new QHBoxLayout(this);
 	helpLayout->setContentsMargins(0, 0, 0, 0);
 	helpLayout->addStretch();
-	helpLayout->addWidget(SynGlyphX::createHelpDialog(970, 850, helpWidget));
+	QRect screen = QApplication::desktop()->availableGeometry();
+	int width = 970;
+	if (screen.width() > 1920){
+		width = 970 * (screen.width() / 1920);
+	}
+	helpLayout->addWidget(SynGlyphX::createHelpDialog(width, 850, helpWidget));
 	helpLayout->addStretch();
 	helpWidget->setLayout(helpLayout);
 
@@ -318,6 +323,10 @@ void HomePageWidget::SwitchDashboardLayout() {
 		loggedOn = true;
 		SetCustomerLogo();
 		m_stackedDashboardLayout->setCurrentIndex(0);
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+			m_mainWindow->setMinimumWidth(1200);
+			m_mainWindow->setMinimumHeight(700);
+		}
 	}
 	else {
 
@@ -423,8 +432,9 @@ void HomePageWidget::SetCustomerLogo() {
 	if (QFileInfo::exists(upperRightLogo)) {
 
 		QPixmap p(upperRightLogo);
-
 		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+		upperRightDashboardImage->AddPadding(25, 0, 25, 0);
+		
 	}
 }
 
@@ -449,7 +459,7 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 			L"suggestions as we work to enhance the tool.</p>"
 			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:support@GlyphEd.co\">support@GlyphEd.co</a></p>"));
 		*/
-		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd’s Enrollment Management GlyphKIT\u2122 is data visualization software designed "
+		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd's Enrollment Management GlyphKIT\u2122 is data visualization software designed "
 			L"to help the Enrollment Management Office benefit from the breadth and depth of available Enrollment Management data. "
 			L"We welcome your interest and input on product direction.</p>"
 			L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@GlyphEd.co\">Support@GlyphEd.co</a></p>"

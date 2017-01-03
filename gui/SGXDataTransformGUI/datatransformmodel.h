@@ -105,7 +105,7 @@ namespace SynGlyphX {
 		void SetDefaults(const DataMappingDefaults& defaults);
 		void SetSceneProperties(const SceneProperties& sceneProperties);
 
-		void LoadDataTransformFile(const QString& filename);
+		void LoadDataTransformFile(const QString& filename, bool data = false);
 		void SaveDataTransformFile(const QString& filename);
 		void ClearAndReset();
 
@@ -165,6 +165,8 @@ namespace SynGlyphX {
 		const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
 		void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
+		void SetConnectionID(boost::uuids::uuid connectionID);
+
 		const TableStatsMap& GetTableStatsMap() const;
 		boost::uuids::uuid GetTreeId(const QModelIndex& index) const;
 		
@@ -191,10 +193,13 @@ namespace SynGlyphX {
 		void AddDatasourceInfoFromDataEngine(const boost::uuids::uuid& datasourceId, const Datasource::SharedPtr datasource);
 		void ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type);
 		QStringList GetChosenTables(const QString& schema, const Datasource::TableNames& tables);
+		void GenerateStats(const InputTable inputTable, QSqlQuery query);
 		void GenerateStats(const InputTable inputTable, int i, const QString& sourceTypeString);
+		void CreateDataStatsFromSource();
 		void CreateAdditionalData();
 
 		DataTransformMapping::SharedPtr m_dataMapping;
+		boost::uuids::uuid m_connectionID;
 		DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 
 		//Additional data from datasources

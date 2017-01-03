@@ -32,6 +32,7 @@ namespace SynGlyphX {
 		QSize sizeHint() const override;
 
 		void SetPixmap(const QPixmap& pixmap);
+		void AddPadding(int top, int right, int bottom, int left);
 
 	protected:
 		void resizeEvent(QResizeEvent* resizeEvent) override;
@@ -40,6 +41,8 @@ namespace SynGlyphX {
 		QPixmap m_pixmap;
 		double m_imageRatio;
 		bool m_fixedImageRatio;
+		int vertical_padding;
+		int horizontal_padding;
 	};
 
 }

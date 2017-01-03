@@ -35,6 +35,8 @@ protected:
 	SynGlyphX::IndexSet GetSourceIndexesForTable(const QString& table) override;
 	bool DoesEmptyFilterShowAll() const override { return m_filteringManager->GetFilterResultsByTable().empty(); }
 
+	const char* getDefaultExportedDataFileName() const override { return "filteredsourcedata.csv"; }
+
 private:
 	FilteringManager* m_filteringManager;
 };

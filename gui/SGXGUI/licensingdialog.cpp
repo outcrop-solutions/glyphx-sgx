@@ -38,8 +38,14 @@ namespace SynGlyphX {
 		QTextEdit* eulaBrowser = new QTextEdit(this);
 		eulaBrowser->setReadOnly(true);
 		eulaBrowser->setMinimumSize(700, 300);
-
-		QFile eulaFile(QDir::fromNativeSeparators(SynGlyphX::Application::applicationDirPath() + "/docs/license_agreement.html"));
+		QString eulaPath;
+		if (QFileInfo(QCoreApplication::applicationFilePath()).fileName().contains("GlyphEd")){
+			eulaPath = ":SGXGUI/Resources/license_agreement_glyphed.html";
+		}
+		else{
+			eulaPath = ":SGXGUI/Resources/license_agreement.html";
+		}
+		QFile eulaFile(eulaPath);
 		eulaFile.open(QFile::ReadOnly | QFile::Text);
 		QTextStream eulaStream(&eulaFile);
 		eulaBrowser->setHtml(eulaStream.readAll());

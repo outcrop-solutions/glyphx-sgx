@@ -181,7 +181,7 @@ void SourceDataWidget::SaveCurrentTabToFile() {
 
 	QSettings settings;
 	settings.beginGroup("SourceDataWidget");
-	QString initialDir = settings.value("fileSaveDir", "").toString() + QDir::separator() + "selectedsourcedata.csv";
+	QString initialDir = settings.value("fileSaveDir", "").toString() + QDir::separator() + getDefaultExportedDataFileName();
 
 	QString filename = QFileDialog::getSaveFileName(this, tr("Save Current Tab To File"), initialDir, "CSV Files (*.csv)");
 	if (!filename.isEmpty()) {

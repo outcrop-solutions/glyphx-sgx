@@ -1,9 +1,8 @@
-#include "glyphviewerwindow.h"
+#include "glyphportablewindow.h"
 #include "glyphbuilderapplication.h"
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
-#include "licensingdialog.h"
 #include <QtCore/QDir>
 #ifdef USE_BREAKPAD
 #include "exception_handler.h"
@@ -15,7 +14,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
-#include "GVGlobal.h"
+#include "version.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -69,7 +68,7 @@ int main(int argc, char *argv[])
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Portable", "0.8.04.2");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Portable", SynGlyphX::getAppVersionString());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	//qInstallMessageHandler(myMessageHandler);
@@ -107,19 +106,12 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
 
-#ifdef USE_LICENSING
-	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
-
-		return 0;
-	}
-#endif
-
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
-	splash.showMessage("Loading Glyph Portable", Qt::AlignHCenter | Qt::AlignBottom);
+	splash.showMessage("Loading visualization...", Qt::AlignHCenter | Qt::AlignBottom);
 
 	a.processEvents();
 
@@ -127,7 +119,7 @@ int main(int argc, char *argv[])
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
-		GlyphViewerWindow w;
+		GlyphPortableWindow w;
 		QFile file(":GlyphViewer/Resources/glyphed_stylesheet.qss"); //For building app 
 		//QFile file("../../../GUI/GlyphViewer/Resources/glyphed_stylesheet.qss"); //For faster style testing
 		file.open(QFile::ReadOnly);
@@ -136,24 +128,9 @@ int main(int argc, char *argv[])
 		w.move(50, 50);
 		w.resize(1200, 700);
 
-		GVGlobal::Init(new GVServices(&w));
-
 		w.show();
 
-		QStringList commandLineArguments = SynGlyphX::Application::arguments();
-		if (commandLineArguments.size() > 1) {
-
-			QDir visualizationToLoad(commandLineArguments[1]);
-
-			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()))) {
-
-				w.closeJVM();
-				return 2;
-			}
-		}
-
 		return a.exec();
-		w.closeJVM();
 	}
 	catch (const std::exception& e) {
 

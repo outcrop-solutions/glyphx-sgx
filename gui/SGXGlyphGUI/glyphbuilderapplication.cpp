@@ -72,7 +72,7 @@ namespace SynGlyphX {
 
 	bool GlyphBuilderApplication::IsGlyphEd() {
 
-		auto appfile = QFileInfo( QCoreApplication::applicationFilePath() ).fileName();
+		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
 		return appfile.contains( "GlyphEd" );
 	}
 

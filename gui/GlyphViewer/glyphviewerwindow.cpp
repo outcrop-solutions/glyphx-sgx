@@ -387,23 +387,26 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
 
-	m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-	QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
-	textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
-	addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
-	act = textPropertiesDockWidget->toggleViewAction();
-	m_loadedVisualizationDependentActions.push_back(act);
-	QIcon textIcon;
-	QPixmap text_off(":SGXGUI/Resources/Icons/icon-text.png");
-	QPixmap text_on(":SGXGUI/Resources/Icons/icon-text-a.png");
-	textIcon.addPixmap(text_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
-	textIcon.addPixmap(text_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	act->setIcon(textIcon);
-	m_viewMenu->addAction(act);
-	m_showHideToolbar->addAction(act);
-	m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
-	textPropertiesDockWidget->hide();
+		m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
+
+		QDockWidget* textPropertiesDockWidget = new QDockWidget(tr("Text Properties"), this);
+		textPropertiesDockWidget->setWidget(m_glyphPropertiesWidgetContainer->GetTextProperitesWidget());
+		addDockWidget(Qt::LeftDockWidgetArea, textPropertiesDockWidget);
+		act = textPropertiesDockWidget->toggleViewAction();
+		m_loadedVisualizationDependentActions.push_back(act);
+		QIcon textIcon;
+		QPixmap text_off(":SGXGUI/Resources/Icons/icon-text.png");
+		QPixmap text_on(":SGXGUI/Resources/Icons/icon-text-a.png");
+		textIcon.addPixmap(text_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+		textIcon.addPixmap(text_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+		act->setIcon(textIcon);
+		m_viewMenu->addAction(act);
+		m_showHideToolbar->addAction(act);
+		m_showHideToolbar->addAction(textPropertiesDockWidget->toggleViewAction());
+		textPropertiesDockWidget->hide();
+	}
 
 	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
@@ -1320,10 +1323,15 @@ void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
 
 	if (m_portableVisualizationExport.DoAnyPlatformsHaveSourceDirectories()) {
 
+		m_exportGlyphPortableAction = new QAction(tr("GlyphPortable"), this);
+		m_loadedVisualizationDependentActions.push_back(m_exportGlyphPortableAction);
+
 		m_fileMenu->addSeparator();
 		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
+		portableVisualizationMenu->addAction(m_exportGlyphPortableAction);
+		QMenu* antzExportMenu = portableVisualizationMenu->addMenu(tr("Legacy (ANTz)"));
 
-		m_portableVisualizationExport.CreateSubmenu(portableVisualizationMenu);
+		m_portableVisualizationExport.CreateSubmenu(antzExportMenu);
 		QObject::connect(&m_portableVisualizationExport, &SynGlyphX::PortableVisualizationExport::CreatePortableVisualization, this, &GlyphViewerWindow::CreatePortableVisualization);
 
 		for (auto action : portableVisualizationMenu->actions()) {
@@ -1417,7 +1425,8 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
 void GlyphViewerWindow::RemapRootPositionMappings() {
 
-	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
+	//RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
+	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_sourceDataCache->GetConnectionID(), this);
 	remapDialog.SetSaveFilename(m_currentFilename);
 
 	if (remapDialog.exec() == QDialog::Accepted) {

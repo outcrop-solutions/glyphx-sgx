@@ -55,7 +55,7 @@ namespace SynGlyphX {
         virtual void ReadSettings();
         virtual void WriteSettings();
 
-        virtual bool LoadRecentFile(const QString& filename) = 0;
+		virtual bool LoadRecentFile(const QString& filename) { return true; };
 
 		virtual bool DoesHelpExist() const;
 

@@ -16,6 +16,7 @@
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
 #include "GVGlobal.h"
+#include "version.h"
 
 /*
 void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", "0.8.04.3");
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getAppVersionString());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
@@ -122,10 +123,9 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(QCursor::pos()));
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
-	QSplashScreen splash(pixmap.scaled(SynGlyphX::Application::DynamicQSize(720, 138)), Qt::WindowStaysOnTopHint);
+	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
 	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
@@ -144,9 +144,7 @@ int main(int argc, char *argv[])
 		QString styleSheet = QLatin1String(file.readAll());
 		w.setStyleSheet(styleSheet);
 		w.move(50, 50);
-		w.resize(std::min(screen.width(), 1200), std::min(screen.height(), 700));
-		w.setMinimumWidth(screen.width());
-		w.setMinimumHeight(screen.height() - 25);
+		w.resize(1200, 700);
 
 		GVGlobal::Init(new GVServices(&w));
 

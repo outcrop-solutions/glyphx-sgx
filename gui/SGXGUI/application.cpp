@@ -108,10 +108,6 @@ namespace SynGlyphX {
 
 	QSize Application::DynamicQSize(int x, int y) {
 
-		QRect screen = QApplication::desktop()->availableGeometry(1);
-		float w = (float)x*(screen.width() / 1920.0);
-		float h = (float)y*(screen.height() / 1040.0);
-
 		//return QSize((int)w, (int)h);
 		return QSize(x, y);
 	}

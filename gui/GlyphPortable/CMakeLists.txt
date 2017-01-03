@@ -55,21 +55,12 @@ TARGET_LINK_LIBRARIES(GlyphPortable ${Boost_LIBRARIES}
 									Qt5::Gui 
 									Qt5::OpenGL 
 									Qt5::Widgets 
-									Qt5::Sql
-									ANTzCore 
-									ANTzBridge 
 									SGXUtility 
 									SGXFoundation 
-									SGXDataMapping 
 									SGXImage 
 									SGXGUI 
-									SGXGlyphGUI
-									SGXDataTransformGUI
-									SGXGeospatial
 									SGXGraphics
-									SGXSceneViewer
-									MapDownloading
-									DataEngine)
+									SGXSceneViewer)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphPortable ${BREAKPAD_LIBRARIES})
@@ -78,10 +69,6 @@ ENDIF()
 IF (${ZSPACE_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphPortable SGXzSpaceGUI)
 ENDIF()	
-
-IF (${LICENSING_FOUND})
-	TARGET_LINK_LIBRARIES(GlyphPortable rlmez)
-ENDIF()
 
 if(${APPLE})
 #	find_library(APP_SERVICES_LIBRARY ApplicationServices)

@@ -564,7 +564,7 @@ bool DataMapperWindow::LoadDataTransform(const QString& filename) {
 
 		QObject::disconnect(m_modelResetConnection);
 
-		m_dataTransformModel->LoadDataTransformFile(filename);
+		m_dataTransformModel->LoadDataTransformFile(filename, true);
 		m_glyphTreesView->SelectLastGlyphTreeRoot();
 		m_aliases->Refresh();
 		SelectFirstBaseObject();
