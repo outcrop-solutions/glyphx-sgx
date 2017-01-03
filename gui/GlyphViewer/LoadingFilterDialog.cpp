@@ -2,9 +2,6 @@
 #include <QtWidgets/QDialogButtonBox>
 #include "LoadingFilterWidget.h"
 #include <QtWidgets/QVBoxLayout>
-#include "dataengineconnection.h"
-#include "glyphengine.h"
-#include "glyphengine.h"
 #include <QtWidgets/QMessageBox>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -36,7 +33,6 @@ LoadingFilterDialog::~LoadingFilterDialog()
 
 void LoadingFilterDialog::SetupFilters(const SynGlyphX::DataTransformMapping& mapping) {
 
-	DataEngine::GlyphEngine ge;
 	ge.initiate(m_dataEngineConnection->getEnv(), m_filename.toStdString(), "", "", "", "GlyphViewer");
 
 	m_loadingFilterWidget->SetFilters(ge, mapping);
@@ -55,8 +51,6 @@ void LoadingFilterDialog::accept() {
 		return;
 	}
 
-	DataEngine::GlyphEngine ge;
-	ge.initiate(m_dataEngineConnection->getEnv(), m_filename.toStdString(), "", "", "", "GlyphViewer");
 	MultiTableDistinctValueFilteringParameters filteringParameters = m_loadingFilterWidget->GetFilterValues();
 	for (const auto& filtersForTable : filteringParameters) {
 

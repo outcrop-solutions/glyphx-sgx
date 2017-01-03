@@ -933,7 +933,7 @@ public class SDTReader {
 	}
 
 	public String[] distinctValuesForField(String id, String table, String field){
-		checkIfXMLAbsorbed();
+		//checkIfXMLAbsorbed();
 		SourceDataInfo temp = null;
 		for(SourceDataInfo sdi : dataPaths){
 			if(sdi.getID().equals(id) && sdi.getTable().equals(table)){
