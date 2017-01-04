@@ -546,9 +546,12 @@ namespace SynGlyphX
 
 			// Draw tags.
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
-				auto pos = glyph.getCachedPosition();
-				if ( scene->isExploded( &glyph ) ) pos += glyph.getExplodedPosition();
-				if ( glyph.getString( GlyphStringType::Tag ) ) renderText( hud_font, camera, pos, render::color::white(), glyph.getString( GlyphStringType::Tag ) );
+				if (scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter(&glyph))
+				{
+					auto pos = glyph.getCachedPosition();
+					if (scene->isExploded(&glyph)) pos += glyph.getExplodedPosition();
+					if (glyph.getString(GlyphStringType::Tag)) renderText(hud_font, camera, pos, render::color::white(), glyph.getString(GlyphStringType::Tag));
+				}
 			} );
 
 			// Draw axis names.
