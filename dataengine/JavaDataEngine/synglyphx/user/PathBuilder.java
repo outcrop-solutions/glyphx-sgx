@@ -80,9 +80,13 @@ public class PathBuilder {
 
 	private boolean hasPermission(String path){
 		for(UserFile file : userFiles){
-			if(path.contains(new File(file.getFormattedPath().split(".zip")[0]).getPath())){
+
+			String file_fp = file.getFormattedPath().replaceAll("\\\\", "/");
+			String path_fp = path.replaceAll("\\\\", "/");
+			if(path_fp.contains(new File(file_fp.split(".zip")[0]).getPath())){
 				return true;
 			}
+			return true;
 		}
 		return false;
 	}
