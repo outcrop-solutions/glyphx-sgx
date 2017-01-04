@@ -86,7 +86,6 @@ public class PathBuilder {
 			if(path_fp.contains(new File(file_fp.split(".zip")[0]).getPath())){
 				return true;
 			}
-			return true;
 		}
 		return false;
 	}
