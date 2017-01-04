@@ -26,14 +26,16 @@
 #include "SceneViewer/sceneviewer.h"
 #include "Glyph3DSceneExport.h"
 
-RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
+//RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
+RemapDialog::RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, boost::uuids::uuid connectionID, QWidget *parent)
 	: QDialog(parent),
 	m_selectedGlyph(std::numeric_limits<unsigned int>::max())
 {
 	setMinimumWidth(850);
 
 	m_dataTransformModel = new SynGlyphX::DataTransformModel(this);
-	m_dataTransformModel->SetDataEngineConnection(dataEngineConnection);
+	//m_dataTransformModel->SetDataEngineConnection(dataEngineConnection);
+	m_dataTransformModel->SetConnectionID(connectionID);
 	m_glyphRolesModel = new GlyphRolesTableModel(m_dataTransformModel, this);
 	m_dataTransformModel->ChangeMapping(*dataTransformMapping);
 

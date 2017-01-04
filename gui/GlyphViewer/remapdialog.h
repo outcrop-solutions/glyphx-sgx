@@ -20,7 +20,7 @@
 
 #include <QtWidgets/QDialog>
 #include "datatransformmapping.h"
-#include "dataengineconnection.h"
+//#include "dataengineconnection.h"
 
 namespace SynGlyphX {
 
@@ -41,7 +41,8 @@ class RemapDialog : public QDialog
 	Q_OBJECT
 
 public:
-	RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	//RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	RemapDialog(SynGlyphX::DataTransformMapping::ConstSharedPtr dataTransformMapping, boost::uuids::uuid connectionID, QWidget *parent);
 	~RemapDialog();
 
 	void SetSaveFilename(const QString& saveFilename);

@@ -137,6 +137,11 @@ SourceDataCache::TableColumns SourceDataCache::GetColumnsForTable(const SynGlyph
 	return GetColumnsForTable(inputTable.GetDatasourceID(), QString::fromStdWString(inputTable.GetTable()));
 }
 
+boost::uuids::uuid SourceDataCache::GetConnectionID() const {
+
+	return m_connectionID;
+}
+
 bool SourceDataCache::IsTableInCache(const boost::uuids::uuid& datasourceID, const QString& originalTablename) const {
 
 	QString tableName = CreateTablename(QString::fromStdString(boost::uuids::to_string(datasourceID)), originalTablename);
