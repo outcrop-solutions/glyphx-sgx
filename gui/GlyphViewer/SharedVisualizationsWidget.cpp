@@ -31,12 +31,11 @@ void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree
 
 			titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"<xmlattr>.name")));
 			titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"")));
-			// change titleAndFile[1] to absolute path
+			// standardize path separators
 			titleAndFile[1].replace("\\", "/");
 			m_baseDir.replace("\\", "/");
-			qDebug() << "titleAndFile[1]=" << titleAndFile[1];
-			qDebug() << "m_baseDir=" << m_baseDir;
-			if (titleAndFile[1].startsWith(m_baseDir))	
+			// change titleAndFile[1] to absolute path
+			if (titleAndFile[1].startsWith(m_baseDir))
 			{
 				// If the base and SDT paths have a common base, we're good...
 				QFileInfo finfo(QDir(m_baseDir), titleAndFile[1]);
