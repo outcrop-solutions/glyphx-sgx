@@ -60,12 +60,23 @@ public class GlyphEngine {
 		if(FilterSetup.getInstance().active()){
 			distincts = FilterSetup.getInstance().getDistinctValuesForField(id,table,field);
 		}else{
+			if(!sdtReader.finishedLoading())
+				try{
+					finishLoading();
+				}catch(Exception e){}
 			distincts = sdtReader.distinctValuesForField(id,table,field);
 		}
 		return distincts;
 	}
 
 	public static void setQueryForDatasource(final String id, final String table, final String query){
+
+		if(table.equals("OnlyTable")){
+			if(!sdtReader.finishedLoading())
+				try{
+					finishLoading();
+				}catch(Exception e){}
+		}
 		sdtReader.setQueryForDatasource(id, table, query);
 	}
 
@@ -168,8 +179,8 @@ public class GlyphEngine {
 	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
-	 	String sdtPath = "D:/Desktop Files/Test Files/Prospect HS Comp/Prospect HS Comparison Pillform.sdt";
-	 	String outDir = "D:/Desktop Files/Test Files/Prospect HS Comp/viz";
+	 	String sdtPath = "C:/Users/Bryan/Desktop/spectrum_subset.sdt";
+	 	String outDir = "C:/Users/Bryan/Desktop/spectrum_subset_data";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
 	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
@@ -180,7 +191,7 @@ public class GlyphEngine {
 	 	String first = "C:/ProgramData/SynGlyphX/GlyphEd/Dev/Admissions Officer/Applicants.sdt";
 	 	String second = "C:/ProgramData/SynGlyphX/GlyphEd/Spectrum/Spectrum/spectrum.sdt";
 
-	 	String expDir = "DataMapper";
+	 	String expDir = "GlyphViewer";
 	 	GlyphEngine start = new GlyphEngine();
 	 	double[] nw = new double[2];
 	 	nw[0] = -180.0; nw[1] = 90.0;
@@ -193,7 +204,16 @@ public class GlyphEngine {
 	 	double[] s = new double[2];
 	 	s[0] = 2048.0; s[1] = 1024.0;
 	 	//s[0] = 471.0; s[1] = 634.0;
-	 	//int err = start.initiate(sdtPath, outDir, expDir);
+	 	/*
+	 	int err = start.initiate(sdtPath, outDir, expDir);
+
+	 	String id = "9a61eaaa-1789-4366-8a31-abc9b95bef73";
+	 	String table = "OnlyTable";
+	 	String field = "Frequency";
+	 	String query = "SELECT * FROM `OnlyTable` WHERE `Frequency` IN ('100.511')";
+	 	System.out.println("Distinct Viz1: "+start.distinctValuesForField(id, table, field).length);
+	 	System.out.println("sizeOfQuery: "+start.sizeOfQuery(id, table, query));
+	 	start.setQueryForDatasource(id, table, query);
 
 	 	start.filterSetup(first);
 	 	String id = "0e10b5e1-60fb-4fbc-8e53-0988839dc495";
@@ -201,13 +221,16 @@ public class GlyphEngine {
 	 	String field = "StaffAssigned";
 	 	System.out.println("Distinct Viz1: "+start.distinctValuesForField(id, table, field).length);
 	 	int err = start.initiate(first, outDir, expDir);
-
+*/
 	 	start.filterSetup(second);
-	 	id = "1e88527e-7da4-4ffd-90cc-d5cf0614ee45";
-	 	table = "WGSData";
-	 	field = "Frequency";
+	 	String id = "1e88527e-7da4-4ffd-90cc-d5cf0614ee45";
+	 	String table = "WGSData";
+	 	String field = "Frequency";
+	 	String query = "SELECT * FROM WGSData WHERE Frequency IN (100.01,100.511,101.012,101.514,102.015,102.516,103.018)";
 	 	System.out.println("Distinct Viz2: "+start.distinctValuesForField(id, table, field).length);
-	 	err = start.initiate(second, outDir, expDir);
+	 	int err = start.initiate(second, outDir, expDir);
+	 	System.out.println("sizeOfQuery: "+start.sizeOfQuery(id, table, query));
+	 	start.setQueryForDatasource(id, table, query);
 
 	 	//double[] nwse = start.getNWandSE();
 /*

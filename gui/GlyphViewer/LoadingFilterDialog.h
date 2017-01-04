@@ -21,6 +21,7 @@
 #include "datatransformmapping.h"
 #include "DistinctValueFilteringParameters.h"
 #include "dataengineconnection.h"
+#include "glyphengine.h"
 
 class LoadingFilterWidget;
 
@@ -41,6 +42,7 @@ private:
 	LoadingFilterWidget* m_loadingFilterWidget;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	QString m_filename;
+	DataEngine::GlyphEngine ge;
 };
 
 //#pragma once
