@@ -41,10 +41,12 @@ namespace SynGlyphX {
 	private:
 		void CreateTagTab();
 		void CreateScaleTab();
+		void CreateGlyphTab();
 
 		QComboBox* m_tagFieldDefaultComboBox;
 		QLineEdit* m_tagValueDefaultLineEdit;
 		QCheckBox* m_removeScaleZeroCheckbox;
+		QCheckBox* m_useSuperimposedCheckbox;
 	};
 
 } //namespace SynGlyphX

@@ -13,6 +13,7 @@ namespace SynGlyphX {
 	{
 		CreateTagTab();
 		CreateScaleTab();
+		CreateGlyphTab();
 	}
 
 	GlyphDefaultsWidget::~GlyphDefaultsWidget()
@@ -25,6 +26,7 @@ namespace SynGlyphX {
 		m_tagFieldDefaultComboBox->setCurrentText(QString::fromStdWString(SynGlyphX::DataMappingDefaults::s_tagFieldStrings.left.at(defaults.GetTagField())));
 		m_tagValueDefaultLineEdit->setText(QString::fromStdWString(defaults.GetDefaultTagValue()));
 		m_removeScaleZeroCheckbox->setChecked(defaults.GetRemoveWhenScaleIsZero());
+		m_useSuperimposedCheckbox->setChecked(defaults.GetUseSuperimposedGlyphs());
 	}
 
 	SynGlyphX::DataMappingDefaults GlyphDefaultsWidget::GetDefaults() const {
@@ -34,6 +36,7 @@ namespace SynGlyphX {
 		defaults.SetTagField(SynGlyphX::DataMappingDefaults::s_tagFieldStrings.right.at(m_tagFieldDefaultComboBox->currentText().toStdWString()));
 		defaults.SetDefaultTagValue(m_tagValueDefaultLineEdit->text().toStdWString());
 		defaults.SetRemoveWhenScaleIsZero(m_removeScaleZeroCheckbox->isChecked());
+		defaults.SetUseSuperimposedGlyphs(m_useSuperimposedCheckbox->isChecked());
 
 		return defaults;
 	}
@@ -77,6 +80,22 @@ namespace SynGlyphX {
 
 		tab->setLayout(tabLayout);
 		addTab(tab, tr("Scale"));
+	}
+
+	void GlyphDefaultsWidget::CreateGlyphTab() {
+
+		QWidget* tab = new QWidget(this);
+		QVBoxLayout* tabLayout = new QVBoxLayout(tab);
+
+		tabLayout->addStretch(1);
+
+		m_useSuperimposedCheckbox = new QCheckBox(tr("Enable/Disable superimposed glyphs"), tab);
+		tabLayout->addWidget(m_useSuperimposedCheckbox);
+
+		tabLayout->addStretch(1);
+
+		tab->setLayout(tabLayout);
+		addTab(tab, tr("Glyph"));
 	}
 
 } //namespace SynGlyphX

@@ -62,6 +62,9 @@ public:
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
 	const SynGlyphX::DataTransformModel* GetDataTransformModel() const;
 
+	void SetElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
+	std::vector<std::wstring> GetElasticListFields(QString sourceDataTableName);
+
 signals:
 	//FilterResultsChanged emits an index set for all glyph indexes that need to be shown, including for tables that don't have any 
 	//filters on them unless there are no filters whatsoever.  While there are several cases where this signal is connected to a slot,
@@ -96,6 +99,8 @@ private:
 	SynGlyphX::IndexSet m_filterResultsIndexedToGlyphs;
 
 	Table2FiltersMap m_filtersForEachTable;
+
+	std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H

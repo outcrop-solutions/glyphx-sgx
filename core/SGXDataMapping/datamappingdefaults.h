@@ -53,6 +53,9 @@ namespace SynGlyphX {
 		void SetRemoveWhenScaleIsZero(bool removeWhenScaleIsZero);
 		bool GetRemoveWhenScaleIsZero() const;
 
+		void SetUseSuperimposedGlyphs(bool useSuperimposedGlyphs);
+		bool GetUseSuperimposedGlyphs() const;
+
 		static const boost::bimap<DataMappingGlyph::MappableField, std::wstring> s_tagFieldStrings;
 		static const std::wstring s_propertyTreeName;
 
@@ -60,6 +63,7 @@ namespace SynGlyphX {
 		DataMappingGlyph::MappableField m_tagField;
 		std::wstring m_defaultTagValue;
 		bool m_removeWhenScaleIsZero;
+		bool m_useSuperimposedGlyphs;
 	};
 
 } //namespace SynGlyphX

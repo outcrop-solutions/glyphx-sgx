@@ -307,6 +307,15 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 	}
 }
 
+std::vector<std::wstring> FilteringManager::GetElasticListFields(QString sourceDataTableName) {
+
+	if (m_elasticListMap.find(sourceDataTableName.toStdWString()) == m_elasticListMap.end()){
+		std::vector<std::wstring> temp;
+		return temp;
+	}
+	return m_elasticListMap[sourceDataTableName.toStdWString()];
+}
+
 const FilteringManager::IndexSetMap& FilteringManager::GetFilterResultsByTable() const {
 
 	return m_filterResultsByTable;

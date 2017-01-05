@@ -816,19 +816,23 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 	try {
 
 		m_mappingModel->LoadDataTransformFile(filename);
+
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
 		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
-		
-		DataEngine::GlyphEngine ge;
+
 		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+		
+		DataEngine::GlyphEngine ge;
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
+
 		for (const auto& filter : filters) {
 
 			ge.SetQueryForDatasource(QString::fromStdString(boost::uuids::to_string(filter.first.GetDatasourceID())),
 				QString::fromStdWString(filter.first.GetTable()),
 				filter.second.GenerateQuery(filter.first)); 
 		}
+
 		if (ge.IsUpdateNeeded()){
 
 			DownloadBaseImages(ge);
@@ -837,19 +841,16 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		std::vector<std::string> images = ge.getBaseImages();
 		
 		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
-
-		SGX_BEGIN_PROFILE(loadScene);
-		m_viewer->loadScene( ( localOutputDir + "glyphs.sgc" ).toStdString().c_str(), ( localOutputDir + "glyphs.sgn" ).toStdString().c_str(), images );
-		SGX_END_PROFILE(loadScene);
-		QStringList qList;
-		for (unsigned int i = 0; i < images.size(); i++){
-			qList << images.at(i).c_str();
-		}
 		
+		SGX_BEGIN_PROFILE(loadScene);
+		m_viewer->loadScene((localOutputDir + "glyphs.sgc").toStdString().c_str(), (localOutputDir + "glyphs.sgn").toStdString().c_str(), images, m_mappingModel->GetDataMapping()->GetDefaults().GetUseSuperimposedGlyphs());
+		SGX_END_PROFILE(loadScene);
+
 		m_sourceDataCache->Setup( QString::fromStdString( dirPath + "sourcedata.db" ) );
 		m_columnsModel->Reset();
 
 		//This must be done before LoadFilesIntoModel is called
+		m_filteringWidget->SetElasticListFields(m_mappingModel->GetDataMapping()->GetElasticListFields());
 		m_filteringWidget->OnNewVisualization();
 
 		LoadFilesIntoModel();
@@ -1425,8 +1426,10 @@ void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
 void GlyphViewerWindow::RemapRootPositionMappings() {
 
-	//RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_dataEngineConnection, this);
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	RemapDialog remapDialog(m_mappingModel->GetDataMapping(), m_sourceDataCache->GetConnectionID(), this);
+	SynGlyphX::Application::restoreOverrideCursor();
+
 	remapDialog.SetSaveFilename(m_currentFilename);
 
 	if (remapDialog.exec() == QDialog::Accepted) {

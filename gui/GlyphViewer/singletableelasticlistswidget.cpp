@@ -2,7 +2,7 @@
 
 const unsigned int SingleTableElasticListsWidget::Spacing = 16;
 
-SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent)
+SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, std::vector<std::wstring> elasticList, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
@@ -12,18 +12,24 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
 	layout->setSpacing(Spacing);
 
-	for (const auto& aliasAndField : aliasAndFieldList) {
+	if (elasticList.size() > 0){
 
-		SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(this);
+		for (const auto& field : elasticList){
 
-		std::string cleanedField = aliasAndField.first.toStdString();
-		std::replace(cleanedField.begin(), cleanedField.end(), '_', ' ');
-		//elasticListWidget->SetTitle(aliasAndField.first);
-		elasticListWidget->SetTitle(QString(cleanedField.c_str()));
+			for (const auto& aliasAndField : aliasAndFieldList) {
 
-		layout->addWidget(elasticListWidget);
-		m_elasticListMap[aliasAndField.second.toStdString()] = elasticListWidget;
-		QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged);
+					AddFieldToElasticList(layout, aliasAndField);
+					break;
+				}
+			}
+		}
+	}
+	else{
+
+		for (const auto& aliasAndField : aliasAndFieldList) {
+
+			AddFieldToElasticList(layout, aliasAndField);
+		}
 	}
 
 	layout->addStretch(1);
@@ -36,6 +42,21 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 SingleTableElasticListsWidget::~SingleTableElasticListsWidget()
 {
 
+}
+
+void SingleTableElasticListsWidget::AddFieldToElasticList(QVBoxLayout* layout, AliasAndField field){
+
+	SynGlyphX::ElasticListWidget* elasticListWidget = new SynGlyphX::ElasticListWidget(this);
+
+	std::string cleanedField = field.first.toStdString();
+	std::replace(cleanedField.begin(), cleanedField.end(), '_', ' ');
+	//elasticListWidget->SetTitle(aliasAndField.first);
+	elasticListWidget->SetTitle(QString(cleanedField.c_str()));
+
+	layout->addWidget(elasticListWidget);
+	m_elasticListMap[field.second.toStdString()] = elasticListWidget;
+
+	QObject::connect(elasticListWidget, &SynGlyphX::ElasticListWidget::SelectionChanged, this, &SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged);
 }
 
 void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexSet& indexSet) {

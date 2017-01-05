@@ -102,6 +102,8 @@ namespace SynGlyphX
 
 		const GlyphGeometryDB& getGeomDB() { return db; }
 
+		void setUseSuperimposed(bool useSuperimposed){ m_useSuperimposed = useSuperimposed; }
+
 		void enumGlyphStrings( std::function<void( int id, int parent_id, int filtering_idx, const char* tag, const char* url, const char* desc )> fn ) const override;
 
 		static const unsigned int NO_GROUP = 0u;
@@ -152,5 +154,7 @@ namespace SynGlyphX
 		unsigned int glyph_storage_next, glyph_storage_size;
 
 		std::unordered_set<std::string> string_pool;
+
+		bool m_useSuperimposed;
 	};
 }

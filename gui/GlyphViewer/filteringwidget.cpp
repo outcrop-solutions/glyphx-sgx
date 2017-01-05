@@ -244,3 +244,8 @@ void FilteringWidget::OnSubsetVisualizationCreated(const QString& subsetVisualiz
 		}
 	}
 }
+
+void FilteringWidget::SetElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap){
+
+	m_filteringManager->SetElasticListFields(elasticListMap);
+}

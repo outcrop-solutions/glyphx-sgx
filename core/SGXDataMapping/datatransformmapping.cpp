@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/algorithm/string.hpp>
 #include "userdefinedbaseimageproperties.h"
 #include "Link.h"
 #include "Alias.h"
@@ -114,6 +115,7 @@ namespace SynGlyphX {
 		m_links(mapping.m_links),
 		m_inputFieldManager(mapping.m_inputFieldManager),
 		m_frontEndFilters(mapping.m_frontEndFilters),
+		m_elasticListMap(mapping.m_elasticListMap),
         m_id(UUIDGenerator::GetNewRandomUUID()) {
 
 	}
@@ -189,6 +191,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_frontEndFilters != mapping.m_frontEndFilters) {
+
+			return false;
+		}
+
+		if (m_elasticListMap != mapping.m_elasticListMap) {
 
 			return false;
 		}
@@ -419,6 +426,26 @@ namespace SynGlyphX {
 			}
 		}
 
+		boost::optional<const boost::property_tree::wptree&> elasticListFieldsPropertyTree = dataTransformPropertyTree.get_child_optional(L"ElasticList");
+		if (elasticListFieldsPropertyTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& elasticListProperties : elasticListFieldsPropertyTree.get()) {
+
+				if (elasticListProperties.first == L"ElasticField") {
+					
+					std::wstring field = elasticListProperties.second.get<std::wstring>(L"<xmlattr>.field");
+					std::wstring id = elasticListProperties.second.get<std::wstring>(L"<xmlattr>.id");
+					std::wstring table = elasticListProperties.second.get<std::wstring>(L"<xmlattr>.table");
+
+					if (m_elasticListMap.find(id + L':' + table) == m_elasticListMap.end()){
+						std::vector<std::wstring> temp;
+						m_elasticListMap[id + L':' + table] = temp;
+					}
+					m_elasticListMap[id + L':' + table].push_back(field);
+				}
+			}
+		}
+
 	}
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -493,15 +520,29 @@ namespace SynGlyphX {
 				for (const auto& field : filter.fields) {
 
 					boost::property_tree::wptree& filterFieldPropertyTree = filterPropertyTree.add(L"FilterField", L"");
-					//filterFieldPropertyTree.put(L"<xmlattr>.id", field.GetDatasourceID());
-					//filterFieldPropertyTree.put(L"<xmlattr>.table", field.GetTable());
-					//filterFieldPropertyTree.put(L"<xmlattr>.field", field.GetField());
-					//filterFieldPropertyTree.put(L"<xmlattr>.type", field.GetType());
 					field.ExportToPropertyTreeInternal(filterFieldPropertyTree);
 				}
 
 			}
+		}
 
+		if (!m_elasticListMap.empty()){
+			boost::property_tree::wptree& elasticListPropertyTree = dataTransformPropertyTreeRoot.add(L"ElasticList", L"");
+			for (const auto& table : m_elasticListMap){
+
+				std::vector<std::wstring> strs;
+				boost::split(strs, table.first, boost::is_any_of(":"));
+				std::wstring id = strs.at(0);
+				std::wstring tbl = strs.at(1);
+
+				for (const auto& field : table.second){
+
+					boost::property_tree::wptree& fieldPropertyTree = elasticListPropertyTree.add(L"ElasticField", L"");
+					fieldPropertyTree.put(L"<xmlattr>.field", field);
+					fieldPropertyTree.put(L"<xmlattr>.id", id);
+					fieldPropertyTree.put(L"<xmlattr>.table", tbl);
+				}
+			}
 		}
 
     }
@@ -589,6 +630,7 @@ namespace SynGlyphX {
 		m_links.clear();
 		m_inputFieldManager.Clear();
 		m_frontEndFilters.clear();
+		m_elasticListMap.clear();
 		m_id = UUIDGenerator::GetNewRandomUUID();
 
 		if (addADefaultBaseObjectAfterClear) {

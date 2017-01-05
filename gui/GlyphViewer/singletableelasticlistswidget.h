@@ -32,7 +32,7 @@ public:
 	typedef std::pair<QString, QString> AliasAndField;
 	typedef std::vector<AliasAndField> AliasAndFieldList;
 
-	SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, QWidget *parent);
+	SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, std::vector<std::wstring> elasticList, QWidget *parent);
 	~SingleTableElasticListsWidget();
 
 	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());
@@ -47,6 +47,8 @@ private:
 	static const unsigned int Spacing;
 
 	typedef std::unordered_map<std::string, SynGlyphX::ElasticListWidget*> ColumnToWidgetMap;
+
+	void AddFieldToElasticList(QVBoxLayout* layout, AliasAndField field);
 
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	QString m_table;
