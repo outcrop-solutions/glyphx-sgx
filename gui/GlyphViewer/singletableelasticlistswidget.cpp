@@ -18,6 +18,7 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 
 			for (const auto& aliasAndField : aliasAndFieldList) {
 
+				if (aliasAndField.second == QString::fromStdWString(field)){
 					AddFieldToElasticList(layout, aliasAndField);
 					break;
 				}
