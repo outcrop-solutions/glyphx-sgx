@@ -128,6 +128,7 @@ void PseudoTimeFilterWidget::ResetForNewVisualization() {
 	m_slider->setMaximum(20);
 
 	m_filterState = FilterState::Inactive;
+	m_filteringManager->EnableTimeFilter(false);
 	UpdateSelectedField(m_columnsModel->index(0, 0, m_columnsModel->index(0, 0, m_columnsModel->index(0, 0))));
 	m_playPauseButton->setToolTip(tr("Play"));
 	m_playPauseButton->setIcon(QIcon(":SGXGUI/Resources/Video/play.png"));
@@ -139,6 +140,7 @@ void PseudoTimeFilterWidget::Disable() {
 
 	EnableButtons(false);
 	ChangeFilterState(FilterState::Inactive);
+	m_filteringManager->EnableTimeFilter(false);
 }
 
 void PseudoTimeFilterWidget::SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager) {
@@ -231,14 +233,15 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 	if (m_filterState == FilterState::Inactive) {
 
 		m_currentPositionLabel->clear();
-		m_filteringManager->ClearAllFilters();
+		m_filteringManager->EnableTimeFilter(false);
 	}
 	else {
 
 		const auto& newSelection = m_selectionForEachDistinctValue.at(sliderValue);
 		m_currentPositionLabel->setText(newSelection.first);
 		
-		m_filteringManager->SetFilterIndexesForTable(m_sourceCacheTableName, newSelection.second, m_moveCameraOnUpdateCheckbox->isChecked());
+		m_filteringManager->EnableTimeFilter(true);
+		m_filteringManager->SetTimeFilterIndexesForTable(m_sourceCacheTableName, newSelection.second);
 	}
 }
 
@@ -270,7 +273,7 @@ void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 		if (newFilterState == FilterState::Inactive) {
 
 			ResetSliderAndLabel();
-			m_filteringManager->ClearAllFilters();
+			m_filteringManager->EnableTimeFilter(false);
 		}
 	}
 

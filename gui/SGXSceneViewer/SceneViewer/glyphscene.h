@@ -67,6 +67,7 @@ namespace SynGlyphX
 
 		void setFilterMode( FilteredResultsDisplayMode mode ) { filter_mode = mode; scene_changed = true; }
 		FilteredResultsDisplayMode getFilterMode() { return filter_mode; }
+		void setFilterApplied() { filter_applied = true; }
 		void setPassedFilter( unsigned int index );
 		void clearFilter() { filtered.clear(); scene_changed = true; filter_applied = false; }
 		bool passedFilter( const Glyph3DNode* node ) const;
