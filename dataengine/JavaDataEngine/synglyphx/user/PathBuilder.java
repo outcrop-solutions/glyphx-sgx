@@ -83,7 +83,8 @@ public class PathBuilder {
 
 			String file_fp = file.getFormattedPath().replaceAll("\\\\", "/");
 			String path_fp = path.replaceAll("\\\\", "/");
-			if(path_fp.contains(new File(file_fp.split(".zip")[0]).getPath())){
+			String test_path = new File(file_fp.split(".zip")[0]).getPath().replaceAll("\\\\", "/");
+			if(path_fp.contains(test_path)){
 				return true;
 			}
 		}
