@@ -1229,8 +1229,6 @@ void GlyphViewerWindow::WriteSettings() {
 
 	SynGlyphX::MainWindow::WriteSettings();
 
-	s_subsetFileList.WriteToSettings();
-
 	QSettings settings;
 
 	settings.beginGroup("Display");
@@ -1598,7 +1596,10 @@ const SynGlyphX::SettingsStoredFileList& GlyphViewerWindow::GetSubsetFileListIns
 
 void GlyphViewerWindow::AddSubsetVisualization(const QString& filename) {
 
+	// read and rewrite the settings immediately so that we stay in sync with any other open instances of the software
+	s_subsetFileList.ReadFromSettings();
 	s_subsetFileList.AddFile(filename);
+	s_subsetFileList.WriteToSettings();
 }
 
 void GlyphViewerWindow::OnEnableDisableFlyToObjectAction( bool enable )
