@@ -135,6 +135,10 @@ public class FilterSetup {
 
 	}
 
+	public boolean isCurrentDataID(String id){
+   		return dataID.equals(id);
+    }
+
 	public static void closeDriverIfOpen(){
       
       	if(driver == null){return;}
@@ -147,9 +151,9 @@ public class FilterSetup {
         }catch(Exception e){
             e.printStackTrace();
         }
-   }
+    }
 
-   public static boolean active(){
+    public static boolean active(){
    		return (driver != null);
-   }
+    }
 }

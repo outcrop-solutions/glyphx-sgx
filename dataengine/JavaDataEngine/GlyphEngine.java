@@ -71,7 +71,7 @@ public class GlyphEngine {
 
 	public static void setQueryForDatasource(final String id, final String table, final String query){
 
-		if(table.equals("OnlyTable")){
+		if(!FilterSetup.getInstance().isCurrentDataID(id)){
 			if(!sdtReader.finishedLoading())
 				try{
 					finishLoading();
