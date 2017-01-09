@@ -4,11 +4,13 @@
 #include <QtWidgets/QLayout>
 #include "LoadingFilterWidget.h"
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include "glyphbuilderapplication.h"
 #include "datatransformmapping.h"
 #include "stringconvert.h"
 #include <QtWidgets/QProgressBar>
 #include "glyphengine.h"
+#include <cassert>
 
 void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
 
@@ -29,9 +31,34 @@ void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree
 
 			titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"<xmlattr>.name")));
 			titleAndFile.push_back(QString::fromStdWString(propertyTreeEntry.second.get<std::wstring>(L"")));
+			// standardize path separators
+			titleAndFile[1].replace("\\", "/");
+			m_baseDir.replace("\\", "/");
 			// change titleAndFile[1] to absolute path
-			QFileInfo finfo(QDir(m_baseDir), titleAndFile[1]);
-			titleAndFile[1] = finfo.absoluteFilePath();
+			if (titleAndFile[1].startsWith(m_baseDir))
+			{
+				// If the base and SDT paths have a common base, we're good...
+				QFileInfo finfo(QDir(m_baseDir), titleAndFile[1]);
+				titleAndFile[1] = finfo.absoluteFilePath();
+			}
+			else
+			{
+				// Otherwise, handle SDT paths being hardcoded for Windows (ugh)
+				
+				// get common base dir (take us up past the user and customer folders), i.e.
+				// the SynGlyphX app data folder on this machine
+				auto basedir = QDir(m_baseDir);
+				basedir.cdUp(); basedir.cdUp();
+				auto basedirpath = basedir.absolutePath();
+				assert(basedirpath.endsWith("SynGlyphX"));
+
+				// get the part of the filename that's INSIDE the SynGlyphX folder (the part
+				// after "SynGlyphX")
+				auto split = titleAndFile[1].split("/SynGlyphX/");
+				assert(split.size() >= 2);
+				auto combined_dir = basedir.absolutePath() + QString("/") + split[1];
+				titleAndFile[1] = combined_dir;
+			}
 			m_filenameToTitleMap.insert(titleAndFile[1], titleAndFile[0]);
 			m_groupedVisualizations.append(parent, titleAndFile);
 		}

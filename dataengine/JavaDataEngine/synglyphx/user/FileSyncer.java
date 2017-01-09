@@ -15,7 +15,6 @@ public class FileSyncer {
 	private static String USER = "ec2-user";
 	private static int PORT = 22;
 	private File ppk = null;
-	private File pub = null;
 	private ArrayList<UserFile> userFiles = null;
 	private ArrayList<UserFile> needToSync = null;
 	private Hashtable<File, Long> toUpdateTS = null;
@@ -39,52 +38,38 @@ public class FileSyncer {
 
 	private void setupPrivateKey(){
 		
-		String ppkey = "PuTTY-User-Key-File-2: ssh-rsa"+System.lineSeparator()
-		+"Encryption: none"+System.lineSeparator()
-		+"Comment: imported-openssh-key"+System.lineSeparator()
-		+"Public-Lines: 6"+System.lineSeparator()
-		+"AAAAB3NzaC1yc2EAAAADAQABAAABAQDFasQ7Wttz2u1ffCtnFvi1qT599ArvIgTZ"+System.lineSeparator()
-	 	+"kgIBIjNTpCJ91iDJrkDehNGYrjGUf26162DxuoLoZBBOkxf33JdvmITQpksDWKw8"+System.lineSeparator()
-	 	+"zDKCXnX9HENHLC2tQC2hL8416yK8rr0F+XUpNZFDiR5yEUVJmQtDEIx+jDGoukTY"+System.lineSeparator()
-	 	+"70Kt6xf2XlgE/bT8GnEAq9rtUPDxJJixP+KDaUqzBKCD2M7c9A71PF1ozkqcUhIe"+System.lineSeparator()
-	 	+"JZdeWtwSDjae9T0Q8wd3+7rCj5BHQ8m4/S6904RK0HsqU7jplnrATQkTZZmO71FU"+System.lineSeparator()
-	 	+"6Otl8NwDicIOF1x4PQgXTDOD4j5EapljtvNcHTv5OiJrppXPY+51"+System.lineSeparator()
-		+"Private-Lines: 14"+System.lineSeparator()
-		+"AAABAGhNyrQZgw0pRHVIo53qEynX676cbBKAhNN3QzvaGAg/FkIqGlS0jm2C+0KR"+System.lineSeparator()
-		+"9nwhABt561SMWJH0HHGHYgiBMjmx+apL0iJIfWf5803SHsDGZ/14qAF7gSBCo871"+System.lineSeparator()
-		+"Fvtdz10SugY12TQ3hDB8U4FZLQwX+EL8S1h8YdfEQhSlu5lcvdJdM00hbVylO/eD"+System.lineSeparator()
-		+"Ym0kKcyrcamZtHgTxUFa/QCw1RmpUA/whpkeIHg6Z0iM+Wtihi97zsvMAq7irL74"+System.lineSeparator()
-		+"8TqfsqhWnQys6LT0rS4ogq5JL+meBgAPOn0UhWd9VYwzazzhXP8fMESzidPhkh69"+System.lineSeparator()
-		+"drEzVmXtL0EHjBfHEIwKxByn7xkAAACBAOEisHMFj5ozIdYmodUrgPG5XLrU73/C"+System.lineSeparator()
-		+"8/0BKnRaj4Fi1hdnwwnXgMbltOdYmh1bYWTv55qXvRXRq8uMRkZtOj6NvzBBiHGF"+System.lineSeparator()
-		+"8sYohlAQrTUe4JwqcRPdstklwDtCMYnMRMB4vvaFMm+n4VxioIeIcOSL0vBIfV/E"+System.lineSeparator()
-		+"/d8xPi2PEqCTAAAAgQDge0ax5R5NTU43m1lvfV924E7ukWzAHZdR3Y68uWKh3sTl"+System.lineSeparator()
-		+"EZ2IWnAEGCtfKZQxeDPDuafAyfRJugcKESydpoOVIoI5T9DHMiDtAy4InEH13aZV"+System.lineSeparator()
-		+"HiXvVxMyUUux6t77veWapoLa4ee5i/Hx/qyJRoK4yDC+4R9TswlZm1qNEveB1wAA"+System.lineSeparator()
-		+"AIEA4QKsjSBDWpbwnlDy2fQS/M/ohHvyCLkGCNn70vvuiuvscVtOQBtvYBOBU5nQ"+System.lineSeparator()
-		+"aNKIfjunrPZ3Asc0Jc3zXOKt+iXULRWuW1NRDh6FX/X7zb0+groV/AgtWvh9Iup3"+System.lineSeparator()
-		+"8GTl7Q35hubk/GSCKosY+wWuN0Qt34pxB/TpGHeF98W67bE="+System.lineSeparator()
-		+"Private-MAC: cdb63829162a8a6bd5024f0463866472474c0383"+System.lineSeparator();
-
-		String pubkey = "---- BEGIN SSH2 PUBLIC KEY ----"+System.lineSeparator()
-		+ "Comment: \"imported-openssh-key\""+System.lineSeparator()
-		+ "AAAAB3NzaC1yc2EAAAADAQABAAABAQDFasQ7Wttz2u1ffCtnFvi1qT599ArvIgTZ"+System.lineSeparator()
-		+ "kgIBIjNTpCJ91iDJrkDehNGYrjGUf26162DxuoLoZBBOkxf33JdvmITQpksDWKw8"+System.lineSeparator()
-		+ "zDKCXnX9HENHLC2tQC2hL8416yK8rr0F+XUpNZFDiR5yEUVJmQtDEIx+jDGoukTY"+System.lineSeparator()
-		+ "70Kt6xf2XlgE/bT8GnEAq9rtUPDxJJixP+KDaUqzBKCD2M7c9A71PF1ozkqcUhIe"+System.lineSeparator()
-		+ "JZdeWtwSDjae9T0Q8wd3+7rCj5BHQ8m4/S6904RK0HsqU7jplnrATQkTZZmO71FU"+System.lineSeparator()
-		+ "6Otl8NwDicIOF1x4PQgXTDOD4j5EapljtvNcHTv5OiJrppXPY+51"+System.lineSeparator()
-		+ "---- END SSH2 PUBLIC KEY ----"+System.lineSeparator();
+		String ppkey = "-----BEGIN RSA PRIVATE KEY-----" + System.lineSeparator()
+		+"MIIEpAIBAAKCAQEAxWrEO1rbc9rtX3wrZxb4tak+ffQK7yIE2ZICASIzU6QifdYg" + System.lineSeparator()
+		+"ya5A3oTRmK4xlH9utetg8bqC6GQQTpMX99yXb5iE0KZLA1isPMwygl51/RxDRywt" + System.lineSeparator()
+		+"rUAtoS/ONesivK69Bfl1KTWRQ4kechFFSZkLQxCMfowxqLpE2O9CresX9l5YBP20" + System.lineSeparator()
+		+"/BpxAKva7VDw8SSYsT/ig2lKswSgg9jO3PQO9TxdaM5KnFISHiWXXlrcEg42nvU9" + System.lineSeparator()
+		+"EPMHd/u6wo+QR0PJuP0uvdOEStB7KlO46ZZ6wE0JE2WZju9RVOjrZfDcA4nCDhdc" + System.lineSeparator()
+		+"eD0IF0wzg+I+RGqZY7bzXB07+Toia6aVz2PudQIDAQABAoIBAGhNyrQZgw0pRHVI" + System.lineSeparator()
+		+"o53qEynX676cbBKAhNN3QzvaGAg/FkIqGlS0jm2C+0KR9nwhABt561SMWJH0HHGH" + System.lineSeparator()
+		+"YgiBMjmx+apL0iJIfWf5803SHsDGZ/14qAF7gSBCo871Fvtdz10SugY12TQ3hDB8" + System.lineSeparator()
+		+"U4FZLQwX+EL8S1h8YdfEQhSlu5lcvdJdM00hbVylO/eDYm0kKcyrcamZtHgTxUFa" + System.lineSeparator()
+		+"/QCw1RmpUA/whpkeIHg6Z0iM+Wtihi97zsvMAq7irL748TqfsqhWnQys6LT0rS4o" + System.lineSeparator()
+		+"gq5JL+meBgAPOn0UhWd9VYwzazzhXP8fMESzidPhkh69drEzVmXtL0EHjBfHEIwK" + System.lineSeparator()
+		+"xByn7xkCgYEA4SKwcwWPmjMh1iah1SuA8blcutTvf8Lz/QEqdFqPgWLWF2fDCdeA" + System.lineSeparator()
+		+"xuW051iaHVthZO/nmpe9FdGry4xGRm06Po2/MEGIcYXyxiiGUBCtNR7gnCpxE92y" + System.lineSeparator()
+		+"2SXAO0IxicxEwHi+9oUyb6fhXGKgh4hw5IvS8Eh9X8T93zE+LY8SoJMCgYEA4HtG" + System.lineSeparator()
+		+"seUeTU1ON5tZb31fduBO7pFswB2XUd2OvLliod7E5RGdiFpwBBgrXymUMXgzw7mn" + System.lineSeparator()
+		+"wMn0SboHChEsnaaDlSKCOU/QxzIg7QMuCJxB9d2mVR4l71cTMlFLsere+73lmqaC" + System.lineSeparator()
+		+"2uHnuYvx8f6siUaCuMgwvuEfU7MJWZtajRL3gdcCgYBeMOA3zzzMW9YtPY55nDDf" + System.lineSeparator()
+		+"cRjdxdbJ0iu4T3OOqJDfphVCR5QvGu1yyYoNPGGGJMQzsbdpU1C1vzor9+0y6+Hx" + System.lineSeparator()
+		+"Z+Z0bwaB0HPI+g1vk/qTfe6lB5C1qgx4kzXA1SnaqA6fpCTpCMMYOdmsiEr3SVtK" + System.lineSeparator()
+		+"E0HWa82gcs9wQK7t6qz1ZwKBgQCgvaVRnQ6lq8VmbAcOnmfNZ7Edg2Sr7IR+Snf7" + System.lineSeparator()
+		+"C4RlBG9Y19RF3vx28hecfNlw0vG+JSLKGdKjOGHyA3o/KQzvrVYyU8Tb3jlVfgFo" + System.lineSeparator()
+		+"iPtyYtTH/l6Lk35beXsKW3RwLvpKUxFASqLzahJFhmdlpOfWCQNeqzUTahA36dZd" + System.lineSeparator()
+		+"TkeM4QKBgQDhAqyNIENalvCeUPLZ9BL8z+iEe/IIuQYI2fvS++6K6+xxW05AG29g" + System.lineSeparator()
+		+"E4FTmdBo0oh+O6es9ncCxzQlzfNc4q36JdQtFa5bU1EOHoVf9fvNvT6CuhX8CC1a" + System.lineSeparator()
+		+"+H0i6nfwZOXtDfmG5uT8ZIIqixj7Ba43RC3finEH9OkYd4X3xbrtsQ==" + System.lineSeparator()
+		+"-----END RSA PRIVATE KEY-----" + System.lineSeparator();
 
 		try{
 			ppk = File.createTempFile("sgxinstancekey",".ppk");
 			FileOutputStream fos = new FileOutputStream(ppk.getAbsolutePath());
 			fos.write(ppkey.getBytes());
-			fos.close();
-
-			pub = File.createTempFile("sgxinstancekey",".pub");
-			fos = new FileOutputStream(pub.getAbsolutePath());
-			fos.write(pubkey.getBytes());
 			fos.close();
 		}
 		catch(Exception e){

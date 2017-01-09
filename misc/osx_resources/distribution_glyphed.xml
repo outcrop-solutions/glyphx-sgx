@@ -14,5 +14,5 @@
     <choice id="com.synglyphx.GlyphEd" visible="false">
         <pkg-ref id="com.synglyphx.GlyphEd"/>
     </choice>
-    <pkg-ref id="com.synglyphx.GlyphEd" version="0" onConclusion="none">GlyphEdGV.component.pkg</pkg-ref>
+    <pkg-ref id="com.synglyphx.GlyphEd" version="0" onConclusion="none">GlyphEd.component.pkg</pkg-ref>
 </installer-gui-script>

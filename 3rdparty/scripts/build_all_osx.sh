@@ -52,4 +52,6 @@ cd ../../../3rdparty/scripts
 ./setup_osx.sh -ebirj8
 cd ../../bin/OSX64/Release
 cp ../../../misc/osx_resources/distribution_glyphed.xml .
+cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement_glyphed.rtf LICENSE.rtf
+cp ../../../misc/osx_resources/readme_ge.txt README.txt
 productbuild --distribution distribution_glyphed.xml --package-path . --resources . GlyphEd.pkg

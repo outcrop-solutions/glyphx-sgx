@@ -189,6 +189,7 @@ namespace SynGlyphX
 		if ( initialized )
 		{
 			setFilteredResults( IndexSet() );
+			scene->clearFilter();
 			scene->clear();
 			group_manager->clear();
 			base_images->clear();
@@ -1085,6 +1086,7 @@ namespace SynGlyphX
 	void SceneViewer::setFilteredResults( const IndexSet& results )
 	{
 		scene->clearFilter();
+		scene->setFilterApplied();
 		for ( auto index : results )
 			scene->setPassedFilter( index );
 		if ( scene->getFilterMode() == FilteredResultsDisplayMode::HideUnfiltered )

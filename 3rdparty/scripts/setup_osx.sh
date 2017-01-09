@@ -183,7 +183,11 @@ if [ $app = GlyphViewer ] || [ $app = DataMapper ] || [ $app = GlyphEd ]; then
 fi
 
 echo Copying icon into app bundle...
-cp ../../Misc/osx_resources/synglyphx_x.icns ../../bin/OSX64/$build/$app.app/Contents/Resources
+if [ $app = GlyphEd ]; then
+	cp ../../Misc/osx_resources/glyphed.icns ../../bin/OSX64/$build/$app.app/Contents/Resources/synglyphx_x.icns
+else
+	cp ../../Misc/osx_resources/synglyphx_x.icns ../../bin/OSX64/$build/$app.app/Contents/Resources
+fi
 
 # Todo: shouldn't be needed. Figure out why this is deployed here in the first place...
 echo Cleaning up executable path...
@@ -195,13 +199,14 @@ if [ $do_install = 1 ]; then
 #	cp -R $app.app ~/Desktop
 	echo Creating OSX package...
 	cd ../../bin/OSX64/$build
-	install_path=/Applications/SynGlyphX/$app.app
+	if [ $app = GlyphEd ]; then
+		install_path=/Applications/GlyphEd.app
+	else
+		install_path=/Applications/SynGlyphX/$app.app
+	fi
 	pkg_name=$app.component.pkg
 	app_id=com.synglyphx.$app
 	pkgbuild --root $app.app --identifier $app_id --install-location $install_path $pkg_name >/dev/null 2>/dev/null
-	if [ $glyphed = 1 ] && [ $app = GlyphViewer ]; then
-		rmdir ./GlyphViewer.app/Contents/MacOS/glyphed
-	fi
 fi
 
 echo Done!

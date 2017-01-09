@@ -6,7 +6,8 @@ FilteringManager::FilteringManager(SynGlyphX::DataTransformModel* DataTransformM
 	: QObject(parent),
 	m_DataTransformModel(DataTransformModel),
 	m_sourceDataCache(sourceDataCache),
-	m_sceneSelectionModel(sceneSelectionModel)
+	m_sceneSelectionModel(sceneSelectionModel),
+	m_timeFilterEnabled(false)
 {
 	QObject::connect(m_sceneSelectionModel->model(), &QAbstractItemModel::modelReset, this, &FilteringManager::OnSceneModelReset);
 	//QObject::connect(m_sceneSelectionModel, &QItemSelectionModel::selectionChanged, this, &FilteringManager::OnSceneSelectionChanged);
@@ -187,6 +188,12 @@ void FilteringManager::SetFilterIndexesForTable(const QString& table, const SynG
 	UpdateGlyphIndexedFilterResults();
 }
 
+void FilteringManager::SetTimeFilterIndexesForTable(const QString& table, const SynGlyphX::IndexSet& filterSet)
+{
+	m_filterResultsPerTableFromTimeFilter[table] = filterSet;
+	UpdateGlyphIndexedFilterResults();
+}
+
 void FilteringManager::Clear() {
 
 	m_filterResultsByTable.clear();
@@ -286,7 +293,22 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 		if (m_filterResultsByTable.count(tableRange.key()) > 0) {
 		
 			for (auto row : m_filterResultsByTable.at(tableRange.key())) {
+				bool time_filter_passed = true;
+				if (m_timeFilterEnabled)
+				{
+					auto& time_filter_results = m_filterResultsPerTableFromTimeFilter.find(tableRange.key());
+					if (time_filter_results->second.find(row) == time_filter_results->second.end())
+						time_filter_passed = false;
+				}
 
+				if (time_filter_passed)
+					newfilterResultsIndexedToGlyphs.insert(row + min);
+			}
+		}
+		else if (m_timeFilterEnabled)
+		{
+			// time filtering only
+			for (auto row : m_filterResultsPerTableFromTimeFilter.at(tableRange.key())) {
 				newfilterResultsIndexedToGlyphs.insert(row + min);
 			}
 		}
@@ -300,7 +322,7 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 		}*/
 	}
 
-	if (newfilterResultsIndexedToGlyphs != m_filterResultsIndexedToGlyphs) {
+	if (newfilterResultsIndexedToGlyphs != m_filterResultsIndexedToGlyphs || m_timeFilterEnabled) {
 
 		m_filterResultsIndexedToGlyphs = newfilterResultsIndexedToGlyphs;
 		emit FilterResultsChanged(m_filterResultsIndexedToGlyphs);
@@ -351,3 +373,14 @@ boost::optional<std::pair<unsigned int, unsigned long>> FilteringManager::GetGly
 
 	return boost::none;
 }
+
+void FilteringManager::EnableTimeFilter(bool val)
+{
+	if (val != m_timeFilterEnabled)
+	{
+		m_timeFilterEnabled = val;
+		if(!val)
+			UpdateGlyphIndexedFilterResults();
+	}
+}
+

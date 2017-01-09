@@ -48,6 +48,7 @@ public:
 	bool GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
 	void GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters);
 	void SetFilterIndexesForTable(const QString& table, const SynGlyphX::IndexSet& filterSet, bool updateFocus = false);
+	void SetTimeFilterIndexesForTable(const QString& table, const SynGlyphX::IndexSet& filterSet);
 	
 	void ClearAllFilters();
 	void ClearFiltersForTable(const QString& table, bool updateFocus = false);
@@ -64,6 +65,8 @@ public:
 
 	void SetElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
 	std::vector<std::wstring> GetElasticListFields(QString sourceDataTableName);
+
+	void EnableTimeFilter(bool val);
 
 signals:
 	//FilterResultsChanged emits an index set for all glyph indexes that need to be shown, including for tables that don't have any 
@@ -92,6 +95,9 @@ private:
 	//Results from loading screen filter
 	IndexSetMap m_filterResultsPerTableFromLoadingFilter;
 
+	//Results from time filter
+	IndexSetMap m_filterResultsPerTableFromTimeFilter;
+
 	TableToGlyphTemplateRangesMap m_tableToGlyphTreeRangesMap;
 	GlyphTemplateRangeToTableMap m_glyphTemplateRangeToTableMap;
 
@@ -101,6 +107,9 @@ private:
 	Table2FiltersMap m_filtersForEachTable;
 
 	std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
+
+	bool m_timeFilterEnabled;
+
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H
