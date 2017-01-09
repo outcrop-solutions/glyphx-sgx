@@ -24,7 +24,7 @@ public class LinkCreator {
 		this.dataPaths = dataPaths;
 		this.rootIds = rootIds;
 		this.temps = temps;
-		System.out.println("Number of data sources: "+String.valueOf(dataPaths.size()));
+		//System.out.println("Number of data sources: "+String.valueOf(dataPaths.size()));
 	}
 
 	public void begin(){
