@@ -215,6 +215,7 @@ public class FileSyncer {
     				scpFrom(syncedDirPath+needToSync.get(i).getFormattedPath(), needToSync.get(i).getRemotePath());
     				try{
     					if(needToSync.get(i).getFileType() != 2 && needToSync.get(i).getFileType() != 4){
+    						UnzipUtility.delete(syncedDirPath+needToSync.get(i).getFormattedPath().split(".zip")[0]);
 				    		UnzipUtility.unzip(syncedDirPath+needToSync.get(i).getFormattedPath(), syncedDirPath+needToSync.get(i).getFormattedPath().split("/")[0],needToSync.get(i).getFileType());
 				    		UnzipUtility.delete(syncedDirPath+needToSync.get(i).getFormattedPath());
 				    	}

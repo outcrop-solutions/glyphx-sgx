@@ -47,11 +47,11 @@ public class SQLiteWriter {
 	public void writeSDTInfo(String timestamp){
 
 		try{
-			File file = new File(outDir+"/sourcedata.db");
 			Class.forName("org.sqlite.JDBC");
 			String conn_str = "jdbc:sqlite:"+outDir+"/sourcedata.db";
+			//String conn_str = "jdbc:sqlite::memory:";
 			conn = DriverManager.getConnection(conn_str);
-
+/*
 			String query = "CREATE TABLE if NOT EXISTS 'SDTInfo' (lastChanged TEXT)";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 	        boolean created = pstmt.execute();
@@ -60,7 +60,7 @@ public class SQLiteWriter {
 	        pstmt = conn.prepareStatement(query);
 	        boolean inserted = pstmt.execute();
 	        pstmt.close();
-
+*/
 		}catch(Exception e){
 	        try{
 	            e.printStackTrace(ErrorHandler.getInstance().addError());

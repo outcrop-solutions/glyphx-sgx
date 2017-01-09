@@ -63,6 +63,9 @@ public:
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
 	const SynGlyphX::DataTransformModel* GetDataTransformModel() const;
 
+	void SetElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
+	std::vector<std::wstring> GetElasticListFields(QString sourceDataTableName);
+
 	void EnableTimeFilter(bool val);
 
 signals:
@@ -102,7 +105,11 @@ private:
 	SynGlyphX::IndexSet m_filterResultsIndexedToGlyphs;
 
 	Table2FiltersMap m_filtersForEachTable;
+
+	std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
+
 	bool m_timeFilterEnabled;
+
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H

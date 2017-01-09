@@ -64,7 +64,9 @@ namespace SynGlyphX
 		timer1.print_ms_to_debug( "built octree" );
 
 		hal::debug::profile_timer timer3;
-		compute_groups();
+		if (m_useSuperimposed) {
+			compute_groups();
+		}
 		timer3.print_ms_to_debug( "computed groups" );
 
 		hal::debug::profile_timer timer4;

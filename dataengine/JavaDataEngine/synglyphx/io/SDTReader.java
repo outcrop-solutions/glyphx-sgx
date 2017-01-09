@@ -99,7 +99,7 @@ public class SDTReader {
 		}catch(InterruptedException ie){
 	        ie.printStackTrace();
 		}
-		double end = System.currentTimeMillis();
+		//double end = System.currentTimeMillis();
 		//System.out.print("Time to generate cache: ");
 		//System.out.println((end-start)/1000.00);
 	}
@@ -189,7 +189,7 @@ public class SDTReader {
 				needsFE = false;
 			}
 
-			System.out.println(roots.getLength());
+			//System.out.println(roots.getLength());
 			rootCount = 0;
 			for (int i = 0; i < roots.getLength(); i++) {
 				Node root = roots.item(i);
@@ -428,7 +428,7 @@ public class SDTReader {
 								}
 								else if(getFunction(element).equals("Percent Rank")){
 									dataPaths.get(temp.getDataSource()).setHasPercentRank();
-									System.out.println("Percent Rank found "+dataPaths.get(temp.getDataSource()).hasPercentRank());
+									//System.out.println("Percent Rank found "+dataPaths.get(temp.getDataSource()).hasPercentRank());
 									dataPaths.get(temp.getDataSource()).addPercentRankField(directMap.get(code));
 								}
 								else if(getFunction(element).equals("Grid")){
@@ -458,7 +458,7 @@ public class SDTReader {
 		NodeList start = doc.getElementsByTagName("InputFields");
 
 		for(int j=0;j<start.getLength();j++){
-			System.out.println(start.getLength());
+			//System.out.println(start.getLength());
 			Node field = start.item(j);
 			NodeList fields = field.getChildNodes();
 
@@ -536,7 +536,7 @@ public class SDTReader {
 					dataPaths.add(csv);
 					dataIds.put(csv.getID()+csv.getTable(),holder);
 					holder++;
-					System.out.println(csv.getID()+":"+csv.getTable());
+					//System.out.println(csv.getID()+":"+csv.getTable());
 					Logger.getInstance().add(csv.getID()+csv.getTable());
 				}else{
 					String id = e.getAttribute("id");
@@ -613,13 +613,15 @@ public class SDTReader {
 	private void createDataFrames() throws Exception{
 
 		for(int i=0; i < dataPaths.size();i++){
-			if(dataPaths.get(i).getType().equals("csv")){
-				reader = new CSVReader();
-				reader.createDataFrame(dataPaths.get(i).getPath());
-				dataPaths.get(i).setDataFrame(reader.getDataFrame());
-			}else{
-				//dataframe creator for JDBC
-				setupDataFrame(dataPaths.get(i));
+			if(dataPaths.get(i).getDataFrame() == null){
+				if(dataPaths.get(i).getType().equals("csv")){
+					reader = new CSVReader();
+					reader.createDataFrame(dataPaths.get(i).getPath());
+					dataPaths.get(i).setDataFrame(reader.getDataFrame());
+				}else{
+					//dataframe creator for JDBC
+					setupDataFrame(dataPaths.get(i));
+				}
 			}
 		}
 	}
@@ -637,7 +639,7 @@ public class SDTReader {
 
 	private void setupDataFrame(SourceDataInfo sdi) {
 
-		checkIfXMLAbsorbed();
+		//checkIfXMLAbsorbed();
 		try{
 			Table table = null;
 			
@@ -651,12 +653,19 @@ public class SDTReader {
 				driver.createConnection(sdi.getHost(),sdi.getUsername(),sdi.getPassword());
 			}
 	        //System.out.println(sourceData.getQuery());
+	        double st = System.currentTimeMillis();
 	        if(sdi.isMerged()){
 	        	table = new MergedTable(sdi.getQuery(), driver);
 	        }else{
 	        	table = new BasicTable(sdi.getTable(), sdi.getQuery(), driver);
 	        }
+	        double end = System.currentTimeMillis();
+			System.out.println("Connect to DB & Get Table: "+String.valueOf((end-st)/1000.00));
+
+	        double st1 = System.currentTimeMillis();
 		    sdi.setDataFrame(table.createDataFrame());
+		    double end1 = System.currentTimeMillis();
+			System.out.println("CreateDataframe: "+String.valueOf((end1-st1)/1000.00));
 
 		}catch(Exception e){
 			e.printStackTrace();

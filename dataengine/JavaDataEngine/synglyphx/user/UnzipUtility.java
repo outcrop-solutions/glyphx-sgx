@@ -56,13 +56,13 @@ public class UnzipUtility {
         bos.close();
     }
 
-    public static void delete(String zipFilePath){
+    public static void delete(String zipFilePath) throws IOException {
         File toDelete = new File(zipFilePath);
-        toDelete.delete();
+        deleteSubDir(toDelete);
+        //toDelete.delete();
     }
 
-    public static void deleteSubDir(File file)
-        throws IOException{
+    public static void deleteSubDir(File file) throws IOException{
 
         if(file.isDirectory()){
             if(file.list().length==0){

@@ -28,28 +28,37 @@ namespace SynGlyphX {
 	DataMappingDefaults::DataMappingDefaults() :
 		m_tagField(DataMappingGlyph::MappableField::Tag),
 		m_defaultTagValue(L"No Tag"),
-		m_removeWhenScaleIsZero(true)
+		m_removeWhenScaleIsZero(true),
+		m_useSuperimposedGlyphs(true)
 	{
 	}
 
 	DataMappingDefaults::DataMappingDefaults(const PropertyTree& propertyTree) :
 		m_tagField(s_tagFieldStrings.right.at(propertyTree.get<std::wstring>(L"TagFieldDefault"))),
 		m_defaultTagValue(propertyTree.get<std::wstring>(L"TagValueDefault")),
-		m_removeWhenScaleIsZero(true) {
+		m_removeWhenScaleIsZero(true),
+		m_useSuperimposedGlyphs(true)
+	{
 
 		boost::optional<const boost::property_tree::wptree&> scaleDefaultPropertyTree = propertyTree.get_child_optional(L"ScaleZeroDefault");
 		if (scaleDefaultPropertyTree.is_initialized()) {
 
 			m_removeWhenScaleIsZero = scaleDefaultPropertyTree.get().get_optional<bool>(L"<xmlattr>.remove").get_value_or(true);
 		}
+
+		boost::optional<const boost::property_tree::wptree&> superimposedPropertyTree = propertyTree.get_child_optional(L"SuperimposedGlyphs");
+		if (superimposedPropertyTree.is_initialized()) {
+
+			m_useSuperimposedGlyphs = superimposedPropertyTree.get().get_optional<bool>(L"<xmlattr>.use").get_value_or(true);
+		}
 	}
 
 	DataMappingDefaults::DataMappingDefaults(const DataMappingDefaults& defaults) :
 		m_tagField(defaults.m_tagField),
 		m_defaultTagValue(defaults.m_defaultTagValue),
-		m_removeWhenScaleIsZero(defaults.m_removeWhenScaleIsZero) {
-
-
+		m_removeWhenScaleIsZero(defaults.m_removeWhenScaleIsZero),
+		m_useSuperimposedGlyphs(defaults.m_useSuperimposedGlyphs)
+	{
 	}
 
 	DataMappingDefaults::~DataMappingDefaults()
@@ -61,6 +70,7 @@ namespace SynGlyphX {
 		m_tagField = defaults.m_tagField;
 		m_defaultTagValue = defaults.m_defaultTagValue;
 		m_removeWhenScaleIsZero = defaults.m_removeWhenScaleIsZero;
+		m_useSuperimposedGlyphs = defaults.m_useSuperimposedGlyphs;
 
 		return *this;
 	}
@@ -82,6 +92,11 @@ namespace SynGlyphX {
 			return false;
 		}
 
+		if (m_useSuperimposedGlyphs != defaults.m_useSuperimposedGlyphs){
+
+			return false;
+		}
+
 		return true;
 	}
 
@@ -95,6 +110,7 @@ namespace SynGlyphX {
 		m_tagField = DataMappingGlyph::MappableField::Tag;
 		m_defaultTagValue = L"No Tag";
 		m_removeWhenScaleIsZero = true;
+		m_useSuperimposedGlyphs = true;
 	}
 
 	void DataMappingDefaults::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
@@ -105,6 +121,9 @@ namespace SynGlyphX {
 
 		PropertyTree& scaleDefaultPropertyTree = propertyTree.add(L"ScaleZeroDefault", L"");
 		scaleDefaultPropertyTree.put(L"<xmlattr>.remove", m_removeWhenScaleIsZero);
+
+		PropertyTree& superimposedPropertyTree = propertyTree.add(L"SuperimposedGlyphs", L"");
+		superimposedPropertyTree.put(L"<xmlattr>.use", m_useSuperimposedGlyphs);
 	}
 
 	void DataMappingDefaults::SetTagField(DataMappingGlyph::MappableField tagField) {
@@ -140,6 +159,16 @@ namespace SynGlyphX {
 	bool DataMappingDefaults::GetRemoveWhenScaleIsZero() const {
 
 		return m_removeWhenScaleIsZero;
+	}
+
+	void DataMappingDefaults::SetUseSuperimposedGlyphs(bool useSuperimposedGlyphs) {
+
+		m_useSuperimposedGlyphs = useSuperimposedGlyphs;
+	}
+
+	bool DataMappingDefaults::GetUseSuperimposedGlyphs() const {
+
+		return m_useSuperimposedGlyphs;
 	}
 
 } //namespace SynGlyphX

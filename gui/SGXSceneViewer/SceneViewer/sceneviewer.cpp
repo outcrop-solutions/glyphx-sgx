@@ -148,7 +148,7 @@ namespace SynGlyphX
 			hal::device::shutdown();
 	}
 
-	void SceneViewer::loadScene( const char* sceneFile, const char* countFile, std::vector<std::string> baseImages )
+	void SceneViewer::loadScene(const char* sceneFile, const char* countFile, std::vector<std::string> baseImages, bool useSuperimposed)
 	{
 		hal::debug::profile_timer timer;
 
@@ -169,7 +169,8 @@ namespace SynGlyphX
 		}
 
 		SceneReader r;
-		r.read( sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids );
+		scene->setUseSuperimposed(useSuperimposed);
+		r.read( sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids);
 
 		resetCamera();
 

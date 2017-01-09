@@ -111,7 +111,7 @@ namespace SynGlyphX
 		HUDAxesLocation hudAxesLocation() { return hud_axes_location; }
 
 		void clearScene();
-		void loadScene( const char* sceneFile, const char* countFile, std::vector<std::string> baseImages );
+		void loadScene( const char* sceneFile, const char* countFile, std::vector<std::string> baseImages, bool useSuperimposed = true);
 
 		void setBackgroundColor( const glm::vec4& color ) { background_color = color; }
 

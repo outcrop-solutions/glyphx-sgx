@@ -46,6 +46,7 @@ public:
 	bool GetLoadSubsetVisualization() const;
 	void SetLoadSubsetVisualizationInNewInstance(bool loadSubsetVisualizationInNewInstance);
 	bool GetLoadSubsetVisualizationInNewInstance() const;
+	void SetElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap);
 
 signals:
 	void LoadSubsetVisualization(QString filename);
