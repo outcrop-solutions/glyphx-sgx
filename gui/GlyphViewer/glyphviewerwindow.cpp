@@ -536,6 +536,7 @@ void GlyphViewerWindow::RefreshVisualization() {
 
 void GlyphViewerWindow::CloseVisualization() {
 
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_pseudoTimeFilterWidget->Disable();
 	ClearAllData();
 	EnableLoadedVisualizationDependentActions(false);
@@ -559,6 +560,8 @@ void GlyphViewerWindow::CloseVisualization() {
 	m_viewer->clearScene();
 	if (m_showHomePage || SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
 		centerWidgetsContainer->setCurrentIndex(0);
+
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 bool GlyphViewerWindow::IsUserLoggedIn() {
@@ -623,7 +626,6 @@ void GlyphViewerWindow::Logout(){
 
 void GlyphViewerWindow::ClearAllData() {
 
-	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	m_glyphForestSelectionModel->ClearAll();
 	m_sourceDataCache->Close();
 	m_glyphForestModel->ClearAndReset();
@@ -631,7 +633,6 @@ void GlyphViewerWindow::ClearAllData() {
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
 	m_hudGenerationInfo.clear();
-	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {

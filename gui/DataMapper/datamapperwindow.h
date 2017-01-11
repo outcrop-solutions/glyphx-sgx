@@ -88,6 +88,7 @@ private slots:
 	void AddLegend();
 	void ChangeFrontEndFilters();
 	void OnFrontEndFiltersDialogAccepted();
+	void ChangeElasticListFilters();
 
 private:
     void CreateMenus();

@@ -179,6 +179,8 @@ namespace SynGlyphX {
 		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_dataMapping->SetFrontEndFilters(filters); }
 		void SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters);
 
+		void SaveElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticFields) { m_dataMapping->SaveElasticListFields(elasticFields); }
+
 	private:
 		void Clear();
 		QVariant GetGlyphData(const QModelIndex& index) const;
