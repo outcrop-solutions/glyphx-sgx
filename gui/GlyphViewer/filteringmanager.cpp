@@ -331,6 +331,9 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 
 std::vector<std::wstring> FilteringManager::GetElasticListFields(QString sourceDataTableName) {
 
+	if (sourceDataTableName.toStdString().find(":") == std::string::npos) {
+		sourceDataTableName += ":OnlyTable";
+	}
 	if (m_elasticListMap.find(sourceDataTableName.toStdWString()) == m_elasticListMap.end()){
 		std::vector<std::wstring> temp;
 		return temp;

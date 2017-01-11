@@ -18,7 +18,7 @@ namespace SynGlyphX {
 		QVBoxLayout* layout = new QVBoxLayout(this);
 		layout->setDirection(QBoxLayout::TopToBottom);
 
-		QLabel* welcomeLabel = new QLabel(tr("Enter your GlyphEd Username and Password"), this);
+		QLabel* welcomeLabel = new QLabel(tr("Enter your Username and Password"), this);
 		welcomeLabel->setAlignment(Qt::AlignCenter);
 		welcomeLabel->setWordWrap(true);
 		welcomeLabel->setTextFormat(Qt::RichText);

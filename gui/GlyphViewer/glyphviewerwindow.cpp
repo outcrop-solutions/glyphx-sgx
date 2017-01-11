@@ -233,11 +233,11 @@ void GlyphViewerWindow::CreateMenus() {
 
 	QAction* openVisAction = CreateMenuAction(m_fileMenu, tr("Open Visualization"), QKeySequence::Open);
 	QObject::connect(openVisAction, &QAction::triggered, this, &GlyphViewerWindow::OpenVisualisation);
-	
+	/*
 	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"));
 	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
 	m_fileMenu->addSeparator();
-
+	*/
 	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
 	QIcon refreshVizIcon;
 	QPixmap refresh(":SGXGUI/Resources/Icons/icon-refresh.png");
@@ -387,7 +387,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
 
-	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 
 		m_glyphPropertiesWidgetContainer = new GlyphPropertiesWidgetsContainer(m_glyphForestModel, m_glyphForestSelectionModel, this);
 
@@ -566,7 +566,7 @@ void GlyphViewerWindow::CloseVisualization() {
 
 bool GlyphViewerWindow::IsUserLoggedIn() {
 
-	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 		return true;
 	}
 

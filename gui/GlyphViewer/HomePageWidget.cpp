@@ -306,7 +306,7 @@ void HomePageWidget::CreateDashboardWidget() {
 
 	m_mainDashboadLayout->addWidget(welcomeWidget);
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() || SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 		loggedOn = m_mainWindow->IsUserLoggedIn();
 	}
 	CreateLowerHalfDashboardWidget();
@@ -323,7 +323,7 @@ void HomePageWidget::SwitchDashboardLayout() {
 		loggedOn = true;
 		SetCustomerLogo();
 		m_stackedDashboardLayout->setCurrentIndex(0);
-		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() || SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 			m_mainWindow->setMinimumWidth(1200);
 			m_mainWindow->setMinimumHeight(700);
 		}
@@ -384,7 +384,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 	//QString customerLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/customer.png");
 	//QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/rightupper.png");
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() || SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 		SetCustomerLogo();
 	}
 
@@ -396,7 +396,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 
 	//m_allViewsFilteringWidget->Reset(m_dataEngineConnection);
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() || SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 		QWidget* loggedOutWidget = new QWidget(m_dashboardWidget);
 		QGridLayout* loggedOutLayout = new QGridLayout(loggedOutWidget);
 		loggedOutLayout->setContentsMargins(0, 0, 0, 0);
@@ -440,32 +440,35 @@ void HomePageWidget::SetCustomerLogo() {
 
 QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() || SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 
 		QLabel* lowerRightLabel = new QLabel(m_dashboardWidget);
 		lowerRightLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		lowerRightLabel->setLineWidth(2);
 		lowerRightLabel->setMidLineWidth(3);
-		//lowerRightLabel->setMinimumWidth(550);
 		lowerRightLabel->setWordWrap(true);
 		lowerRightLabel->setTextFormat(Qt::RichText);
 		lowerRightLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 		lowerRightLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 		lowerRightLabel->setOpenExternalLinks(true);
 		lowerRightLabel->setStyleSheet("font-size: 10pt; background-color: white; padding: 10px;");
-		/*
-		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd\u2122 is data visualization software designed to help the Enrollment Management "
-			L"Office more quickly make sense of all the available data.  This is the 1.0 release of GlyphEd – we welcome your feedback and "
-			L"suggestions as we work to enhance the tool.</p>"
-			L"<p>To learn more, share feedback, or just ask questions, please feel free to contact Mark Sloan at 703.507.9788, <a href=\"mailto:support@GlyphEd.co\">support@GlyphEd.co</a></p>"));
-		*/
-		lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122.  GlyphEd's Enrollment Management GlyphKIT\u2122 is data visualization software designed "
-			L"to help the Enrollment Management Office benefit from the breadth and depth of available Enrollment Management data. "
-			L"We welcome your interest and input on product direction.</p>"
-			L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@GlyphEd.co\">Support@GlyphEd.co</a></p>"
-			L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a></p>"
-			L"<p>If you prefer to call, we can be reached at:  571.733.9469 during normal business hours, Eastern Time.</p>"));
 
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+
+			lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphEd\u2122. GlyphEd's Enrollment Management GlyphKIT\u2122 is data visualization software designed "
+				L"to help the Enrollment Management Office benefit from the breadth and depth of available Enrollment Management data. "
+				L"We welcome your interest and input on product direction.</p>"
+				L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@GlyphEd.co\">Support@GlyphEd.co</a></p>"
+				L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a></p>"
+				L"<p>If you prefer to call, we can be reached at:  571.733.9469 during normal business hours, Eastern Time.</p>"));
+		}
+		else{
+			lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphViewer. "
+				L"We welcome your interest and input on product direction.</p>"
+				//L"<p>For Help & Support, please contact us at:  <a href=\"mailto:info@synglyphx.com\">Info@SynGlyphX.com</a></p>"
+				L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a></p>"
+				L"<p>If you prefer to call, we can be reached at:  571.733.9469 during normal business hours, Eastern Time.</p>"));
+		}
 		return lowerRightLabel;
 	}
 	else {

@@ -77,9 +77,9 @@ int main(int argc, char *argv[])
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
-		QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
-		commonDataDir.mkdir("GlyphEd");
 	}
+	QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
+	commonDataDir.mkdir("GlyphEd");
 
 	//qInstallMessageHandler(myMessageHandler);
 

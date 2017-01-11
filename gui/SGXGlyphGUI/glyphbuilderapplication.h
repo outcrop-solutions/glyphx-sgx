@@ -46,6 +46,7 @@ namespace SynGlyphX {
 		static bool AreInternalSGXFeaturesEnabled();
 
 		static bool IsGlyphEd();
+		static bool AWSEnabled() { return true; }
 
 	protected:
 		static QMap<LogoType, QString> s_logoLocations;

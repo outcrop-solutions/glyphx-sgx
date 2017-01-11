@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 #include "userdefinedbaseimageproperties.h"
 #include "Link.h"
 #include "Alias.h"
@@ -1220,6 +1221,15 @@ namespace SynGlyphX {
 				subsetMapping->m_links.push_back(newLink);
 			}
 		}
+
+		std::map<std::wstring, std::vector<std::wstring>> newElasticListMap;
+		for (const auto& inputTable : inputTableToFileMap) {
+			std::wstring tableName = boost::lexical_cast<std::wstring>(inputTable.first.GetDatasourceID()) + L":" + inputTable.first.GetTable();
+			if (m_elasticListMap.find(tableName) != m_elasticListMap.end()){
+				newElasticListMap[boost::lexical_cast<std::wstring>(table2DatasourceIDMap.at(inputTable.first)) + L":OnlyTable"] = m_elasticListMap.at(tableName);
+			}
+		}
+		subsetMapping->SaveElasticListFields(newElasticListMap);
 
 		return subsetMapping;
 	}
