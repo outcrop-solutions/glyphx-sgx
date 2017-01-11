@@ -185,6 +185,7 @@ namespace SynGlyphX {
 		std::wstring GetFormattedName(const boost::uuids::uuid& datasourceID, const std::wstring& table) const;
 
 		std::map<std::wstring, std::vector<std::wstring>> GetElasticListFields() const { return m_elasticListMap; }
+		void SaveElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
 
     protected:
 		void CopyInputBindingsForSubsetMapping(DataMappingGlyphGraph::SharedPtr newGlyphGraph, 

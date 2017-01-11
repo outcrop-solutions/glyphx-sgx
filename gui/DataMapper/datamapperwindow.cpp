@@ -45,6 +45,9 @@
 #include <QtCore/QStandardPaths>
 #include "FilterSetupWidget.h"
 #include "ProjectEditDialog.h"
+#include "ElasticListSetupDialog.h"
+#include "datastatsmodel.h"
+#include "inputfield.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -236,6 +239,9 @@ void DataMapperWindow::CreateMenus() {
 
 	QAction* filterSetupAction = m_datasourceMenu->addAction(tr("Setup Filters"));
 	QObject::connect(filterSetupAction, &QAction::triggered, this, &DataMapperWindow::ChangeFrontEndFilters);
+
+	QAction* elasticSetupAction = m_datasourceMenu->addAction(tr("Setup Elastic Lists"));
+	QObject::connect(elasticSetupAction, &QAction::triggered, this, &DataMapperWindow::ChangeElasticListFilters);
 
 	m_datasourceMenu->addSeparator();
 
@@ -1173,4 +1179,31 @@ void DataMapperWindow::OnFrontEndFiltersDialogAccepted() {
 	FilterSetupWidget* filterSetupWidget = dynamic_cast<FilterSetupWidget*>(m_frontEndFiltersSetupDialog->GetWidget());
 	m_dataTransformModel->SetFrontEndFiltersUndoRedo(filterSetupWidget->GetFilters());
 	DMGlobal::Services()->SetModified();
+}
+
+void DataMapperWindow::ChangeElasticListFilters() {
+
+	std::map<std::wstring, std::vector<std::wstring>> elasticFields = m_dataTransformModel->GetDataMapping()->GetElasticListFields();
+	std::map<std::wstring, std::vector<std::wstring>> availableFields;
+	std::map<std::wstring, std::wstring> formattedNames;
+	
+	for (const auto& table : m_dataTransformModel->GetTableStatsMap()){
+
+		std::wstring formattedName = m_dataTransformModel->GetDataMapping()->GetFormattedName(table.first.GetDatasourceID(), table.first.GetTable());
+		std::wstring tableName = boost::lexical_cast<std::wstring>(table.first.GetDatasourceID()) + L":" + table.first.GetTable();
+		formattedNames[tableName] = formattedName;
+		std::vector<std::wstring> fields;
+		for (const auto& field : table.second){
+			fields.push_back(field.at(0).toStdWString());
+		}
+		availableFields[tableName] = fields;
+	}
+	
+	SynGlyphX::ElasticListSetupDialog elsd = SynGlyphX::ElasticListSetupDialog(this);
+	elsd.SetFormattedNames(formattedNames);
+	elsd.PopulateTabs(elasticFields, availableFields);
+
+	if (elsd.exec() == QDialog::Accepted) {
+		m_dataTransformModel->SaveElasticListFields(elsd.SaveElasticListSelections());
+	}
 }
