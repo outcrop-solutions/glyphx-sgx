@@ -33,14 +33,14 @@ namespace SynGlyphX {
 
 	void ElasticListSetupDialog::PopulateTabs(std::map<std::wstring, std::vector<std::wstring>> elastic, std::map<std::wstring, std::vector<std::wstring>> available){
 
-		for (auto table : available){
+		for (const auto& table : available){
 			ElasticListSetupTab* tab = new ElasticListSetupTab(table.first);
 			std::vector<std::wstring> availableFields;
 			if (elastic.find(table.first) == elastic.end()){
 				std::vector<std::wstring> empty;
 				elastic[table.first] = empty;
 			}
-			for (auto field : available[table.first]){
+			for (const auto& field : table.second){
 				if (std::find(elastic[table.first].begin(), elastic[table.first].end(), field) == elastic[table.first].end()){
 					availableFields.push_back(field);
 				}
@@ -57,7 +57,7 @@ namespace SynGlyphX {
 	std::map<std::wstring, std::vector<std::wstring>> ElasticListSetupDialog::SaveElasticListSelections(){
 		
 		std::map<std::wstring, std::vector<std::wstring>> toReturn;
-		for (auto& tab : m_elasticTabs){
+		for (const auto& tab : m_elasticTabs){
 			toReturn[tab.first] = tab.second->GetElasticList();
 		}
 		return toReturn;

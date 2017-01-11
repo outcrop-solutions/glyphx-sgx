@@ -63,7 +63,7 @@ namespace SynGlyphX {
 
 	void ElasticListSetupTab::PopulateAvailableFields(std::vector<std::wstring> available){
 
-		for (auto field : available){
+		for (const auto& field : available){
 			QListWidgetItem * item = new QListWidgetItem(QString::fromStdWString(field));
 			m_availableFields->addItem(item);
 		}
@@ -71,7 +71,7 @@ namespace SynGlyphX {
 
 	void ElasticListSetupTab::PopulateElasticList(std::vector<std::wstring> elastic){
 
-		for (auto field : elastic){
+		for (const auto& field : elastic){
 			QListWidgetItem * item = new QListWidgetItem(QString::fromStdWString(field));
 			m_elasticList->addItem(item);
 		}
