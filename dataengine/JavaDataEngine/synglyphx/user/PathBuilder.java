@@ -224,13 +224,14 @@ public class PathBuilder {
 
 	private File findFile(File base, String toFind){
 
+		String toFind_suffix = toFind.replace('\\', '/').split(base.getName())[1];
 		if(base.isDirectory()){
 			File[] base_files = base.listFiles();
 			for(File file : base_files){
 				if(file.isDirectory()){
-					findSDT(file, sdtFiles);
+					findFile(file, toFind);
 				}
-				else if(file.getName().equals(toFind)){
+				else if(file.getAbsolutePath().replace('\\','/').endsWith(toFind_suffix)){
 					return file;
 				}
 			}
