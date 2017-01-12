@@ -239,13 +239,17 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
 	m_fileMenu->addSeparator();
 	*/
-	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
-	QIcon refreshVizIcon;
-	QPixmap refresh(":SGXGUI/Resources/Icons/icon-refresh.png");
-	refreshVizIcon.addPixmap(refresh.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	refreshVisualizationAction->setIcon( refreshVizIcon );
-	QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
-	m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
+	QAction* refreshVisualizationAction = nullptr;
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
+	{
+		refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
+		QIcon refreshVizIcon;
+		QPixmap refresh(":SGXGUI/Resources/Icons/icon-refresh.png");
+		refreshVizIcon.addPixmap(refresh.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+		refreshVisualizationAction->setIcon(refreshVizIcon);
+		QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
+		m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
+	}
 
 	m_fileMenu->addSeparator();
 
@@ -260,7 +264,7 @@ void GlyphViewerWindow::CreateMenus() {
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
 	m_fileToolbar->addAction(closeVisualizationAction);
-	m_fileToolbar->addAction(refreshVisualizationAction);
+	if (refreshVisualizationAction) m_fileToolbar->addAction(refreshVisualizationAction);
 
 	CreateExportToPortableVisualizationSubmenu();
 	
