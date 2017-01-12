@@ -102,7 +102,7 @@ namespace SynGlyphX
 		void hideAllTags();
 		void enableSuperimposedGlyphGadgets( bool val );
 
-		void setFilteredResults( const IndexSet& results );
+		void setFilteredResults( const IndexSet& results, bool disableFiltering );
 		void setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
 		FilteredResultsDisplayMode filteredResultsDisplayMode() { return scene->getFilterMode(); }
 

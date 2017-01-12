@@ -107,7 +107,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	
 	try {
 		
-		CreateANTzWidget();
+		CreateSceneViewer();
 	}
 
 	catch (const std::exception& e) {
@@ -162,7 +162,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 	QObject::connect(m_homePage, &HomePageWidget::LoadVisualization, this, &GlyphViewerWindow::LoadNewVisualization);
 }
 
-void GlyphViewerWindow::CreateANTzWidget() {
+void GlyphViewerWindow::CreateSceneViewer() {
 	
 	QStackedWidget* antzWidgetContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 	if (m_viewer) {
@@ -213,7 +213,6 @@ void GlyphViewerWindow::CreateANTzWidget() {
 	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(true); });
 	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(false); });
 	QObject::connect( m_hideAllTagsAction, &QAction::triggered, this, [this]{ m_viewer->hideAllTags(); });
-	QObject::connect( m_filteringManager, &FilteringManager::FilterResultsChanged, this, [this]( const SynGlyphX::IndexSet& results ){ m_viewer->setFilteredResults( results ); } );
 
 	m_viewer->setOnSelectionChanged( [this]( bool selection_exists )
 	{
@@ -224,6 +223,8 @@ void GlyphViewerWindow::CreateANTzWidget() {
 		m_openURLAction->setEnabled( selection_exists );
 		m_propertiesAction->setEnabled( selection_exists );
 	} );
+
+	m_filteringManager->SetViewer(m_viewer);
 }
 
 void GlyphViewerWindow::CreateMenus() {

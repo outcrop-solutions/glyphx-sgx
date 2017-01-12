@@ -129,7 +129,7 @@ private:
 	void EnableLoadedVisualizationDependentActions(bool enable);
 	void ChangeOptions(const GlyphViewerOptions& oldOptions, const GlyphViewerOptions& newOptions);
 	void ClearAllData();
-	void CreateANTzWidget();
+	void CreateSceneViewer();
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();

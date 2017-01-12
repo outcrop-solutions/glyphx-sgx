@@ -31,6 +31,7 @@
 namespace SynGlyphX {
 
 	class DataTransformModel;
+	class SceneViewer;
 }
 
 class FilteringManager : public QObject
@@ -44,6 +45,8 @@ public:
 
 	FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent);
 	~FilteringManager();
+
+	void SetViewer(SynGlyphX::SceneViewer* viewer) { m_viewer = viewer; }
 
 	bool GenerateFilterResultsForTable(const QString& table, const FilteringParameters& filters, bool updateFocus = false);
 	void GenerateLoadingFilterResultsForTable(const QString& table, const FilteringParameters::ColumnDistinctValuesFilterMap& filters);
@@ -109,7 +112,7 @@ private:
 	std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
 
 	bool m_timeFilterEnabled;
-
+	SynGlyphX::SceneViewer* m_viewer;
 };
 
 #endif // SOURCEDATASELECTIONMODEL_H

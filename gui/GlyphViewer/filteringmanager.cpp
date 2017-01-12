@@ -1,6 +1,7 @@
 #include "filteringmanager.h"
 #include "datatransformmodel.h"
 #include <boost/optional.hpp>
+#include <SceneViewer/SceneViewer.h>
 
 FilteringManager::FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),
@@ -204,6 +205,8 @@ void FilteringManager::Clear() {
 	m_filterResultsPerTableFromLoadingFilter.clear();
 
 	m_filterResultsIndexedToGlyphs.clear();
+
+	m_viewer->setFilteredResults(SynGlyphX::IndexSet(), true);
 }
 
 void FilteringManager::ClearAllFilters() {
@@ -220,7 +223,9 @@ void FilteringManager::ClearAllFilters() {
 	m_filtersForEachTable.clear();
 
 	UpdateGlyphIndexedFilterResults();
-}
+	m_viewer->setFilteredResults(SynGlyphX::IndexSet(), true);
+}	
+
 
 void FilteringManager::ClearFiltersForTable(const QString& table, bool updateFocus) {
 
@@ -326,6 +331,7 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 
 		m_filterResultsIndexedToGlyphs = newfilterResultsIndexedToGlyphs;
 		emit FilterResultsChanged(m_filterResultsIndexedToGlyphs);
+		m_viewer->setFilteredResults(m_filterResultsIndexedToGlyphs, false);
 	}
 }
 
