@@ -38,6 +38,7 @@
 #include "SettingsStoredFileList.h"
 
 class HomePageWidget;
+class FrontEndFilterListWidget; 
 namespace SynGlyphX
 {
 	class SceneViewer;
@@ -120,7 +121,6 @@ private:
 		QMap<unsigned int, QString> m_displayNames;
 	};
 	void LoadVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters = MultiTableDistinctValueFilteringParameters());
-	void LoadANTzCompatibilityVisualization(const QString& filename);
 	void LoadDataTransform(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters);
 	void ValidateDataMappingFile(SynGlyphX::DataTransformMapping::SharedPtr mapping, const QString& filename);
 	void LoadFilesIntoModel();
@@ -169,6 +169,7 @@ private:
 
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
+	QDockWidget* m_leftDockWidget;
 	QDockWidget* m_rightDockWidget;
 	QDockWidget* m_bottomDockWidget;
 
@@ -187,6 +188,7 @@ private:
 	SourceDataCache::SharedPtr m_sourceDataCache;
 	FilteringWidget* m_filteringWidget;
 	FilteringManager* m_filteringManager;
+	FrontEndFilterListWidget* m_FEfilterListWidget;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
