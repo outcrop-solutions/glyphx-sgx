@@ -73,14 +73,13 @@ public:
 	bool AreSelectionsValid() const;
 
 	bool IsQueryNeeded(const SynGlyphX::InputTable& table) const;
-	MultiTableDistinctValueFilteringParameters GetFilterValues() const;
+	std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> GetFilterValues() const;
 
 private:
 	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;
 	typedef std::unordered_map<SynGlyphX::InputTable, FieldToWidgetMap, SynGlyphX::InputTableHash> TableToWidgetsMap;
 
 	QSplitter* AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping);
-	void AddFilter(const QString& name, const SynGlyphX::FrontEndFilter& filter, const QStringList& filterValues);
 
 	TableToWidgetsMap m_filterListWidgets;
 };

@@ -29,7 +29,7 @@ public:
 	FrontEndFilterListWidget(QWidget *parent);
 	~FrontEndFilterListWidget();
 
-	void update(const MultiTableDistinctValueFilteringParameters& filters);
+	void update(const std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>& filters);
 
 private:
 	QVBoxLayout* m_mainLayout;

@@ -179,9 +179,10 @@ bool LoadingFilterWidget::IsQueryNeeded(const SynGlyphX::InputTable& table) cons
 	return false;
 }
 
-MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues() const {
+std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> LoadingFilterWidget::GetFilterValues() const {
 
 	MultiTableDistinctValueFilteringParameters filteringParameters;
+	std::vector<std::wstring> unselected;
 
 	for (const auto& tableFilterWidgets : m_filterListWidgets) {
 
@@ -193,6 +194,10 @@ MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues(
 
 				filteringParametersForTable.SetDistinctValueFilter(QString::fromStdWString(filterWidget.first), filterData);
 			}
+			else
+			{
+				unselected.push_back(filterWidget.first);
+			}
 		}
 
 		if (filteringParametersForTable.HasFilters()) {
@@ -201,5 +206,5 @@ MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues(
 		}
 	}
 
-	return filteringParameters;
+	return std::make_pair(filteringParameters, unselected);
 }

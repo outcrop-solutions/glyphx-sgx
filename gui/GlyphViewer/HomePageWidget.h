@@ -57,7 +57,7 @@ public:
 
 signals:
 	void LoadRecentFile(QString filename);
-	bool LoadVisualization(const QString& sdtToLoad, const MultiTableDistinctValueFilteringParameters& userSelectedFilters);
+	bool LoadVisualization(const QString& sdtToLoad, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> userSelectedFilters);
 
 private slots:
 	void OnLoadVisualization();

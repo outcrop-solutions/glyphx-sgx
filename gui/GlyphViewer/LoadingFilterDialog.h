@@ -34,7 +34,7 @@ public:
 	~LoadingFilterDialog();
 
 	void SetupFilters(const SynGlyphX::DataTransformMapping& mapping);
-	MultiTableDistinctValueFilteringParameters GetFilterValues() const;
+	std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> GetFilterValues() const;
 
 	void accept() override;
 

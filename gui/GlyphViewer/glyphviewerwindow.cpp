@@ -47,7 +47,7 @@
 #include <hal/hal.h>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
-QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
+QMap<QString, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>> GlyphViewerWindow::s_recentFilters;
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -486,7 +486,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 
 			ValidateDataMappingFile(mapping, openFile);
 
-			MultiTableDistinctValueFilteringParameters filters;
+			std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filters;
 			if (!mapping->GetFrontEndFilters().empty()) {
 
 				LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
@@ -703,7 +703,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	}
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filters) {
 	SGX_PROFILE_SCOPE
 	QString nativeFilename = QDir::toNativeSeparators(filename);
 	if (nativeFilename == m_currentFilename) {
@@ -711,12 +711,13 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 		return true;
 	}
 
+	// @todo - HERE
 	m_FEfilterListWidget->update(filters);
 
 	GVGlobal::Services()->ClearUndoStack();
 	try {
 
-		LoadVisualization(nativeFilename, filters);
+		LoadVisualization(nativeFilename, filters.first);
 	}
 	catch (const std::exception& e) {
 
@@ -734,7 +735,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 	}
 
 	SetCurrentFile(nativeFilename);
-	if (!filters.empty()) {
+	if (!filters.first.empty()) {
 
 		s_recentFilters[nativeFilename] = filters;
 	}
@@ -1228,7 +1229,7 @@ void GlyphViewerWindow::ReadSettings() {
 
 		settings.endGroup(); //file group
 
-		s_recentFilters[file] = filtersAllTables;
+		s_recentFilters[file] = std::make_pair(filtersAllTables, std::vector<std::wstring>());
 	}
 
 	settings.endGroup(); //filter group
@@ -1269,7 +1270,7 @@ void GlyphViewerWindow::WriteSettings() {
 
 		settings.beginGroup(file);
 
-		for (const auto& table : s_recentFilters[file]) {
+		for (const auto& table : s_recentFilters[file].first) {
 
 			QString tableGroup = QString::fromStdString(boost::uuids::to_string(table.first.GetDatasourceID())) + ":" + 
 				QString::fromStdWString(table.first.GetTable());
