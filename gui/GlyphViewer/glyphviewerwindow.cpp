@@ -568,6 +568,10 @@ void GlyphViewerWindow::CloseVisualization() {
 
 		m_legendsDockWidget->hide();
 	}
+	if (m_leftDockWidget->isVisible()) {
+
+		m_leftDockWidget->hide();
+	}
 	if (m_rightDockWidget->isVisible()){
 
 		m_rightDockWidget->hide();

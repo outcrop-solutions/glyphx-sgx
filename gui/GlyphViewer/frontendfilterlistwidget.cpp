@@ -21,7 +21,11 @@ FrontEndFilterListWidget::~FrontEndFilterListWidget()
 
 void FrontEndFilterListWidget::update(const std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>& filters)
 {
-	for (auto w : findChildren<QWidget*>()) delete w;
+	QLayoutItem *child;
+	while ((child = m_mainLayout->takeAt(0)) != 0) {
+		delete child->widget();
+		delete child;
+	}
 
 	auto add_panel = [this](const QString& title) -> QVBoxLayout* {
 		auto collapse = new QPushButton(title);
@@ -33,8 +37,9 @@ void FrontEndFilterListWidget::update(const std::pair<MultiTableDistinctValueFil
 		m_mainLayout->addWidget(listframe);
 
 		QObject::connect(collapse, &QPushButton::pressed, this, [listframe, collapse]() {
-			if (listframe->height() != 0) listframe->setMaximumHeight(0);
-			else listframe->setMaximumHeight(9999999);	// @todo
+			int goal_height = 0;
+			if (listframe->height() == 0) goal_height = 99999;
+			listframe->setMaximumHeight(goal_height);
 		});
 
 		return buttonsLayout;
