@@ -506,7 +506,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 				filters = loadingFilterDialog.GetFilterValues();
 			}
 
-			LoadNewVisualization(openFile, filters);
+			LoadNewVisualization(openFile, filters, true);
 		}
 		catch (const std::exception& e) {
 
@@ -715,7 +715,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	}
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filters) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filters, bool useFEFilterList) {
 	SGX_PROFILE_SCOPE
 	QString nativeFilename = QDir::toNativeSeparators(filename);
 	if (nativeFilename == m_currentFilename) {
@@ -723,8 +723,10 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, std::pair<
 		return true;
 	}
 
-	// @todo - HERE
-	m_FEfilterListWidget->update(filters);
+	if (useFEFilterList)
+		m_FEfilterListWidget->update(filters);
+	else
+		m_FEfilterListWidget->hide();
 
 	GVGlobal::Services()->ClearUndoStack();
 	try {
@@ -765,7 +767,7 @@ bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
 	if (s_recentFilters.contains(filename)) {
 
-		return m_homePage->LoadVisualization(filename, s_recentFilters[filename]);
+		return m_homePage->LoadVisualization(filename, s_recentFilters[filename], true);
 	}
 	else {
 
