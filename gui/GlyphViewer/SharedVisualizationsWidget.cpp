@@ -231,7 +231,7 @@ bool SharedVisualizationsWidget::CanCurrentHaveFilters() const {
 	return (m_loadingFilterWidgetMap.count(m_currentFilename) != 0);
 }
 
-MultiTableDistinctValueFilteringParameters SharedVisualizationsWidget::GetCurrentFilterValues() const {
+std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> SharedVisualizationsWidget::GetCurrentFilterValues() const {
 
 	if (m_loadingFilterWidgetMap.count(m_currentFilename) != 0) {
 
@@ -239,7 +239,7 @@ MultiTableDistinctValueFilteringParameters SharedVisualizationsWidget::GetCurren
 	}
 	else {
 
-		return MultiTableDistinctValueFilteringParameters();
+		return std::make_pair(MultiTableDistinctValueFilteringParameters(), std::vector<std::wstring>());
 	}
 }
 

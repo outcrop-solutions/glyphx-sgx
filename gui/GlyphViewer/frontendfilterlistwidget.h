@@ -17,71 +17,20 @@
 
 #pragma once
 
-#include <QtWidgets/QScrollArea>
-#include "inputtable.h"
-#include <unordered_map>
-#include "TitleListWidget.h"
-#include "FrontEndFilter.h"
-#include "DistinctValueFilteringParameters.h"
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
+#include "filteringparameters.h"
 
-namespace DataEngine {
-
-	class GlyphEngine;
-}
-
-namespace SynGlyphX {
-
-	class DataTransformMapping;
-}
-
-class QSplitter;
-
-class LoadingFilterMissingChoice : public std::runtime_error {
-
-public:
-	LoadingFilterMissingChoice(const std::wstring& field);
-	~LoadingFilterMissingChoice() {}
-
-	const std::wstring& GetField() const { return m_field; }
-
-private:
-	std::wstring m_field;
-};
-
-class SingleLoadingFilterWidget : public SynGlyphX::TitleListWidget {
-
-public:
-	SingleLoadingFilterWidget(bool isRequired, QWidget* parent);
-	~SingleLoadingFilterWidget() {}
-
-	bool IsRequired() const { return m_isRequired; }
-
-protected:
-	bool m_isRequired;
-};
-
-class LoadingFilterWidget : public QWidget
+class FrontEndFilterListWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	LoadingFilterWidget(QWidget *parent);
-	~LoadingFilterWidget();
+	FrontEndFilterListWidget(QWidget *parent);
+	~FrontEndFilterListWidget();
 
-	void SetFilters(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping);
-
-	bool AreSelectionsValid() const;
-
-	bool IsQueryNeeded(const SynGlyphX::InputTable& table) const;
-	std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> GetFilterValues() const;
+	void update(const std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>& filters);
 
 private:
-	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;
-	typedef std::unordered_map<SynGlyphX::InputTable, FieldToWidgetMap, SynGlyphX::InputTableHash> TableToWidgetsMap;
-
-	QSplitter* AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping);
-
-	TableToWidgetsMap m_filterListWidgets;
+	QVBoxLayout* m_mainLayout;
 };
-
-//#pragma once
