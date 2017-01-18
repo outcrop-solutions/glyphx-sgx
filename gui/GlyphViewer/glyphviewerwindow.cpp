@@ -416,10 +416,18 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	}
 
 	m_leftDockWidget = new QDockWidget(tr("Active Front End Filters"));
+	auto sv = new QScrollArea(m_leftDockWidget);
 	m_FEfilterListWidget = new FrontEndFilterListWidget(m_leftDockWidget);
-	m_leftDockWidget->setWidget(m_FEfilterListWidget);
-	addDockWidget(Qt::LeftDockWidgetArea, m_leftDockWidget);
+	m_leftDockWidget->setWidget(sv);
+	sv->setWidget(m_FEfilterListWidget);
+	sv->setWidgetResizable(true);
+	sv->setMinimumWidth(300);
+	sv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	act = m_leftDockWidget->toggleViewAction();
+	addDockWidget(Qt::LeftDockWidgetArea, m_leftDockWidget);
+	m_FEfilterListWidget->setVisible(true);
+	sv->setVisible(true);
+
 	m_loadedVisualizationDependentActions.push_back(act);
 	QIcon feFilterIcon;
 	QPixmap fe_filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
