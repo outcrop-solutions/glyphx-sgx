@@ -265,7 +265,7 @@ void GlyphTreesView::ExportGlyphToFile() {
 
 void GlyphTreesView::SelectLastGlyphTreeRoot() {
 
-	selectionModel()->select(model()->index(m_sourceModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
+	selectionModel()->select(model()->index((int)m_sourceModel->GetDataMapping()->GetGlyphGraphs().size() - 1, 0), QItemSelectionModel::ClearAndSelect);
 }
 
 SynGlyphX::DataMappingGlyphGraph GlyphTreesView::GetGraphForCopyToClipboard(const QModelIndex& index, bool includeChildren) {

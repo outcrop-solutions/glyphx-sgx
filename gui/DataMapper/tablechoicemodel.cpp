@@ -92,11 +92,11 @@ int TableChoiceModel::rowCount(const QModelIndex& parent) const {
 
 	if (!parent.isValid()) {
 
-		return m_tables.size();
+		return (int)m_tables.size();
 	}
 	else if ((!m_tableToTablesLinkedByForiegnKeys.empty()) && (parent.column() == 0)) {
 
-		return m_tableToTablesLinkedByForiegnKeys.at(parent.row()).size();
+		return (int)m_tableToTablesLinkedByForiegnKeys.at(parent.row()).size();
 	}
 	else {
 
