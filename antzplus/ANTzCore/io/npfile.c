@@ -89,7 +89,7 @@ FILE* npFileOpen( const char* fileName, const char* mode, void* dataRef )
 	char* msg = NULL;
 
 	// ascert fileName is valid string
-	length = strnlen( fileName, 261 );
+	length = (int)strnlen( fileName, 261 );
 	if(length < 1 || length >= 260 )
 	{
 		npPostMsg( "warn 7249 - invalid fileName", kNPmsgFile, dataRef );
@@ -160,7 +160,7 @@ int npFileRead (void* readBuffer, int elementSize, int elementCount,
 {
 	int count = 0;
 
-	count = fread (readBuffer, elementSize, elementCount, file);
+	count = (int)fread (readBuffer, elementSize, elementCount, file);
 	
 	if ( count <= 0 )
 		printf(" warn 7218 - zero bytes read\n", count);
@@ -195,7 +195,7 @@ int npFileWrite (const void* str, int wordSize, int size, FILE* file, void* data
 	if (size <= 0)
 		return 0;
 
-	return fwrite( str, wordSize, size, file );
+	return (int)fwrite( str, wordSize, size, file );
 
 	//return fwrite( str, 1, strlen(str), file );
 }

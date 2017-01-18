@@ -46,7 +46,7 @@ namespace SynGlyphX {
 
 			if ( m_numFields == 0 ) {
 
-				m_numFields = values.size();
+				m_numFields = (unsigned int)values.size();
 			}
 			else if ( m_numFields != values.size() ) {
 

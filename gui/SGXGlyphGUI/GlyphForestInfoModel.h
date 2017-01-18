@@ -76,7 +76,7 @@ namespace SynGlyphX {
 
 			GlyphInfoNode& operator=(const GlyphInfoNode& node) = delete;
 
-			unsigned int GetChildCount() const { return m_children.size(); }
+			unsigned int GetChildCount() const { return static_cast<unsigned int>(m_children.size()); }
 			bool IsRoot() const { return (m_parent == nullptr); }
 
 			GlyphTextProperties m_properties;

@@ -23,7 +23,7 @@ void RangeFilterListWidget::ResetForNewTable() {
 
 	//Insert ranges and extents for new table
 	const Field2RangeAndDistinctValuesVector& newField2RangeAndExtentList = m_table2RangesAndDistinctValuesMap[m_currentTable];
-	unsigned int numberOfFields = newField2RangeAndExtentList.size();
+	unsigned int numberOfFields = static_cast<unsigned int>(newField2RangeAndExtentList.size());
 
 	unsigned int numberOfRows = 0;
 	for (unsigned int j = 0; j < numberOfFields; ++j) {
@@ -42,7 +42,7 @@ void RangeFilterListWidget::ResetForNewTable() {
 		}
 
 		//m_filterListTableWidget->setSpan(numberOfRows, 0, newField2RangeAndExtentList[j].second.size(), 1);
-		numberOfRows += newField2RangeAndExtentList[j].second.size();
+		numberOfRows += static_cast<unsigned int>(newField2RangeAndExtentList[j].second.size());
 
 		m_filterGroups[m_currentTable].AddGroup(filterWidgetGroup, newField2RangeAndExtentList[j].first);
 	}

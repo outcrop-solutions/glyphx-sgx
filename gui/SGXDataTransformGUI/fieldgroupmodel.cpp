@@ -186,7 +186,7 @@ void FieldGroupModel::ResetTable(SynGlyphX::DataTransformModel* model) {
 	int previousTotal = 0;
 	for (auto& fields : m_dataTransformModel->GetNumericFieldsByTable()) {
 
-		previousTotal += fields.second.size();
+		previousTotal += int(fields.second.size());
 		m_countOfFieldsPerTable.push_back(previousTotal);
 	}
 	endResetModel();

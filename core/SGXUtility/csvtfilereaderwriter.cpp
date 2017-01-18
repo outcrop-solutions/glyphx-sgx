@@ -23,7 +23,7 @@ namespace SynGlyphX {
 
 	void CSVTFileReaderWriter::WriteCSVTFile(const std::string& filename, const CSVFileHandler::CSVValues& types) {
 
-		unsigned int numberOfTypes = types.size();
+		unsigned int numberOfTypes = (int)types.size();
 		if (numberOfTypes == 0) {
 
 			throw std::invalid_argument("CSVT Writer needs at least one type to write out a CSVT file.");

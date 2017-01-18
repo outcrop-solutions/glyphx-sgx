@@ -86,7 +86,7 @@ FILE* npNewMapFile (const char* fileName, const char* mode, void* dataRef)
 int npReadMapFile (void* readBuffer, int elementSize, int elementCount, 
 				 FILE* file, void* dataRef)
 {
-	int bytes = 0;
+	size_t bytes = 0;
 
 	bytes = fread (readBuffer, elementSize, elementCount, file);
 	
@@ -95,7 +95,7 @@ int npReadMapFile (void* readBuffer, int elementSize, int elementCount,
 	else
 		printf("Success Reading\n");
 
-	return bytes;
+	return (int)bytes;
 }
 
 
@@ -126,7 +126,7 @@ FILE* npDialogMapFile (const char* fileName, int dialogType, void* dataRef)
 //-----------------------------------------------------------------------------
 int npWriteMapFile (const void* str, int wordSize, int size, FILE* file, void* dataRef)
 {
-	return fwrite( str, wordSize, strlen(str), file );
+	return (int)fwrite( str, wordSize, strlen(str), file );
 }
 
 
@@ -797,7 +797,7 @@ ANTZCORE_API int npFileOpenMap (const char* filePath, int wordSize, int size, vo
 		if (count > 0)
 		{
 			printf("converting\n");
-			npLoadMapFile (buffer, wordSize, count, dataRef);	//process data
+			npLoadMapFile (buffer, wordSize, (int)count, dataRef);	//process data
 			printf ("Done\n");
 		}
 		else
@@ -818,7 +818,7 @@ ANTZCORE_API int npFileSaveMap(const char* filePath, int wordSize, int size, voi
 {
 	int i = 0;
 	int err = 0;
-	int total = 0;
+	size_t total = 0;
 	int rootIndex = 0;
 	size_t count = 0;
 	FILE* file = NULL;
@@ -860,7 +860,7 @@ ANTZCORE_API int npFileSaveMap(const char* filePath, int wordSize, int size, voi
 	while (count > 0)
 	{
 		printf("Writing...\n");
-		total += count = npFileWrite (buffer, 1, count, file, dataRef);
+		total += count = (size_t)npFileWrite (buffer, 1, (int)count, file, dataRef);
 
 		if (count >= kNPfileBlockSize)
 		{
@@ -1475,7 +1475,7 @@ void npThreadFileOpenMap (void* dataRef)
 
 	strcpy (filePath, data->io.file.currentOpenPath);
 
-	result = npFileOpenMap (filePath, 1, strlen(filePath), dataRef);
+	result = npFileOpenMap (filePath, 1, (int)strlen(filePath), dataRef);
 
 	if (!result)
 		npPostMsg ("err 4981 - npThreadFileOpenMap failed", kNPmsgErr, data);

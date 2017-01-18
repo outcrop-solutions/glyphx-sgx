@@ -364,7 +364,7 @@ void npCtrlFile (int command, void* dataRef)
 
 				sprintf (msg, "Saving: %s", filePath);
 				npPostMsg (msg, kNPmsgCtrl, dataRef);
-				result = npFileSaveMap (filePath, 1, strlen(filePath), dataRef);
+				result = npFileSaveMap (filePath, 1, (int)strlen(filePath), dataRef);
 
 				//Save entire scene state and all tables to CSV
 				// antz0001.zip and/or '/antz0001/scene/csv/*'... scene/json/*' ...images/jpg/*.jpg
@@ -425,7 +425,7 @@ void npCtrlFile (int command, void* dataRef)
 				//npFileSave(filePath, data);
 				sprintf (msg, "Saving: %s", filePath);
 				npPostMsg (msg, kNPmsgCtrl, data);
-				result = npFileSaveMap (filePath, 1, strlen(filePath), data);
+				result = npFileSaveMap (filePath, 1, (int)strlen(filePath), data);
 			}
 			else
 			{
@@ -449,7 +449,7 @@ void npCtrlFile (int command, void* dataRef)
 			{
 				sprintf (msg, "Saving: %s", filePath);
 				npPostMsg (msg, kNPmsgCtrl, dataRef);
-				result = npFileSaveMap (filePath, 1, strlen(filePath), dataRef);
+				result = npFileSaveMap (filePath, 1, (int)strlen(filePath), dataRef);
 			}
 			else
 			{
@@ -1786,7 +1786,7 @@ void npInitCPU (void* dataRef)
 
 void npCmdOpen( char* filePath, void* dataRef)
 {
-	npFileOpenMap( filePath, 1, strlen(filePath), dataRef );
+	npFileOpenMap( filePath, 1, (int)strlen(filePath), dataRef );
 }
 
 //zz debug replace with keymap array

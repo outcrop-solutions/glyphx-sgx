@@ -193,7 +193,7 @@ namespace SynGlyphX
 			assert( set );
 			assert( !is_depth_format( fmt ) );
 			glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
-			auto idx = set->color_targets.size();
+			auto idx = static_cast<unsigned int>(set->color_targets.size());
 			assert( idx < 16u );	// theoretical maximum; todo: check ACTUAL maximum on current driver
 			hal::texture* t = create_texture( set->w, set->h, fmt, nullptr );
 			set->color_targets.push_back( t );

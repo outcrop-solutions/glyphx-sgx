@@ -51,7 +51,7 @@ namespace SynGlyphX
 		void clearFilteredOutFromSelection();
 		bool isSelected( const Glyph3DNode* glyph ) const;
 		bool selectionEmpty() const { return selection.size() == 0; }
-		unsigned int selectionSize() const { return selection.size(); }
+		unsigned int selectionSize() const { return static_cast<unsigned int>(selection.size()); }
 		const Glyph3DNode* getSingleSelection() const
 		{
 			if ( selection.size() == 0 ) return nullptr;
@@ -85,7 +85,7 @@ namespace SynGlyphX
 
 		bool hasAnimation() const { return has_animation; }
 
-		unsigned int getGroupSize( unsigned int group ) { return groups[group - 1].nodes.size(); }
+		unsigned int getGroupSize( unsigned int group ) { return static_cast<unsigned int>(groups[group - 1].nodes.size()); }
 		float getGroupStatus() const { return group_status; }
 		unsigned int getActiveGroup() const { return active_group; }
 		glm::vec3 getExplodedPosition( const Glyph3DNode* node ) const;

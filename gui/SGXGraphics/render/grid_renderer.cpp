@@ -51,7 +51,7 @@ namespace SynGlyphX
 			fmt.add_stream( hal::stream_info( hal::stream_type::float32, 3u, hal::stream_semantic::position, 0u ) );
 
 			grid_info g;
-			g.mesh = hal::device::create_mesh( fmt, hal::primitive_type::line_list, vertices.size(), &vertices[0], indices.size() / 2u, &indices[0] );
+			g.mesh = hal::device::create_mesh( fmt, hal::primitive_type::line_list, uint32_t(vertices.size()), &vertices[0], uint32_t(indices.size()) / 2u, &indices[0] );
 			g.base_color = _base_color;
 			g.transform = _transform;
 			grids.push_back( g );

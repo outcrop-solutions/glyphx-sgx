@@ -50,7 +50,7 @@ namespace SynGlyphX {
 
 	boost::optional<ValueMappingRange> ValueMappingRangeTranslator::get_value(std::wstring const &v) {
 
-		int position = v.find(L',');
+		int position = (int)v.find(L',');
 
 		if (position != -1) {
 

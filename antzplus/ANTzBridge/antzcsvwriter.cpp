@@ -422,7 +422,7 @@ namespace SynGlyphXANTz {
 			file.WriteLine(grid);
 		}
 
-		return firstId + grids.size();
+		return firstId + (unsigned long)grids.size();
 	}
 
 	ANTzCSVWriter& ANTzCSVWriter::GetInstance() {

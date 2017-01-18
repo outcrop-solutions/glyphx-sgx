@@ -66,7 +66,7 @@ void MapTrackToIntAttribute (int trackOffset, int* attributeValuePtr, void* data
 
 	if (data->io.ch.intTracks.propertyTrackIndex < kNPmaxPropertiesMapped) 
 	{
-		printf("mapping int trackOffset %d to memory address %x\n", trackOffset, attributeValuePtr);
+		//printf("mapping int trackOffset %d to memory address %x\n", trackOffset, attributeValuePtr);
 		*data->io.ch.intTracks.nodePropertyMemoryNextLocation++ = (void*)attributeValuePtr;
 		data->io.ch.intTracks.propertyTracks[data->io.ch.intTracks.propertyTrackIndex++] = trackOffset;
 	}
@@ -79,7 +79,7 @@ void MapTrackToFloatAttribute (int trackOffset, float* attributeValuePtr, void* 
 
 	if (data->io.ch.floatTracks.propertyTrackIndex < kNPmaxPropertiesMapped) 
 	{
-		printf("mapping float trackOffset %d to memory address %x\n", trackOffset, attributeValuePtr);
+		//printf("mapping float trackOffset %d to memory address %x\n", trackOffset, attributeValuePtr);
 		*data->io.ch.floatTracks.nodePropertyMemoryNextLocation++ = (void*)attributeValuePtr;
 		data->io.ch.floatTracks.propertyTracks[data->io.ch.floatTracks.propertyTrackIndex++] = trackOffset;
 	}
@@ -92,7 +92,7 @@ void MapTrackToUcharAttribute (int trackOffset, unsigned char* attributeValuePtr
 
 	if (data->io.ch.ucharTracks.propertyTrackIndex < kNPmaxPropertiesMapped) 
 	{
-		printf("mapping uchar trackOffset %d to memory address %x\n", trackOffset, attributeValuePtr);
+		//printf("mapping uchar trackOffset %d to memory address %x\n", trackOffset, attributeValuePtr);
 		*data->io.ch.ucharTracks.nodePropertyMemoryNextLocation++ = (void*)attributeValuePtr;
 		data->io.ch.ucharTracks.propertyTracks[data->io.ch.ucharTracks.propertyTrackIndex++] = trackOffset;
 	}
@@ -890,8 +890,8 @@ void npChSubscribeNode (pNPnode node, void* dataRef)
 		}
 	}
 
-	printf("npChSubscribeNode, list of node property memory address goes from 0x%x to 0%x\n",
-		&ch->ucharTracks.nodePropertyMemoryLocations[0],ch->ucharTracks.nodePropertyMemoryNextLocation);
+	//printf("npChSubscribeNode, list of node property memory address goes from 0x%x to 0%x\n",
+	//	&ch->ucharTracks.nodePropertyMemoryLocations[0],ch->ucharTracks.nodePropertyMemoryNextLocation);
 }
 
 //---------------------------------------------------------------

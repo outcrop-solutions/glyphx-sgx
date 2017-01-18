@@ -275,7 +275,7 @@ ANTZCORE_API void npUpdateTextTag(pNPtag tag)
 	float charHeight = 15.0f;
 
 //	if(tag->titleSize == 0)											//zz debug
-		tag->titleSize = strlen(tag->title);
+		tag->titleSize = (int)strlen(tag->title);
 
 	//add procedure to count lines and width length
 	//strlen(tag->desc);

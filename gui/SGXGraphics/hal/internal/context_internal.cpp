@@ -70,7 +70,7 @@ namespace SynGlyphX
 						buffers[i] = GL_COLOR_ATTACHMENT0 + i;
 
 					glBindFramebuffer( GL_FRAMEBUFFER, set->fb );
-					glDrawBuffers( set->color_targets.size(), buffers );
+					glDrawBuffers( int(set->color_targets.size()), buffers );
 					assert( glCheckFramebufferStatus( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE );
 				}
 				else
@@ -371,7 +371,7 @@ namespace SynGlyphX
 				if ( it == f->string_cache.end() )
 				{
 					hal::font_string new_str;
-					new_str.length = strlen( text );
+					new_str.length = uint32_t(strlen(text));
 					new_str.instance_data = device_internal::create_cbuffer( sizeof( glm::vec4 ) * new_str.length );
 					glm::vec2 pen;
 					const char* prev = nullptr;

@@ -623,7 +623,7 @@ QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, co
 
 QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, const MultiKeywordFilter& filter) const {
 
-	int numberOfKeywords = filter.size();
+	int numberOfKeywords = int(filter.size());
 	if (numberOfKeywords == 0) {
 
 		throw std::invalid_argument("Keyword filter string can not be created for zero keywords.");
@@ -725,7 +725,7 @@ QString SourceDataCache::CreateBetweenString(const QString& columnName, const Sy
 
 QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateIntervalUnion& intervals) const {
 
-	int numberOfIntervals = intervals.size();
+	int numberOfIntervals = int(intervals.size());
 	if (numberOfIntervals == 0) {
 
 		throw std::invalid_argument("Between string can not be created for zero intervals.");
