@@ -234,7 +234,7 @@ namespace SynGlyphXANTz {
 		
 		if (tag.substr(0, 9) == L"<a href=\"") {
 
-			int pos = tag.find_first_of('\"', 9) + 2;
+			int pos = (int)tag.find_first_of('\"', 9) + 2;
 			return tag.substr(pos, tag.length() - pos - 4);
 		}
 		else {

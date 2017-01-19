@@ -344,7 +344,7 @@ void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedF
 	m_sourceCacheTableName = SourceDataCache::CreateTablename(dataSourceIdString, tableName);
 	m_selectionForEachDistinctValue = m_filteringManager->GetSourceDataCache()->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
 
-	m_slider->setMaximum(m_selectionForEachDistinctValue.size() - 1);
+	m_slider->setMaximum(int(m_selectionForEachDistinctValue.size()) - 1);
 
 	m_fieldLabel->setText(tr("Selected Field: ") + dataSourceName + ":" + tableName + " " + columnName);
 }

@@ -123,10 +123,10 @@ namespace SynGlyphX
 					if ( id.anim_buffer ) hal::device::release( id.anim_buffer );
 					if ( id.alt_pos_buffer ) hal::device::release( id.alt_pos_buffer );
 
-					id.transform_buffer = hal::device::create_cbuffer( transform_size );
-					id.color_bound_buffer = hal::device::create_cbuffer( color_size );
-					id.anim_buffer = hal::device::create_cbuffer( anim_size );
-					id.alt_pos_buffer = hal::device::create_cbuffer( alt_pos_size );
+					id.transform_buffer = hal::device::create_cbuffer(static_cast<unsigned int>(transform_size) );
+					id.color_bound_buffer = hal::device::create_cbuffer(static_cast<unsigned int>(color_size) );
+					id.anim_buffer = hal::device::create_cbuffer(static_cast<unsigned int>(anim_size) );
+					id.alt_pos_buffer = hal::device::create_cbuffer( static_cast<unsigned int>(alt_pos_size) );
 					context->update_constant_block( id.transform_buffer, &id.transforms[0], transform_size, hal::cbuffer_usage::static_draw );
 					context->update_constant_block( id.color_bound_buffer, &id.colors_or_bounds[0], color_size, hal::cbuffer_usage::static_draw );
 					context->update_constant_block( id.anim_buffer, &id.animation[0], anim_size, hal::cbuffer_usage::static_draw );
@@ -157,7 +157,7 @@ namespace SynGlyphX
 					context->bind( material_binding_point, id.color_bound_buffer );
 					context->bind( anim_binding_point, id.anim_buffer );
 					context->bind( alt_pos_binding_point, id.alt_pos_buffer );
-					context->draw_instances( id.transforms.size() );
+					context->draw_instances( static_cast<unsigned int>(id.transforms.size()));
 				}
 
 				context->end_instancing();

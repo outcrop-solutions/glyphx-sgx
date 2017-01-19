@@ -38,7 +38,7 @@ void LoadingFilterDialog::SetupFilters(const SynGlyphX::DataTransformMapping& ma
 	m_loadingFilterWidget->SetFilters(ge, mapping);
 }
 
-MultiTableDistinctValueFilteringParameters LoadingFilterDialog::GetFilterValues() const {
+std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> LoadingFilterDialog::GetFilterValues() const {
 
 	return m_loadingFilterWidget->GetFilterValues();
 }
@@ -51,7 +51,7 @@ void LoadingFilterDialog::accept() {
 		return;
 	}
 
-	MultiTableDistinctValueFilteringParameters filteringParameters = m_loadingFilterWidget->GetFilterValues();
+	MultiTableDistinctValueFilteringParameters filteringParameters = m_loadingFilterWidget->GetFilterValues().first;
 	for (const auto& filtersForTable : filteringParameters) {
 
 		QString id = QString::fromStdWString(boost::uuids::to_wstring(filtersForTable.first.GetDatasourceID()));

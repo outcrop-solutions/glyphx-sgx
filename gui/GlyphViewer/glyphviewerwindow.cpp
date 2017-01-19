@@ -7,6 +7,7 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QGroupBox>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
@@ -15,6 +16,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QColorDialog>
 #include "glyphbuilderapplication.h"
+#include "frontendfilterlistwidget.h"
 #include "datatransformmapping.h"
 #include "downloadoptionsdialog.h"
 #include "data/npmapfile.h"
@@ -45,7 +47,7 @@
 #include <hal/hal.h>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
-QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
+QMap<QString, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>> GlyphViewerWindow::s_recentFilters;
 
 GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -239,13 +241,17 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
 	m_fileMenu->addSeparator();
 	*/
-	QAction* refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
-	QIcon refreshVizIcon;
-	QPixmap refresh(":SGXGUI/Resources/Icons/icon-refresh.png");
-	refreshVizIcon.addPixmap(refresh.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	refreshVisualizationAction->setIcon( refreshVizIcon );
-	QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
-	m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
+	QAction* refreshVisualizationAction = nullptr;
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
+	{
+		refreshVisualizationAction = CreateMenuAction(m_fileMenu, tr("Refresh Visualization"), QKeySequence::Refresh);
+		QIcon refreshVizIcon;
+		QPixmap refresh(":SGXGUI/Resources/Icons/icon-refresh.png");
+		refreshVizIcon.addPixmap(refresh.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+		refreshVisualizationAction->setIcon(refreshVizIcon);
+		QObject::connect(refreshVisualizationAction, &QAction::triggered, this, &GlyphViewerWindow::RefreshVisualization);
+		m_loadedVisualizationDependentActions.push_back(refreshVisualizationAction);
+	}
 
 	m_fileMenu->addSeparator();
 
@@ -260,7 +266,7 @@ void GlyphViewerWindow::CreateMenus() {
 	m_loadedVisualizationDependentActions.push_back(closeVisualizationAction);
 
 	m_fileToolbar->addAction(closeVisualizationAction);
-	m_fileToolbar->addAction(refreshVisualizationAction);
+	if (refreshVisualizationAction) m_fileToolbar->addAction(refreshVisualizationAction);
 
 	CreateExportToPortableVisualizationSubmenu();
 	
@@ -409,6 +415,30 @@ void GlyphViewerWindow::CreateDockWidgets() {
 		textPropertiesDockWidget->hide();
 	}
 
+	m_leftDockWidget = new QDockWidget(tr("Active Front End Filters"));
+	auto sv = new QScrollArea(m_leftDockWidget);
+	m_FEfilterListWidget = new FrontEndFilterListWidget(m_leftDockWidget);
+	m_leftDockWidget->setWidget(sv);
+	sv->setWidget(m_FEfilterListWidget);
+	sv->setWidgetResizable(true);
+	sv->setMinimumWidth(300);
+	sv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	act = m_leftDockWidget->toggleViewAction();
+	addDockWidget(Qt::LeftDockWidgetArea, m_leftDockWidget);
+	m_FEfilterListWidget->setVisible(true);
+	sv->setVisible(true);
+
+	m_loadedVisualizationDependentActions.push_back(act);
+	QIcon feFilterIcon;
+	QPixmap fe_filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
+	QPixmap fe_filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
+	feFilterIcon.addPixmap(fe_filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	feFilterIcon.addPixmap(fe_filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	act->setIcon(feFilterIcon);
+	m_viewMenu->addAction(act);
+	m_showHideToolbar->addAction(act);
+	m_leftDockWidget->hide();
+
 	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
 	m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
 	m_rightDockWidget->setWidget(m_filteringWidget);
@@ -464,7 +494,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 
 			ValidateDataMappingFile(mapping, openFile);
 
-			MultiTableDistinctValueFilteringParameters filters;
+			std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filters;
 			if (!mapping->GetFrontEndFilters().empty()) {
 
 				LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
@@ -476,7 +506,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 				filters = loadingFilterDialog.GetFilterValues();
 			}
 
-			LoadNewVisualization(openFile, filters);
+			LoadNewVisualization(openFile, filters, true);
 		}
 		catch (const std::exception& e) {
 
@@ -545,6 +575,10 @@ void GlyphViewerWindow::CloseVisualization() {
 	if (m_legendsDockWidget->isFloating()) {
 
 		m_legendsDockWidget->hide();
+	}
+	if (m_leftDockWidget->isVisible()) {
+
+		m_leftDockWidget->hide();
 	}
 	if (m_rightDockWidget->isVisible()){
 
@@ -681,7 +715,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 	}
 }
 
-bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const MultiTableDistinctValueFilteringParameters& filters) {
+bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filters, bool useFEFilterList) {
 	SGX_PROFILE_SCOPE
 	QString nativeFilename = QDir::toNativeSeparators(filename);
 	if (nativeFilename == m_currentFilename) {
@@ -689,10 +723,15 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 		return true;
 	}
 
+	if (useFEFilterList)
+		m_FEfilterListWidget->update(filters);
+	else
+		m_FEfilterListWidget->hide();
+
 	GVGlobal::Services()->ClearUndoStack();
 	try {
 
-		LoadVisualization(nativeFilename, filters);
+		LoadVisualization(nativeFilename, filters.first);
 	}
 	catch (const std::exception& e) {
 
@@ -710,7 +749,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, const Mult
 	}
 
 	SetCurrentFile(nativeFilename);
-	if (!filters.empty()) {
+	if (!filters.first.empty()) {
 
 		s_recentFilters[nativeFilename] = filters;
 	}
@@ -728,7 +767,7 @@ bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
 
 	if (s_recentFilters.contains(filename)) {
 
-		return m_homePage->LoadVisualization(filename, s_recentFilters[filename]);
+		return m_homePage->LoadVisualization(filename, s_recentFilters[filename], true);
 	}
 	else {
 
@@ -1204,7 +1243,7 @@ void GlyphViewerWindow::ReadSettings() {
 
 		settings.endGroup(); //file group
 
-		s_recentFilters[file] = filtersAllTables;
+		s_recentFilters[file] = std::make_pair(filtersAllTables, std::vector<std::wstring>());
 	}
 
 	settings.endGroup(); //filter group
@@ -1245,7 +1284,7 @@ void GlyphViewerWindow::WriteSettings() {
 
 		settings.beginGroup(file);
 
-		for (const auto& table : s_recentFilters[file]) {
+		for (const auto& table : s_recentFilters[file].first) {
 
 			QString tableGroup = QString::fromStdString(boost::uuids::to_string(table.first.GetDatasourceID())) + ":" + 
 				QString::fromStdWString(table.first.GetTable());

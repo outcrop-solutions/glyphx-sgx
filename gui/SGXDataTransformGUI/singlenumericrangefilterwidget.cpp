@@ -113,7 +113,7 @@ namespace SynGlyphX {
 	void SingleNumericRangeFilterWidget::SetSliderPositionValuesAndMaxExtents(const SliderPositionValues& valuesAtSliderPosition) {
 
 		m_valuesAtSliderPosition = valuesAtSliderPosition;
-		m_rangeSlider->setRange(0, m_valuesAtSliderPosition.size() - 1);
+		m_rangeSlider->setRange(0, int(m_valuesAtSliderPosition.size()) - 1);
 		SetMaxRangeExtents(*m_valuesAtSliderPosition.begin(), *m_valuesAtSliderPosition.rbegin());
 	}
 

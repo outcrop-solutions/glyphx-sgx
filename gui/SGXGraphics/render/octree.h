@@ -67,7 +67,7 @@ namespace SynGlyphX
 
 			void insert( content_t* content, const sphere_bound& bound );
 			unsigned int get_depth() const { return depth; }
-			unsigned int get_object_count() const { return contents.size(); }
+			unsigned int get_object_count() const { return static_cast<unsigned int>(contents.size()); }
 
 			const box_bound& get_bound() { return bound; }
 			const box_bound& get_loose_bound() { return loose_bound; }

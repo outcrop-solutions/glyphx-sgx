@@ -381,7 +381,7 @@ namespace SynGlyphX {
 
 			if (IsParentlessRowInDataType(DataType::BaseObjects, index.row())) {
 
-				int baseObjectIndex = index.row() - m_dataMapping->GetGlyphGraphs().size();
+				int baseObjectIndex = index.row() - (int)m_dataMapping->GetGlyphGraphs().size();
 				const BaseImage& baseObject = m_dataMapping->GetBaseObjects()[baseObjectIndex];
 				SynGlyphX::BaseImage::Type baseImageType = baseObject.GetType();
 				if (baseImageType == BaseImage::UserImage) {
@@ -403,7 +403,7 @@ namespace SynGlyphX {
 			}
 			else if (IsParentlessRowInDataType(DataType::DataSources, index.row())) {
 
-				int datasourceIndex = index.row() - m_dataMapping->GetGlyphGraphs().size() - m_dataMapping->GetBaseObjects().size();
+				int datasourceIndex = index.row() - int(m_dataMapping->GetGlyphGraphs().size()) - int(m_dataMapping->GetBaseObjects().size());
 				SynGlyphX::DataTransformMapping::DatasourceMap::const_iterator datasource = m_dataMapping->GetDatasources().begin();
 				std::advance(datasource, datasourceIndex);
 				return QString::fromStdWString(datasource->second->GetFormattedName());
@@ -414,7 +414,7 @@ namespace SynGlyphX {
 			}
 			else if (IsParentlessRowInDataType(DataType::FieldGroups, index.row())) {
 
-				int fieldGroupIndex = index.row() - (m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size());
+				int fieldGroupIndex = index.row() - int(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size());
 				SynGlyphX::DataTransformMapping::FieldGroupMap::const_iterator fieldGroup = m_dataMapping->GetFieldGroupMap().begin();
 				std::advance(fieldGroup, fieldGroupIndex);
 				return QString::fromStdWString(fieldGroup->first);
@@ -589,8 +589,8 @@ namespace SynGlyphX {
 
 		if (!parent.isValid()) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + 
-				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size() + m_dataMapping->GetLinks().size();
+			return int(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() + 
+				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size() + m_dataMapping->GetLinks().size());
 		}
 
 		if (parent.internalPointer() != nullptr) {
@@ -604,7 +604,7 @@ namespace SynGlyphX {
 
 	boost::uuids::uuid DataTransformModel::AddFileDatasource(const FileDatasource& datasource) {
 
-		int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
+		int newRow = GetFirstIndexForDataType(DataType::DataSources) + (int)m_dataMapping->GetDatasources().size();
 		beginInsertRows(QModelIndex(), newRow, newRow);
 		boost::uuids::uuid id = m_dataMapping->AddFileDatasource(datasource);
 		AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().at(id));
@@ -615,7 +615,7 @@ namespace SynGlyphX {
 
 	boost::uuids::uuid DataTransformModel::AddDatabaseServer(const DatabaseServerDatasource& datasource) {
 
-		int newRow = GetFirstIndexForDataType(DataType::DataSources) + m_dataMapping->GetDatasources().size();
+		int newRow = GetFirstIndexForDataType(DataType::DataSources) + int(m_dataMapping->GetDatasources().size());
 		beginInsertRows(QModelIndex(), newRow, newRow);
 		boost::uuids::uuid id = m_dataMapping->AddDatabaseServer(datasource);
 		AddDatasourceInfoFromDataEngine(id, m_dataMapping->GetDatasources().at(id));
@@ -757,7 +757,7 @@ namespace SynGlyphX {
 					}
 					else if (IsParentlessRowInDataType(DataType::BaseObjects, i)) {
 
-						m_dataMapping->RemoveBaseObject(i - m_dataMapping->GetGlyphGraphs().size());
+						m_dataMapping->RemoveBaseObject(i - int(m_dataMapping->GetGlyphGraphs().size()));
 					}
 					else if (IsParentlessRowInDataType(DataType::DataSources, i)) {
 
@@ -790,7 +790,7 @@ namespace SynGlyphX {
 
 					//Since bindings could have been cleared due to datasources being removed, notify that the data of glyphs has been changed
 					unsigned int firstGlyphIndex = GetFirstIndexForDataType(DataType::GlyphTrees);
-					emit dataChanged(index(firstGlyphIndex), index(firstGlyphIndex + m_dataMapping->GetGlyphGraphs().size() - 1));
+					emit dataChanged(index(firstGlyphIndex), index(int(firstGlyphIndex + m_dataMapping->GetGlyphGraphs().size() - 1)));
 				}
 			}
 		
@@ -911,7 +911,7 @@ namespace SynGlyphX {
 			throw std::invalid_argument("Can't add empty glyph tree to data mapping");
 		}
 
-		int row = m_dataMapping->GetGlyphGraphs().size();
+		int row = int(m_dataMapping->GetGlyphGraphs().size());
 		beginInsertRows(QModelIndex(), row, row);
 		m_dataMapping->AddGlyphTree(glyphTree);
 		endInsertRows();
@@ -924,13 +924,13 @@ namespace SynGlyphX {
 	void DataTransformModel::SetBaseObject(unsigned int position, const BaseImage& baseImage) {
 
 		m_dataMapping->SetBaseObject(position, baseImage);
-		QModelIndex modelIndex = index(m_dataMapping->GetGlyphGraphs().size() + position);
+		QModelIndex modelIndex = index(int(m_dataMapping->GetGlyphGraphs().size() + position));
 		emit dataChanged(modelIndex, modelIndex);
 	}
 
 	void DataTransformModel::AddBaseObject(const BaseImage& baseImage) {
 
-		int row = m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
+		int row = int(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size());
 		beginInsertRows(QModelIndex(), row, row);
 		m_dataMapping->AddBaseObject(baseImage);
 		endInsertRows();
@@ -945,14 +945,14 @@ namespace SynGlyphX {
 
 	void DataTransformModel::AddLegend(const Legend& legend) {
 
-		int row = GetFirstIndexForDataType(DataType::Legends) + m_dataMapping->GetLegends().size();
+		int row = GetFirstIndexForDataType(DataType::Legends) + int(m_dataMapping->GetLegends().size());
 		beginInsertRows(QModelIndex(), row, row);
 		m_dataMapping->AddLegend(legend);
 		endInsertRows();
 	}
 	
 	void DataTransformModel::AddLink(const SynGlyphX::Link& link) {
-		int row = GetFirstIndexForDataType(DataType::Links) + m_dataMapping->GetLinks().size();
+		int row = GetFirstIndexForDataType(DataType::Links) + int(m_dataMapping->GetLinks().size());
 		beginInsertRows(QModelIndex(), row, row);
 		m_dataMapping->AddLink(link);
 		endInsertRows();
@@ -972,24 +972,24 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformModel::SetLinks(const std::vector<Link>& links) {
-		int extraRows = links.size() - m_dataMapping->GetLinks().size();
+		int extraRows = int(links.size() - m_dataMapping->GetLinks().size());
 		auto startIndex = GetFirstIndexForDataType(DataType::Links);
 		if (extraRows >  0) {
-			auto insertIndex = startIndex + m_dataMapping->GetLinks().size();
+			int insertIndex = int(startIndex + m_dataMapping->GetLinks().size());
 			beginInsertRows(QModelIndex(), insertIndex, insertIndex + extraRows - 1);
 			m_dataMapping->SetLinks(links);
 			endInsertRows();
 			emit dataChanged(index(startIndex), index(insertIndex));
 		}
 		else if (extraRows < 0) {
-			auto removeIndex = startIndex + links.size();
+			int removeIndex = int(startIndex + links.size());
 			beginRemoveRows(QModelIndex(), removeIndex, removeIndex - extraRows );
 			m_dataMapping->SetLinks(links);
 			endRemoveRows();
 			emit dataChanged(index(startIndex), index(removeIndex));
 		}
 		else {
-			emit dataChanged(index(startIndex), index(startIndex + links.size()));
+			emit dataChanged(index(startIndex), index(int(startIndex + links.size())));
 		}
 	}
 
@@ -1002,14 +1002,14 @@ namespace SynGlyphX {
 	}
 
 	void DataTransformModel::CreateAddLinkCommand(const SynGlyphX::Link& link) {
-		auto command = new AddLinkCommand(this, m_dataMapping->GetLinks().size(), link);
+		auto command = new AddLinkCommand(this, int(m_dataMapping->GetLinks().size()), link);
 		command->setText(tr("Add Link"));
 		AppGlobal::Services()->GetUndoStack()->push(command);
 	}
 	bool DataTransformModel::IsParentlessRowInDataType(DataType type, int row) const {
 
-		int min = GetFirstIndexForDataType(type);
-		int max = 0;
+		size_t min = GetFirstIndexForDataType(type);
+		size_t max = 0;
 		if (type == DataType::BaseObjects) {
 
 			max = min + m_dataMapping->GetBaseObjects().size();
@@ -1035,32 +1035,32 @@ namespace SynGlyphX {
 			max = min + m_dataMapping->GetGlyphGraphs().size();
 		}
 
-		return ((row >= min) && (row < max));
+		return ((row >= int(min)) && (row < int(max)));
 	}
 
 	unsigned int DataTransformModel::GetFirstIndexForDataType(DataType type) const {
 
 		if (type == DataType::BaseObjects) {
 
-			return m_dataMapping->GetGlyphGraphs().size();
+			return static_cast<unsigned int>(m_dataMapping->GetGlyphGraphs().size());
 		}
 		else if (type == DataType::DataSources) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size();
+			return static_cast<unsigned int>(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size());
 		}
 		else if (type == DataType::FieldGroups) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size();
+			return static_cast<unsigned int>(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size());
 		}
 		else if (type == DataType::Legends) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
-				m_dataMapping->GetFieldGroupMap().size();
+			return static_cast<unsigned int>(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
+				m_dataMapping->GetFieldGroupMap().size());
 		}
 		else if (type == DataType::Links) {
 
-			return m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
-				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size();
+			return static_cast<unsigned int>(m_dataMapping->GetGlyphGraphs().size() + m_dataMapping->GetBaseObjects().size() + m_dataMapping->GetDatasources().size() +
+				m_dataMapping->GetFieldGroupMap().size() + m_dataMapping->GetLegends().size());
 		}
 		else if (type == DataType::GlyphTrees) {
 
@@ -1341,7 +1341,7 @@ namespace SynGlyphX {
 		bool addNew = (groupIterator == fieldGroupMap.end());
 	
 		int firstIndex = GetFirstIndexForDataType(DataType::FieldGroups);
-		int lastIndex = firstIndex + fieldGroupMap.size() - 1;
+		int lastIndex = firstIndex + int(fieldGroupMap.size()) - 1;
 		if (addNew) {
 
 			lastIndex++;
@@ -1383,7 +1383,7 @@ namespace SynGlyphX {
 
 			//Since references to the removed field group could have been cleared, notify that the data of glyphs has been changed
 			unsigned int firstGlyphIndex = GetFirstIndexForDataType(DataType::GlyphTrees);
-			emit dataChanged(index(firstGlyphIndex), index(firstGlyphIndex + m_dataMapping->GetGlyphGraphs().size() - 1));
+			emit dataChanged(index(firstGlyphIndex), index(firstGlyphIndex + int(m_dataMapping->GetGlyphGraphs().size()) - 1));
 		}
 	}
 

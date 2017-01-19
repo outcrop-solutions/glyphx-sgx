@@ -258,8 +258,8 @@ namespace SynGlyphX {
 
 	boost::optional<GlyphColor> GlyphColorTranslator::get_value(std::wstring const &v) {
 
-		int firstComma = v.find_first_of(L',');
-		int secondComma = v.find_last_of(L',');
+		int firstComma = (int)v.find_first_of(L',');
+		int secondComma = (int)v.find_last_of(L',');
 
 		try {
 

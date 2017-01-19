@@ -96,13 +96,13 @@ namespace SynGlyphX {
 
 		if ( !parent.isValid() ) {
 
-			return m_glyphs.size();
+			return (int)m_glyphs.size();
 		}
 
 		if ( parent.internalPointer() != nullptr ) {
 
 			GlyphInfoNode* parentNode = static_cast<GlyphInfoNode*>( parent.internalPointer() );
-			return parentNode->GetChildCount();
+			return (int)parentNode->GetChildCount();
 		}
 
 		return 0;
@@ -167,7 +167,7 @@ namespace SynGlyphX {
 
 		if ( title.substr( 0, 8 ) == L"<a href=" ) {
 
-			int pos = title.find_first_of( '>', 8 ) + 1;
+			auto pos = title.find_first_of( '>', 8 ) + 1;
 			return QString::fromStdWString( title.substr( pos, title.length() - pos - 4 ) );
 		}
 		else {

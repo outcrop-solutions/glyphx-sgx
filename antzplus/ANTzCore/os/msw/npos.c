@@ -72,7 +72,7 @@ void nposGetAppPath (char* buffer, int* size)
 	strcpy (buffer, appPath);
 
 	//set the length
-	*size = strlen(buffer); 
+	*size = (int)strlen(buffer); 
 }
 
 // current working directory is OS specific

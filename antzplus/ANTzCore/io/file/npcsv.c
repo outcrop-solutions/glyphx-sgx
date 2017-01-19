@@ -72,7 +72,7 @@ FILE* npOpenCSV (const char* fileName, const char* mode, void* dataRef)
 int npReadCSV (void* readBuffer, int elementSize, int elementCount, 
 				 FILE* file, void* dataRef)
 {
-	int bytes = 0;
+	size_t bytes = 0;
 
 	bytes = fread (readBuffer, elementSize, elementCount, file);
 	
@@ -81,7 +81,7 @@ int npReadCSV (void* readBuffer, int elementSize, int elementCount,
 	else
 		printf("Success Reading\n");
 
-	return bytes;
+	return (int)bytes;
 }
 
 
@@ -109,7 +109,7 @@ void npTestCSV (void* fileName, int wordSize, int size, void* dataRef)
 	file = npOpenCSV (fileName, "r+", dataRef);
 
 	// write the file path in the file as text
-	count = npWriteCSV (buffer, 1, strlen(buffer), file, dataRef);
+	count = npWriteCSV (buffer, 1, (int)strlen(buffer), file, dataRef);
 
 	printf("wrote %d bytes.\n", count); 
 
@@ -154,7 +154,7 @@ FILE* npCSVDialog (const char* fileName, int dialogType, void* dataRef)
 //-----------------------------------------------------------------------------
 int npWriteCSV (const void* str, int wordSize, int size, FILE* file, void* dataRef)
 {
-	return fwrite( str, 1, strlen(str), file );
+	return (int)fwrite( str, 1, strlen(str), file );
 }
 
 
@@ -227,7 +227,7 @@ void npCSVtoMap (FILE* file, int type, void*dataRef)
 		if (count > 0)
 		{
 			printf("Loading File\n");			//add table type handling, debug zz
-			npLoadMapFile (buffer, 1, count, dataRef);	//process data
+			npLoadMapFile (buffer, 1, (int)count, dataRef);	//process data
 			printf ("Done\n\n");
 		}
 		else
@@ -1258,8 +1258,8 @@ int npOpenMapCSV (char* filePath, int mapType, void* dataRef)
 	}
 
 	//id the table using the first field of the header row,
-	mapFormat = npGetFormat( filePath, curs, size, data );
-	mapType = npGetMapType( mapFormat, curs, size, data );
+	mapFormat = npGetFormat( filePath, curs, (int)size, data );
+	mapType = npGetMapType( mapFormat, curs, (int)size, data );
 /*
 //	mapItemFuncPtr = npGetMapItemFuncPtr( mapFormat, mapType, data );
 
@@ -1286,7 +1286,7 @@ int npOpenMapCSV (char* filePath, int mapType, void* dataRef)
 	//start processing items (CSV/table rows)
 
 		//update count and set read ptr to beginning of next line	
-		count += i = npSeekToNextLineLimit(curs, size - count);
+		count += i = npSeekToNextLineLimit(curs, (int)(size - count));
 		curs = &curs[i];
 
 		count += i = npSeekToNextField(curs);	//skip the first id column
@@ -1475,7 +1475,7 @@ int npSaveMapToCSV (char* filePath, int mapType, void* dataRef)
 	count = npMapToCSV (buffer, mapType, kNPfileBlockSize, dataRef);
 
 	printf("Writing...\n");
-	count = npFileWrite (buffer, 1, count, file, dataRef);
+	count = npFileWrite (buffer, 1, (int)count, file, dataRef);
 
 
 	// print first line of file contents
@@ -1500,5 +1500,5 @@ int npSaveMapToCSV (char* filePath, int mapType, void* dataRef)
 
 	free (buffer);
 
-	return count;
+	return (int)count;
 } 

@@ -18,7 +18,7 @@ void KeywordFilterListWidget::ResetForNewTable() {
 
 	//Insert ranges and extents for new table
 	const FilteringParameters::ColumnKeywordFilterMap& keywordFilterMap = m_table2FiltersMap[m_currentTable];
-	unsigned int numberOfFields = keywordFilterMap.size();
+	unsigned int numberOfFields = static_cast<unsigned int>(keywordFilterMap.size());
 
 	unsigned int numberOfRows = 0;
 	for (unsigned int j = 0; j < numberOfFields; ++j) {
@@ -33,7 +33,7 @@ void KeywordFilterListWidget::ResetForNewTable() {
 		}
 
 		//m_filterListTableWidget->setSpan(numberOfRows, 0, newField2RangeAndExtentList[j].second.size(), 1);
-		numberOfRows += keywordFilterMap[j].second.size();
+		numberOfRows += static_cast<unsigned int>(keywordFilterMap[j].second.size());
 
 		m_filterGroups[m_currentTable].AddGroup(filterWidgetGroup, keywordFilterMap[j].first);
 	}

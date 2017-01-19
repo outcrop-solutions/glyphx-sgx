@@ -589,12 +589,12 @@ void FilteringTable::FilterWidgetGroupsManager::Clear() {
 
 unsigned int FilteringTable::FilterWidgetGroupsManager::GetNumberOfGroups() const {
 
-	return m_filterWidgets.size();
+	return static_cast<unsigned int>(m_filterWidgets.size());
 }
 
 unsigned int FilteringTable::FilterWidgetGroupsManager::GetCountForGroup(unsigned int group) const {
 
-	return m_filterWidgets[group].size();
+	return static_cast<unsigned int>(m_filterWidgets[group].size());
 }
 
 std::vector<unsigned int> FilteringTable::FilterWidgetGroupsManager::GetCountGorEachGroup() const {
@@ -603,7 +603,7 @@ std::vector<unsigned int> FilteringTable::FilterWidgetGroupsManager::GetCountGor
 
 	for (const auto& group : m_filterWidgets) {
 
-		counts.push_back(group.size());
+		counts.push_back(static_cast<unsigned int>(group.size()));
 	}
 
 	return counts;
@@ -619,7 +619,7 @@ FilteringTable::FilterWidgetGroupsManager::GroupedIndex FilteringTable::FilterWi
 			return GroupedIndex(i, index - totalSize);
 		}
 
-		totalSize += m_filterWidgets[i].size();
+		totalSize += static_cast<unsigned int>(m_filterWidgets[i].size());
 	}
 
 	throw std::invalid_argument("Index exceeds total number of widgets.");
