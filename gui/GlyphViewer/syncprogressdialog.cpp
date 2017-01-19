@@ -98,4 +98,8 @@ namespace SynGlyphX {
 		}
 	}
 
+	int SyncProgressDialog::GetFileCount(){
+		return file_count;
+	}
+
 }

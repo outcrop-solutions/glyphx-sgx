@@ -21,6 +21,11 @@
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "syncprogressdialog.h"
 #include <QtWidgets/QDesktopWidget>
+#include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include "AnnouncementDialog.h"
+#include "S3FileManager.h"
+#include "version.h"
 
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 	: QFrame(parent),
@@ -81,6 +86,15 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
 	m_optionsButtonGroup->button(0)->setChecked(true);
 	OnNewOptionSelected(0);
+
+	s3Manager = new DataEngine::S3FileManager();
+	QString os_path =
+#ifdef WIN32
+	"releases/windows";
+#elif __APPLE__
+	"releases/mac";
+#endif
+	CheckForNewRelease(os_path);
 
 	if (loggedOn){
 		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
@@ -516,6 +530,11 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 	d->exec();
 	LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && d->GetFileCount() > 0){
+		SynGlyphX::AnnouncementDialog* notesDialog = new SynGlyphX::AnnouncementDialog("Patch Notes", this);
+		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/patchnotes.html");
+		notesDialog->show();
+	}
 }
 
 void HomePageWidget::ResetViews(){
@@ -847,4 +866,28 @@ void HomePageWidget::OnNewOptionSelected(int index) {
 void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
 
 	emit LoadRecentFile(item->toolTip());
+}
+
+void HomePageWidget::CheckForNewRelease(QString os_path) {
+
+	QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName().toLower().replace(".exe","");
+	std::vector<DataEngine::S3File*> files = s3Manager->GetFilesFromDirectory(appName.toStdString(), os_path.toStdString().c_str());
+	std::string releaseName;
+	for (const auto& file : files){ if (file->GetName().find("newrelease") != std::string::npos){ releaseName = file->GetName(); } }
+	std::vector<std::string> x;
+	boost::split(x, releaseName, boost::is_any_of("_"));
+
+	if (x.at(1) != SynGlyphX::getAppVersionString()){
+		for (const auto& file : files){
+			if (file->GetName().find("_"+x.at(1)+".") != std::string::npos){
+				SynGlyphX::AnnouncementDialog* releaseDialog = new SynGlyphX::AnnouncementDialog("New Release Available", this);
+				releaseDialog->AddLabel("https://s3.amazonaws.com/" + appName + "/" + os_path + "/" + releaseName.c_str());
+				releaseDialog->ReplaceLabelText("***", QString::fromStdString(file->GetUrl()));
+				releaseDialog->ReplaceLabelText("_._.__", x.at(1).c_str());
+				releaseDialog->AddWebView("https://s3.amazonaws.com/" + appName + "/" + os_path + "/changes/changes_" + x.at(1).c_str() + "_.html");
+				releaseDialog->resize(400, 250);
+				releaseDialog->show();
+			}
+		}
+	}
 }
