@@ -1559,7 +1559,7 @@ namespace SynGlyphX {
 		if (query.exec()) {
 			while (query.next()){
 				fieldNames << query.value(1).toString();
-				fieldTypes << query.value(2).toString();
+				fieldTypes << query.value(2).toString().toLower();
 				if (query.value(2).toString() == "REAL") {
 					numericCols.push_back(query.value(1).toString().toStdWString());
 				}
