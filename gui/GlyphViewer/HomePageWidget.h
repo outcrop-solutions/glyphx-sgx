@@ -22,6 +22,7 @@
 #include "dataengineconnection.h"
 #include "userlogindialog.h"
 #include "glyphviewerwindow.h"
+#include "S3FileManager.h"
 
 class QStackedWidget;
 class QStackedLayout;
@@ -52,7 +53,6 @@ public:
 	void LoadProject(const QString& project);
 
 	void ResetViews();
-	//void SyncFilesAndLoadViews();
 	void LoggedOut();
 
 signals:
@@ -80,6 +80,7 @@ private:
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
 	QWidget* CreateLowerDashboardWidget();
 	void SetCustomerLogo();
+	void CheckForNewRelease(QString os_path);
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
@@ -104,6 +105,7 @@ private:
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;
 
+	DataEngine::S3FileManager* s3Manager;
 	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	//GlyphEd only.  Will get rid of ASAP

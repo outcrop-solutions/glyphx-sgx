@@ -15,6 +15,7 @@
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QToolButton>
 #include <QtWebEngineWidgets/QWebEngineView>
+#include "AnnouncementDialog.h"
 
 namespace SynGlyphX {
 
@@ -204,6 +205,11 @@ namespace SynGlyphX {
 		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));
 		QObject::connect(licensingAction, &QAction::triggered, this, &MainWindow::ShowLicensingDialog);
 
+		if (QFileInfo(QCoreApplication::applicationFilePath()).fileName().contains("GlyphEd")) {
+			QAction* recentChanges = m_helpMenu->addAction(tr("Recent Changes"));
+			QObject::connect(recentChanges, &QAction::triggered, this, &MainWindow::ShowRecentChanges);
+		}
+
 		m_helpMenu->addSeparator();
 
 		m_aboutBoxAction = m_helpMenu->addAction("About " + GetApplicationDisplayName());
@@ -294,6 +300,12 @@ namespace SynGlyphX {
 		helpDialog->show();
 	}
 
+	void MainWindow::ShowRecentChanges(){
+
+		SynGlyphX::AnnouncementDialog* notesDialog = new SynGlyphX::AnnouncementDialog("Recent Changes", this);
+		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/historicalnotes.html");
+		notesDialog->show();
+	}
 
     void MainWindow::ShowAboutBox() {
 

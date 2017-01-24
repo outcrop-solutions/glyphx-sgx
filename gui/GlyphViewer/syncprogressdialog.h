@@ -40,6 +40,8 @@ namespace SynGlyphX {
 		SyncProgressDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
 		~SyncProgressDialog(){};
 
+		int GetFileCount();
+
 		public slots:
 		//Slot that is called when QTimer timeouts 
 		void handleTimeOut();

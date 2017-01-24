@@ -117,6 +117,7 @@ namespace SynGlyphX {
         void OnRecentFileSelected();
 		void ShowLicensingDialog();
 		void ShowTutorial();
+		void ShowRecentChanges();
         void ShowAboutBox();
 		void UserSettings();
 
