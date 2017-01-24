@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXFoundation
 							../../Core/SGXDataMapping
 							../../GUI/MapDownloading
+							${AWS_INCLUDE_DIR}
 							${JAVA_INCLUDE_DIRS})
 
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
@@ -28,7 +29,9 @@ TARGET_LINK_LIBRARIES(DataEngine ${Boost_LIBRARIES}
 							  SGXGeospatial
 							  SGXFoundation
 							  SGXDataMapping
-							  MapDownloading)
+							  MapDownloading
+							  aws-cpp-sdk-core
+							  aws-cpp-sdk-s3)
 							  
 TARGET_LINK_LIBRARIES(DataEngine)
 
