@@ -1,0 +1,1564 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\3rdparty\bin\
+     Dest : C:\sgx\bin\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   0	C:\sgx\3rdparty\bin\
+	*EXTRA Dir        -1	C:\sgx\bin\Win64\
+	                   0	C:\sgx\3rdparty\bin\Win32\
+	                   8	C:\sgx\3rdparty\bin\Win32\Debug\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\resources\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\scene\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\textures\
+	  *EXTRA File 		     119	antzglobals.csv
+	  *EXTRA File 		     115	antzosc.csv
+	  *EXTRA File 		   2.8 m	assimp.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  166110	dataengine.jar
+	  *EXTRA File 		   10458	debug.log
+	  *EXTRA File 		  342016	glew32.dll
+	  *EXTRA File 		   9.7 m	icudtl.dat
+	  *EXTRA File 		    7028	log.txt
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		      91	nourl.html
+	  *EXTRA File 		  11.4 m	Qt5Cored.dll
+	  *EXTRA File 		  13.0 m	Qt5Guid.dll
+	  *EXTRA File 		   2.3 m	Qt5Networkd.dll
+	  *EXTRA File 		  734720	Qt5OpenGLd.dll
+	  *EXTRA File 		   7.7 m	Qt5Qmld.dll
+	  *EXTRA File 		   7.6 m	Qt5Quickd.dll
+	  *EXTRA File 		  417280	Qt5Sqld.dll
+	  *EXTRA File 		  264704	Qt5WebChanneld.dll
+	  *EXTRA File 		 397.4 m	Qt5WebEngineCored.dll
+	  *EXTRA File 		  524800	Qt5WebEngined.dll
+	  *EXTRA File 		  382976	Qt5WebEngineWidgetsd.dll
+	  *EXTRA File 		  10.5 m	Qt5Widgetsd.dll
+	  *EXTRA File 		   15360	QtWebEngineProcess.exe
+	  *EXTRA File 		   6.5 m	qtwebengine_resources.pak
+	  *EXTRA File 		  415020	qtwebengine_resources_100p.pak
+	  *EXTRA File 		  476671	qtwebengine_resources_200p.pak
+	  *EXTRA File 		   6.2 m	SGXUtility.pdb
+	  *EXTRA File 		  105984	SGXzSpaceGUI.dll
+	  *EXTRA File 		  989892	SGXzSpaceGUI.ilk
+	  *EXTRA File 		   1.4 m	SGXzSpaceGUI.pdb
+	  *EXTRA File 		     675	tlog.txt
+	  *EXTRA File 		  247984	vccorlib120.dll
+	                   6	C:\sgx\3rdparty\bin\Win32\Release\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\textures\
+	  *EXTRA File 		  187904	ANTzSingleGlyphGUI.dll
+	  *EXTRA File 		   2.8 m	assimp.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  165778	dataengine.jar
+	  *EXTRA File 		  663552	DataMapper.exe
+	  *EXTRA File 		   11371	debug.log
+	  *EXTRA File 		  342016	glew32.dll
+	  *EXTRA File 		  142336	GlyphDesigner.exe
+	  *EXTRA File 		   9.7 m	icudtl.dat
+	  *EXTRA File 		    7055	log.txt
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		   5.2 m	Qt5Core.dll
+	  *EXTRA File 		   5.7 m	Qt5Gui.dll
+	  *EXTRA File 		   1.0 m	Qt5Network.dll
+	  *EXTRA File 		  322560	Qt5OpenGL.dll
+	  *EXTRA File 		   2.9 m	Qt5Qml.dll
+	  *EXTRA File 		   2.9 m	Qt5Quick.dll
+	  *EXTRA File 		  200704	Qt5Sql.dll
+	  *EXTRA File 		  101376	Qt5WebChannel.dll
+	  *EXTRA File 		  228352	Qt5WebEngine.dll
+	  *EXTRA File 		  53.4 m	Qt5WebEngineCore.dll
+	  *EXTRA File 		  178176	Qt5WebEngineWidgets.dll
+	  *EXTRA File 		   5.2 m	Qt5Widgets.dll
+	  *EXTRA File 		   15360	QtWebEngineProcess.exe
+	  *EXTRA File 		   6.5 m	qtwebengine_resources.pak
+	  *EXTRA File 		  415020	qtwebengine_resources_100p.pak
+	  *EXTRA File 		  476671	qtwebengine_resources_200p.pak
+	  *EXTRA File 		   11726	tlog.txt
+	  *EXTRA File 		  247984	vccorlib120.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         4         0         4         0         0        29
+   Files :        14         0        14         0         0        66
+   Bytes :    1.02 m         0    1.02 m         0         0  585.51 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\3rdparty\tools\vc120redist\
+     Dest : C:\sgx\bin\Win32\Debug\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\sgx\3rdparty\tools\vc120redist\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\resources\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\scene\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\textures\
+	  *EXTRA File 		   2.8 m	assimp.dll
+	  *EXTRA File 		  107520	boost_filesystem-vc120-mt-1_62.dll
+	  *EXTRA File 		  160768	boost_filesystem-vc120-mt-gd-1_55.dll
+	  *EXTRA File 		  164864	boost_filesystem-vc120-mt-gd-1_62.dll
+	  *EXTRA File 		  167424	boost_filesystem-vc140-mt-gd-1_59.dll
+	  *EXTRA File 		   16896	boost_system-vc120-mt-1_62.dll
+	  *EXTRA File 		   25600	boost_system-vc120-mt-gd-1_55.dll
+	  *EXTRA File 		   24576	boost_system-vc120-mt-gd-1_62.dll
+	  *EXTRA File 		   33792	boost_system-vc140-mt-gd-1_59.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  342016	glew32.dll
+	  *EXTRA File 		  11.4 m	Qt5Cored.dll
+	  *EXTRA File 		  13.0 m	Qt5Guid.dll
+	  *EXTRA File 		   2.3 m	Qt5Networkd.dll
+	  *EXTRA File 		  734720	Qt5OpenGLd.dll
+	  *EXTRA File 		   7.7 m	Qt5Qmld.dll
+	  *EXTRA File 		   7.6 m	Qt5Quickd.dll
+	  *EXTRA File 		  417280	Qt5Sqld.dll
+	  *EXTRA File 		  264704	Qt5WebChanneld.dll
+	  *EXTRA File 		 397.4 m	Qt5WebEngineCored.dll
+	  *EXTRA File 		  524800	Qt5WebEngined.dll
+	  *EXTRA File 		  382976	Qt5WebEngineWidgetsd.dll
+	  *EXTRA File 		  10.5 m	Qt5Widgetsd.dll
+	  *EXTRA File 		  105984	SGXzSpaceGUI.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0        15
+   Files :         4         0         4         0         0        24
+   Bytes :    2.33 m         0    2.33 m         0         0  456.46 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\ANTzPlus\ANTzTemplate\
+     Dest : C:\sgx\bin\Win32\Debug\ANTzTemplate\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  11	C:\sgx\ANTzPlus\ANTzTemplate\
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		  247984	vccorlib120.dll
+	                   0	C:\sgx\ANTzPlus\ANTzTemplate\usr\
+	                   1	C:\sgx\ANTzPlus\ANTzTemplate\usr\csv\
+	                   1	C:\sgx\ANTzPlus\ANTzTemplate\usr\images\
+	                   1	C:\sgx\ANTzPlus\ANTzTemplate\usr\plugin\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        14         0        14         0         0         4
+   Bytes :   10.32 m         0   10.32 m         0         0    2.33 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\3rdparty\tools\vc120redist\
+     Dest : C:\sgx\bin\Win32\Debug\ANTzTemplate\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\sgx\3rdparty\tools\vc120redist\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzTemplate\usr\
+	  *EXTRA File 		  203776	freeglut.dll
+	  *EXTRA File 		   5.3 m	FreeImage.dll
+	  *EXTRA File 		  237568	glut32.dll
+	  *EXTRA File 		  283136	libcurl.dll
+	  *EXTRA File 		   3.8 m	libmysql.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         1
+   Files :         4         0         4         0         0         5
+   Bytes :    2.33 m         0    2.33 m         0         0    9.89 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\ANTzPlus\ANTzzSpaceTemplate\
+     Dest : C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   9	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		  247984	vccorlib120.dll
+	                   0	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\
+	                   1	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\csv\
+	                   1	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\images\
+	                   1	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\plugin\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        12         0        12         0         0         4
+   Bytes :    4.64 m         0    4.64 m         0         0    2.33 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\3rdparty\tools\vc120redist\
+     Dest : C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\sgx\3rdparty\tools\vc120redist\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\usr\
+	  *EXTRA File 		  203776	freeglut.dll
+	  *EXTRA File 		  237568	glut32.dll
+	  *EXTRA File 		   3.8 m	libmysql.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         1
+   Files :         4         0         4         0         0         3
+   Bytes :    2.33 m         0    2.33 m         0         0    4.23 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\ANTzPlus\ANTzMacTemplate\
+     Dest : C:\sgx\bin\Win32\Debug\ANTzMacTemplate\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   7	C:\sgx\ANTzPlus\ANTzMacTemplate\
+	                   0	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\
+	                   1	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\csv\
+	                   1	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\images\
+	                   1	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\plugin\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        10         0        10         0         0         0
+   Bytes :    9.78 m         0    9.78 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\InstallerFiles\DefaultBaseImages\
+     Dest : C:\sgx\bin\Win32\Debug\DefaultBaseImages\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   6	C:\sgx\Misc\InstallerFiles\DefaultBaseImages\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         6         0         6         0         0         0
+   Bytes :    4.03 m         0    4.03 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\InstallerFiles\GlyphTemplates\
+     Dest : C:\sgx\bin\Win32\Debug\GlyphTemplates\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  19	C:\sgx\Misc\InstallerFiles\GlyphTemplates\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        19         0        19         0         0         0
+   Bytes :    1.55 m         0    1.55 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\InstallerFiles\meshes\
+     Dest : C:\sgx\bin\Win32\Debug\meshes\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  18	C:\sgx\Misc\InstallerFiles\meshes\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        18         0        18         0         0         0
+   Bytes :   293.7 k         0   293.7 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\InstallerFiles\shaders\
+     Dest : C:\sgx\bin\Win32\Debug\shaders\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  18	C:\sgx\Misc\InstallerFiles\shaders\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        18         0        18         0         0         0
+   Bytes :    11.6 k         0    11.6 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\InstallerFiles\fonts\
+     Dest : C:\sgx\bin\Win32\Debug\fonts\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   1	C:\sgx\Misc\InstallerFiles\fonts\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         1         0         1         0         0         0
+   Bytes :   212.2 k         0   212.2 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\InstallerFiles\textures\
+     Dest : C:\sgx\bin\Win32\Debug\textures\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  12	C:\sgx\Misc\InstallerFiles\textures\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        12         0        12         0         0         0
+   Bytes :    65.1 k         0    65.1 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\Misc\Help\
+     Dest : C:\sgx\bin\Win32\Debug\help\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   1	C:\sgx\Misc\Help\
+	                  36	C:\sgx\Misc\Help\images\
+	                   7	C:\sgx\Misc\Help\images\icons\
+	                   2	C:\sgx\Misc\Help\jquery-1.7.2\
+	                   2	C:\sgx\Misc\Help\pages\
+	                   5	C:\sgx\Misc\Help\pages\Filters\
+	                   1	C:\sgx\Misc\Help\pages\Front End Navigation Guide\
+	                   3	C:\sgx\Misc\Help\pages\Front End Navigation Guide\Navigating the Viewer\
+	                   7	C:\sgx\Misc\Help\pages\Front End Navigation Guide\Understanding the Viewer\
+	                   7	C:\sgx\Misc\Help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\
+	                   5	C:\sgx\Misc\Help\pages\Legends\
+	                   4	C:\sgx\Misc\Help\w2ui-1.4.2\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        12         0        12         0         0         0
+   Files :        80         0        80         0         0         0
+   Bytes :    3.05 m         0    3.05 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\DataEngine\jdk\jre\bin\
+     Dest : C:\sgx\bin\Win32\Debug\jre\bin\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  65	C:\sgx\DataEngine\jdk\jre\bin\
+	                   1	C:\sgx\DataEngine\jdk\jre\bin\client\
+	                   2	C:\sgx\DataEngine\jdk\jre\bin\dtplugin\
+	                   2	C:\sgx\DataEngine\jdk\jre\bin\plugin2\
+	                   1	C:\sgx\DataEngine\jdk\jre\bin\server\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        71         0        71         0         0         0
+   Bytes :   55.01 m         0   55.01 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\DataEngine\jdk\jre\lib\
+     Dest : C:\sgx\bin\Win32\Debug\jre\lib\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  30	C:\sgx\DataEngine\jdk\jre\lib\
+	                   5	C:\sgx\DataEngine\jdk\jre\lib\cmm\
+	                  17	C:\sgx\DataEngine\jdk\jre\lib\deploy\
+	                  13	C:\sgx\DataEngine\jdk\jre\lib\ext\
+	                   8	C:\sgx\DataEngine\jdk\jre\lib\fonts\
+	                   1	C:\sgx\DataEngine\jdk\jre\lib\i386\
+	                   0	C:\sgx\DataEngine\jdk\jre\lib\images\
+	                   8	C:\sgx\DataEngine\jdk\jre\lib\images\cursors\
+	                   2	C:\sgx\DataEngine\jdk\jre\lib\jfr\
+	                   4	C:\sgx\DataEngine\jdk\jre\lib\management\
+	                   9	C:\sgx\DataEngine\jdk\jre\lib\security\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        11         0        11         0         0         0
+   Files :        97         0        97         0         0         0
+   Bytes :  104.20 m         0  104.20 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:25 PM
+   Source : C:\sgx\DataEngine\JavaDataEngine\database-drivers\
+     Dest : C:\sgx\bin\Win32\Debug\database-drivers\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   8	C:\sgx\DataEngine\JavaDataEngine\database-drivers\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         8         0         8         0         0         0
+   Bytes :   11.40 m         0   11.40 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:25 PM
+
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\
+     Dest : C:\sgx\bin\Win32\Debug\qt_plugins\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   0	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\audio\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\bearer\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\canbus\
+	                   2	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\designer\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\generic\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\geoservices\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\iconengines\
+	                  30	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\imageformats\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\mediaservice\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\platforms\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\playlistformats\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\position\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\printsupport\
+	                  21	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\qmltooling\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sceneparsers\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sensorgestures\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sensors\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sqldrivers\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        19         0        19         0         0         0
+   Files :       137         0       137         0         0         0
+   Bytes :  234.32 m         0  234.32 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+        1 file(s) copied.
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\Qt\Qt5.6.0\5.6\msvc2013_64\resources\
+     Dest : C:\sgx\bin\Win32\Debug\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\Qt\Qt5.6.0\5.6\msvc2013_64\resources\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\resources\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\scene\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\textures\
+	  *EXTRA File 		     119	antzglobals.csv
+	  *EXTRA File 		     115	antzosc.csv
+	  *EXTRA File 		   2.8 m	assimp.dll
+	  *EXTRA File 		  107520	boost_filesystem-vc120-mt-1_62.dll
+	  *EXTRA File 		  160768	boost_filesystem-vc120-mt-gd-1_55.dll
+	  *EXTRA File 		  164864	boost_filesystem-vc120-mt-gd-1_62.dll
+	  *EXTRA File 		  167424	boost_filesystem-vc140-mt-gd-1_59.dll
+	  *EXTRA File 		   16896	boost_system-vc120-mt-1_62.dll
+	  *EXTRA File 		   25600	boost_system-vc120-mt-gd-1_55.dll
+	  *EXTRA File 		   24576	boost_system-vc120-mt-gd-1_62.dll
+	  *EXTRA File 		   33792	boost_system-vc140-mt-gd-1_59.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  166110	dataengine.jar
+	  *EXTRA File 		   10458	debug.log
+	  *EXTRA File 		  342016	glew32.dll
+	  *EXTRA File 		    7028	log.txt
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		      91	nourl.html
+	  *EXTRA File 		  11.4 m	Qt5Cored.dll
+	  *EXTRA File 		  13.0 m	Qt5Guid.dll
+	  *EXTRA File 		   2.3 m	Qt5Networkd.dll
+	  *EXTRA File 		  734720	Qt5OpenGLd.dll
+	  *EXTRA File 		   7.7 m	Qt5Qmld.dll
+	  *EXTRA File 		   7.6 m	Qt5Quickd.dll
+	  *EXTRA File 		  417280	Qt5Sqld.dll
+	  *EXTRA File 		  264704	Qt5WebChanneld.dll
+	  *EXTRA File 		 397.4 m	Qt5WebEngineCored.dll
+	  *EXTRA File 		  524800	Qt5WebEngined.dll
+	  *EXTRA File 		  382976	Qt5WebEngineWidgetsd.dll
+	  *EXTRA File 		  10.5 m	Qt5Widgetsd.dll
+	  *EXTRA File 		   15360	QtWebEngineProcess.exe
+	  *EXTRA File 		   6.2 m	SGXUtility.pdb
+	  *EXTRA File 		  105984	SGXzSpaceGUI.dll
+	  *EXTRA File 		  989892	SGXzSpaceGUI.ilk
+	  *EXTRA File 		   1.4 m	SGXzSpaceGUI.pdb
+	  *EXTRA File 		     675	tlog.txt
+	  *EXTRA File 		  247984	vccorlib120.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0        15
+   Files :         4         0         4         0         0        39
+   Bytes :   17.10 m         0   17.10 m         0         0  467.66 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\3rdparty\tools\graphics\Win32\
+     Dest : C:\sgx\bin\Win32\Debug\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   2	C:\sgx\3rdparty\tools\graphics\Win32\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\resources\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\scene\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Debug\textures\
+	  *EXTRA File 		     119	antzglobals.csv
+	  *EXTRA File 		     115	antzosc.csv
+	  *EXTRA File 		  107520	boost_filesystem-vc120-mt-1_62.dll
+	  *EXTRA File 		  160768	boost_filesystem-vc120-mt-gd-1_55.dll
+	  *EXTRA File 		  164864	boost_filesystem-vc120-mt-gd-1_62.dll
+	  *EXTRA File 		  167424	boost_filesystem-vc140-mt-gd-1_59.dll
+	  *EXTRA File 		   16896	boost_system-vc120-mt-1_62.dll
+	  *EXTRA File 		   25600	boost_system-vc120-mt-gd-1_55.dll
+	  *EXTRA File 		   24576	boost_system-vc120-mt-gd-1_62.dll
+	  *EXTRA File 		   33792	boost_system-vc140-mt-gd-1_59.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  166110	dataengine.jar
+	  *EXTRA File 		   10458	debug.log
+	  *EXTRA File 		   9.7 m	icudtl.dat
+	  *EXTRA File 		    7028	log.txt
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		      91	nourl.html
+	  *EXTRA File 		  11.4 m	Qt5Cored.dll
+	  *EXTRA File 		  13.0 m	Qt5Guid.dll
+	  *EXTRA File 		   2.3 m	Qt5Networkd.dll
+	  *EXTRA File 		  734720	Qt5OpenGLd.dll
+	  *EXTRA File 		   7.7 m	Qt5Qmld.dll
+	  *EXTRA File 		   7.6 m	Qt5Quickd.dll
+	  *EXTRA File 		  417280	Qt5Sqld.dll
+	  *EXTRA File 		  264704	Qt5WebChanneld.dll
+	  *EXTRA File 		 397.4 m	Qt5WebEngineCored.dll
+	  *EXTRA File 		  524800	Qt5WebEngined.dll
+	  *EXTRA File 		  382976	Qt5WebEngineWidgetsd.dll
+	  *EXTRA File 		  10.5 m	Qt5Widgetsd.dll
+	  *EXTRA File 		   15360	QtWebEngineProcess.exe
+	  *EXTRA File 		   6.5 m	qtwebengine_resources.pak
+	  *EXTRA File 		  415020	qtwebengine_resources_100p.pak
+	  *EXTRA File 		  476671	qtwebengine_resources_200p.pak
+	  *EXTRA File 		   6.2 m	SGXUtility.pdb
+	  *EXTRA File 		  105984	SGXzSpaceGUI.dll
+	  *EXTRA File 		  989892	SGXzSpaceGUI.ilk
+	  *EXTRA File 		   1.4 m	SGXzSpaceGUI.pdb
+	  *EXTRA File 		     675	tlog.txt
+	  *EXTRA File 		  247984	vccorlib120.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0        15
+   Files :         2         0         2         0         0        41
+   Bytes :    3.20 m         0    3.20 m         0         0  481.55 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\3rdparty\tools\vc120redist\
+     Dest : C:\sgx\bin\Win32\Release\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\sgx\3rdparty\tools\vc120redist\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\textures\
+	  *EXTRA File 		  187904	ANTzSingleGlyphGUI.dll
+	  *EXTRA File 		   2.8 m	assimp.dll
+	  *EXTRA File 		  100352	boost_filesystem-vc120-mt-1_55.dll
+	  *EXTRA File 		  107520	boost_filesystem-vc120-mt-1_62.dll
+	  *EXTRA File 		  116224	boost_filesystem-vc140-mt-1_59.dll
+	  *EXTRA File 		   17408	boost_system-vc120-mt-1_55.dll
+	  *EXTRA File 		   16896	boost_system-vc120-mt-1_62.dll
+	  *EXTRA File 		   19456	boost_system-vc140-mt-1_59.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  342016	glew32.dll
+	  *EXTRA File 		   5.2 m	Qt5Core.dll
+	  *EXTRA File 		   5.7 m	Qt5Gui.dll
+	  *EXTRA File 		   1.0 m	Qt5Network.dll
+	  *EXTRA File 		  322560	Qt5OpenGL.dll
+	  *EXTRA File 		   2.9 m	Qt5Qml.dll
+	  *EXTRA File 		   2.9 m	Qt5Quick.dll
+	  *EXTRA File 		  200704	Qt5Sql.dll
+	  *EXTRA File 		  101376	Qt5WebChannel.dll
+	  *EXTRA File 		  228352	Qt5WebEngine.dll
+	  *EXTRA File 		  53.4 m	Qt5WebEngineCore.dll
+	  *EXTRA File 		  178176	Qt5WebEngineWidgets.dll
+	  *EXTRA File 		   5.2 m	Qt5Widgets.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0        13
+   Files :         4         0         4         0         0        22
+   Bytes :    2.33 m         0    2.33 m         0         0   81.37 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\ANTzPlus\ANTzTemplate\
+     Dest : C:\sgx\bin\Win32\Release\ANTzTemplate\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  11	C:\sgx\ANTzPlus\ANTzTemplate\
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		  247984	vccorlib120.dll
+	                   0	C:\sgx\ANTzPlus\ANTzTemplate\usr\
+	                   1	C:\sgx\ANTzPlus\ANTzTemplate\usr\csv\
+	                   1	C:\sgx\ANTzPlus\ANTzTemplate\usr\images\
+	                   1	C:\sgx\ANTzPlus\ANTzTemplate\usr\plugin\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        14         0        14         0         0         4
+   Bytes :   10.32 m         0   10.32 m         0         0    2.33 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\3rdparty\tools\vc120redist\
+     Dest : C:\sgx\bin\Win32\Release\ANTzTemplate\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\sgx\3rdparty\tools\vc120redist\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzTemplate\usr\
+	  *EXTRA File 		  203776	freeglut.dll
+	  *EXTRA File 		   5.3 m	FreeImage.dll
+	  *EXTRA File 		  237568	glut32.dll
+	  *EXTRA File 		  283136	libcurl.dll
+	  *EXTRA File 		   3.8 m	libmysql.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         1
+   Files :         4         0         4         0         0         5
+   Bytes :    2.33 m         0    2.33 m         0         0    9.89 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\ANTzPlus\ANTzzSpaceTemplate\
+     Dest : C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   9	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		  247984	vccorlib120.dll
+	                   0	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\
+	                   1	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\csv\
+	                   1	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\images\
+	                   1	C:\sgx\ANTzPlus\ANTzzSpaceTemplate\usr\plugin\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        12         0        12         0         0         4
+   Bytes :    4.64 m         0    4.64 m         0         0    2.33 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\3rdparty\tools\vc120redist\
+     Dest : C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\sgx\3rdparty\tools\vc120redist\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\usr\
+	  *EXTRA File 		  203776	freeglut.dll
+	  *EXTRA File 		  237568	glut32.dll
+	  *EXTRA File 		   3.8 m	libmysql.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         1
+   Files :         4         0         4         0         0         3
+   Bytes :    2.33 m         0    2.33 m         0         0    4.23 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:32 PM
+   Source : C:\sgx\ANTzPlus\ANTzMacTemplate\
+     Dest : C:\sgx\bin\Win32\Release\ANTzMacTemplate\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   7	C:\sgx\ANTzPlus\ANTzMacTemplate\
+	                   0	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\
+	                   1	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\csv\
+	                   1	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\images\
+	                   1	C:\sgx\ANTzPlus\ANTzMacTemplate\usr\plugin\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        10         0        10         0         0         0
+   Bytes :    9.78 m         0    9.78 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:32 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\InstallerFiles\DefaultBaseImages\
+     Dest : C:\sgx\bin\Win32\Release\DefaultBaseImages\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   6	C:\sgx\Misc\InstallerFiles\DefaultBaseImages\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         6         0         6         0         0         0
+   Bytes :    4.03 m         0    4.03 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\InstallerFiles\GlyphTemplates\
+     Dest : C:\sgx\bin\Win32\Release\GlyphTemplates\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  19	C:\sgx\Misc\InstallerFiles\GlyphTemplates\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        19         0        19         0         0         0
+   Bytes :    1.55 m         0    1.55 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\InstallerFiles\meshes\
+     Dest : C:\sgx\bin\Win32\Release\meshes\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  18	C:\sgx\Misc\InstallerFiles\meshes\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        18         0        18         0         0         0
+   Bytes :   293.7 k         0   293.7 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\InstallerFiles\shaders\
+     Dest : C:\sgx\bin\Win32\Release\shaders\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  18	C:\sgx\Misc\InstallerFiles\shaders\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        18         0        18         0         0         0
+   Bytes :    11.6 k         0    11.6 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\InstallerFiles\fonts\
+     Dest : C:\sgx\bin\Win32\Release\fonts\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   1	C:\sgx\Misc\InstallerFiles\fonts\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         1         0         1         0         0         0
+   Bytes :   212.2 k         0   212.2 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\InstallerFiles\textures\
+     Dest : C:\sgx\bin\Win32\Release\textures\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  12	C:\sgx\Misc\InstallerFiles\textures\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :        12         0        12         0         0         0
+   Bytes :    65.1 k         0    65.1 k         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\Misc\Help\
+     Dest : C:\sgx\bin\Win32\Release\help\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   1	C:\sgx\Misc\Help\
+	                  36	C:\sgx\Misc\Help\images\
+	                   7	C:\sgx\Misc\Help\images\icons\
+	                   2	C:\sgx\Misc\Help\jquery-1.7.2\
+	                   2	C:\sgx\Misc\Help\pages\
+	                   5	C:\sgx\Misc\Help\pages\Filters\
+	                   1	C:\sgx\Misc\Help\pages\Front End Navigation Guide\
+	                   3	C:\sgx\Misc\Help\pages\Front End Navigation Guide\Navigating the Viewer\
+	                   7	C:\sgx\Misc\Help\pages\Front End Navigation Guide\Understanding the Viewer\
+	                   7	C:\sgx\Misc\Help\pages\Front End Navigation Guide\Understanding the Viewer\Filtering Pane\
+	                   5	C:\sgx\Misc\Help\pages\Legends\
+	                   4	C:\sgx\Misc\Help\w2ui-1.4.2\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        12         0        12         0         0         0
+   Files :        80         0        80         0         0         0
+   Bytes :    3.05 m         0    3.05 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\DataEngine\jdk\jre\bin\
+     Dest : C:\sgx\bin\Win32\Release\jre\bin\
+
+    Files : *.dll
+	    
+  Options : /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  65	C:\sgx\DataEngine\jdk\jre\bin\
+	                   1	C:\sgx\DataEngine\jdk\jre\bin\client\
+	                   2	C:\sgx\DataEngine\jdk\jre\bin\dtplugin\
+	                   2	C:\sgx\DataEngine\jdk\jre\bin\plugin2\
+	                   1	C:\sgx\DataEngine\jdk\jre\bin\server\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         0         5         0         0         0
+   Files :        71         0        71         0         0         0
+   Bytes :   55.01 m         0   55.01 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\DataEngine\jdk\jre\lib\
+     Dest : C:\sgx\bin\Win32\Release\jre\lib\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                  30	C:\sgx\DataEngine\jdk\jre\lib\
+	                   5	C:\sgx\DataEngine\jdk\jre\lib\cmm\
+	                  17	C:\sgx\DataEngine\jdk\jre\lib\deploy\
+	                  13	C:\sgx\DataEngine\jdk\jre\lib\ext\
+	                   8	C:\sgx\DataEngine\jdk\jre\lib\fonts\
+	                   1	C:\sgx\DataEngine\jdk\jre\lib\i386\
+	                   0	C:\sgx\DataEngine\jdk\jre\lib\images\
+	                   8	C:\sgx\DataEngine\jdk\jre\lib\images\cursors\
+	                   2	C:\sgx\DataEngine\jdk\jre\lib\jfr\
+	                   4	C:\sgx\DataEngine\jdk\jre\lib\management\
+	                   9	C:\sgx\DataEngine\jdk\jre\lib\security\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        11         0        11         0         0         0
+   Files :        97         0        97         0         0         0
+   Bytes :  104.20 m         0  104.20 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:33 PM
+   Source : C:\sgx\DataEngine\JavaDataEngine\database-drivers\
+     Dest : C:\sgx\bin\Win32\Release\database-drivers\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   8	C:\sgx\DataEngine\JavaDataEngine\database-drivers\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         8         0         8         0         0         0
+   Bytes :   11.40 m         0   11.40 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:33 PM
+
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+        1 file(s) copied.
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:34 PM
+   Source : C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\
+     Dest : C:\sgx\bin\Win32\Release\qt_plugins\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   0	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\audio\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\bearer\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\canbus\
+	                   2	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\designer\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\generic\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\geoservices\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\iconengines\
+	                  30	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\imageformats\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\mediaservice\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\platforms\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\playlistformats\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\position\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\printsupport\
+	                  21	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\qmltooling\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sceneparsers\
+	                   6	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sensorgestures\
+	                   3	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sensors\
+	                   9	C:\Qt\Qt5.6.0\5.6\msvc2013_64\plugins\sqldrivers\
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        19         0        19         0         0         0
+   Files :       137         0       137         0         0         0
+   Bytes :  234.32 m         0  234.32 m         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:35 PM
+
+        1 file(s) copied.
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:35 PM
+   Source : C:\Qt\Qt5.6.0\5.6\msvc2013_64\resources\
+     Dest : C:\sgx\bin\Win32\Release\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   4	C:\Qt\Qt5.6.0\5.6\msvc2013_64\resources\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\textures\
+	  *EXTRA File 		  187904	ANTzSingleGlyphGUI.dll
+	  *EXTRA File 		   2.8 m	assimp.dll
+	  *EXTRA File 		  100352	boost_filesystem-vc120-mt-1_55.dll
+	  *EXTRA File 		  107520	boost_filesystem-vc120-mt-1_62.dll
+	  *EXTRA File 		  116224	boost_filesystem-vc140-mt-1_59.dll
+	  *EXTRA File 		   17408	boost_system-vc120-mt-1_55.dll
+	  *EXTRA File 		   16896	boost_system-vc120-mt-1_62.dll
+	  *EXTRA File 		   19456	boost_system-vc140-mt-1_59.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  165778	dataengine.jar
+	  *EXTRA File 		  663552	DataMapper.exe
+	  *EXTRA File 		   11371	debug.log
+	  *EXTRA File 		  342016	glew32.dll
+	  *EXTRA File 		  142336	GlyphDesigner.exe
+	  *EXTRA File 		    7055	log.txt
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		   5.2 m	Qt5Core.dll
+	  *EXTRA File 		   5.7 m	Qt5Gui.dll
+	  *EXTRA File 		   1.0 m	Qt5Network.dll
+	  *EXTRA File 		  322560	Qt5OpenGL.dll
+	  *EXTRA File 		   2.9 m	Qt5Qml.dll
+	  *EXTRA File 		   2.9 m	Qt5Quick.dll
+	  *EXTRA File 		  200704	Qt5Sql.dll
+	  *EXTRA File 		  101376	Qt5WebChannel.dll
+	  *EXTRA File 		  228352	Qt5WebEngine.dll
+	  *EXTRA File 		  53.4 m	Qt5WebEngineCore.dll
+	  *EXTRA File 		  178176	Qt5WebEngineWidgets.dll
+	  *EXTRA File 		   5.2 m	Qt5Widgets.dll
+	  *EXTRA File 		   15360	QtWebEngineProcess.exe
+	  *EXTRA File 		   11726	tlog.txt
+	  *EXTRA File 		  247984	vccorlib120.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0        13
+   Files :         4         0         4         0         0        33
+   Bytes :   17.10 m         0   17.10 m         0         0   84.68 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:35 PM
+
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, January 24, 2017 5:11:35 PM
+   Source : C:\sgx\3rdparty\tools\graphics\Win32\
+     Dest : C:\sgx\bin\Win32\Release\
+
+    Files : *.*
+	    
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /Z /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+	                   2	C:\sgx\3rdparty\tools\graphics\Win32\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzMacTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\ANTzzSpaceTemplate\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\database-drivers\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\DefaultBaseImages\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\fonts\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\GlyphTemplates\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\help\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\jre\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\meshes\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\qt_plugins\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\shaders\
+	*EXTRA Dir        -1	C:\sgx\bin\Win32\Release\textures\
+	  *EXTRA File 		  187904	ANTzSingleGlyphGUI.dll
+	  *EXTRA File 		  100352	boost_filesystem-vc120-mt-1_55.dll
+	  *EXTRA File 		  107520	boost_filesystem-vc120-mt-1_62.dll
+	  *EXTRA File 		  116224	boost_filesystem-vc140-mt-1_59.dll
+	  *EXTRA File 		   17408	boost_system-vc120-mt-1_55.dll
+	  *EXTRA File 		   16896	boost_system-vc120-mt-1_62.dll
+	  *EXTRA File 		   19456	boost_system-vc140-mt-1_59.dll
+	  *EXTRA File 		   17920	ConvertHash.dll
+	  *EXTRA File 		  165778	dataengine.jar
+	  *EXTRA File 		  663552	DataMapper.exe
+	  *EXTRA File 		   11371	debug.log
+	  *EXTRA File 		  142336	GlyphDesigner.exe
+	  *EXTRA File 		   9.7 m	icudtl.dat
+	  *EXTRA File 		    7055	log.txt
+	  *EXTRA File 		  455328	msvcp120.dll
+	  *EXTRA File 		  773968	msvcr100.dll
+	  *EXTRA File 		  970912	msvcr120.dll
+	  *EXTRA File 		   5.2 m	Qt5Core.dll
+	  *EXTRA File 		   5.7 m	Qt5Gui.dll
+	  *EXTRA File 		   1.0 m	Qt5Network.dll
+	  *EXTRA File 		  322560	Qt5OpenGL.dll
+	  *EXTRA File 		   2.9 m	Qt5Qml.dll
+	  *EXTRA File 		   2.9 m	Qt5Quick.dll
+	  *EXTRA File 		  200704	Qt5Sql.dll
+	  *EXTRA File 		  101376	Qt5WebChannel.dll
+	  *EXTRA File 		  228352	Qt5WebEngine.dll
+	  *EXTRA File 		  53.4 m	Qt5WebEngineCore.dll
+	  *EXTRA File 		  178176	Qt5WebEngineWidgets.dll
+	  *EXTRA File 		   5.2 m	Qt5Widgets.dll
+	  *EXTRA File 		   15360	QtWebEngineProcess.exe
+	  *EXTRA File 		   6.5 m	qtwebengine_resources.pak
+	  *EXTRA File 		  415020	qtwebengine_resources_100p.pak
+	  *EXTRA File 		  476671	qtwebengine_resources_200p.pak
+	  *EXTRA File 		   11726	tlog.txt
+	  *EXTRA File 		  247984	vccorlib120.dll
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0        13
+   Files :         2         0         2         0         0        35
+   Bytes :    3.20 m         0    3.20 m         0         0   98.57 m
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Ended : Tuesday, January 24, 2017 5:11:35 PM
+
