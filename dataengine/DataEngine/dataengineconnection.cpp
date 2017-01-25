@@ -97,7 +97,7 @@ namespace DataEngine
 
 		ifile.close();
 		options[0].optionString = const_cast<char*>(jarFilesOptionString.c_str());
-        options[1].optionString = const_cast<char*>("-Xmx1370M"); //Max of 1G
+        options[1].optionString = const_cast<char*>("-Xmx4G"); //Max of 1G
 
         vmArgs.version = JNI_VERSION_1_8;
 		vmArgs.options = options;
