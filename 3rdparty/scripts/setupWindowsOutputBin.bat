@@ -27,7 +27,7 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		rem echo %%p 
 		rem echo %%c 
 
-		robocopy /z /e ..\tools\vc120redist\ %basedir%\%%p\%%c *.dll
+		robocopy /z /e ..\tools\vc120redist_64\ %basedir%\%%p\%%c *.dll
 		
 		robocopy /z /e ..\..\ANTzPlus\%antztemplate% %basedir%\%%p\%%c\%antztemplate%
 		robocopy /z /e ..\tools\vc120redist\ %basedir%\%%p\%%c\%antztemplate% *.dll
