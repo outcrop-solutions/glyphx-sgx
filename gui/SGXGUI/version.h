@@ -3,5 +3,5 @@
 
 namespace SynGlyphX
 {
-	inline const char* getAppVersionString() { return "1.0.00"; }
+	inline const char* getAppVersionString() { return "1.0.01"; }
 }

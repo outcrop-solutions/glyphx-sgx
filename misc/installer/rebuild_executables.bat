@@ -1,7 +1,7 @@
 @echo off
 
 echo Cleaning up output folder...
-cd ../../bin/Win32
+cd ../../bin/Win64
 rd /s /q Release 2>NUL
 
 echo Setting up output folder...
@@ -16,7 +16,7 @@ rd /s /q vs 2>NUL
 echo Running cmake...
 mkdir vs
 cd vs
-cmake ../gui -G "Visual Studio 12 2013" >NUL
+cmake ../gui -G "Visual Studio 12 2013 Win64" >NUL
 
 echo Building applications (this will take a while)...
 msbuild GlyphBuilder.sln /target:Rebuild /maxcpucount /p:Configuration=Release >NUL

@@ -25,7 +25,7 @@ namespace DataEngine
         
         std::string jre_name =
 #ifdef WIN32
-        ".\\jre\\bin\\client\\jvm.dll";
+        ".\\jre\\bin\\server\\jvm.dll";
 #elif __APPLE__
         "../Frameworks/jdk1.8.0_92.jdk/Contents/Home/jre/lib/server/libjvm.dylib";
 #endif
@@ -39,7 +39,7 @@ namespace DataEngine
 #ifdef WIN32
         else{
 			
-			jvmDll.Load("..\\..\\DataEngine\\jdk\\jre\\bin\\client\\jvm.dll");
+			jvmDll.Load("..\\..\\DataEngine\\jdk\\jre\\bin\\server\\jvm.dll");
 		}
 #endif
 		jre.close();
