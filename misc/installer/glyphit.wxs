@@ -3,11 +3,11 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
     <Product Id="*" UpgradeCode="{60300ed8-be8c-4915-aaae-98de51954b98}" Version="$(var.version)" Language="1033" Name="GlyphIt" Manufacturer="SynGlyphX">
-        <Package InstallerVersion="300" Compressed="yes"/>
+        <Package InstallerVersion="300" Compressed="yes" Platform="x64"/>
         <Media Id="1" Cabinet="glyphit.cab" EmbedCab="yes" />
 
         <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFilesFolder">
+            <Directory Id="ProgramFiles64Folder">
                 <Directory Id="SGXFolder" Name="SynGlyphX">
                     <Directory Id="APPDIR" Name="GlyphIt"/>
                 </Directory>

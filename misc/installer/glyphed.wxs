@@ -3,11 +3,11 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
     <Product Id="*" UpgradeCode="{f5a32348-7df6-48ef-84ac-89e863efaa03}" Version="$(var.version)" Language="1033" Name="GlyphEd" Manufacturer="GlyphEd">
-        <Package InstallerVersion="300" Compressed="yes"/>
+        <Package InstallerVersion="300" Compressed="yes" Platform="x64"/>
         <Media Id="1" Cabinet="glyphed.cab" EmbedCab="yes" />
 
         <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFilesFolder">
+            <Directory Id="ProgramFiles64Folder">
                 <Directory Id="APPDIR" Name="GlyphEd"/>
             </Directory>
             <!-- Step 1: Define the directory structure -->

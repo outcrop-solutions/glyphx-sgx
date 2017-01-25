@@ -3,11 +3,11 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- Note: UpgradeCode must remain the SAME for future versions of the same product but DIFFERENT for different products. -->
     <Product Id="*" UpgradeCode="{bd2bb2cd-529f-4b65-bbd3-3d00d522d520}" Version="$(var.version)" Language="1033" Name="GlyphViewer" Manufacturer="SynGlyphX">
-        <Package InstallerVersion="300" Compressed="yes"/>
+        <Package InstallerVersion="300" Compressed="yes" Platform="x64"/>
         <Media Id="1" Cabinet="glyphviewer.cab" EmbedCab="yes" />
 
         <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFilesFolder">
+            <Directory Id="ProgramFiles64Folder">
                 <Directory Id="SGXFolder" Name="SynGlyphX">
                     <Directory Id="APPDIR" Name="GlyphViewer"/>
                 </Directory>
