@@ -748,6 +748,15 @@ QString SourceDataCache::CreateBetweenString(const QString& columnName, const Sy
 	}
 }
 
+void SourceDataCache::CreateIndex(const QString& tableName, const QString& columnName) const {
+
+	QSqlQuery().exec("DROP INDEX IF EXISTS tf_index");
+	QString queryString = "CREATE INDEX tf_index ON \"" + tableName + "\" (\"" + columnName + "\")";
+	QSqlQuery query(m_db);
+	query.prepare(queryString);
+	query.exec();
+}
+
 SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const {
 
 	DistinctValueIndexMap distinctValueIndexMap;

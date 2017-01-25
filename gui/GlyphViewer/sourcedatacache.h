@@ -82,6 +82,7 @@ public:
 	SynGlyphX::IndexSet GetIndexesFromTableWithSelectedValues(const QString& tableName, const FilteringParameters::ColumnDistinctValuesFilterMap& selectedValues, const SynGlyphX::IndexSet& previousSelection = SynGlyphX::IndexSet()) const;
 	SynGlyphX::IndexSet GetIndexesFromTableThatPassFilters(const QString& tableName, const FilteringParameters& filters) const;
 
+	void CreateIndex(const QString& tableName, const QString& columnName) const;
 	DistinctValueIndexMap GetIndexesOrderedByDistinctValue(const QString& tableName, const QString& columnName) const;
 
 	static QString CreateTablename(const SynGlyphX::InputTable& inputTable);
