@@ -117,7 +117,7 @@ void HomePageWidget::CreateHomePageOptionsWidget() {
 	options << tr("   Home") << tr("   All Views") << tr("   My Views");
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		options << tr("   Help");
+		options << tr("   User Guide");
 	} 
 	options << tr("   Exit");
 
