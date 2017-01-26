@@ -176,7 +176,10 @@ public abstract class Table {
 		this.data.addRow(columnNames);
 
 		try{
-			PreparedStatement pstmt = driver.getConnection().prepareStatement(this.query);
+			PreparedStatement pstmt = driver.getConnection().prepareStatement("PRAGMA synchronous = OFF;");
+			pstmt.execute();
+			pstmt.close();
+			pstmt = driver.getConnection().prepareStatement(this.query);
 	        ResultSet rs = pstmt.executeQuery();
 
 	        while(rs.next()){

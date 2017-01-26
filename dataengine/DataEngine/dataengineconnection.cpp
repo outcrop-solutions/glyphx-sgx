@@ -46,7 +46,7 @@ namespace DataEngine
 		
 		CreateJVMFunc CreateJVM = (CreateJVMFunc)jvmDll.GetAddress("JNI_CreateJavaVM");
 
-        const auto option_count = 2u;
+        const auto option_count = 3u;
 		JavaVMInitArgs vmArgs;
         memset(&vmArgs, 0, sizeof(vmArgs));
 		JavaVMOption options[option_count];
@@ -97,7 +97,8 @@ namespace DataEngine
 
 		ifile.close();
 		options[0].optionString = const_cast<char*>(jarFilesOptionString.c_str());
-        options[1].optionString = const_cast<char*>("-Xmx4G"); //Max of 1G
+        options[1].optionString = const_cast<char*>("-Xmx4G"); //Max of 4G
+		options[2].optionString = const_cast<char*>("-XX:+UseConcMarkSweepGC"); //Make GC in JVM run concurrently
 
         vmArgs.version = JNI_VERSION_1_8;
 		vmArgs.options = options;

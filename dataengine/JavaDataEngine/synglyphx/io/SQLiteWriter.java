@@ -51,6 +51,10 @@ public class SQLiteWriter {
 			String conn_str = "jdbc:sqlite:"+outDir+"/sourcedata.db";
 			//String conn_str = "jdbc:sqlite::memory:";
 			conn = DriverManager.getConnection(conn_str);
+
+			PreparedStatement pstmt = conn.prepareStatement("PRAGMA journal_mode = OFF;");
+			pstmt.execute();
+			pstmt.close();
 /*
 			String query = "CREATE TABLE if NOT EXISTS 'SDTInfo' (lastChanged TEXT)";
 			PreparedStatement pstmt = conn.prepareStatement(query);

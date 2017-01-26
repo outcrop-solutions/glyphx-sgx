@@ -80,7 +80,7 @@ if not "%~1"=="" (
 
 		if not "%~2"=="" (
 
-			if "%~2"=="-g" %jcmd%\java -Xmx1g GlyphEngine
+			if "%~2"=="-g" %jcmd%\java -Xmx4g -XX:+UseConcMarkSweepGC GlyphEngine
 
 			if "%~2"=="-d" %jcmd%\java DataEngine
 
