@@ -423,20 +423,20 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	sv->setWidgetResizable(true);
 	sv->setMinimumWidth(300);
 	sv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-	act = m_leftDockWidget->toggleViewAction();
+	m_ToggleFEFilterListAction = m_leftDockWidget->toggleViewAction();
 	addDockWidget(Qt::LeftDockWidgetArea, m_leftDockWidget);
 	m_FEfilterListWidget->setVisible(true);
 	sv->setVisible(true);
 
-	m_loadedVisualizationDependentActions.push_back(act);
+	m_loadedVisualizationDependentActions.push_back(m_ToggleFEFilterListAction);
 	QIcon feFilterIcon;
 	QPixmap fe_filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
 	QPixmap fe_filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
 	feFilterIcon.addPixmap(fe_filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
 	feFilterIcon.addPixmap(fe_filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	act->setIcon(feFilterIcon);
-	m_viewMenu->addAction(act);
-	m_showHideToolbar->addAction(act);
+	m_ToggleFEFilterListAction->setIcon(feFilterIcon);
+	m_viewMenu->addAction(m_ToggleFEFilterListAction);
+	m_showHideToolbar->addAction(m_ToggleFEFilterListAction);
 	m_leftDockWidget->hide();
 
 	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
@@ -506,7 +506,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 				filters = loadingFilterDialog.GetFilterValues();
 			}
 
-			LoadNewVisualization(openFile, filters, true);
+			LoadNewVisualization(openFile, filters, filters.size() > 0);
 		}
 		catch (const std::exception& e) {
 
@@ -724,11 +724,12 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTable
 	}
 
 	if (useFEFilterList)
+	{
 		m_FEfilterListWidget->update(nativeFilename.toStdString().c_str(), filters);
+	}
 	else
 	{
-		m_FEfilterListWidget->clear();
-		m_FEfilterListWidget->hide();
+		m_leftDockWidget->hide();
 	}
 
 	GVGlobal::Services()->ClearUndoStack();
@@ -761,7 +762,8 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTable
 		s_recentFilters.remove(nativeFilename);
 	}
 	EnableLoadedVisualizationDependentActions(true);
-	
+	m_ToggleFEFilterListAction->setEnabled(useFEFilterList);
+
 	statusBar()->showMessage("Visualization successfully opened", 3000);
 	return true;
 }

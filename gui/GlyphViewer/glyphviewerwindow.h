@@ -155,6 +155,7 @@ private:
 	QAction* m_remapRootPositionMappingsAction;
 	QAction* m_enableDisableSelEffectActionMenu;
 	QAction* m_exportGlyphPortableAction;
+	QAction* m_ToggleFEFilterListAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QAction* m_showHideHUDAxisAction;
