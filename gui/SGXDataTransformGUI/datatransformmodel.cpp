@@ -1547,7 +1547,10 @@ namespace SynGlyphX {
 
 		std::string d_ID = boost::lexical_cast<std::string>(inputTable.GetDatasourceID());
 		std::string table(inputTable.GetTable().begin(), inputTable.GetTable().end());
-		std::string formattedName = d_ID + ':' + table;
+		std::string formattedName = d_ID;
+		if (table != "OnlyTable"){
+			formattedName += ':' + table;
+		}
 
 		QStringList fieldNames;
 		QStringList fieldTypes;

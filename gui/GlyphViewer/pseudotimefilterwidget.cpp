@@ -332,6 +332,7 @@ void PseudoTimeFilterWidget::OnFilterSelectionButtonClicked() {
 
 void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedField) {
 
+	bool toIndex = m_selectedField.isValid();
 	m_selectedField = newSelectedField;
 
 	QString columnName = m_columnsModel->data(newSelectedField).toString();
@@ -342,7 +343,10 @@ void PseudoTimeFilterWidget::UpdateSelectedField(const QModelIndex& newSelectedF
 	QString dataSourceIdString = m_columnsModel->data(dataSourceIndex, SourceDataInfoModel::IDRole).toString();
 
 	m_sourceCacheTableName = SourceDataCache::CreateTablename(dataSourceIdString, tableName);
-	m_filteringManager->GetSourceDataCache()->CreateIndex(m_sourceCacheTableName, columnName);
+
+	if (toIndex){
+		m_filteringManager->GetSourceDataCache()->CreateIndex(m_sourceCacheTableName, columnName);
+	}
 	m_selectionForEachDistinctValue = m_filteringManager->GetSourceDataCache()->GetIndexesOrderedByDistinctValue(m_sourceCacheTableName, columnName);
 
 	m_slider->setMaximum(int(m_selectionForEachDistinctValue.size()) - 1);
