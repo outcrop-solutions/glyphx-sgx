@@ -313,8 +313,11 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 		else if (m_timeFilterEnabled)
 		{
 			// time filtering only
-			for (auto row : m_filterResultsPerTableFromTimeFilter.at(tableRange.key())) {
-				newfilterResultsIndexedToGlyphs.insert(row + min);
+			if (m_filterResultsPerTableFromTimeFilter.find(tableRange.key()) != m_filterResultsPerTableFromTimeFilter.end())
+			{
+				for (auto row : m_filterResultsPerTableFromTimeFilter.at(tableRange.key())) {
+					newfilterResultsIndexedToGlyphs.insert(row + min);
+				}
 			}
 		}
 		//Uncomment if it is decided to show other tables when a filter operates only on one table
@@ -331,7 +334,7 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 
 		m_filterResultsIndexedToGlyphs = newfilterResultsIndexedToGlyphs;
 		emit FilterResultsChanged(m_filterResultsIndexedToGlyphs);
-		m_viewer->setFilteredResults(m_filterResultsIndexedToGlyphs, false);
+		m_viewer->setFilteredResults(m_filterResultsIndexedToGlyphs, !m_timeFilterEnabled);
 	}
 }
 
