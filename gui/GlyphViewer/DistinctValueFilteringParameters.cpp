@@ -56,12 +56,37 @@ void DistinctValueFilteringParameters::SetDistinctValueFilters(const ColumnDisti
 
 void DistinctValueFilteringParameters::SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues) {
 
-	m_distinctValuesFilters[column] = distinctValues;
+	for (auto& p : m_distinctValuesFilters)
+	{
+		if (p.first == column)
+		{
+			p.second = distinctValues;
+			return;
+		}
+	}
+
+	// if we got here it wasn't already in the list, so add it
+	m_distinctValuesFilters.push_back(std::make_pair(column, distinctValues));
 }
 
 void DistinctValueFilteringParameters::RemoveDistinctValueFilter(const QString& column) {
 
-	m_distinctValuesFilters.erase(column);
+	for (auto it = m_distinctValuesFilters.begin(); it != m_distinctValuesFilters.end(); ++it)
+	{
+		if (it->first == column)
+		{
+			m_distinctValuesFilters.erase(it);
+			return;
+		}
+	}
+}
+
+QSet<QString> DistinctValueFilteringParameters::GetDistinctValueFilter(const QString& column)
+{
+	for (auto& p : m_distinctValuesFilters)
+		if (p.first == column)
+			return p.second;
+	return QSet<QString>();
 }
 
 const DistinctValueFilteringParameters::ColumnDistinctValuesFilterMap& DistinctValueFilteringParameters::GetDistinctValueFilters() const {
@@ -71,16 +96,24 @@ const DistinctValueFilteringParameters::ColumnDistinctValuesFilterMap& DistinctV
 
 QString DistinctValueFilteringParameters::GenerateQuery(const SynGlyphX::InputTable& table) const {
 
-	QString query = "SELECT * FROM `" + QString::fromStdWString(table.GetTable()) + "` WHERE ";
+	QString query = "";
+	if (!m_distinctValuesFilters.empty())
+	{
+		query = "SELECT * FROM `" + QString::fromStdWString(table.GetTable()) + "` WHERE ";
 
-	for (const auto& filter : m_distinctValuesFilters) {
+		bool added_to_query = false;
+		for (const auto& filter : m_distinctValuesFilters) {
 
-		if (filter != *m_distinctValuesFilters.begin()) {
+			if (!filter.second.empty())
+			{
 
-			query += " AND ";
+				if (added_to_query)
+					query += " AND ";
+
+				query += CreateInString(filter.first, filter.second);
+				added_to_query = true;
+			}
 		}
-
-		query += CreateInString(filter.first, filter.second);
 	}
 
 	return query;

@@ -726,7 +726,7 @@ void HomePageWidget::SetupGlyphEdViz() {
 void HomePageWidget::OnLoadVisualization() {
 
 	QString fileToLoad;
-	std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> filteringParameters;
+	MultiTableDistinctValueFilteringParameters filteringParameters;
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
@@ -746,13 +746,13 @@ void HomePageWidget::OnLoadVisualization() {
 
 			if (fileToLoad.endsWith("Global Dashboard.sdt")) {
 
-				auto singleTableFilters = filteringParameters.first.begin();
+				auto singleTableFilters = filteringParameters.begin();
 				QSet<QString> readers;
-				if (!filteringParameters.first.empty()) {
+				if (!filteringParameters.empty()) {
 
 					if (singleTableFilters->second.HasFilters()) {
 
-						readers = singleTableFilters->second.GetDistinctValueFilters().at("reader_name");
+						readers = singleTableFilters->second.GetDistinctValueFilter("reader_name");
 					}
 
 				}
@@ -763,7 +763,7 @@ void HomePageWidget::OnLoadVisualization() {
 
 		DataEngine::GlyphEngine ge;
 		ge.initiate(m_dataEngineConnection->getEnv(), fileToLoad.toStdString(), "", "", "", "GlyphViewer");
-		for (const auto& filtersForTable : filteringParameters.first) {
+		for (const auto& filtersForTable : filteringParameters) {
 
 			QString id = QString::fromStdWString(boost::uuids::to_wstring(filtersForTable.first.GetDatasourceID()));
 			QString tableName = QString::fromStdWString(filtersForTable.first.GetTable());

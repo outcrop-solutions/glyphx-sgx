@@ -30,7 +30,7 @@ SingleLoadingFilterWidget::SingleLoadingFilterWidget(bool isRequired, QWidget* p
 LoadingFilterWidget::LoadingFilterWidget(QWidget *parent)
 	: QWidget(parent)
 {
-	
+
 }
 
 LoadingFilterWidget::~LoadingFilterWidget()
@@ -49,21 +49,21 @@ void LoadingFilterWidget::SetFilters(DataEngine::GlyphEngine& glyphEngine, const
 	const SynGlyphX::MultiTableFrontEndFilters& filters = mapping.GetFrontEndFilters();
 	//for (const auto& filtersForTable : filters) {
 
-		QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping);
-		//QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
-		//std::string cleanedTitle = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable())).toStdString();
-		//std::replace(cleanedTitle.begin(), cleanedTitle.end(), '_', ' ');
-		//QString title(cleanedTitle.c_str());
-		QString title = "Filters:";
-		if (filters.size() == 1){
-			innerWidgetLayout->addWidget(splitter);
-		} 
-		else{
-			SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(title, splitter, this);
-			groupBox->setContentsMargins(0, 0, 0, 0);
-			groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 24px;}");
-			innerWidgetLayout->addWidget(groupBox);
-		}
+	QSplitter* splitter = AddFiltersForTable(glyphEngine, mapping);
+	//QString title = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable()));
+	//std::string cleanedTitle = QString::fromStdWString(mapping.GetFormattedName(filtersForTable.first.GetDatasourceID(), filtersForTable.first.GetTable())).toStdString();
+	//std::replace(cleanedTitle.begin(), cleanedTitle.end(), '_', ' ');
+	//QString title(cleanedTitle.c_str());
+	QString title = "Filters:";
+	if (filters.size() == 1) {
+		innerWidgetLayout->addWidget(splitter);
+	}
+	else {
+		SynGlyphX::GroupBoxSingleWidget* groupBox = new SynGlyphX::GroupBoxSingleWidget(title, splitter, this);
+		groupBox->setContentsMargins(0, 0, 0, 0);
+		groupBox->setStyleSheet("QGroupBox{font-family:'Calibri', Helvetica, Arial, Sans; font-weight: bold; text-transform: uppercase; font-size: 13pt; line-height: 24px;}");
+		innerWidgetLayout->addWidget(groupBox);
+	}
 	//}
 
 	//int stretchSize = 3 - filters.size();
@@ -98,9 +98,9 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->ShowSearchFilter(true);
 		QStringList distinctValues;
 
-		for (const auto& inputField : filter.fields){
+		for (const auto& inputField : filter.fields) {
 			SynGlyphX::InputTable table(inputField);
-			tables.push_back(table);	
+			tables.push_back(table);
 
 			QString id = QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
 			QString tableName = QString::fromStdWString(table.GetTable());
@@ -110,7 +110,7 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 			if (fieldToAliasMap.count(inputField.GetField()) == 0) {
 
 				std::string cleanedField = qField.toStdString();
-				std::replace( cleanedField.begin(), cleanedField.end(), '_', ' ');
+				std::replace(cleanedField.begin(), cleanedField.end(), '_', ' ');
 				filterWidget->SetTitle(QString(cleanedField.c_str()));
 			}
 			else {
@@ -144,8 +144,8 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		});
 		filterWidget->SetItems(distinctValues);
 
-		splitter->addWidget(filterWidget);		
-	}	
+		splitter->addWidget(filterWidget);
+	}
 
 	return splitter;
 }
@@ -179,10 +179,9 @@ bool LoadingFilterWidget::IsQueryNeeded(const SynGlyphX::InputTable& table) cons
 	return false;
 }
 
-std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> LoadingFilterWidget::GetFilterValues() const {
+MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues() const {
 
 	MultiTableDistinctValueFilteringParameters filteringParameters;
-	std::vector<std::wstring> unselected;
 
 	for (const auto& tableFilterWidgets : m_filterListWidgets) {
 
@@ -190,21 +189,10 @@ std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>
 		for (const auto& filterWidget : tableFilterWidgets.second) {
 
 			QSet<QString> filterData = filterWidget.second->GetSelectedLabels().toSet();
-			if ((!filterData.isEmpty()) && (!filterWidget.second->AreAllItemsSelected())) {
-
-				filteringParametersForTable.SetDistinctValueFilter(QString::fromStdWString(filterWidget.first), filterData);
-			}
-			else
-			{
-				unselected.push_back(filterWidget.first);
-			}
+			filteringParametersForTable.SetDistinctValueFilter(QString::fromStdWString(filterWidget.first), filterData);
 		}
-
-		if (filteringParametersForTable.HasFilters()) {
-
-			filteringParameters[tableFilterWidgets.first] = filteringParametersForTable;
-		}
+		filteringParameters.push_back(std::make_pair(tableFilterWidgets.first, filteringParametersForTable));
 	}
 
-	return std::make_pair(filteringParameters, unselected);
+	return filteringParameters;
 }

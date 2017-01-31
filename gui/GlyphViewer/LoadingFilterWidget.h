@@ -73,7 +73,7 @@ public:
 	bool AreSelectionsValid() const;
 
 	bool IsQueryNeeded(const SynGlyphX::InputTable& table) const;
-	std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> GetFilterValues() const;
+	MultiTableDistinctValueFilteringParameters GetFilterValues() const;
 
 private:
 	typedef std::unordered_map<std::wstring, SingleLoadingFilterWidget*> FieldToWidgetMap;

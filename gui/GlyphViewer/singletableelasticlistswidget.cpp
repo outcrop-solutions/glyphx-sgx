@@ -87,7 +87,7 @@ void SingleTableElasticListsWidget::OnElasticWidgetSelectionChanged() {
 		const QSet<QString>& columnSelection = elasticListWidget.second->GetSelectedRawData();
 		if (!columnSelection.empty()) {
 
-			newSelection[QString::fromStdString(elasticListWidget.first)] = columnSelection;
+			newSelection.push_back(std::make_pair(QString::fromStdString(elasticListWidget.first), columnSelection));
 		}
 	}
 

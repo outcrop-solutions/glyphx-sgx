@@ -26,7 +26,7 @@
 class DistinctValueFilteringParameters
 {
 public:
-	typedef std::map<QString, QSet<QString>> ColumnDistinctValuesFilterMap;
+	typedef std::vector<std::pair<QString, QSet<QString>>> ColumnDistinctValuesFilterMap;
 
 	DistinctValueFilteringParameters();
 	DistinctValueFilteringParameters(const DistinctValueFilteringParameters& filters);
@@ -41,10 +41,12 @@ public:
 
 	void SetDistinctValueFilters(const ColumnDistinctValuesFilterMap& filterMap);
 	void SetDistinctValueFilter(const QString& column, const QSet<QString>& distinctValues);
+	QSet<QString> GetDistinctValueFilter(const QString& column);
 	void RemoveDistinctValueFilter(const QString& column);
 	const ColumnDistinctValuesFilterMap& GetDistinctValueFilters() const;
 
 	QString GenerateQuery(const SynGlyphX::InputTable& table) const;
+
 
 protected:
 	QString CreateInString(const QString& columnName, const QSet<QString>& values) const;
@@ -53,6 +55,4 @@ protected:
 	ColumnDistinctValuesFilterMap m_distinctValuesFilters;
 };
 
-typedef std::unordered_map<SynGlyphX::InputTable, DistinctValueFilteringParameters, SynGlyphX::InputTableHash> MultiTableDistinctValueFilteringParameters;
-
-//#pragma once
+typedef std::vector<std::pair<SynGlyphX::InputTable, DistinctValueFilteringParameters>> MultiTableDistinctValueFilteringParameters;

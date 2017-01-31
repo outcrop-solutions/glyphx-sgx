@@ -6,6 +6,8 @@
 #include "groupboxsinglewidget.h"
 #include "application.h"
 #include "glyphviewerwindow.h"
+#include "datatransformmapping.h"
+#include "frontendfilter.h"
 
 FrontEndFilterListWidget::FrontEndFilterListWidget(QWidget *parent)
 	: QWidget(parent)
@@ -19,13 +21,21 @@ FrontEndFilterListWidget::~FrontEndFilterListWidget()
 {
 }
 
-void FrontEndFilterListWidget::update(const std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>& filters)
+void FrontEndFilterListWidget::clear()
 {
 	QLayoutItem *child;
 	while ((child = m_mainLayout->takeAt(0)) != 0) {
 		delete child->widget();
 		delete child;
 	}
+}
+
+void FrontEndFilterListWidget::update(const char* filename, const MultiTableDistinctValueFilteringParameters& filters)
+{
+	SynGlyphX::DataTransformMapping mapping;
+	mapping.ReadFromFile(filename);
+
+	clear();
 
 	auto add_panel = [this](const QString& title) -> QVBoxLayout* {
 		auto collapse = new QPushButton(title);
@@ -45,22 +55,35 @@ void FrontEndFilterListWidget::update(const std::pair<MultiTableDistinctValueFil
 		return buttonsLayout;
 	};
 
-	for (auto& f : filters.first)
+	for (auto& table : filters)
 	{
-		auto& fe = f.second;
-		auto ffilters = fe.GetDistinctValueFilters();
+		auto fieldToAliasMap = mapping.GetFieldToAliasMapForTable(table.first);
+		auto& filterparams = table.second;
+		auto ffilters = filterparams.GetDistinctValueFilters();
 		for (auto& fef : ffilters)
 		{
-			auto layout = add_panel(fef.first);
-			auto& fefe = fef.second;
-			for (auto& s : fefe) layout->addWidget(new QLabel(s));
-		}
-	}
+			auto field = fef.first.toStdWString();
+			auto title = fef.first;
+			if (fieldToAliasMap.count(field) == 0) {
 
-	for (auto& f : filters.second)
-	{
-		auto layout = add_panel(QString::fromStdWString(f));
-		layout->addWidget(new QLabel("no selection"));
+				std::string cleanedField = fef.first.toStdString();
+				std::replace(cleanedField.begin(), cleanedField.end(), '_', ' ');
+				title = QString::fromStdString(cleanedField);
+			}
+			else {
+
+				title = QString::fromStdWString(fieldToAliasMap.at(field));
+			}
+
+			auto layout = add_panel(title);
+			auto& fefe = fef.second;
+
+			if (fefe.size() > 0)
+				for (auto& s : fefe) layout->addWidget(new QLabel(s));
+			else
+				layout->addWidget(new QLabel("no selection"));
+
+		}
 	}
 
 	m_mainLayout->addStretch();

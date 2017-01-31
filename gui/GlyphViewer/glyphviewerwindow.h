@@ -63,7 +63,7 @@ public:
 	static void AddSubsetVisualization(const QString& filename);
 
 public slots:
-	bool LoadNewVisualization(const QString& filename, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> = std::make_pair(MultiTableDistinctValueFilteringParameters(), std::vector<std::wstring>()), bool useFEFilterListWidget = false);
+	bool LoadNewVisualization(const QString& filename, MultiTableDistinctValueFilteringParameters filters = MultiTableDistinctValueFilteringParameters(), bool useFEFilterListWidget = false);
 
 protected:
 	void ReadSettings() override;
@@ -201,7 +201,7 @@ private:
 	std::vector<HUDGenerationInfo> m_hudGenerationInfo;
 
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
-	static QMap<QString, std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>>> s_recentFilters;
+	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

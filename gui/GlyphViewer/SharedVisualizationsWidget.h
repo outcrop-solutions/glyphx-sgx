@@ -75,7 +75,7 @@ public:
 	bool DoCurrentNecessaryFiltersHaveSelection() const;
 	QString GetCurrentFilename() const;
 	bool CanCurrentHaveFilters() const;
-	std::pair<MultiTableDistinctValueFilteringParameters, std::vector<std::wstring>> GetCurrentFilterValues() const;
+	MultiTableDistinctValueFilteringParameters GetCurrentFilterValues() const;
 
 	const QMap<QString, QString>& GetSharedVisualizationsInfo() const { return m_filenameToTitleMap; }
 
