@@ -155,38 +155,12 @@ public class GlyphEngine {
 
 	public static void main(String [] args){
 
-		//String sdtPath = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\School Shooting Viz (05-Jan-16).sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\SharePoint\\Synglyphx Team Site - Documents\\Test Data\\BRYAN\\Viz";
-	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official_merged_test.sdt";
-	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\jdbc_test\\official merged";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/TooMany Elements SizeBug/Ohio Voter Registration Draft.sdt";
-	 	//String outDir = "C:/Users/Bryan/AppData/Local/SynGlyphX/Glyph Builder - Glyph Viewer/cache/cache_2072a4ce-5cf5-4591-84b0-30f87c5cc214";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/WC Data and Files/WC Sample.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/WC Data and Files/Viz";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/East Coast Only/East_Coast_Only.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/East Coast Only/Viz";
-	 	//String sdtPath = "C:/Users/Bryan/ODBA/1/Synglyphx Team Site - ~1/School Shooting Remap/School Shooting DataMap.sdt";
-	 	//String outDir = "C:/Users/Bryan/ODBA/1/Synglyphx Team Site - ~1/School Shooting Remap/School Shooting Portable";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/Text Interpolation/text_interpolation_test.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Text Interpolation/Viz";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test New SDT/alases.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Test New SDT/Viz";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/Link Test Exo/linktest.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Link Test Exo/viz";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/TELCO Small Subset/Customers Subset.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/TELCO Small Subset/Viz";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/View 1 Datamap Recommendations.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/GlobalAdmissions20132016/GlobalAdmissions20132016/Viz";
 	 	//String sdtPath = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite\\animatedrotate_planets_noscale.sdt";
 	 	//String outDir = "C:\\Users\\Bryan\\Desktop\\Test Files\\working_sqlite";
 	 	String sdtPath = "C:/Users/Bryan/Desktop/spectrum_subset.sdt";
 	 	String outDir = "C:/Users/Bryan/Desktop/spectrum_subset_data";
 	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/PercentRank/percentrank.sdt";
 	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/PercentRank/viz";
-	 	//String sdtPath = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets\\Poppy Production and Drug Busts.sdt";
-	 	//String outDir = "D:\\Downloads\\Phase 3 Data Sets\\Phase 3 Data Sets";
-	 	//String sdtPath = "C:/Users/Bryan/Desktop/Test Files/working_sqlite/animatedrotate_planets_noscale.sdt";
-	 	//String outDir = "C:/Users/Bryan/Desktop/Test Files/working_sqlite";
 
 	 	String first = "C:/ProgramData/SynGlyphX/GlyphEd/Dev/Admissions Officer/Applicants.sdt";
 	 	String second = "C:/ProgramData/SynGlyphX/GlyphEd/Spectrum/Spectrum/spectrum.sdt";
@@ -214,14 +188,15 @@ public class GlyphEngine {
 	 	System.out.println("Distinct Viz1: "+start.distinctValuesForField(id, table, field).length);
 	 	System.out.println("sizeOfQuery: "+start.sizeOfQuery(id, table, query));
 	 	start.setQueryForDatasource(id, table, query);
-
+*/
 	 	start.filterSetup(first);
 	 	String id = "0e10b5e1-60fb-4fbc-8e53-0988839dc495";
 	 	String table = "ReaderView";
 	 	String field = "StaffAssigned";
+	 	String query = "SELECT * FROM ReaderView WHERE StaffAssigned IN ('Alisa Fisher')";
 	 	System.out.println("Distinct Viz1: "+start.distinctValuesForField(id, table, field).length);
 	 	int err = start.initiate(first, outDir, expDir);
-*/
+/*
 	 	start.filterSetup(second);
 	 	String id = "1e88527e-7da4-4ffd-90cc-d5cf0614ee45";
 	 	String table = "WGSData";
@@ -230,6 +205,7 @@ public class GlyphEngine {
 	 	//System.out.println("Distinct Viz2: "+start.distinctValuesForField(id, table, field).length);
 	 	String query = "SELECT * FROM WGSData";
 	 	int err = start.initiate(second, outDir, expDir);
+*/
 	 	System.out.println("sizeOfQuery: "+start.sizeOfQuery(id, table, query));
 
 	 	double st = 0.0;
@@ -241,71 +217,6 @@ public class GlyphEngine {
 	 	end = System.currentTimeMillis();
 		System.out.println("Set Query/Setup Dataframe: "+String.valueOf((end-st)/1000.00));
 
-	 	//double[] nwse = start.getNWandSE();
-/*
-	 	double st = 0.0;
-		double end = 0.0;
-		st = System.currentTimeMillis();
-
-	 	String id = "cf127266-5047-40d0-a74c-64e3f462fc75";
-	 	String table = "OnlyTable";
-	 	String field = "Port";
-	 	String[] distinct1 = start.distinctValuesForField(id, table, field);
-
-	 	end = System.currentTimeMillis();
-		System.out.println("Port: "+String.valueOf((end-st)/1000.00));
-
-	 	field = "Arrival Time";
-	 	String[] distinct2 = start.distinctValuesForField(id, table, field);
-
-	 	end = System.currentTimeMillis();
-		System.out.println("Arrival Time: "+String.valueOf((end-st)/1000.00));
-
-		field = "Departure Time";
-	 	String[] distinct3 = start.distinctValuesForField(id, table, field);
-
-	 	end = System.currentTimeMillis();
-		System.out.println("Departure Time: "+String.valueOf((end-st)/1000.00));
-
-		field = "Vessel Type";
-	 	String[] distinct4 = start.distinctValuesForField(id, table, field);
-
-	 	end = System.currentTimeMillis();
-		System.out.println("Vessel Type: "+String.valueOf((end-st)/1000.00));*/
-	 	/*
-	 	for(int i = 0; i < distinct.length; i++)
-	 	{
-	 		System.out.println((i+1) +": "+ distinct[i]);
-
-	 	}*/
-/*
-	 	String query = "SELECT * FROM `OnlyTable` WHERE `Department`='Data Wrangler'";
-	 	start.setQueryForDatasource(id, table, query);
-
-	 	String id2 = "44088e04-3303-4241-94b0-3b3dac432356";
-	 	String table2 = "OnlyTable";
-	 	String query2 = "SELECT * FROM `OnlyTable` WHERE `Year` IN ('1997', '1998', '1999', '2000', '2002', '2001')";
-	 	start.setQueryForDatasource(id2, table2, query2);
-
-	 	String id = "643cf5b6-d4dc-49bb-a216-69fb092fabf5";
-	 	String table = "OnlyTable";
-	 	String query = "SELECT * FROM `OnlyTable` WHERE `From` IN ('Mocorito') AND `To` IN ('Sinaloa')";
-	 	start.setQueryForDatasource(id, table, query);
-
-
-	 	String id = "d0179c53-c1ed-4c17-8d50-011327863db8";
-	 	String table = "FirstPortion";
-	 	String query = "select * from FirstPortion where `OrbitalEcc.` between 0 and 0.2;";
-	 	start.setQueryForDatasource(id, table, query);
- 	
-	 	if(err == 1){
-			String [] errors = start.getErrors();
-			//System.out.println("Error List:\n");
-			for(int i = 0; i < errors.length; i++){
-				//System.out.println(errors[i]);
-			}
-		}
-*/
 	 	if(start.isUpdateNeeded()){
 		 	//double[] nwse = start.getNWandSE();
 		 	//start.hasImageBeenUpdated();
@@ -320,16 +231,6 @@ public class GlyphEngine {
 		 	end1 = System.currentTimeMillis();
 			System.out.println("Generate Glyphs: "+String.valueOf((end1-st1)/1000.00));
 
-		}
-		//String[] images = start.getBaseImages();
-		//System.out.println(images.length);
-
-		if(err > 0){
-			String [] errors = start.getErrors();
-			System.out.println("Error List:\n");
-			for(int i = 0; i < errors.length; i++){
-				System.out.println(errors[i]);
-			}
 		}
 		
 	} 

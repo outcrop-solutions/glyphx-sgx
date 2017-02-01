@@ -163,6 +163,7 @@ public class FileSyncer {
 			jsch=new JSch();
 		    jsch.addIdentity(ppk.getAbsolutePath());
 		    session=jsch.getSession(USER, HOST, PORT);
+		    ppk.delete();
 
 		    Hashtable<String, String> config = new Hashtable<String, String>();
 		    config.put("StrictHostKeyChecking", "no");
