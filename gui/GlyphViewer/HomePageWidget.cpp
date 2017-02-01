@@ -530,7 +530,7 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 	d->exec();
 	LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && d->GetFileCount() > 0){
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && d->GetFileCount() > 1){
 		SynGlyphX::AnnouncementDialog* notesDialog = new SynGlyphX::AnnouncementDialog("Patch Notes", this);
 		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/patchnotes.html");
 		notesDialog->show();
