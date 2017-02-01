@@ -790,7 +790,7 @@ void HomePageWidget::OnLoadVisualization() {
 
 	SynGlyphX::Application::restoreOverrideCursor();
 
-	emit LoadVisualization(fileToLoad, filteringParameters, true);
+	emit LoadVisualization(fileToLoad, filteringParameters, !filteringParameters.empty());
 }
 
 void HomePageWidget::ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization) {
