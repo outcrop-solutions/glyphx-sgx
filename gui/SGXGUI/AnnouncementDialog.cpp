@@ -13,7 +13,8 @@ namespace SynGlyphX {
 		setWindowTitle(title);
 
 		layout = new QVBoxLayout();
-		
+
+		setAttribute(Qt::WA_DeleteOnClose);
 	}
 
 	AnnouncementDialog::~AnnouncementDialog()
