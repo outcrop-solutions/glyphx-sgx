@@ -430,8 +430,8 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 	m_loadedVisualizationDependentActions.push_back(m_ToggleFEFilterListAction);
 	QIcon feFilterIcon;
-	QPixmap fe_filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
-	QPixmap fe_filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
+	QPixmap fe_filter_off(":SGXGUI/Resources/Icons/icon-filter-list.png");
+	QPixmap fe_filter_on(":SGXGUI/Resources/Icons/icon-filter-list-a.png");
 	feFilterIcon.addPixmap(fe_filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
 	feFilterIcon.addPixmap(fe_filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	m_ToggleFEFilterListAction->setIcon(feFilterIcon);
