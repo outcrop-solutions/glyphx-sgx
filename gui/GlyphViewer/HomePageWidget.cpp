@@ -895,6 +895,5 @@ void HomePageWidget::CheckForNewRelease(QString os_path) {
 				}
 			}
 		}
-	}
     }
 }
