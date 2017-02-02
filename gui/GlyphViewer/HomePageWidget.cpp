@@ -875,21 +875,24 @@ void HomePageWidget::CheckForNewRelease(QString os_path) {
 	std::vector<DataEngine::S3File*> files = s3Manager->GetFilesFromDirectory(appName.toStdString(), os_path.toStdString().c_str());
 	std::string releaseName;
 	for (const auto& file : files){ if (file->GetName().find("newrelease") != std::string::npos){ releaseName = file->GetName(); } }
-	std::vector<std::string> x;
-	boost::split(x, releaseName, boost::is_any_of("_"));
-	std::string installName = appName.toStdString();
-	if (appName != "glyphed" && !isGlyphIt){ installName = "glyphviewer"; }
+	if (!releaseName.empty())
+	{
+		std::vector<std::string> x;
+		boost::split(x, releaseName, boost::is_any_of("_"));
+		std::string installName = appName.toStdString();
+		if (appName != "glyphed" && !isGlyphIt) { installName = "glyphviewer"; }
 
-	if (x.at(1) != SynGlyphX::getAppVersionString()){
-		for (const auto& file : files){
-			if (file->GetName().find(installName+"_"+x.at(1)+".") != std::string::npos){
-				SynGlyphX::AnnouncementDialog* releaseDialog = new SynGlyphX::AnnouncementDialog("New Release Available", this);
-				releaseDialog->AddLabel("https://s3.amazonaws.com/" + appName + "/" + os_path + "/" + releaseName.c_str());
-				releaseDialog->ReplaceLabelText("***", QString::fromStdString(file->GetUrl()));
-				releaseDialog->ReplaceLabelText("_._.__", x.at(1).c_str());
-				releaseDialog->AddWebView("https://s3.amazonaws.com/" + appName + "/" + os_path + "/changes/changes_" + x.at(1).c_str() + "_.html");
-				releaseDialog->resize(400, 250);
-				releaseDialog->show();
+		if (x.at(1) != SynGlyphX::getAppVersionString()) {
+			for (const auto& file : files) {
+				if (file->GetName().find(installName + "_" + x.at(1) + ".") != std::string::npos) {
+					SynGlyphX::AnnouncementDialog* releaseDialog = new SynGlyphX::AnnouncementDialog("New Release Available", this);
+					releaseDialog->AddLabel("https://s3.amazonaws.com/" + appName + "/" + os_path + "/" + releaseName.c_str());
+					releaseDialog->ReplaceLabelText("***", QString::fromStdString(file->GetUrl()));
+					releaseDialog->ReplaceLabelText("_._.__", x.at(1).c_str());
+					releaseDialog->AddWebView("https://s3.amazonaws.com/" + appName + "/" + os_path + "/changes/changes_" + x.at(1).c_str() + "_.html");
+					releaseDialog->resize(400, 250);
+					releaseDialog->show();
+				}
 			}
 		}
 	}
