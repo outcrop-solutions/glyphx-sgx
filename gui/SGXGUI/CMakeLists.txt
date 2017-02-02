@@ -29,7 +29,7 @@ TARGET_LINK_LIBRARIES(SGXGUI ${Boost_LIBRARIES}
 
 #Enable licensing if it is available
 IF (${LICENSING_FOUND})
-	TARGET_LINK_LIBRARIES(SGXGUI rlmez rlmid1)
+	TARGET_LINK_LIBRARIES(SGXGUI rlmez)
 	IF (${WIN32}) 
 		#Check if /SAFESEH:NO is needed with the newer 12.0 VS 2015 version of RLM-EZ (32 bit only)
 		set_target_properties(SGXGUI PROPERTIES LINK_FLAGS_DEBUG "/NODEFAULTLIB:libcmt.lib /SAFESEH:NO /SUBSYSTEM:WINDOWS")

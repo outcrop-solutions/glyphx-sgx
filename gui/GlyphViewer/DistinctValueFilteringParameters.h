@@ -19,6 +19,7 @@
 
 #include <map>
 #include <unordered_map>
+#include <vector>
 #include <QtCore/QSet>
 #include <QtCore/QString>
 #include "inputtable.h"

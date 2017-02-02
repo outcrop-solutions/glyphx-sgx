@@ -31,7 +31,7 @@ namespace SynGlyphX {
 		m_dataTransformMapping->ClearInputFieldBindings(fieldID);
 		const auto& links = m_dataTransformMapping->GetLinks();
 		//need to do it in reverse so removing will not affect indexes
-		for (auto i = links.size() - 1; i >= 0; --i) 
+		for (int i = int(links.size()) - 1; i >= 0; --i)
 		{
 			if (links[i].m_start.m_inputFieldId == fieldID ||
 				links[i].m_end.m_inputFieldId == fieldID)
@@ -663,7 +663,7 @@ namespace SynGlyphX {
 				}
 			}
 
-			for (auto i = m_frontEndFilters.size() - 1; i >= 0; --i) //reverse order to preserve index
+			for (int i = int(m_frontEndFilters.size()) - 1; i >= 0; --i) //reverse order to preserve index
 				for (const auto& field : m_frontEndFilters[i].fields)
 				{ 
 					if (field.GetDatasourceID() == id)

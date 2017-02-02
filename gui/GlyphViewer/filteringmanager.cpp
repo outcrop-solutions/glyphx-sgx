@@ -301,7 +301,7 @@ void FilteringManager::UpdateGlyphIndexedFilterResults() {
 				bool time_filter_passed = true;
 				if (m_timeFilterEnabled)
 				{
-					auto& time_filter_results = m_filterResultsPerTableFromTimeFilter.find(tableRange.key());
+					const auto& time_filter_results = m_filterResultsPerTableFromTimeFilter.find(tableRange.key());
 					if (time_filter_results->second.find(row) == time_filter_results->second.end())
 						time_filter_passed = false;
 				}

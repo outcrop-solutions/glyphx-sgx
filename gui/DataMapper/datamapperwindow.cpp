@@ -1199,7 +1199,7 @@ void DataMapperWindow::ChangeElasticListFilters() {
 		availableFields[tableName] = fields;
 	}
 	
-	SynGlyphX::ElasticListSetupDialog elsd = SynGlyphX::ElasticListSetupDialog(this);
+	SynGlyphX::ElasticListSetupDialog elsd(this);
 	elsd.SetFormattedNames(formattedNames);
 	elsd.PopulateTabs(elasticFields, availableFields);
 

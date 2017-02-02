@@ -32,6 +32,10 @@ TARGET_LINK_LIBRARIES(DataEngine ${Boost_LIBRARIES}
 							  MapDownloading
 							  aws-cpp-sdk-core
 							  aws-cpp-sdk-s3)
+
+if(${APPLE})
+	TARGET_LINK_LIBRARIES(DataEngine curl)
+endif()
 							  
 TARGET_LINK_LIBRARIES(DataEngine)
 
