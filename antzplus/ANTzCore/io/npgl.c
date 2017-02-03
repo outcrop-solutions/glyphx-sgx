@@ -63,7 +63,6 @@ void npLoadTextures(void* dataRef)
 
 	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &textureSize);
 	printf ("\nMax Texture Size: %dx%d\n", textureSize, textureSize);
-	printf ("Larger textures down converted\n", textureSize);
 
 	printf ("\nSearching For Textures\n");
 	// load our texture		// texture, debug zz

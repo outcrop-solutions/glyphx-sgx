@@ -1222,8 +1222,6 @@ void npCtrlProperty (int command, void* dataRef)
 		case kNPcmdColorDown :
 			node->colorIndex--;
 			SetIndexColor (&node->color, &node->colorIndex);
-			sprintf(msg, "color index:%3d   RGB: %3d,%3d,%3d",
-				node->colorIndex, node->color.r, node->color.g, node->color.b, node->color.a);
 			npPostMsg (msg, kNPmsgCtrl, dataRef);
 			break;
 

@@ -111,7 +111,7 @@ void npTestCSV (void* fileName, int wordSize, int size, void* dataRef)
 	// write the file path in the file as text
 	count = npWriteCSV (buffer, 1, (int)strlen(buffer), file, dataRef);
 
-	printf("wrote %d bytes.\n", count); 
+	//printf("wrote %d bytes.\n", count); 
 
 	// read the file
 //	npFileRewind(file);
@@ -218,17 +218,17 @@ void npCSVtoMap (FILE* file, int type, void*dataRef)
 
 	if( file != NULL )   // check to see if file exists
 	{
-		printf("Reading File...\n");
+		//printf("Reading File...\n");
 		count = npFileRead (buffer, 1, kNPmapFileBufferMax, file, dataRef);
-		printf("Bytes Read: %d\n", count);
+		//printf("Bytes Read: %d\n", count);
 
 		npFileClose (file, dataRef);	//done reading, close file
 		
 		if (count > 0)
 		{
-			printf("Loading File\n");			//add table type handling, debug zz
+			//printf("Loading File\n");			//add table type handling, debug zz
 			npLoadMapFile (buffer, 1, (int)count, dataRef);	//process data
-			printf ("Done\n\n");
+			//printf ("Done\n\n");
 		}
 		else
 			printf("err 4297 - zero bytes read\n");
@@ -1232,7 +1232,7 @@ int npOpenMapCSV (char* filePath, int mapType, void* dataRef)
 		goto finish;
 	}
 		
-	printf( "Bytes Read: %d", size );
+//	printf( "Bytes Read: %d", size );
 
 
 	printf( "Done\n" );
@@ -1481,7 +1481,7 @@ int npSaveMapToCSV (char* filePath, int mapType, void* dataRef)
 	// print first line of file contents
 	if (count > 0)
 	{
-		printf("Bytes Written: %d\n", count);
+//		printf("Bytes Written: %d\n", count);
 		npFileRewind(file);
 		size = npFileRead (buffer, 1, 79, file, dataRef);
 		printf("File Contents:\n");

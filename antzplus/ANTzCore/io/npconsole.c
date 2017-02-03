@@ -854,8 +854,6 @@ void npQueCmdFromCSV ( const char* cmdElement, const char* cmdData, void* dataRe
 	//test
 	if ( !strncmp( "alpha_mode", cmdElement, 10 ) ) 
 		data->io.gl.alphaMode = npatoi(cmdData);
-	else
-		printf( "err 4738 - unknown CmdElement: %s\n", kNPmsgErr, data );
 /*	
 	//convert cmdParams based on command function type and call the function
 	switch (type)

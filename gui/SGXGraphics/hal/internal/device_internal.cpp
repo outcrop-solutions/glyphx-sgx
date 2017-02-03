@@ -266,7 +266,7 @@ namespace SynGlyphX
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m->ebo );
 			glBufferData( GL_ELEMENT_ARRAY_BUFFER, index_data_size, indices, GL_STATIC_DRAW );	// only support 4-byte uint indices for now
 
-			unsigned int offset = 0u;
+			size_t offset = 0u;
 			for ( unsigned int i = 0; i < fmt.stream_count(); ++i )
 			{
 				auto& stream = fmt.get_stream_info( i );

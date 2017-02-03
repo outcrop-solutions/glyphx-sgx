@@ -2,6 +2,7 @@
 #include "effect.h"
 #include <string>
 #include <fstream>
+#include <iterator>
 #include "gl.h"
 #include "../log.h"
 

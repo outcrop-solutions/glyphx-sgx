@@ -37,7 +37,6 @@ void CreateTracks (int numberTracks, void *dataRef);
 void SaveHeader (int offset, char* header, void *dataRef);
 int SaveHeaders (char** headers, void *dataRef);
 bool npChSaveTrackData (int numberTracks, int offset, float** trackFloatData, unsigned char** trackUcharData, int** trackIntData, char** buffer);
-void DumpChannel (char* str, pNPch ch);
 
 bool loopAtEndOfTrack = true;	//zz,  move to data->io.ch
 
@@ -350,23 +349,6 @@ ANTZCORE_API void npInitCh(void* dataRef)
 ANTZCORE_API void npCloseCh(void* dataRef)		//clean-up
 {
 	return;
-}
-
-//------------------------------------------------------------------------------
-void DumpChannel(char* str, pNPch ch)
-{
-	printf("%s\n", str);
-	printf(" channelNextDataChangeTime: %d\n", ch->channelNextDataChangeTime);
-	printf(" channelReadIndex: %d\n", ch->channelReadIndex);
-	printf(" channelSampleRate: %d\n", ch->channelSampleRate);
-	printf(" channelWriteIndex: %d\n", ch->channelWriteIndex);
-	//printf(" : %d\n", channel->nodePropertyMemoryLocations);
-	//printf(" : %d\n", channel->nodePropertyMemoryNextLocation);
-	printf(" numberTracks: %d\n", ch->numberTracks);
-	printf(" propertyFloatTrackIndex: %d\n", ch->floatTracks.propertyTrackIndex);
-	//printf(" : %d\n", channel->propertyTracks);
-	//printf(" : %d\n", channel->trackData);
-	//printf(" : %d\n", channel->trackNames);
 }
 
 //

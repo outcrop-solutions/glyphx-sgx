@@ -788,17 +788,13 @@ ANTZCORE_API int npFileOpenMap (const char* filePath, int wordSize, int size, vo
 			return 0;
 		}
 
-		printf("Reading File... ");
 		count = npFileRead (buffer, 1, kNPmapFileBufferMax, file, dataRef);
-		printf("Bytes Read: %d ", count);
 
 		npFileClose (file, dataRef);	//done reading, close file
 		
 		if (count > 0)
 		{
-			printf("converting\n");
 			npLoadMapFile (buffer, wordSize, (int)count, dataRef);	//process data
-			printf ("Done\n");
 		}
 		else
 			printf("warn 7287 - zero bytes read\n");
@@ -874,7 +870,6 @@ ANTZCORE_API int npFileSaveMap(const char* filePath, int wordSize, int size, voi
 	// print first line of file contents
 	if (total > 0)
 	{
-		printf("Bytes Written: %d\n", count);
 		npFileRewind(file);
 		size = npFileRead (buffer, 1, 79, file, dataRef);
 		printf("File Contents:\n");
@@ -932,251 +927,6 @@ void npFileOpenMapAttrib (int attrib, void* dataRef)
 {
 	return;
 }
-
-//-----------------------------------------------------------------------------
-// keep track of a bufferIndex for each list
-// write list of children
-// write node or node list
-// write node specific data to a separate list, ie pin, camera, etc
-// write list of channels,						channels NOT YET IMPLEMENTED, debug, zz
-// returns a pointer to the last char written to buffer
-//-----------------------------------------------------------------------------
-//int npWriteNode (const char* buffer, pNPnode node, int format, char** endPtr, void* dataRef)
-int npWriteNodeNewest (const char* buffer, pNPnode node, int format, void* dataRef)
-{
-	int n			= 0;
-	int parentID	= 0;
-	int childID		= 0;
-
-	pNPnode parent = NULL;
-
-	pData data = (pData) dataRef;
-
-	// pointers to the node data, update to be a generic list, debug, zz
-	// break into separate buffers, debug zz
-	char* nodePtr = data->io.write;
-
-/*
-	switch (format)
-	{	
-		case kNPnodeCSV :	npNodeToCSV(buffer, nodeRef, format, dataRef); break;
-		case kNPnodeOSC :	npNodeToOSC (buffer, nodeRef, format, dataRef); break;
-		case kNPnodeMySQL : npNodeToSQL (buffer, nodeRef, format, dataRef); break;
-		case kNPnodeXML :	npNodeToKML (buffer, nodeRef, format, dataRef); break;
-		case kNPnodeJSON :	npNodeToJSON (buffer, nodeRef, format, dataRef); break;
-		case kNPnodeKML :	npNodeToKML (buffer, nodeRef, format, dataRef); break;
-		case default : break;
-	}
-*/
-
-	//if parent exists then set the parentID, otherwise defaults to 0
-	if (node->parent != NULL)
-		parentID = node->parent->id;
-
-	//if kNodeLink then childID is set to the link-B node id, default is 0
-	if (node->type == kNodeLink)
-		childID = node->child[0]->id;	//link-B node ptr stored at child[0]
-
-	//format as CSV and fill the buffer, broken into groups for readability
-	n += sprintf ((nodePtr + n), "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
-		node->id,					//id is unique to this node
-		node->type,		
-		node->id,					// node->data->id uses this node id
-		
-		node->selected,
-		parentID,					// parent id replaces pointer to parent
-		node->branchLevel,
-		childID,					// either same as the node or id of link end B
-		node->childIndex,
-		node->childCount,
-		
-		node->chInputID,
-		node->chOutputID,	
-		node->chLastUpdated,
-
-		0, //node->average,
-		0, //node->interval,
-
-		node->auxA.x,
-		node->auxA.y,
-		node->auxA.z,
-
-		node->auxB.x,
-		node->auxB.y,
-		node->auxB.z
-	);
-
-	//  next group
-	n += sprintf ((nodePtr + n), ",%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f",
-		node->colorShift,
-
-		node->rotateVec.angle, 
-		node->rotateVec.x,
-		node->rotateVec.y,
-		node->rotateVec.z,
-		
-		node->scale.x,
-		node->scale.y,
-		node->scale.z,
-		
-		node->translate.x,
-		node->translate.y,
-		node->translate.z,
-
-		node->tagOffset.x,
-		node->tagOffset.y,
-		node->tagOffset.z,
-		
-		node->rotateRate.x,
-		node->rotateRate.y,
-		node->rotateRate.z,
-
-		node->rotate.x,
-		node->rotate.y,
-		node->rotate.z
-	);
-
-	n += sprintf ((nodePtr + n), ",%f,%f,%f,%f,%f,%f,%f,%f,%f", 
-		node->scaleRate.x,
-		node->scaleRate.y,
-		node->scaleRate.z,
-
-		node->translateRate.x,
-		node->translateRate.y,
-		node->translateRate.z,
-
-		node->translateVec.x,
-		node->translateVec.y,
-		node->translateVec.z
-	);
-
-	n += sprintf ((nodePtr + n), ",%d,%d,%f,%f,%f,%d,%d,%d,%d,%d,%d,%d",
-		node->shader,
-		node->geometry,
-
-		node->lineWidth,
-		node->pointSize,
-		node->ratio,
-
-		node->colorIndex,
-		
-		node->color.r,
-		node->color.g,
-		node->color.b,
-		node->color.a,
-
-		node->colorFade,
-		node->textureID
-	);
-
-	n += sprintf ((nodePtr + n), ",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
-		node->hide,
-		node->freeze,
-		node->topo,
-		node->facet,
-
-		node->autoZoom.x,
-		node->autoZoom.y,
-		node->autoZoom.z,
-		
-		node->triggerHi.x,
-		node->triggerHi.y,
-		node->triggerHi.z,
-
-		node->triggerLo.x,
-		node->triggerLo.y,
-		node->triggerLo.z 
-	);
-
-	n += sprintf ((nodePtr + n), ",%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%d",
-		node->setHi.x,
-		node->setHi.y,
-		node->setHi.z,
-
-		node->setLo.x,
-		node->setLo.y,
-		node->setLo.z,
-
-		node->proximity.x,
-		node->proximity.y,
-		node->proximity.z,
-
-		node->proximityMode.x,
-		node->proximityMode.y,
-		node->proximityMode.z
-	);
-
-	//last group
-	n += sprintf( ( nodePtr + n ), ",%d,%d,%d,%d,%d,%d,%d,%d",
-		node->segments.x,
-		node->segments.y,
-		node->segments.z,
-
-		node->tagMode,
-
-		node->formatID,
-		node->tableID,
-		node->recordID,
-
-		0// node->size
-	);
-
-
-/*
-//------------------------------------------------------------------------------
-void npitoa(char** buffer, const int* value)
-{
-	itoa(*value, *buffer, 0);
-}
-
-//------------------------------------------------------------------------------
-void npftoa(char** buffer, const int* value)
-{
-	ftoa(*value, *buffer, 0);
-}
-
-//------------------------------------------------------------------------------
-void npIntToCSV(char** buffer, const int* value)
-{
-	itoa(*value, *buffer, 0);
-	buffer++;
-	buffer* = ',';
-	buffer++;
-}
-
-//------------------------------------------------------------------------------
-void npFloatToCSV(char** buffer, const int* value)
-{
-	itoa(*value, *buffer, 0);
-}
-
-	npIntToCSV(&buffer, &node->id);
-	//...
-	npFloatToCSV(&buffer, &node->proximity.z);
-
-	npIntToCSV(&buffer, &node->proximityMode.x);
-	npIntToCSV(&buffer, &node->proximityMode.y);
-	npIntToCSV(&buffer, &node->proximityMode.z);
-	//...
-	npIntToCSV&buffer, &node->recordID);
-
-	npitoa(&buffer, &node->size);		//no comma for last field
-
-//	buffer++;
-
-	//after last group, end the node row using a newline
-	*buffer = '\n';
-*/
-
-	//after last group, end the node row using a newline
-	n += sprintf ((nodePtr + n), "\r");						//zzhp debug pull this out to higher level... SQL compatible
-
-	//increment the buffer
-	data->io.write += n;
-
-	return n;
-}
-
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -1874,13 +1624,14 @@ int npWriteNode (const char* buffer, pNPnode node, int format, void* dataRef)
 		0, //node->average,
 		0, //node->interval,
 
-		node->auxA.x,
-		node->auxA.y,
-		node->auxA.z,
+		// ot: this was writing floats but with %d specifier, wtf
+		(int)node->auxA.x,
+		(int)node->auxA.y,
+		(int)node->auxA.z,
 
-		node->auxB.x,
-		node->auxB.y,
-		node->auxB.z
+		(int)node->auxB.x,
+		(int)node->auxB.y,
+		(int)node->auxB.z
 	);
 
 	//  next group

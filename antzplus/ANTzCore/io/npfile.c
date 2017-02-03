@@ -161,9 +161,6 @@ int npFileRead (void* readBuffer, int elementSize, int elementCount,
 	int count = 0;
 
 	count = (int)fread (readBuffer, elementSize, elementCount, file);
-	
-	if ( count <= 0 )
-		printf(" warn 7218 - zero bytes read\n", count);
 
 	return count;
 }
