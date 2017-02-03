@@ -22,7 +22,7 @@ namespace SynGlyphX {
 		m_newDatasourceFileLineEdit->SetText(oldFileName);
 		layout->addRow(tr("New:"), m_newDatasourceFileLineEdit);
 
-		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Cancel, this);
+		QDialogButtonBox* dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 		layout->addWidget(dialogButtonBox);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &ReplaceFilenameDialog::accept);
 		QObject::connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &ReplaceFilenameDialog::reject);

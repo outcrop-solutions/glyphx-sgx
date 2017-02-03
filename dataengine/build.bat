@@ -17,7 +17,7 @@ SET outpath=%jp%\..\..\classes
 SET package=%outpath%\synglyphx
 
 
-
+if not "%~3"=="x" (
 if not exist %outpath% mkdir %outpath%
 
 if not exist %package% mkdir %package%
@@ -62,7 +62,7 @@ if not exist %package%\user mkdir %package%\user
 
 %jcmd%\javac -d %outpath% %jp%\synglyphx\user\*.java
 
-
+)
 
 SET currdir=%cd%
 
