@@ -1579,7 +1579,7 @@ namespace SynGlyphX {
 		query.finish();
 
 		for (int i = 0; i < fieldNames.size(); i++){
-			query.prepare("SELECT MIN(" + fieldNames.at(i) + "), MAX(" + fieldNames.at(i) + "), COUNT(DISTINCT(" + fieldNames.at(i) + ")) FROM \"" + QString(formattedName.c_str()) + "\"");
+			query.prepare("SELECT MIN(\"" + fieldNames.at(i) + "\"), MAX(\"" + fieldNames.at(i) + "\"), COUNT(DISTINCT(\"" + fieldNames.at(i) + "\")) FROM \"" + QString(formattedName.c_str()) + "\"");
 			if (query.exec()) {
 				while (query.next()){
 					QStringList fieldStats;
