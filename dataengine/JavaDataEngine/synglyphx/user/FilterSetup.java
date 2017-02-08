@@ -136,7 +136,7 @@ public class FilterSetup {
 	}
 
 	public boolean isCurrentDataID(String id){
-   		return dataID.equals(id);
+   		return dataID == null ? false : dataID.equals(id);
     }
 
 	public static void closeDriverIfOpen(){
