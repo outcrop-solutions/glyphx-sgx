@@ -178,7 +178,8 @@ public class PathBuilder {
 			for (int i = 0; i < baseobjects.getLength(); i++) {
 				Node baseobject = baseobjects.item(i);
 				if(((Element)baseobject).hasAttribute("filename")){
-					((Element)baseobject).setAttribute("filename", restructureFilePath(file, ((Element)baseobject).getAttribute("filename")));
+					String attrfile = ((Element)baseobject).getAttribute("filename");
+					String new_path = restructureFilePath(file, attrfile);
 				}
 			}
 
@@ -218,18 +219,15 @@ public class PathBuilder {
 	}
 
 	private String restructureFilePath(File curr_file, String old_path){
-
 		return findFile(new File(curr_file.getParent()), (new File(old_path)).getName()).toString();
 	}
 
 	private File findFile(File base, String toFind){
 
-		String toFind_suffix = toFind.replace('\\', '/').split(base.getName())[1];
 		if(base.isDirectory()){
 			File[] base_files = base.listFiles();
 			for(File file : base_files){
 				if(file.isDirectory()){
-					findFile(file, toFind);
 				}
 				else if(file.getAbsolutePath().replace('\\','/').endsWith(toFind_suffix)){
 					return file;
