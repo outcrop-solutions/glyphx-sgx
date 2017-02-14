@@ -10,7 +10,7 @@ namespace SynGlyphX {
 	{
 		QWebEngineView* dlg = new QWebEngineView( parent );
 		dlg->setMinimumSize( width, height );
-		dlg->load(QUrl("http://sample-env.zccmpffgqr.us-west-2.elasticbeanstalk.com/help/" ) );
+		dlg->load(QUrl("https://s3.amazonaws.com/glyphed/userguide/index.htm"));
 		return dlg;
 	}
 }
