@@ -180,6 +180,7 @@ public class PathBuilder {
 				if(((Element)baseobject).hasAttribute("filename")){
 					String attrfile = ((Element)baseobject).getAttribute("filename");
 					String new_path = restructureFilePath(file, attrfile);
+					((Element)baseobject).setAttribute("filename", new_path);
 				}
 			}
 
@@ -223,11 +224,13 @@ public class PathBuilder {
 	}
 
 	private File findFile(File base, String toFind){
+		String toFind_suffix = toFind.contains("\\") ? toFind.replace('\\', '/').split("/" + base.getName() + "/")[1] : toFind;
 
 		if(base.isDirectory()){
 			File[] base_files = base.listFiles();
 			for(File file : base_files){
 				if(file.isDirectory()){
+					return findFile(file, toFind);
 				}
 				else if(file.getAbsolutePath().replace('\\','/').endsWith(toFind_suffix)){
 					return file;
