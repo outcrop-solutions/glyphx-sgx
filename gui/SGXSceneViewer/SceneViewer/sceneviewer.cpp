@@ -480,7 +480,7 @@ namespace SynGlyphX
 		context->set_blend_state( hal::blend_state::alpha );
 
 		// draw drag-select
-		if ( mode == ViewerMode::Full )
+		if ( mode != ViewerMode::SingleGlyph )
 		{
 			if ( drag_info( button::left ).dragging && ( QGuiApplication::queryKeyboardModifiers() & Qt::KeyboardModifier::ShiftModifier ) )
 			{
@@ -782,7 +782,7 @@ namespace SynGlyphX
 		if ( event->button() == Qt::RightButton ) release_button( int( button::right ) );
 		if ( event->button() == Qt::MiddleButton ) release_button( int( button::middle ) );
 
-		if ( mode == ViewerMode::Full )
+		if ( mode != ViewerMode::SingleGlyph )
 		{
 			bool changed_selection = false;
 			if ( event->button() == Qt::MouseButton::LeftButton )
@@ -891,7 +891,7 @@ namespace SynGlyphX
 		set_cam_control( free_cam_control, true );	// force reactivate to let the controller know to update its internal state (since it has
 													// no other way to know we changed the camera orientation directly)
 
-		if ( mode == ViewerMode::SingleGlyph )
+		if ( mode != ViewerMode::Full )
 		{
 			// Single glyph mode is locked to orbit cam, so find a better starting position for the camera.
 			float radius = 0.f;

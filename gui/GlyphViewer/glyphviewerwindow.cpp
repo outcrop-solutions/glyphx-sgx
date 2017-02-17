@@ -1,4 +1,3 @@
-#include "glyphviewerwindow.h"
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
@@ -44,6 +43,7 @@
 #include "GlyphForestInfoModel.h"
 #include "Profiler.h"
 #include "networkdownloader.h"
+#include "InteractiveLegend.h"
 #include <hal/hal.h>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
@@ -335,6 +335,16 @@ void GlyphViewerWindow::CreateMenus() {
 	m_remapRootPositionMappingsAction->setIcon(remapIcon);
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
+
+	auto legendAction = m_toolsMenu->addAction(tr("Show Legend"));
+	QIcon legendIcon;
+	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-xyz.png");
+	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-xyz-a.png");
+	legendIcon.addPixmap(xyz_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	legendIcon.addPixmap(xyz_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	legendAction->setIcon(legendIcon);
+	QObject::connect(legendAction, &QAction::triggered, this, &GlyphViewerWindow::ShowInteractiveLegend);
+	m_loadedVisualizationDependentActions.push_back(legendAction);
 
 	m_toolsMenu->addSeparator();
 
@@ -1497,6 +1507,12 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 			LoadNewVisualization(remapFilename);
 		}
 	}
+}
+
+void GlyphViewerWindow::ShowInteractiveLegend()
+{
+	InteractiveLegend legend(this, m_mappingModel->GetDataMapping(), m_viewer);
+	legend.exec();
 }
 
 void GlyphViewerWindow::CreateInteractionToolbar() {

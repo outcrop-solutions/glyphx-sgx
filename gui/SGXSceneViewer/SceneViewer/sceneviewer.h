@@ -53,6 +53,7 @@ namespace SynGlyphX
 	{
 		Full,
 		SingleGlyph,
+		SingleGlyph_AllowSelection,
 	};
 
 	class SGXSCENEVIEWER_API SceneViewer : public QOpenGLWidget
@@ -121,6 +122,8 @@ namespace SynGlyphX
 		void setOverridePositionXYZ(const std::array<std::string, 3>& positionOverride);
 
 		void setLogoFile(const char* file) { logo_file = file; }
+
+		void setHiddenElementMode(GlyphRenderer::HiddenElementMode mode) { glyph_renderer->setHiddenElementMode(mode); }
 
 	protected:
 		enum class CenterMode

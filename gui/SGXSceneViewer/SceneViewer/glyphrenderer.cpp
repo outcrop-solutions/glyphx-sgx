@@ -6,6 +6,7 @@
 #include <render/perspective_camera.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/compatibility.hpp>
+#include <glm/gtx/color_space.hpp>
 #include "glyphnode.h"
 #include "glyphgeometrydb.h"
 
@@ -202,24 +203,31 @@ namespace SynGlyphX
 	{
 		scene.enumGlyphs( [this, &scene]( const Glyph3DNode& glyph )
 		{
-			bool passed_filter = scene.passedFilter( &glyph );
-
-			uint32_t bucket_id = 0u;
-			if ( !passed_filter )
-				bucket_id |= FILTER_FAIL;
-			if ( global_wireframe || glyph.getWireframe() )
-				bucket_id |= WIREFRAME;
-			if ( glyph.getColor().a < 1.f )
-				bucket_id |= BLENDED;
-
-			glyph_bucket& bucket = get_bucket( bucket_id, static_cast<uint16_t>( glyph.getExplodedPositionGroup() ) );
-
-			render::model* model = db.get( glyph.getGeometry(), glyph.getTorusRatio() );
-			for ( auto part : model->get_parts() )
+			if (!glyph.getHiddenByLegend() || hide_mode != HiddenElementMode::Hidden)
 			{
-				bucket.add_instance( part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), glyph.getColor(), glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup() );
-				if ( bound_vis_enabled )
-					add_bound_to_bucket( glyph, get_bucket( WIREFRAME | ( passed_filter ? 0u : FILTER_FAIL ), 0u ) );
+				bool passed_filter = scene.passedFilter(&glyph);
+
+				auto color = glyph.getColor();
+				if (hide_mode == HiddenElementMode::GreyedOut && glyph.getHiddenByLegend())
+					color.r = color.g = color.b = glm::luminosity(glm::vec3(color));
+
+				uint32_t bucket_id = 0u;
+				if (!passed_filter)
+					bucket_id |= FILTER_FAIL;
+				if (global_wireframe || glyph.getWireframe())
+					bucket_id |= WIREFRAME;
+				if (glyph.getColor().a < 1.f)
+					bucket_id |= BLENDED;
+
+				glyph_bucket& bucket = get_bucket(bucket_id, static_cast<uint16_t>(glyph.getExplodedPositionGroup()));
+
+				render::model* model = db.get(glyph.getGeometry(), glyph.getTorusRatio());
+				for (auto part : model->get_parts())
+				{
+					bucket.add_instance(part->get_mesh(), glyph.getCachedTransform() * glyph.getVisualTransform() * model->get_transform() * part->get_transform(), color, glyph.getAnimationAxis(), glyph.getAnimationRate(), glyph.getAnimationCenter(), glyph.getExplodedPosition(), glyph.getExplodedPositionGroup());
+					if (bound_vis_enabled)
+						add_bound_to_bucket(glyph, get_bucket(WIREFRAME | (passed_filter ? 0u : FILTER_FAIL), 0u));
+				}
 			}
 			return true;
 		} );

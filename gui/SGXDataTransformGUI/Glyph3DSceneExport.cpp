@@ -32,7 +32,8 @@ namespace SynGlyphX {
 		Glyph3DNode* parent,
 		GlyphScene& scene) {
 
-		auto* glyphnode = scene.allocGlyph(node->first, parent == nullptr, SynGlyphX::Glyph3DNodeType::GlyphElement);
+		auto label = node->first;
+		auto* glyphnode = scene.allocGlyph(node->first, parent == nullptr, SynGlyphX::Glyph3DNodeType::GlyphElement, -1, label);
 
 		VirtualTopologyInfo::Type topo = node->second.GetVirtualTopology().GetType();
 

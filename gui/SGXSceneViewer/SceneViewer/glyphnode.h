@@ -106,12 +106,17 @@ namespace SynGlyphX
 		int getID() const { return id; }
 		bool isRoot() const { return root; }
 
+		int32_t getLabel() const { return label; }
+
+		void setHiddenByLegend(bool v) const { hidden_by_legend = v; }
+		bool getHiddenByLegend() const { return hidden_by_legend; }
+
 		void enumNodes( std::function<bool( const Glyph3DNode& )> fn ) const;
 
 	private:
-		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), id( _id ),
+		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index, uint32_t _label ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), id( _id ),
 			filtering_index( _filtering_index ), exploded_position_group( 0.f ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ), root( _isRoot ), type( _type ), animation_root( false ),
-			animation_child( false ), grouped( false ) {
+			animation_child( false ), grouped( false ), label( _label ), hidden_by_legend( false ) {
 			for ( auto i = 0; i < int( GlyphStringType::Count ); ++i ) strings[i] = nullptr;
 		}
 
@@ -139,6 +144,8 @@ namespace SynGlyphX
 		mutable glm::vec3 animation_axis;
 		mutable float animation_rate;
 
+		uint16_t label;
+
 		// flags( packed )
 		GlyphShape geometry : 4;
 		bool wireframe : 1;
@@ -147,6 +154,7 @@ namespace SynGlyphX
 		mutable bool animation_root : 1;
 		mutable bool animation_child : 1;
 		mutable bool grouped : 1;
+		mutable bool hidden_by_legend : 1;
 
 		friend class GlyphScene;	// so glyphscene can instantiate
 	};

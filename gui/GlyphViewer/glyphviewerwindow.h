@@ -89,6 +89,7 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void RemapRootPositionMappings();
+	void ShowInteractiveLegend();
 	void OnStereoSetup(bool stereoEnabled);
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);

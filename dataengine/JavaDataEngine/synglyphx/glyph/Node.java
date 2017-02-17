@@ -34,6 +34,7 @@ public class Node {
 	private int lineNum;
 	private int branchLevel;
 	private int template;
+	private int label;
 	private Map<Integer, Node> children = null; 
 
 	public Node(){
@@ -164,6 +165,11 @@ public class Node {
 	public void setNumChildren(int i){
 		this.numChildren = i;
 	}
+
+	public void setLabel(int l)
+	{
+		label = l;
+	}
 //END SETTERS
 
 //GETTERS
@@ -281,6 +287,10 @@ public class Node {
 
 	public String getURL(){
 		return url;
+	}
+
+	public int getLabel(){
+		return label;
 	}
 //END GETTERS
 
