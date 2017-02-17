@@ -92,6 +92,7 @@ namespace SynGlyphX
 		bool stereoMode() { return false; /* not yet implemented */ }
 		void enableFreeSelectionCamera( bool val ) { free_selection_camera = val; }
 		void enableSelectionEffect( bool val ) { selection_effect_enabled = val; glyph_renderer->resetSelectionAnimation(); }
+		void resetSelectionAnimation() { if (glyph_renderer) glyph_renderer->resetSelectionAnimation(); }
 		bool freeSelectionCameraEnabled() { return free_selection_camera; }
 
 		void setFilteredGlyphOpacity( float opacity ) { filtered_glyph_opacity = opacity; }
@@ -124,6 +125,7 @@ namespace SynGlyphX
 		void setLogoFile(const char* file) { logo_file = file; }
 
 		void setHiddenElementMode(GlyphRenderer::HiddenElementMode mode) { glyph_renderer->setHiddenElementMode(mode); }
+		void setResetPulseAnimOnSelectionChange(bool v) { glyph_renderer->setResetPulseAnimOnSelectionChange(v); }
 
 	protected:
 		enum class CenterMode

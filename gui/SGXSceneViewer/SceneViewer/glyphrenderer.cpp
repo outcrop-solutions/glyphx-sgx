@@ -363,7 +363,7 @@ namespace SynGlyphX
 		auto& selection = get_bucket( SELECTION, 0u );
 		auto& selection_wireframe = get_bucket( SELECTION | WIREFRAME, 0u );
 
-		if ( scene->getSelectionChanged() )
+		if (reset_sel_animation_on_sel_change && scene->getSelectionChanged() )
 			selection_animation_state = 0.f;
 
 		if ( !sel_effect_enabled ) return;

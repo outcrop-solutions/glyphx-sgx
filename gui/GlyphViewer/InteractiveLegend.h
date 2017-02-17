@@ -7,7 +7,9 @@
 namespace SynGlyphX { class SceneViewer; }
 
 // todo:
-// - needs to display input field names
+// - needs to display some kind of names
+//   - pass 1 - use tag input field names (via aliases)
+//   - pass 2 - default to above but provide a custom option in datamapper
 // - needs to be dockable (make it a dock widget instead of a dialog?)
 // - needs to handle scenes with multiple glyphs (look at how remapdialog does it?)
 // - try to fix the camera swoop when starting up (SceneViewer single glyph mode issue)

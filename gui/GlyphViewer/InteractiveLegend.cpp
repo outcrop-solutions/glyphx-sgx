@@ -57,23 +57,51 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 		primary_viewer->getScene().flagChanged();
 		update_viewer();
 	});
+	toggle->setEnabled(false);
 	buttonsLayout->addWidget(toggle);
 
-/*	QPushButton* hide = new QPushButton("Show/Hide Branch", this);
-	QObject::connect(hide, &QPushButton::clicked, this, [this]() {
-		std::unordered_set<uint32_t> labels;
-		viewer->getScene().enumSelected([&](const SynGlyphX::Glyph3DNode& glyph) {
-			labels.insert(glyph.getLabel());
+	QPushButton* branch = new QPushButton("Show/Hide Branch", this);
+	QObject::connect(branch, &QPushButton::clicked, this, [this]() {
+		// gather selection
+		std::unordered_set<uint32_t> selected;
+		viewer->getScene().enumSelected([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
+			selected.insert(glyph.getLabel());
+			glyph.enumNodes([this, &selected](const SynGlyphX::Glyph3DNode& child) {
+				selected.insert(child.getLabel());
+				return true;
+			});
 		});
 
-		primary_viewer->getScene().enumGlyphs([this, &labels](const SynGlyphX::Glyph3DNode& glyph) {
-			if (labels.find(glyph.getLabel()) != labels.end())
-				glyph.setHiddenByLegend(true);
-			return true;
-		});
+		// if any element in the selection is visible, hide all selected elements; otherwise, show them all
+		bool hide = false;
+		for (auto l : selected)
+			if (hidden_elements.find(l) == hidden_elements.end())
+				hide = true;
+
+		if (hide)
+		{
+			hidden_elements.insert(selected.begin(), selected.end());
+			primary_viewer->getScene().enumGlyphs([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
+				if (selected.find(glyph.getLabel()) != selected.end())
+					glyph.setHiddenByLegend(true);
+				return true;
+			});
+		}
+		else
+		{
+			for (auto l : selected)
+				hidden_elements.erase(l);
+			primary_viewer->getScene().enumGlyphs([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
+				if (selected.find(glyph.getLabel()) != selected.end())
+					glyph.setHiddenByLegend(false);
+				return true;
+			});
+		}
+
 		primary_viewer->getScene().flagChanged();
+		update_viewer();
 	});
-	buttonsLayout->addWidget(hide);*/
+	buttonsLayout->addWidget(branch);
 
 	QPushButton* show_all = new QPushButton("Show All", this);
 	QObject::connect(show_all, &QPushButton::clicked, this, [this]() {
@@ -88,6 +116,12 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 	buttonsLayout->addWidget(show_all);
 
 	mainLayout->addLayout(buttonsLayout);
+
+	viewer->setOnSelectionChanged([toggle, branch, this](bool) {
+		toggle->setEnabled(!viewer->getScene().selectionEmpty());
+		branch->setEnabled(!viewer->getScene().selectionEmpty());
+		viewer->resetSelectionAnimation();
+	});
 }
 
 void InteractiveLegend::showEvent(QShowEvent* event)
@@ -106,6 +140,7 @@ void InteractiveLegend::showEvent(QShowEvent* event)
 	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*glyph, scene);
 	scene.finishAdding();
 
+	viewer->setResetPulseAnimOnSelectionChange(false);
 	viewer->setHiddenElementMode(SynGlyphX::GlyphRenderer::HiddenElementMode::GreyedOut);
 	viewer->resetCamera();
 }
@@ -117,4 +152,5 @@ void InteractiveLegend::update_viewer()
 		return true;
 	});
 	viewer->getScene().flagChanged();
+	viewer->getScene().flagSelectionChanged();
 }

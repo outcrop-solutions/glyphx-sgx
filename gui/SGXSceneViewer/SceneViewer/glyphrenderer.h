@@ -53,6 +53,7 @@ namespace SynGlyphX
 		void resetSelectionAnimation() { selection_animation_state = 0.f; }
 
 		void setHiddenElementMode(HiddenElementMode mode) { hide_mode = mode; }
+		void setResetPulseAnimOnSelectionChange(bool v) { reset_sel_animation_on_sel_change = v; }
 
 	private:
 		class glyph_bucket
@@ -110,6 +111,7 @@ namespace SynGlyphX
 		bool updates_done = false;
 
 		HiddenElementMode hide_mode = HiddenElementMode::Hidden;
+		bool reset_sel_animation_on_sel_change = true;
 
 		GlyphGeometryDB& db;
 	};

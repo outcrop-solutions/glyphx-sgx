@@ -81,6 +81,7 @@ namespace SynGlyphX
 
 		bool getSelectionChanged() { return selection_changed; }
 		void clearSelectionChangedFlag() { selection_changed = false; }
+		void flagSelectionChanged() { selection_changed = true; }
 
 		render::box_bound& getBound() const;
 

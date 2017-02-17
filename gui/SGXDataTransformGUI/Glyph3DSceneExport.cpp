@@ -3,6 +3,7 @@
 #include "SceneViewer/glyphnode.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "../../ANTzPlus/ANTzTopology/ANTzTopology.h"
+#include "stringconvert.h"
 
 namespace SynGlyphX {
 
