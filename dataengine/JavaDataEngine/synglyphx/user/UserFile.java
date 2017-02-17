@@ -17,9 +17,6 @@ public class UserFile {
 		remotePath = rpath;
 		securityGroup = s_group;
 		formattedPath = rpath.replace('_',' ');
-		if(type == 4){
-			formattedPath = formattedPath.replace("sharedvisualizations.xml","syncedvisualizations.xml");
-		}
 	}
 
 	public void setLastModified(long dt){

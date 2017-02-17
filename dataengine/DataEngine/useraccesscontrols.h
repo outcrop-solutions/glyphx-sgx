@@ -45,23 +45,30 @@ namespace DataEngine
 		UserAccessControls(JNIEnv *env);
 		~UserAccessControls(){};
 
-		void InitializeConnection();
 		bool IsValidConnection();
 		void ResetConnection();
-		int ValidateCredentials(QString username, QString password);
 		QString NameOfUser();
 		QString NameOfInstitution();
 		QString LastModified();
 		QStringList VizualizationNames();
-		int FileSyncSetup(QString path);
+
+		void InitializeConnection();
+		int ValidateCredentials(QString username, QString password);
+		int CheckAvailableGroups();
+		bool FileSyncSetup(QString path);
 		int VisualizationsToSync();
 		void StartSyncingFiles();
+		int GetSyncProgress();
+		bool IsDoneSyncing();
+
 		int FilesSynced();
 		void PresetLogoPath(QString path);
 		void SetVisualizationNames(QStringList vizs);
 		void SetUsersNameAndInstitution(QString name, QString inst);
 		QString GlyphEdPath();
 		bool HasSynced();
+
+
 	};
 }
 #endif // USERACCESSCONTROLS_H

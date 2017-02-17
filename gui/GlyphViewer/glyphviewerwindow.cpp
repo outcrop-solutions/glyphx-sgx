@@ -96,7 +96,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 			m_dataEngineConnection->createJVM();
 			de_version = m_dataEngineConnection->VersionNumber();
-			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/GlyphEd/"));
+			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
 		}
 	}
 	catch (const std::exception& e) {

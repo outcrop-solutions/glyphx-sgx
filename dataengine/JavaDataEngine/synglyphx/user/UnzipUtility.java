@@ -12,7 +12,7 @@ public class UnzipUtility {
 
     private static final int BUFFER_SIZE = 4096;
 
-    public static void unzip(String zipFilePath, String destDirectory, int fileType) throws IOException {
+    public static String unzip(String zipFilePath, String destDirectory) throws IOException {
 
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
@@ -21,15 +21,9 @@ public class UnzipUtility {
         ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
         ZipEntry entry = zipIn.getNextEntry();
 
-        if(fileType == 1){
-            String subDirName = entry.getName().split("/")[0];
-            File subDir = new File(destDirectory + File.separator + subDirName);
-            if(subDir.exists()){
-                deleteSubDir(subDir);
-            }
-            subDir.mkdir();
-        }
         // iterates over entries in the zip file
+        String toReturn = entry.getName().split("/")[0];
+
         while (entry != null) {
             String filePath = destDirectory + File.separator + entry.getName();
             if (!entry.isDirectory()) {
@@ -44,10 +38,13 @@ public class UnzipUtility {
             entry = zipIn.getNextEntry();
         }
         zipIn.close();
+
+        return toReturn;
     }
 
     private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        new File(filePath).getParentFile().mkdir();
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
         byte[] bytesIn = new byte[BUFFER_SIZE];
         int read = 0;
         while ((read = zipIn.read(bytesIn)) != -1) {

@@ -80,7 +80,7 @@ private:
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
 	QWidget* CreateLowerDashboardWidget();
 	void SetCustomerLogo();
-	void CheckForNewRelease(QString os_path);
+	void CheckForNewRelease();
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;

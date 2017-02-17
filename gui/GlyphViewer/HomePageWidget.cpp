@@ -88,17 +88,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	OnNewOptionSelected(0);
 
 	s3Manager = new DataEngine::S3FileManager();
-	QString os_path =
-#ifdef WIN32
-	"releases/windows";
-#elif __APPLE__
-	"releases/mac";
-#endif
-	CheckForNewRelease(os_path);
+	CheckForNewRelease();
 
-	if (loggedOn){
-		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
-	}
 }
 
 HomePageWidget::~HomePageWidget()
@@ -509,6 +500,9 @@ void HomePageWidget::Login(){
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
+		if (m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups() > 1){
+			//Add dialog to select which group the user would like to load
+		}
 		SyncFilesAndLoadViews();
 	}
 	else{
@@ -524,13 +518,12 @@ void HomePageWidget::Login(){
 
 void HomePageWidget::SyncFilesAndLoadViews(){
 
-	//QRect test = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
 	LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && d->GetFileCount() > 1){
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && m_dataEngineConnection->UserAccessControls()->VisualizationsToSync() > 1){
 		SynGlyphX::AnnouncementDialog* notesDialog = new SynGlyphX::AnnouncementDialog("Patch Notes", this);
 		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/patchnotes.html");
 		notesDialog->show();
@@ -868,7 +861,14 @@ void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
 	emit LoadRecentFile(item->toolTip());
 }
 
-void HomePageWidget::CheckForNewRelease(QString os_path) {
+void HomePageWidget::CheckForNewRelease() {
+
+	QString os_path =
+#ifdef WIN32
+		"releases/windows";
+#elif __APPLE__
+		"releases/mac";
+#endif
 
 	bool isGlyphIt = QFile("DataMapper.exe").exists();
 	QString appName = (QFileInfo(QCoreApplication::applicationFilePath()).fileName().toLower().replace(".exe","") == "glyphed") ? "glyphed" : "glyphit";
@@ -896,4 +896,7 @@ void HomePageWidget::CheckForNewRelease(QString os_path) {
 			}
 		}
     }
+	if (loggedOn){
+		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+	}
 }

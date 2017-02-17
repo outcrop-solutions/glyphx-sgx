@@ -17,7 +17,7 @@ namespace DataEngine
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 				"initConnection", "()Z");
 			if (methodId != NULL) {
-				connected = jniEnv->CallStaticIntMethod(jcls, methodId);
+				connected = jniEnv->CallStaticBooleanMethod(jcls, methodId);
 
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
@@ -147,7 +147,7 @@ namespace DataEngine
 		return names;
 	}
 
-	int UserAccessControls::FileSyncSetup(QString path){
+	bool UserAccessControls::FileSyncSetup(QString path){
 
 		if (valid == 2){
 			return 0;
@@ -155,17 +155,17 @@ namespace DataEngine
 
 		synced = true;
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"fileSyncSetup", "(Ljava/lang/String;)I");
-		int count = 0;
+			"fileSyncSetup", "(Ljava/lang/String;)Z");
+		bool needed = false;
 		if (methodId != NULL) {
 			jstring fp = jniEnv->NewStringUTF(path.toStdString().c_str());
-			count = (jint)jniEnv->CallStaticIntMethod(jcls, methodId, fp);
+			needed = jniEnv->CallStaticBooleanMethod(jcls, methodId, fp);
 			if (jniEnv->ExceptionCheck()) {
 				jniEnv->ExceptionDescribe();
 				jniEnv->ExceptionClear();
 			}
 		}
-		return count;
+		return needed;
 	}
 
 	int UserAccessControls::VisualizationsToSync(){
@@ -265,5 +265,59 @@ namespace DataEngine
 	void UserAccessControls::SetUsersNameAndInstitution(QString name, QString inst){
 		presetName = name;
 		presetInstitution = inst;
+	}
+
+	int UserAccessControls::CheckAvailableGroups(){
+
+		int group_count = 0;
+		if (jcls != NULL) {
+			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+				"checkAvailableGroups", "()I");
+			if (methodId != NULL) {
+				group_count = jniEnv->CallStaticIntMethod(jcls, methodId);
+
+				if (jniEnv->ExceptionCheck()) {
+					jniEnv->ExceptionDescribe();
+					jniEnv->ExceptionClear();
+				}
+			}
+		}
+		return group_count;
+	}
+
+	int UserAccessControls::GetSyncProgress(){
+
+		long progress = 0;
+		if (jcls != NULL) {
+			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+				"getSyncProgress", "()J");
+			if (methodId != NULL) {
+				progress = jniEnv->CallStaticLongMethod(jcls, methodId);
+
+				if (jniEnv->ExceptionCheck()) {
+					jniEnv->ExceptionDescribe();
+					jniEnv->ExceptionClear();
+				}
+			}
+		}
+		return static_cast<int>(progress);
+	}
+
+	bool UserAccessControls::IsDoneSyncing(){
+
+		bool done = false;
+		if (jcls != NULL) {
+			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+				"isDoneSyncing", "()Z");
+			if (methodId != NULL) {
+				done = jniEnv->CallStaticBooleanMethod(jcls, methodId);
+
+				if (jniEnv->ExceptionCheck()) {
+					jniEnv->ExceptionDescribe();
+					jniEnv->ExceptionClear();
+				}
+			}
+		}
+		return done;
 	}
 }
