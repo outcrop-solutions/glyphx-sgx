@@ -88,8 +88,12 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	OnNewOptionSelected(0);
 
 	s3Manager = new DataEngine::S3FileManager();
-	CheckForNewRelease();
-
+	if (loggedOn){
+		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+	}
+	else{
+		CheckForNewRelease();
+	}
 }
 
 HomePageWidget::~HomePageWidget()
@@ -518,6 +522,7 @@ void HomePageWidget::Login(){
 
 void HomePageWidget::SyncFilesAndLoadViews(){
 
+	bool showReleaseNow = loggedOn;
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
@@ -527,6 +532,9 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 		SynGlyphX::AnnouncementDialog* notesDialog = new SynGlyphX::AnnouncementDialog("Patch Notes", this);
 		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/patchnotes.html");
 		notesDialog->show();
+	}
+	if (showReleaseNow){
+		CheckForNewRelease();
 	}
 }
 
@@ -895,8 +903,5 @@ void HomePageWidget::CheckForNewRelease() {
 				}
 			}
 		}
-    }
-	if (loggedOn){
-		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
 	}
 }

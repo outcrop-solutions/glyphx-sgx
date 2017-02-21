@@ -76,11 +76,6 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
-		QPoint dialogCenter = mapToGlobal(rect().center());
-		QPoint parentWindowCenter = nativeParentWidget()->window()->mapToGlobal(
-			nativeParentWidget()->window()->rect().center());
-		move(parentWindowCenter - dialogCenter);
-
 		QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 		QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
