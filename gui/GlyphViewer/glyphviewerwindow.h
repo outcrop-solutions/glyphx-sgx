@@ -39,6 +39,7 @@
 
 class HomePageWidget;
 class FrontEndFilterListWidget; 
+class InteractiveLegend;
 namespace SynGlyphX
 {
 	class SceneViewer;
@@ -89,7 +90,7 @@ private slots:
 	void OnSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
 	void CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform);
 	void RemapRootPositionMappings();
-	void ShowInteractiveLegend();
+	void ToggleInteractiveLegend();
 	void OnStereoSetup(bool stereoEnabled);
 	void OnShowHideHUDAxis(bool show);
 	void OnShowHideSceneAxis(bool show);
@@ -170,6 +171,8 @@ private:
 	QAction* m_propertiesAction;
 
 	LegendsDisplayWidget* m_legendsWidget;
+	QDockWidget* m_legendDock = nullptr;
+	InteractiveLegend* m_legend = nullptr;
 	QDockWidget* m_legendsDockWidget;
 	QDockWidget* m_leftDockWidget;
 	QDockWidget* m_rightDockWidget;

@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "Glyph3DSceneExport.h"
 
-InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMapping::ConstSharedPtr _mapping, SynGlyphX::SceneViewer* _primary_viewer) : QDialog(parent), mapping(_mapping), primary_viewer(_primary_viewer)
+InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMapping::ConstSharedPtr _mapping, SynGlyphX::SceneViewer* _primary_viewer) : QWidget(parent), mapping(_mapping), primary_viewer(_primary_viewer)
 {
 	viewer = new SynGlyphX::SceneViewer(this, SynGlyphX::ViewerMode::SingleGlyph_AllowSelection);
 	viewer->setMinimumSize(256, 256);
@@ -126,7 +126,7 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 
 void InteractiveLegend::showEvent(QShowEvent* event)
 {
-	QDialog::showEvent(event);
+	QWidget::showEvent(event);
 	viewer->makeCurrent();
 	viewer->clearScene();
 

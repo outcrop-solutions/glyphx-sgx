@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <QtWidgets/QDialog>
+#include <QtWidgets/QWidget>
 #include <unordered_set>
 #include "datatransformmapping.h"
 namespace SynGlyphX { class SceneViewer; }
@@ -10,10 +10,9 @@ namespace SynGlyphX { class SceneViewer; }
 // - needs to display some kind of names
 //   - pass 1 - use tag input field names (via aliases)
 //   - pass 2 - default to above but provide a custom option in datamapper
-// - needs to be dockable (make it a dock widget instead of a dialog?)
 // - needs to handle scenes with multiple glyphs (look at how remapdialog does it?)
 // - try to fix the camera swoop when starting up (SceneViewer single glyph mode issue)
-class InteractiveLegend : public QDialog
+class InteractiveLegend : public QWidget
 {
 	Q_OBJECT
 

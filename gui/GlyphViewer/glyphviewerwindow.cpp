@@ -343,7 +343,7 @@ void GlyphViewerWindow::CreateMenus() {
 	legendIcon.addPixmap(xyz_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
 	legendIcon.addPixmap(xyz_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	legendAction->setIcon(legendIcon);
-	QObject::connect(legendAction, &QAction::triggered, this, &GlyphViewerWindow::ShowInteractiveLegend);
+	QObject::connect(legendAction, &QAction::triggered, this, &GlyphViewerWindow::ToggleInteractiveLegend);
 	m_loadedVisualizationDependentActions.push_back(legendAction);
 
 	m_toolsMenu->addSeparator();
@@ -403,6 +403,12 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
+
+	m_legend = new InteractiveLegend(this, m_mappingModel->GetDataMapping(), m_viewer);
+	m_legendDock = new QDockWidget(tr("Legend"), this);
+	m_legendDock->hide();
+	m_legendDock->setFloating(true);
+	m_legendDock->setWidget(m_legend);
 
 	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 
@@ -1509,10 +1515,18 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 	}
 }
 
-void GlyphViewerWindow::ShowInteractiveLegend()
+void GlyphViewerWindow::ToggleInteractiveLegend()
 {
-	InteractiveLegend legend(this, m_mappingModel->GetDataMapping(), m_viewer);
-	legend.exec();
+	if (m_legendDock->isVisible())
+	{
+		m_legendDock->hide();
+	}
+	else
+	{
+		addDockWidget(Qt::DockWidgetArea::NoDockWidgetArea, m_legendDock);
+		m_legendDock->resize(m_legend->size());
+		m_legendDock->show();
+	}
 }
 
 void GlyphViewerWindow::CreateInteractionToolbar() {
