@@ -171,8 +171,8 @@ private:
 	QAction* m_propertiesAction;
 
 	LegendsDisplayWidget* m_legendsWidget;
-	QDockWidget* m_legendDock = nullptr;
-	InteractiveLegend* m_legend = nullptr;
+	QDockWidget* m_interactiveLegendDock = nullptr;
+	InteractiveLegend* m_interactiveLegend = nullptr;
 	QDockWidget* m_legendsDockWidget;
 	QDockWidget* m_leftDockWidget;
 	QDockWidget* m_rightDockWidget;

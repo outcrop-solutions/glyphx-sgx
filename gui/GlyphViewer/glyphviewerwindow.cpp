@@ -336,7 +336,7 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
 
-	auto legendAction = m_toolsMenu->addAction(tr("Show Legend"));
+	auto legendAction = m_toolsMenu->addAction(tr("Show Interactive Legend"));
 	QIcon legendIcon;
 	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-xyz.png");
 	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-xyz-a.png");
@@ -404,11 +404,11 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
 
-	m_legend = new InteractiveLegend(this, m_mappingModel->GetDataMapping(), m_viewer);
-	m_legendDock = new QDockWidget(tr("Legend"), this);
-	m_legendDock->hide();
-	m_legendDock->setFloating(true);
-	m_legendDock->setWidget(m_legend);
+	m_interactiveLegend = new InteractiveLegend(this, m_mappingModel->GetDataMapping());
+	m_interactiveLegendDock = new QDockWidget(tr("InteractiveLegend"), this);
+	m_interactiveLegendDock->hide();
+	m_interactiveLegendDock->setFloating(true);
+	m_interactiveLegendDock->setWidget(m_interactiveLegend);
 
 	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 
@@ -683,6 +683,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
+	m_interactiveLegendDock->close();
 	m_hudGenerationInfo.clear();
 }
 
@@ -1517,15 +1518,16 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 
 void GlyphViewerWindow::ToggleInteractiveLegend()
 {
-	if (m_legendDock->isVisible())
+	if (m_interactiveLegendDock->isVisible())
 	{
-		m_legendDock->hide();
+		m_interactiveLegendDock->hide();
 	}
 	else
 	{
-		addDockWidget(Qt::DockWidgetArea::NoDockWidgetArea, m_legendDock);
-		m_legendDock->resize(m_legend->size());
-		m_legendDock->show();
+		m_interactiveLegend->setPrimaryViewer(m_viewer);
+		addDockWidget(Qt::DockWidgetArea::NoDockWidgetArea, m_interactiveLegendDock);
+		m_interactiveLegendDock->resize(m_interactiveLegend->size());
+		m_interactiveLegendDock->show();
 	}
 }
 

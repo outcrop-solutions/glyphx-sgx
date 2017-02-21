@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "Glyph3DSceneExport.h"
 
-InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMapping::ConstSharedPtr _mapping, SynGlyphX::SceneViewer* _primary_viewer) : QWidget(parent), mapping(_mapping), primary_viewer(_primary_viewer)
+InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMapping::ConstSharedPtr _mapping) : QWidget(parent), mapping(_mapping)
 {
 	viewer = new SynGlyphX::SceneViewer(this, SynGlyphX::ViewerMode::SingleGlyph_AllowSelection);
 	viewer->setMinimumSize(256, 256);
@@ -19,6 +19,26 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 	setLayout(mainLayout);
 
 	QHBoxLayout* buttonsLayout = new QHBoxLayout(this);
+
+	prev = new QPushButton(this);
+	prev->setToolTip(tr("Previous Glyph"));
+	prev->setIcon(QIcon(":SGXGUI/Resources/left_arrow.png"));
+	prev->setEnabled(false);
+	QObject::connect(prev, &QPushButton::clicked, this, [this]() {
+		--glyph_index;
+		build_scene();
+	});
+	buttonsLayout->addWidget(prev);
+
+	next = new QPushButton(this);
+	next->setToolTip(tr("Next Glyph"));
+	next->setIcon(QIcon(":SGXGUI/Resources/right_arrow.png"));
+	QObject::connect(next, &QPushButton::clicked, this, [this]() {
+		++glyph_index;
+		build_scene();
+	});
+	next->setEnabled(mapping->GetGlyphGraphs().size() > 1);
+	buttonsLayout->addWidget(next);
 
 	QPushButton* toggle = new QPushButton("Show/Hide Element", this);
 	QObject::connect(toggle, &QPushButton::clicked, this, [this]() {
@@ -133,16 +153,19 @@ void InteractiveLegend::showEvent(QShowEvent* event)
 	char buf[255];
 	sprintf(buf, "sizeof(Glyph3DNode) = %i\n", sizeof(SynGlyphX::Glyph3DNode));
 	OutputDebugStringA(buf);
-	
-	SynGlyphX::GlyphScene& scene = viewer->getScene();
-	auto glyph = mapping->GetGlyphGraphs().begin()->second;
-	scene.beginAdding(glyph->size());
-	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*glyph, scene);
-	scene.finishAdding();
 
-	viewer->setResetPulseAnimOnSelectionChange(false);
-	viewer->setHiddenElementMode(SynGlyphX::GlyphRenderer::HiddenElementMode::GreyedOut);
-	viewer->resetCamera();
+	build_scene();
+}
+
+void InteractiveLegend::hideEvent(QHideEvent* event)
+{
+	hidden_elements.clear();
+	primary_viewer->getScene().enumGlyphs([this](const SynGlyphX::Glyph3DNode& glyph) {
+		glyph.setHiddenByLegend(false);
+		primary_viewer->getScene().flagChanged();
+		return true;
+	});
+	primary_viewer->setStatusMessage("");
 }
 
 void InteractiveLegend::update_viewer()
@@ -153,4 +176,51 @@ void InteractiveLegend::update_viewer()
 	});
 	viewer->getScene().flagChanged();
 	viewer->getScene().flagSelectionChanged();
+
+	if (hidden_elements.size() > 0)
+	{
+		primary_viewer->setStatusMessage("note: some glyph elements hidden");
+	}
+	else
+	{
+		primary_viewer->setStatusMessage("");
+	}
+}
+
+void InteractiveLegend::build_scene()
+{
+	SynGlyphX::GlyphScene& scene = viewer->getScene();
+	scene.clear();
+
+	if (glyph_index <= 0)
+	{
+		glyph_index = 0;
+		prev->setEnabled(false);
+	}
+	else
+	{
+		prev->setEnabled(true);
+	}
+
+	if (glyph_index >= mapping->GetGlyphGraphs().size() - 1)
+	{
+		glyph_index = int(mapping->GetGlyphGraphs().size()) - 1;
+		next->setEnabled(false);
+	}
+	else
+	{
+		next->setEnabled(true);
+	}
+
+	auto it = mapping->GetGlyphGraphs().begin();
+	std::advance(it, glyph_index);
+
+	auto glyph = it->second;
+	scene.beginAdding(glyph->size());
+	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*glyph, scene);
+	scene.finishAdding();
+
+	viewer->setResetPulseAnimOnSelectionChange(false);
+	viewer->setHiddenElementMode(SynGlyphX::GlyphRenderer::HiddenElementMode::GreyedOut);
+	viewer->resetCamera();
 }

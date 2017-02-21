@@ -101,6 +101,7 @@ namespace SynGlyphX
 		void setHUDAxesLocation( HUDAxesLocation loc ) { hud_axes_location = loc; }
 		void showTagsOfSelectedObjects( bool show );
 		void setAxisNames( const char* X, const char* Y, const char* Z );
+		void setStatusMessage(const char* message) { status_message = message; }
 		void hideAllTags();
 		void enableSuperimposedGlyphGadgets( bool val );
 
@@ -221,6 +222,7 @@ namespace SynGlyphX
 		GlyphRenderer* glyph_renderer;
 		AxisRenderer* axis_renderer;
 		std::string axis_names[3];
+		std::string status_message;
 		BaseImageRenderer* base_images;
 		render::renderer* renderer;
 		render::grid_renderer* grids;

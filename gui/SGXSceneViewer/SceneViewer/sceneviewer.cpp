@@ -196,6 +196,7 @@ namespace SynGlyphX
 			grids->clear();
 			for ( int i = 0; i < 3; ++i )
 				axis_names[i] = "";
+			status_message = "";
 			for ( auto& tex : base_textures )
 				hal::device::release( tex );
 			base_textures.clear();
@@ -517,7 +518,7 @@ namespace SynGlyphX
 				if ( scene->selectionEmpty() )
 				{
 					auto campos = camera->get_position();
-					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Camera Position: X: %.2f, Y: %.2f, Z: %.2f", campos.x, campos.y, campos.z );
+					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 32 ), CenterMode::X, render::color::white(), "Camera Position: X: %.2f, Y: %.2f, Z: %.2f", campos.x, campos.y, campos.z );
 				}
 				else
 				{
@@ -537,14 +538,17 @@ namespace SynGlyphX
 								positionHUD += axis_names[i] + ": " + m_overridePosition[i];
 							}
 						}
-						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
+						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 32 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
 					}
 					else
 					{
-						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 16 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %.2f, Y: %.2f, Z: %.2f", orbit_center.x, orbit_center.y, orbit_center.z );
+						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 32 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %.2f, Y: %.2f, Z: %.2f", orbit_center.x, orbit_center.y, orbit_center.z );
 					}
 				}
 			}
+
+			if (!status_message.empty())
+				renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 16), CenterMode::X, render::color::white(), status_message.c_str());
 
 			// Draw tags.
 			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
