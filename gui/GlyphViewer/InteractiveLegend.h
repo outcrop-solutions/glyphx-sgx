@@ -8,12 +8,12 @@
 namespace SynGlyphX { class SceneViewer; }
 class QPushButton;
 
+// interactive legend, allows user to examine and show/hide individual elements or whole branches
 // todo:
-// - needs to display some kind of names
-//   - pass 1 - use tag input field names (via aliases)
-//   - pass 2 - default to above but provide a custom option in datamapper
+// - provide a custom field name option in datamapper
 // - try to fix the camera swoop when starting up (SceneViewer single glyph mode issue)
 // - improve centering if possible (ex glyphed "current year RC with prior year admits" centers on a weird spot)
+// - improve text positioning if possible (this is a general SceneViewer issue though)
 class InteractiveLegend : public QWidget
 {
 	Q_OBJECT

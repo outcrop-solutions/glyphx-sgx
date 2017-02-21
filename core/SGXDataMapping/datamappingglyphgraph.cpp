@@ -330,15 +330,20 @@ namespace SynGlyphX {
 
 	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetMinGlyphTree() const {
 
-		return CreateMinOrMaxGlyphSubtree(false);
+		return CreateMinOrMaxGlyphSubtree(CreateGlyphTreeType::MIN);
 	}
 
 	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetMaxGlyphTree() const {
 
-		return CreateMinOrMaxGlyphSubtree(true);
+		return CreateMinOrMaxGlyphSubtree(CreateGlyphTreeType::MAX);
 	}
 
-	GlyphGraph::SharedPtr DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(bool isMax) const {
+	GlyphGraph::SharedPtr DataMappingGlyphGraph::GetLegendGlyphTree() const {
+
+		return CreateMinOrMaxGlyphSubtree(CreateGlyphTreeType::LEGEND);
+	}
+
+	GlyphGraph::SharedPtr DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(CreateGlyphTreeType type) const {
 
 		//DataMappingGlyphGraphMaxExportVisitor vis;
 		//boost::depth_first_search(*this, boost::visitor(vis));
@@ -346,55 +351,58 @@ namespace SynGlyphX {
 
 		GlyphGraph::SharedPtr glyphTree = std::make_shared<GlyphGraph>();
 
-		if (isMax) {
-
+		if (type == CreateGlyphTreeType::MAX) {
 			glyphTree->SetRootGlyph(GetRoot()->second.GetMaxGlyph());
 		}
-		else {
-
+		else if (type == CreateGlyphTreeType::MIN) {
 			glyphTree->SetRootGlyph(GetRoot()->second.GetMinGlyph());
 		}
+		else {
+			glyphTree->SetRootGlyph(GetRoot()->second.GetLegendGlyph());
+		}
 
-		CreateMinOrMaxGlyphSubtree(GetRoot(), glyphTree->GetRoot(), glyphTree, isMax);
+		CreateMinOrMaxGlyphSubtree(GetRoot(), glyphTree->GetRoot(), glyphTree, type);
 
-		if (isMax) {
-
+		if (type == CreateGlyphTreeType::MAX) {
 			for (const auto& link : m_linkGlyphs) {
-
 				glyphTree->AddLink(link.first.first, link.first.second, link.second.GetMaxGlyph());
 			}
 		}
-		else {
-
+		else if (type == CreateGlyphTreeType::MIN) {
 			for (const auto& link : m_linkGlyphs) {
-
 				glyphTree->AddLink(link.first.first, link.first.second, link.second.GetMinGlyph());
+			}
+		}
+		else {
+			for (const auto& link : m_linkGlyphs) {
+				glyphTree->AddLink(link.first.first, link.first.second, link.second.GetLegendGlyph());
 			}
 		}
 
 		return glyphTree;
 	}
 
-	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, bool isMax) const {
+	void DataMappingGlyphGraph::CreateMinOrMaxGlyphSubtree(const DataMappingGlyphGraph::ConstGlyphIterator parent, GlyphGraph::GlyphIterator newVertex, GlyphGraph::SharedPtr newGlyphGraph, CreateGlyphTreeType type) const {
 
 		for (unsigned int i = 0; i < children(parent); ++i) {
 
 			const DataMappingGlyphGraph::ConstGlyphIterator& childNode = child(parent, i);
 
 			GlyphGraph::GlyphIterator newChild;
-			if (isMax) {
-
+			if (type == CreateGlyphTreeType::MAX) {
 				newChild = newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetMaxGlyph());
 			}
-			else {
-
+			else if (type == CreateGlyphTreeType::MIN) {
 				newChild = newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetMinGlyph());
+			}
+			else {
+				newChild = newGlyphGraph->AddChildGlyph(newVertex, childNode->second.GetLegendGlyph());
 			}
 
 			//Keep labels the same
 			newChild->first = childNode->first;
 
-			CreateMinOrMaxGlyphSubtree(childNode, newChild, newGlyphGraph, isMax);
+			CreateMinOrMaxGlyphSubtree(childNode, newChild, newGlyphGraph, type);
 		}
 	}
 

@@ -1,37 +1,37 @@
 #include "Glyph3DSceneExport.h"
 #include "SceneViewer/glyphscene.h"
 #include "SceneViewer/glyphnode.h"
+#include "datatransformmapping.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "../../ANTzPlus/ANTzTopology/ANTzTopology.h"
 #include "stringconvert.h"
 
 namespace SynGlyphX {
 
-	Glyph3DSceneExport::Glyph3DSceneExport()
-	{
-	}
-
-
-	Glyph3DSceneExport::~Glyph3DSceneExport()
-	{
-	}
-
-	void Glyph3DSceneExport::ExportMaxGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene) {
+	void Glyph3DSceneExport::ExportMaxGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene, SynGlyphX::DataTransformMapping* mapping) {
 
 		SynGlyphX::GlyphGraph::SharedPtr maxGlyph = dataMappingGlyph.GetMaxGlyphTree();
-		ExportGlyphTo3DScene(maxGlyph, maxGlyph->GetRoot().constify(), nullptr, scene);
+		ExportGlyphTo3DScene(dataMappingGlyph, maxGlyph, maxGlyph->GetRoot().constify(), nullptr, scene, mapping);
 	}
 
-	void Glyph3DSceneExport::ExportMinGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene) {
+	void Glyph3DSceneExport::ExportMinGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene, SynGlyphX::DataTransformMapping* mapping) {
 
 		SynGlyphX::GlyphGraph::SharedPtr minGlyph = dataMappingGlyph.GetMinGlyphTree();
-		ExportGlyphTo3DScene(minGlyph, minGlyph->GetRoot().constify(), nullptr, scene);
+		ExportGlyphTo3DScene(dataMappingGlyph, minGlyph, minGlyph->GetRoot().constify(), nullptr, scene, mapping);
 	}
 
-	void Glyph3DSceneExport::ExportGlyphTo3DScene(GlyphGraph::ConstSharedPtr glyph,
+	void Glyph3DSceneExport::ExportLegendGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene, SynGlyphX::DataTransformMapping* mapping) {
+
+		SynGlyphX::GlyphGraph::SharedPtr legendGlyph = dataMappingGlyph.GetLegendGlyphTree();
+		ExportGlyphTo3DScene(dataMappingGlyph, legendGlyph, legendGlyph->GetRoot().constify(), nullptr, scene, mapping);
+	}
+
+	void Glyph3DSceneExport::ExportGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, 
+		GlyphGraph::ConstSharedPtr glyph,
 		const GlyphGraph::ConstGlyphIterator& node,
 		Glyph3DNode* parent,
-		GlyphScene& scene) {
+		GlyphScene& scene,
+		SynGlyphX::DataTransformMapping* mapping) {
 
 		auto label = node->first;
 		auto* glyphnode = scene.allocGlyph(node->first, parent == nullptr, SynGlyphX::Glyph3DNodeType::GlyphElement, -1, label);
@@ -41,6 +41,29 @@ namespace SynGlyphX {
 		SetupGeometry(node->second.GetStructure(), *glyphnode);
 		glyphnode->setColor(GetColor(node->second.GetColor(), node->second.GetTransparency()));
 		glyphnode->setPlacementPolicy(ChoosePlacementPolicy(topo));
+
+		if (mapping)
+		{
+			auto _input_field = node->second.GetTag();
+			if (!_input_field.empty())
+			{
+				SynGlyphX::InputTable table = mapping->GetInputTable(dataMappingGlyph);
+				auto& fieldToAliasMap = mapping->GetFieldToAliasMapForTable(table);
+				SynGlyphX::InputField field = mapping->GetInputFieldManager()->GetInputField(_input_field);
+				if (field.IsValid()) {
+
+					auto fieldName = StringConvert::ToStdString(field.GetField());
+					std::string tag;
+					if (fieldToAliasMap.count(field.GetField()) == 0) {
+						tag = fieldName;
+					}
+					else {
+						tag = StringConvert::ToStdString(fieldToAliasMap[field.GetField()]);
+					}
+					glyphnode->setString(GlyphStringType::Tag, scene.createString(tag.c_str()));
+				}
+			}
+		}
 
 		glm::vec3 pos(0.f);
 		if (parent != nullptr) {
@@ -107,7 +130,7 @@ namespace SynGlyphX {
 
 		for (unsigned int i = 0; i < glyph->ChildCount(node); ++i) {
 
-			ExportGlyphTo3DScene(glyph, glyph->GetChild(node, i), glyphnode, scene);
+			ExportGlyphTo3DScene(dataMappingGlyph, glyph, glyph->GetChild(node, i), glyphnode, scene, mapping);
 		}
 	}
 

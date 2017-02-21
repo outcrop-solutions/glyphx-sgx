@@ -500,83 +500,86 @@ namespace SynGlyphX
 			}
 
 			// draw logo
-			context->bind( tex_effect );
-			context->bind( 0u, sgx_logo );
-			context->set_constant( tex_effect, "material", "tint_color", glm::vec4( 1.f, 1.f, 1.f, 1.f ) );
-			renderer->add_blended_batch( logo, tex_effect );
-			renderer->render( context, ui_camera );
+			if (mode == ViewerMode::Full)
+			{
+				context->bind(tex_effect);
+				context->bind(0u, sgx_logo);
+				context->set_constant(tex_effect, "material", "tint_color", glm::vec4(1.f, 1.f, 1.f, 1.f));
+				renderer->add_blended_batch(logo, tex_effect);
+				renderer->render(context, ui_camera);
+			}
 
 			checkErrors();
 		}
 
 		context->reset_defaults();
 
-		if ( mode == ViewerMode::Full )
+		if (mode == ViewerMode::Full)
 		{
-			if ( !scene->empty() )
+			if (!scene->empty())
 			{
-				if ( scene->selectionEmpty() )
+				if (scene->selectionEmpty())
 				{
 					auto campos = camera->get_position();
-					renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 32 ), CenterMode::X, render::color::white(), "Camera Position: X: %.2f, Y: %.2f, Z: %.2f", campos.x, campos.y, campos.z );
+					renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 32), CenterMode::X, render::color::white(), "Camera Position: X: %.2f, Y: %.2f, Z: %.2f", campos.x, campos.y, campos.z);
 				}
 				else
 				{
 					auto single_root = scene->getSingleRoot();
-					if ( single_root && single_root->getType() != Glyph3DNodeType::Link )
+					if (single_root && single_root->getType() != Glyph3DNodeType::Link)
 					{
 						std::string positionHUD;
-						for ( int i = 0; i < 3; ++i ) {
+						for (int i = 0; i < 3; ++i) {
 
 							//4 is the size of "X / ".  If an axis name's size is only 4 then nothing is mapped to that axis.
-							if ( axis_names[i].size() > 4 ) {
+							if (axis_names[i].size() > 4) {
 
-								if ( !positionHUD.empty() ) {
+								if (!positionHUD.empty()) {
 									positionHUD += ", ";
 								}
 
 								positionHUD += axis_names[i] + ": " + m_overridePosition[i];
 							}
 						}
-						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 32 ), CenterMode::X, render::color::white(), positionHUD.c_str() );
+						renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 32), CenterMode::X, render::color::white(), positionHUD.c_str());
 					}
 					else
 					{
-						renderTextCenteredF( hud_font, glm::vec2( width() / 2, height() - 32 ), CenterMode::X, render::color::white(), "Selection Centered At: X: %.2f, Y: %.2f, Z: %.2f", orbit_center.x, orbit_center.y, orbit_center.z );
+						renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 32), CenterMode::X, render::color::white(), "Selection Centered At: X: %.2f, Y: %.2f, Z: %.2f", orbit_center.x, orbit_center.y, orbit_center.z);
 					}
 				}
 			}
 
-			if (!status_message.empty())
-				renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 16), CenterMode::X, render::color::white(), status_message.c_str());
-
-			// Draw tags.
-			scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
-				if (scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter(&glyph))
-				{
-					auto pos = glyph.getCachedPosition();
-					if (scene->isExploded(&glyph)) pos += glyph.getExplodedPosition();
-					if (glyph.getString(GlyphStringType::Tag)) renderText(hud_font, camera, pos, render::color::white(), glyph.getString(GlyphStringType::Tag));
-				}
-			} );
-
 			// Draw axis names.
-			if ( hud_axes_enabled )
+			if (hud_axes_enabled)
 			{
 				const float axis_name_offset = 16.f;
-				if ( axis_names[0] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 1.f, 0.f, 0.f, 0.f ) ) ) ), render::color::white(), axis_names[0].c_str() );
-				if ( axis_names[1] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin + ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 0.f, 1.f, 0.f ) ) ) ), render::color::white(), axis_names[1].c_str() );
-				if ( axis_names[2] != "" ) renderText( hud_font, glm::vec2( hud_axes_origin - ( hud_axes_size + axis_name_offset ) * glm::vec3( ( hud_axes_rotation * glm::vec4( 0.f, 1.f, 0.f, 0.f ) ) ) ), render::color::white(), axis_names[2].c_str() );
+				if (axis_names[0] != "") renderText(hud_font, glm::vec2(hud_axes_origin + (hud_axes_size + axis_name_offset) * glm::vec3((hud_axes_rotation * glm::vec4(1.f, 0.f, 0.f, 0.f)))), render::color::white(), axis_names[0].c_str());
+				if (axis_names[1] != "") renderText(hud_font, glm::vec2(hud_axes_origin + (hud_axes_size + axis_name_offset) * glm::vec3((hud_axes_rotation * glm::vec4(0.f, 0.f, 1.f, 0.f)))), render::color::white(), axis_names[1].c_str());
+				if (axis_names[2] != "") renderText(hud_font, glm::vec2(hud_axes_origin - (hud_axes_size + axis_name_offset) * glm::vec3((hud_axes_rotation * glm::vec4(0.f, 1.f, 0.f, 0.f)))), render::color::white(), axis_names[2].c_str());
 			}
 
-			if ( scene_axes_enabled )
+			if (scene_axes_enabled)
 			{
 				const float axis_name_offset = 10.f;
-				if ( axis_names[0] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.x + axis_name_offset ) * glm::vec3( 1.f, 0.f, 0.f ), render::color::white(), axis_names[0].c_str() );
-				if ( axis_names[1] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.y + axis_name_offset ) * glm::vec3( 0.f, 1.f, 0.f ), render::color::white(), axis_names[1].c_str() );
-				if ( axis_names[2] != "" ) renderText( hud_font, camera, scene_axis_origin + ( scene_axis_sizes.z + axis_name_offset ) * glm::vec3( 0.f, 0.f, 1.f ), render::color::white(), axis_names[2].c_str() );
+				if (axis_names[0] != "") renderText(hud_font, camera, scene_axis_origin + (scene_axis_sizes.x + axis_name_offset) * glm::vec3(1.f, 0.f, 0.f), render::color::white(), axis_names[0].c_str());
+				if (axis_names[1] != "") renderText(hud_font, camera, scene_axis_origin + (scene_axis_sizes.y + axis_name_offset) * glm::vec3(0.f, 1.f, 0.f), render::color::white(), axis_names[1].c_str());
+				if (axis_names[2] != "") renderText(hud_font, camera, scene_axis_origin + (scene_axis_sizes.z + axis_name_offset) * glm::vec3(0.f, 0.f, 1.f), render::color::white(), axis_names[2].c_str());
 			}
 		}
+
+		if (!status_message.empty())
+			renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 16), CenterMode::X, render::color::white(), status_message.c_str());
+
+		// Draw tags.
+		scene->enumTagEnabled( [this]( const Glyph3DNode& glyph ) {
+			if (scene->getFilterMode() != FilteredResultsDisplayMode::HideUnfiltered || scene->passedFilter(&glyph))
+			{
+				auto pos = glyph.getCachedPosition();
+				if (scene->isExploded(&glyph)) pos += glyph.getExplodedPosition();
+				if (glyph.getString(GlyphStringType::Tag)) renderText(hud_font, camera, pos, render::color::white(), glyph.getString(GlyphStringType::Tag));
+			}
+		} );
 
 		hal::device::end_frame();
 	}

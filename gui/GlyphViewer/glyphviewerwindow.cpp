@@ -405,7 +405,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->hide();
 
 	m_interactiveLegend = new InteractiveLegend(this, m_mappingModel->GetDataMapping());
-	m_interactiveLegendDock = new QDockWidget(tr("InteractiveLegend"), this);
+	m_interactiveLegendDock = new QDockWidget(tr("Interactive Legend"), this);
 	m_interactiveLegendDock->hide();
 	m_interactiveLegendDock->setFloating(true);
 	m_interactiveLegendDock->setWidget(m_interactiveLegend);
@@ -950,7 +950,7 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 
 		QMap<unsigned int, QString> fields, displayNames;
 		SynGlyphX::InputTable table = dataTransformMapping->GetInputTable(rootGlyph.first);
-		std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
+		auto& fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
 		
 		for (unsigned int i = 0; i < 3; ++i) {
 

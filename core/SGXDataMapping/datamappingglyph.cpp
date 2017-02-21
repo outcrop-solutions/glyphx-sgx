@@ -255,6 +255,40 @@ namespace SynGlyphX {
 		return glyph;
 	}
 
+	SynGlyphX::Glyph DataMappingGlyph::GetLegendGlyph() const {
+
+		SynGlyphX::Glyph glyph;
+
+		glyph.GetPosition()[0] = m_position[0].GetValue().GetMax();
+		glyph.GetPosition()[1] = m_position[1].GetValue().GetMax();
+		glyph.GetPosition()[2] = m_position[2].GetValue().GetMax();
+
+		glyph.GetRotation()[0] = m_rotation[0].GetValue().GetMax();
+		glyph.GetRotation()[1] = m_rotation[1].GetValue().GetMax();
+		glyph.GetRotation()[2] = m_rotation[2].GetValue().GetMax();
+
+		glyph.GetScale()[0] = m_scale[0].GetValue().GetMax();
+		glyph.GetScale()[1] = m_scale[1].GetValue().GetMax();
+		glyph.GetScale()[2] = m_scale[2].GetValue().GetMax();
+
+		glyph.GetColor() = m_color.GetValue().GetMax();
+		glyph.GetTransparency() = m_transparency.GetValue().GetMax();
+
+		glyph.GetTag() = m_tag.GetBinding().GetInputFieldID();
+		glyph.GetDescription() = m_description.GetValue();
+
+		glyph.GetRotationRate()[0] = m_rotationRate[0].GetValue().GetMax();
+		glyph.GetRotationRate()[1] = m_rotationRate[1].GetValue().GetMax();
+		glyph.GetRotationRate()[2] = m_rotationRate[2].GetValue().GetMax();
+
+		glyph.GetStructure() = m_structure.ExportGlyphGeometry();
+		glyph.GetVirtualTopology() = m_virtualTopology.ExportVirtualTopology();
+
+		glyph.GetURL() = m_url.GetValue();
+
+		return glyph;
+	}
+
 	bool DataMappingGlyph::IsPositionXYBoundToInputFields() const {
 
 		return (m_position[0].GetBinding().IsBoundToInputField() && m_position[1].GetBinding().IsBoundToInputField());

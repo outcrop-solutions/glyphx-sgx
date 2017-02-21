@@ -141,6 +141,8 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 		toggle->setEnabled(!viewer->getScene().selectionEmpty());
 		branch->setEnabled(!viewer->getScene().selectionEmpty());
 		viewer->resetSelectionAnimation();
+		viewer->hideAllTags();
+		viewer->showTagsOfSelectedObjects(true);
 	});
 }
 
@@ -155,6 +157,7 @@ void InteractiveLegend::showEvent(QShowEvent* event)
 	OutputDebugStringA(buf);
 
 	build_scene();
+	update_viewer();
 }
 
 void InteractiveLegend::hideEvent(QHideEvent* event)
@@ -172,6 +175,7 @@ void InteractiveLegend::update_viewer()
 {
 	viewer->getScene().enumGlyphs([this](const SynGlyphX::Glyph3DNode& glyph) {
 		glyph.setHiddenByLegend(hidden_elements.find(glyph.getLabel()) != hidden_elements.end());
+		//viewer->getScene().enableTag(&glyph);
 		return true;
 	});
 	viewer->getScene().flagChanged();
@@ -217,7 +221,7 @@ void InteractiveLegend::build_scene()
 
 	auto glyph = it->second;
 	scene.beginAdding(glyph->size());
-	SynGlyphX::Glyph3DSceneExport::ExportMaxGlyphTo3DScene(*glyph, scene);
+	SynGlyphX::Glyph3DSceneExport::ExportLegendGlyphTo3DScene(*glyph, scene, const_cast<SynGlyphX::DataTransformMapping*>(mapping.get()));	// @todo - ugh, shouldn't need a const_cast here
 	scene.finishAdding();
 
 	viewer->setResetPulseAnimOnSelectionChange(false);

@@ -28,21 +28,22 @@ namespace SynGlyphX {
 	class Glyph3DNode;
 	class GlyphScene;
 	class PlacementPolicy;
+	class DataTransformMapping;
 
 	class SGXDATATRANSFORMGUI_EXPORT Glyph3DSceneExport
 	{
 	public:
-		Glyph3DSceneExport();
-		~Glyph3DSceneExport();
-
-		static void ExportMaxGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene);
-		static void ExportMinGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene);
+		static void ExportMaxGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene, SynGlyphX::DataTransformMapping* mapping = nullptr);
+		static void ExportMinGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene, SynGlyphX::DataTransformMapping* mapping = nullptr);
+		static void ExportLegendGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, GlyphScene& scene, SynGlyphX::DataTransformMapping* mapping = nullptr);
 
 	private:
-		static void ExportGlyphTo3DScene(GlyphGraph::ConstSharedPtr glyph,
+		static void ExportGlyphTo3DScene(const DataMappingGlyphGraph& dataMappingGlyph, 
+										 GlyphGraph::ConstSharedPtr glyph,
 										 const GlyphGraph::ConstGlyphIterator& node,
 										 Glyph3DNode* parent,
-										 GlyphScene& scene);
+										 GlyphScene& scene,
+										 SynGlyphX::DataTransformMapping* mapping);
 		static void SetupGeometry(const GlyphGeometry& geometry, Glyph3DNode& node);
 		static glm::vec4 GetColor(const GlyphColor& color, double alpha);
 		static PlacementPolicy* ChoosePlacementPolicy(const VirtualTopologyInfo::Type& topo);
