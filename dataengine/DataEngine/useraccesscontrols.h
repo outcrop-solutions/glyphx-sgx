@@ -51,6 +51,8 @@ namespace DataEngine
 		QString NameOfInstitution();
 		QString LastModified();
 		QStringList VizualizationNames();
+		QStringList GetFormattedGroupNames();
+		void SetChosenGroup(QString name);
 
 		void InitializeConnection();
 		int ValidateCredentials(QString username, QString password);

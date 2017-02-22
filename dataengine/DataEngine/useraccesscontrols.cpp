@@ -147,6 +147,45 @@ namespace DataEngine
 		return names;
 	}
 
+	QStringList UserAccessControls::GetFormattedGroupNames(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getListOfFormattedGroupNames", "()[Ljava/lang/String;");
+		jobjectArray itr;
+		QStringList names;
+		if (methodId != NULL) {
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int j = 0; j < length; j++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, j);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				QString name(str);
+				names << name;
+			}
+		}
+		return names;
+	}
+
+	void UserAccessControls::SetChosenGroup(QString name){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"setChosenGroup", "(Ljava/lang/String;)V");
+		if (methodId != NULL) {
+			jstring fp = jniEnv->NewStringUTF(name.toStdString().c_str());
+			jniEnv->CallStaticVoidMethod(jcls, methodId, fp);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
 	bool UserAccessControls::FileSyncSetup(QString path){
 
 		if (valid == 2){

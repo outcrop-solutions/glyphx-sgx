@@ -111,9 +111,22 @@ public class UserAccessControls {
 		return loggedInUser.securityGroupCount();
 	}
 
+	public static String[] getListOfFormattedGroupNames(){
+		return loggedInUser.getListOfFormattedGroupNames();
+	}
+
 	public static void setChosenGroup(int id){
 
-		loggedInUser.setSelectedGroup(id);
+		setChosenGroupById(loggedInUser.setSelectedGroup(id));
+	}
+
+	public static void setChosenGroup(String fgroup){
+
+		setChosenGroupById(loggedInUser.setSelectedGroup(fgroup));
+	}
+
+	private static void setChosenGroupById(int id){
+
 		try{
 			String query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
 			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";

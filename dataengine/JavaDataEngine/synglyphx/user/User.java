@@ -2,6 +2,8 @@ package synglyphx.user;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class User {
 
@@ -11,6 +13,7 @@ public class User {
 	private Institution institution = null;
 	private int selectedGroup;
 	private ArrayList<SecurityGroup> securityGroups = null;
+	private HashMap<String, Integer> formattedGroupNames = null;
 	private ArrayList<UserFile> userFiles = null; 
 
 	public User(int id,String fn,Timestamp lm){
@@ -19,6 +22,7 @@ public class User {
 		this.lastModified = lm;
 		userFiles = new ArrayList<UserFile>();
 		securityGroups = new ArrayList<SecurityGroup>();
+		formattedGroupNames = new HashMap<String, Integer>();
 	}
 
 	public void setInstitution(int institution_id, String institution_name){
@@ -31,10 +35,17 @@ public class User {
 
 	public void addSecurityGroup(SecurityGroup sg){
 		securityGroups.add(sg);
+		formattedGroupNames.put(sg.getInstitutionName()+" - "+sg.getGroupName(), sg.getId());
 	}
 
-	public void setSelectedGroup(int g){
+	public int setSelectedGroup(int g){
 		selectedGroup = g;
+		return selectedGroup;
+	}
+
+	public int setSelectedGroup(String g){
+		selectedGroup = formattedGroupNames.get(g);
+		return selectedGroup;
 	}
 
 	public int securityGroupCount(){
@@ -74,6 +85,15 @@ public class User {
 			selectedGroup = securityGroups.get(0).getId();
 		}
 		return selectedGroup;
+	}
+
+	public String[] getListOfFormattedGroupNames(){
+
+		String[] names = new String[securityGroupCount()];
+		for (int i = 0; i < securityGroupCount(); i++) {
+			names[i] = securityGroups.get(i).getInstitutionName()+" - "+securityGroups.get(i).getGroupName();
+		}
+		return names;
 	}
 
 	public String getGroupS3Directory(){

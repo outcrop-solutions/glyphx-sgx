@@ -88,11 +88,13 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	OnNewOptionSelected(0);
 
 	s3Manager = new DataEngine::S3FileManager();
+	CheckForNewRelease();
+
 	if (loggedOn){
 		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
 	}
-	else{
-		CheckForNewRelease();
+	else if(releaseDialog){
+		releaseDialog->show();
 	}
 }
 
@@ -506,6 +508,8 @@ void HomePageWidget::Login(){
 		m_mainWindow->UpdateUserMenu();
 		if (m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups() > 1){
 			//Add dialog to select which group the user would like to load
+			//m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
+			//m_dataEngineConnection->UserAccessControls()->SetChosenGroup(QString);
 		}
 		SyncFilesAndLoadViews();
 	}
@@ -533,8 +537,8 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/patchnotes.html");
 		notesDialog->show();
 	}
-	if (showReleaseNow){
-		CheckForNewRelease();
+	if (showReleaseNow && releaseDialog){
+		releaseDialog->show();
 	}
 }
 
@@ -893,13 +897,12 @@ void HomePageWidget::CheckForNewRelease() {
 		if (x.at(1) != SynGlyphX::getAppVersionString()) {
 			for (const auto& file : files) {
 				if (file->GetName().find(installName + "_" + x.at(1) + ".") != std::string::npos) {
-					SynGlyphX::AnnouncementDialog* releaseDialog = new SynGlyphX::AnnouncementDialog("New Release Available", this);
+					releaseDialog = std::make_shared<SynGlyphX::AnnouncementDialog>("New Release Available", this);
 					releaseDialog->AddLabel("https://s3.amazonaws.com/" + appName + "/" + os_path + "/" + releaseName.c_str());
 					releaseDialog->ReplaceLabelText("***", QString::fromStdString(file->GetUrl()));
 					releaseDialog->ReplaceLabelText("_._.__", x.at(1).c_str());
 					releaseDialog->AddWebView("https://s3.amazonaws.com/" + appName + "/" + os_path + "/changes/changes_" + x.at(1).c_str() + "_.html");
 					releaseDialog->resize(400, 250);
-					releaseDialog->show();
 				}
 			}
 		}

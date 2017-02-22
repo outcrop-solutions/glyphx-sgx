@@ -14,7 +14,7 @@ namespace SynGlyphX {
 
 		layout = new QVBoxLayout();
 
-		setAttribute(Qt::WA_DeleteOnClose);
+		//setAttribute(Qt::WA_DeleteOnClose);
 	}
 
 	AnnouncementDialog::~AnnouncementDialog()
