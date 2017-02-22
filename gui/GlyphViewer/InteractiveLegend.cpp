@@ -173,9 +173,10 @@ void InteractiveLegend::hideEvent(QHideEvent* event)
 
 void InteractiveLegend::update_viewer()
 {
+	total_elements = 0;
 	viewer->getScene().enumGlyphs([this](const SynGlyphX::Glyph3DNode& glyph) {
 		glyph.setHiddenByLegend(hidden_elements.find(glyph.getLabel()) != hidden_elements.end());
-		//viewer->getScene().enableTag(&glyph);
+		++total_elements;
 		return true;
 	});
 	viewer->getScene().flagChanged();
@@ -183,7 +184,10 @@ void InteractiveLegend::update_viewer()
 
 	if (hidden_elements.size() > 0)
 	{
-		primary_viewer->setStatusMessage("note: some glyph elements hidden");
+		if (total_elements == hidden_elements.size())
+			primary_viewer->setStatusMessage("note: all glyph elements hidden");
+		else
+			primary_viewer->setStatusMessage("note: some glyph elements hidden");
 	}
 	else
 	{
