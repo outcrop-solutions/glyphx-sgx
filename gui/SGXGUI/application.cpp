@@ -64,7 +64,6 @@ namespace SynGlyphX {
 #endif
 
 		s_commonDataLocation = QDir::toNativeSeparators(baseCommonDataPath + '/' + organizationName());
-		//s_writeableLocation = QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + '/' + organizationName() + '/' + applicationName());
 		s_writeableLocation = QDir::toNativeSeparators(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + '/' + organizationName() + '/' + "GlyphCache");
 
 		QDir commonDataDir(s_commonDataLocation);
