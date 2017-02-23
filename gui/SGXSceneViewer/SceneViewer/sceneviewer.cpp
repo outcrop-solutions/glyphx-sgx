@@ -1018,7 +1018,7 @@ namespace SynGlyphX
 					unsigned int count = 0u;
 					float largest_bound = 0.f;
 					float selection_radius = 0.f;
-					if ( mode == ViewerMode::Full )
+					if ( mode == ViewerMode::Full || mode == ViewerMode::SingleGlyph_AllowSelection )
 					{
 						scene->enumSelected( [this, &count, &largest_bound, &glyphs_selected]( const Glyph3DNode& glyph ) {
 							orbit_center += glyph.getCachedPosition();
