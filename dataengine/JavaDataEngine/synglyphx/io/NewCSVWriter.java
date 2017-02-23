@@ -20,7 +20,7 @@ public class NewCSVWriter {
 	// increment when data format changes. if you change this you have to change
 	// the corresponding constant in scenereader.cpp as well (in addition to changing
 	// that class to read the new format).
-	public static final int FORMAT_VERSION = 1;
+	public static final int FORMAT_VERSION = 2;
 	
 	private int nodeCount;
 	private Map<Integer,Node> allNodes;
@@ -158,6 +158,7 @@ public class NewCSVWriter {
 	        HashMap<Integer,Double> rotation_lookup = new HashMap<Integer,Double>();
 	        for(int i = 1; i< nodeCount; i++){
 	        	Node temp = allNodes.get(i);
+
 	        	String xyz = "";
 	        	if(rootCoords.get(firstRoot).toMerge()){
 	        		xyz = String.valueOf(temp.getX())+String.valueOf(temp.getY())+String.valueOf(temp.getZ());
@@ -173,6 +174,10 @@ public class NewCSVWriter {
 	        	if(print && isScaleGTZero(temp)){
 
 	        		data.writeInt( i + global_offset );
+
+					// todo - could easily be a short
+					// TODO - this doesn't appear to be the correct value
+	        		data.writeInt( temp.getLabel() );
 
 			        if(temp.getParent()==0){
 			        	data.writeInt( temp.getParent() );

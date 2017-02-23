@@ -230,6 +230,7 @@ public class GlyphCreator {
 			node.setChildOf(p);
 			glyphRepo.addEdge(p);
 		}
+		node.setLabel(nodeTemp.getLabel());
 		node.setLineNum(cursor.getCurrentIndex()+1);
 		node.setNumChildren(nodeTemp.getNumChildren());
 		glyphRepo.addNode(node);

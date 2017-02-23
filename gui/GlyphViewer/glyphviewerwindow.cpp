@@ -1,4 +1,3 @@
-#include "glyphviewerwindow.h"
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
@@ -44,6 +43,7 @@
 #include "GlyphForestInfoModel.h"
 #include "Profiler.h"
 #include "networkdownloader.h"
+#include "InteractiveLegend.h"
 #include <hal/hal.h>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
@@ -336,6 +336,16 @@ void GlyphViewerWindow::CreateMenus() {
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
 
+	auto legendAction = m_toolsMenu->addAction(tr("Show Interactive Legend"));
+	QIcon legendIcon;
+	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-xyz.png");
+	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-xyz-a.png");
+	legendIcon.addPixmap(xyz_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	legendIcon.addPixmap(xyz_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	legendAction->setIcon(legendIcon);
+	QObject::connect(legendAction, &QAction::triggered, this, &GlyphViewerWindow::ToggleInteractiveLegend);
+	m_loadedVisualizationDependentActions.push_back(legendAction);
+
 	m_toolsMenu->addSeparator();
 
 	QAction* optionsAction = m_toolsMenu->addAction(tr("Options"));
@@ -393,6 +403,12 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));
 	m_legendsDockWidget->hide();
+
+	m_interactiveLegend = new InteractiveLegend(this, m_mappingModel->GetDataMapping());
+	m_interactiveLegendDock = new QDockWidget(tr("Interactive Legend"), this);
+	m_interactiveLegendDock->hide();
+	m_interactiveLegendDock->setFloating(true);
+	m_interactiveLegendDock->setWidget(m_interactiveLegend);
 
 	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 
@@ -667,6 +683,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
 	m_filteringWidget->OnNewVisualization();
+	m_interactiveLegendDock->close();
 	m_hudGenerationInfo.clear();
 }
 
@@ -933,7 +950,7 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 
 		QMap<unsigned int, QString> fields, displayNames;
 		SynGlyphX::InputTable table = dataTransformMapping->GetInputTable(rootGlyph.first);
-		std::unordered_map<std::wstring, std::wstring> fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
+		auto& fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
 		
 		for (unsigned int i = 0; i < 3; ++i) {
 
@@ -1496,6 +1513,21 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 
 			LoadNewVisualization(remapFilename);
 		}
+	}
+}
+
+void GlyphViewerWindow::ToggleInteractiveLegend()
+{
+	if (m_interactiveLegendDock->isVisible())
+	{
+		m_interactiveLegendDock->hide();
+	}
+	else
+	{
+		m_interactiveLegend->setPrimaryViewer(m_viewer);
+		addDockWidget(Qt::DockWidgetArea::NoDockWidgetArea, m_interactiveLegendDock);
+		m_interactiveLegendDock->resize(m_interactiveLegend->size());
+		m_interactiveLegendDock->show();
 	}
 }
 

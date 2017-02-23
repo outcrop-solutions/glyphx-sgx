@@ -28,7 +28,7 @@ namespace SynGlyphX
 
 		void update( float timeDelta );
 
-		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1 );
+		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1, uint32_t label = uint32_t(-1) );
 		const char* createString( const char* text );
 
 		void beginAdding( unsigned int count );
@@ -77,9 +77,11 @@ namespace SynGlyphX
 
 		bool getChanged() { return scene_changed; }
 		void clearChangedFlag() { scene_changed = false; }
+		void flagChanged() { scene_changed = true; }
 
 		bool getSelectionChanged() { return selection_changed; }
 		void clearSelectionChangedFlag() { selection_changed = false; }
+		void flagSelectionChanged() { selection_changed = true; }
 
 		render::box_bound& getBound() const;
 

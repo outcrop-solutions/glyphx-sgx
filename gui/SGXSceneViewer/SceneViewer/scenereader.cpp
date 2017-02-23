@@ -18,7 +18,7 @@ namespace SynGlyphX
 {
 	namespace
 	{
-		const int32_t FORMAT_VERSION = 1;
+		const int32_t FORMAT_VERSION = 2;
 		const int32_t SCENE_FILE_MAGIC_NUMBER = 0xa042bc3f;
 		const int32_t COUNT_FILE_MAGIC_NUMBER = 0x294ee1ac;
 
@@ -226,6 +226,7 @@ namespace SynGlyphX
 		GlyphPlacementData data;
 
 		data.id = read_int();
+		data.label = read_int();
 		data.parent_id = read_int();
 		data.pos = read_vec3();
 		data.rot = read_vec3();
@@ -244,7 +245,7 @@ namespace SynGlyphX
 		data.is_root = ( data.parent_id == 0 ) || !parent;
 		hal::debug::_assert( data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id );
 
-		auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1 );
+		auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1, data.label );
 		SetupGeometry( data.geom_type, *glyphnode );
 		glyphnode->setString( GlyphStringType::Tag, scene.createString( tag.c_str() ) );
 		glyphnode->setString( GlyphStringType::Url, scene.createString( url.c_str() ) );
