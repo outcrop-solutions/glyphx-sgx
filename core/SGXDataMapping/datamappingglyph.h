@@ -65,6 +65,7 @@ namespace SynGlyphX {
 		SynGlyphX::Glyph GetMinGlyph() const;
 		SynGlyphX::Glyph GetDifference() const;
 		SynGlyphX::Glyph GetMaxGlyph() const;
+		SynGlyphX::Glyph GetLegendGlyph() const;
 
 		DataMappingGlyph& operator=(const DataMappingGlyph& glyph);
 		bool operator==(const DataMappingGlyph& glyph) const;

@@ -197,6 +197,7 @@ public class SDTReader {
 					XMLGlyphTemplate temp = new XMLGlyphTemplate();
 					NodeList categories = root.getChildNodes();
 					temp.setToMerge(getMergeStatus(root));
+					temp.setLabel(Integer.parseInt(((Element)root).getAttribute("label")));
 					addNode(categories, temp, 0);
 					if(needsFE){
 						setFrontEnd(root);
@@ -294,10 +295,10 @@ public class SDTReader {
 			if(child.getNodeName().equals("Glyph")){
 				p.addChild();
 				XMLGlyphTemplate childTemp = new XMLGlyphTemplate();
+				childTemp.setLabel(Integer.parseInt(((Element)child).getAttribute("label")));
 				childTemp.setBranchLevel(p_branch+1);
 				NodeList categories = child.getChildNodes();
 				addNode(categories, childTemp, pID);
-
 			}
 		}
 

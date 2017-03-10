@@ -13,7 +13,7 @@ namespace SynGlyphX
 	{
 		bool is_root;
 		int geom_type, topo;
-		int id, parent_id;
+		int id, parent_id, label;
 		render::packed_color color;
 		glm::vec3 pos, rot, scale;
 		float ratio;
