@@ -217,8 +217,8 @@ public class DataEngine {
 		//String dec = d.decryptPassword(enc);
 		//System.out.println(enc);
 		//System.out.println(dec);
-		/*
-		int err = d.loadFromCSV("C:/Users/Bryan/Desktop/East Coast Only/Data_Sample_Mockup_Trimmed.csv");
+		
+		int err = d.loadFromCSV("D:/Downloads/Aareal Capital.csv");
 		if(err == 1){
 			String [] errors = d.getErrors();
 			System.out.println("Error List:\n");
@@ -232,13 +232,13 @@ public class DataEngine {
 				String[] stats = d.getStatsForField(0,fields[i]);
 				System.out.println(stats[0]+", "+stats[1]+", "+stats[2]+", "+stats[3]+", "+stats[4]+", "+stats[5]);
 			}
-		}*/
+		}/*
 		int err = d.connectToServer("sqlite:C:/Users/Bryan/Desktop/Link Test Exo/test_exoplanet.db","","","sqlite3");
 		String[] tbls = d.getTableNames();
 		for(int i = 0; i < tbls.length; i++){
 			System.out.println(tbls[i]);
 		}
-		String[] sch_list = d.getSchemas();
+		String[] sch_list = d.getSchemas();*/
 		//String[] sch_list = d.connectToServer("mysql://10.128.132.153:3306/world","synglyphx","password","mysql");
 		/*String host = "oracle://@10.128.132.153:1521:orcl";
 		String user = "nduser";

@@ -15,53 +15,35 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef DATASOURCESTATSWIDGET_H
-#define DATASOURCESTATSWIDGET_H
+#ifndef FIELDPROPERTIESDIALOG_H
+#define FIELDPROPERTIESDIALOG_H
 
-#include <QtWidgets/QTabWidget>
-#include <QtSql/QSqlDatabase>
-#include <QtWidgets/QTableView>
-#include <unordered_map>
-#include "dataengineconnection.h"
-#include "uuid.h"
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QGroupBox>
+#include "FieldProperties.h"
 
-class DataStatsModel;
-
-namespace SynGlyphX {
-	class DataTransformModel;
-	class RoleDataFilterProxyModel;
-	class InputTable;
-	class DataStatsModel;
-}
-
-class DataSourceStatsWidget : public QTabWidget
+class FieldPropertiesDialog : public QDialog
 {
-	Q_OBJECT
+	//Q_OBJECT
 
 public:
-	DataSourceStatsWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent = 0);
-	~DataSourceStatsWidget();
 
-	virtual QSize sizeHint() const;
+	FieldPropertiesDialog(SynGlyphX::FieldProperties* properties, QWidget* parent = 0);
+	~FieldPropertiesDialog();
 
-	void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
-	void AddNewStatsViews();
-	void ClearTabs();
-
-public slots:
-	void RebuildStatsViews();
-
-private slots:
-	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
-	void EditFieldProperties();
+	void SaveSelections();
 
 private:
-	void CreateTablesFromDatasource(const SynGlyphX::InputTable& inputTable, const QString& formattedDatasourceName);
-	void CreateTableView(SynGlyphX::DataStatsModel* model, const QString& tabName, const QString& id);
-	void RemoveTableViews(const QString& name = QString());
+	void SetTypesAndDetails();
+	QGroupBox* SetGroupBoxForSelection(QString type);
 
-	SynGlyphX::DataTransformModel* m_model;
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	QListWidget* types;
+	QStackedWidget* stackedWidget;
+	std::map<QString, QString> details;
+	SynGlyphX::FieldProperties* m_properties;
+
 };
 
-#endif // DATASOURCESTATSWIDGET_H
+#endif //FIELDPROPERTIESDIALOG_H

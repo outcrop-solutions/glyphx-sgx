@@ -7,6 +7,11 @@
 #include "datastatsmodel.h"
 #include "datatransformmodel.h"
 #include "roledatafilterproxymodel.h"
+#include <QtWidgets/QAction>
+#include "inputfield.h"
+#include "FieldPropertiesDialog.h"
+#include "FieldProperties.h"
+#include "hashid.h"
 
 DataSourceStatsWidget::DataSourceStatsWidget(SynGlyphX::DataTransformModel* dataTransformModel, QWidget *parent)
 	: QTabWidget(parent),
@@ -98,6 +103,11 @@ void DataSourceStatsWidget::CreateTableView(SynGlyphX::DataStatsModel* model, co
 	view->resizeColumnsToContents();
 	view->resizeRowsToContents();
 
+	view->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+	QAction* m_updateFieldProperties = new QAction(tr("Properties"), view);
+	QObject::connect(m_updateFieldProperties, &QAction::triggered, this, &DataSourceStatsWidget::EditFieldProperties);
+	view->addAction(m_updateFieldProperties);
+
 	addTab(view, tabName);
 }
 
@@ -127,4 +137,28 @@ void DataSourceStatsWidget::RemoveTableViews(const QString& name) {
 		removeTab(indexOf(view));
 		delete view;
 	}
+}
+
+void DataSourceStatsWidget::EditFieldProperties() {
+	
+	QTableView* tab = reinterpret_cast<QTableView*>(currentWidget());
+	QModelIndex index = tab->currentIndex();
+	int row = index.row();
+
+	SynGlyphX::InputTable inputTbl = m_model->GetInputTableForTree(m_model->index(currentIndex()));
+	SynGlyphX::DataStatsModel::TableStats tblStats = m_model->GetTableStatsMap().at(inputTbl);
+	QStringList stats = tblStats.at(row);
+
+	SynGlyphX::HashID seed = inputTbl.GetHashID();
+	SynGlyphX::CombineHashID(seed, stats.at(0).toStdWString());
+	std::wstring hashid = std::to_wstring(seed);
+
+	SynGlyphX::FieldProperties* field = new SynGlyphX::FieldProperties(inputTbl.GetDatasourceID(), inputTbl.GetTable(), stats.at(0).toStdWString());
+
+	FieldPropertiesDialog dialog(field, this);
+	dialog.setWindowTitle(tr("Field Properties"));
+	if (dialog.exec() == QDialog::Accepted) {
+		dialog.SaveSelections();
+	}
+	
 }
