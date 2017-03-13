@@ -51,6 +51,7 @@ public class Syncer {
 
 		files_to_sync = new ArrayList<String>();
 		server_timestamps = new HashMap<String,Long>();
+		new File(dir_path).mkdir();
 		new File(dir_path,key_prefix).mkdir();
 		List<S3ObjectSummary> objs = s3.listObjects(BUCKET_NAME, key_prefix).getObjectSummaries();
 		for(S3ObjectSummary o : objs) {
