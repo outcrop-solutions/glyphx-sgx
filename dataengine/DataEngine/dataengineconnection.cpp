@@ -4,6 +4,7 @@
 #include "dataenginestatement.h"
 #include <fstream>
 #include "utilitytypes.h"
+#include <boost/filesystem.hpp>
 //#include <QtCore/QDebug>
 
 namespace DataEngine
@@ -64,15 +65,6 @@ namespace DataEngine
 		char jarFileSeparator = ':';
 #endif
 
-		SynGlyphX::StringVector jarFiles;
-		jarFiles.push_back("dataengine.jar");
-		jarFiles.push_back("database-drivers/commons-lang3-3.1.jar");
-		jarFiles.push_back("database-drivers/ojdbc7.jar");
-		jarFiles.push_back("database-drivers/opencsv-3.7.jar");
-		jarFiles.push_back("database-drivers/jsch-0.1.53.jar");
-		jarFiles.push_back("database-drivers/mysql-connector-java-5.1.38-bin.jar");
-		jarFiles.push_back("database-drivers/sqlite-jdbc-3.8.11.2.jar");
-		jarFiles.push_back("database-drivers/vertica-jdbc-7.2.1-0.jar");
         // Note: please use forward slashes! Paths with \\ are NOT cross-platform.
 		
 		std::string jarFilePrefix;
@@ -88,11 +80,11 @@ namespace DataEngine
 		}
 
 		std::string jarFilesOptionString = "-Djava.class.path=";
-		for (const auto& jarFile : jarFiles) {
-
-			jarFilesOptionString += jarFilePrefix;
-			jarFilesOptionString += jarFile;
-			jarFilesOptionString += jarFileSeparator;
+		jarFilesOptionString += jarFilePrefix + "dataengine.jar" + jarFileSeparator;
+		boost::filesystem::path dir(jarFilePrefix+"database-drivers/");
+		boost::filesystem::directory_iterator end_iter;
+		for (boost::filesystem::directory_iterator dir_iter(dir); dir_iter != end_iter; ++dir_iter){
+			jarFilesOptionString += dir_iter->path().string() + jarFileSeparator;
 		}
 
 		ifile.close();

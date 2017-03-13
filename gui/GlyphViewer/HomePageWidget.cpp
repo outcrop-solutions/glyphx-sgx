@@ -88,16 +88,13 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	OnNewOptionSelected(0);
 
 	s3Manager = new DataEngine::S3FileManager();
-	QString os_path =
-#ifdef WIN32
-	"releases/windows";
-#elif __APPLE__
-	"releases/mac";
-#endif
-	CheckForNewRelease(os_path);
+	CheckForNewRelease();
 
 	if (loggedOn){
 		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+	}
+	else if(releaseDialog){
+		releaseDialog->show();
 	}
 }
 
@@ -509,6 +506,11 @@ void HomePageWidget::Login(){
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
+		if (m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups() > 1){
+			//Add dialog to select which group the user would like to load
+			//m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
+			//m_dataEngineConnection->UserAccessControls()->SetChosenGroup(QString);
+		}
 		SyncFilesAndLoadViews();
 	}
 	else{
@@ -524,16 +526,19 @@ void HomePageWidget::Login(){
 
 void HomePageWidget::SyncFilesAndLoadViews(){
 
-	//QRect test = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
+	bool showReleaseNow = loggedOn;
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
 	LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && d->GetFileCount() > 1){
+	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && m_dataEngineConnection->UserAccessControls()->VisualizationsToSync() > 1){
 		SynGlyphX::AnnouncementDialog* notesDialog = new SynGlyphX::AnnouncementDialog("Patch Notes", this);
 		notesDialog->AddWebView("https://s3.amazonaws.com/glyphed/changes/patchnotes.html");
 		notesDialog->show();
+	}
+	if (showReleaseNow && releaseDialog){
+		releaseDialog->show();
 	}
 }
 
@@ -868,7 +873,14 @@ void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
 	emit LoadRecentFile(item->toolTip());
 }
 
-void HomePageWidget::CheckForNewRelease(QString os_path) {
+void HomePageWidget::CheckForNewRelease() {
+
+	QString os_path =
+#ifdef WIN32
+		"releases/windows";
+#elif __APPLE__
+		"releases/mac";
+#endif
 
 	bool isGlyphIt = QFile("DataMapper.exe").exists();
 	QString appName = (QFileInfo(QCoreApplication::applicationFilePath()).fileName().toLower().replace(".exe","") == "glyphed") ? "glyphed" : "glyphit";
@@ -882,18 +894,17 @@ void HomePageWidget::CheckForNewRelease(QString os_path) {
 		std::string installName = appName.toStdString();
 		if (appName != "glyphed" && !isGlyphIt) { installName = "glyphviewer"; }
 
-		if (x.at(1) != SynGlyphX::getAppVersionString()) {
+		if (x.at(1) != SynGlyphX::getAppVersionString() && std::string(SynGlyphX::getAppVersionString()).find("t") == std::string::npos) {
 			for (const auto& file : files) {
 				if (file->GetName().find(installName + "_" + x.at(1) + ".") != std::string::npos) {
-					SynGlyphX::AnnouncementDialog* releaseDialog = new SynGlyphX::AnnouncementDialog("New Release Available", this);
+					releaseDialog = std::make_shared<SynGlyphX::AnnouncementDialog>("New Release Available", this);
 					releaseDialog->AddLabel("https://s3.amazonaws.com/" + appName + "/" + os_path + "/" + releaseName.c_str());
 					releaseDialog->ReplaceLabelText("***", QString::fromStdString(file->GetUrl()));
 					releaseDialog->ReplaceLabelText("_._.__", x.at(1).c_str());
 					releaseDialog->AddWebView("https://s3.amazonaws.com/" + appName + "/" + os_path + "/changes/changes_" + x.at(1).c_str() + "_.html");
 					releaseDialog->resize(400, 250);
-					releaseDialog->show();
 				}
 			}
 		}
-    }
+	}
 }

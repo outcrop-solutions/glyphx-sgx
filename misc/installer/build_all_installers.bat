@@ -4,5 +4,5 @@ echo Also make sure you've updated the version numbers in version.wxi and in ver
 pause
 call build_glyphed_installer.bat
 call build_glyphviewer_installer.bat
-call build_glyphed_installer.bat
+call build_glyphit_installer.bat
 echo Done!

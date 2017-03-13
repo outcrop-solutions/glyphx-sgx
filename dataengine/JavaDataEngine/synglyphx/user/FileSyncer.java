@@ -118,7 +118,7 @@ public class FileSyncer {
 			needToSync.add(new UserFile("Logo", inst.getName()+"/customer.png", 1, 2));
 			setNewModified(img, inst.getLogoModified().getTime());
 		}
-		File db = new File(syncedDirPath+inst.getName()+"/glyphed.db");
+		File db = new File(syncedDirPath+inst.getName()+"/data.db");
 		if(db.exists()){
 			if(db.lastModified() < inst.getDBModified().getTime()){
 				needToSyncData = 1;
@@ -217,7 +217,7 @@ public class FileSyncer {
     				try{
     					if(needToSync.get(i).getFileType() != 2 && needToSync.get(i).getFileType() != 4){
     						UnzipUtility.delete(syncedDirPath+needToSync.get(i).getFormattedPath().split(".zip")[0]);
-				    		UnzipUtility.unzip(syncedDirPath+needToSync.get(i).getFormattedPath(), syncedDirPath+needToSync.get(i).getFormattedPath().split("/")[0],needToSync.get(i).getFileType());
+				    		UnzipUtility.unzip(syncedDirPath+needToSync.get(i).getFormattedPath(), syncedDirPath+needToSync.get(i).getFormattedPath().split("/")[0]);
 				    		UnzipUtility.delete(syncedDirPath+needToSync.get(i).getFormattedPath());
 				    	}
 			    	}catch(Exception e){e.printStackTrace();}

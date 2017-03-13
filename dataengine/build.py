@@ -19,16 +19,7 @@ if platform.system() == 'Darwin':
 driver_path = jp+'/database-drivers/'
 
 classpath = jp+sep
-driver_set = {'opencsv-3.7.jar',
-			'commons-lang3-3.1.jar',
-			'ojdbc7.jar',
-			'mysql-connector-java-5.1.38-bin.jar'
-			'sqlite-jdbc-3.8.11.2.jar',
-			'vertica-jdbc-7.2.1-0.jar',
-			'jsch-0.1.53.jar'}
-
-for driver in driver_set:
-	classpath += driver_path+driver+sep
+classpath += driver_path+'*'+sep
 
 outpath = jp+'/../../classes'
 package = outpath+'/synglyphx'

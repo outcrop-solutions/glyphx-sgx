@@ -40,6 +40,7 @@ namespace SynGlyphX {
 	class TitleListWidget;
 	class UserLoginDialog;
 	class ResizeableImageLabel;
+	class AnnouncementDialog;
 }
 
 class HomePageWidget : public QFrame
@@ -80,7 +81,7 @@ private:
 	void ProduceGlyphEdCSV(const QString& sdtToLoad, const QString& tableInDB, unsigned int currentDataVisualization);
 	QWidget* CreateLowerDashboardWidget();
 	void SetCustomerLogo();
-	void CheckForNewRelease(QString os_path);
+	void CheckForNewRelease();
 
 	QGridLayout* m_mainLayout;
 	QStackedLayout* m_homePageWidgetsLayout;
@@ -106,6 +107,7 @@ private:
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;
 
 	DataEngine::S3FileManager* s3Manager;
+	std::shared_ptr<SynGlyphX::AnnouncementDialog> releaseDialog;
 	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	//GlyphEd only.  Will get rid of ASAP

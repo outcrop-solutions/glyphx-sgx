@@ -22,15 +22,15 @@ import org.w3c.dom.NodeList;
 
 public class PathBuilder {
 
-	private static String DBNAME = "glyphed.db";
-	private HashMap<String, Node> sdtNames;
+	private static String DBNAME = "data.db";
+	private ArrayList<Node> sdtNames;
 	private ArrayList<File> sdtFiles;
 	private ArrayList<UserFile> userFiles;
 	private String localPath;
 	
 	public PathBuilder(String path){
 
-		sdtNames = new HashMap<String, Node>(); //Map SDT Filename to Viz name in sharedvisualization.xml
+		sdtNames = new ArrayList<Node>(); //Map SDT Filename to Viz name in sharedvisualization.xml
 		this.localPath = path;
 	}
 
@@ -38,7 +38,7 @@ public class PathBuilder {
 
 		this.userFiles = userFiles;
 		try{
-			Files.copy(FileSystems.getDefault().getPath(localPath+"/syncedvisualizations.xml"), FileSystems.getDefault().getPath(localPath+"/sharedvisualizations.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(FileSystems.getDefault().getPath(new File(localPath,"syncedvisualizations.xml").getAbsolutePath()), FileSystems.getDefault().getPath(new File(localPath,"sharedvisualizations.xml").getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
 			File file = new File(localPath+"/sharedvisualizations.xml");
 			long lastModified = file.lastModified();
 
@@ -53,7 +53,7 @@ public class PathBuilder {
 			for (int i = 0; i < vizs.getLength(); i++) {
 				Node viz = vizs.item(i);
 				if(hasPermission(viz.getChildNodes().item(0).getNodeValue())){
-					sdtNames.put(((Element)viz).getAttribute("name"), viz.getChildNodes().item(0));
+					sdtNames.add(viz.getChildNodes().item(0));
 				}else{
 					toRemove.add(viz);
 				}
@@ -83,8 +83,8 @@ public class PathBuilder {
 
 			String file_fp = file.getFormattedPath().replaceAll("\\\\", "/");
 			String path_fp = path.replaceAll("\\\\", "/");
-			String test_path = new File(file_fp.split(".zip")[0]).getPath().replaceAll("\\\\", "/");
-			if(path_fp.contains(test_path)){
+			String test_path = new File(file_fp.split(".zip")[0]).getName();//.getPath().replaceAll("\\\\", "/");
+			if(path_fp.contains("/"+test_path+"/")){
 				return true;
 			}
 		}
@@ -95,25 +95,26 @@ public class PathBuilder {
 
 		String[] directories = getLocalDirectories(localPath);
 
-		for(Map.Entry<String, Node> entry : sdtNames.entrySet()){
-			String old_path = entry.getValue().getNodeValue();
+		for(Node entry : sdtNames){
+			String old_path = entry.getNodeValue();
 			String new_path = findFilePath(old_path, directories);
 			if(!new_path.equals("")){
-				entry.getValue().setTextContent((new File(new_path)).getPath());
+				entry.setTextContent((new File(new_path)).getPath());
 			}
 
 		}
 	}
 
 	private String findFilePath(String old_path, String[] directories){
+
 		String name = (new File(old_path)).getName();
-		//System.out.println(name);
+
 		for(int i = 0; i < directories.length; i++){
-			if(old_path.contains(directories[i])){
+			if(old_path.contains(File.separator+directories[i]+File.separator)){
 				String[] split = old_path.split(directories[i], 2);
-				//System.out.println(localPath+File.separator+directories[i]+split[1]);
-				if((new File(localPath+File.separator+directories[i]+split[1])).exists()){
-					return (localPath+File.separator+directories[i]+split[1]);
+				//System.out.println(localPath+File.separator+directories[i]+File.separator+name);
+				if((new File(localPath+File.separator+directories[i]+File.separator+name)).exists()){
+					return (localPath+File.separator+directories[i]+File.separator+name);
 				}
 				else{
 					return "";
@@ -141,9 +142,9 @@ public class PathBuilder {
 		sdtFiles = new ArrayList<File>();
 		File base_dir = new File(localPath);
 		findSDT(base_dir, sdtFiles);
-		System.out.println(sdtFiles.size());
+		//System.out.println(sdtFiles.size());
 		for(File file : sdtFiles){
-			System.out.println(file.toString());
+			//System.out.println(file.toString());
 			restructureSDTInnerPaths(file);
 		}
 		
@@ -157,7 +158,7 @@ public class PathBuilder {
 				if(file.isDirectory()){
 					findSDT(file, sdtFiles);
 				}
-				else if(file.getName().contains(".sdt")){
+				else if(file.getName().endsWith(".sdt")){
 					sdtFiles.add(file);
 				}
 			}
@@ -224,15 +225,20 @@ public class PathBuilder {
 	}
 
 	private File findFile(File base, String toFind){
-		String toFind_suffix = toFind.contains("\\") ? toFind.replace('\\', '/').split("/" + base.getName() + "/")[1] : toFind;
 
-		if(base.isDirectory()){
+		if(new File(base.getAbsolutePath(), toFind).exists()){
+			return new File(base.getAbsolutePath(), toFind);
+		}
+		else if(new File(localPath, toFind).exists()){
+			return new File(localPath, toFind);
+		}
+		else{
 			File[] base_files = base.listFiles();
 			for(File file : base_files){
 				if(file.isDirectory()){
-					return findFile(file, toFind);
+					findFile(file, toFind);
 				}
-				else if(file.getAbsolutePath().replace('\\','/').endsWith(toFind_suffix)){
+				else if(file.getName().equals(toFind)){
 					return file;
 				}
 			}

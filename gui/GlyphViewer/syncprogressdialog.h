@@ -40,23 +40,15 @@ namespace SynGlyphX {
 		SyncProgressDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
 		~SyncProgressDialog(){};
 
-		int GetFileCount();
-
 		public slots:
 		//Slot that is called when QTimer timeouts 
 		void handleTimeOut();
 
 	private:
-		QLabel* GetSyncLabel();
-		void UpdateSyncLabel();
-
 		QVBoxLayout* layout;
 		QLabel* syncLabel;
 		QTimer *timer;
 		QProgressBar* progress;
-		int value;
-		int viz_count;
-		int file_count;
 		SharedVisualizationsWidget* m_allViewsFilteringWidget;
 
 		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;

@@ -10,7 +10,7 @@ SET jcmd=%jp%\..\jdk\bin
 
 SET drivers=%jp%\database-drivers
 
-SET CLASSPATH=%jp%;%drivers%\opencsv-3.7.jar;%drivers%\commons-lang3-3.1.jar;%drivers%\ojdbc7.jar;%drivers%\mysql-connector-java-5.1.38-bin.jar;%drivers%\sqlite-jdbc-3.8.11.2.jar;%drivers%\vertica-jdbc-7.2.1-0.jar;%drivers%\jsch-0.1.53.jar;
+SET CLASSPATH=%jp%;%drivers%\*;
 
 SET outpath=%jp%\..\..\classes
 

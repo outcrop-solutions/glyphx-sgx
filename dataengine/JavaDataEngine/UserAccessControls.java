@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.security.MessageDigest;
 import synglyphx.user.User;
+import synglyphx.user.Syncer;
 import synglyphx.user.UserFile;
+import synglyphx.user.SecurityGroup;
 import synglyphx.user.PathBuilder;
 import synglyphx.user.FilterSetup;
 import synglyphx.io.Logger;
@@ -12,13 +14,14 @@ import java.util.concurrent.TimeUnit;
 
 public class UserAccessControls {
 
-	private static String HOST = "ec2-52-42-56-15.us-west-2.compute.amazonaws.com";
-	private static String USER = "sgxuser";
-	private static String PASS = "sgxpass";
-	private static String DBNAME = "SynGlyphX";
+	private static String HOST = "sgxinstance.cqu1pnqua5at.us-west-2.rds.amazonaws.com";
+	private static String USER = "sgxadmin";
+	private static String PASS = "#sgxpw13#";
+	private static String DBNAME = "sgxdb";
 	private static String PORT = "3306";
 	private static User loggedInUser = null;
 	private static Connection conn;
+	private static Syncer syncer = null;
 
 	public static boolean initConnection(){
 		try{
@@ -41,18 +44,18 @@ public class UserAccessControls {
 		try{
 		    String query = "SELECT * FROM ";
 		    query += "(UserAccounts INNER JOIN Institutions ON (UserAccounts.Institution=Institutions.ID)) ";
-		    query += "WHERE UserAccounts.Username='"+username+"';";
+		    query += "WHERE UserAccounts.Email='"+username+"';";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 	        ResultSet rs = pstmt.executeQuery();
 
 	        if(rs.next()){
 	        	String pw = rs.getString("UserAccounts.Password");
 	        	if(pw.equals(password) || pw.equals(hashPassword(password))){
-	        		loggedInUser = new User(rs.getInt("UserAccounts.ID"),rs.getString("UserAccounts.Name"),rs.getInt("UserAccounts.Group"),rs.getTimestamp("UserAccounts.LastModified"));
+	        		loggedInUser = new User(rs.getInt("UserAccounts.ID"),rs.getString("UserAccounts.Name"),rs.getTimestamp("UserAccounts.LastLogin"));
 					loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
 					String update = "UPDATE UserAccounts SET "+
 									"LoginCount = "+String.valueOf(rs.getInt("UserAccounts.LoginCount")+1)+", "+
-									"LastModified = '"+(new Timestamp(System.currentTimeMillis())).toString()+"' "+
+									"LastLogin = '"+(new Timestamp(System.currentTimeMillis())).toString()+"' "+
 									"WHERE ID = "+String.valueOf(loggedInUser.getID());
 					conn.prepareStatement(update).executeUpdate();
 				}
@@ -64,19 +67,9 @@ public class UserAccessControls {
 				return 0;
 			}
 
-			query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
-			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";
-			query += "WHERE VisualizationGroups.Institution="+loggedInUser.getInstitutionID()+" AND VisualizationGroups.Group="+loggedInUser.getGroup()+";";
-			pstmt = conn.prepareStatement(query);
-	        rs = pstmt.executeQuery();
-
-	        while(rs.next()){
-	        	loggedInUser.addUserFile(rs.getString("Visualizations.Name"),rs.getString("Visualizations.Path"),rs.getInt("VisualizationGroups.Group"),1);
-	        }
-	        rs.close();
-			pstmt.close();
-
-			conn.close();
+			if(checkAvailableGroups() == 1){
+				setChosenGroup(loggedInUser.getGroup());
+		    }
 
 		}catch(Exception e){
 			try{
@@ -88,29 +81,104 @@ public class UserAccessControls {
 		return 1;
 	}
 
+	public static int checkAvailableGroups(){
+
+		if(loggedInUser.securityGroupCount() == 0){
+			try{
+				String query = "SELECT AvailableGroups.Group, SecurityGroups.Name, SecurityGroups.S3Directory, Institutions.Name FROM ";
+				query += "(AvailableGroups INNER JOIN SecurityGroups ON (SecurityGroups.ID=AvailableGroups.Group)) ";
+				query += "INNER JOIN Institutions ON (Institutions.ID=SecurityGroups.Institution) ";
+				query += "WHERE UserID="+loggedInUser.getID();
+				PreparedStatement pstmt = conn.prepareStatement(query);
+		        ResultSet rs = pstmt.executeQuery();
+
+		        while(rs.next()){
+		        	int id = rs.getInt("AvailableGroups.Group");
+		        	String sgn = rs.getString("SecurityGroups.Name");
+		        	String in = rs.getString("Institutions.Name");
+		        	String sd = rs.getString("SecurityGroups.S3Directory");
+		        	loggedInUser.addSecurityGroup(new SecurityGroup(id, sgn, in, sd));
+				}
+				rs.close();
+				pstmt.close();
+			}catch(Exception e){
+				try{
+	            	e.printStackTrace(Logger.getInstance().addError());
+		        }catch(Exception ex){}
+		        e.printStackTrace();
+			}
+		}
+		return loggedInUser.securityGroupCount();
+	}
+
+	public static String[] getListOfFormattedGroupNames(){
+		return loggedInUser.getListOfFormattedGroupNames();
+	}
+
+	public static void setChosenGroup(int id){
+
+		setChosenGroupById(loggedInUser.setSelectedGroup(id));
+	}
+
+	public static void setChosenGroup(String fgroup){
+
+		setChosenGroupById(loggedInUser.setSelectedGroup(fgroup));
+	}
+
+	private static void setChosenGroupById(int id){
+
+		try{
+			String query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
+			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";
+			query += "WHERE VisualizationGroups.Group="+id+";";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        while(rs.next()){
+	        	loggedInUser.addUserFile(rs.getString("Visualizations.Name"),rs.getString("Visualizations.Path"),rs.getInt("VisualizationGroups.Group"),1);
+	        }
+
+	        rs.close();
+			pstmt.close();
+
+			conn.close();
+		}catch(Exception e){
+			try{
+	            e.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+		}
+	}
+
 	public static void logOutCurrentUser(){
 		loggedInUser = null;
 		FilterSetup.getInstance().closeDriverIfOpen();
 	}
 
 	public static String getGlyphEdPath(){
-		return loggedInUser.getGlyphEdPath();
+		return syncer.getFinalDirectory();
 	}
 
-	public static int fileSyncSetup(final String sync_dir){
-		return loggedInUser.fileSyncSetup(sync_dir, nameOfInstitution());
+	public static boolean fileSyncSetup(final String sync_dir){
+		syncer = new Syncer(loggedInUser.getGroupS3Directory(), sync_dir, loggedInUser.getUserFiles());
+		return syncer.isSyncingNeeded(loggedInUser.getRemotePaths());
 	}
 
 	public static int visualizationsToSync(){
-		return loggedInUser.visualizationsToSync();
+		return syncer.visualizationsToSync();
 	}
 
 	public static void startSyncingFiles(){
-		loggedInUser.startSyncingFiles();
+		syncer.downloadFiles();
 	}
 
-	public static int filesSynced(){
-		return loggedInUser.filesSynced();
+	public static long getSyncProgress(){
+		Logger.getInstance().add(String.valueOf(syncer.getProgress()));
+		return syncer.getProgress();
+	}
+
+	public static boolean isDoneSyncing(){
+		return syncer.isDone();
 	}
 
 	public static String nameOfUser(){
@@ -123,6 +191,10 @@ public class UserAccessControls {
 
 	public static String nameOfInstitution(){
 		return loggedInUser.getInstitutionName();
+	}
+
+	public static String getS3Directory(){
+		return loggedInUser.getGroupS3Directory();
 	}
 
 	public static String lastModified(){
@@ -163,6 +235,16 @@ public class UserAccessControls {
 		System.out.println(UserAccessControls.validateCredentials("devtest","devtest"));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
+
+		if(UserAccessControls.fileSyncSetup("C:/ProgramData/SynGlyphX/Content")){
+			UserAccessControls.startSyncingFiles();
+			do{
+				try {
+			        Thread.sleep(500);
+			    } catch (InterruptedException e) {}
+			    System.out.println(UserAccessControls.getSyncProgress());
+			}while(UserAccessControls.isDoneSyncing() == false);
+		}
 /*
 		System.out.println("");
 		String[] vizNames = UserAccessControls.visualizationNames();
