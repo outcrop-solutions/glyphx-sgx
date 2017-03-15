@@ -907,7 +907,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		std::vector<std::string> images = ge.getBaseImages();
 		
 		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
-		
+
+		m_interactiveLegend->reset();
+
 		SGX_BEGIN_PROFILE(loadScene);
 		m_viewer->loadScene((localOutputDir + "glyphs.sgc").toStdString().c_str(), (localOutputDir + "glyphs.sgn").toStdString().c_str(), images, m_mappingModel->GetDataMapping()->GetDefaults().GetUseSuperimposedGlyphs());
 		SGX_END_PROFILE(loadScene);

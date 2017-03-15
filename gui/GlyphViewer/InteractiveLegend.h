@@ -21,6 +21,7 @@ class InteractiveLegend : public QWidget
 public:
 	InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMapping::ConstSharedPtr mapping);
 	void setPrimaryViewer(SynGlyphX::SceneViewer* v) { primary_viewer = v; }	// provide the main scene's viewer so we can update its scene
+	void reset() { setup = false; }
 
 protected:
 	void showEvent(QShowEvent* event) override;
