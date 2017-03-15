@@ -38,4 +38,5 @@ private:
 	std::unordered_set<uint32_t> hidden_elements;
 	int total_elements = 0;
 	int glyph_index = 0;
+	bool setup = false;
 };

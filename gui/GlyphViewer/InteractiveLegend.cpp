@@ -148,16 +148,19 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 
 void InteractiveLegend::showEvent(QShowEvent* event)
 {
-	QWidget::showEvent(event);
-	viewer->makeCurrent();
-	viewer->clearScene();
+	// we need to do this in the show event (because the GL context won't be initialized yet in the constructor)
+	// but we only need to do it ONCE for the lifetime of the widget.
+	if (!setup)
+	{
+		QWidget::showEvent(event);
+		viewer->makeCurrent();
+		viewer->clearScene();
 
-	char buf[255];
-	sprintf(buf, "sizeof(Glyph3DNode) = %i\n", sizeof(SynGlyphX::Glyph3DNode));
-	OutputDebugStringA(buf);
+		build_scene();
+		update_viewer();
 
-	build_scene();
-	update_viewer();
+		setup = true;
+	}
 }
 
 void InteractiveLegend::hideEvent(QHideEvent* event)
