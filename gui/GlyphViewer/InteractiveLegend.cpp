@@ -35,7 +35,7 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 	next->setIcon(QIcon(":SGXGUI/Resources/right_arrow.png"));
 	QObject::connect(next, &QPushButton::clicked, this, [this]() {
 		++glyph_index;
-		build_scene();
+		build_scene(); 
 	});
 	next->setEnabled(mapping->GetGlyphGraphs().size() > 1);
 	buttonsLayout->addWidget(next);
@@ -152,6 +152,14 @@ void InteractiveLegend::showEvent(QShowEvent* event)
 	// but we only need to do it ONCE for the lifetime of the widget.
 	if (!setup)
 	{
+		hidden_elements.clear();
+		primary_viewer->getScene().enumGlyphs([this](const SynGlyphX::Glyph3DNode& glyph) {
+			glyph.setHiddenByLegend(false);
+			primary_viewer->getScene().flagChanged();
+			return true;
+		});
+		primary_viewer->setStatusMessage("");
+
 		QWidget::showEvent(event);
 		viewer->makeCurrent();
 		viewer->clearScene();
@@ -161,17 +169,6 @@ void InteractiveLegend::showEvent(QShowEvent* event)
 
 		setup = true;
 	}
-}
-
-void InteractiveLegend::hideEvent(QHideEvent* event)
-{
-	hidden_elements.clear();
-	primary_viewer->getScene().enumGlyphs([this](const SynGlyphX::Glyph3DNode& glyph) {
-		glyph.setHiddenByLegend(false);
-		primary_viewer->getScene().flagChanged();
-		return true;
-	});
-	primary_viewer->setStatusMessage("");
 }
 
 void InteractiveLegend::update_viewer()

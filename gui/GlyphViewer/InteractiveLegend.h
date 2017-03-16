@@ -25,7 +25,6 @@ public:
 
 protected:
 	void showEvent(QShowEvent* event) override;
-	void hideEvent(QHideEvent* event) override;
 
 private:
 	void update_viewer();
