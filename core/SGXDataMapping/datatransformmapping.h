@@ -33,6 +33,7 @@
 #include "filedatasource.h"
 #include "databaseserverdatasource.h"
 #include "FrontEndFilter.h"
+#include "FieldProperties.h"
 
 namespace SynGlyphX {
 
@@ -62,7 +63,6 @@ namespace SynGlyphX {
 		std::wstring GenerateInputFieldID(const InputField& field); //may not be const with future implementation
 
 		void Clear();
-
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 		void ImportFromPropertyTree(const boost::property_tree::wptree& propertyTree);
@@ -184,6 +184,11 @@ namespace SynGlyphX {
 
 		std::wstring GetFormattedName(const boost::uuids::uuid& datasourceID, const std::wstring& table) const;
 
+		bool HasFieldProperties(std::wstring fieldId) { return m_fieldProperties.find(fieldId) != m_fieldProperties.end(); }
+		FieldProperties GetFieldProperties(std::wstring fieldId) { return m_fieldProperties[fieldId]; }
+		void AddNewFieldProperties(std::wstring fieldId, FieldProperties fieldProperties) { m_fieldProperties[fieldId] = fieldProperties; }
+		void RemoveFieldProperties(std::wstring fieldId) { m_fieldProperties.erase(fieldId); }
+
 		std::map<std::wstring, std::vector<std::wstring>> GetElasticListFields() const { return m_elasticListMap; }
 		void SaveElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
 
@@ -210,6 +215,7 @@ namespace SynGlyphX {
 		InputFieldManager m_inputFieldManager;
 		MultiTableFrontEndFilters m_frontEndFilters;
 		std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
+		std::map<std::wstring, FieldProperties> m_fieldProperties;
 		boost::uuids::uuid m_id;
     };
 

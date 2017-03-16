@@ -23,6 +23,7 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QGroupBox>
 #include "FieldProperties.h"
+#include "datastatsmodel.h"
 
 class FieldPropertiesDialog : public QDialog
 {
@@ -30,10 +31,10 @@ class FieldPropertiesDialog : public QDialog
 
 public:
 
-	FieldPropertiesDialog(SynGlyphX::FieldProperties* properties, QWidget* parent = 0);
+	FieldPropertiesDialog(SynGlyphX::FieldProperties properties, QWidget* parent = 0);
 	~FieldPropertiesDialog();
 
-	void SaveSelections();
+	SynGlyphX::FieldProperties SaveSelections(SynGlyphX::DataStatsModel* model, int row);
 
 private:
 	void SetTypesAndDetails();
@@ -42,7 +43,7 @@ private:
 	QListWidget* types;
 	QStackedWidget* stackedWidget;
 	std::map<QString, QString> details;
-	SynGlyphX::FieldProperties* m_properties;
+	SynGlyphX::FieldProperties m_properties;
 
 };
 

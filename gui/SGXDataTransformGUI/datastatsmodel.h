@@ -45,6 +45,7 @@ namespace SynGlyphX {
 		virtual Qt::ItemFlags flags(const QModelIndex & index) const;
 		virtual QStringList mimeTypes() const;
 		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
+		virtual bool setData(const QModelIndex & index, const QVariant &value);
 
 	private:
 		//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);

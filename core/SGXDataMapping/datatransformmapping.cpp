@@ -117,6 +117,7 @@ namespace SynGlyphX {
 		m_inputFieldManager(mapping.m_inputFieldManager),
 		m_frontEndFilters(mapping.m_frontEndFilters),
 		m_elasticListMap(mapping.m_elasticListMap),
+		m_fieldProperties(mapping.m_fieldProperties),
         m_id(UUIDGenerator::GetNewRandomUUID()) {
 
 	}
@@ -197,6 +198,11 @@ namespace SynGlyphX {
 		}
 
 		if (m_elasticListMap != mapping.m_elasticListMap) {
+
+			return false;
+		}
+
+		if (m_fieldProperties != mapping.m_fieldProperties) {
 
 			return false;
 		}
@@ -447,6 +453,26 @@ namespace SynGlyphX {
 			}
 		}
 
+		boost::optional<const boost::property_tree::wptree&> fieldPropertiesListPropertyTree = dataTransformPropertyTree.get_child_optional(L"FieldPropertiesList");
+		if (fieldPropertiesListPropertyTree.is_initialized()) {
+
+			for (const boost::property_tree::wptree::value_type& fieldProperties : fieldPropertiesListPropertyTree.get()) {
+
+				if (fieldProperties.first == L"FieldProperties") {
+
+					std::wstring hashid = fieldProperties.second.get<std::wstring>(L"<xmlattr>.hashid");
+					boost::uuids::uuid id = fieldProperties.second.get<boost::uuids::uuid>(L"<xmlattr>.id");
+					std::wstring table = fieldProperties.second.get<std::wstring>(L"<xmlattr>.table");
+					std::wstring field = fieldProperties.second.get<std::wstring>(L"<xmlattr>.field");
+					std::wstring type = fieldProperties.second.get<std::wstring>(L"<xmlattr>.type");
+					int dec = fieldProperties.second.get<int>(L"<xmlattr>.dec");
+					std::wstring sym = fieldProperties.second.get<std::wstring>(L"<xmlattr>.sym");
+
+					m_fieldProperties[hashid] = SynGlyphX::FieldProperties(id, table, field, type, dec, sym);
+				}
+			}
+		}
+
 	}
 
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
@@ -543,6 +569,15 @@ namespace SynGlyphX {
 					fieldPropertyTree.put(L"<xmlattr>.id", id);
 					fieldPropertyTree.put(L"<xmlattr>.table", tbl);
 				}
+			}
+		}
+
+		if (!m_fieldProperties.empty()){
+			boost::property_tree::wptree& fieldPropertiesListPropertyTree = dataTransformPropertyTreeRoot.add(L"FieldPropertiesList", L"");
+			for (const auto& field : m_fieldProperties){
+
+				boost::property_tree::wptree& fieldPropertyTree = fieldPropertiesListPropertyTree.add(L"FieldProperties", L"");
+				field.second.ExportToPropertyTree(fieldPropertyTree, field.first);
 			}
 		}
 

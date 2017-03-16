@@ -21,7 +21,10 @@
 #include "sgxdatamapping.h"
 #include <string>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <boost/bimap.hpp>
+#include <QtCore/QVariant>
+#include <QtCore/QString>
 
 namespace SynGlyphX {
 
@@ -30,15 +33,22 @@ namespace SynGlyphX {
 
 	public:
 		enum Type {
-			Number = 0,
-			Currency = 1,
-			Percentage = 2
+			Default = 0,
+			Number = 1,
+			Currency = 2,
+			Percentage = 3
 		};
 
-		FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type = L"Number", int dec = 0, std::wstring sym = L"$");
-		~FieldProperties();
+		FieldProperties(){};
+		FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type = L"Default", int dec = 0, std::wstring sym = L"");
+		FieldProperties(const FieldProperties& fp);
+		~FieldProperties(){};
 
-		void UpdateProperties(std::wstring type, int dec, std::wstring sym = L"$");
+		bool operator==(const FieldProperties& inputField) const;
+		bool operator!=(const FieldProperties& inputField) const;
+
+		void AddStatsToField(QStringList stats);
+		void UpdateProperties(std::wstring type, int dec, std::wstring sym = L"");
 
 		boost::uuids::uuid GetID() { return m_id; }
 		std::wstring GetTable() { return m_table; }
@@ -46,6 +56,12 @@ namespace SynGlyphX {
 		Type GetType() { return m_type; }
 		int GetDecimalsToDisplay() { return m_decimals; }
 		std::wstring GetSymbol() { return m_symbol; }
+		QString GetDefaultFieldType() { return m_stats.at(1); }
+
+		QString transformData(QString value);
+		QString transformData(int value);
+		QString transformData(double value);
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree, std::wstring hashid) const;
 
 		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
 
@@ -56,6 +72,7 @@ namespace SynGlyphX {
 		Type m_type;
 		int m_decimals;
 		std::wstring m_symbol;
+		QStringList m_stats;
 
 	};
 

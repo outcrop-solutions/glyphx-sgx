@@ -75,12 +75,27 @@ void DataSourceStatsWidget::ClearTabs() {
 
 void DataSourceStatsWidget::CreateTablesFromDatasource(const SynGlyphX::InputTable& inputTable, const QString& formattedDatasourceName) {
 
+	int i = 0;
 	QString tabName = formattedDatasourceName;
 	if (inputTable.GetTable() != L"OnlyTable") {
 
 		tabName += ":" + QString::fromStdWString(inputTable.GetTable());
 	}
 	SynGlyphX::DataStatsModel* model = new SynGlyphX::DataStatsModel(inputTable, m_model->GetTableStatsMap().at(inputTable), this);
+	for (const auto& fieldStats : m_model->GetTableStatsMap().at(inputTable)) {
+
+		SynGlyphX::HashID seed = inputTable.GetHashID();
+		SynGlyphX::CombineHashID(seed, fieldStats.at(0).toStdWString());
+		std::wstring hashid = std::to_wstring(seed);
+		if (m_model->HasFieldProperties(hashid)){
+			SynGlyphX::FieldProperties fp = m_model->GetFieldProperties(hashid);
+			fp.AddStatsToField(fieldStats);
+			model->setData(model->index(i, 2), fp.transformData(2));
+			model->setData(model->index(i, 3), fp.transformData(3));
+		}
+		i++;
+
+	}
 	CreateTableView(model, tabName, QString::fromStdString(boost::uuids::to_string(inputTable.GetDatasourceID())));
 }
 
@@ -153,12 +168,25 @@ void DataSourceStatsWidget::EditFieldProperties() {
 	SynGlyphX::CombineHashID(seed, stats.at(0).toStdWString());
 	std::wstring hashid = std::to_wstring(seed);
 
-	SynGlyphX::FieldProperties* field = new SynGlyphX::FieldProperties(inputTbl.GetDatasourceID(), inputTbl.GetTable(), stats.at(0).toStdWString());
+	SynGlyphX::FieldProperties field(inputTbl.GetDatasourceID(), inputTbl.GetTable(), stats.at(0).toStdWString());
+
+	if (m_model->HasFieldProperties(hashid)){
+		field = m_model->GetFieldProperties(hashid);
+	}
+	field.AddStatsToField(stats);
 
 	FieldPropertiesDialog dialog(field, this);
 	dialog.setWindowTitle(tr("Field Properties"));
 	if (dialog.exec() == QDialog::Accepted) {
-		dialog.SaveSelections();
+		field = dialog.SaveSelections(reinterpret_cast<SynGlyphX::DataStatsModel*>(tab->model()), row);
+		if (field.GetType() != SynGlyphX::FieldProperties::Type::Default){
+			m_model->AddNewFieldProperties(hashid, dialog.SaveSelections(reinterpret_cast<SynGlyphX::DataStatsModel*>(tab->model()), row));
+		}
+		else{
+			if (m_model->HasFieldProperties(hashid)){
+				m_model->RemoveFieldProperties(hashid);
+			}
+		}
 	}
 	
 }

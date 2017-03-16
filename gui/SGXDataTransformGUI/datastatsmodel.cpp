@@ -134,4 +134,16 @@ namespace SynGlyphX {
 		}
 	}
 
+	bool DataStatsModel::setData(const QModelIndex & index, const QVariant &value) {
+
+		if (index.isValid()) {
+
+			QStringList l = m_stats.at(index.row());
+			l.replace(index.column(), value.toString());
+			m_stats.replace(index.row(), l);
+			return true;
+		}
+		return false;
+	}
+
 } //namespace SynGlyphX
