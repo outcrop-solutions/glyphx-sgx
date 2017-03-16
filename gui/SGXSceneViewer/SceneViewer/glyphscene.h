@@ -28,7 +28,7 @@ namespace SynGlyphX
 
 		void update( float timeDelta );
 
-		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1, uint32_t label = uint32_t(-1) );
+		Glyph3DNode* allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index = -1, uint32_t label = uint32_t(-1), uint32_t glyph_index = uint32_t(-1) );
 		const char* createString( const char* text );
 
 		void beginAdding( unsigned int count );

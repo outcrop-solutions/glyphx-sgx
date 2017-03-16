@@ -58,7 +58,7 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 		{
 			hidden_elements.insert(selected.begin(), selected.end());
 			primary_viewer->getScene().enumGlyphs([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
-				if (selected.find(glyph.getLabel()) != selected.end())
+				if (glyph.getGlyphIndex() == glyph_index && selected.find(glyph.getLabel()) != selected.end())
 					glyph.setHiddenByLegend(true);
 				return true;
 			});
@@ -68,7 +68,7 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 			for (auto l : selected)
 				hidden_elements.erase(l);
 			primary_viewer->getScene().enumGlyphs([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
-				if (selected.find(glyph.getLabel()) != selected.end())
+				if (glyph.getGlyphIndex() == glyph_index && selected.find(glyph.getLabel()) != selected.end())
 					glyph.setHiddenByLegend(false);
 				return true;
 			});
@@ -102,7 +102,7 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 		{
 			hidden_elements.insert(selected.begin(), selected.end());
 			primary_viewer->getScene().enumGlyphs([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
-				if (selected.find(glyph.getLabel()) != selected.end())
+				if (glyph.getGlyphIndex() == glyph_index && selected.find(glyph.getLabel()) != selected.end())
 					glyph.setHiddenByLegend(true);
 				return true;
 			});
@@ -112,7 +112,7 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 			for (auto l : selected)
 				hidden_elements.erase(l);
 			primary_viewer->getScene().enumGlyphs([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
-				if (selected.find(glyph.getLabel()) != selected.end())
+				if (glyph.getGlyphIndex() == glyph_index && selected.find(glyph.getLabel()) != selected.end())
 					glyph.setHiddenByLegend(false);
 				return true;
 			});
@@ -127,7 +127,8 @@ InteractiveLegend::InteractiveLegend(QWidget *parent, SynGlyphX::DataTransformMa
 	QObject::connect(show_all, &QPushButton::clicked, this, [this]() {
 		hidden_elements.clear();
 		primary_viewer->getScene().enumGlyphs([this](const SynGlyphX::Glyph3DNode& glyph) {
-			glyph.setHiddenByLegend(false);
+			if (glyph.getGlyphIndex() == glyph_index)
+				glyph.setHiddenByLegend(false);
 			return true;
 		});
 		primary_viewer->getScene().flagChanged();

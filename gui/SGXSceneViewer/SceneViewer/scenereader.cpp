@@ -227,6 +227,11 @@ namespace SynGlyphX
 
 		data.id = read_int();
 		data.label = read_int();
+
+		data.glyph_index = read_int();
+		if (data.glyph_index >= 8u)
+			throw std::runtime_error("Glyph element index is too large; only up to 8 glyph types are supported.");
+
 		data.parent_id = read_int();
 		data.pos = read_vec3();
 		data.rot = read_vec3();
@@ -245,7 +250,7 @@ namespace SynGlyphX
 		data.is_root = ( data.parent_id == 0 ) || !parent;
 		hal::debug::_assert( data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id );
 
-		auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1, data.label );
+		auto* glyphnode = scene.allocGlyph( data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1, data.label, data.glyph_index );
 		SetupGeometry( data.geom_type, *glyphnode );
 		glyphnode->setString( GlyphStringType::Tag, scene.createString( tag.c_str() ) );
 		glyphnode->setString( GlyphStringType::Url, scene.createString( url.c_str() ) );

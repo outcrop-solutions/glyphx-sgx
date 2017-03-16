@@ -112,6 +112,7 @@ public class NewCSVWriter {
         
 	        int global_offset = 5;
 	        int glyph_node_count = 0, base_image_count = 0, link_count = 0;
+	        int root_glyph_index = 0;
 
 	        // write base images
 			boolean world = true;
@@ -154,6 +155,7 @@ public class NewCSVWriter {
 	        boolean print = true;
 	        String lastRootXYZ = "";
 	        int firstRoot = 1;
+	        int glyph_index = 0;
 	        excluded = new ArrayList<Integer>();
 	        HashMap<Integer,Double> rotation_lookup = new HashMap<Integer,Double>();
 	        for(int i = 1; i< nodeCount; i++){
@@ -175,9 +177,13 @@ public class NewCSVWriter {
 
 	        		data.writeInt( i + global_offset );
 
+	        		// if we hit 0 in the labels, we're starting a new glyph
+	        		if (temp.getLabel() == 0)
+	        			root_glyph_index++;
+
 					// todo - could easily be a short
-					// TODO - this doesn't appear to be the correct value
 	        		data.writeInt( temp.getLabel() );
+	        		data.writeInt( glyph_index );
 
 			        if(temp.getParent()==0){
 			        	data.writeInt( temp.getParent() );
@@ -236,6 +242,7 @@ public class NewCSVWriter {
 		    	
 		    	if(rootCoords.get(firstRoot).getLastID() == i){
 		    		firstRoot = rootCoords.get(firstRoot).getLastTemp()+1;
+		    		glyph_index++;
 		    	}
 		    	print = true;
 	        }
