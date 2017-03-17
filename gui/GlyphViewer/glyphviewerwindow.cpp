@@ -335,16 +335,16 @@ void GlyphViewerWindow::CreateMenus() {
 	m_remapRootPositionMappingsAction->setIcon(remapIcon);
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
-
-	auto legendAction = m_toolsMenu->addAction(tr("Show Interactive Legend"));
+	/*
+	m_interactiveLegendAction = m_toolsMenu->addAction(tr("Show Interactive Legend"));
 	QIcon legendIcon;
-	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-xyz.png");
-	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-xyz-a.png");
-	legendIcon.addPixmap(xyz_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
-	legendIcon.addPixmap(xyz_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	legendAction->setIcon(legendIcon);
-	QObject::connect(legendAction, &QAction::triggered, this, &GlyphViewerWindow::ToggleInteractiveLegend);
-	m_loadedVisualizationDependentActions.push_back(legendAction);
+	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-onoff.png");
+	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-onoff-a.png");
+	legendIcon.addPixmap(legend_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	legendIcon.addPixmap(legend_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	m_interactiveLegendAction->setIcon(legendIcon);
+	QObject::connect(m_interactiveLegendAction, &QAction::triggered, this, &GlyphViewerWindow::ToggleInteractiveLegend);
+	m_loadedVisualizationDependentActions.push_back(m_interactiveLegendAction);*/
 
 	m_toolsMenu->addSeparator();
 
@@ -409,6 +409,17 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_interactiveLegendDock->hide();
 	m_interactiveLegendDock->setFloating(true);
 	m_interactiveLegendDock->setWidget(m_interactiveLegend);
+	m_interactiveLegendAction = m_interactiveLegendDock->toggleViewAction();//m_viewMenu->addAction(tr("Show Interactive Legend")); 
+	QIcon intrLegendIcon;
+	QPixmap intrlegend_off(":SGXGUI/Resources/Icons/icon-onoff.png");
+	QPixmap intrlegend_on(":SGXGUI/Resources/Icons/icon-onoff-a.png");
+	intrLegendIcon.addPixmap(intrlegend_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	intrLegendIcon.addPixmap(intrlegend_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	m_interactiveLegendAction->setIcon(intrLegendIcon);
+	m_viewMenu->addAction(m_interactiveLegendAction);
+	m_showHideToolbar->addAction(m_interactiveLegendAction);
+	QObject::connect(m_interactiveLegendAction, &QAction::toggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
+	m_loadedVisualizationDependentActions.push_back(m_interactiveLegendAction);
 
 	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 

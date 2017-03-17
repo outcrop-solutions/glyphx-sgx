@@ -53,6 +53,8 @@
         <file>Resources/right_arrow.png</file>
         <file>Resources/license_agreement.html</file>
         <file>Resources/license_agreement_glyphed.html</file>
+        <file>Resources/Icons/icon-onoff.png</file>
+        <file>Resources/Icons/icon-onoff-a.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
         <file alias="qt.conf">Resources/qt.conf</file>

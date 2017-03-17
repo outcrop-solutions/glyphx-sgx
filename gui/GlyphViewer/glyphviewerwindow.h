@@ -158,6 +158,7 @@ private:
 	QAction* m_enableDisableSelEffectActionMenu;
 	QAction* m_exportGlyphPortableAction;
 	QAction* m_ToggleFEFilterListAction;
+	QAction* m_interactiveLegendAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QAction* m_showHideHUDAxisAction;
