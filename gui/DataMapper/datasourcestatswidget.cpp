@@ -94,7 +94,6 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const SynGlyphX::InputTab
 			model->setData(model->index(i, 3), fp.transformData(3));
 		}
 		i++;
-
 	}
 	CreateTableView(model, tabName, QString::fromStdString(boost::uuids::to_string(inputTable.GetDatasourceID())));
 }

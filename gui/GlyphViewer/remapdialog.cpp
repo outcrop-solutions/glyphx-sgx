@@ -108,6 +108,21 @@ void RemapDialog::CreateDataStatsModels() {
 		if (m_dataStatsModels.count(table) == 0) {
 
 			SynGlyphX::DataStatsModel* dataStatsModel = new SynGlyphX::DataStatsModel(table, m_dataTransformModel->GetTableStatsMap().at(table), this);
+			int i = 0;
+
+			for (const auto& fieldStats : m_dataTransformModel->GetTableStatsMap().at(table)) {
+
+				SynGlyphX::HashID seed = table.GetHashID();
+				SynGlyphX::CombineHashID(seed, fieldStats.at(0).toStdWString());
+				std::wstring hashid = std::to_wstring(seed);
+				if (m_dataTransformModel->HasFieldProperties(hashid)){
+					SynGlyphX::FieldProperties fp = m_dataTransformModel->GetFieldProperties(hashid);
+					fp.AddStatsToField(fieldStats);
+					dataStatsModel->setData(dataStatsModel->index(i, 2), fp.transformData(2));
+					dataStatsModel->setData(dataStatsModel->index(i, 3), fp.transformData(3));
+				}
+				i++;
+			}
 			m_dataStatsModels[table] = dataStatsModel;
 		}
 	}
