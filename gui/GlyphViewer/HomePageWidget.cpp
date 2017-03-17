@@ -894,7 +894,7 @@ void HomePageWidget::CheckForNewRelease() {
 		std::string installName = appName.toStdString();
 		if (appName != "glyphed" && !isGlyphIt) { installName = "glyphviewer"; }
 
-		if (x.at(1) != SynGlyphX::getAppVersionString()) {
+		if (x.at(1) != SynGlyphX::getAppVersionString() && std::string(SynGlyphX::getAppVersionString()).find("t") == std::string::npos) {
 			for (const auto& file : files) {
 				if (file->GetName().find(installName + "_" + x.at(1) + ".") != std::string::npos) {
 					releaseDialog = std::make_shared<SynGlyphX::AnnouncementDialog>("New Release Available", this);

@@ -232,11 +232,11 @@ public class UserAccessControls {
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("bholster","bholster"));
+		System.out.println(UserAccessControls.validateCredentials("devtest","devtest"));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 
-		if(UserAccessControls.fileSyncSetup("C:/Users/Bryan/Documents/SyncedGlyphEdFiles")){
+		if(UserAccessControls.fileSyncSetup("C:/ProgramData/SynGlyphX/Content")){
 			UserAccessControls.startSyncingFiles();
 			do{
 				try {

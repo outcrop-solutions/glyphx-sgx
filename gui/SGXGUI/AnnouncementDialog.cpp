@@ -14,6 +14,7 @@ namespace SynGlyphX {
 
 		layout = new QVBoxLayout();
 
+		setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans;");
 		//setAttribute(Qt::WA_DeleteOnClose);
 	}
 
@@ -52,7 +53,7 @@ namespace SynGlyphX {
 		m_label = new QLabel(this);
 		m_label->setWordWrap(true);
 		m_label->setOpenExternalLinks(true);
-		m_label->setStyleSheet("font-size: 10pt;");
+		m_label->setStyleSheet("font-family:'Calibri', Helvetica, Arial, Sans; font-size: 10pt;");
 		m_label->setText(UseURLText(QUrl(url)));
 		layout->addWidget(m_label);
 	}

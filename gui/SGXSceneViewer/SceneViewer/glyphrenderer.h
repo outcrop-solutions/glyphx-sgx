@@ -38,6 +38,12 @@ namespace SynGlyphX
 			Combined,
 		};
 
+		enum class HiddenElementMode
+		{
+			Hidden,
+			GreyedOut,
+		};
+
 		void enableBoundVis( bool enable );
 		void setBoundVisMode( BoundVisMode mode );
 		BoundVisMode getBoundVisMode() { return bound_vis_mode; }
@@ -45,6 +51,9 @@ namespace SynGlyphX
 
 		void enableSelectionEffect( bool val ) { sel_effect_enabled = val; }
 		void resetSelectionAnimation() { selection_animation_state = 0.f; }
+
+		void setHiddenElementMode(HiddenElementMode mode) { hide_mode = mode; }
+		void setResetPulseAnimOnSelectionChange(bool v) { reset_sel_animation_on_sel_change = v; }
 
 	private:
 		class glyph_bucket
@@ -100,6 +109,9 @@ namespace SynGlyphX
 		float selection_animation_time, selection_animation_state;
 		float previous_frame_time;
 		bool updates_done = false;
+
+		HiddenElementMode hide_mode = HiddenElementMode::Hidden;
+		bool reset_sel_animation_on_sel_change = true;
 
 		GlyphGeometryDB& db;
 	};

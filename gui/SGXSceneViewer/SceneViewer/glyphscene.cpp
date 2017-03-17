@@ -12,13 +12,13 @@ namespace SynGlyphX
 		clear();
 	}
 
-	Glyph3DNode* GlyphScene::allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index )
+	Glyph3DNode* GlyphScene::allocGlyph( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index, uint32_t _label, uint32_t _glyph_index)
 	{
 		assert( glyph_storage_size != 0u );
 		assert( glyph_storage_next < glyph_storage_size );
 		char* mem = glyph_storage + sizeof( Glyph3DNode ) * glyph_storage_next;
 		++glyph_storage_next;
-		return new ( mem ) Glyph3DNode( _id, _isRoot, _type, _filtering_index );
+		return new ( mem ) Glyph3DNode( _id, _isRoot, _type, _filtering_index, _label, _glyph_index);
 	}
 
 	void GlyphScene::add( Glyph3DNode* glyph )

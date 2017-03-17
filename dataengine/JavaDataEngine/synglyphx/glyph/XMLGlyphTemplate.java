@@ -8,7 +8,7 @@ import synglyphx.util.MapFunction;
 
 public class XMLGlyphTemplate{
 
-	private String label;
+	private int label;
 	private String id;
 	private String tag;
 	private String description;
@@ -176,8 +176,8 @@ public class XMLGlyphTemplate{
 		this.numChildren++;
 	}
 
-	public void setLabel(String label){
-		this.label = label;
+	public void setLabel(int l){
+		label = l;
 	}
 
 	public void setTag(String tag, String tag_id){
@@ -270,8 +270,8 @@ public class XMLGlyphTemplate{
 		return this.numChildren;
 	}
 
-	public String getLabel(){
-		return this.label;
+	public int getLabel(){
+		return label;
 	}
 
 	public String getTag(){

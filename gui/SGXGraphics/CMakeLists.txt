@@ -30,7 +30,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 endif()
 
-set(SGXGRAPHICS_LIBS SGXGraphics glew assimp freetype)
+set(SGXGRAPHICS_LIBS SGXGraphics glew assimp-vc120-mt freetype)
 if(${APPLE})
 	LIST(APPEND SGXGRAPHICS_LIBS z)		#need zlib on apple
 endif()

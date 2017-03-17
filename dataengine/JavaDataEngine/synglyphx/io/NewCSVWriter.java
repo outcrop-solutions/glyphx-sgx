@@ -20,7 +20,7 @@ public class NewCSVWriter {
 	// increment when data format changes. if you change this you have to change
 	// the corresponding constant in scenereader.cpp as well (in addition to changing
 	// that class to read the new format).
-	public static final int FORMAT_VERSION = 1;
+	public static final int FORMAT_VERSION = 2;
 	
 	private int nodeCount;
 	private Map<Integer,Node> allNodes;
@@ -112,6 +112,7 @@ public class NewCSVWriter {
         
 	        int global_offset = 5;
 	        int glyph_node_count = 0, base_image_count = 0, link_count = 0;
+	        int root_glyph_index = 0;
 
 	        // write base images
 			boolean world = true;
@@ -154,10 +155,12 @@ public class NewCSVWriter {
 	        boolean print = true;
 	        String lastRootXYZ = "";
 	        int firstRoot = 1;
+	        int glyph_index = 0;
 	        excluded = new ArrayList<Integer>();
 	        HashMap<Integer,Double> rotation_lookup = new HashMap<Integer,Double>();
 	        for(int i = 1; i< nodeCount; i++){
 	        	Node temp = allNodes.get(i);
+
 	        	String xyz = "";
 	        	if(rootCoords.get(firstRoot).toMerge()){
 	        		xyz = String.valueOf(temp.getX())+String.valueOf(temp.getY())+String.valueOf(temp.getZ());
@@ -173,6 +176,14 @@ public class NewCSVWriter {
 	        	if(print && isScaleGTZero(temp)){
 
 	        		data.writeInt( i + global_offset );
+
+	        		// if we hit 0 in the labels, we're starting a new glyph
+	        		if (temp.getLabel() == 0)
+	        			root_glyph_index++;
+
+					// todo - could easily be a short
+	        		data.writeInt( temp.getLabel() );
+	        		data.writeInt( glyph_index );
 
 			        if(temp.getParent()==0){
 			        	data.writeInt( temp.getParent() );
@@ -231,6 +242,7 @@ public class NewCSVWriter {
 		    	
 		    	if(rootCoords.get(firstRoot).getLastID() == i){
 		    		firstRoot = rootCoords.get(firstRoot).getLastTemp()+1;
+		    		glyph_index++;
 		    	}
 		    	print = true;
 	        }

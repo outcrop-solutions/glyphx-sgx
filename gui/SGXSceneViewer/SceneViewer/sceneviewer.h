@@ -53,6 +53,7 @@ namespace SynGlyphX
 	{
 		Full,
 		SingleGlyph,
+		SingleGlyph_AllowSelection,
 	};
 
 	class SGXSCENEVIEWER_API SceneViewer : public QOpenGLWidget
@@ -91,6 +92,7 @@ namespace SynGlyphX
 		bool stereoMode() { return false; /* not yet implemented */ }
 		void enableFreeSelectionCamera( bool val ) { free_selection_camera = val; }
 		void enableSelectionEffect( bool val ) { selection_effect_enabled = val; glyph_renderer->resetSelectionAnimation(); }
+		void resetSelectionAnimation() { if (glyph_renderer) glyph_renderer->resetSelectionAnimation(); }
 		bool freeSelectionCameraEnabled() { return free_selection_camera; }
 
 		void setFilteredGlyphOpacity( float opacity ) { filtered_glyph_opacity = opacity; }
@@ -99,6 +101,7 @@ namespace SynGlyphX
 		void setHUDAxesLocation( HUDAxesLocation loc ) { hud_axes_location = loc; }
 		void showTagsOfSelectedObjects( bool show );
 		void setAxisNames( const char* X, const char* Y, const char* Z );
+		void setStatusMessage(const char* message) { status_message = message; }
 		void hideAllTags();
 		void enableSuperimposedGlyphGadgets( bool val );
 
@@ -121,6 +124,9 @@ namespace SynGlyphX
 		void setOverridePositionXYZ(const std::array<std::string, 3>& positionOverride);
 
 		void setLogoFile(const char* file) { logo_file = file; }
+
+		void setHiddenElementMode(GlyphRenderer::HiddenElementMode mode) { glyph_renderer->setHiddenElementMode(mode); }
+		void setResetPulseAnimOnSelectionChange(bool v) { glyph_renderer->setResetPulseAnimOnSelectionChange(v); }
 
 	protected:
 		enum class CenterMode
@@ -216,6 +222,7 @@ namespace SynGlyphX
 		GlyphRenderer* glyph_renderer;
 		AxisRenderer* axis_renderer;
 		std::string axis_names[3];
+		std::string status_message;
 		BaseImageRenderer* base_images;
 		render::renderer* renderer;
 		render::grid_renderer* grids;

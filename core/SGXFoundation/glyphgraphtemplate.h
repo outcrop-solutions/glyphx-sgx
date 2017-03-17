@@ -200,10 +200,10 @@ namespace SynGlyphX {
 			}
 		}
 
-		/*Label GetLabel(const GlyphIterator& vertex) const {
+		Label GetLabel(const GlyphIterator& vertex) const {
 
 			return vertex->first;
-		}*/
+		}
 
 		const LinkMap& GetLinks() const {
 
