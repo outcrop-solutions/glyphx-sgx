@@ -6,3 +6,5 @@ call build_glyphed_installer.bat
 call build_glyphviewer_installer.bat
 call build_glyphit_installer.bat
 echo Done!
+
+pause

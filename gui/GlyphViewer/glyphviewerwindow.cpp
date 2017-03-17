@@ -409,7 +409,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_interactiveLegendDock->hide();
 	m_interactiveLegendDock->setFloating(true);
 	m_interactiveLegendDock->setWidget(m_interactiveLegend);
-	m_interactiveLegendAction = m_interactiveLegendDock->toggleViewAction();//m_viewMenu->addAction(tr("Show Interactive Legend")); 
+	m_interactiveLegendAction = m_interactiveLegendDock->toggleViewAction(); //m_viewMenu->addAction(tr("Show Interactive Legend"));
 	QIcon intrLegendIcon;
 	QPixmap intrlegend_off(":SGXGUI/Resources/Icons/icon-onoff.png");
 	QPixmap intrlegend_on(":SGXGUI/Resources/Icons/icon-onoff-a.png");
@@ -1531,17 +1531,18 @@ void GlyphViewerWindow::RemapRootPositionMappings() {
 
 void GlyphViewerWindow::ToggleInteractiveLegend()
 {
+	/*
 	if (m_interactiveLegendDock->isVisible())
 	{
 		m_interactiveLegendDock->hide();
 	}
 	else
-	{
+	{*/
 		m_interactiveLegend->setPrimaryViewer(m_viewer);
 		addDockWidget(Qt::DockWidgetArea::NoDockWidgetArea, m_interactiveLegendDock);
 		m_interactiveLegendDock->resize(m_interactiveLegend->size());
-		m_interactiveLegendDock->show();
-	}
+		//m_interactiveLegendDock->show();
+	//}
 }
 
 void GlyphViewerWindow::CreateInteractionToolbar() {
