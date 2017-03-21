@@ -27,6 +27,8 @@
 #include <unordered_map>
 #include <map>
 #include "filteringparameters.h"
+#include "FieldProperties.h"
+#include "datatransformmodel.h"
 
 namespace SynGlyphX {
 
@@ -66,6 +68,10 @@ public:
 	SourceDataCache::ConstSharedPtr GetSourceDataCache() const;
 	const SynGlyphX::DataTransformModel* GetDataTransformModel() const;
 
+	std::map<std::wstring, SynGlyphX::FieldProperties> GetFieldPropertiesForTable(boost::uuids::uuid tableId, std::wstring tableName) 
+	{ 
+		return m_DataTransformModel->GetFieldPropertiesForTable(tableId, tableName); 
+	}
 	void SetElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
 	std::vector<std::wstring> GetElasticListFields(QString sourceDataTableName);
 

@@ -249,7 +249,7 @@ namespace SynGlyphX {
 
 	void SingleNumericRangeFilterWidget::SetMinLineEdit(double val) {
 
-		m_minLineEdit->setText(ConvertDoubleToString(val, m_minValidator->decimals()));
+		m_minLineEdit->setText(m_fieldProperties.transformData(ConvertDoubleToString(val, m_minValidator->decimals())));
 	}
 
 	double SingleNumericRangeFilterWidget::GetMinLineEdit() const {
@@ -260,14 +260,19 @@ namespace SynGlyphX {
 			return std::numeric_limits<double>::lowest();
 		}
 		else {
-
-			return lineEditText.toDouble();
+			double to_return = lineEditText.toDouble();
+			if (to_return == 0.0){
+				SliderPositionValues::const_iterator iT = m_valuesAtSliderPosition.begin();
+				std::advance(iT, m_rangeSlider->GetLowerPosition());
+				to_return = *iT;
+			}
+			return to_return;
 		}
 	}
 
 	void SingleNumericRangeFilterWidget::SetMaxLineEdit(double val) {
 
-		m_maxLineEdit->setText(ConvertDoubleToString(val, m_maxValidator->decimals()));
+		m_maxLineEdit->setText(m_fieldProperties.transformData(ConvertDoubleToString(val, m_maxValidator->decimals())));
 	}
 
 	double SingleNumericRangeFilterWidget::GetMaxLineEdit() const {
@@ -278,8 +283,13 @@ namespace SynGlyphX {
 			return std::numeric_limits<double>::max();
 		}
 		else {
-
-			return lineEditText.toDouble();
+			double to_return = lineEditText.toDouble();
+			if (to_return == 0.0){
+				SliderPositionValues::const_iterator iT = m_valuesAtSliderPosition.begin();
+				std::advance(iT, m_rangeSlider->GetUpperPosition());
+				to_return = *iT;
+			}
+			return to_return;
 		}
 	}
 

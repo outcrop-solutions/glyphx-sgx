@@ -46,6 +46,9 @@ namespace SynGlyphX {
 		static QString ConvertDoubleToRawString(double value);
 		static QString ConvertQVariantToRawString(const QVariant& value);
 
+		const QStringList GetFormattedData() { return m_formattedData; }
+		void ReplaceFormattedData(QStringList reformatterData) { m_formattedData = reformatterData; }
+
 	private:
 		float total = 0.0;
 		bool noTotal = true;

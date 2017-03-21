@@ -23,6 +23,8 @@
 #include <unordered_map>
 #include "elasticlistwidget.h"
 #include "sourcedatacache.h"
+#include "filteringmanager.h"
+#include "FieldProperties.h"
 
 class SingleTableElasticListsWidget : public SynGlyphX::VerticalScrollArea
 {
@@ -32,7 +34,7 @@ public:
 	typedef std::pair<QString, QString> AliasAndField;
 	typedef std::vector<AliasAndField> AliasAndFieldList;
 
-	SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, std::vector<std::wstring> elasticList, QWidget *parent);
+	SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, FilteringManager* filteringManager, QWidget *parent);
 	~SingleTableElasticListsWidget();
 
 	void PopulateElasticLists(const SynGlyphX::IndexSet& indexSet = SynGlyphX::IndexSet());
@@ -53,6 +55,7 @@ private:
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	QString m_table;
 	ColumnToWidgetMap m_elasticListMap;
+	std::map<std::wstring, SynGlyphX::FieldProperties> m_fieldPropertiesMap;
 	QWidget* m_innerWidget;
 };
 

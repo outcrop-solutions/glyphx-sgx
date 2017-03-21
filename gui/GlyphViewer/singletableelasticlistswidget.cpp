@@ -1,8 +1,11 @@
 #include "singletableelasticlistswidget.h"
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/uuid/uuid.hpp>
 
 const unsigned int SingleTableElasticListsWidget::Spacing = 16;
 
-SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, std::vector<std::wstring> elasticList, QWidget *parent)
+SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList aliasAndFieldList, SourceDataCache::ConstSharedPtr sourceDataCache, const QString& table, FilteringManager* filteringManager, QWidget *parent)
 	: SynGlyphX::VerticalScrollArea(parent),
 	m_sourceDataCache(sourceDataCache),
 	m_table(table)
@@ -12,9 +15,9 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 	QVBoxLayout* layout = new QVBoxLayout(m_innerWidget);
 	layout->setSpacing(Spacing);
 
-	if (elasticList.size() > 0){
+	if (filteringManager->GetElasticListFields(table).size() > 0){
 
-		for (const auto& field : elasticList){
+		for (const auto& field : filteringManager->GetElasticListFields(table)){
 
 			for (const auto& aliasAndField : aliasAndFieldList) {
 
@@ -32,6 +35,10 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 			AddFieldToElasticList(layout, aliasAndField);
 		}
 	}
+
+	std::vector<std::string> splt;
+	boost::split(splt, table.toStdString(), boost::is_any_of(":"));
+	m_fieldPropertiesMap = filteringManager->GetFieldPropertiesForTable(boost::lexical_cast<boost::uuids::uuid>(splt.at(0)), splt.size() == 2 ? QString(splt.at(1).c_str()).toStdWString() : L"OnlyTable");
 
 	layout->addStretch(1);
 
@@ -75,6 +82,17 @@ void SingleTableElasticListsWidget::PopulateElasticLists(const SynGlyphX::IndexS
 			}
 
 			column.second->SetData(elasticListData);
+
+			if (m_fieldPropertiesMap.find(QString::fromStdString(column.first).toStdWString()) != m_fieldPropertiesMap.end()){
+
+				SynGlyphX::FieldProperties fp = m_fieldPropertiesMap.at(QString::fromStdString(column.first).toStdWString());
+				QStringList qsl = column.second->GetElasticListModel()->GetFormattedData();
+
+				for (int i = 0; i < qsl.size(); i++){
+					qsl.replace(i, fp.transformData(qsl.at(i)));
+				}
+				column.second->GetElasticListModel()->ReplaceFormattedData(qsl);
+			}
 		}
 	}
 }

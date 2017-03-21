@@ -46,6 +46,8 @@ namespace SynGlyphX {
 		void SetData(const ElasticListModel::Data& data);
 		//void SetSelectedData(const ElasticListModel::Data& data);
 
+		ElasticListModel* GetElasticListModel() { return m_model; }
+
 		const QSet<QString>& GetSelectedRawData() const;
 
 	signals:

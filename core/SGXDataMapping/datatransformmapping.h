@@ -188,6 +188,7 @@ namespace SynGlyphX {
 		FieldProperties GetFieldProperties(std::wstring fieldId) { return m_fieldProperties[fieldId]; }
 		void AddNewFieldProperties(std::wstring fieldId, FieldProperties fieldProperties) { m_fieldProperties[fieldId] = fieldProperties; }
 		void RemoveFieldProperties(std::wstring fieldId) { m_fieldProperties.erase(fieldId); }
+		std::map<std::wstring, FieldProperties> GetFieldPropertiesForTable(boost::uuids::uuid tableId, std::wstring tableName);
 
 		std::map<std::wstring, std::vector<std::wstring>> GetElasticListFields() const { return m_elasticListMap; }
 		void SaveElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticListMap) { m_elasticListMap = elasticListMap; }
