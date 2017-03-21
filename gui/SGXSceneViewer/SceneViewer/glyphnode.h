@@ -116,8 +116,8 @@ namespace SynGlyphX
 
 	private:
 		Glyph3DNode( unsigned int _id, bool _isRoot, Glyph3DNodeType _type, int _filtering_index, uint32_t _label, uint32_t _glyph_index ) : placement( nullptr ), torus_ratio( 0.1f ), parent( nullptr ), id( _id ),
-			filtering_index( _filtering_index ), exploded_position_group( 0.f ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ), root( _isRoot ), type( _type ), animation_root( false ),
-			animation_child( false ), grouped( false ), label( _label ), glyph_index(_glyph_index), hidden_by_legend( false ) {
+			filtering_index( _filtering_index ), exploded_position_group( 0.f ), animation_axis( 1.f, 0.f, 0.f ), animation_rate( 0.f ), label( _label ), root( _isRoot ), type( _type ), glyph_index(_glyph_index), animation_root( false ),
+			animation_child( false ), grouped( false ), hidden_by_legend( false ) {
 			for ( auto i = 0; i < int( GlyphStringType::Count ); ++i ) strings[i] = nullptr;
 		}
 
@@ -152,7 +152,7 @@ namespace SynGlyphX
 		bool wireframe : 1;
 		bool root : 1;
 		Glyph3DNodeType type : 1;
-		uint glyph_index : 3;
+		unsigned int glyph_index : 3;
 		mutable bool animation_root : 1;
 		mutable bool animation_child : 1;
 		mutable bool grouped : 1;
