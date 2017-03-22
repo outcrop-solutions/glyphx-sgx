@@ -45,6 +45,7 @@
 #include "networkdownloader.h"
 #include "InteractiveLegend.h"
 #include <hal/hal.h>
+#include "FieldProperties.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -1011,6 +1012,9 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 				const QMap<unsigned int, QString>& fields = m_hudGenerationInfo[hudInfoIndex].GetFields();
 				QList<QVariant> posSourceDataVar = m_sourceDataCache->GetValuesForRow(m_hudGenerationInfo[hudInfoIndex].GetTable(), 
 					fields.values(), indexes.get().second);
+				std::map<std::wstring, SynGlyphX::FieldProperties> fieldProperties = m_filteringManager->GetFieldPropertiesForTable(
+					m_hudGenerationInfo[hudInfoIndex].GetTable().GetDatasourceID(),
+					m_hudGenerationInfo[hudInfoIndex].GetTable().GetTable());
 				std::array<std::string, 3> posSourceData;
 				unsigned int j = 0;
 				for (unsigned int i = 0; i < 3; ++i) {
@@ -1018,26 +1022,30 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 					if (fields.contains(i)) {
 
 						//Conversion is being done this way to allow formatting numbers
-
-						bool convertedToNumber = false;
-						float number = posSourceDataVar[j].toFloat(&convertedToNumber);
-
-						if (convertedToNumber) {
-							// Show numbers with no integral parts as ints for readability
-							float frac = fmodf( number, 1.f );
-							if ( frac != 0.f )
-							{
-								// use sprintf so we can control significant digits (std::to_string can be unpredictable with floats)
-								char buf[128];
-								sprintf( buf, "%.3f", number );
-								posSourceData[i] = buf;
-							}
-							else
-								posSourceData[i] = std::to_string( static_cast<int>( number ) );
+						if (fieldProperties.find(fields[i].toStdWString()) != fieldProperties.end()){
+							posSourceData[i] = fieldProperties.at(fields[i].toStdWString()).transformData(posSourceDataVar[j].toString()).toStdString();
 						}
-						else {
+						else{
+							bool convertedToNumber = false;
+							float number = posSourceDataVar[j].toFloat(&convertedToNumber);
 
-							posSourceData[i] = posSourceDataVar[j].toString().toStdString();
+							if (convertedToNumber) {
+								// Show numbers with no integral parts as ints for readability
+								float frac = fmodf(number, 1.f);
+								if (frac != 0.f)
+								{
+									// use sprintf so we can control significant digits (std::to_string can be unpredictable with floats)
+									char buf[128];
+									sprintf(buf, "%.3f", number);
+									posSourceData[i] = buf;
+								}
+								else
+									posSourceData[i] = std::to_string(static_cast<int>(number));
+							}
+							else {
+
+								posSourceData[i] = posSourceDataVar[j].toString().toStdString();
+							}
 						}
 						++j;
 					}
