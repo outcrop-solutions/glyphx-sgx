@@ -963,7 +963,7 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 
 		QMap<unsigned int, QString> fields, displayNames;
 		SynGlyphX::InputTable table = dataTransformMapping->GetInputTable(rootGlyph.first);
-		auto& fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
+		auto fieldToAliasMap = dataTransformMapping->GetFieldToAliasMapForTable(table);
 		
 		for (unsigned int i = 0; i < 3; ++i) {
 

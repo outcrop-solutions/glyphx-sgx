@@ -48,7 +48,7 @@ namespace SynGlyphX {
 			if (!_input_field.empty())
 			{
 				SynGlyphX::InputTable table = mapping->GetInputTable(dataMappingGlyph);
-				auto& fieldToAliasMap = mapping->GetFieldToAliasMapForTable(table);
+				auto fieldToAliasMap = mapping->GetFieldToAliasMapForTable(table);
 				SynGlyphX::InputField field = mapping->GetInputFieldManager()->GetInputField(_input_field);
 				if (field.IsValid()) {
 

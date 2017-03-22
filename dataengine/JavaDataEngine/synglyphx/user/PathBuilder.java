@@ -107,18 +107,13 @@ public class PathBuilder {
 
 	private String findFilePath(String old_path, String[] directories){
 
-		String name = (new File(old_path)).getName();
+		String[] dpath = old_path.split("/|\\\\");
+		String name = dpath[dpath.length-1];
 
 		for(int i = 0; i < directories.length; i++){
-			if(old_path.contains(File.separator+directories[i]+File.separator)){
-				String[] split = old_path.split(directories[i], 2);
-				//System.out.println(localPath+File.separator+directories[i]+File.separator+name);
-				if((new File(localPath+File.separator+directories[i]+File.separator+name)).exists()){
-					return (localPath+File.separator+directories[i]+File.separator+name);
-				}
-				else{
-					return "";
-				}
+			File new_path = new File(localPath+File.separator+directories[i]+File.separator+name);
+			if(new_path.exists() && old_path.contains(directories[i])){
+				return new_path.getAbsolutePath();
 			}
 		}
 		return "";
