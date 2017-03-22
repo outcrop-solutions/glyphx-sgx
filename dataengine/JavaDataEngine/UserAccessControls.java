@@ -236,7 +236,13 @@ public class UserAccessControls {
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 
-		if(UserAccessControls.fileSyncSetup("C:/ProgramData/SynGlyphX/Content")){
+		String os = System.getProperty("os.name").toLowerCase();
+		String default_path = "C:/ProgramData/SynGlyphX/Content";
+		if(os.contains("mac")){
+			default_path = "/Users/synglyphx/Library/Application Support/SynGlyphX/Content";
+		}
+
+		if(UserAccessControls.fileSyncSetup(default_path)){
 			UserAccessControls.startSyncingFiles();
 			do{
 				try {
