@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import synglyphx.util.GeoID;
 import synglyphx.util.Functions;
 import synglyphx.util.MapFunction;
+import synglyphx.data.FieldProperties;
 
 public class XMLGlyphTemplate{
 
@@ -29,6 +30,7 @@ public class XMLGlyphTemplate{
 	private int datasource;
 	private int lastChildID;
 	private boolean toMerge;
+	private FieldProperties fieldProperties = null;
 
 	public XMLGlyphTemplate(){
 		ranges = new HashMap<String, ArrayList<Double>>();
@@ -236,6 +238,14 @@ public class XMLGlyphTemplate{
 
 	public void mapFunction(String name, String function){
 		functionMapping.put(name, function);
+	}
+
+	public void setFieldProperties(FieldProperties fp){
+		fieldProperties = fp;
+	}
+
+	public FieldProperties getFieldProperties(){
+		return fieldProperties;
 	}
 
 	public int getDataSource(){

@@ -1617,20 +1617,25 @@ namespace SynGlyphX {
 			QString field = des.getField();
 			QString type = des.getType();
 
-			if (type == "real") {
-			
-				numericCols.push_back(field.toStdWString());
-			}
-
 			QStringList fieldStats;
 			fieldStats.append(field);
 			fieldStats.append(type);
-			fieldStats.append(des.getMin());
-			fieldStats.append(des.getMax());
-			fieldStats.append(des.getAverage());
+
+			if (type == "real") {
+				numericCols.push_back(field.toStdWString());
+				fieldStats.append(ConvertNumericValueToQString(des.getMin().toDouble()));
+				fieldStats.append(ConvertNumericValueToQString(des.getMax().toDouble()));
+			}
+			else{
+				fieldStats.append(des.getMin());
+				fieldStats.append(des.getMax());
+			}
+
+			fieldStats.append("-");
 			fieldStats.append(des.getCount());
 			fieldStats.append(des.getDistinct());
 			tableStats.append(fieldStats);
+
 		}
 
 		if (!numericCols.empty()) {

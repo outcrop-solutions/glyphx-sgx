@@ -1023,9 +1023,9 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 
 						//Conversion is being done this way to allow formatting numbers
 						if (fieldProperties.find(fields[i].toStdWString()) != fieldProperties.end()){
-							posSourceData[i] = fieldProperties.at(fields[i].toStdWString()).transformData(posSourceDataVar[j].toString()).toStdString();
+							posSourceData[i] = fieldProperties.at(fields[i].toStdWString()).transformData(posSourceDataVar[j].toString()).replace("%", "%%").toStdString();
 						}
-						else{
+						else{/*
 							bool convertedToNumber = false;
 							float number = posSourceDataVar[j].toFloat(&convertedToNumber);
 
@@ -1042,10 +1042,10 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 								else
 									posSourceData[i] = std::to_string(static_cast<int>(number));
 							}
-							else {
+							else {*/
 
 								posSourceData[i] = posSourceDataVar[j].toString().toStdString();
-							}
+							//}
 						}
 						++j;
 					}

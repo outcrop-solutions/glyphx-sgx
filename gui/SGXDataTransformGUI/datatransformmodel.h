@@ -187,6 +187,8 @@ namespace SynGlyphX {
 
 		void SaveElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticFields) { m_dataMapping->SaveElasticListFields(elasticFields); }
 
+		QString ConvertNumericValueToQString(double value){ return (value == (long long)value) ? QString::number(value, 'f', 0) : QString::number(value); }
+
 	private:
 		void Clear();
 		QVariant GetGlyphData(const QModelIndex& index) const;

@@ -208,7 +208,7 @@ public class GlyphCreator {
 		node.setDefaultTagValue(default_tag_value);
 		if(input.get("Tag") != null){
 			//System.out.println(input.get("Tag"));
-			node.setTag(nodeTemp.getTag()+": "+cursor.get(input.get("Tag")));
+			node.setTag(nodeTemp.getTag()+": "+nodeTemp.getFieldProperties().transformData(cursor.get(input.get("Tag"))));
 			node.setTagPos(csvData.get(currData).getDataFrame().getHeaderPlace(input.get("Tag")));
 		}else if(input.get("Tag") == null && input.get(default_tag_field) != null){
 			node.setTag(input.get(default_tag_field)+": "+cursor.get(input.get(default_tag_field)));
