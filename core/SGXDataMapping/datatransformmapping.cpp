@@ -1406,13 +1406,13 @@ namespace SynGlyphX {
 		return formattedName;
 	}
 
-	std::map<std::wstring, FieldProperties> DataTransformMapping::GetFieldPropertiesForTable(boost::uuids::uuid tableId, std::wstring tableName) {
+	std::map<std::wstring, FieldProperties> DataTransformMapping::GetFieldPropertiesForTable(const boost::uuids::uuid& tableId, const std::wstring& tableName) const {
 		
 		std::map<std::wstring, FieldProperties> fieldsForSourceDataTable;
 
 		if (!m_fieldProperties.empty()){
 
-			for (auto& fp : m_fieldProperties){
+			for (auto fp : m_fieldProperties){
 				if (fp.second.GetID() == tableId && fp.second.GetTable() == tableName){
 					fieldsForSourceDataTable[fp.second.GetField()] = fp.second;
 				}

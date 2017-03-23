@@ -81,6 +81,7 @@ private:
 
 	QSplitter* AddFiltersForTable(DataEngine::GlyphEngine& glyphEngine, const SynGlyphX::DataTransformMapping& mapping);
 
+	std::map<std::wstring, std::map<QString, QString>> m_maskToValueMap;
 	TableToWidgetsMap m_filterListWidgets;
 };
 
