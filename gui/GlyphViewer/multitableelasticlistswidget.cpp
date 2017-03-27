@@ -55,7 +55,7 @@ void MultiTableElasticListsWidget::OnNewVisualization() {
 						m_sourceDataInfoModel->data(fieldIndex, SourceDataInfoModel::FieldRole).toString()));
 				}
 				
-				SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(aliasAndFieldList, sourceDataCache, sourceDataCacheTablename, m_filteringManager->GetElasticListFields(sourceDataCacheTablename), this);
+				SingleTableElasticListsWidget* elasticListsWidgetForTable = new SingleTableElasticListsWidget(aliasAndFieldList, sourceDataCache, sourceDataCacheTablename, m_filteringManager, this);
 				m_elasticListsStackLayout->addWidget(elasticListsWidgetForTable);
 				m_elasticListWidgetsForEachTable[sourceDataCacheTablename.toStdWString()] = elasticListsWidgetForTable;
 				QObject::connect(elasticListsWidgetForTable, &SingleTableElasticListsWidget::SelectionChanged, this, &MultiTableElasticListsWidget::OnElasticListsSelectionChanged);

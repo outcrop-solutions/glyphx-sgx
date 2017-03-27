@@ -32,14 +32,16 @@ namespace SynGlyphX {
 	InputField::InputField(const boost::property_tree::wptree& propertyTree) :
 		InputTable(propertyTree),
 		m_field(propertyTree.get<std::wstring>(L"<xmlattr>.field")),
-		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))) {
+		m_type(s_fieldTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type")))
+	{
 
 	}
 
 	InputField::InputField(const InputField& inputField) :
 		InputTable(inputField),
 		m_field(inputField.m_field),
-		m_type(inputField.m_type) {
+		m_type(inputField.m_type)
+	{
 
 	}
 

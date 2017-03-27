@@ -15,47 +15,67 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef DATASTATSMODEL_H
-#define DATASTATSMODEL_H
+#ifndef SYNGLYPHX_FIELDPROPERTIES_H
+#define SYNGLYPHX_FIELDPROPERTIES_H
 
-#include "sgxdatatransformgui_global.h"
-#include <QtCore/QAbstractTableModel>
-#include <QtSql/QSqlQuery>
-#include <boost/uuid/uuid.hpp>
-#include "dataengineconnection.h"
-#include "inputtable.h"
+#include "sgxdatamapping.h"
+#include <string>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/bimap.hpp>
+#include <QtCore/QVariant>
+#include <QtCore/QString>
 
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORMGUI_EXPORT DataStatsModel : public QAbstractTableModel
+	class SGXDATAMAPPING_API FieldProperties
 	{
-		Q_OBJECT
 
 	public:
-		typedef QList<QStringList> TableStats;
+		enum Type {
+			Default = 0,
+			Number = 1,
+			Currency = 2,
+			Percentage = 3
+		};
 
-		DataStatsModel(const SynGlyphX::InputTable& table, const TableStats& tableStats, QObject *parent = 0);
-		~DataStatsModel();
+		FieldProperties(){};
+		FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type = L"Default", int dec = 0, std::wstring sym = L"");
+		FieldProperties(const FieldProperties& fp);
+		~FieldProperties(){};
 
-		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
-		virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-		virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+		bool operator==(const FieldProperties& inputField) const;
+		bool operator!=(const FieldProperties& inputField) const;
 
-		virtual Qt::ItemFlags flags(const QModelIndex & index) const;
-		virtual QStringList mimeTypes() const;
-		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
-		virtual bool setData(const QModelIndex & index, const QVariant &value);
+		void AddStatsToField(QStringList stats);
+		void UpdateProperties(std::wstring type, int dec, std::wstring sym = L"");
+
+		boost::uuids::uuid GetID() { return m_id; }
+		std::wstring GetTable() { return m_table; }
+		std::wstring GetField() { return m_field; }
+		Type GetType() { return m_type; }
+		int GetDecimalsToDisplay() { return m_decimals; }
+		std::wstring GetSymbol() { return m_symbol; }
+		QString GetDefaultFieldType() { return m_stats.at(1); }
+
+		QString transformData(QString value);
+		QString transformData(int value);
+		QString transformData(double value);
+		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree, std::wstring hashid) const;
+
+		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
 
 	private:
-		//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
-		//void GenerateStats(DataEngine::DataEngineConnection *dec);
+		boost::uuids::uuid m_id;
+		std::wstring m_table;
+		std::wstring m_field;
+		Type m_type;
+		int m_decimals;
+		std::wstring m_symbol;
+		QStringList m_stats;
 
-		QList<QVariant::Type> m_fieldTypes;
-		SynGlyphX::InputTable m_table;
-		TableStats m_stats;
 	};
 
 } //namespace SynGlyphX
 
-#endif // DATASTATSMODEL_H
+#endif //SYNGLYPHX_FIELDPROPERTIES_H

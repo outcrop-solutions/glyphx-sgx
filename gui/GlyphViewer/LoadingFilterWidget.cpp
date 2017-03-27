@@ -11,6 +11,7 @@
 #include "datatransformmapping.h"
 #include "groupboxsinglewidget.h"
 #include <QtCore/QCollator>
+#include "FieldProperties.h"
 
 LoadingFilterMissingChoice::LoadingFilterMissingChoice(const std::wstring& field) :
 	std::runtime_error(""),
@@ -98,9 +99,16 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		filterWidget->ShowSearchFilter(true);
 		QStringList distinctValues;
 
+		std::vector<SynGlyphX::FieldProperties> fieldProperties;
+
 		for (const auto& inputField : filter.fields) {
 			SynGlyphX::InputTable table(inputField);
 			tables.push_back(table);
+
+			std::map<std::wstring, SynGlyphX::FieldProperties> fpMap = mapping.GetFieldPropertiesForTable(table.GetDatasourceID(), table.GetTable());
+			if (fpMap.find(inputField.GetField()) != fpMap.end()){
+				fieldProperties.push_back(fpMap.at(inputField.GetField()));
+			}
 
 			QString id = QString::fromStdWString(boost::uuids::to_wstring(table.GetDatasourceID()));
 			QString tableName = QString::fromStdWString(table.GetTable());
@@ -142,6 +150,19 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 		{
 			return collator.compare(value1, value2) < 0;
 		});
+		if (fieldProperties.size() > 0){
+			SynGlyphX::FieldProperties fp = fieldProperties.at(0);
+			std::map<QString, QString> fmMap;
+			QStringList formattedDistinctValues;
+			for (const auto& value : distinctValues){
+				QString fmVal = fp.transformData(value);
+				formattedDistinctValues << fmVal;
+				fmMap[fmVal] = value;
+			}
+			m_maskToValueMap[fp.GetField()] = fmMap;
+			distinctValues.clear();
+			distinctValues = formattedDistinctValues;
+		}
 		filterWidget->SetItems(distinctValues);
 
 		splitter->addWidget(filterWidget);
@@ -189,6 +210,16 @@ MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues(
 		for (const auto& filterWidget : tableFilterWidgets.second) {
 
 			QSet<QString> filterData = filterWidget.second->GetSelectedLabels().toSet();
+			if (filterData.size() > 0 && m_maskToValueMap.find(filterWidget.first) != m_maskToValueMap.end()){
+				QList<QString> filterDataList = filterData.toList();
+				for (int i = 0; i < filterDataList.size(); i++){
+					if (!filterDataList.at(i).isEmpty()){
+						filterDataList.replace(i, m_maskToValueMap.at(filterWidget.first).at(filterDataList.at(i)));
+					}
+				}
+				filterData.clear();
+				filterData = filterDataList.toSet();
+			}
 			filteringParametersForTable.SetDistinctValueFilter(QString::fromStdWString(filterWidget.first), filterData);
 		}
 		filteringParameters.push_back(std::make_pair(tableFilterWidgets.first, filteringParametersForTable));

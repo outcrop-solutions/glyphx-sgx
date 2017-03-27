@@ -36,7 +36,7 @@ namespace DataEngine
 		Aws::Client::ClientConfiguration clientConfig;
 		clientConfig.scheme = Aws::Http::Scheme::HTTPS;
 		clientConfig.connectTimeoutMs = 30000;
-		clientConfig.requestTimeoutMs = 600000;
+		clientConfig.requestTimeoutMs = 120000;
 
 		s3Client = new Aws::S3::S3Client(credentials, clientConfig);
 		

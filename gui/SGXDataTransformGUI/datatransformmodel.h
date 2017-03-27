@@ -179,7 +179,15 @@ namespace SynGlyphX {
 		void SetFrontEndFilters(const MultiTableFrontEndFilters& filters) { m_dataMapping->SetFrontEndFilters(filters); }
 		void SetFrontEndFiltersUndoRedo(const MultiTableFrontEndFilters& filters);
 
+		bool HasFieldProperties(std::wstring fieldId) { return m_dataMapping->HasFieldProperties(fieldId); }
+		FieldProperties GetFieldProperties(std::wstring fieldId) { return m_dataMapping->GetFieldProperties(fieldId); }
+		void AddNewFieldProperties(std::wstring fieldId, FieldProperties fieldProperties) { m_dataMapping->AddNewFieldProperties(fieldId, fieldProperties); }
+		void RemoveFieldProperties(std::wstring fieldId) { m_dataMapping->RemoveFieldProperties(fieldId); }
+		std::map<std::wstring, FieldProperties> GetFieldPropertiesForTable(boost::uuids::uuid tableId, std::wstring tableName){ return m_dataMapping->GetFieldPropertiesForTable(tableId, tableName); }
+
 		void SaveElasticListFields(std::map<std::wstring, std::vector<std::wstring>> elasticFields) { m_dataMapping->SaveElasticListFields(elasticFields); }
+
+		QString ConvertNumericValueToQString(double value){ return (value == (long long)value) ? QString::number(value, 'f', 0) : QString::number(value); }
 
 	private:
 		void Clear();

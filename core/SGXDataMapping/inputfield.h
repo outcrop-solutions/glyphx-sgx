@@ -70,6 +70,7 @@ namespace SynGlyphX {
 	private:
 		std::wstring m_field;
 		Type m_type;
+
 	};
 
 	typedef std::unordered_set<InputField, InputTableHash> FieldGroup;

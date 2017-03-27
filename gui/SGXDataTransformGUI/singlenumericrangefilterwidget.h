@@ -25,6 +25,7 @@
 #include "rangeslider.h"
 #include "interval.h"
 #include <set>
+#include "FieldProperties.h"
 
 namespace SynGlyphX {
 
@@ -46,6 +47,8 @@ namespace SynGlyphX {
 		DegenerateInterval GetRange() const;
 
 		const SliderPositionValues& GetSliderPositionValues() const;
+
+		void SetFieldProperties(FieldProperties fp) { m_fieldProperties = fp; }
 
 	signals:
 		void RangeUpdated(DegenerateInterval range);
@@ -80,6 +83,7 @@ namespace SynGlyphX {
 		QLineEdit* m_maxLineEdit;
 		QDoubleValidator* m_maxValidator;
 		RangeSlider* m_rangeSlider;
+		FieldProperties m_fieldProperties;
 
 		double m_ratio;
 		SliderPositionValues m_valuesAtSliderPosition;

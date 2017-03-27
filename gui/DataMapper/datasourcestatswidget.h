@@ -53,6 +53,7 @@ public slots:
 
 private slots:
 	void OnRowsRemovedFromModel(const QModelIndex& parent, int start, int end);
+	void EditFieldProperties();
 
 private:
 	void CreateTablesFromDatasource(const SynGlyphX::InputTable& inputTable, const QString& formattedDatasourceName);

@@ -15,12 +15,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ArrayList;
 import synglyphx.glyph.XMLGlyphTemplate;
 import synglyphx.data.SourceDataInfo;
 import synglyphx.data.FilterField;
 import synglyphx.data.Query;
 import synglyphx.data.Cursor;
+import synglyphx.data.FieldProperties;
 import synglyphx.util.*;
 import synglyphx.glyph.Mapper;
 import synglyphx.io.Logger;
@@ -150,6 +152,7 @@ public class SDTReader {
 		//if(updateNeeded){
 			Logger.getInstance().add("Absorbing XML...");
 			absorbXML();
+			getFieldPropertiesList(doc);
 			Logger.getInstance().add("Creating SDTLinkReader...");
 			linkReader = new SDTLinkReader(doc, templates, dataPaths, directMap);
 			//System.out.println("Link Reader created");
@@ -1025,6 +1028,67 @@ public class SDTReader {
 				break;
 			}
 		}
+	}
+
+	private void getFieldPropertiesList(Document doc){
+
+		ArrayList<FieldProperties> fieldPropertiesAL = new ArrayList<FieldProperties>();
+
+		NodeList fieldPropertiesList = doc.getElementsByTagName("FieldPropertiesList");
+
+		for(int i = 0; i < fieldPropertiesList.getLength(); i++){
+
+			Element fieldProperties = (Element) fieldPropertiesList.item(i);
+			NodeList objects = fieldProperties.getElementsByTagName("FieldProperties");
+
+			for(int j = 0; j < objects.getLength(); j++){
+
+				Node object = objects.item(j);
+				Element element = (Element) object;
+
+				String id = element.getAttribute("id");
+				String table = element.getAttribute("table");
+				String field = element.getAttribute("field");
+				String type = element.getAttribute("type");
+				String dec = element.getAttribute("dec");
+				String sym = element.getAttribute("sym");
+
+				fieldPropertiesAL.add(new FieldProperties(id, table, field, type, Integer.parseInt(dec), sym));
+			}
+		}
+
+		Iterator it = templates.entrySet().iterator();
+		while (it.hasNext()) {
+        	Map.Entry pair = (Map.Entry)it.next();
+        	XMLGlyphTemplate temp = (XMLGlyphTemplate)pair.getValue();
+        	SourceDataInfo sdi = dataPaths.get(getRootOfTemplate(temp).getDataSource());
+        	String id = sdi.getID();
+        	String table = sdi.getTable();
+        	String field = temp.getTag();
+        	if(!field.equals("")){
+        		if(directMap.containsKey(field)){
+        			field = directMap.get(field);
+        		}
+        		temp.setFieldProperties(getFieldProperties(id, table, field, fieldPropertiesAL));
+        	}
+        }
+	}
+
+	private FieldProperties getFieldProperties(String id, String table, String field, ArrayList<FieldProperties> fieldPropertiesAL){
+
+		for(FieldProperties fp : fieldPropertiesAL){
+			if(fp.matchesField(id, table, field)){
+				return fp;
+			}
+		}
+		return new FieldProperties(id, table, field, "Default", 0, "");
+	}
+
+	private XMLGlyphTemplate getRootOfTemplate(XMLGlyphTemplate temp){
+		if(temp.getChildOf() == 0){
+			return temp;
+		}
+		return getRootOfTemplate(templates.get(temp.getChildOf()));
 	}
 }
 

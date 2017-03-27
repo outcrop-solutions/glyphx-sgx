@@ -63,6 +63,13 @@ QWidget* RangeFilterListWidget::AddFilter(const QString& field, unsigned int spa
 
 	boost::uuids::string_generator gen;
 	SynGlyphX::SingleNumericRangeFilterWidget* filter = CreateRangeFilterWidget();
+	std::map<std::wstring, SynGlyphX::FieldProperties> fp_map = m_filteringManager->GetFieldPropertiesForTable(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString());
+	if (fp_map.find(field.toStdWString()) != fp_map.end()){
+		filter->SetFieldProperties(fp_map.at(field.toStdWString()));
+	}
+	else{
+		filter->SetFieldProperties(SynGlyphX::FieldProperties(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString()));
+	}
 	filter->blockSignals(true);
 	SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
 

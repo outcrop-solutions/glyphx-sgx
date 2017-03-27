@@ -15,47 +15,36 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef DATASTATSMODEL_H
-#define DATASTATSMODEL_H
+#ifndef FIELDPROPERTIESDIALOG_H
+#define FIELDPROPERTIESDIALOG_H
 
-#include "sgxdatatransformgui_global.h"
-#include <QtCore/QAbstractTableModel>
-#include <QtSql/QSqlQuery>
-#include <boost/uuid/uuid.hpp>
-#include "dataengineconnection.h"
-#include "inputtable.h"
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QGroupBox>
+#include "FieldProperties.h"
+#include "datastatsmodel.h"
 
-namespace SynGlyphX {
+class FieldPropertiesDialog : public QDialog
+{
+	//Q_OBJECT
 
-	class SGXDATATRANSFORMGUI_EXPORT DataStatsModel : public QAbstractTableModel
-	{
-		Q_OBJECT
+public:
 
-	public:
-		typedef QList<QStringList> TableStats;
+	FieldPropertiesDialog(SynGlyphX::FieldProperties properties, QWidget* parent = 0);
+	~FieldPropertiesDialog();
 
-		DataStatsModel(const SynGlyphX::InputTable& table, const TableStats& tableStats, QObject *parent = 0);
-		~DataStatsModel();
+	SynGlyphX::FieldProperties SaveSelections(SynGlyphX::DataStatsModel* model, int row);
 
-		virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-		virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
-		virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-		virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+private:
+	void SetTypesAndDetails();
+	QGroupBox* SetGroupBoxForSelection(QString type);
 
-		virtual Qt::ItemFlags flags(const QModelIndex & index) const;
-		virtual QStringList mimeTypes() const;
-		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
-		virtual bool setData(const QModelIndex & index, const QVariant &value);
+	QListWidget* types;
+	QStackedWidget* stackedWidget;
+	std::map<QString, QString> details;
+	SynGlyphX::FieldProperties m_properties;
 
-	private:
-		//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);
-		//void GenerateStats(DataEngine::DataEngineConnection *dec);
+};
 
-		QList<QVariant::Type> m_fieldTypes;
-		SynGlyphX::InputTable m_table;
-		TableStats m_stats;
-	};
-
-} //namespace SynGlyphX
-
-#endif // DATASTATSMODEL_H
+#endif //FIELDPROPERTIESDIALOG_H

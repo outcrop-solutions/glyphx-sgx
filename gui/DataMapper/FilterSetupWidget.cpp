@@ -78,6 +78,11 @@ public:
 			if (t == table)
 				return;
 		}
+		if (count() > 0){
+			if (item(0)->data(Qt::UserRole).value<InputField>().GetType() != mimeData->GetInputField().GetType()){
+				return;
+			}
+		}
 		event->acceptProposedAction();
 
 	}

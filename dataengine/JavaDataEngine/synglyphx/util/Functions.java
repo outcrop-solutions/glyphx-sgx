@@ -125,18 +125,38 @@ public class Functions {
     	}
     	return temp;
 	}
+
+	public static boolean isNumeric(String str){
+		try{  
+		  	Double.parseDouble(str);
+		}  
+		catch(NumberFormatException nfe){  
+		    return false;  
+		}  
+		return true;  
+	}
+
+	public static String formatNumber(double number, int decimals){
+		if(decimals == 0){
+			return String.valueOf(Math.round(number));
+		}
+		double multiple = Math.pow(10, decimals);
+		String output = String.valueOf(Math.round(number * multiple) / multiple);
+		int offset = decimals - ((output.length()-1)-output.indexOf("."));
+		if(offset > 0){
+			while(0 < offset--){ output += "0";}
+		}
+		return output;
+	}
 /*
 	public static void main(String[] args){
-		double[] hsv = Functions.convertRGBtoHSV(0,255,0);
-		System.out.println(hsv[0]);
-		System.out.println(hsv[1]);
-		System.out.println(hsv[2]);
 
-		//double[] rgb = Functions.convertHSVtoRGB(hsv[0],hsv[1],hsv[2]);
-		double[] rgb = Functions.convertHSVtoRGB(50,101,101);
-		System.out.println(rgb[0]);
-		System.out.println(rgb[1]);
-		System.out.println(rgb[2]);
+		System.out.println(Functions.formatNumber(103.018, 0));
+		System.out.println(Functions.formatNumber(103.018, 1));
+		System.out.println(Functions.formatNumber(103.018, 2));
+		System.out.println(Functions.formatNumber(103.018, 3));
+		System.out.println(Functions.formatNumber(103.018, 4));
+		System.out.println(Functions.formatNumber(103.018, 5));
 	}
 */
 }
