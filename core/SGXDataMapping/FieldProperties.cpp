@@ -22,7 +22,8 @@ namespace SynGlyphX {
 		m_table(fp.m_table), 
 		m_field(fp.m_field),
 		m_type(fp.m_type),
-		m_decimals(fp.m_decimals), 
+
+	m_decimals(fp.m_decimals), 
 		m_symbol(fp.m_symbol),
 		m_stats(fp.m_stats)
 	{
@@ -78,8 +79,10 @@ namespace SynGlyphX {
 		QString last = "";
 
 		if (m_type == FieldProperties::Type::Default){
-			if (m_stats.at(2).toDouble() == value){ return m_stats.at(2); }
-			else if (m_stats.at(3).toDouble() == value){ return m_stats.at(3); }
+			if (!m_stats.empty()){
+				if (m_stats.at(2).toDouble() == value){ return m_stats.at(2); }
+				else if (m_stats.at(3).toDouble() == value){ return m_stats.at(3); }
+			}
 			return QString::number(value);
 		}
 		else if (m_type == FieldProperties::Type::Currency){
