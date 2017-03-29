@@ -41,6 +41,7 @@ namespace SynGlyphX {
 
 		static const SettingsStoredFileList& GetRecentFileListInstance();
 		static void ClearRecentFileList() { s_recentFileList.ClearFiles(); }
+		void SetCurrentUserDirectory(const QString& userdir){ m_userDirectory = userdir; }
 		void UpdateUserMenu(QString username);
 
     protected slots:
@@ -82,6 +83,7 @@ namespace SynGlyphX {
         QList<QAction*> m_recentFileActions;
         QString m_currentFilename;
 		QString de_version;
+		QString m_userDirectory;
 		QMenu* m_viewMenu;
         QMenu* m_helpMenu;
 #ifdef WIN32

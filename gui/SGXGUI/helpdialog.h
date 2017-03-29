@@ -18,12 +18,38 @@
 #pragma once
 
 #include "sgxgui_global.h"
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QStackedLayout>
 
 class QWebEngineView;
 class QWidget;
+class QFrame;
+class QPushButton;
 
 namespace SynGlyphX {
 
 	SGXGUI_EXPORT QWebEngineView* createHelpDialog( QString path, int width, int height, QWidget* parent );
+
+	class SGXGUI_EXPORT HelpDialog : public QDialog
+	{
+		Q_OBJECT
+
+	public:
+		HelpDialog(QString userDirectory, QWidget *parent);
+		~HelpDialog(){}
+
+	private slots:
+		void ChangeIndex();
+
+	private:
+
+		QFrame* CreateHelpFrame(QString path);
+
+		QStackedLayout* m_stackedLayout;
+		QPushButton* toggleButton;
+		int w_guide;
+		int h_guide;
+
+	};
 
 } //namespace SynGlyphX

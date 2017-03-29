@@ -289,6 +289,7 @@ void HomePageWidget::CreateHelpWidget() {
 		}
 		else{
 
+			m_mainWindow->SetCurrentUserDirectory(m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
 			QDir dir(m_dataEngineConnection->UserAccessControls()->GlyphEdPath() + "/guide");
 			if (dir.exists()){
 

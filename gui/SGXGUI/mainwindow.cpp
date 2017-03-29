@@ -268,6 +268,7 @@ namespace SynGlyphX {
 
 	void MainWindow::UserLogOut(){
 
+		m_userDirectory.clear();
 #ifdef WIN32
 		userMenuBar->clear();
 #elif __APPLE__
@@ -292,12 +293,7 @@ namespace SynGlyphX {
 
 	void MainWindow::ShowTutorial() {
 
-		QString path("https://s3.amazonaws.com/glyphit/userguide/index.htm");
-		if (QFileInfo(QCoreApplication::applicationFilePath()).fileName().contains("GlyphEd")) {
-			path = "https://s3.amazonaws.com/glyphit/userguide/index.htm";
-		}
-		SingleWidgetDialog* helpDialog = new SingleWidgetDialog(QDialogButtonBox::StandardButton::Close, SynGlyphX::createHelpDialog(path, 970, 920, this ), this);
-		helpDialog->setWindowTitle(tr("Help"));
+		HelpDialog * helpDialog = new HelpDialog(m_userDirectory, this);
 		helpDialog->show();
 	}
 
