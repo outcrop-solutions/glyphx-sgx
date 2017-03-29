@@ -196,11 +196,8 @@ namespace SynGlyphX {
 
         m_helpMenu = menuBar()->addMenu(tr("Help"));
 
-		if (DoesHelpExist()) {
-
-			m_fullHelpMenu = CreateMenuAction(m_helpMenu, tr("Guide"), QKeySequence::HelpContents);
-			QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
-		}
+		m_fullHelpMenu = CreateMenuAction(m_helpMenu, tr("Guide"), QKeySequence::HelpContents);
+		QObject::connect(m_fullHelpMenu, &QAction::triggered, this, &MainWindow::ShowTutorial);
 
 		QAction* licensingAction = m_helpMenu->addAction(tr("Licensing"));
 		QObject::connect(licensingAction, &QAction::triggered, this, &MainWindow::ShowLicensingDialog);
@@ -295,7 +292,11 @@ namespace SynGlyphX {
 
 	void MainWindow::ShowTutorial() {
 
-		SingleWidgetDialog* helpDialog = new SingleWidgetDialog(QDialogButtonBox::StandardButton::Close, SynGlyphX::createHelpDialog( 970, 920, this ), this);
+		QString path("https://s3.amazonaws.com/glyphit/userguide/index.htm");
+		if (QFileInfo(QCoreApplication::applicationFilePath()).fileName().contains("GlyphEd")) {
+			path = "https://s3.amazonaws.com/glyphit/userguide/index.htm";
+		}
+		SingleWidgetDialog* helpDialog = new SingleWidgetDialog(QDialogButtonBox::StandardButton::Close, SynGlyphX::createHelpDialog(path, 970, 920, this ), this);
 		helpDialog->setWindowTitle(tr("Help"));
 		helpDialog->show();
 	}

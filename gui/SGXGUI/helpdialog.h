@@ -24,6 +24,6 @@ class QWidget;
 
 namespace SynGlyphX {
 
-	SGXGUI_EXPORT QWebEngineView* createHelpDialog( int width, int height, QWidget* parent );
+	SGXGUI_EXPORT QWebEngineView* createHelpDialog( QString path, int width, int height, QWidget* parent );
 
 } //namespace SynGlyphX
