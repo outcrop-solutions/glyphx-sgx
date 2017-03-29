@@ -43,6 +43,7 @@ namespace SynGlyphX {
 		QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
 
 		if (!userDirectory.isNull() && QDir(userDirectory + "/guide").exists()){
+			toggleButton = buttonBox->addButton("View Visualization Guide", QDialogButtonBox::ActionRole);
 			QObject::connect(toggleButton, &QPushButton::clicked, this, &HelpDialog::ChangeIndex);
 		}
 		QPushButton* exitButton = buttonBox->addButton(QDialogButtonBox::StandardButton::Close);
