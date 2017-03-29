@@ -78,8 +78,10 @@ namespace SynGlyphX {
 		QString last = "";
 
 		if (m_type == FieldProperties::Type::Default){
-			if (m_stats.at(2).toDouble() == value){ return m_stats.at(2); }
-			else if (m_stats.at(3).toDouble() == value){ return m_stats.at(3); }
+			if (!m_stats.empty()){
+				if (m_stats.at(2).toDouble() == value){ return m_stats.at(2); }
+				else if (m_stats.at(3).toDouble() == value){ return m_stats.at(3); }
+			}
 			return QString::number(value);
 		}
 		else if (m_type == FieldProperties::Type::Currency){

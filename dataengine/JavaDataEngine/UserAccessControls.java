@@ -232,7 +232,7 @@ public class UserAccessControls {
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("devtest","devtest"));
+		System.out.println(UserAccessControls.validateCredentials("test","test"));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 

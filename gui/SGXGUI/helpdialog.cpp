@@ -6,11 +6,11 @@
 
 namespace SynGlyphX {
 
-	QWebEngineView* createHelpDialog( int width, int height, QWidget* parent )
+	QWebEngineView* createHelpDialog( QString path, int width, int height, QWidget* parent )
 	{
 		QWebEngineView* dlg = new QWebEngineView( parent );
 		dlg->setMinimumSize( width, height );
-		dlg->load(QUrl("https://s3.amazonaws.com/glyphed/userguide/index.htm"));
+		dlg->load(QUrl(path));
 		return dlg;
 	}
 }

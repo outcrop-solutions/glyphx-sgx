@@ -115,6 +115,8 @@ private:
 	QStringList m_glyphEdSDTFiles;
 	QStringList m_glyphEdTablesInDB;
 	QString m_currentProject;
+	int w_guide;
+	int h_guide;
 };
 
 //#pragma once

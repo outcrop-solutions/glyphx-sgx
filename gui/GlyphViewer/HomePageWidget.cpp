@@ -71,10 +71,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	CreateDashboardWidget();
 	CreateAllViewsWidget();
 	CreateMyViewsWidget();
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		CreateHelpWidget();
-	}
+	CreateHelpWidget();
 
 	m_mainLayout->addLayout(m_homePageWidgetsLayout, 1, 1);
 
@@ -111,12 +108,7 @@ void HomePageWidget::LoadProject(const QString& project) {
 void HomePageWidget::CreateHomePageOptionsWidget() {
 
 	QStringList options;
-	options << tr("   Home") << tr("   All Views") << tr("   My Views");
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		options << tr("   User Guide");
-	} 
-	options << tr("   Exit");
+	options << tr("   Home") << tr("   All Views") << tr("   My Views") << tr("   User Guide") << tr("   Exit");
 
 	QVBoxLayout* optionsLayout = new QVBoxLayout(this);
 	optionsLayout->setSpacing(20);
@@ -231,36 +223,91 @@ void HomePageWidget::CreateMyViewsWidget() {
 
 void HomePageWidget::CreateHelpWidget() {
 
-	QFrame* widget = new QFrame(this);
-	widget->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	widget->setLineWidth(2);
-	widget->setMidLineWidth(2);
-	widget->setStyleSheet("background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea)");
+	if (m_homePageWidgetsLayout->count() < m_optionsButtonGroup->buttons().size()-1){
 
-	QGridLayout* mainLayout = new QGridLayout(widget);
-	mainLayout->setContentsMargins(200, 0, 200, 0);
+		QFrame* widget = new QFrame(this);
+		widget->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		widget->setLineWidth(2);
+		widget->setMidLineWidth(2);
+		widget->setStyleSheet("background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #cdcfd4, stop: 1 #e7e9ea)");
 
-	QFrame* helpWidget = new QFrame(this);
-	helpWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	helpWidget->setLineWidth(2);
-	helpWidget->setMidLineWidth(3);
-	helpWidget->setStyleSheet("background-color: white;");
+		QHBoxLayout* mainLayout = new QHBoxLayout(widget);
+		mainLayout->setContentsMargins(0, 0, 0, 0);
 
-	QHBoxLayout* helpLayout = new QHBoxLayout(this);
-	helpLayout->setContentsMargins(0, 0, 0, 0);
-	helpLayout->addStretch();
-	QRect screen = QApplication::desktop()->availableGeometry();
-	int width = 970;
-	if (screen.width() > 1920){
-		width = 970 * (screen.width() / 1920);
+		QFrame* helpWidget = new QFrame(this);
+		helpWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+		helpWidget->setLineWidth(2);
+		helpWidget->setMidLineWidth(3);
+		helpWidget->setStyleSheet("background-color: white;");
+
+		QHBoxLayout* helpLayout = new QHBoxLayout(this);
+		helpLayout->setContentsMargins(0, 0, 0, 0);
+		helpLayout->addStretch();
+		QString path("https://s3.amazonaws.com/glyphit/userguide/index.htm");
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+			path = "https://s3.amazonaws.com/glyphit/userguide/index.htm";
+		}
+		w_guide = widget->frameWidth() / 2;
+		h_guide = widget->frameRect().height();
+		helpLayout->addWidget(SynGlyphX::createHelpDialog(path, w_guide, h_guide, helpWidget));
+		helpLayout->addStretch();
+		helpWidget->setLayout(helpLayout);
+		mainLayout->addWidget(helpWidget);
+
+		widget->setLayout(mainLayout);
+		m_homePageWidgetsLayout->addWidget(widget);
 	}
-	helpLayout->addWidget(SynGlyphX::createHelpDialog(width, 850, helpWidget));
-	helpLayout->addStretch();
-	helpWidget->setLayout(helpLayout);
+	else{
+		
+		int i = 0;
+		for (i; i < m_optionsButtonGroup->buttons().size(); i++){
+			if (m_optionsButtonGroup->button(i)->text() == "   User Guide"){
+				break;
+			}
+		}
 
-	mainLayout->addWidget(helpWidget, 0, 0, 0, 0);
-	widget->setLayout(mainLayout);
-	m_homePageWidgetsLayout->addWidget(widget);
+		QFrame* widget = static_cast<QFrame*>(m_homePageWidgetsLayout->widget(i));
+		QHBoxLayout* mainLayout = static_cast<QHBoxLayout*>(widget->layout());
+
+		if (mainLayout->count() == 2){
+
+			QFrame* lhw = static_cast<QFrame*>(mainLayout->itemAt(1)->widget());
+			if (lhw->layout() != NULL)
+			{
+				QLayoutItem* item;
+				while ((item = lhw->layout()->takeAt(0)) != NULL)
+				{
+					delete item->widget();
+					delete item;
+				}
+				delete lhw->layout();
+			}
+			QLayoutItem* item = mainLayout->takeAt(1);
+			delete item->widget();
+			delete item;
+		}
+		else{
+
+			QDir dir(m_dataEngineConnection->UserAccessControls()->GlyphEdPath() + "/guide");
+			if (dir.exists()){
+
+				QFrame* l_helpWidget = new QFrame(this);
+				l_helpWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+				l_helpWidget->setLineWidth(2);
+				l_helpWidget->setMidLineWidth(3);
+				l_helpWidget->setStyleSheet("background-color: white;");
+
+				QHBoxLayout* l_helpLayout = new QHBoxLayout(this);
+				l_helpLayout->setContentsMargins(0, 0, 0, 0);
+				l_helpLayout->addStretch();
+				QString l_path(dir.path() + "/index.htm");
+				l_helpLayout->addWidget(SynGlyphX::createHelpDialog(l_path, w_guide, h_guide, l_helpWidget));
+				l_helpLayout->addStretch();
+				l_helpWidget->setLayout(l_helpLayout);
+				mainLayout->addWidget(l_helpWidget);
+			}
+		}
+	}
 }
 
 void HomePageWidget::CreateDashboardWidget() {
@@ -549,6 +596,7 @@ void HomePageWidget::ResetViews(){
 
 void HomePageWidget::LoggedOut(){
 	
+	CreateHelpWidget();
 	SwitchDashboardLayout();
 }
 
@@ -866,6 +914,7 @@ void HomePageWidget::OnNewOptionSelected(int index) {
 
 	m_homePageWidgetsLayout->setCurrentIndex(index);
 	m_loadVisualizationButton->setVisible((index == 1) || (index == 2));
+	m_mainWindow->update();
 }
 
 void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {

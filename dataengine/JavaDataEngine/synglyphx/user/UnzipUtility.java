@@ -32,7 +32,8 @@ public class UnzipUtility {
             } else {
                 // if the entry is a directory, make the directory
                 File dir = new File(filePath);
-                dir.mkdir();
+                new File(dir.getParent()).mkdirs();
+                //dir.mkdir();
             }
             zipIn.closeEntry();
             entry = zipIn.getNextEntry();
