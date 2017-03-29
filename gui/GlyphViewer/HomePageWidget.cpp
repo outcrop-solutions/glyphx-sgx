@@ -259,14 +259,15 @@ void HomePageWidget::CreateHelpWidget() {
 	}
 	else{
 		
-		int i = 0;
-		for (i; i < m_optionsButtonGroup->buttons().size(); i++){
+		int index = 0;
+		for (int i = 0; i < m_optionsButtonGroup->buttons().size(); i++){
 			if (m_optionsButtonGroup->button(i)->text() == "   User Guide"){
+				index = i;
 				break;
 			}
 		}
 
-		QFrame* widget = static_cast<QFrame*>(m_homePageWidgetsLayout->widget(i));
+		QFrame* widget = static_cast<QFrame*>(m_homePageWidgetsLayout->widget(index));
 		QHBoxLayout* mainLayout = static_cast<QHBoxLayout*>(widget->layout());
 
 		if (mainLayout->count() == 2){
