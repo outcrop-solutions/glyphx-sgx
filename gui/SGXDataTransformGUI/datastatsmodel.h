@@ -46,6 +46,7 @@ namespace SynGlyphX {
 		virtual QStringList mimeTypes() const;
 		virtual QMimeData* mimeData(const QModelIndexList& indexes) const;
 		bool setFormattedData(const QModelIndex & index, const QVariant &value);
+		const InputTable& GetInputTable() { return m_table; }
 
 	private:
 		//void GenerateStats(const boost::uuids::uuid& databaseId, const QString& tableName, QString filename, DataEngine::DataEngineConnection &dec);

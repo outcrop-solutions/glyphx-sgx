@@ -159,7 +159,8 @@ void DataSourceStatsWidget::EditFieldProperties() {
 	QModelIndex index = tab->currentIndex();
 	int row = index.row();
 
-	SynGlyphX::InputTable inputTbl = m_model->GetInputTableForTree(m_model->index(currentIndex()));
+	SynGlyphX::DataStatsModel* statsModel = reinterpret_cast<SynGlyphX::DataStatsModel*>(tab->model());
+	SynGlyphX::InputTable inputTbl = statsModel->GetInputTable();
 	SynGlyphX::DataStatsModel::TableStats tblStats = m_model->GetTableStatsMap().at(inputTbl);
 	QStringList stats = tblStats.at(row);
 
