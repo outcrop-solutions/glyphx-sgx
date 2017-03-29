@@ -118,8 +118,8 @@ void RemapDialog::CreateDataStatsModels() {
 				if (m_dataTransformModel->HasFieldProperties(hashid)){
 					SynGlyphX::FieldProperties fp = m_dataTransformModel->GetFieldProperties(hashid);
 					fp.AddStatsToField(fieldStats);
-					dataStatsModel->setData(dataStatsModel->index(i, 2), fp.transformData(2));
-					dataStatsModel->setData(dataStatsModel->index(i, 3), fp.transformData(3));
+					dataStatsModel->setFormattedData(dataStatsModel->index(i, 2), fp.transformData(2));
+					dataStatsModel->setFormattedData(dataStatsModel->index(i, 3), fp.transformData(3));
 				}
 				i++;
 			}

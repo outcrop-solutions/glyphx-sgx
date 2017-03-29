@@ -127,8 +127,8 @@ SynGlyphX::FieldProperties FieldPropertiesDialog::SaveSelections(SynGlyphX::Data
 
 	m_properties.UpdateProperties(typeName.toStdWString(), dec, sym);
 
-	model->setData(model->index(row, 2), m_properties.transformData(2));
-	model->setData(model->index(row, 3), m_properties.transformData(3));
+	model->setFormattedData(model->index(row, 2), m_properties.transformData(2));
+	model->setFormattedData(model->index(row, 3), m_properties.transformData(3));
 
 	return m_properties;
 }

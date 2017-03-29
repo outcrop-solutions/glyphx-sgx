@@ -134,7 +134,7 @@ namespace SynGlyphX {
 		}
 	}
 
-	bool DataStatsModel::setData(const QModelIndex & index, const QVariant &value, int role) {
+	bool DataStatsModel::setFormattedData(const QModelIndex & index, const QVariant &value) {
 
 		if (index.isValid()) {
 

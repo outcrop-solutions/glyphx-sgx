@@ -90,8 +90,8 @@ void DataSourceStatsWidget::CreateTablesFromDatasource(const SynGlyphX::InputTab
 		if (m_model->HasFieldProperties(hashid)){
 			SynGlyphX::FieldProperties fp = m_model->GetFieldProperties(hashid);
 			fp.AddStatsToField(fieldStats);
-			model->setData(model->index(i, 2), fp.transformData(2));
-			model->setData(model->index(i, 3), fp.transformData(3));
+			model->setFormattedData(model->index(i, 2), fp.transformData(2));
+			model->setFormattedData(model->index(i, 3), fp.transformData(3));
 		}
 		i++;
 	}
