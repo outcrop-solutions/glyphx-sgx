@@ -87,9 +87,9 @@ QGroupBox* FieldPropertiesDialog::SetGroupBoxForSelection(QString type)
 			QLabel* symbol = new QLabel(tr("Symbol: "), this);
 			QComboBox* symbolCB = new QComboBox(this);
 			symbolCB->addItem(QString::fromWCharArray(L"$"));
-			symbolCB->addItem(QString::fromWCharArray(L"£"));
-			symbolCB->addItem(QString::fromWCharArray(L"€"));
-			symbolCB->addItem(QString::fromWCharArray(L"¥"));
+			symbolCB->addItem(QString::fromStdWString(L"\u00A3"));
+			symbolCB->addItem(QString::fromStdWString(L"\u20AC"));
+			symbolCB->addItem(QString::fromStdWString(L"\u00A5"));
 			formLayout->addRow(symbol);
 			formLayout->addRow(symbolCB);
 			decimalSP->setValue(2);
