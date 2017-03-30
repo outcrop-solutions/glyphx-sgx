@@ -37,7 +37,8 @@ SingleTableElasticListsWidget::SingleTableElasticListsWidget(AliasAndFieldList a
 	}
 
 	std::vector<std::string> splt;
-	boost::split(splt, table.toStdString(), boost::is_any_of(":"));
+    std::string ts = table.toStdString(); // temp variable because you can't pass a temporary by ref (for the boost::split call below)
+    boost::algorithm::split(splt, ts, boost::is_any_of(":"));
 	m_fieldPropertiesMap = filteringManager->GetFieldPropertiesForTable(boost::lexical_cast<boost::uuids::uuid>(splt.at(0)), splt.size() == 2 ? QString(splt.at(1).c_str()).toStdWString() : L"OnlyTable");
 
 	layout->addStretch(1);

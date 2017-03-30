@@ -7,6 +7,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QPushButton>
+#include <cstdlib>
 
 namespace SynGlyphX {
 
@@ -46,7 +47,7 @@ namespace SynGlyphX {
 			toggleButton = buttonBox->addButton("View Visualization Guide", QDialogButtonBox::ActionRole);
 			QObject::connect(toggleButton, &QPushButton::clicked, this, &HelpDialog::ChangeIndex);
 		}
-		QPushButton* exitButton = buttonBox->addButton(QDialogButtonBox::StandardButton::Close);
+		buttonBox->addButton(QDialogButtonBox::StandardButton::Close);
 		QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
 		mainLayout->addWidget(buttonBox);
