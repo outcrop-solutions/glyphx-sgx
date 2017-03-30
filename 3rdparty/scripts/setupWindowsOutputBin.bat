@@ -54,7 +54,6 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%fonts% %basedir%\%%p\%%c\%fonts%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%textures% %basedir%\%%p\%%c\%textures%
-		robocopy /z /e ..\..\Misc\Help %basedir%\%%p\%%c\help
 
 		mkdir %basedir%\%%p\%%c\jre
 		mkdir %basedir%\%%p\%%c\jre\bin
