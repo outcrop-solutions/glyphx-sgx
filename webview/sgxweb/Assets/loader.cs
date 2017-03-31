@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class loader : MonoBehaviour
 {
+    public GameObject ConePrefab;
+    public GameObject SpherePrefab;
+    public GameObject CylinderPrefab;
+    public GameObject CubePrefab;
+    public GameObject MissingMeshPrefab;
+
     void read_base_image(reader r)
     {
         var tex_id = r.read_byte();
@@ -30,7 +36,7 @@ public class loader : MonoBehaviour
         data.rot = r.read_vec3();
         data.scale = r.read_vec3();
         data.color = r.read_packed_color();
-        data.geom_type = r.read_byte();
+        data.geom = (geom_type)r.read_byte();
         data.topo = r.read_byte();
         data.ratio = r.read_float();
         data.rotation_rates = r.read_vec3();
@@ -53,7 +59,20 @@ public class loader : MonoBehaviour
     {
         if (data.is_root)
         {
-            var obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            GameObject obj;
+            switch (data.geom)
+            {
+                case geom_type.CONE:
+                    obj = GameObject.Instantiate(ConePrefab); break;
+                case geom_type.SPHERE:
+                    obj = GameObject.Instantiate(SpherePrefab); break;
+                case geom_type.CYLINDER:
+                    obj = GameObject.Instantiate(CylinderPrefab); break;
+                case geom_type.CUBE:
+                    obj = GameObject.Instantiate(CubePrefab); break;
+                default:
+                    obj = GameObject.Instantiate(MissingMeshPrefab); break;
+            }
             obj.transform.localScale = data.scale;
             obj.transform.position = data.pos;
         }
