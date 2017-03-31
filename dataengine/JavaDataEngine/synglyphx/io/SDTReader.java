@@ -1052,8 +1052,9 @@ public class SDTReader {
 				String type = element.getAttribute("type");
 				String dec = element.getAttribute("dec");
 				String sym = element.getAttribute("sym");
+				String dtFmt = element.getAttribute("format");
 
-				fieldPropertiesAL.add(new FieldProperties(id, table, field, type, Integer.parseInt(dec), sym));
+				fieldPropertiesAL.add(new FieldProperties(id, table, field, type, Integer.parseInt(dec), sym, dtFmt));
 			}
 		}
 
@@ -1081,7 +1082,7 @@ public class SDTReader {
 				return fp;
 			}
 		}
-		return new FieldProperties(id, table, field, "Default", 0, "");
+		return new FieldProperties(id, table, field, "Default", 0, "", "");
 	}
 
 	private XMLGlyphTemplate getRootOfTemplate(XMLGlyphTemplate temp){

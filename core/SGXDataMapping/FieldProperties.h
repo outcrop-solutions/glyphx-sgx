@@ -36,11 +36,12 @@ namespace SynGlyphX {
 			Default = 0,
 			Number = 1,
 			Currency = 2,
-			Percentage = 3
+			Percentage = 3,
+			Datetime = 4
 		};
 
 		FieldProperties(){};
-		FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type = L"Default", int dec = 0, std::wstring sym = L"");
+		FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type = L"Default", int dec = 0, std::wstring sym = L"", QString dFmt = "", QString tFmt = "");
 		FieldProperties(const FieldProperties& fp);
 		~FieldProperties(){};
 
@@ -48,7 +49,7 @@ namespace SynGlyphX {
 		bool operator!=(const FieldProperties& inputField) const;
 
 		void AddStatsToField(QStringList stats);
-		void UpdateProperties(std::wstring type, int dec, std::wstring sym = L"");
+		void UpdateProperties(std::wstring type, int dec, std::wstring sym = L"", QString dFmt = "", QString tFmt = "");
 
 		boost::uuids::uuid GetID() { return m_id; }
 		std::wstring GetTable() { return m_table; }
@@ -56,7 +57,10 @@ namespace SynGlyphX {
 		Type GetType() { return m_type; }
 		int GetDecimalsToDisplay() { return m_decimals; }
 		std::wstring GetSymbol() { return m_symbol; }
+		QString DateFormat() { return m_dateFmt; }
+		QString TimeFormat() { return m_timeFmt; }
 		QString GetDefaultFieldType() { return m_stats.at(1); }
+		QString GetSampleValue() { return m_stats.at(3); }
 
 		QString transformData(QString value);
 		QString transformData(int value);
@@ -72,6 +76,9 @@ namespace SynGlyphX {
 		Type m_type;
 		int m_decimals;
 		std::wstring m_symbol;
+		QString m_datetimeFmt;
+		QString m_dateFmt;
+		QString m_timeFmt;
 		QStringList m_stats;
 
 	};

@@ -38,10 +38,13 @@ public:
 
 private:
 	void SetTypesAndDetails();
+	void SetDateTimeFormats();
 	QGroupBox* SetGroupBoxForSelection(QString type);
 
 	QListWidget* types;
 	QStackedWidget* stackedWidget;
+	QStringList dateFormats;
+	QStringList timeFormats;
 	std::map<QString, QString> details;
 	SynGlyphX::FieldProperties m_properties;
 

@@ -467,8 +467,9 @@ namespace SynGlyphX {
 					std::wstring type = fieldProperties.second.get<std::wstring>(L"<xmlattr>.type");
 					int dec = fieldProperties.second.get<int>(L"<xmlattr>.dec");
 					std::wstring sym = fieldProperties.second.get<std::wstring>(L"<xmlattr>.sym");
+					QStringList dtFmt = QString::fromStdWString(fieldProperties.second.get<std::wstring>(L"<xmlattr>.format", L"")).split(" h");
 
-					m_fieldProperties[hashid] = SynGlyphX::FieldProperties(id, table, field, type, dec, sym);
+					m_fieldProperties[hashid] = SynGlyphX::FieldProperties(id, table, field, type, dec, sym, dtFmt.at(0), dtFmt.size() == 2 ? "h"+dtFmt.at(1) : "");
 				}
 			}
 		}
