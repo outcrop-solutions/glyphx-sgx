@@ -27,14 +27,32 @@ public enum geom_type
     CYLINDER = 19,
 }
 
+public enum topology
+{
+    kNPtopoNull = 0,
+    kNPtopoCube,
+    kNPtopoSphere,
+    kNPtopoTorus,
+    kNPtopoCylinder,
+    kNPtopoPin,
+    kNPtopoRod,
+    kNPtopoPoint,
+    kNPtopoCount,
+    kNPtopoCone,
+    kNPtopoPlot,
+    kNPtopoSurface,
+    kNPtopoMesh
+}
+
 public struct creation_data
 {
     public bool is_root;
     public geom_type geom;
-    public int topo;
+    public topology topo;
     public int id, parent_id, label, glyph_index;
     public UnityEngine.Color32 color;
     public UnityEngine.Vector3 pos, rot, scale;
     public float ratio;
     public UnityEngine.Vector3 rotation_rates;
+    public string tag, url, desc;
 }

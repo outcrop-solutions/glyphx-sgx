@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class scene : MonoBehaviour
+public class glyph : MonoBehaviour
 {
-    public Dictionary<int, GameObject> glyphs = new Dictionary<int, GameObject>();
+    public creation_data data;
 
     void Start()
     {

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(scene))]
 public class loader : MonoBehaviour
 {
     public GameObject ConePrefab;
@@ -37,15 +38,18 @@ public class loader : MonoBehaviour
         data.scale = r.read_vec3();
         data.color = r.read_packed_color();
         data.geom = (geom_type)r.read_byte();
-        data.topo = r.read_byte();
+        data.topo = (topology)r.read_byte();
         data.ratio = r.read_float();
         data.rotation_rates = r.read_vec3();
-        data.is_root = (data.parent_id == 0) /*|| !parent */;
+
+        bool parent_found = data.parent_id != 0 && GetComponent<scene>().glyphs.ContainsKey(data.parent_id);
+        data.is_root = !(data.parent_id != 0 && parent_found);
+        Debug.Assert(data.parent_id == 0 || parent_found, "read_glyph: glyph has parent id that is not in scene");
 
         // strings
-        var tag = r.read_string();
-        var url = r.read_string();
-        var desc = r.read_string();
+        data.tag = r.read_string();
+        data.url = r.read_string();
+        data.desc = r.read_string();
 
         return data;
     }
@@ -55,27 +59,194 @@ public class loader : MonoBehaviour
         // @todo
     }
 
+    GameObject create_shape(geom_type type)
+    {
+        GameObject obj = null;
+        switch (type)
+        {
+            case geom_type.CONE:
+                obj = GameObject.Instantiate(ConePrefab); break;
+            case geom_type.SPHERE:
+                obj = GameObject.Instantiate(SpherePrefab); break;
+            case geom_type.CYLINDER:
+                obj = GameObject.Instantiate(CylinderPrefab); break;
+            case geom_type.CUBE:
+                obj = GameObject.Instantiate(CubePrefab); break;
+            default:
+                obj = GameObject.Instantiate(MissingMeshPrefab); break;
+        }
+        return obj;
+    }
+
+    void place_root(ref creation_data data, Transform obj)
+    {
+        obj.position = data.pos;
+        obj.localScale = data.scale;
+        apply_antz_rotation(obj, data.rot);
+
+        if (data.topo == topology.kNPtopoRod)
+        {
+            //visual_scale = glm::vec3(data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f);
+            obj.Translate(new Vector3(0.0f, 0.0f, 1.0f));
+        }
+        else
+        {
+            obj.localScale = data.scale;
+        }
+
+        if ((data.geom == geom_type.CYLINDER || data.geom == geom_type.WIRE_CYLINDER)
+            || data.geom == geom_type.CONE || data.geom == geom_type.WIRE_CONE
+            || (data.topo != topology.kNPtopoPin
+                && (data.geom == geom_type.PIN
+                    || data.geom == geom_type.WIRE_PIN)))
+        {
+
+            obj.Translate(new Vector3(0.0f, 0.0f, -1.0f));
+        }
+
+        //glyphnode->setCachedTransform(transform);
+        //glyphnode->setVisualScale(visual_scale);
+        //++root_count;
+    }
+
+    void apply_antz_rotation(Transform t, Vector3 antz_rot)
+    {
+        t.Rotate(new Vector3(0.0f, 0.0f, -1.0f), Mathf.Deg2Rad * antz_rot.y);
+        t.Rotate(new Vector3(-1.0f, 0.0f, 0.0f), Mathf.Deg2Rad * antz_rot.x);
+        t.Rotate(new Vector3(0.0f, 0.0f, -1.0f), Mathf.Deg2Rad * antz_rot.z);
+    }
+
+    // @todo - put these somewhere more sensible
+    float s_offsetUnit = 1.0f;
+    float s_offsetPin = 5.0f;
+    float s_offsetRod = 10.0f;
+    float s_offsetCube = 0.7071068f;
+    float s_offsetTorus = 0.75f;
+
+    void apply_non_pin_rod_offset(ref creation_data data, Transform t, glyph parent)
+    {
+
+        if (data.topo == topology.kNPtopoCube)
+            t.Translate(new Vector3(0.0f, 0.0f, s_offsetCube));
+        else if (data.topo == topology.kNPtopoTorus)
+        {
+            if (parent.data.topo == topology.kNPtopoTorus)
+                t.Translate(new Vector3(0.0f, 0.0f, s_offsetTorus));
+        }
+        else if (parent.data.topo == topology.kNPtopoPin)
+            t.Translate(new Vector3(0.0f, 0.0f, s_offsetUnit));
+    }
+
+    void apply_final_offset(ref creation_data data, Transform t)
+    {
+        if ((data.geom == geom_type.CYLINDER || data.geom == geom_type.CONE)
+            || ((data.topo == topology.kNPtopoRod) && (data.geom == geom_type.PIN)))
+        {
+
+            t.Translate(new Vector3(0.0f, 0.0f, -s_offsetUnit));
+        }
+    }
+
+    void apply_final_child_offset(ref creation_data data, Transform t, out Vector3 visual_scale)
+    {
+        visual_scale = Vector3.one;
+
+        if (data.topo != topology.kNPtopoRod && (data.geom != geom_type.PIN))
+        {
+            t.Translate(new Vector3(0.0f, 0.0f, s_offsetPin));
+        }
+        else if (data.topo == topology.kNPtopoRod)
+        {                   //width uses ratio, length uses scale 2 * 5 = 10
+            visual_scale = new Vector3(data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * s_offsetPin);
+            t.Translate(new Vector3(0.0f, 0.0f, s_offsetUnit));
+        }
+
+        apply_final_offset(ref data, t);
+    }
+
+    void place_child(ref creation_data data, GameObject obj, glyph parent)
+    {
+        switch (parent.data.topo)
+        {
+            case topology.kNPtopoTorus:
+                {
+                    var scale = data.scale;
+                    var pos = data.pos;
+                    var antz_rot = data.rot;
+
+                    if ((data.geom == geom_type.CONE) || (data.geom == geom_type.CYLINDER) || (data.geom == geom_type.PIN))
+                    {
+                        obj.transform.Translate(new Vector3(0.0f, 0.0f, 1.0f));
+                    }
+
+                    //scale up 1.5X to match torus geometry size inner radius (?)
+                    float s_torusRadius = 1.5f;
+                    obj.transform.localScale = new Vector3(s_torusRadius, s_torusRadius, s_torusRadius);
+
+                    //position at torus outer radius, inside center of tube
+
+                    obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * (pos.x + 90.0f));
+                    obj.transform.Translate(new Vector3(1.0f, 0.0f, 0.0f)); //translate to center of tube
+
+                    if (data.topo == topology.kNPtopoTorus)//dynamic_cast <const ANTzTorusPlacementPolicy* const> (childGlyph->getPlacementPolicy()) != nullptr)
+                    {
+                        obj.transform.Rotate(new Vector3(1.0f, 0.0f, 0.0f) * Mathf.Deg2Rad * 90.0f);
+                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * -90.0f);
+                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * pos.y);  //latitude
+                                                                                                     //translate.z based on scale.x and is converted from deg 57.29...
+                        obj.transform.Translate(new Vector3(0.0f, 0.1591f * scale.x * scale.z / 57.29578f, 0.0f));
+                    }
+                    else
+                    {
+                        obj.transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), Mathf.Deg2Rad * 90.0f);
+                        obj.transform.Rotate(new Vector3(0.0f, -1.0f, 0.0f), Mathf.Deg2Rad * pos.y); //latitude
+
+                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * 90.0f);               //orient North
+                                                                                                                  //translate 1 unit to surface then convert node z local units
+                                                                                                                  //uses parent->ratio for torus inner radius and 1.5f for scaling factor
+                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, parent.data.ratio + (pos.z / 360.0f)));
+
+                        obj.transform.Rotate(new Vector3(0.5f, 0.5f, 0.5f)); //results in 1/4 parent
+                    }
+                    //orientation
+                    apply_antz_rotation(transform, antz_rot);
+
+                    //scale 1/2 size of parent, smaller is good for torus .5 / 1.5
+                    if (parent.data.topo == topology.kNPtopoRod)        //rod is scaled at draw time and does not pass along scale to children
+                        obj.transform.localScale.Scale(new Vector3(0.33333333f, 0.33333333f, 0.33333333f));
+                    else
+                        obj.transform.localScale.Scale(new Vector3(scale.x * 0.33333333f, scale.y * 0.33333333f, scale.z * 0.33333333f));   //node scale
+
+                    apply_non_pin_rod_offset(ref data, obj.transform, parent);
+
+                    Vector3 visual_scale;
+                    apply_final_child_offset(ref data, obj.transform, out visual_scale);
+                    // childGlyph->setVisualScale(visual_scale);
+                }
+                break;
+        }
+    }
+
+    // corresponds to SceneReader::read_glyph_element
     void create_glyph(creation_data data)
     {
-        if (data.is_root)
+        // first instantiate the right prefab and add the glyph component to it
+        GameObject obj = create_shape(data.geom);
+        var gc = obj.AddComponent<glyph>();
+        gc.data = data;
+
+        if (data.is_root)   // root elements have their own placement logic
         {
-            GameObject obj;
-            switch (data.geom)
-            {
-                case geom_type.CONE:
-                    obj = GameObject.Instantiate(ConePrefab); break;
-                case geom_type.SPHERE:
-                    obj = GameObject.Instantiate(SpherePrefab); break;
-                case geom_type.CYLINDER:
-                    obj = GameObject.Instantiate(CylinderPrefab); break;
-                case geom_type.CUBE:
-                    obj = GameObject.Instantiate(CubePrefab); break;
-                default:
-                    obj = GameObject.Instantiate(MissingMeshPrefab); break;
-            }
-            obj.transform.localScale = data.scale;
-            obj.transform.position = data.pos;
+            place_root(ref data, obj.transform);
         }
+        else
+        {
+            var parent = GetComponent<scene>().glyphs[data.parent_id];
+            obj.transform.SetParent(parent.transform, false);
+            place_child(ref data, obj, parent.GetComponent<glyph>());
+        }
+
+        GetComponent<scene>().glyphs.Add(data.id, obj);
     }
 
     // Use this for initialization
