@@ -221,6 +221,9 @@ public class PathBuilder {
 
 	private File findFile(File base, String toFind){
 
+		String[] fileBreakout = toFind.split("/|\\\\");
+		toFind = fileBreakout[fileBreakout.length-1];
+
 		if(new File(base.getAbsolutePath(), toFind).exists()){
 			return new File(base.getAbsolutePath(), toFind);
 		}
