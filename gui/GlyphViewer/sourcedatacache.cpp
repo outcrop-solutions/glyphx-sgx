@@ -720,7 +720,7 @@ std::set<double> SourceDataCache::GetSortedNumericDistictValues(const SynGlyphX:
 
 QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateInterval& minMax) const {
 
-	return ("(\"" + columnName + "\" BETWEEN " + QString::number(minMax.GetMin()) + " AND " + QString::number(minMax.GetMax()) + ")");
+	return ("(\"" + columnName + "\" BETWEEN " + QString::number(minMax.GetMin(), 'f') + " AND " + QString::number(minMax.GetMax(), 'f') + ")");
 }
 
 QString SourceDataCache::CreateBetweenString(const QString& columnName, const SynGlyphX::DegenerateIntervalUnion& intervals) const {

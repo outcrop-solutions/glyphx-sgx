@@ -6,7 +6,7 @@
 namespace SynGlyphX {
 
 	SingleNumericRangeFilterWidget::SingleNumericRangeFilterWidget(Qt::Orientation orientation, QWidget *parent)
-		: QWidget(parent)
+		: SingleRangeFilterWidget(parent)
 	{
 		QBoxLayout* mainLayout = nullptr;
 		if (orientation == Qt::Horizontal) {
@@ -45,11 +45,6 @@ namespace SynGlyphX {
 		QObject::connect(m_maxLineEdit, &QLineEdit::editingFinished, this, &SingleNumericRangeFilterWidget::OnMaxLineEditUpdated);
 
 		SetMaxRangeExtents(DegenerateInterval(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()));
-	}
-
-	SingleNumericRangeFilterWidget::~SingleNumericRangeFilterWidget()
-	{
-
 	}
 
 	void SingleNumericRangeFilterWidget::SetMaxRangeExtents(const DegenerateInterval& range) {

@@ -15,80 +15,78 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_SINGLENUMERICRANGEFILTERWIDGET_H
-#define SYNGLYPHX_SINGLENUMERICRANGEFILTERWIDGET_H
+#ifndef SYNGLYPHX_SINGLEDATETIMERANGEFILTERWIDGET_H
+#define SYNGLYPHX_SINGLEDATETIMERANGEFILTERWIDGET_H
 
 #include "sgxdatatransformgui_global.h"
 #include <QtWidgets/QWidget>
-#include <QtWidgets/QLineEdit>
-#include <QtGui/QDoubleValidator>
 #include "singlerangefilterwidget.h"
+#include <QtWidgets/QDateTimeEdit>
+#include <QtWidgets/QLabel>
+#include <QtGui/QDoubleValidator>
 #include "rangeslider.h"
 #include "interval.h"
 #include <set>
 #include "FieldProperties.h"
 
+class QBoxLayout;
+
 namespace SynGlyphX {
 
-	class SGXDATATRANSFORMGUI_EXPORT SingleNumericRangeFilterWidget : public SingleRangeFilterWidget
+	class SGXDATATRANSFORMGUI_EXPORT SingleDatetimeRangeFilterWidget : public SingleRangeFilterWidget
 	{
 		Q_OBJECT
 
 	public:
 		typedef std::set<double> SliderPositionValues;
 
-		SingleNumericRangeFilterWidget(Qt::Orientation orientation, QWidget *parent);
-		SingleNumericRangeFilterWidget(const SingleNumericRangeFilterWidget&) = delete;
-		//~SingleNumericRangeFilterWidget();
+		SingleDatetimeRangeFilterWidget(Qt::Orientation orientation, QWidget *parent);
+		SingleDatetimeRangeFilterWidget(const SingleDatetimeRangeFilterWidget&) = delete;
+		//~SingleDatetimeRangeFilterWidget();
 
-		void SetSliderPositionValuesAndMaxExtents(const SliderPositionValues& valuesAtSliderPosition) override;
-		void SetMaxRangeExtents(const DegenerateInterval& range) override;
-		DegenerateInterval GetMaxRangeExtents() const override;
+		void SetSliderPositionValuesAndMaxExtents(const SliderPositionValues& valuesAtSliderPosition) override { m_valuesAtSliderPosition = valuesAtSliderPosition; }
+		void SetMaxRangeExtents(const DegenerateInterval& range) override {};
+		DegenerateInterval GetMaxRangeExtents() const override { return (DegenerateInterval(m_min, m_max)); };
 
 		void SetRange(const DegenerateInterval& range) override;
-		DegenerateInterval GetRange() const override;
+		DegenerateInterval GetRange() const override { return (DegenerateInterval(GetMinDatetimeEdit(), GetMaxDatetimeEdit())); }
 
-		const SliderPositionValues& GetSliderPositionValues() const override;
+		const SliderPositionValues& GetSliderPositionValues() const override { return m_valuesAtSliderPosition; };
 
-		void SetFieldProperties(FieldProperties fp) override { m_fieldProperties = fp; SetRange(GetRange()); }
+		void SetFieldProperties(FieldProperties fp) override;
 
 	//signals:
 		//void RangeUpdated(DegenerateInterval range);
 
 	private slots:
-		void OnSliderLowerUpdated(int lower);
-		void OnSliderUpperUpdated(int upper);
-		void OnMinLineEditUpdated();
-		void OnMaxLineEditUpdated();
+		void OnMinDatetimeEditUpdated();
+		void OnMaxDatetimeEditUpdated();
 		void EmitRangeUpdate() override;
 
 	private:
-		double ConvertSliderPositionToValueInRange(int value);
-		int ConvertValueInRangeToSliderPosition(double value);
+		void UseDateTimeLayoutOnly();
+		void UseDateAndTimeLayout();
 
-		void SetMinLineEditBlockSignals(double min);
-		void SetMaxLineEditBlockSignals(double max);
-
-		void SetMinLineEdit(double val);
-		double GetMinLineEdit() const;
-		void SetMaxLineEdit(double val);
-		double GetMaxLineEdit() const;
+		void SetMinDatetimeEdit(qint64 val);
+		qint64 GetMinDatetimeEdit() const;
+		void SetMaxDatetimeEdit(qint64 val);
+		qint64 GetMaxDatetimeEdit() const;
 
 		QString ConvertDoubleToString(double val, int decimals) const override;
 
-		void SetMaxRangeExtents(double min, double max);
-
-		QLineEdit* m_minLineEdit;
-		QDoubleValidator* m_minValidator;
-		QLineEdit* m_maxLineEdit;
-		QDoubleValidator* m_maxValidator;
-		RangeSlider* m_rangeSlider;
+		QBoxLayout* mainLayout;
+		qint64 m_min;
+		qint64 m_max;
+		QDateEdit* m_minDateEdit;
+		QDateEdit* m_maxDateEdit;
+		QTimeEdit* m_minTimeEdit;
+		QTimeEdit* m_maxTimeEdit;
 		FieldProperties m_fieldProperties;
 
-		double m_ratio;
 		SliderPositionValues m_valuesAtSliderPosition;
+
 	};
 
 } //namespace SynGlyphX
 
-#endif // SYNGLYPHX_SINGLENUMERICRANGEFILTERWIDGET_H
+#endif // SYNGLYPHX_SINGLEDATETIMERANGEFILTERWIDGET_H

@@ -19,7 +19,7 @@
 #define RANGEFILTERLISTWIDGET_H
 
 #include "FilteringTable.h"
-#include "singlenumericrangefilterwidget.h"
+#include "singlerangefilterwidget.h"
 #include "interval.h"
 #include "filteringparameters.h"
 
@@ -45,16 +45,16 @@ private slots:
 	void OnRangesChanged();
 
 private:
-	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues> RangeAndDistinctValues;
+	typedef std::pair<SynGlyphX::DegenerateInterval, SynGlyphX::SingleRangeFilterWidget::SliderPositionValues> RangeAndDistinctValues;
 	typedef std::pair<QString, std::vector<RangeAndDistinctValues>> Field2RangeAndDistinctValues;
 	typedef std::vector<Field2RangeAndDistinctValues> Field2RangeAndDistinctValuesVector;
 	typedef QMap<QString, Field2RangeAndDistinctValuesVector> Table2RangesAndDistinctValuesMap;
 
 	FilteringParameters::ColumnRangeFilterMap GatherRangesBeforeSpan(int span);
 	void ResetMinMaxExtentsForFilters(unsigned int startingSpan);
-	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromCell(int row, int column = 1) const;
-	SynGlyphX::SingleNumericRangeFilterWidget* GetRangeFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const;
-	SynGlyphX::SingleNumericRangeFilterWidget* CreateRangeFilterWidget();
+	QWidget* GetRangeFilterWidgetFromCell(int row, int column = 1) const;
+	SynGlyphX::SingleRangeFilterWidget* GetRangeFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const;
+	SynGlyphX::SingleRangeFilterWidget* CreateRangeFilterWidget(int type);
 
 	//FilteringTable* m_rangeFiltersTableWidget;
 	Table2RangesAndDistinctValuesMap m_table2RangesAndDistinctValuesMap;

@@ -1,4 +1,6 @@
 #include "rangefilterlistwidget.h"
+#include "singlenumericrangefilterwidget.h"
+#include "singledatetimerangefilterwidget.h"
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QPushButton>
 #include "filteringparameters.h"
@@ -31,7 +33,7 @@ void RangeFilterListWidget::ResetForNewTable() {
 		FilterWidgetGroupsManager::FilterWidgetGroup filterWidgetGroup;
 		for (unsigned int k = 0; k < newField2RangeAndExtentList[j].second.size(); ++k) {
 
-			SynGlyphX::SingleNumericRangeFilterWidget* filterWidget = CreateRangeFilterWidget();
+			SynGlyphX::SingleRangeFilterWidget* filterWidget = CreateRangeFilterWidget(0);
 			filterWidget->blockSignals(true);
 			filterWidget->SetSliderPositionValuesAndMaxExtents(newField2RangeAndExtentList[j].second[k].second);
 			filterWidget->SetRange(newField2RangeAndExtentList[j].second[k].first);
@@ -48,10 +50,16 @@ void RangeFilterListWidget::ResetForNewTable() {
 	}
 }
 
-SynGlyphX::SingleNumericRangeFilterWidget* RangeFilterListWidget::CreateRangeFilterWidget() {
+SynGlyphX::SingleRangeFilterWidget* RangeFilterListWidget::CreateRangeFilterWidget(int type) {
 
-	SynGlyphX::SingleNumericRangeFilterWidget* filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, m_filterListTableWidget);
-	QObject::connect(filter, &SynGlyphX::SingleNumericRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
+	SynGlyphX::SingleRangeFilterWidget* filter;
+	if (type == SynGlyphX::FieldProperties::Datetime){
+		filter = new SynGlyphX::SingleDatetimeRangeFilterWidget(Qt::Horizontal, m_filterListTableWidget);
+	}
+	else{
+		filter = new SynGlyphX::SingleNumericRangeFilterWidget(Qt::Horizontal, m_filterListTableWidget);
+	}
+	QObject::connect(filter, &SynGlyphX::SingleRangeFilterWidget::RangeUpdated, this, &RangeFilterListWidget::OnRangesChanged);
 	return filter;
 }
 
@@ -62,23 +70,25 @@ QWidget* RangeFilterListWidget::AddFilter(const QString& field, unsigned int spa
 	FilteringParameters::ColumnRangeFilterMap rangeFilterMap = GatherRangesBeforeSpan(span);
 
 	boost::uuids::string_generator gen;
-	SynGlyphX::SingleNumericRangeFilterWidget* filter = CreateRangeFilterWidget();
 	std::map<std::wstring, SynGlyphX::FieldProperties> fp_map = m_filteringManager->GetFieldPropertiesForTable(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString());
+	SynGlyphX::FieldProperties fieldProperties;
 	if (fp_map.find(field.toStdWString()) != fp_map.end()){
-		filter->SetFieldProperties(fp_map.at(field.toStdWString()));
+		fieldProperties = fp_map.at(field.toStdWString());
 	}
 	else{
-		filter->SetFieldProperties(SynGlyphX::FieldProperties(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString()));
+		fieldProperties = SynGlyphX::FieldProperties(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString());
 	}
-	filter->blockSignals(true);
 	SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
 
-	SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, rangeFilterMap);
+	SynGlyphX::SingleRangeFilterWidget* filter = CreateRangeFilterWidget(fieldProperties.GetType());
+	filter->blockSignals(true);
+	SynGlyphX::SingleRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, rangeFilterMap);
 	filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
 	filter->SetRange(SynGlyphX::DegenerateInterval(*sliderPositionValues.begin(), *sliderPositionValues.rbegin()));
-	
+	filter->SetFieldProperties(fieldProperties);
 	filter->blockSignals(false);
 	return filter;
+	
 }
 
 FilteringParameters::ColumnRangeFilterMap RangeFilterListWidget::GatherRangesBeforeSpan(int span) {
@@ -90,7 +100,8 @@ FilteringParameters::ColumnRangeFilterMap RangeFilterListWidget::GatherRangesBef
 		SynGlyphX::DegenerateIntervalUnion ranges;
 		for (unsigned int j = 0; j < rowSpan; ++j) {
 
-			ranges.push_back(GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(i, j))->GetRange());
+			SynGlyphX::SingleRangeFilterWidget* filterWidget = GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(i, j));
+			ranges.push_back(filterWidget->GetRange());
 		}
 		rangeFilterMap.push_back(FilteringParameters::ColumnRangeFilter(m_filterGroups[m_currentTable].GetFields().at(i), ranges));
 	}
@@ -127,12 +138,13 @@ void RangeFilterListWidget::GetFilteringParametersForTable(const QString& table,
 
 void RangeFilterListWidget::OnRangesChanged() {
 
-	SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
+	//if (SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender())){
+	SynGlyphX::SingleRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
 	
 	int row = 0;
 	for (; row < m_filterListTableWidget->rowCount(); ++row) {
 
-		if (m_filterListTableWidget->cellWidget(row, 1) == updatedFilter) {
+		if (m_filterListTableWidget->cellWidget(row, 1) == sender()) {
 
 			break;
 		}
@@ -142,14 +154,19 @@ void RangeFilterListWidget::OnRangesChanged() {
 	OnFilterChanged();
 }
 
-SynGlyphX::SingleNumericRangeFilterWidget* RangeFilterListWidget::GetRangeFilterWidgetFromCell(int row, int column) const {
+QWidget* RangeFilterListWidget::GetRangeFilterWidgetFromCell(int row, int column) const {
 
-	return dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(m_filterListTableWidget->cellWidget(row, column));
+	return m_filterListTableWidget->cellWidget(row, column);
 }
 
-SynGlyphX::SingleNumericRangeFilterWidget* RangeFilterListWidget::GetRangeFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const {
+SynGlyphX::SingleRangeFilterWidget* RangeFilterListWidget::GetRangeFilterWidgetFromGroup(const FilterWidgetGroupsManager::GroupedIndex& index) const {
 
-	return dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(m_filterGroups[m_currentTable].GetWidget(index));
+	QWidget* obj = m_filterGroups[m_currentTable].GetWidget(index);
+	QString name = obj->metaObject()->className();
+	if (QString(obj->metaObject()->className()) == QString("SynGlyphX::SingleDatetimeRangeFilterWidget")){
+		return dynamic_cast<SynGlyphX::SingleDatetimeRangeFilterWidget*>(obj);
+	}
+	return dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(obj);
 }
 
 void RangeFilterListWidget::SaveFiltersInTableWidget() {
@@ -163,7 +180,7 @@ void RangeFilterListWidget::SaveFiltersInTableWidget() {
 		unsigned int groupSize = m_filterGroups[m_currentTable].GetCountForGroup(k);
 		for (unsigned int i = 0; i < groupSize; ++i) {
 
-			SynGlyphX::SingleNumericRangeFilterWidget* filterWidget = GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(k, i));
+			SynGlyphX::SingleRangeFilterWidget* filterWidget = GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(k, i));
 			field2RangeAndExtent.second.push_back(RangeAndDistinctValues(filterWidget->GetRange(), filterWidget->GetSliderPositionValues()));
 		}
 
@@ -195,12 +212,12 @@ void RangeFilterListWidget::ResetMinMaxExtentsForFilters(unsigned int startingSp
 
 		QString field = m_filterGroups[m_currentTable].GetFields().at(j);
 		SynGlyphX::InputField inputField(gen(datasourceTable[0].toStdWString()), datasourceTable[1].toStdWString(), field.toStdWString(), SynGlyphX::InputField::Real);
-		SynGlyphX::SingleNumericRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, columnIntervalMap);
+		SynGlyphX::SingleRangeFilterWidget::SliderPositionValues sliderPositionValues = m_filteringManager->GetSourceDataCache()->GetSortedNumericDistictValues(inputField, columnIntervalMap);
 		
 		SynGlyphX::DegenerateIntervalUnion intervalUnion;
 		for (unsigned int k = 0; k < m_filterGroups[m_currentTable].GetCountForGroup(j); ++k) {
 
-			SynGlyphX::SingleNumericRangeFilterWidget* filter = GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(j, k));
+			SynGlyphX::SingleRangeFilterWidget* filter = GetRangeFilterWidgetFromGroup(FilterWidgetGroupsManager::GroupedIndex(j, k));
 			filter->blockSignals(true);
 			filter->SetSliderPositionValuesAndMaxExtents(sliderPositionValues);
 			filter->blockSignals(false);

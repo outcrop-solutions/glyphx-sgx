@@ -3,8 +3,10 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QDateTimeEdit>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtCore/QDateTime>
+#include "singledatetimerangefilterwidget.h"
 
 FieldPropertiesDialog::FieldPropertiesDialog(SynGlyphX::FieldProperties properties, QWidget* parent)
 	: QDialog(parent),
@@ -67,7 +69,7 @@ void FieldPropertiesDialog::SetTypesAndDetails()
 		stackedWidget->addWidget(SetGroupBoxForSelection(name));
 	}
 
-	types->setFixedWidth(fontMetrics().width(typeNames.at(3)) * 2);
+	types->setFixedWidth(fontMetrics().width("Percentage") * 2);
 
 	types->setCurrentItem(types->item(m_properties.GetType()));
 	stackedWidget->setCurrentIndex(m_properties.GetType());
@@ -162,7 +164,16 @@ QGroupBox* FieldPropertiesDialog::SetGroupBoxForSelection(QString type)
 		timeFormatList->setFixedWidth(w);
 
 	}
-
+	/*
+	if (type == "Default"){
+		QLabel* date = new QLabel(tr("Datetime: "), this);
+		SynGlyphX::SingleDatetimeRangeFilterWidget* dateEdit = new SynGlyphX::SingleDatetimeRangeFilterWidget(Qt::Horizontal, this);
+		dateEdit->SetRange(SynGlyphX::DegenerateInterval(m_properties.GetMin().toDouble(), m_properties.GetMax().toDouble()));
+		dateEdit->SetFieldProperties(m_properties);
+		formLayout->addRow(date);
+		formLayout->addRow(dateEdit);
+	}
+	*/
 	QLabel* description = new QLabel();
 	description->setWordWrap(true);
 	description->setText(details[type]);

@@ -57,10 +57,13 @@ namespace SynGlyphX {
 		Type GetType() { return m_type; }
 		int GetDecimalsToDisplay() { return m_decimals; }
 		std::wstring GetSymbol() { return m_symbol; }
+		QString DatetimeFormat() { return m_datetimeFmt; }
 		QString DateFormat() { return m_dateFmt; }
 		QString TimeFormat() { return m_timeFmt; }
 		QString GetDefaultFieldType() { return m_stats.at(1); }
-		QString GetSampleValue() { return m_stats.at(3); }
+		QString GetMin() { return m_stats.at(2); }
+		QString GetMax() { return m_stats.at(3); }
+		QString GetSampleValue() { return GetMax(); }
 
 		QString transformData(QString value);
 		QString transformData(int value);

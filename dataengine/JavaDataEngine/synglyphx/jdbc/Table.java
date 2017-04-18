@@ -63,10 +63,16 @@ public abstract class Table {
             counts[0] = rs.getString(1);
             int cc = 0;
 	        for(int i = 1; i < columnNames.size()*3; i+=3){
-	            ranges[0] = rs.getString(i+1);
+	        	String temp = columnNames.get(cc);
+	        	ranges[0] = rs.getString(i+1);
 	            ranges[1] = rs.getString(i+2);
+	        	if(columnTypes.get(temp).equals("Datetime")){
+	        		try{
+	        			ranges[0] = String.valueOf(rs.getTimestamp(i+1).getTime());
+	            		ranges[1] = String.valueOf(rs.getTimestamp(i+2).getTime());
+	            	}catch(Exception e){}
+	        	}
 	            counts[1] = rs.getString(i+3);
-	            String temp = columnNames.get(cc);
 	            dataStats.put(temp, new DataStats(columnTypes.get(temp),ranges,counts));
             	DataStats ds = dataStats.get(temp);
 	            Logger.getInstance().add(ds.getType()+" | "+ds.getMin()+" | "+ds.getMax()+" | "+ds.getAverage()+" | "+ds.getCount()+" | "+ds.getDistinct()); 
@@ -131,13 +137,13 @@ public abstract class Table {
 		jdbcTypes.put("MEDIUMBLOB","String");
 		jdbcTypes.put("LONGBLOB","String");
 		
-		jdbcTypes.put("DATE","String");
-		jdbcTypes.put("DATETIME","String");
-		jdbcTypes.put("TIMESTAMP","String");
-		jdbcTypes.put("TIME","String");
-		jdbcTypes.put("YEAR","String");
-		jdbcTypes.put("TIMETZ","String");
-		jdbcTypes.put("TIMESTAMPTZ","String");
+		jdbcTypes.put("DATE","Datetime");
+		jdbcTypes.put("DATETIME","Datetime");
+		jdbcTypes.put("TIMESTAMP","Datetime");
+		jdbcTypes.put("TIME","Datetime");
+		jdbcTypes.put("YEAR","Datetime");
+		jdbcTypes.put("TIMETZ","Datetime");
+		jdbcTypes.put("TIMESTAMPTZ","Datetime");
 		jdbcTypes.put("INTERVAL YEAR TO MONTH","String");
 		jdbcTypes.put("INTERVAL HOUR TO SECOND","String");
 		jdbcTypes.put("INTERVAL HOUR TO MINUTE","String");
