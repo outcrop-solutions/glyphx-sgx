@@ -2,6 +2,7 @@
 #include "sceneviewer.h"
 #include <cstdarg>
 #include <ctime>
+#include <boost/algorithm/string/replace.hpp>
 #include <QtCore/QDebug>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QKeyEvent>
@@ -541,6 +542,7 @@ namespace SynGlyphX
 								positionHUD += axis_names[i] + ": " + m_overridePosition[i];
 							}
 						}
+						boost::replace_all(positionHUD, "%", "%%");
 						renderTextCenteredF(hud_font, glm::vec2(width() / 2, height() - 32), CenterMode::X, render::color::white(), positionHUD.c_str());
 					}
 					else
