@@ -86,6 +86,8 @@ if not "%~1"=="" (
 
 			if "%~2"=="-u" %jcmd%\java UserAccessControls
 
+			if "%~2"=="-f" %jcmd%\java synglyphx.data.FieldProperties
+
 		)
 
 	)

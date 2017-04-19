@@ -1,6 +1,7 @@
 #include "FieldProperties.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
+#include <QtCore/QDateTime>
 
 namespace SynGlyphX {
 
@@ -8,25 +9,22 @@ namespace SynGlyphX {
 		(FieldProperties::Type::Default, L"Default")
 		(FieldProperties::Type::Number, L"Number")
 		(FieldProperties::Type::Currency, L"Currency")
-		(FieldProperties::Type::Percentage, L"Percentage");
+		(FieldProperties::Type::Percentage, L"Percentage")
+		(FieldProperties::Type::Datetime, L"Datetime");
 
-	FieldProperties::FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type, int dec, std::wstring sym) :
-		m_id(id), m_table(tbl), m_field(fld),
-		m_type(s_fieldTypeStrings.right.at(type)),
-		m_decimals(dec), m_symbol(sym)
+	FieldProperties::FieldProperties(boost::uuids::uuid id, std::wstring tbl, std::wstring fld, std::wstring type, int dec, std::wstring sym, QString dFmt, QString tFmt) :
+		m_id(id), m_table(tbl), m_field(fld)
 	{
+		UpdateProperties(type, dec, sym, dFmt, tFmt);
 	}
 
 	FieldProperties::FieldProperties(const FieldProperties& fp) :
 		m_id(fp.m_id), 
 		m_table(fp.m_table), 
 		m_field(fp.m_field),
-		m_type(fp.m_type),
-
-	m_decimals(fp.m_decimals), 
-		m_symbol(fp.m_symbol),
 		m_stats(fp.m_stats)
 	{
+		UpdateProperties(s_fieldTypeStrings.left.at(fp.m_type), fp.m_decimals, fp.m_symbol, fp.m_dateFmt, fp.m_timeFmt);
 	}
 
 	bool FieldProperties::operator==(const FieldProperties& inputField) const {
@@ -37,6 +35,9 @@ namespace SynGlyphX {
 			m_type != inputField.m_type ||
 			m_decimals != inputField.m_decimals ||
 			m_symbol != inputField.m_symbol ||
+			m_datetimeFmt != inputField.m_datetimeFmt ||
+			m_dateFmt != inputField.m_dateFmt ||
+			m_timeFmt != inputField.m_timeFmt ||
 			m_stats != inputField.m_stats) 
 		{
 			return false;
@@ -56,11 +57,14 @@ namespace SynGlyphX {
 		m_stats = stats;
 	}
 
-	void FieldProperties::UpdateProperties(std::wstring type, int dec, std::wstring sym)
+	void FieldProperties::UpdateProperties(std::wstring type, int dec, std::wstring sym, QString dFmt, QString tFmt)
 	{
 		m_type = s_fieldTypeStrings.right.at(type);
 		m_decimals = dec;
 		m_symbol = sym;
+		m_dateFmt = dFmt == "" ? "N/A" : dFmt;
+		m_timeFmt = tFmt == "" ? "N/A" : tFmt;
+		m_datetimeFmt = dFmt + (tFmt != "" ? " " : "") + tFmt;
 	}
 
 	QString FieldProperties::transformData(QString value){
@@ -92,6 +96,17 @@ namespace SynGlyphX {
 			value *= 100;
 			last = "%";
 		}
+		else if (m_type == FieldProperties::Type::Datetime){
+			qint64 ts = value;
+			QDateTime* dt = new QDateTime();
+			if (QDateTime::currentMSecsSinceEpoch() / 1000.0 < ts){
+				dt->setMSecsSinceEpoch(ts);
+			}
+			else{
+				dt->setMSecsSinceEpoch(ts * 1000.0);
+			}
+			return dt->toString(m_datetimeFmt);
+		}
 
 		return first + QString::number(value, 'f', m_decimals) + last;
 	}
@@ -104,6 +119,7 @@ namespace SynGlyphX {
 		propertyTree.put(L"<xmlattr>.type", s_fieldTypeStrings.left.at(m_type));
 		propertyTree.put(L"<xmlattr>.dec", m_decimals);
 		propertyTree.put(L"<xmlattr>.sym", m_symbol);
+		propertyTree.put(L"<xmlattr>.format", m_datetimeFmt.toStdWString());
 	}
 
 }

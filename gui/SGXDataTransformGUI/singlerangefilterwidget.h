@@ -15,39 +15,50 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef FIELDPROPERTIESDIALOG_H
-#define FIELDPROPERTIESDIALOG_H
+#ifndef SYNGLYPHX_SINGLERANGEFILTERWIDGET_H
+#define SYNGLYPHX_SINGLERANGEFILTERWIDGET_H
 
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QGroupBox>
+#include "sgxdatatransformgui_global.h"
+#include <QtWidgets/QWidget>
+#include "rangeslider.h"
+#include "interval.h"
+#include <set>
 #include "FieldProperties.h"
-#include "datastatsmodel.h"
 
-class FieldPropertiesDialog : public QDialog
-{
-	//Q_OBJECT
+namespace SynGlyphX {
 
-public:
+	class SGXDATATRANSFORMGUI_EXPORT SingleRangeFilterWidget : public QWidget
+	{
+		Q_OBJECT
 
-	FieldPropertiesDialog(SynGlyphX::FieldProperties properties, QWidget* parent = 0);
-	~FieldPropertiesDialog();
+	public:
+		typedef std::set<double> SliderPositionValues;
 
-	SynGlyphX::FieldProperties SaveSelections(SynGlyphX::DataStatsModel* model, int row);
+		SingleRangeFilterWidget(QWidget *parent) : QWidget(parent) {};
+		virtual ~SingleRangeFilterWidget() {};
 
-private:
-	void SetTypesAndDetails();
-	void SetDateTimeFormats();
-	QGroupBox* SetGroupBoxForSelection(QString type);
+		virtual void SetSliderPositionValuesAndMaxExtents(const SliderPositionValues& valuesAtSliderPosition) = 0;
+		virtual void SetMaxRangeExtents(const DegenerateInterval& range) = 0;
+		virtual DegenerateInterval GetMaxRangeExtents() const = 0;
 
-	QListWidget* types;
-	QStackedWidget* stackedWidget;
-	QStringList dateFormats;
-	QStringList timeFormats;
-	std::map<QString, QString> details;
-	SynGlyphX::FieldProperties m_properties;
+		virtual void SetRange(const DegenerateInterval& range) = 0;
+		virtual DegenerateInterval GetRange() const = 0;
 
-};
+		virtual const SliderPositionValues& GetSliderPositionValues() const = 0;
 
-#endif //FIELDPROPERTIESDIALOG_H
+		virtual void SetFieldProperties(FieldProperties fp) = 0;
+
+	signals:
+		void RangeUpdated(DegenerateInterval range);
+
+	private slots:
+		virtual void EmitRangeUpdate() = 0;
+
+	private:
+		virtual QString ConvertDoubleToString(double val, int decimals) const = 0;
+
+	};
+
+} //namespace SynGlyphX
+
+#endif // SYNGLYPHX_SINGLERANGEFILTERWIDGET_H

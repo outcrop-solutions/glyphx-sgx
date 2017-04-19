@@ -32,8 +32,8 @@ public class DataStats {
  			this.type = "real";
  		}else if(type.equals("String")){
  			this.type = "text";
- 		}else if(type.equals("Date") || type.equals("Timestamp") || type.equals("Time")){
- 			this.type = "datetime";
+ 		}else if(type.equals("Datetime")){
+ 			this.type = "real";
  		}else{
  			this.type = "void";
  		}
