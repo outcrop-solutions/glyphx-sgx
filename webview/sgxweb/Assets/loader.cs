@@ -11,6 +11,7 @@ public class loader : MonoBehaviour
     public GameObject CylinderPrefab;
     public GameObject CubePrefab;
     public GameObject MissingMeshPrefab;
+    public Material GlyphMaterial;
 
     void read_base_image(reader r)
     {
@@ -256,6 +257,13 @@ public class loader : MonoBehaviour
             place_child(ref data, obj, parent.GetComponent<glyph>());
         }
 
+        var mrs = obj.GetComponentsInChildren<MeshRenderer>();
+        foreach (var mr in mrs)
+        {
+            mr.material = GlyphMaterial;
+            mr.material.color = data.color;
+        }
+
         GetComponent<scene>().glyphs.Add(data.id, obj);
     }
 
@@ -297,9 +305,6 @@ public class loader : MonoBehaviour
         }
         for (uint i = 0; i < link_count; ++i)
             read_link(sgc);
-
-        var torus = torus_generator.create(0.1f);
-        torus.name = "test torus";
     }
 
     // Update is called once per frame
