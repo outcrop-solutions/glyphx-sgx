@@ -74,12 +74,12 @@ public class torus_generator
                 vertices[iv1] = new Vector3(x, y, z);
 
                 triangleIndices[iv1 * 6] = iv1;
-                triangleIndices[iv1 * 6 + 1] = iv2;
-                triangleIndices[iv1 * 6 + 2] = iv3;
+                triangleIndices[iv1 * 6 + 1] = iv3;
+                triangleIndices[iv1 * 6 + 2] = iv2;
 
                 triangleIndices[iv1 * 6 + 3] = iv3;
-                triangleIndices[iv1 * 6 + 4] = iv4;
-                triangleIndices[iv1 * 6 + 5] = iv1;
+                triangleIndices[iv1 * 6 + 4] = iv1;
+                triangleIndices[iv1 * 6 + 5] = iv4;
             }
         }
         mesh.vertices = vertices;
