@@ -65,8 +65,8 @@ public class torus_generator
                 int iv4 = next_tube_offset + j;
 
                 x = (seg_radius + tube_radius * Mathf.Cos(j * tube_size)) * Mathf.Cos(i * seg_size);
-                z = (seg_radius + tube_radius * Mathf.Cos(j * tube_size)) * Mathf.Sin(i * seg_size);
-                y = tube_radius * Mathf.Sin(j * tube_size);
+                y = (seg_radius + tube_radius * Mathf.Cos(j * tube_size)) * Mathf.Sin(i * seg_size);
+                z = tube_radius * Mathf.Sin(j * tube_size);
 
                 // @todo - port normal vector computation code from C++; we're calling Mesh.RecalculateNormals below
                 // but analytical normals would be higher quality
