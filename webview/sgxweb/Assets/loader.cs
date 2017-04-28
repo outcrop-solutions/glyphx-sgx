@@ -83,7 +83,7 @@ public class loader : MonoBehaviour
 
     void place_root(ref creation_data data, Transform obj)
     {
-        Matrix4x4 local = Matrix4x4.identity;
+        Matrix4x4 local = matrix.from_transform(obj.transform);
 
         local = matrix.translate(local, data.pos);
         local = matrix.scale(local, data.scale);
@@ -181,7 +181,7 @@ public class loader : MonoBehaviour
                     var scale = data.scale;
                     var pos = data.pos;
                     var antz_rot = data.rot;
-                    Matrix4x4 local = Matrix4x4.identity;// matrix.from_transform(obj.transform.parent);
+                    Matrix4x4 local = matrix.from_transform(obj.transform);
 
                     if ((parent.data.geom == geom_type.CONE) || (parent.data.geom == geom_type.CYLINDER) || (parent.data.geom == geom_type.PIN))
                     {
@@ -235,6 +235,41 @@ public class loader : MonoBehaviour
                     matrix.set_from_matrix(obj.transform, local);
                 }
                 break;
+            case topology.kNPtopoPin:
+            case topology.kNPtopoRod:
+                {
+                    var scale = data.scale;
+                    var pos = data.pos;
+                    var antz_rot = data.rot;
+                    Matrix4x4 local = matrix.from_transform(obj.transform);
+                    bool parent_is_rod = parent.data.topo == topology.kNPtopoRod;
+                    //position the node vertically on the pin, note using translate.x
+                    if (parent.data.is_root && !parent_is_rod)
+                        //zzoff
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, s_offsetPin + pos.x / 37.22f));    //root pin workaround, zz debug
+                    else if (parent_is_rod)   //replace kNPoffsetPin with
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, parent.data.scale.z * (s_offsetRod + 2.0f * pos.x / 37.22f)));
+                    else if ((data.geom == geom_type.CONE) || (data.geom == geom_type.CYLINDER))
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, 1.0f + pos.x / 37.22f));
+                    else
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, s_offsetPin + pos.x / 37.22f));
+
+                    if (data.topo != topology.kNPtopoRod && !parent_is_rod)
+                        local = matrix.scale(local, new Vector3(scale.x * 0.5f, scale.y * 0.5f, scale.z * 0.5f));
+                    else if (data.topo != topology.kNPtopoRod)      //rod is scaled at draw time and does not pass along scale to children
+                        local = matrix.scale(local, scale);  //rod does not scale child
+
+                    //offset from center after scaling, preserves ring offset when scaling
+                    local = matrix.translate(local, new Vector3(pos.z * .008333333f, 0.0f, 0.0f)); // node->translate.y / -37.22f, 0.0f); //locked y, makes more sense when swtiching topos
+
+                    apply_antz_rotation(local, antz_rot);
+
+                    Vector3 visual_scale;
+                    apply_final_child_offset(ref data, obj.transform, out visual_scale);
+
+                    matrix.set_from_matrix(obj.transform, local);
+                }
+                break;
         }
     }
 
@@ -256,6 +291,8 @@ public class loader : MonoBehaviour
             obj.transform.SetParent(parent.transform, false);
             place_child(ref data, obj, parent.GetComponent<glyph>());
         }
+
+        obj.name = data.tag;
 
         var mrs = obj.GetComponentsInChildren<MeshRenderer>();
         foreach (var mr in mrs)
