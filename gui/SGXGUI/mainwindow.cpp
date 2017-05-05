@@ -30,6 +30,7 @@ namespace SynGlyphX {
 		m_needToReadSettings(true),
         m_stateVersion(stateVersion)
     {
+		m_validLicense = false;
         //Make sure Status Bar gets created for all applications
         statusBar();
 
@@ -53,6 +54,14 @@ namespace SynGlyphX {
 		m_undoStack = new QUndoStack(this);
 
 		QObject::connect(&s_recentFileList, &SettingsStoredFileList::FileListChanged, this, &MainWindow::UpdateRecentFileList);
+
+		QSettings settings;
+		settings.beginGroup("LoggedInUser");
+		bool sl = settings.value("StayLogged", false).toBool();
+		if (!sl){
+			settings.setValue("Username", "Guest");
+		}
+		settings.endGroup();
 
 #ifdef WIN32
 		userMenuBar = new QMenuBar(menuBar());
@@ -250,6 +259,7 @@ namespace SynGlyphX {
 #elif __APPLE__
 		m_loginMenu->menuAction()->setVisible(true);
 #endif
+		m_validLicense = SynGlyphX::LicensingDialog::CheckLicense();
 	}
 
 	QAction* MainWindow::LogoutMenu(){
@@ -269,6 +279,8 @@ namespace SynGlyphX {
 	}
 
 	void MainWindow::UserLogOut(){
+
+		m_validLicense = false;
 
 		m_userDirectory.clear();
 #ifdef WIN32

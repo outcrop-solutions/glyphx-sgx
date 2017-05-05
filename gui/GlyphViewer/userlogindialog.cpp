@@ -119,24 +119,29 @@ namespace SynGlyphX {
 		if (valid != 0){
 			name = m_dataEngineConnection->UserAccessControls()->NameOfUser();
 			inst = m_dataEngineConnection->UserAccessControls()->NameOfInstitution();
+			bool stayLoggedIn = false;
 			if (stayLoggedInCheckBox->checkState() == Qt::Checked){
-				QSettings l_settings;
-				l_settings.beginGroup("LoggedInUser");
-				l_settings.setValue("Username", user);
-				l_settings.setValue("Password", pass);
-				l_settings.setValue("Name", name);
-				l_settings.setValue("Institution", inst);
-				l_settings.setValue("StayLogged", true);
-				l_settings.endGroup();
+				stayLoggedIn = true;
 			}
+			QSettings l_settings;
+			l_settings.beginGroup("LoggedInUser");
+			l_settings.setValue("Username", user);
+			l_settings.setValue("Password", pass);
+			l_settings.setValue("Name", name);
+			l_settings.setValue("Institution", inst);
+			l_settings.setValue("StayLogged", stayLoggedIn);
+			l_settings.endGroup();
 		}
 		if (valid == 1) {
+			m_dataEngineConnection->UserAccessControls()->GenerateLicenseKey(m_dataEngineConnection->GetGlyphEdPath().remove("/Content/"));
 			QSettings settings;
 			settings.beginGroup(user);
 			settings.setValue("Username", user);
 			settings.setValue("Password", pass);
 			settings.setValue("Name", name);
 			settings.setValue("Institution", inst);
+			settings.setValue("UserID", m_dataEngineConnection->UserAccessControls()->GetUserID());
+			settings.setValue("LicenseType", m_dataEngineConnection->UserAccessControls()->GetLicenseType());
 			settings.setValue("Visualizations", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
 			settings.endGroup();
 			canLogIn = true;

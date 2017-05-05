@@ -63,9 +63,53 @@ namespace DataEngine
 				}
 			}
 		}
-
 		return valid;
+	}
 
+	bool UserAccessControls::GenerateLicenseKey(QString path){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"generateLicenseKey", "(Ljava/lang/String;)Z");
+		bool success = false;
+		if (methodId != NULL) {
+			jstring fp = jniEnv->NewStringUTF(path.toStdString().c_str());
+			success = jniEnv->CallStaticBooleanMethod(jcls, methodId, fp);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return success;
+	}
+
+	int UserAccessControls::GetUserID(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getUserID", "()I");
+		int id = 0;
+		if (methodId != NULL) {
+			id = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return id;
+	}
+
+	int UserAccessControls::GetLicenseType(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getLicenseType", "()I");
+		int type = 0;
+		if (methodId != NULL) {
+			type = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return type;
 	}
 
 	QString UserAccessControls::NameOfUser(){

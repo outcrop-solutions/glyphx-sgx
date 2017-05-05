@@ -2,6 +2,8 @@
 import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import synglyphx.user.User;
 import synglyphx.user.Syncer;
@@ -81,6 +83,28 @@ public class UserAccessControls {
 		return 1;
 	}
 
+	public static boolean generateLicenseKey(String location){
+		try{
+			ResultSet rs = conn.prepareStatement("SELECT * FROM UsageLicenses WHERE `UserID` = "+String.valueOf(loggedInUser.getID())).executeQuery();
+			if(rs.next()){
+				loggedInUser.setLicenseType(rs.getInt("Type"));
+				PrintWriter writer = new PrintWriter(new File(location,"SGXLicense"), "UTF-8");
+    			writer.println(rs.getString("Key"));
+    			writer.close();
+			}
+			conn.close();
+			return true;
+		}
+		catch(Exception e){
+			try{
+				conn.close();
+	            e.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+		}
+		return false;
+	}
+
 	public static int checkAvailableGroups(){
 
 		if(loggedInUser.securityGroupCount() == 0){
@@ -141,7 +165,7 @@ public class UserAccessControls {
 	        rs.close();
 			pstmt.close();
 
-			conn.close();
+			//conn.close();
 		}catch(Exception e){
 			try{
 	            e.printStackTrace(Logger.getInstance().addError());
@@ -179,6 +203,14 @@ public class UserAccessControls {
 
 	public static boolean isDoneSyncing(){
 		return syncer.isDone();
+	}
+
+	public static int getUserID(){
+		return loggedInUser.getID();
+	}
+
+	public static int getLicenseType(){
+		return loggedInUser.getLicenseType();
 	}
 
 	public static String nameOfUser(){
@@ -232,7 +264,7 @@ public class UserAccessControls {
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("devtest","devtest"));
+		System.out.println(UserAccessControls.validateCredentials("bholster","bholster"));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 
@@ -241,7 +273,8 @@ public class UserAccessControls {
 		if(os.contains("mac")){
 			default_path = "/Users/synglyphx/Library/Application Support/SynGlyphX/Content";
 		}
-
+		UserAccessControls.generateLicenseKey("C:/ProgramData/SynGlyphX");
+		/*
 		if(UserAccessControls.fileSyncSetup(default_path)){
 			UserAccessControls.startSyncingFiles();
 			do{
@@ -250,7 +283,7 @@ public class UserAccessControls {
 			    } catch (InterruptedException e) {}
 			    System.out.println(UserAccessControls.getSyncProgress());
 			}while(UserAccessControls.isDoneSyncing() == false);
-		}
+		}*/
 /*
 		System.out.println("");
 		String[] vizNames = UserAccessControls.visualizationNames();

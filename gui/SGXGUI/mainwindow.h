@@ -43,6 +43,7 @@ namespace SynGlyphX {
 		static void ClearRecentFileList() { s_recentFileList.ClearFiles(); }
 		void SetCurrentUserDirectory(const QString& userdir){ m_userDirectory = userdir; }
 		void UpdateUserMenu(QString username);
+		bool HasValidLicense(){ return m_validLicense; };
 
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
@@ -126,6 +127,7 @@ namespace SynGlyphX {
 	private:
 		bool m_needToReadSettings;
 		unsigned int m_stateVersion;
+		bool m_validLicense;
 
     };
 

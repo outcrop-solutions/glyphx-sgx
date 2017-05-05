@@ -47,6 +47,8 @@ namespace DataEngine
 
 		bool IsValidConnection();
 		void ResetConnection();
+		int GetUserID();
+		int GetLicenseType();
 		QString NameOfUser();
 		QString NameOfInstitution();
 		QString LastModified();
@@ -56,6 +58,7 @@ namespace DataEngine
 
 		void InitializeConnection();
 		int ValidateCredentials(QString username, QString password);
+		bool GenerateLicenseKey(QString path);
 		int CheckAvailableGroups();
 		bool FileSyncSetup(QString path);
 		int VisualizationsToSync();

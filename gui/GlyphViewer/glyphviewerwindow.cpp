@@ -512,33 +512,36 @@ void GlyphViewerWindow::OpenProject() {
 
 void GlyphViewerWindow::OpenVisualisation() {
 
-	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt);;SynGlyphX Data Transform Files (*.sdt)"));
-	if (!openFile.isEmpty()) {
+	if (HasValidLicense()){
 
-		try {
+		QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt);;SynGlyphX Data Transform Files (*.sdt)"));
+		if (!openFile.isEmpty()) {
 
-			SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-			mapping->ReadFromFile(openFile.toStdString());
+			try {
 
-			ValidateDataMappingFile(mapping, openFile);
+				SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+				mapping->ReadFromFile(openFile.toStdString());
 
-			MultiTableDistinctValueFilteringParameters filters;
-			if (!mapping->GetFrontEndFilters().empty()) {
+				ValidateDataMappingFile(mapping, openFile);
 
-				LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
-				loadingFilterDialog.SetupFilters(*mapping);
-				if (loadingFilterDialog.exec() == QDialog::Rejected) {
+				MultiTableDistinctValueFilteringParameters filters;
+				if (!mapping->GetFrontEndFilters().empty()) {
 
-					return;
+					LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
+					loadingFilterDialog.SetupFilters(*mapping);
+					if (loadingFilterDialog.exec() == QDialog::Rejected) {
+
+						return;
+					}
+					filters = loadingFilterDialog.GetFilterValues();
 				}
-				filters = loadingFilterDialog.GetFilterValues();
+
+				LoadNewVisualization(openFile, filters, filters.size() > 0);
 			}
+			catch (const std::exception& e) {
 
-			LoadNewVisualization(openFile, filters, filters.size() > 0);
-		}
-		catch (const std::exception& e) {
-
-			QMessageBox::critical(this, tr("Visualization failed to load"), tr("Visualization failed to load: ") + e.what());
+				QMessageBox::critical(this, tr("Visualization failed to load"), tr("Visualization failed to load: ") + e.what());
+			}
 		}
 	}
 }
@@ -745,56 +748,64 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTableDistinctValueFilteringParameters filters, bool useFEFilterList) {
-	SGX_PROFILE_SCOPE
-	QString nativeFilename = QDir::toNativeSeparators(filename);
-	if (nativeFilename == m_currentFilename) {
-		
+
+	if (HasValidLicense()){
+
+		SGX_PROFILE_SCOPE
+		QString nativeFilename = QDir::toNativeSeparators(filename);
+		if (nativeFilename == m_currentFilename) {
+
+			return true;
+		}
+
+		if (useFEFilterList)
+		{
+			m_FEfilterListWidget->update(nativeFilename.toStdString().c_str(), filters);
+		}
+		else
+		{
+			m_leftDockWidget->hide();
+		}
+
+		GVGlobal::Services()->ClearUndoStack();
+		try {
+
+			LoadVisualization(nativeFilename, filters);
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok, this);
+			critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+			critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+			critical_error.setStandardButtons(QMessageBox::Ok);
+			critical_error.setDefaultButton(QMessageBox::Ok);
+			critical_error.setEscapeButton(QMessageBox::Ok);
+			critical_error.exec();
+			m_dataEngineConnection->ClearJavaErrors();
+			CloseVisualization();
+			//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
+			return false;
+		}
+
+		SetCurrentFile(nativeFilename);
+		if (!filters.empty()) {
+
+			s_recentFilters[nativeFilename] = filters;
+		}
+		else if (s_recentFilters.contains(nativeFilename)) {
+
+			s_recentFilters.remove(nativeFilename);
+		}
+		EnableLoadedVisualizationDependentActions(true);
+		m_ToggleFEFilterListAction->setEnabled(useFEFilterList);
+
+		statusBar()->showMessage("Visualization successfully opened", 3000);
 		return true;
 	}
+	else{
 
-	if (useFEFilterList)
-	{
-		m_FEfilterListWidget->update(nativeFilename.toStdString().c_str(), filters);
+		return true;
 	}
-	else
-	{
-		m_leftDockWidget->hide();
-	}
-
-	GVGlobal::Services()->ClearUndoStack();
-	try {
-
-		LoadVisualization(nativeFilename, filters);
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok, this);
-		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
-		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
-		critical_error.setStandardButtons(QMessageBox::Ok);
-		critical_error.setDefaultButton(QMessageBox::Ok);
-		critical_error.setEscapeButton(QMessageBox::Ok);
-		critical_error.exec();
-		m_dataEngineConnection->ClearJavaErrors();
-		CloseVisualization();
-		//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
-		return false;
-	}
-
-	SetCurrentFile(nativeFilename);
-	if (!filters.empty()) {
-
-		s_recentFilters[nativeFilename] = filters;
-	}
-	else if (s_recentFilters.contains(nativeFilename)) {
-
-		s_recentFilters.remove(nativeFilename);
-	}
-	EnableLoadedVisualizationDependentActions(true);
-	m_ToggleFEFilterListAction->setEnabled(useFEFilterList);
-
-	statusBar()->showMessage("Visualization successfully opened", 3000);
-	return true;
 }
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
