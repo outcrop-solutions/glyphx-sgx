@@ -92,12 +92,13 @@ public class UserAccessControls {
     			writer.println(rs.getString("Key"));
     			writer.close();
 			}
-			conn.close();
+			if(loggedInUser.securityGroupCount() <= 1){
+				conn.close();
+			}
 			return true;
 		}
 		catch(Exception e){
 			try{
-				conn.close();
 	            e.printStackTrace(Logger.getInstance().addError());
 	        }catch(Exception ex){}
 	        e.printStackTrace();
@@ -165,7 +166,9 @@ public class UserAccessControls {
 	        rs.close();
 			pstmt.close();
 
-			//conn.close();
+			if(loggedInUser.securityGroupCount() > 1){
+				conn.close();
+			}
 		}catch(Exception e){
 			try{
 	            e.printStackTrace(Logger.getInstance().addError());
@@ -273,8 +276,10 @@ public class UserAccessControls {
 		if(os.contains("mac")){
 			default_path = "/Users/synglyphx/Library/Application Support/SynGlyphX/Content";
 		}
-		UserAccessControls.generateLicenseKey("C:/ProgramData/SynGlyphX");
-		/*
+		//UserAccessControls.generateLicenseKey("C:/ProgramData/SynGlyphX");
+		//System.out.println(getListOfFormattedGroupNames());
+		setChosenGroup(getListOfFormattedGroupNames()[0]);
+		
 		if(UserAccessControls.fileSyncSetup(default_path)){
 			UserAccessControls.startSyncingFiles();
 			do{
@@ -283,7 +288,7 @@ public class UserAccessControls {
 			    } catch (InterruptedException e) {}
 			    System.out.println(UserAccessControls.getSyncProgress());
 			}while(UserAccessControls.isDoneSyncing() == false);
-		}*/
+		}
 /*
 		System.out.println("");
 		String[] vizNames = UserAccessControls.visualizationNames();

@@ -103,19 +103,20 @@ namespace SynGlyphX {
 		else {
 
 			QMessageBox::information(nullptr, tr("Licensing"), tr("License Status: ") + LicenseStatusToString(licenseStatus, numberOfDaysLeft) + 
-				"\n\n" + tr("A valid license is needed to use SynGlyphX software.  Please install your license using the next dialog, or contact SynGlyphX (http://www.synglyphx.com) for a license."));
-
+				"\n\n" + tr("A valid license is needed to use SynGlyphX software.  Please contact SynGlyphX (http://www.synglyphx.com) for a license."));
+			/*
 			LicensingDialog dialog(nullptr);
-			if (dialog.exec() == QDialog::Accepted) {/*
+			if (dialog.exec() == QDialog::Accepted) {
 				if (rlmez_checkout(const_cast<char*>("synglyphx"), version, &numberOfDaysLeft) == 0) {
 					result = true;
 				}
 				else {
 
 					QMessageBox::information(nullptr, tr("Licensing"), tr("License is invalid or expired.  Please obtain a valid license."));
-				}*/
+				}
 				result = false;
 			}
+			*/
 		}
 
 		QDir::setCurrent(previousCurrentDir);

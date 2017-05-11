@@ -93,8 +93,11 @@ namespace SynGlyphX {
 
 	bool UserLoginDialog::Login() {
 
-		QString user = m_usernameLineEdit->text();
-		QString pass = m_passwordLineEdit->text();
+		QSettings l_settings;
+		l_settings.beginGroup("LoggedInUser");
+		bool stayLoggedIn = l_settings.value("StayLogged", false).toBool();
+		QString user = stayLoggedIn ? l_settings.value("Username", "Guest").toString() : m_usernameLineEdit->text();
+		QString pass = stayLoggedIn ? l_settings.value("Password", "").toString() : m_passwordLineEdit->text();
 		QString name;
 		QString inst;
 		bool canLogIn = false;
@@ -119,21 +122,17 @@ namespace SynGlyphX {
 		if (valid != 0){
 			name = m_dataEngineConnection->UserAccessControls()->NameOfUser();
 			inst = m_dataEngineConnection->UserAccessControls()->NameOfInstitution();
-			bool stayLoggedIn = false;
 			if (stayLoggedInCheckBox->checkState() == Qt::Checked){
 				stayLoggedIn = true;
 			}
-			QSettings l_settings;
-			l_settings.beginGroup("LoggedInUser");
 			l_settings.setValue("Username", user);
 			l_settings.setValue("Password", pass);
 			l_settings.setValue("Name", name);
 			l_settings.setValue("Institution", inst);
 			l_settings.setValue("StayLogged", stayLoggedIn);
-			l_settings.endGroup();
 		}
 		if (valid == 1) {
-			m_dataEngineConnection->UserAccessControls()->GenerateLicenseKey(m_dataEngineConnection->GetGlyphEdPath().remove("/Content/"));
+			m_dataEngineConnection->UserAccessControls()->GenerateLicenseKey(m_dataEngineConnection->GetGlyphEdPath().remove("Content"));
 			QSettings settings;
 			settings.beginGroup(user);
 			settings.setValue("Username", user);
@@ -146,6 +145,7 @@ namespace SynGlyphX {
 			settings.endGroup();
 			canLogIn = true;
 		}
+		l_settings.endGroup();
 		
 		return canLogIn;
 	}

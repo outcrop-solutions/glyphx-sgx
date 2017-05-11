@@ -25,6 +25,7 @@
 #include <boost/algorithm/string.hpp>
 #include "AnnouncementDialog.h"
 #include "S3FileManager.h"
+#include "GroupSelectionDialog.h"
 #include "version.h"
 
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
@@ -88,7 +89,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	CheckForNewRelease();
 
 	if (loggedOn){
-		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+		//QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+		QTimer::singleShot(0, this, SLOT(Login()));
 	}
 	else if(releaseDialog){
 		releaseDialog->show();
@@ -489,13 +491,15 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 void HomePageWidget::SetCustomerLogo() {
 
 	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
-	if (QFileInfo::exists(upperRightLogo)) {
-
-		QPixmap p(upperRightLogo);
-		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
-		upperRightDashboardImage->AddPadding(25, 0, 25, 0);
-		
+	if (!QFileInfo::exists(upperRightLogo)) {
+		upperRightLogo = ":SGXGUI/Resources/synglyphx_x.ico";
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+			upperRightLogo = ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico";
+		}
 	}
+	QPixmap p(upperRightLogo);
+	upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+	upperRightDashboardImage->AddPadding(25, 0, 25, 0);
 }
 
 QWidget* HomePageWidget::CreateLowerDashboardWidget() {
@@ -555,12 +559,23 @@ void HomePageWidget::Login(){
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
-		if (m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups() > 1){
-			//Add dialog to select which group the user would like to load
-			//m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
-			//m_dataEngineConnection->UserAccessControls()->SetChosenGroup(QString);
+		if (m_mainWindow->MainWindow::HasValidLicense()){
+			int ag = m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups();
+			if (ag > 1){
+				QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
+				GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
+				if (gsd->exec() == QDialog::Accepted) {
+					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(gsd->GetSelectedGroup());
+				}
+			}
+
+			if (ag == 0){
+				SwitchDashboardLayout();
+			}
+			else{
+				SyncFilesAndLoadViews();
+			}
 		}
-		SyncFilesAndLoadViews();
 	}
 	else{
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
