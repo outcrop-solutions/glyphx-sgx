@@ -203,16 +203,6 @@ struct aiColor3D
         return aiColor3D(r*f,g*f,b*f);
     }
 
-    /** Access a specific color component */
-    float operator[](unsigned int i) const {
-        return *(&r + i);
-    }
-
-    /** Access a specific color component */
-    float& operator[](unsigned int i) {
-        return *(&r + i);
-    }
-
     /** Check whether a color is black */
     bool IsBlack() const {
         static const float epsilon = 10e-3f;
