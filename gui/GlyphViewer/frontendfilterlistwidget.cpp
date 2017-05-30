@@ -1,4 +1,4 @@
-#include "FrontEndFilterListWidget.h"
+#include "frontendfilterlistwidget.h"
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QAbstractItemView>
 #include <QtCore/QProcess>
@@ -7,7 +7,7 @@
 #include "application.h"
 #include "glyphviewerwindow.h"
 #include "datatransformmapping.h"
-#include "frontendfilter.h"
+#include "FrontEndFilter.h"
 
 FrontEndFilterListWidget::FrontEndFilterListWidget(QWidget *parent)
 	: QWidget(parent)

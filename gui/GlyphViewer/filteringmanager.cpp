@@ -1,7 +1,7 @@
 #include "filteringmanager.h"
 #include "datatransformmodel.h"
 #include <boost/optional.hpp>
-#include <SceneViewer/SceneViewer.h>
+#include <SceneViewer/sceneviewer.h>
 
 FilteringManager::FilteringManager(SynGlyphX::DataTransformModel* DataTransformModel, SourceDataCache::SharedPtr sourceDataCache, SynGlyphX::ItemFocusSelectionModel* sceneSelectionModel, QObject *parent)
 	: QObject(parent),

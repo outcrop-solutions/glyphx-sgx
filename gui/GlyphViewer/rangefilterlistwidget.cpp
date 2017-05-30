@@ -139,8 +139,6 @@ void RangeFilterListWidget::GetFilteringParametersForTable(const QString& table,
 void RangeFilterListWidget::OnRangesChanged() {
 
 	//if (SynGlyphX::SingleNumericRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender())){
-	SynGlyphX::SingleRangeFilterWidget* updatedFilter = dynamic_cast<SynGlyphX::SingleNumericRangeFilterWidget*>(sender());
-	
 	int row = 0;
 	for (; row < m_filterListTableWidget->rowCount(); ++row) {
 

@@ -16,8 +16,8 @@
 ///
 #pragma once
 
-#include "../../GUI/SGXSceneViewer/platform.h"
-#include "../../GUI/SGXSceneViewer/SceneViewer/placementpolicy.h"
+#include "../../gui/SGXSceneViewer/platform.h"
+#include "../../gui/SGXSceneViewer/SceneViewer/placementpolicy.h"
 
 namespace SynGlyphXANTz {
 

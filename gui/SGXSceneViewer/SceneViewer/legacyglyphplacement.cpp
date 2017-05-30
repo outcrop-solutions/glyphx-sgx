@@ -2,7 +2,7 @@
 #include "legacyglyphplacement.h"
 #include "glyphnode.h"
 #include "placementpolicy.h"
-#include "../../../ANTzPlus/ANTzTopology/ANTzTopology.h"
+#include "../../../antzplus/ANTzTopology/ANTzTopology.h"
 
 namespace SynGlyphX
 {

@@ -1,5 +1,5 @@
 
-#include "SuperimposedGroupManager.h"
+#include "superimposedgroupmanager.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <hal/hal.h>
 #include <render/model.h>
