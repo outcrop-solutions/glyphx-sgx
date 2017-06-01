@@ -56,6 +56,8 @@ public:
 	void ResetViews();
 	void LoggedOut();
 
+	void ReSyncFilesAndLoadViews();
+
 signals:
 	void LoadRecentFile(QString filename);
 	bool LoadVisualization(const QString& sdtToLoad, MultiTableDistinctValueFilteringParameters userSelectedFilters, bool useFrontEndFilters);
@@ -68,6 +70,7 @@ private slots:
 	void OnRecentViewClicked(QListWidgetItem *item);
 	void SyncFilesAndLoadViews();
 	void Login();
+	void ContinueWithLogin();
 
 private:
 	void CreateHomePageOptionsWidget();

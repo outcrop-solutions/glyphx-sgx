@@ -46,6 +46,19 @@ namespace DataEngine
 		}
 	}
 
+	void UserAccessControls::FlushOutFilterSetup(){
+		synced = false;
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"flushOutFilterSetup", "()V");
+		if (methodId != NULL) {
+			jniEnv->CallStaticVoidMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
 	int UserAccessControls::ValidateCredentials(QString username, QString password){
 
 		valid = 0;

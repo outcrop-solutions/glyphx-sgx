@@ -55,6 +55,7 @@
         <file>Resources/license_agreement_glyphed.html</file>
         <file>Resources/Icons/icon-onoff.png</file>
         <file>Resources/Icons/icon-onoff-a.png</file>
+        <file>Resources/GlyphEd/SynGlyphX-inside-3.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
         <file alias="qt.conf">Resources/qt.conf</file>

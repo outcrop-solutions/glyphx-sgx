@@ -89,8 +89,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	CheckForNewRelease();
 
 	if (loggedOn){
-		//QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
-		QTimer::singleShot(0, this, SLOT(Login()));
+		//QTimer::singleShot(0, this, SLOT(Login()));
+		Login();
 	}
 	else if(releaseDialog){
 		releaseDialog->show();
@@ -559,23 +559,8 @@ void HomePageWidget::Login(){
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
-		if (m_mainWindow->MainWindow::HasValidLicense()){
-			int ag = m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups();
-			if (ag > 1){
-				QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
-				GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
-				if (gsd->exec() == QDialog::Accepted) {
-					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(gsd->GetSelectedGroup());
-				}
-			}
-
-			if (ag == 0){
-				SwitchDashboardLayout();
-			}
-			else{
-				SyncFilesAndLoadViews();
-			}
-		}
+		SwitchDashboardLayout();
+		QTimer::singleShot(0, this, SLOT(ContinueWithLogin()));
 	}
 	else{
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
@@ -585,6 +570,34 @@ void HomePageWidget::Login(){
 		critical_error.setDefaultButton(QMessageBox::Ok);
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
+	}
+}
+
+void HomePageWidget::ContinueWithLogin(){
+
+	if (m_mainWindow->MainWindow::HasValidLicense()){
+		int ag = m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups();
+		QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
+		m_mainWindow->CreateUserSettingsDialog(fgns);
+		if (ag > 1){
+			GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
+			if (gsd->exec() == QDialog::Accepted) {
+				QString selected = gsd->GetSelectedGroup();
+				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(selected);
+				m_mainWindow->SetSelectedGroup(selected);
+			}
+		}
+
+
+		if (ag == 0){
+			SwitchDashboardLayout();
+		}
+		else{
+			SyncFilesAndLoadViews();
+		}
+	}
+	else{
+		m_mainWindow->Logout();
 	}
 }
 
@@ -604,6 +617,13 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 	if (showReleaseNow && releaseDialog){
 		releaseDialog->show();
 	}
+}
+
+void HomePageWidget::ReSyncFilesAndLoadViews(){
+
+	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
+	d->exec();
+	LoggedOut();
 }
 
 void HomePageWidget::ResetViews(){

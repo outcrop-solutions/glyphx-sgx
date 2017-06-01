@@ -74,6 +74,7 @@ namespace SynGlyphX {
 		QAction* LogoutMenu();
 		void UserLogOut();
 		virtual QString GetApplicationDisplayName() const;
+		void SetUserSettingsDialog(QDialog* userSettings){ m_userSettings = userSettings; }
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
@@ -115,6 +116,7 @@ namespace SynGlyphX {
 
 		static SettingsStoredFileList s_recentFileList;
 		static const QString s_noFileName;
+		QDialog* m_userSettings;
 
     private slots:
         void OnRecentFileSelected();

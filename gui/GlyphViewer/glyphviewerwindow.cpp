@@ -45,6 +45,7 @@
 #include "networkdownloader.h"
 #include "InteractiveLegend.h"
 #include <hal/hal.h>
+#include <QtWidgets/QDialogButtonBox>
 #include "FieldProperties.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
@@ -692,10 +693,63 @@ void GlyphViewerWindow::Logout(){
 	settings.setValue("StayLogged", false);
 	settings.endGroup();
 
+	if (MainWindow::HasValidLicense()){
+		m_groupsComboBox->clear();
+	}
+
 	m_dataEngineConnection->UserAccessControls()->ResetConnection();
 
 	m_homePage->ResetViews();
 	m_homePage->LoggedOut();
+	SynGlyphX::Application::restoreOverrideCursor();
+}
+
+void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
+
+	QDialog* s = new QDialog(this);
+	s->setWindowTitle(tr("User Settings"));
+	QVBoxLayout* mainLayout = new QVBoxLayout(s);
+	QGroupBox *groupBox = new QGroupBox(tr("Visualization Groups"));
+	QHBoxLayout* layout = new QHBoxLayout(s);
+	m_groupsComboBox = new QComboBox(s);
+	m_groupsComboBox->addItems(groups);
+	QPushButton* loadButton = new QPushButton(tr("Load"), s);
+	loadButton->setDisabled(groups.isEmpty());
+	layout->addWidget(m_groupsComboBox, 3);
+	layout->addWidget(loadButton, 1);
+	groupBox->setLayout(layout);
+	mainLayout->addWidget(groupBox);
+
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, s);
+	mainLayout->addWidget(buttonBox);
+
+	s->setLayout(mainLayout);
+
+	QObject::connect(loadButton, &QPushButton::clicked, this, &GlyphViewerWindow::SwitchVisualizationGroup);
+	QObject::connect(buttonBox, &QDialogButtonBox::rejected, s, &QDialog::reject);
+
+	SetUserSettingsDialog(s);
+}
+
+void GlyphViewerWindow::SwitchVisualizationGroup() {
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+	m_userSettings->accept();
+
+	QString groupName = m_groupsComboBox->currentText();
+
+	if (MainWindow::HasOpenFile()){
+		CloseVisualization();
+	}
+	m_homePage->ResetViews();
+
+	m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+
+	m_dataEngineConnection->UserAccessControls()->FlushOutFilterSetup();
+
+	m_homePage->ReSyncFilesAndLoadViews();
+
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 

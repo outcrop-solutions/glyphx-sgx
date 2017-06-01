@@ -242,7 +242,7 @@ namespace SynGlyphX {
 				allowed = (QStringList() << "GlyphEd");
 				break;
 			default:
-				return 2;
+				return 3;
 		}
 
 		std::ifstream input("SGXLicense");

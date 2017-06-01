@@ -268,14 +268,7 @@ namespace SynGlyphX {
 
 	void MainWindow::UserSettings() {
 
-		QDialog* s = new QDialog(this);
-		s->setWindowTitle(tr("User Settings"));
-		QVBoxLayout* layout = new QVBoxLayout(s);
-		QWidget *placeHolder = new QWidget(s);
-		placeHolder->setMinimumSize(300, 300);
-		layout->addWidget(placeHolder);
-		s->setLayout(layout);
-		s->exec();
+		m_userSettings->exec();
 	}
 
 	void MainWindow::UserLogOut(){

@@ -47,6 +47,7 @@ namespace DataEngine
 
 		bool IsValidConnection();
 		void ResetConnection();
+		void FlushOutFilterSetup();
 		int GetUserID();
 		int GetLicenseType();
 		QString NameOfUser();

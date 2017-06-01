@@ -39,10 +39,10 @@ namespace SynGlyphX {
 			" margin-right: 50px; "
 			" min-height: 40px; } ");
 		m_usernameLineEdit->setStyleSheet(line);
-		m_passwordLineEdit->setStyleSheet(line);
+		m_passwordLineEdit->setStyleSheet(line);/*
 		stayLoggedInCheckBox = new QCheckBox("Keep me logged in", this);
 		stayLoggedInCheckBox->setLayoutDirection(Qt::RightToLeft);
-		stayLoggedInCheckBox->setStyleSheet("font-size:11pt;margin-right:50px;");
+		stayLoggedInCheckBox->setStyleSheet("font-size:11pt;margin-right:50px;");*/
 		QFormLayout* formLayout = new QFormLayout(this);
 		formLayout->setContentsMargins(-1, -1, -1, 0);
 		formLayout->setFormAlignment(Qt::AlignCenter);
@@ -63,7 +63,7 @@ namespace SynGlyphX {
 
 		QHBoxLayout* hboxlayout = new QHBoxLayout;
 		hboxlayout->addWidget(chgpw);
-		hboxlayout->addWidget(stayLoggedInCheckBox);
+		//hboxlayout->addWidget(stayLoggedInCheckBox);
 
 		formLayout->addRow(hboxlayout);
 
@@ -122,14 +122,14 @@ namespace SynGlyphX {
 		if (valid != 0){
 			name = m_dataEngineConnection->UserAccessControls()->NameOfUser();
 			inst = m_dataEngineConnection->UserAccessControls()->NameOfInstitution();
-			if (stayLoggedInCheckBox->checkState() == Qt::Checked){
+			/*if (stayLoggedInCheckBox->checkState() == Qt::Checked){
 				stayLoggedIn = true;
-			}
+			}*/
 			l_settings.setValue("Username", user);
 			l_settings.setValue("Password", pass);
 			l_settings.setValue("Name", name);
 			l_settings.setValue("Institution", inst);
-			l_settings.setValue("StayLogged", stayLoggedIn);
+			l_settings.setValue("StayLogged", true);
 		}
 		if (valid == 1) {
 			m_dataEngineConnection->UserAccessControls()->GenerateLicenseKey(m_dataEngineConnection->GetGlyphEdPath().remove("Content"));

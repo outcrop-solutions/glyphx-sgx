@@ -62,9 +62,12 @@ public:
 	static void ClearSubsetFileList() { s_subsetFileList.ClearFiles(); }
 	static void ClearRecentFileList();
 	static void AddSubsetVisualization(const QString& filename);
+	void CreateUserSettingsDialog(QStringList groups);
+	void SetSelectedGroup(QString selected){ m_groupsComboBox->setCurrentIndex(m_groupsComboBox->findText(selected)); }
 
 public slots:
 	bool LoadNewVisualization(const QString& filename, MultiTableDistinctValueFilteringParameters filters = MultiTableDistinctValueFilteringParameters(), bool useFEFilterListWidget = false);
+	void Logout();
 
 protected:
 	void ReadSettings() override;
@@ -101,7 +104,7 @@ private slots:
 	void OnOpenURLs();
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
-	void Logout();
+	void SwitchVisualizationGroup();
 
 private:
 	class HUDGenerationInfo {
@@ -184,6 +187,8 @@ private:
 	bool m_showErrorFromTransform;
 	bool m_showHomePage;
 	QString m_defaultProject;
+
+	QComboBox* m_groupsComboBox;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
