@@ -1,6 +1,7 @@
 #include "HomePageWidget.h"
 #include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
+#include <QtCore/QSettings>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QMessageBox>
 #include "TitleListWidget.h"
@@ -492,7 +493,7 @@ void HomePageWidget::SetCustomerLogo() {
 
 	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 	if (!QFileInfo::exists(upperRightLogo)) {
-		upperRightLogo = ":SGXGUI/Resources/synglyphx_x.ico";
+		upperRightLogo = ":SGXGUI/Resources/sgx_x.png";
 		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
 			upperRightLogo = ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico";
 		}
@@ -580,11 +581,24 @@ void HomePageWidget::ContinueWithLogin(){
 		QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
 		m_mainWindow->CreateUserSettingsDialog(fgns);
 		if (ag > 1){
-			GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
-			if (gsd->exec() == QDialog::Accepted) {
-				QString selected = gsd->GetSelectedGroup();
-				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(selected);
-				m_mainWindow->SetSelectedGroup(selected);
+
+			QSettings settings;
+			settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+			QString groupName = settings.value("GroupName", "Default").toString();
+			bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+			settings.endGroup();
+
+			if (onStartupChecked && fgns.contains(groupName)){
+				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+				m_mainWindow->SetSelectedGroup(groupName);
+			}
+			else{
+				GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
+				if (gsd->exec() == QDialog::Accepted) {
+					QString selected = gsd->GetSelectedGroup();
+					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(selected);
+					m_mainWindow->SetSelectedGroup(selected);
+				}
 			}
 		}
 

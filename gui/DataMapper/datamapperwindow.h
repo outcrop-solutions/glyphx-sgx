@@ -37,6 +37,7 @@
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
 #include "aliaseswidget.h"
+#include "userlogindialog.h"
 
 class LinksListView;
 class LinksDialog;
@@ -48,6 +49,7 @@ namespace SynGlyphX {
 	class RoleDataFilterProxyModel;
 	class IntRoleDataFilterProxyModel;
 	class SingleWidgetDialog;
+	class UserLoginDialog;
 }
 
 class DataMapperWindow : public SynGlyphX::MainWindow
@@ -106,6 +108,13 @@ private:
 	void ClearAndInitializeDataMapping();
 	void SelectFirstBaseObject();
 	void OnLinkDialogAccepted();
+	bool IsUserLoggedIn();
+	void Login();
+	void UpdateUserMenu();
+	void Logout();
+
+	QDialog* loginDialog;
+	SynGlyphX::UserLoginDialog* loginWidget;
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;

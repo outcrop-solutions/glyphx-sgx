@@ -68,14 +68,14 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
 
 	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
-
+	/*
 #ifdef USE_LICENSING
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
 #endif
-
+	*/
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);

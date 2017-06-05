@@ -706,18 +706,41 @@ void GlyphViewerWindow::Logout(){
 
 void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
+	QSettings settings;
+	settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+	QString groupName = settings.value("GroupName", "Default").toString();
+	bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+	settings.endGroup();
+
 	QDialog* s = new QDialog(this);
 	s->setWindowTitle(tr("User Settings"));
 	QVBoxLayout* mainLayout = new QVBoxLayout(s);
+
 	QGroupBox *groupBox = new QGroupBox(tr("Visualization Groups"));
-	QHBoxLayout* layout = new QHBoxLayout(s);
+	groupBox->setStyleSheet("QGroupBox{background-color:white;}");
+	
+	QVBoxLayout* vlayout = new QVBoxLayout(s);
+
+	QCheckBox *checkbox = new QCheckBox(this);
+	checkbox->setText("Load "+groupName+" on Startup");
+	checkbox->setChecked(onStartupChecked);
+	vlayout->addWidget(checkbox);
+
 	m_groupsComboBox = new QComboBox(s);
 	m_groupsComboBox->addItems(groups);
+	vlayout->addWidget(m_groupsComboBox);
+
+	QHBoxLayout* hlayout = new QHBoxLayout(s);
+	QPushButton* defButton = new QPushButton(tr("Set as Default"), s);
+	defButton->setDisabled(groups.isEmpty());
+	hlayout->addWidget(defButton, 1);
 	QPushButton* loadButton = new QPushButton(tr("Load"), s);
 	loadButton->setDisabled(groups.isEmpty());
-	layout->addWidget(m_groupsComboBox, 3);
-	layout->addWidget(loadButton, 1);
-	groupBox->setLayout(layout);
+	hlayout->addWidget(loadButton, 1);
+
+	vlayout->addLayout(hlayout);
+	groupBox->setLayout(vlayout);
+
 	mainLayout->addWidget(groupBox);
 
 	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, s);
@@ -725,6 +748,19 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
 	s->setLayout(mainLayout);
 
+	QObject::connect(defButton, &QPushButton::clicked, checkbox, [=](){
+		checkbox->setText("Load " + m_groupsComboBox->currentText() + " on Startup");
+		QSettings st1;
+		st1.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		st1.setValue("GroupName", m_groupsComboBox->currentText());
+		st1.endGroup();
+	});
+	QObject::connect(checkbox, &QCheckBox::stateChanged, checkbox, [=](){
+		QSettings st2;
+		st2.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		st2.setValue("OnStartupChecked", checkbox->isChecked());
+		st2.endGroup();
+	});
 	QObject::connect(loadButton, &QPushButton::clicked, this, &GlyphViewerWindow::SwitchVisualizationGroup);
 	QObject::connect(buttonBox, &QDialogButtonBox::rejected, s, &QDialog::reject);
 
