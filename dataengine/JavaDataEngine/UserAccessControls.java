@@ -27,7 +27,7 @@ public class UserAccessControls {
 		return conn != null;
 	}
 	
-	public static int validateCredentials(String username, String password){
+	public static int validateCredentials(String username, String password, String appVersion){
 
 		if(username.contains(" ")){
 			return 0;
@@ -47,7 +47,8 @@ public class UserAccessControls {
 					loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
 					String update = "UPDATE UserAccounts SET "+
 									"LoginCount = "+String.valueOf(rs.getInt("UserAccounts.LoginCount")+1)+", "+
-									"LastLogin = '"+(new Timestamp(System.currentTimeMillis())).toString()+"' "+
+									"LastLogin = '"+(new Timestamp(System.currentTimeMillis())).toString()+"', "+
+									"VersionNum = '"+appVersion+"' "+
 									"WHERE ID = "+String.valueOf(loggedInUser.getID());
 					conn.prepareStatement(update).executeUpdate();
 				}
@@ -264,7 +265,7 @@ public class UserAccessControls {
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("bholster","bholster"));
+		System.out.println(UserAccessControls.validateCredentials("bholster","bholster",""));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 

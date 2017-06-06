@@ -40,6 +40,7 @@ namespace DataEngine
 		QString presetName;
 		QString presetInstitution;
 		QStringList vizNames;
+		QString appVersion;
 
 	public:
 		UserAccessControls(JNIEnv *env);
@@ -56,6 +57,7 @@ namespace DataEngine
 		QStringList VizualizationNames();
 		QStringList GetFormattedGroupNames();
 		void SetChosenGroup(QString name);
+		void SetAppVersionNumber(QString version){ appVersion = version; }
 
 		void InitializeConnection();
 		int ValidateCredentials(QString username, QString password);

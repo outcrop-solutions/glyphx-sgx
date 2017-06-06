@@ -5,7 +5,8 @@ namespace DataEngine
 	UserAccessControls::UserAccessControls(JNIEnv *env) :
 		jniEnv(env),
 		validConnection(false),
-        synced(false)
+        synced(false),
+		appVersion("")
 	{
 		jcls = jniEnv->FindClass("UserAccessControls");
 	}
@@ -64,11 +65,12 @@ namespace DataEngine
 		valid = 0;
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"validateCredentials", "(Ljava/lang/String;Ljava/lang/String;)I");
+				"validateCredentials", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
 			if (methodId != NULL) {
 				jstring un = jniEnv->NewStringUTF(username.toStdString().c_str());
 				jstring pw = jniEnv->NewStringUTF(password.toStdString().c_str());
-				valid = jniEnv->CallStaticIntMethod(jcls, methodId, un, pw);
+				jstring vn = jniEnv->NewStringUTF(appVersion.toStdString().c_str());
+				valid = jniEnv->CallStaticIntMethod(jcls, methodId, un, pw, vn);
 
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();

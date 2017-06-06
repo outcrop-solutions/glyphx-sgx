@@ -47,6 +47,7 @@
 #include <hal/hal.h>
 #include <QtWidgets/QDialogButtonBox>
 #include "FieldProperties.h"
+#include "version.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -98,6 +99,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 			m_dataEngineConnection->createJVM();
 			de_version = m_dataEngineConnection->VersionNumber();
+			m_dataEngineConnection->UserAccessControls()->SetAppVersionNumber(SynGlyphX::getAppVersionString());
 			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
 		}
 	}
