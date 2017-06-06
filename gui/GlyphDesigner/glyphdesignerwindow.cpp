@@ -16,6 +16,7 @@
 #include "singleglyphviewoptionswidget.h"
 #include "singlewidgetdialog.h"
 #include "glyphtemplatelibrarylistwidget.h"
+#include "glyphbuilderapplication.h"
 #include "GDGlobal.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
@@ -23,8 +24,11 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	m_3dView(nullptr),
     m_treeView(nullptr),
     m_glyphTreeModel(nullptr),
+	m_dataEngineConnection(nullptr),
 	m_isFileLoadingOrDefaultGlyphSet(false)
 {
+	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
+
 	m_glyphTreeModel = new SynGlyphXANTz::MinMaxGlyphTreeModel(this);
 	m_glyphTreeModel->RepaceModelWithDefaultGlyphTree();
 	m_sharedSelectionModel = new QItemSelectionModel(m_glyphTreeModel, this);
@@ -47,6 +51,21 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::rowsMoved, this, &GlyphDesignerWindow::OnModelChanged);
 	QObject::connect(m_glyphTreeModel, &SynGlyphXANTz::MinMaxGlyphTreeModel::dataChanged, this, &GlyphDesignerWindow::OnModelChanged);
 	
+	try {
+
+		if (!m_dataEngineConnection->hasJVM()){
+
+			m_dataEngineConnection->createJVM();
+			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
+
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		throw;
+	}
+
 	SelectRootGlyphInModel();
 
 	GDGlobal::Init(new GDServices(this));
@@ -58,6 +77,29 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	}
 
     statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
+
+	loginDialog = new QDialog(this);
+	loginDialog->setWindowFlags(((loginDialog->windowFlags() | Qt::CustomizeWindowHint) & ~Qt::WindowContextHelpButtonHint));
+	QVBoxLayout* layout = new QVBoxLayout(loginDialog);
+	loginWidget = new DataEngine::UserLoginDialog(m_dataEngineConnection, this);
+	loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	loginWidget->setMinimumWidth(400);
+	loginWidget->setLineWidth(2);
+	loginWidget->setMidLineWidth(3);
+	loginWidget->setStyleSheet("background-color: white;");
+	QObject::connect(loginWidget, &DataEngine::UserLoginDialog::LoginActivated, this, &GlyphDesignerWindow::Login);
+	loginWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+	layout->addWidget(loginWidget);
+	loginDialog->setLayout(layout);
+
+	QObject::connect(loginDialog, &QDialog::rejected, this, &QWidget::close);
+
+	if (IsUserLoggedIn()){
+		Login();
+	}
+	else{
+		QTimer::singleShot(0, loginDialog, SLOT(exec()));
+	}
 }
 
 GlyphDesignerWindow::~GlyphDesignerWindow()
@@ -425,3 +467,81 @@ void GlyphDesignerWindow::ChangeGlobalOptions() {
 		m_3dView->SetLockZPositionToZero(optionsWidget->IsZAlwaysZeroIn3D());
 	}
 }
+
+//NEW LOGIN/LICENSE STUFF FOR GLYPHDESIGNER
+
+bool GlyphDesignerWindow::IsUserLoggedIn() {
+
+	QSettings settings;
+	settings.beginGroup("LoggedInUser");
+	QString user = settings.value("Username", "Guest").toString();
+	QString pass = settings.value("Password", "").toString();
+	QString name = settings.value("Name", "Guest").toString();
+	QString inst = settings.value("Institution", "").toString();
+	bool logged = settings.value("StayLogged", false).toBool();
+	settings.endGroup();
+
+	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
+		return true;
+	}
+	else{
+		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+		if (logged){
+			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+			if (valid == 1 || valid == 2){
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+void GlyphDesignerWindow::Login(){
+
+	if (loginWidget->Login()){
+		MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
+		UpdateUserMenu();
+		if (MainWindow::HasValidLicense()){
+			loginDialog->hide();
+		}
+		else{
+			Logout();
+		}
+	}
+	else{
+		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
+		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+		critical_error.setStandardButtons(QMessageBox::Ok);
+		critical_error.setDefaultButton(QMessageBox::Ok);
+		critical_error.setEscapeButton(QMessageBox::Ok);
+		critical_error.exec();
+	}
+}
+
+void GlyphDesignerWindow::UpdateUserMenu(){
+	QObject::connect(MainWindow::LogoutMenu(), &QAction::triggered, this, &GlyphDesignerWindow::Logout);
+}
+
+void GlyphDesignerWindow::Logout(){
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	MainWindow::UserLogOut();
+
+	QSettings settings;
+	settings.beginGroup("LoggedInUser");
+	settings.setValue("Username", "Guest");
+	settings.setValue("Password", "");
+	settings.setValue("Name", "Guest");
+	settings.setValue("Institution", "");
+	settings.setValue("StayLogged", false);
+	settings.endGroup();
+
+	m_dataEngineConnection->UserAccessControls()->ResetConnection();
+
+	SynGlyphX::Application::restoreOverrideCursor();
+	IsUserLoggedIn();
+	loginDialog->exec();
+}
+
+//NEW LOGIN/LICENSE STUFF FOR GLYPHDESIGNER ENDS

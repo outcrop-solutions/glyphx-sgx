@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef SYNGLYPHX_USERLOGINDIALOG_H
-#define SYNGLYPHX_USERLOGINDIALOG_H
+#ifndef USERLOGINDIALOG_H
+#define USERLOGINDIALOG_H
 
 #include "sgxgui_global.h"
 #include <QtWidgets/QFrame>
@@ -27,9 +27,9 @@
 
 class QLabel;
 
-namespace SynGlyphX {
+namespace DataEngine {
 
-	class UserLoginDialog : public QFrame
+	class DATAENGINE UserLoginDialog : public QFrame
 	{
 		Q_OBJECT
 
@@ -42,7 +42,7 @@ namespace SynGlyphX {
 		void Clear();
 
 	signals:
-		void DMLoginActivated();
+		void LoginActivated();
 
 	private:
 		QPushButton* loginButton;

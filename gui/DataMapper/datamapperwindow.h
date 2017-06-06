@@ -49,7 +49,6 @@ namespace SynGlyphX {
 	class RoleDataFilterProxyModel;
 	class IntRoleDataFilterProxyModel;
 	class SingleWidgetDialog;
-	class UserLoginDialog;
 }
 
 class DataMapperWindow : public SynGlyphX::MainWindow
@@ -114,7 +113,7 @@ private:
 	void Logout();
 
 	QDialog* loginDialog;
-	SynGlyphX::UserLoginDialog* loginWidget;
+	DataEngine::UserLoginDialog* loginWidget;
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;

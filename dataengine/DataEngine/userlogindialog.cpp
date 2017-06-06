@@ -7,8 +7,10 @@
 #include <QtWidgets/QPushButton>
 #include <QtCore/QSettings>
 #include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtWidgets/QApplication>
 
-namespace SynGlyphX {
+namespace DataEngine {
 
 	UserLoginDialog::UserLoginDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
 		: QFrame(parent),
@@ -81,9 +83,12 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
-		QObject::connect(loginButton, &QPushButton::clicked, this, &UserLoginDialog::DMLoginActivated);
-		//QObject::connect(m_usernameLineEdit, &QLineEdit::returnPressed, this, &UserLoginDialog::DMLoginActivated);
-		//QObject::connect(m_passwordLineEdit, &QLineEdit::returnPressed, this, &UserLoginDialog::DMLoginActivated);
+		QObject::connect(loginButton, &QPushButton::clicked, this, &UserLoginDialog::LoginActivated);
+		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+		if (appfile.contains("GlyphEd") || appfile.contains("GlyphViewer")){
+			QObject::connect(m_usernameLineEdit, &QLineEdit::returnPressed, this, &UserLoginDialog::LoginActivated);
+			QObject::connect(m_passwordLineEdit, &QLineEdit::returnPressed, this, &UserLoginDialog::LoginActivated);
+		}
 	}
 
 

@@ -104,7 +104,7 @@ private:
 	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
 	
 	GlyphViewerWindow* m_mainWindow;
-	SynGlyphX::UserLoginDialog* loginWidget;
+	DataEngine::UserLoginDialog* loginWidget;
 	bool loggedOn;
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;

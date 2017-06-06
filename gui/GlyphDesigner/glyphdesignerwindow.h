@@ -22,6 +22,9 @@
 #include "glyphtreeview.h"
 #include "antzsingleglyphtreewidget.h"
 #include "minmaxglyphtreemodel.h"
+#include "dataengineconnection.h"
+#include "userlogindialog.h"
+
 class GDServicesImpl;
 class GlyphDesignerWindow : public SynGlyphX::MainWindow
 {
@@ -30,6 +33,7 @@ class GlyphDesignerWindow : public SynGlyphX::MainWindow
 public:
     GlyphDesignerWindow(QWidget *parent = 0);
     ~GlyphDesignerWindow();
+	void closeJVM();
 
 protected:
     virtual bool LoadRecentFile(const QString& filename);
@@ -56,6 +60,14 @@ private:
     bool SaveTemplateFile(const QString& filename);
     bool AskUserToSave();
 	void SelectRootGlyphInModel();
+	bool IsUserLoggedIn();
+	void Login();
+	void UpdateUserMenu();
+	void Logout();
+
+	QDialog* loginDialog;
+	DataEngine::UserLoginDialog* loginWidget;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 
 	SynGlyphXANTz::ANTzSingleGlyphTreeWidget* m_3dView;
     GlyphTreeView* m_treeView;

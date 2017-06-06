@@ -472,13 +472,13 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 		loggedOutLayout->setColumnStretch(2, 1);
 		loggedOutLayout->setSpacing(15);
 
-		loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
+		loginWidget = new DataEngine::UserLoginDialog(m_dataEngineConnection, this);
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
 		loginWidget->setMidLineWidth(3);
 		//loginWidget->setMinimumHeight(250);
 		loginWidget->setStyleSheet("background-color: white;");
-		QObject::connect(loginWidget, &SynGlyphX::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
+		QObject::connect(loginWidget, &DataEngine::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
 
 		loginWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 		loggedOutLayout->addWidget(loginWidget, 0, 1, 1, 1);//, Qt::AlignCenter | Qt::AlignTop); //1,1
