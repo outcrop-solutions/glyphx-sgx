@@ -491,13 +491,35 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 
 void HomePageWidget::SetCustomerLogo() {
 
-	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
-	if (!QFileInfo::exists(upperRightLogo)) {
-		upperRightLogo = ":SGXGUI/Resources/sgx_x.png";
-		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
-			upperRightLogo = ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico";
+
+	QSettings st1;
+	st1.beginGroup("LogoSettings");
+
+	bool onStartupChecked = false;
+	bool reqOnStartupChecked = false;
+	if (m_dataEngineConnection->UserAccessControls()->GetUserID() != 0){
+		QSettings settings;
+		settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+		reqOnStartupChecked = settings.value("ReqOnStartupChecked", false).toBool();
+		settings.endGroup();
+		if (!onStartupChecked && !reqOnStartupChecked){
+			st1.setValue("LastLogo", SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico" : ":SGXGUI/Resources/sgx_x.png");
 		}
 	}
+
+	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
+	if (!QFileInfo::exists(upperRightLogo)) {
+		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/sgx_x.png").toString();
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico").toString();
+		}
+	}
+	else{
+		st1.setValue("LastLogo", upperRightLogo);
+	}
+	st1.endGroup();
+
 	QPixmap p(upperRightLogo);
 	upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
 	upperRightDashboardImage->AddPadding(25, 0, 25, 0);
@@ -577,16 +599,18 @@ void HomePageWidget::Login(){
 void HomePageWidget::ContinueWithLogin(){
 
 	if (m_mainWindow->MainWindow::HasValidLicense()){
+
+		QSettings settings;
+		settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		QString groupName = settings.value("GroupName", "Default").toString();
+		bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+		bool reqOnStartupChecked = settings.value("ReqOnStartupChecked", true).toBool();
+		settings.endGroup();
+
 		int ag = m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups();
 		QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
 		m_mainWindow->CreateUserSettingsDialog(fgns);
-		if (ag > 1){
-
-			QSettings settings;
-			settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
-			QString groupName = settings.value("GroupName", "Default").toString();
-			bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
-			settings.endGroup();
+		if (ag > 1 && (reqOnStartupChecked || onStartupChecked)){
 
 			if (onStartupChecked && fgns.contains(groupName)){
 				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
@@ -602,8 +626,7 @@ void HomePageWidget::ContinueWithLogin(){
 			}
 		}
 
-
-		if (ag == 0){
+		if (ag == 0 || (!reqOnStartupChecked && !onStartupChecked)){
 			SwitchDashboardLayout();
 		}
 		else{

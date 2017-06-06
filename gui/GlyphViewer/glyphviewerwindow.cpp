@@ -710,6 +710,7 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 	settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
 	QString groupName = settings.value("GroupName", "Default").toString();
 	bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+	bool reqOnStartupChecked = settings.value("ReqOnStartupChecked", true).toBool();
 	settings.endGroup();
 
 	QDialog* s = new QDialog(this);
@@ -721,9 +722,16 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 	
 	QVBoxLayout* vlayout = new QVBoxLayout(s);
 
+	QCheckBox *autoLoadCheckbox = new QCheckBox(this);
+	autoLoadCheckbox->setText("Require Selection on Startup");
+	autoLoadCheckbox->setChecked(reqOnStartupChecked);
+	autoLoadCheckbox->setDisabled(groups.size() <= 1);
+	vlayout->addWidget(autoLoadCheckbox);
+
 	QCheckBox *checkbox = new QCheckBox(this);
 	checkbox->setText("Load "+groupName+" on Startup");
 	checkbox->setChecked(onStartupChecked);
+	checkbox->setDisabled(groups.size() <= 1);
 	vlayout->addWidget(checkbox);
 
 	m_groupsComboBox = new QComboBox(s);
@@ -732,7 +740,7 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
 	QHBoxLayout* hlayout = new QHBoxLayout(s);
 	QPushButton* defButton = new QPushButton(tr("Set as Default"), s);
-	defButton->setDisabled(groups.isEmpty());
+	defButton->setDisabled(groups.size() <= 1);
 	hlayout->addWidget(defButton, 1);
 	QPushButton* loadButton = new QPushButton(tr("Load"), s);
 	loadButton->setDisabled(groups.isEmpty());
@@ -750,6 +758,7 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
 	QObject::connect(defButton, &QPushButton::clicked, checkbox, [=](){
 		checkbox->setText("Load " + m_groupsComboBox->currentText() + " on Startup");
+		checkbox->setChecked(true);
 		QSettings st1;
 		st1.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
 		st1.setValue("GroupName", m_groupsComboBox->currentText());
@@ -760,6 +769,12 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 		st2.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
 		st2.setValue("OnStartupChecked", checkbox->isChecked());
 		st2.endGroup();
+	});
+	QObject::connect(autoLoadCheckbox, &QCheckBox::stateChanged, autoLoadCheckbox, [=](){
+		QSettings st3;
+		st3.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		st3.setValue("ReqOnStartupChecked", autoLoadCheckbox->isChecked());
+		st3.endGroup();
 	});
 	QObject::connect(loadButton, &QPushButton::clicked, this, &GlyphViewerWindow::SwitchVisualizationGroup);
 	QObject::connect(buttonBox, &QDialogButtonBox::rejected, s, &QDialog::reject);
