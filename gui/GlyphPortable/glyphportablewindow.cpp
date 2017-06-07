@@ -1,4 +1,4 @@
-#include "GlyphPortableWindow.h"
+#include "glyphportablewindow.h"
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QMessageBox>
