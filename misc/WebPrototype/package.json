@@ -1,0 +1,20 @@
+{
+	"name": "synglyphxwebprototype",
+	"version": "1.0.0",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"dependencies": {
+		"jquery": "^3.2.1",
+		"materialize-css": "^0.98.2",
+		"font-awesome": "^4.7.0"
+	},
+	"devDependencies": {
+    
+	},
+	"scripts": {
+    
+	}
+}
