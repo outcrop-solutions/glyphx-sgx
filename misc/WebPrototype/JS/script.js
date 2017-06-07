@@ -1,4 +1,13 @@
-function toggleNav() {
+
+ $(document).ready(function() {
+    //$('#tableSelect').material_select();
+    $('select').material_select();
+  });
+  
+  
+  //FUNCTIONS
+
+  function toggleNav() {
     if (document.getElementById("filterNav").style.width == "400px") {
         document.getElementById("filterNav").style.width = "0";
     }

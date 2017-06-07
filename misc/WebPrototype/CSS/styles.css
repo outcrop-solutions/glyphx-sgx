@@ -12,6 +12,44 @@
 
 }
 
+.filter-wrap{
+    width: 93%;
+}
+
+.button-big-circle {
+    left: 1%;
+    position: fixed;
+    top: 93%;
+    background-color: steelblue;
+}
+.button-big-circle:hover {
+    background-color: rgb(59, 113, 158);
+}
+
+.button-circle1{
+    left: 1.4%;
+    position: fixed;
+    top: 88%;
+}
+
+.button-circle2{
+    left: 1.4%;
+    position: fixed;
+    top: 83%;
+}
+
+.button-circle3{
+    left: 1.4%;
+    position: fixed;
+    top: 77.9%;
+}
+
+.button-circle4{
+    left: 1.4%;
+    position: fixed;
+    top: 72.9%;
+}
+
 
 /*-----------------         SIDE BAR           ----------------*/
 /* The side navigation menu */

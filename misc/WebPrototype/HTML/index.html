@@ -32,15 +32,36 @@
     </div>
   </nav>
 
+    <div class="fixed-action-btn click-to-toggle">
+      <a class="btn-floating btn-large button-big-circle">
+        <i class="material-icons">menu</i>
+      </a>
+      <ul>
+        <li><a class="btn-floating red button-circle1"><i class="material-icons">insert_chart</i></a></li>
+        <li><a class="btn-floating yellow darken-1 button-circle2"><i class="material-icons">format_quote</i></a></li>
+        <li><a class="btn-floating green button-circle3"><i class="material-icons">publish</i></a></li>
+        <li><a class="btn-floating blue button-circle4"><i class="material-icons">attach_file</i></a></li>
+      </ul>
+    </div>
 
   <div id="filterNav" class="sidenav">
 
     <div id="filterView" class="">
       HELLO
     </div>
-      <a id="filterViewButton" class="waves-effect waves-light btn fa fa-caret-up close-button" onclick="toggleFilter()"></a>
+    <a id="filterViewButton" class="waves-effect btn fa fa-caret-up close-button" onclick="toggleFilter()"></a>
 
-    <div class="container">
+    <div class="container filter-wrap">
+
+      <div id="tableSelect" class="input-field col s12">
+        <select multiple>
+          <option value="" disabled selected>Select Tables</option>
+          <option value="1">Table 1</option>
+          <option value="2">Table 2</option>
+          <option value="3">Table 3</option>
+          <label>Tables</label>
+        </select>
+      </div>
 
     </div>
     
