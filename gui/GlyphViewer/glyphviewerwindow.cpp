@@ -665,7 +665,7 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 		if (logged){
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
 			if (valid == 1 || valid == 2){
-				m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
+				//m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
 				MainWindow::UpdateUserMenu(name);
 				UpdateUserMenu();
 				return true;
@@ -760,6 +760,7 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
 	QObject::connect(defButton, &QPushButton::clicked, checkbox, [=](){
 		checkbox->setText("Load " + m_groupsComboBox->currentText() + " on Startup");
+		autoLoadCheckbox->setChecked(false);
 		checkbox->setChecked(true);
 		QSettings st1;
 		st1.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));

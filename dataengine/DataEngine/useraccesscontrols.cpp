@@ -1,4 +1,5 @@
 #include "useraccesscontrols.h"
+#include <QtCore/QSettings>
 
 namespace DataEngine
 {
@@ -99,6 +100,9 @@ namespace DataEngine
 
 	int UserAccessControls::GetUserID(){
 
+		if (valid == 2){
+			return presetId.toInt();
+		}
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"getUserID", "()I");
 		int id = 0;
@@ -134,6 +138,21 @@ namespace DataEngine
 		}
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"nameOfUser", "()Ljava/lang/String;");
+		jstring itr = NULL;
+		if (methodId != NULL) {
+			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return QString(jniEnv->GetStringUTFChars(itr, JNI_FALSE));
+	}
+
+	QString UserAccessControls::NameOfDirectory(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getS3Directory", "()Ljava/lang/String;");
 		jstring itr = NULL;
 		if (methodId != NULL) {
 			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
@@ -208,6 +227,10 @@ namespace DataEngine
 
 	QStringList UserAccessControls::GetFormattedGroupNames(){
 
+		if (valid == 2){
+			return groupNames;
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"getListOfFormattedGroupNames", "()[Ljava/lang/String;");
 		jobjectArray itr;
@@ -233,6 +256,14 @@ namespace DataEngine
 
 	void UserAccessControls::SetChosenGroup(QString name){
 
+		if (valid == 2){
+			QSettings groupSettings;
+			groupSettings.beginGroup(name);
+			PresetLogoPath(groupSettings.value("DirectoryPath", "").toString());
+			groupSettings.endGroup();
+			return;
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"setChosenGroup", "(Ljava/lang/String;)V");
 		if (methodId != NULL) {
@@ -243,6 +274,7 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+
 	}
 
 	bool UserAccessControls::FileSyncSetup(QString path){
@@ -337,8 +369,10 @@ namespace DataEngine
 		presetLogoPath = path;
 	}
 
-	void UserAccessControls::SetVisualizationNames(QStringList vizs){
-		
+	void UserAccessControls::SetVisualizationGroupNames(QStringList groups, QStringList vizs){
+		groupNames = groups;
+		vizNames = vizs;
+		/*
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"", "(Ljava/lang/String;[Ljava/lang/String;)V");
 
@@ -358,14 +392,20 @@ namespace DataEngine
 			}
 			vizNames = vizs;
 		}
+		*/
 	}
 
-	void UserAccessControls::SetUsersNameAndInstitution(QString name, QString inst){
+	void UserAccessControls::SetUsersInformation(QString id, QString name, QString inst){
+		presetId = id;
 		presetName = name;
 		presetInstitution = inst;
 	}
 
 	int UserAccessControls::CheckAvailableGroups(){
+
+		if (valid == 2){
+			return groupNames.size();
+		}
 
 		int group_count = 0;
 		if (jcls != NULL) {
@@ -402,6 +442,10 @@ namespace DataEngine
 	}
 
 	bool UserAccessControls::IsDoneSyncing(){
+
+		if (valid == 2){
+			return true;
+		}
 
 		bool done = false;
 		if (jcls != NULL) {

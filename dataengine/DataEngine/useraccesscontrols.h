@@ -37,8 +37,10 @@ namespace DataEngine
 		bool synced;
 		int valid;
 		QString presetLogoPath;
+		QString presetId;
 		QString presetName;
 		QString presetInstitution;
+		QStringList groupNames;
 		QStringList vizNames;
 		QString appVersion;
 
@@ -53,6 +55,7 @@ namespace DataEngine
 		int GetLicenseType();
 		QString NameOfUser();
 		QString NameOfInstitution();
+		QString NameOfDirectory();
 		QString LastModified();
 		QStringList VizualizationNames();
 		QStringList GetFormattedGroupNames();
@@ -71,8 +74,8 @@ namespace DataEngine
 
 		int FilesSynced();
 		void PresetLogoPath(QString path);
-		void SetVisualizationNames(QStringList vizs);
-		void SetUsersNameAndInstitution(QString name, QString inst);
+		void SetVisualizationGroupNames(QStringList groups, QStringList vizs);
+		void SetUsersInformation(QString id, QString name, QString inst);
 		QString GlyphEdPath();
 		bool HasSynced();
 

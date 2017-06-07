@@ -249,6 +249,10 @@ namespace SynGlyphX {
 
 		m_userSettingsMenu = m_loginMenu->addAction("User Settings");
 		QObject::connect(m_userSettingsMenu, &QAction::triggered, this, &MainWindow::UserSettings);
+		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+		if (appfile.contains("DataMapper") || appfile.contains("GlyphDesigner")){
+			m_userSettingsMenu->setDisabled(true);
+		}
 
 		m_loginMenu->addSeparator();
 

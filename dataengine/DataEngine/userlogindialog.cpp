@@ -114,17 +114,19 @@ namespace DataEngine {
 			QString pw = settings.value("Password", "").toString();
 			QString nm = settings.value("Name", "Guest").toString();
 			QString in = settings.value("Institution", "").toString();
+			QString id = settings.value("UserID", "0").toString();
 			QStringList vizs = settings.value("Visualizations", "").toStringList();
+			QStringList groups = settings.value("GroupNames", "").toStringList();
 			settings.endGroup();
 			if (user == un && pass == pw){
-				m_dataEngineConnection->UserAccessControls()->SetUsersNameAndInstitution(nm, in);
-				m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + in);
-				m_dataEngineConnection->UserAccessControls()->SetVisualizationNames(vizs);
+				m_dataEngineConnection->UserAccessControls()->SetUsersInformation(id, nm, in);
+				//m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + in);
+				m_dataEngineConnection->UserAccessControls()->SetVisualizationGroupNames(groups, vizs);
 				canLogIn = true;
 			}
 		}
 
-		if (valid != 0){
+		if (valid == 1 || (valid == 2 && canLogIn)){
 			name = m_dataEngineConnection->UserAccessControls()->NameOfUser();
 			inst = m_dataEngineConnection->UserAccessControls()->NameOfInstitution();
 			/*if (stayLoggedInCheckBox->checkState() == Qt::Checked){
@@ -147,6 +149,7 @@ namespace DataEngine {
 			settings.setValue("UserID", m_dataEngineConnection->UserAccessControls()->GetUserID());
 			settings.setValue("LicenseType", m_dataEngineConnection->UserAccessControls()->GetLicenseType());
 			settings.setValue("Visualizations", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
+			settings.setValue("GroupNames", m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames());
 			settings.endGroup();
 			canLogIn = true;
 		}

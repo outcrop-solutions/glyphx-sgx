@@ -49,6 +49,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include "datastatsmodel.h"
 #include "inputfield.h"
+#include "version.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -103,6 +104,7 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 			m_dataEngineConnection->createJVM();
 			m_dataTransformModel->SetDataEngineConnection(m_dataEngineConnection);
 			m_dataSourceStats->SetDataEngineConnection(m_dataEngineConnection);
+			m_dataEngineConnection->UserAccessControls()->SetAppVersionNumber(SynGlyphX::getAppVersionString());
 			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
 
 		}

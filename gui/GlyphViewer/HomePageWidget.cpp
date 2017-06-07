@@ -610,6 +610,7 @@ void HomePageWidget::ContinueWithLogin(){
 		int ag = m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups();
 		QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
 		m_mainWindow->CreateUserSettingsDialog(fgns);
+
 		if (ag > 1 && (reqOnStartupChecked || onStartupChecked)){
 
 			if (onStartupChecked && fgns.contains(groupName)){
@@ -619,9 +620,9 @@ void HomePageWidget::ContinueWithLogin(){
 			else{
 				GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
 				if (gsd->exec() == QDialog::Accepted) {
-					QString selected = gsd->GetSelectedGroup();
-					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(selected);
-					m_mainWindow->SetSelectedGroup(selected);
+					groupName = gsd->GetSelectedGroup();
+					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+					m_mainWindow->SetSelectedGroup(groupName);
 				}
 			}
 		}
@@ -631,6 +632,13 @@ void HomePageWidget::ContinueWithLogin(){
 		}
 		else{
 			SyncFilesAndLoadViews();
+
+			QSettings groupSettings;
+			groupSettings.beginGroup(groupName);
+			groupSettings.setValue("LastUserToAccess", m_dataEngineConnection->UserAccessControls()->GetUserID());
+			groupSettings.setValue("DirectoryPath", m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
+			groupSettings.setValue("VisualizationNames", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
+			groupSettings.endGroup();
 		}
 	}
 	else{

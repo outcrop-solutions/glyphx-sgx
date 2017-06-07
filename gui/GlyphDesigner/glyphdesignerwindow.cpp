@@ -18,6 +18,7 @@
 #include "glyphtemplatelibrarylistwidget.h"
 #include "glyphbuilderapplication.h"
 #include "GDGlobal.h"
+#include "version.h"
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -56,6 +57,7 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 		if (!m_dataEngineConnection->hasJVM()){
 
 			m_dataEngineConnection->createJVM();
+			m_dataEngineConnection->UserAccessControls()->SetAppVersionNumber(SynGlyphX::getAppVersionString());
 			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
 
 		}
