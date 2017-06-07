@@ -155,6 +155,7 @@ fi
 
 if [ $java = 8 ]; then
 	echo Deploying Java VM 1.8.0_131...
+	# todo - don't hardcode JDK version number
 	cp -R /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk ../../bin/OSX64/$build/$app.app/Contents/Frameworks
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_131.jdk/Contents/Home/src.zip
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_131.jdk/Contents/Home/man

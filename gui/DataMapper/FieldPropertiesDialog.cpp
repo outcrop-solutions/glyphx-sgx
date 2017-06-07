@@ -140,7 +140,6 @@ QGroupBox* FieldPropertiesDialog::SetGroupBoxForSelection(QString type)
 			formatList->addItem(dt->toString(dateFormats.at(i)));
 		}
 		QString datetest = m_properties.DateFormat();
-		int dateindex = dateFormats.indexOf(m_properties.DateFormat());
 		formatList->setCurrentItem(formatList->item(dateFormats.indexOf(m_properties.DateFormat())));
 
 		QListWidget* timeFormatList = new QListWidget();

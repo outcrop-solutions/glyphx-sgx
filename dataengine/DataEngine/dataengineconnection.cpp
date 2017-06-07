@@ -28,7 +28,7 @@ namespace DataEngine
 #ifdef WIN32
         ".\\jre\\bin\\server\\jvm.dll";
 #elif __APPLE__
-        "../Frameworks/jdk1.8.0_92.jdk/Contents/Home/jre/lib/server/libjvm.dylib";
+        "../Frameworks/jdk1.8.0_131.jdk/Contents/Home/jre/lib/server/libjvm.dylib";
 #endif
         
         std::ifstream jre(jre_name);
