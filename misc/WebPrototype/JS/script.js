@@ -145,8 +145,6 @@
             }
         });
     });
-
-      
   });
   
   
@@ -162,7 +160,19 @@ function toggleNav() {
         $('#launchFilter').css({"backgroundColor": "rgb(59, 113, 158)"});
         document.getElementById("filterNav").style.width = "450px";
     }
-        $('select').material_select();
+      /*$('.chips').material_chip();
+  $('.chips-initial1').material_chip({
+    data: [{
+      tag: 'Apple',
+    }, {
+      tag: 'Microsoft',
+    }, {
+      tag: 'Google',
+    }],
+  });*/
+    $('.material-icons .close').on('chip.delete', function(e, chip){
+    alert("HEy!");
+  });
 }
 
 //Toggles view of the top section of the filter side bar

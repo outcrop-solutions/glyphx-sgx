@@ -154,12 +154,25 @@
     .sidenav a {font-size: 18px;}
 }
 
-#filterView
+#filterSummaryContainer
 {
-    width:90%;
-    height:25%;
+    width: 94%;
+    height:95%;
+        overflow: auto;
+    margin-left: 3%;
+    border: 1px;
+    border-color: black;
+    border-style: double;
 }
 
-.btn {
-    
+.btnSave {
+    width: 100%;
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-top: 2.5px;
+    font-size: 13px !important;
+}
+
+.marginTop {
+     margin-top: 5px;
 }
