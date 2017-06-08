@@ -109,10 +109,16 @@
     .sidenav a {font-size: 18px;}
 }
 
+#filterView
+{
+    width:93%;
+    height:25%;
+}
+
 #filterSummaryContainer
 {
     width: 94%;
-    height:95%;
+    height:90%;
         overflow: auto;
     margin-left: 3%;
     border: 1px;
@@ -126,8 +132,4 @@
     padding-right: 2px;
     margin-top: 2.5px;
     font-size: 13px !important;
-}
-
-.marginTop {
-     margin-top: 5px;
 }
