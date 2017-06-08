@@ -9,7 +9,15 @@
 
 .close-button:hover {
     background-color: rgb(59, 113, 158);
+}
 
+.filter-font li > a, .filter-font li > span {
+    font-size: 13px;
+    line-height: 0px;
+}
+
+.select-wrapper input.select-dropdown {
+    height: 1.5rem;
 }
 
 .filter-wrap{
