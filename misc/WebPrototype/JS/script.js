@@ -1,6 +1,7 @@
 
  $(document).ready(function() {
-    
+      
+   init();
     // Prepares the select boxes (materialize)
     $('select').material_select();
 
@@ -170,9 +171,7 @@ function toggleNav() {
       tag: 'Google',
     }],
   });*/
-    $('.material-icons .close').on('chip.delete', function(e, chip){
-    alert("HEy!");
-  });
+  
 }
 
 //Toggles view of the top section of the filter side bar
