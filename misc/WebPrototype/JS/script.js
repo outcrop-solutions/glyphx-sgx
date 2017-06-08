@@ -3,6 +3,7 @@
     
     // Prepares the select boxes (materialize)
     $('select').material_select();
+    $('ul.tabs').tabs();
 
     // Creating an alertify error message
     if(!alertify.showError){

@@ -103,6 +103,17 @@
     top: 72.9%;
 }
 
+.tabs .tab a:hover, .tabs .tab a.active {
+    color: rgb(59, 113, 158);
+}
+
+.tabs .tab a {
+    color: rgb(59, 113, 158);
+}
+
+.tabs .indicator {
+    background-color: rgb(59, 113, 158);
+}
 
 /*-----------------         SIDE BAR           ----------------*/
 /* The side navigation menu */
