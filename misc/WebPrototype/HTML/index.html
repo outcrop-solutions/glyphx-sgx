@@ -47,8 +47,9 @@
   <div id="filterNav" class="sidenav">
 
     <div id="filterView" class="container">
-          <div class="row">
-        <div class="input-field col s8">
+          
+          <div class="row" style="margin-bottom: 0px;">
+        <div class="input-field col s9 filter-wrap filter-font">
       <select>
         <option value="" disabled selected>Select View</option>
         <option value="1">View 1</option>
@@ -56,9 +57,31 @@
         <option value="3">View 3</option>
       </select>
     </div>
-     <div class="input-field col s4"><a class="waves-effect waves-light btn">button</a></div>
+     <div class="input-field col s3"><a class="waves-effect waves-light dropdown-button btn btnSave" href='#' data-activates='SaveDropdown'>New</a></div>
        </div>
+
+       <ul id='SaveDropdown' class='dropdown-content'>
+    <li><a href="#!">New</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">Save</a></li>
+    <li><a href="#!">Save As</a></li>
+    <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+       </ul>
+
+       <div class="row" style="margin-bottom:0px; height:50%;">
+        <div class="container col s12 filter-wrap filter-font" id="filterSummaryContainer">
+        
+        </div>
+       </div>
+
+       <div class="row" style="margin-bottom: 0px;">
+        <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Clear All</a></div>
+         <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Disable</a></div>
+         <div class="input-field col s6"></div>
+       </div>
+      
     </div>
+    
     <a id="filterViewButton" class="waves-effect btn fa fa-caret-up close-button" onclick="toggleFilter()"></a>
 
     <div class="container filter-wrap">

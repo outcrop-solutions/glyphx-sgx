@@ -111,10 +111,25 @@
 
 #filterView
 {
-    width:90%;
+    width:93%;
     height:25%;
 }
 
-.btn {
-    
+#filterSummaryContainer
+{
+    width: 94%;
+    height:90%;
+        overflow: auto;
+    margin-left: 3%;
+    border: 1px;
+    border-color: black;
+    border-style: double;
+}
+
+.btnSave {
+    width: 100%;
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-top: 2.5px;
+    font-size: 13px !important;
 }
