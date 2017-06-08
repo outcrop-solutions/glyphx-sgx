@@ -9,6 +9,7 @@
 	"dependencies": {
 		"jquery": "^3.2.1",
 		"materialize-css": "^0.98.2",
+		"alertifyjs": "^1.9.0",
 		"font-awesome": "^4.7.0"
 	},
 	"devDependencies": {

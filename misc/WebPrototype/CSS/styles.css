@@ -4,11 +4,11 @@
 
 .close-button {
     height: 26px;
-    background-color: steelblue;
+    background-color: rgb(59, 113, 158);
 }
 
 .close-button:hover {
-    background-color: rgb(59, 113, 158);
+    background-color: steelblue;
 }
 
 .filter-font li > a, .filter-font li > span {
@@ -22,6 +22,51 @@
 
 .filter-wrap{
     width: 93%;
+}
+
+.noUi-horizontal {
+    width: 30%;
+}
+
+#range {
+    top: 26px;
+    left: 34%;
+    width: 24%;
+}
+
+#deleteRange {
+    padding-top: 2%;
+    padding-left: 6%;
+
+}
+
+#deleteRange:hover {
+    color: darkred;
+}
+
+.switch label .lever {
+    width: 30px;
+    height: 11px;
+}
+
+#switchBar {
+    padding-left: 18%;
+    padding-top: 3%;
+}
+
+.switch label .lever:after {
+    width: 15px;
+    height: 15px;
+}
+
+.input-field input {
+    width: 60%;
+    height: 1.5rem;
+}
+
+.noUi-base {
+    width: 97%;
+    left: -1%;
 }
 
 .button-big-circle {
