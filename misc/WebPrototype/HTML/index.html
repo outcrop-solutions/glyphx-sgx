@@ -46,10 +46,12 @@
 
   <div id="filterNav" class="sidenav">
 
-    <div id="filterView" class="container">
+    <!-- Top Conatiner -->
+    <div id="filterView" class="container" style="width:93%;height:35%;">
           
-          <div class="row" style="margin-bottom: 0px;">
-        <div class="input-field col s9 filter-wrap filter-font">
+          <!-- 1st Row -->
+          <div class="row" style="margin-bottom: 0px;height:15%;">
+        <div class="input-field col s9 filter-wrap filter-font marginTop">
       <select>
         <option value="" disabled selected>Select View</option>
         <option value="1">View 1</option>
@@ -57,7 +59,7 @@
         <option value="3">View 3</option>
       </select>
     </div>
-     <div class="input-field col s3"><a class="waves-effect waves-light dropdown-button btn btnSave" href='#' data-activates='SaveDropdown'>New</a></div>
+     <div class="input-field col s3 marginTop"><a class="waves-effect waves-light dropdown-button btn btnSave" href='#' data-activates='SaveDropdown'>New</a></div>
        </div>
 
        <ul id='SaveDropdown' class='dropdown-content'>
@@ -67,36 +69,66 @@
     <li><a href="#!">Save As</a></li>
     <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
        </ul>
-
+       <!-- 1st Row  ENDS-->
+       
+       
+        <!-- 2nd Row -->
        <div class="row" style="margin-bottom:0px; height:50%;">
         <div class="container col s12 filter-wrap filter-font" id="filterSummaryContainer">
         
+          <div class="chip">
+          Age
+          <i class="close material-icons" id="">close</i>
+        </div>
+        <div class="chip">
+          Gender
+          <i class="close material-icons">close</i>
+        </div>
+        <div class="chip">
+          Something
+          <i class="close material-icons">close</i>
+        </div>
+
         </div>
        </div>
+       <!-- 2nd Row  ENDS-->
 
+       <!-- 3rd Row -->
        <div class="row" style="margin-bottom: 0px;">
         <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Clear All</a></div>
          <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Disable</a></div>
          <div class="input-field col s6"></div>
        </div>
-      
+      <!-- 3rd Row ENDS -->
+
+      <!-- 4th Row -->
+      <div class="container filter-wrap">
+
+            <div id="tableSelect" class="input-field col s12 filter-font">
+              <select multiple>
+                <option value="" disabled selected>Select Tables</option>
+                <option value="1">Table 1</option>
+                <option value="2">Table 2</option>
+                <option value="3">Table 3</option>
+                <label>Tables</label>
+              </select>
+            </div>
+
+      </div>
+     <!-- 4th Row ENDS-->
+
     </div>
     
-    <a id="filterViewButton" class="waves-effect btn fa fa-caret-up close-button" onclick="toggleFilter()"></a>
+    
+    
+    <!-- Top Conatiner ENDS -->
+    <div class="row" style="margin-bottom:0px;">
+    <a id="filterViewButton" class="waves-effect btn fa col s12 fa-caret-up close-button" onclick="toggleFilter()"></a>
+  </div>
+    
+    <!-- Bottom Conatiner -->
+    
 
-    <div class="container filter-wrap">
-
-      <div id="tableSelect" class="input-field col s12 filter-font">
-        <select multiple>
-          <option value="" disabled selected>Select Tables</option>
-          <option value="1">Table 1</option>
-          <option value="2">Table 2</option>
-          <option value="3">Table 3</option>
-          <label>Tables</label>
-        </select>
-      </div>
-
-    </div>
     
   </div>
 
