@@ -14,12 +14,12 @@
     else {
         document.getElementById("filterNav").style.width = "400px";
     }
+     $('select').material_select();
 }
 
 function toggleFilter() {
     if ($('#filterViewButton').hasClass("fa-caret-up")) {
         $("#filterView").toggle(); 
-        console.log("1");
         $('#filterViewButton').removeClass("fa-caret-up");
         $('#filterViewButton').addClass("fa-caret-down");
     }
