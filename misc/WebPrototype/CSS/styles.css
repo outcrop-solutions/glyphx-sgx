@@ -178,3 +178,16 @@
 .marginTop {
      margin-top: 5px;
 }
+
+.standardFont { 
+    font-size: 13px !important; 
+} 
+ 
+.dropdown-content li > a, .dropdown-content li > span{ 
+    padding: 12px 14px; 
+} 
+ 
+.chip .close { 
+    float: left; 
+    padding-left: 0px; 
+}
