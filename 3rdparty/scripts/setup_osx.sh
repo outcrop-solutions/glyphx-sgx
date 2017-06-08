@@ -28,7 +28,7 @@ glyphed=0
 
 # Process command-line options.
 
-while getopts "drvegbcimj:q:" opt; do
+while getopts "drvepgbcimj:q:" opt; do
 	case "$opt" in
 		d)
 			build=Debug
@@ -50,6 +50,10 @@ while getopts "drvegbcimj:q:" opt; do
 			;;
 		m)
 			app=DataMapper
+			((appcount++))
+			;;
+		p)
+			app=GlyphPortable
 			((appcount++))
 			;;
 		b)
