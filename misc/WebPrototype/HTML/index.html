@@ -29,7 +29,7 @@
 
   <nav>
     <div class="nav-wrapper">
-      <a class="brand-logo">Some Useful Toolbar</a>
+      <a class="brand-logo">LOGO Here</a>
       <ul class="right hide-on-med-and-down">
         <li><a><i class="fa fa-bars fa-2x"></i></a></li>
         <li><a><i class="fa fa-floppy-o fa-2x"></i></a></li>
@@ -137,56 +137,89 @@
 
     <a id="filterViewButton" class="waves-effect btn fa fa-caret-up close-button" onclick="toggleFilter()"></a>
 
-     <ul class="collapsible" data-collapsible="EXPANDABLE">
+     <ul class="collapsible" data-collapsible="expandable">
       <li>
-        <div class="collapsible-header"><i class="fa fa-bookmark"></i>Active</div>
+        <div class="collapsible-header"><i class="fa fa-thumb-tack"></i>Active</div>
         <div class="collapsible-body"></div>
       </li>
       <li>
         <div class="collapsible-header"><i class="fa fa-filter"></i>Filters</div>
         <div class="collapsible-body">
-          <div class="row">
-            <div class="col s12">
 
-              <ul class="tabs tabs-fixed-width">
-                <li class="tab col s3"><a class="active" href="#test1">Elastic</a></li>
-                <li class="tab col s3"><a href="#test2">Ranges</a></li>
+          <ul class="collapsible" data-collapsible="expandable">
+            <li>
+              <div class="collapsible-header"><span class="badge fa fa-thumb-tack"></span>Filter 1</div>
+              <div class="collapsible-body">
 
-              </ul>
-            </div>
-            <div id="test1" class="col s12">FILTERS MISSING RIGHT NOW</div>
-            <div id="test2" class="col s12">
-              <ul class="collapsible">
-
-                <div class="row ">
-                  <i id="deleteRange" class="fa fa-trash fa-2x col s1"></i>
-
-                  <div style="left: 6%;" class="input-field col s3">
-                    <input placeholder="0" id="min" type="text">
-                    <label for="min">Min</label>
+                <div class="row">
+                  <div class="col s12">
+                    <ul class="tabs tabs-fixed-width">
+                      <li class="tab col s3"><a class="active" href="#test1">Elastic</a></li>
+                      <li class="tab col s3"><a href="#test2">Ranges</a></li>
+                    </ul>
                   </div>
+                  <div id="test1" class="col s12"><br>FILTERS MISSING RIGHT NOW</div>
+                  <div id="test2" class="col s12">
 
-                  <div id="range" class=""></div>
-
-                  <div style="left: 28%;" class="input-field col s3">
-                    <input placeholder="100" id="max" type="text">
-                    <label for="max">Max</label>
+                    <ul class="collapsible" data-collapsible="expandable">
+                      <li>
+                        <div class="row" style="height: 42px;">
+                          <i id="deleteRange" class="fa fa-trash fa-2x col s1"></i>
+                          <div style="left: 6%;" class="input-field col s3">
+                            <input placeholder="0" id="min" type="text">
+                            <label for="min">Min</label>
+                          </div>
+                          <div id="range" class=""></div>
+                          <div style="left: 28%;" class="input-field col s3">
+                            <input placeholder="100" id="max" type="text">
+                            <label for="max">Max</label>
+                          </div>
+                          <div id="switchBar" class="switch col s1">
+                            <label>
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="row" style="height: 42px;">
+                          <i id="deleteRange" class="fa fa-trash fa-2x col s1"></i>
+                          <div style="left: 6%;" class="input-field col s3">
+                            <input placeholder="0" id="min" type="text">
+                            <label for="min">Min</label>
+                          </div>
+                          <div id="range" class=""></div>
+                          <div style="left: 28%;" class="input-field col s3">
+                            <input placeholder="100" id="max" type="text">
+                            <label for="max">Max</label>
+                          </div>
+                          <div id="switchBar" class="switch col s1">
+                            <label>
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="row" style="height: 42px;">
+                          <i id="addRange" class="fa fa-plus fa-2x"></i>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
-
-                  <div id="switchBar" class="switch col s1">
-                    <label>
-                      <input type="checkbox">
-                      <span class="lever"></span>
-                    </label>
-                  </div>
-                  
                 </div>
-              </ul>
 
-            </div>
+              </div>
+            </li>
+            <li>
+              <div class="collapsible-header"><span class="badge fa fa-thumb-tack"></span>Filter 2</div>
+              <div class="collapsible-body">
 
-          </div>
-
+              </div>
+            </li>
+          </ul>
 
         </div>
       </li>
