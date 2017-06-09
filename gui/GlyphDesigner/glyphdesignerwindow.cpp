@@ -507,7 +507,7 @@ void GlyphDesignerWindow::Login(){
 			loginDialog->hide();
 		}
 		else{
-			Logout();
+			QTimer::singleShot(0, this, SLOT(Logout()));
 		}
 	}
 	else{

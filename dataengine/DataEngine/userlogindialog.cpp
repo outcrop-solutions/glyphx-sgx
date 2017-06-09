@@ -115,13 +115,11 @@ namespace DataEngine {
 			QString nm = settings.value("Name", "Guest").toString();
 			QString in = settings.value("Institution", "").toString();
 			QString id = settings.value("UserID", "0").toString();
-			QStringList vizs = settings.value("Visualizations", "").toStringList();
 			QStringList groups = settings.value("GroupNames", "").toStringList();
 			settings.endGroup();
 			if (user == un && pass == pw){
 				m_dataEngineConnection->UserAccessControls()->SetUsersInformation(id, nm, in);
-				//m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + in);
-				m_dataEngineConnection->UserAccessControls()->SetVisualizationGroupNames(groups, vizs);
+				m_dataEngineConnection->UserAccessControls()->SetVisualizationGroupNames(groups);
 				canLogIn = true;
 			}
 		}
@@ -148,7 +146,6 @@ namespace DataEngine {
 			settings.setValue("Institution", inst);
 			settings.setValue("UserID", m_dataEngineConnection->UserAccessControls()->GetUserID());
 			settings.setValue("LicenseType", m_dataEngineConnection->UserAccessControls()->GetLicenseType());
-			settings.setValue("Visualizations", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
 			settings.setValue("GroupNames", m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames());
 			settings.endGroup();
 			canLogIn = true;

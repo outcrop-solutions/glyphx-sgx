@@ -804,6 +804,13 @@ void GlyphViewerWindow::SwitchVisualizationGroup() {
 
 	m_homePage->ReSyncFilesAndLoadViews();
 
+	QSettings groupSettings;
+	groupSettings.beginGroup(groupName);
+	groupSettings.setValue("LastUserToAccess", m_dataEngineConnection->UserAccessControls()->GetUserID());
+	groupSettings.setValue("DirectoryPath", m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
+	groupSettings.setValue("VisualizationNames", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
+	groupSettings.endGroup();
+
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 

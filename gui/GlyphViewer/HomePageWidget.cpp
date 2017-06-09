@@ -42,7 +42,14 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	m_mainLayout->setColumnStretch(1, 1);
 	m_mainLayout->setHorizontalSpacing(0);
 	m_mainLayout->setContentsMargins(0, 8, 16, 16);
-
+	/*
+	QSettings settings;
+	QStringList keys = settings.allKeys();
+	for (auto key : keys){
+		settings.remove(key);
+	}
+	settings.clear();
+	*/
 	QLabel* logoLabel = new QLabel(this);
 	logoLabel->setAlignment(Qt::AlignCenter);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
@@ -613,7 +620,10 @@ void HomePageWidget::ContinueWithLogin(){
 
 		if (ag > 1 && (reqOnStartupChecked || onStartupChecked)){
 
-			if (onStartupChecked && fgns.contains(groupName)){
+			if (fgns.size() == 1){
+				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(fgns.at(0));
+			}
+			else if (onStartupChecked && fgns.contains(groupName)){
 				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
 				m_mainWindow->SetSelectedGroup(groupName);
 			}
@@ -623,6 +633,9 @@ void HomePageWidget::ContinueWithLogin(){
 					groupName = gsd->GetSelectedGroup();
 					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
 					m_mainWindow->SetSelectedGroup(groupName);
+				}
+				else{
+					ag = 0;
 				}
 			}
 		}

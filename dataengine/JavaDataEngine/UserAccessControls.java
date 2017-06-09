@@ -242,7 +242,7 @@ public class UserAccessControls {
 		PathBuilder pb = new PathBuilder(path);
 		ArrayList<UserFile> userFiles = new ArrayList<UserFile>();
 		for(int i = 0; i < names.length; i++){
-			userFiles.add( new UserFile("",names[i],1,1));
+			userFiles.add(new UserFile("",names[i],1,1));
 		}
 		pb.resetSharedVisualizationPaths(userFiles);
 	}

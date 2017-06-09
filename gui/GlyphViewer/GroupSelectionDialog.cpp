@@ -22,10 +22,15 @@ GroupSelectionDialog::GroupSelectionDialog(QStringList groupNames, QWidget *pare
 	layout->addWidget(l_groupBox);
 
 	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
+	QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+	okButton->setDisabled(true);
 	layout->addWidget(buttonBox);
 
 	setLayout(layout);
-
+	
+	QObject::connect(m_availableGroups, &QListWidget::itemSelectionChanged, okButton, [=](){
+		okButton->setDisabled(m_availableGroups->selectedItems().size() != 1);
+	});
 	QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 
 	PopulateAvailableGroups();
@@ -43,7 +48,4 @@ void GroupSelectionDialog::PopulateAvailableGroups(){
 		m_availableGroups->addItem(item);
 	}
 }
-
-
-
 

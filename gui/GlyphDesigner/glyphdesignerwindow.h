@@ -52,6 +52,7 @@ private slots:
     void EditingModeChanged(QAction* action);
 	void OnModelChanged();
 	void ChangeGlobalOptions();
+	void Logout();
 
 private:
     void CreateMenus();
@@ -63,7 +64,6 @@ private:
 	bool IsUserLoggedIn();
 	void Login();
 	void UpdateUserMenu();
-	void Logout();
 
 	QDialog* loginDialog;
 	DataEngine::UserLoginDialog* loginWidget;

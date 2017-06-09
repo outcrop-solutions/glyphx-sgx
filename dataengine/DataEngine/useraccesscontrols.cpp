@@ -228,6 +228,13 @@ namespace DataEngine
 	QStringList UserAccessControls::GetFormattedGroupNames(){
 
 		if (valid == 2){
+			QSettings settings;
+			QStringList childGroups = settings.childGroups();
+			for (auto group : groupNames){
+				if (!childGroups.contains(group)){
+					groupNames.removeAll(group);
+				}
+			}
 			return groupNames;
 		}
 
@@ -260,6 +267,7 @@ namespace DataEngine
 			QSettings groupSettings;
 			groupSettings.beginGroup(name);
 			PresetLogoPath(groupSettings.value("DirectoryPath", "").toString());
+			SetVisualizationNames(groupSettings.value("VisualizationNames", "").toStringList());
 			groupSettings.endGroup();
 			return;
 		}
@@ -369,12 +377,14 @@ namespace DataEngine
 		presetLogoPath = path;
 	}
 
-	void UserAccessControls::SetVisualizationGroupNames(QStringList groups, QStringList vizs){
+	void UserAccessControls::SetVisualizationGroupNames(QStringList groups){
 		groupNames = groups;
-		vizNames = vizs;
-		/*
+	}
+
+	void UserAccessControls::SetVisualizationNames(QStringList vizs){
+		
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"", "(Ljava/lang/String;[Ljava/lang/String;)V");
+			"setVisualizationNames", "(Ljava/lang/String;[Ljava/lang/String;)V");
 
 		jstring fp = jniEnv->NewStringUTF(presetLogoPath.toStdString().c_str());
 		jobjectArray selected = (jobjectArray)jniEnv->NewObjectArray(vizs.size(), jniEnv->FindClass("java/lang/String"), jniEnv->NewStringUTF(""));
@@ -392,7 +402,7 @@ namespace DataEngine
 			}
 			vizNames = vizs;
 		}
-		*/
+		
 	}
 
 	void UserAccessControls::SetUsersInformation(QString id, QString name, QString inst){

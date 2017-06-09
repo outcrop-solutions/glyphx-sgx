@@ -90,6 +90,7 @@ private slots:
 	void ChangeFrontEndFilters();
 	void OnFrontEndFiltersDialogAccepted();
 	void ChangeElasticListFilters();
+	void Logout();
 
 private:
     void CreateMenus();
@@ -110,7 +111,6 @@ private:
 	bool IsUserLoggedIn();
 	void Login();
 	void UpdateUserMenu();
-	void Logout();
 
 	QDialog* loginDialog;
 	DataEngine::UserLoginDialog* loginWidget;

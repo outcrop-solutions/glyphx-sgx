@@ -74,7 +74,8 @@ namespace DataEngine
 
 		int FilesSynced();
 		void PresetLogoPath(QString path);
-		void SetVisualizationGroupNames(QStringList groups, QStringList vizs);
+		void SetVisualizationGroupNames(QStringList groups);
+		void SetVisualizationNames(QStringList vizs);
 		void SetUsersInformation(QString id, QString name, QString inst);
 		QString GlyphEdPath();
 		bool HasSynced();
