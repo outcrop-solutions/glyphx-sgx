@@ -34,13 +34,13 @@
         <li><a><i class="fa fa-bars fa-2x"></i></a></li>
         <li><a><i class="fa fa-floppy-o fa-2x"></i></a></li>
         <li><a><i class="fa fa-cog fa-2x"></i></a></li>
-        <li id="launchFilter" onclick="toggleNav()"><a><i class="fa fa-filter fa-2x"></i></a></li>
+        <li id="launchFilter" onclick="toggleNav()"><a id="filterLaunch"><i class="fa fa-filter fa-2x"></i></a></li>
       </ul>
     </div>
   </nav>
 
     <div class="fixed-action-btn click-to-toggle">
-      <a class="btn-floating btn-large button-big-circle">
+      <a id="menuLL" class="btn-floating btn-large button-big-circle">
         <i class="material-icons">menu</i>
       </a>
       <ul>
@@ -66,7 +66,7 @@
         <option value="3">View 3</option>
       </select>
     </div>
-     <div class="input-field col s3 marginTop"><a class="waves-effect waves-light dropdown-button btn btnSave" href='#' data-activates='SaveDropdown'>New</a></div>
+     <div class="input-field col s3 marginTop"><a class="waves-effect waves-light dropdown-button btn btnSave" href='#' data-activates='SaveDropdown'>Menu</a></div>
        </div>
 
        <ul id='SaveDropdown' class='dropdown-content'>
@@ -74,7 +74,6 @@
     <li class="divider"></li>
     <li><a href="#!">Save</a></li>
     <li><a href="#!">Save As</a></li>
-    <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
        </ul>
        <!-- 1st Row  ENDS-->
        
@@ -83,43 +82,28 @@
        <div class="row" style="margin-bottom:0px; height:50%;">
         <div class="container col s12 filter-wrap filter-font" id="filterSummaryContainer">
         
-          <div class="chip">
-          
-          <i class="close material-icons" id="">close</i>Age
-        </div>
-        
-        <div class="chip">
-          
-          <i class="close material-icons">close</i>Gender
-        </div>
-        <br/>
-        <div class="chip">
-          <i class="close material-icons">close</i>Gender
-        </div>
-        <br/>
-        <div class="chip">
-          <i class="close material-icons">close</i>Gender
-        </div>
-        <br/>
-        <div class="chip">
-          <i class="close material-icons">close</i>Gender
-        </div>
+  <ul class="collection">
+        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="fa fa-times crosscolor" onclick="onCancelFilter()"></i></a></div></li>
+        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="fa fa-times crosscolor" onclick="onCancelFilter()"></i></a></div></li>
+        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="fa fa-times crosscolor" onclick="onCancelFilter()"></i></a></div></li>
+        <li class="collection-item"><div>Alvin<a href="#!" class="secondary-content"><i class="fa fa-times crosscolor" onclick="onCancelFilter()"></i></a></div></li>
+      </ul>
 
         </div>
        </div>
-       <!-- 2nd Row  ENDS-->
+       <!-- 2nd Row ENDS-->
 
        <!-- 3rd Row -->
-       <div class="row" style="margin-bottom: 0px;">
-        <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Clear All</a></div>
-         <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Disable</a></div>
+       <div class="row" style="margin-bottom: 0px; height:15%;">
+        <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave" id="clearAllFilters">Clear All</a></div>
+         <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave" id="toggleFilters">Hide</a></div>
          <div class="input-field col s6"></div>
        </div>
       <!-- 3rd Row ENDS -->
 
       <!-- 4th Row -->
       <div class="container filter-wrap">
-
+        <div class="row">
             <div id="tableSelect" class="input-field col s12 filter-font">
               <select multiple>
                 <option value="" disabled selected>Select Tables</option>
@@ -129,7 +113,7 @@
                 <label>Tables</label>
               </select>
             </div>
-
+        </div>
       </div>
      <!-- 4th Row ENDS-->
 
@@ -226,6 +210,14 @@
     </ul>
 
     
+
+    <div class="tap-target" data-activates="menuLL">
+    <div class="tap-target-content">
+      <h5>Title</h5>
+      <p>A bunch of text</p>
+    </div>
+  </div>
+
     
     <!-- Top Conatiner ENDS -->
 
