@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import 'jquery';
-import $ from 'jquery';
 import 'materialize-css/bin/materialize.js';
 import 'materialize-css/dist/css/materialize.css';
-import 'material-icons';
 import 'font-awesome/css/font-awesome.css';
-import './App.css';
+import './Navbar.css';
 
-class App extends Component {
+class Navbar extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="Navbar">
 
           <nav>
             <div className="nav-wrapper">
@@ -24,7 +21,7 @@ class App extends Component {
             </div>
           </nav>
 
-          <div id="mySidenav" className="sidenav">
+          <div id="filterNav" className="sidenav">
             HELLO
           </div>
 
@@ -34,12 +31,12 @@ class App extends Component {
 }
 
 function toggleNav() {
-    if (document.getElementById("mySidenav").style.width == "450px") {
-        document.getElementById("mySidenav").style.width = "0";
+    if (document.getElementById("filterNav").style.width == "450px") {
+        document.getElementById("filterNav").style.width = "0";
     }
     else {
-        document.getElementById("mySidenav").style.width = "450px";
+        document.getElementById("filterNav").style.width = "450px";
     }
 }
 
-export default App;
+export default Navbar;
