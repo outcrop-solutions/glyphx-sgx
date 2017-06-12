@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Navbar from './Navbar';
+import TopNav from './topNav';
+import FilterBar from './filterBar';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
-ReactDOM.render(<Navbar />, document.getElementById('root'));
+ReactDOM.render(<TopNav />, document.getElementById('root'));
 registerServiceWorker();
