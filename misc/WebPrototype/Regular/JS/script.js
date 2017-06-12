@@ -5,6 +5,7 @@
     // Prepares the select boxes (materialize)
     $('select').material_select();
     $('ul.tabs').tabs();
+    $('ul.tabs').tabs('select_tab', 'test1');
 
     // Creating an alertify error message
     if(!alertify.showError){
