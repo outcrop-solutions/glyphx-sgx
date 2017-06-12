@@ -2,6 +2,9 @@
 	background-color: steelblue;
 }
 
+nav ul a {
+    height: 64px;
+}
 
 /*-----------------         SIDE BAR           ----------------*/
 /* The side navigation menu */
