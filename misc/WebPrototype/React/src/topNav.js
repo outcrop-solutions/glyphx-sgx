@@ -8,7 +8,6 @@ import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import './topNav.css';
 
 injectTapEventPlugin();
@@ -46,9 +45,9 @@ function toggleNav() {
 }
 
 const styles = {
-  navLogo: {
-    cursor: 'pointer',
-  },
+    navLogo: {
+        cursor: 'pointer',
+    },
 };
 
 export default TopNav;
