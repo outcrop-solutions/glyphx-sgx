@@ -46,6 +46,7 @@
 #include "InteractiveLegend.h"
 #include <hal/hal.h>
 #include "FieldProperties.h"
+#include "filesystem.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -1414,10 +1415,8 @@ void GlyphViewerWindow::CreateExportToPortableVisualizationSubmenu() {
 
 		m_fileMenu->addSeparator();
 		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
-		portableVisualizationMenu->addAction(m_exportGlyphPortableAction);
-		QMenu* antzExportMenu = portableVisualizationMenu->addMenu(tr("Legacy (ANTz)"));
 
-		m_portableVisualizationExport.CreateSubmenu(antzExportMenu);
+		m_portableVisualizationExport.CreateSubmenu( portableVisualizationMenu );
 		QObject::connect(&m_portableVisualizationExport, &SynGlyphX::PortableVisualizationExport::CreatePortableVisualization, this, &GlyphViewerWindow::CreatePortableVisualization);
 
 		for (auto action : portableVisualizationMenu->actions()) {
@@ -1451,7 +1450,18 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 
 	try {
 
-		m_portableVisualizationExport.CopyContentsOfSourceDirectory(platform, csvDirectory);
+		QDir destDir( csvDirectory );
+		if ( destDir.exists() )
+			SynGlyphX::Filesystem::RemoveContentsOfDirectory( csvDirectory.toStdString() );
+			
+		m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, csvDirectory );
+
+		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+		std::string cacheDirectoryPath = dcd + ( "/cache_" + boost::uuids::to_string( m_mappingModel->GetDataMapping()->GetID() ) );
+		std::string dirPath = cacheDirectoryPath + "/";
+		QString cachePath = QString::fromStdString( dirPath + "scene/" );
+		m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
+
 		DataEngine::GlyphEngine ge;
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
