@@ -1,5 +1,5 @@
-.nav-wrapper {
-	background-color: steelblue;
+.navbar-color {
+	background-color: steelblue !important;
 }
 
 nav ul a {

@@ -3,16 +3,15 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import 'font-awesome/css/font-awesome.css';
 import FilterNav from './filterNav';
 import TextField from 'material-ui/TextField';
-
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 import './topNav.css';
 
-    
+injectTapEventPlugin();
 
 class TopNav extends Component {
     render() {
@@ -20,9 +19,9 @@ class TopNav extends Component {
             <MuiThemeProvider> 
                 <div className="TopNav">
 
-                    <AppBar
-                      title={<span style={navLogo.title}>LOGO</span>}
-                      iconElementRight={<IconButton><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
+                    <AppBar className="navbar-color"
+                        title={<span style={styles.navLogo}>LOGO</span>}
+                        iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
                     />
 
                     <div id="filterNav" className="sidenav">
@@ -46,8 +45,8 @@ function toggleNav() {
     }
 }
 
-const navLogo = {
-  title: {
+const styles = {
+  navLogo: {
     cursor: 'pointer',
   },
 };
