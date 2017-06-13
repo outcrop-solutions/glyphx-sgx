@@ -4,8 +4,12 @@
   "private": true,
   "dependencies": {
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+	"react-flex-material": "^1.0.2"
   },
+  "peerDependencies": {
+     "prop-types": "^15.5.7"
+	},
   "devDependencies": {
     "react-scripts": "^1.0.7",
     "jquery": "^3.2.1",
