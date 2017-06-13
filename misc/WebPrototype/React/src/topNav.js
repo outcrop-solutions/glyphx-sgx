@@ -6,12 +6,13 @@ import {Navbar, NavItem} from 'react-materialize';
 import 'font-awesome/css/font-awesome.css';
 import FilterNav from './filterNav.js';
 import './topNav.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 class TopNav extends Component {
   render() {
     return (
       <div className="TopNav">
-
+	  
         <Navbar brand='LOGO' right>
           <NavItem href=''><i className="fa fa-bars fa-2x"></i></NavItem>
           <NavItem href=''><i className="fa fa-floppy-o fa-2x"></i></NavItem>
@@ -19,10 +20,11 @@ class TopNav extends Component {
           <NavItem onClick={toggleNav}><i className="fa fa-filter fa-2x"></i></NavItem>
         </Navbar>
 
+		<MuiThemeProvider>
         <div id="filterNav" className="sidenav">
           <FilterNav></FilterNav>
         </div>
-
+		 </MuiThemeProvider>
       </div>
     );
   }
