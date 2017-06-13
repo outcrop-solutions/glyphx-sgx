@@ -150,23 +150,6 @@ void DataMapperWindow::CreateCenterWidget() {
 	setCentralWidget(m_minMaxGlyph3DWidget);
 }
 
-void DataMapperWindow::CreateExportToPortableVisualizationSubmenu() {
-
-	if (m_portableVisualizationExport.DoAnyPlatformsHaveSourceDirectories()) {
-
-		m_fileMenu->addSeparator();
-		QMenu* portableVisualizationMenu = m_fileMenu->addMenu(tr("Create Portable Visualization"));
-
-		m_portableVisualizationExport.CreateSubmenu(portableVisualizationMenu);
-		QObject::connect(&m_portableVisualizationExport, &SynGlyphX::PortableVisualizationExport::CreatePortableVisualization, this, &DataMapperWindow::CreatePortableVisualization);
-
-		for (auto action : portableVisualizationMenu->actions()) {
-
-			m_projectDependentActions.push_back(action);
-		}
-	}
-}
-
 void DataMapperWindow::CreateMenus() {
 
     //Create File Menu
@@ -185,8 +168,6 @@ void DataMapperWindow::CreateMenus() {
     QAction* saveAsProjectAction = CreateMenuAction(m_fileMenu, tr("Save As Mapping"), QKeySequence::SaveAs);
     QObject::connect(saveAsProjectAction, &QAction::triggered, this, &DataMapperWindow::SaveAsProject);
 	m_projectDependentActions.push_back(saveAsProjectAction);
-
-	CreateExportToPortableVisualizationSubmenu();
 
 	m_fileMenu->addActions(m_recentFileActions);
 
@@ -733,116 +714,6 @@ void DataMapperWindow::AddDatabaseServerDatasources() {
 
 		m_dataEngineConnection->closeConnection();
 	}
-}
-
-void DataMapperWindow::CreatePortableVisualization(SynGlyphX::PortableVisualizationExport::Platform platform) {
-
-	SynGlyphX::DataTransformMapping::ConstSharedPtr dataMapping = m_dataTransformModel->GetDataMapping();
-
-	if (dataMapping->GetDatasources().empty()) {
-
-		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no datasources."));
-		return;
-	}
-
-	if (dataMapping->GetGlyphGraphs().empty()) {
-
-		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates."));
-		return;
-	}
-
-	if (!dataMapping->DoesAtLeastOneGlyphGraphHaveBindingsOnPosition()) {
-
-		QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Visualization has no glyph templates with bindings on Position X, Position Y, or Position Z."));
-		return;
-	}
-
-	/*std::vector<unsigned int> missingBaseObjects = dataMapping->GetFileBaseObjectsWithInvalidFiles();
-	if (!missingBaseObjects.empty()) {
-
-		if (SynGlyphX::ChangeImageFileDialog::UpdateImageFiles(missingBaseObjects, std::const_pointer_cast<SynGlyphX::DataTransformMapping>(dataMapping), this)) {
-
-			if (!m_currentFilename.isEmpty()) {
-
-				m_dataTransformModel->SaveDataTransformFile(m_currentFilename);
-			}
-		}
-		else {
-
-			QMessageBox::critical(this, tr("Export to ANTz Error"), tr("Portable visualization can't be created when images are still missing."));
-			return;
-		}
-	}*/
-
-	
-	QSet<QString> projectFileDirs;
-	projectFileDirs.insert(QDir::toNativeSeparators(m_currentFilename));
-	for (const auto& datasource : m_dataTransformModel->GetDataMapping()->GetDatasources()) {
-
-		if (datasource.second->GetSourceType() == SynGlyphX::Datasource::SourceType::File) {
-
-			SynGlyphX::FileDatasource::ConstSharedPtr fileDatasource = std::dynamic_pointer_cast<const SynGlyphX::FileDatasource>(datasource.second);
-			projectFileDirs.insert(QDir::toNativeSeparators(QString::fromStdWString(fileDatasource->GetFilename())));
-		}
-	}
-
-	QString csvDirectory = QDir::toNativeSeparators(GetExistingEmptyDirectory(projectFileDirs, "ANTzExportDir", tr("Select Directory For Portable Visualization"), "", tr("Selected directory contains one or more files relevant to the project.")));
-	if (csvDirectory.isEmpty()) {
-
-		return;
-	}
-
-	
-	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-
-	try {
-
-		//bool useOldANTzFilenames = !QFile::exists(templateDir + QDir::separator() + "usr" + QDir::separator() + "csv" + QDir::separator() + "antzglobals.csv");
-		SaveProject();
-		m_portableVisualizationExport.CopyContentsOfSourceDirectory(platform, csvDirectory);
-		DataEngine::GlyphEngine ge;
-		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "\\", baseImageDir, baseFilename, "DataMapper");
-		if (ge.IsUpdateNeeded()){
-			try {
-
-				ge.getDownloadedBaseImage(m_dataTransformModel->GetDataMapping().get()->GetBaseObjects());
-			}
-			catch (const DownloadException& e) {
-
-				SynGlyphX::Application::restoreOverrideCursor();
-				QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
-				SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-			}
-			catch (const std::exception&) {
-
-				throw;
-			}
-			ge.generateGlyphs(this);
-
-			m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
-		}
-
-		SynGlyphX::Application::restoreOverrideCursor();
-	}
-	catch (const std::exception& e) {
-
-		try {
-
-			SynGlyphX::Filesystem::RemoveContentsOfDirectory(csvDirectory.toStdString());
-			SynGlyphX::Application::restoreOverrideCursor();
-			QMessageBox::critical(this, tr("Create Portable Visualization Error"), e.what());
-		}
-		catch (...) {
-		
-			SynGlyphX::Application::restoreOverrideCursor();
-			QMessageBox::information(this, tr("Directory in use"), tr("Could not create portable visualization because files in this directory are currently in use."), QMessageBox::Ok);
-		}
-		return;
-	}
-
-	statusBar()->showMessage("Portable visualization successfully created", 6000);
 }
 
 void DataMapperWindow::AddBaseObject() {
