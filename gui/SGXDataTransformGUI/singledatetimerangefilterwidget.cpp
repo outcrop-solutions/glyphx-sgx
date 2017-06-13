@@ -14,10 +14,6 @@ namespace SynGlyphX {
 		UseDateAndTimeLayout();
 
 		setLayout(mainLayout);
-
-		QSize sz(size()); //100,30
-		QSize psz(parent->size()); //356,726
-
 	}
 
 	void SingleDatetimeRangeFilterWidget::UseDateAndTimeLayout() {

@@ -11,6 +11,7 @@ public class loader : MonoBehaviour
     public GameObject CylinderPrefab;
     public GameObject CubePrefab;
     public GameObject MissingMeshPrefab;
+    public Material GlyphMaterial;
 
     void read_base_image(reader r)
     {
@@ -59,10 +60,10 @@ public class loader : MonoBehaviour
         // @todo
     }
 
-    GameObject create_shape(geom_type type)
+    GameObject create_shape(ref creation_data data)
     {
         GameObject obj = null;
-        switch (type)
+        switch (data.geom)
         {
             case geom_type.CONE:
                 obj = GameObject.Instantiate(ConePrefab); break;
@@ -72,6 +73,8 @@ public class loader : MonoBehaviour
                 obj = GameObject.Instantiate(CylinderPrefab); break;
             case geom_type.CUBE:
                 obj = GameObject.Instantiate(CubePrefab); break;
+            case geom_type.TORUS:
+                obj = torus_generator.create(data.ratio); break;
             default:
                 obj = GameObject.Instantiate(MissingMeshPrefab); break;
         }
@@ -80,18 +83,21 @@ public class loader : MonoBehaviour
 
     void place_root(ref creation_data data, Transform obj)
     {
-        obj.position = data.pos;
-        obj.localScale = data.scale;
-        apply_antz_rotation(obj, data.rot);
+        Matrix4x4 local = matrix.from_transform(obj.transform);
+
+        local = matrix.translate(local, data.pos);
+        local = matrix.scale(local, data.scale);
+        local = apply_antz_rotation(local, data.rot);
 
         if (data.topo == topology.kNPtopoRod)
         {
             //visual_scale = glm::vec3(data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f);
-            obj.Translate(new Vector3(0.0f, 0.0f, 1.0f));
+            local = matrix.translate(local, new Vector3(0.0f, 0.0f, 1.0f));
         }
         else
         {
-            obj.localScale = data.scale;
+            // @todo - is this right?
+            local = matrix.scale(local, data.scale);
         }
 
         if ((data.geom == geom_type.CYLINDER || data.geom == geom_type.WIRE_CYLINDER)
@@ -101,19 +107,21 @@ public class loader : MonoBehaviour
                     || data.geom == geom_type.WIRE_PIN)))
         {
 
-            obj.Translate(new Vector3(0.0f, 0.0f, -1.0f));
+            local = matrix.translate(local, new Vector3(0.0f, 0.0f, -1.0f));
         }
 
+        matrix.set_from_matrix(obj.transform, local);
         //glyphnode->setCachedTransform(transform);
         //glyphnode->setVisualScale(visual_scale);
         //++root_count;
     }
 
-    void apply_antz_rotation(Transform t, Vector3 antz_rot)
+    Matrix4x4 apply_antz_rotation(Matrix4x4 m, Vector3 antz_rot)
     {
-        t.Rotate(new Vector3(0.0f, 0.0f, -1.0f), Mathf.Deg2Rad * antz_rot.y);
-        t.Rotate(new Vector3(-1.0f, 0.0f, 0.0f), Mathf.Deg2Rad * antz_rot.x);
-        t.Rotate(new Vector3(0.0f, 0.0f, -1.0f), Mathf.Deg2Rad * antz_rot.z);
+        m = matrix.rotate(m, Mathf.Deg2Rad * antz_rot.y, new Vector3(0.0f, 0.0f, -1.0f));
+        m = matrix.rotate(m, Mathf.Deg2Rad * antz_rot.x, new Vector3(-1.0f, 0.0f, 0.0f));
+        m = matrix.rotate(m, Mathf.Deg2Rad * antz_rot.z, new Vector3(0.0f, 0.0f, -1.0f));
+        return m;
     }
 
     // @todo - put these somewhere more sensible
@@ -173,55 +181,93 @@ public class loader : MonoBehaviour
                     var scale = data.scale;
                     var pos = data.pos;
                     var antz_rot = data.rot;
+                    Matrix4x4 local = matrix.from_transform(obj.transform);
 
-                    if ((data.geom == geom_type.CONE) || (data.geom == geom_type.CYLINDER) || (data.geom == geom_type.PIN))
+                    if ((parent.data.geom == geom_type.CONE) || (parent.data.geom == geom_type.CYLINDER) || (parent.data.geom == geom_type.PIN))
                     {
-                        obj.transform.Translate(new Vector3(0.0f, 0.0f, 1.0f));
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, 1.0f));
                     }
 
                     //scale up 1.5X to match torus geometry size inner radius (?)
                     float s_torusRadius = 1.5f;
-                    obj.transform.localScale = new Vector3(s_torusRadius, s_torusRadius, s_torusRadius);
+                    local = matrix.scale(local, new Vector3(s_torusRadius, s_torusRadius, s_torusRadius));
 
                     //position at torus outer radius, inside center of tube
 
-                    obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * (pos.x + 90.0f));
-                    obj.transform.Translate(new Vector3(1.0f, 0.0f, 0.0f)); //translate to center of tube
+                    local = matrix.rotate(local, pos.x + 90.0f, new Vector3(0.0f, 0.0f, 1.0f));
+                    local = matrix.translate(local, new Vector3(1.0f, 0.0f, 0.0f));
 
                     if (data.topo == topology.kNPtopoTorus)//dynamic_cast <const ANTzTorusPlacementPolicy* const> (childGlyph->getPlacementPolicy()) != nullptr)
                     {
-                        obj.transform.Rotate(new Vector3(1.0f, 0.0f, 0.0f) * Mathf.Deg2Rad * 90.0f);
-                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * -90.0f);
-                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * pos.y);  //latitude
+                        local = matrix.rotate(local, 90.0f, new Vector3(1.0f, 0.0f, 0.0f));
+                        local = matrix.rotate(local, -90.0f, new Vector3(0.0f, 0.0f, 1.0f));
+                        local = matrix.rotate(local, pos.y, new Vector3(0.0f, 0.0f, 1.0f));
                                                                                                      //translate.z based on scale.x and is converted from deg 57.29...
-                        obj.transform.Translate(new Vector3(0.0f, 0.1591f * scale.x * scale.z / 57.29578f, 0.0f));
+                        local = matrix.translate(local, new Vector3(0.0f, 0.1591f * scale.x * scale.z / 57.29578f, 0.0f));
                     }
                     else
                     {
-                        obj.transform.Rotate(new Vector3(0.0f, 1.0f, 0.0f), Mathf.Deg2Rad * 90.0f);
-                        obj.transform.Rotate(new Vector3(0.0f, -1.0f, 0.0f), Mathf.Deg2Rad * pos.y); //latitude
+                        local = matrix.rotate(local, 90.0f, new Vector3(0.0f, 1.0f, 0.0f));
+                        local = matrix.rotate(local, pos.y, new Vector3(0.0f, -1.0f, 0.0f)); //latitude
 
-                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, 1.0f), Mathf.Deg2Rad * 90.0f);               //orient North
-                                                                                                                  //translate 1 unit to surface then convert node z local units
-                                                                                                                  //uses parent->ratio for torus inner radius and 1.5f for scaling factor
-                        obj.transform.Rotate(new Vector3(0.0f, 0.0f, parent.data.ratio + (pos.z / 360.0f)));
+                        local = matrix.rotate(local, 90.0f, new Vector3(0.0f, 0.0f, 1.0f));               //orient North
+                                                                                                                   //translate 1 unit to surface then convert node z local units
+                                                                                                                   //uses parent->ratio for torus inner radius and 1.5f for scaling factor
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, parent.data.ratio + (pos.z / 360.0f)));
 
-                        obj.transform.Rotate(new Vector3(0.5f, 0.5f, 0.5f)); //results in 1/4 parent
+                        local = matrix.scale(local, new Vector3(0.5f, 0.5f, 0.5f)); //results in 1/4 parent
                     }
                     //orientation
-                    apply_antz_rotation(transform, antz_rot);
+                    local = apply_antz_rotation(local, antz_rot);
 
                     //scale 1/2 size of parent, smaller is good for torus .5 / 1.5
-                    if (parent.data.topo == topology.kNPtopoRod)        //rod is scaled at draw time and does not pass along scale to children
-                        obj.transform.localScale.Scale(new Vector3(0.33333333f, 0.33333333f, 0.33333333f));
+                    if (data.topo == topology.kNPtopoRod)        //rod is scaled at draw time and does not pass along scale to children
+                        local = matrix.scale(local, new Vector3(0.33333333f, 0.33333333f, 0.33333333f));
                     else
-                        obj.transform.localScale.Scale(new Vector3(scale.x * 0.33333333f, scale.y * 0.33333333f, scale.z * 0.33333333f));   //node scale
+                        local = matrix.scale(local, new Vector3(scale.x * 0.33333333f, scale.y * 0.33333333f, scale.z * 0.33333333f));   //node scale
 
                     apply_non_pin_rod_offset(ref data, obj.transform, parent);
 
                     Vector3 visual_scale;
                     apply_final_child_offset(ref data, obj.transform, out visual_scale);
                     // childGlyph->setVisualScale(visual_scale);
+
+                    matrix.set_from_matrix(obj.transform, local);
+                }
+                break;
+            case topology.kNPtopoPin:
+            case topology.kNPtopoRod:
+                {
+                    var scale = data.scale;
+                    var pos = data.pos;
+                    var antz_rot = data.rot;
+                    Matrix4x4 local = matrix.from_transform(obj.transform);
+                    bool parent_is_rod = parent.data.topo == topology.kNPtopoRod;
+                    //position the node vertically on the pin, note using translate.x
+                    if (parent.data.is_root && !parent_is_rod)
+                        //zzoff
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, s_offsetPin + pos.x / 37.22f));    //root pin workaround, zz debug
+                    else if (parent_is_rod)   //replace kNPoffsetPin with
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, parent.data.scale.z * (s_offsetRod + 2.0f * pos.x / 37.22f)));
+                    else if ((data.geom == geom_type.CONE) || (data.geom == geom_type.CYLINDER))
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, 1.0f + pos.x / 37.22f));
+                    else
+                        local = matrix.translate(local, new Vector3(0.0f, 0.0f, s_offsetPin + pos.x / 37.22f));
+
+                    if (data.topo != topology.kNPtopoRod && !parent_is_rod)
+                        local = matrix.scale(local, new Vector3(scale.x * 0.5f, scale.y * 0.5f, scale.z * 0.5f));
+                    else if (data.topo != topology.kNPtopoRod)      //rod is scaled at draw time and does not pass along scale to children
+                        local = matrix.scale(local, scale);  //rod does not scale child
+
+                    //offset from center after scaling, preserves ring offset when scaling
+                    local = matrix.translate(local, new Vector3(pos.z * .008333333f, 0.0f, 0.0f)); // node->translate.y / -37.22f, 0.0f); //locked y, makes more sense when swtiching topos
+
+                    apply_antz_rotation(local, antz_rot);
+
+                    Vector3 visual_scale;
+                    apply_final_child_offset(ref data, obj.transform, out visual_scale);
+
+                    matrix.set_from_matrix(obj.transform, local);
                 }
                 break;
         }
@@ -231,7 +277,7 @@ public class loader : MonoBehaviour
     void create_glyph(creation_data data)
     {
         // first instantiate the right prefab and add the glyph component to it
-        GameObject obj = create_shape(data.geom);
+        GameObject obj = create_shape(ref data);
         var gc = obj.AddComponent<glyph>();
         gc.data = data;
 
@@ -244,6 +290,15 @@ public class loader : MonoBehaviour
             var parent = GetComponent<scene>().glyphs[data.parent_id];
             obj.transform.SetParent(parent.transform, false);
             place_child(ref data, obj, parent.GetComponent<glyph>());
+        }
+
+        obj.name = data.tag;
+
+        var mrs = obj.GetComponentsInChildren<MeshRenderer>();
+        foreach (var mr in mrs)
+        {
+            mr.material = GlyphMaterial;
+            mr.material.color = data.color;
         }
 
         GetComponent<scene>().glyphs.Add(data.id, obj);

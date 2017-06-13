@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getAppVersionString());
+	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getFullVersionString().c_str());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 

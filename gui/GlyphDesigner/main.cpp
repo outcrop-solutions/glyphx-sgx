@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     printf("after change, libraryPaths=(%s)\n", QCoreApplication::libraryPaths().join(",").toUtf8().data());
 #endif
     
-    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", SynGlyphX::getAppVersionString());
+    SynGlyphX::GlyphBuilderApplication::Setup("Glyph Builder - Glyph Designer", SynGlyphX::getFullVersionString().c_str());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 #ifdef USE_BREAKPAD

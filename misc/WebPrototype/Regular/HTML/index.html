@@ -1,0 +1,239 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>protoype</title>
+  <meta name="description" content="">
+
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="../node_modules/materialize-css/bin/materialize.css">
+  <link rel="stylesheet" href="../node_modules/materialize-css/extras/noUiSlider/nouislider.css">
+  <link rel="stylesheet" href="../node_modules/alertifyjs/build/css/alertify.min.css" />
+	<link rel="stylesheet" href="../node_modules/alertifyjs/build/css/themes/default.min.css" />
+  <link rel="stylesheet" href="../CSS/styles.css">
+  <link rel="stylesheet" href="../CSS/styles2.css">
+
+</head>
+
+<body bgcolor="grey">
+  <script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="../node_modules/materialize-css/bin/materialize.js"></script>
+  <script type="text/javascript" src="../node_modules/materialize-css/extras/noUiSlider/nouislider.js"></script>
+  <script src="../node_modules/alertifyjs/build/alertify.min.js"></script>
+  <script type="text/javascript" src="../JS/script.js"></script>
+  <script type="text/javascript" src="../JS/script2.js"></script>
+  
+
+  <nav>
+    <div class="nav-wrapper">
+      <a class="brand-logo"><img src="../Res/Img/logo.webp" style="width: 300px; height: 73px;"></img></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a><i class="fa fa-bars fa-2x"></i></a></li>
+        <li><a><i class="fa fa-floppy-o fa-2x"></i></a></li>
+        <li><a><i class="fa fa-cog fa-2x"></i></a></li>
+        <li id="launchFilter" onclick="toggleNav()"><a><i class="fa fa-filter fa-2x"></i></a></li>
+      </ul>
+    </div>
+  </nav>
+
+    <div class="fixed-action-btn click-to-toggle">
+      <a class="btn-floating btn-large button-big-circle">
+        <i class="material-icons">menu</i>
+      </a>
+      <ul>
+        <li><a class="btn-floating red button-circle1"><i class="material-icons">insert_chart</i></a></li>
+        <li><a class="btn-floating yellow darken-1 button-circle2"><i class="material-icons">format_quote</i></a></li>
+        <li><a class="btn-floating green button-circle3"><i class="material-icons">publish</i></a></li>
+        <li><a class="btn-floating blue button-circle4"><i class="material-icons">attach_file</i></a></li>
+      </ul>
+    </div>
+
+  <div id="filterNav" class="sidenav">
+
+    <!-- Top Conatiner -->
+    <div id="filterView" class="container" style="width:93%;height:35%;">
+          
+          <!-- 1st Row -->
+          <div class="row" style="margin-bottom: 0px;height:15%;">
+        <div class="input-field col s9 filter-wrap filter-font marginTop">
+      <select>
+        <option value="" disabled selected>Select View</option>
+        <option value="1">View 1</option>
+        <option value="2">View 2</option>
+        <option value="3">View 3</option>
+      </select>
+    </div>
+     <div class="input-field col s3 marginTop"><a class="waves-effect waves-light dropdown-button btn btnSave" href='#' data-activates='SaveDropdown'>New</a></div>
+       </div>
+
+       <ul id='SaveDropdown' class='dropdown-content'>
+    <li><a href="#!">New</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">Save</a></li>
+    <li><a href="#!">Save As</a></li>
+    <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+       </ul>
+       <!-- 1st Row  ENDS-->
+       
+       
+        <!-- 2nd Row -->
+       <div class="row" style="margin-bottom:0px; height:50%;">
+        <div class="container col s12 filter-wrap filter-font" id="filterSummaryContainer">
+        
+          <div class="chip">
+          
+          <i class="close material-icons" id="">close</i>Age
+        </div>
+        
+        <div class="chip">
+          
+          <i class="close material-icons">close</i>Gender
+        </div>
+        <br/>
+        <div class="chip">
+          <i class="close material-icons">close</i>Gender
+        </div>
+        <br/>
+        <div class="chip">
+          <i class="close material-icons">close</i>Gender
+        </div>
+        <br/>
+        <div class="chip">
+          <i class="close material-icons">close</i>Gender
+        </div>
+
+        </div>
+       </div>
+       <!-- 2nd Row  ENDS-->
+
+       <!-- 3rd Row -->
+       <div class="row" style="margin-bottom: 0px;">
+        <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Clear All</a></div>
+         <div class="input-field col s3 btnSave"><a class="waves-effect waves-light btn btnSave">Disable</a></div>
+         <div class="input-field col s6"></div>
+       </div>
+      <!-- 3rd Row ENDS -->
+
+      <!-- 4th Row -->
+      <div class="container filter-wrap">
+
+            <div id="tableSelect" class="input-field col s12 filter-font">
+              <select multiple>
+                <option value="" disabled selected>Select Tables</option>
+                <option value="1">Table 1</option>
+                <option value="2">Table 2</option>
+                <option value="3">Table 3</option>
+                <label>Tables</label>
+              </select>
+            </div>
+
+      </div>
+     <!-- 4th Row ENDS-->
+
+    </div>
+
+    <a id="filterViewButton" class="waves-effect btn fa fa-caret-up close-button" onclick="toggleFilter()"></a>
+
+     <ul class="collapsible" data-collapsible="expandable">
+      <li>
+        <div class="collapsible-header"><i class="fa fa-thumb-tack"></i>Active</div>
+        <div class="collapsible-body"></div>
+      </li>
+      <li>
+        <div class="collapsible-header"><i class="fa fa-filter"></i>Filters</div>
+        <div class="collapsible-body">
+
+          <ul class="collapsible" data-collapsible="expandable">
+            <li>
+              <div class="collapsible-header"><span class="badge fa fa-thumb-tack"></span>Filter 1</div>
+              <div class="collapsible-body">
+
+                <div class="row">
+                  <div class="col s12">
+                    <ul class="tabs tabs-fixed-width">
+                      <li class="tab col s3"><a href="#test1">Elastic</a></li>
+                      <li class="tab col s3"><a href="#test2">Ranges</a></li>
+                    </ul>
+                  </div>
+                  <div id="test1" class="col s12"><br>FILTERS MISSING RIGHT NOW</div>
+                  <div id="test2" class="col s12">
+
+                    <ul class="collapsible" data-collapsible="expandable">
+                      <li>
+                        <div class="row" style="height: 42px;">
+                          <i id="deleteRange" class="fa fa-trash fa-2x col s1"></i>
+                          <div style="left: 6%;" class="input-field col s3">
+                            <input placeholder="0" id="min" type="text">
+                            <label for="min">Min</label>
+                          </div>
+                          <div id="range" class=""></div>
+                          <div style="left: 28%;" class="input-field col s3">
+                            <input placeholder="100" id="max" type="text">
+                            <label for="max">Max</label>
+                          </div>
+                          <div id="switchBar" class="switch col s1">
+                            <label>
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="row" style="height: 42px;">
+                          <i id="deleteRange" class="fa fa-trash fa-2x col s1"></i>
+                          <div style="left: 6%;" class="input-field col s3">
+                            <input placeholder="0" id="min" type="text">
+                            <label for="min">Min</label>
+                          </div>
+                          <div id="range" class=""></div>
+                          <div style="left: 28%;" class="input-field col s3">
+                            <input placeholder="100" id="max" type="text">
+                            <label for="max">Max</label>
+                          </div>
+                          <div id="switchBar" class="switch col s1">
+                            <label>
+                              <input type="checkbox">
+                              <span class="lever"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="row" style="height: 42px;">
+                          <i id="addRange" class="fa fa-plus fa-2x"></i>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </li>
+            <li>
+              <div class="collapsible-header"><span class="badge fa fa-thumb-tack"></span>Filter 2</div>
+              <div class="collapsible-body">
+
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </li>
+    </ul>
+
+    
+    
+    <!-- Top Conatiner ENDS -->
+
+    
+    <!-- Bottom Conatiner -->
+    
+  </div>
+
+</body>
+
+</html>

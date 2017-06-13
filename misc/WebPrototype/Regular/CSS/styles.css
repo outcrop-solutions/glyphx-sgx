@@ -1,0 +1,177 @@
+.nav-wrapper {
+	background-color: steelblue;
+}
+
+.close-button {
+    height: 26px;
+    background-color: rgb(59, 113, 158);
+}
+
+.close-button:hover {
+    background-color: steelblue;
+}
+
+.filter-font li > a, .filter-font li > span {
+    font-size: 13px;
+    line-height: 0px;
+}
+
+.select-wrapper input.select-dropdown {
+    height: 1.5rem;
+}
+
+.filter-wrap{
+    width: 93%;
+}
+
+.noUi-horizontal {
+    width: 30%;
+}
+
+#range {
+    top: 26px;
+    left: 34%;
+    width: 24%;
+}
+
+#deleteRange {
+    padding-top: 2%;
+    padding-left: 6%;
+
+}
+
+#deleteRange:hover {
+    color: darkred;
+}
+
+#addRange {
+    padding-top: 2%;
+    padding-left: 6%;
+
+}
+
+#addRange:hover {
+    color: rgb(59, 113, 158);
+}
+
+.switch label .lever {
+    width: 30px;
+    height: 11px;
+}
+
+#switchBar {
+    padding-left: 18%;
+    padding-top: 3%;
+}
+
+.switch label .lever:after {
+    width: 15px;
+    height: 15px;
+}
+
+.input-field input {
+    width: 60%;
+    height: 1.5rem;
+}
+
+.noUi-base {
+    width: 97%;
+    left: -1%;
+}
+
+.button-big-circle {
+    left: 1%;
+    position: fixed;
+    top: 93%;
+    background-color: steelblue;
+}
+.button-big-circle:hover {
+    background-color: rgb(59, 113, 158);
+}
+
+.button-circle1{
+    left: 1.4%;
+    position: fixed;
+    top: 88%;
+}
+
+.button-circle2{
+    left: 1.4%;
+    position: fixed;
+    top: 83%;
+}
+
+.button-circle3{
+    left: 1.4%;
+    position: fixed;
+    top: 77.9%;
+}
+
+.button-circle4{
+    left: 1.4%;
+    position: fixed;
+    top: 72.9%;
+}
+
+.tabs .tab a:hover, .tabs .tab a.active {
+    color: rgb(59, 113, 158);
+}
+
+.tabs .tab a {
+    color: rgb(59, 113, 158);
+}
+
+.tabs .indicator {
+    background-color: rgb(59, 113, 158);
+}
+
+/*-----------------         SIDE BAR           ----------------*/
+/* The side navigation menu */
+.sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    right: 0;
+    background-color: white; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 0px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+    transition: 0.3s
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover, .offcanvas a:focus{
+    color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+

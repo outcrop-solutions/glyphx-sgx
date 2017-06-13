@@ -33,9 +33,8 @@ TARGET_LINK_LIBRARIES(SGXSceneViewer
 	Qt5::Widgets
 	SGXUtility 
 	SGXFoundation
-	SGXGlyphGUI
-	SGXGUI
 	SGXGraphics
+	SGXGlyphGUI
 )
 
 Set_Windows_Properties(SGXSceneViewer)

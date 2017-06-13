@@ -1,5 +1,5 @@
 #include "ANTzTopology.h"
-#include "../../GUI/SGXSceneViewer/SceneViewer/glyphnode.h"
+#include "../../gui/SGXSceneViewer/SceneViewer/glyphnode.h"
 #include <glm/gtx/matrix_decompose.hpp>
 
 namespace SynGlyphXANTz {
