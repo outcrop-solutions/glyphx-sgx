@@ -25,12 +25,6 @@ namespace SynGlyphX {
 			QObject::connect(windowsAction, &QAction::triggered, this, [this]{ emit CreatePortableVisualization(Platform::Windows); });
 		}
 
-		if (DoesPlatformHaveSourceDirectory(Platform::WindowsZSpace)) {
-
-			QAction* zSpaceAction = menu->addAction(tr("Windows (zSpace)"));
-			QObject::connect(zSpaceAction, &QAction::triggered, this, [this]{ emit CreatePortableVisualization(Platform::WindowsZSpace); });
-		}
-
 		if (DoesPlatformHaveSourceDirectory(Platform::Mac)) {
 
 			QAction* macAction = menu->addAction(tr("Mac"));
@@ -43,10 +37,9 @@ namespace SynGlyphX {
 		QString sourceBaseDir = QDir::toNativeSeparators(QFileInfo(SynGlyphX::Application::applicationDirPath()).canonicalFilePath()) + QDir::separator();
 		
 		QSettings settings;
-		settings.beginGroup("ANTzExport");
-		AddSourceDirectoryToPlatformIfItExists(Platform::Windows, settings.value("windows", sourceBaseDir + "ANTzTemplate").toString());
-		AddSourceDirectoryToPlatformIfItExists(Platform::WindowsZSpace, settings.value("zSpace", sourceBaseDir + "ANTzzSpaceTemplate").toString());
-		AddSourceDirectoryToPlatformIfItExists(Platform::Mac, settings.value("mac", sourceBaseDir + "ANTzMacTemplate").toString());
+		settings.beginGroup("ExportPortable");
+		AddSourceDirectoryToPlatformIfItExists(Platform::Windows, settings.value("windows", sourceBaseDir + "GlyphPortableWin64").toString());
+		AddSourceDirectoryToPlatformIfItExists(Platform::Mac, settings.value("mac", sourceBaseDir + "GlyphPortableOSX").toString());
 		settings.endGroup();
 	}
 
@@ -85,26 +78,6 @@ namespace SynGlyphX {
 			return false;
 		}
 
-        if (!baseSourceDir.exists("usr")) {
-            
-            baseSourceDir.mkdir("usr");
-        }
-        
-		if (!baseSourceDir.cd("usr")) {
-
-            return false;
-		}
-
-		if (!baseSourceDir.exists("csv")) {
-
-            baseSourceDir.mkdir("csv");
-		}
-
-		if (!baseSourceDir.exists("images")) {
-
-            baseSourceDir.mkdir("images");
-		}
-
 		return true;
 	}
 
@@ -121,7 +94,7 @@ namespace SynGlyphX {
 		}
 
 		Filesystem::CopyDirectoryOverwrite(m_sourceDirectories.at(platform).toStdString(), destinationDir.toStdString(), true);
-		if ((platform == Platform::Windows) || (platform == Platform::WindowsZSpace)) {
+		if ((platform == Platform::Windows)) {
 
 			QString appPath = SynGlyphX::Application::applicationDirPath() + QDir::separator();
 
@@ -132,7 +105,7 @@ namespace SynGlyphX {
         
 #ifdef __APPLE__
         // On OSX the exectuable won't automatically have the execute permission bit set. Change it.
-        Filesystem::SetExecutable( destinationDir.toStdString() + "/Glyph_Viewer_(Portable)_mac" );
+        Filesystem::SetExecutable( destinationDir.toStdString() + "/GlyphPortable" );
 #endif
 	}
 

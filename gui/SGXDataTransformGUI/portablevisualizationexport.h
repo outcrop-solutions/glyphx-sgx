@@ -30,10 +30,7 @@ namespace SynGlyphX {
 	public:
 		enum Platform {
 			Windows,
-			WindowsZSpace,
 			Mac,
-			Linux,
-			Web
 		};
 
 		PortableVisualizationExport();
