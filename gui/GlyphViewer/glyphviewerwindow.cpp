@@ -1456,22 +1456,12 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 			
 		m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, csvDirectory );
 
+		// compute the cache path and copy the cache to the output
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
 		std::string cacheDirectoryPath = dcd + ( "/cache_" + boost::uuids::to_string( m_mappingModel->GetDataMapping()->GetID() ) );
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
 		m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
-
-		DataEngine::GlyphEngine ge;
-		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-		std::string baseFilename = (QString::fromStdWString(SynGlyphX::DefaultBaseImageProperties::GetBasefilename()).toStdString());
-
-		//App says "DataMapper" because this is equivalent to create portable visualization in DataMapper
-		ge.initiate(m_dataEngineConnection->getEnv(), m_currentFilename.toStdString(), csvDirectory.toStdString() + "/", baseImageDir, baseFilename, "DataMapper");
-		DownloadBaseImages(ge);
-		ge.generateGlyphs(this);
-
-		m_portableVisualizationExport.CopyLogo(QDir::toNativeSeparators(csvDirectory + "/usr/images/"));
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
