@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import 'materialize-css/bin/materialize.js';
-import 'materialize-css/dist/css/materialize.css';
-import {Navbar, NavItem} from 'react-materialize';
+import Range from './range.js';
 import 'font-awesome/css/font-awesome.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './filterNav.css';
 
 class FilterNav extends Component {
-  render() {
-    return (
-      <div className="TopNav">
-          {/* TOP SECTION */}
-          HELLO I AM FILTER
+    render() {
+        return (
+            <MuiThemeProvider> 
+                
+                <div className="TopNav">
+                    {/* TOP SECTION */}
+                    HELLO I AM FILTER
 
-          {/* BOTTOM SECTION */}
-      </div>
-    );
-  }
+                    {/* BOTTOM SECTION */}
+                    <Range></Range>
+                </div>
+
+            </MuiThemeProvider>
+        );
+    }
 }
 
 export default FilterNav;
