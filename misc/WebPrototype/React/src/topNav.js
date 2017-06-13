@@ -1,33 +1,38 @@
 import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import 'materialize-css/bin/materialize.js';
-import 'materialize-css/dist/css/materialize.css';
-import {Navbar, NavItem} from 'react-materialize';
 import 'font-awesome/css/font-awesome.css';
-import FilterNav from './filterNav.js';
+import FilterNav from './filterNav';
+import TextField from 'material-ui/TextField';
+
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './topNav.css';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+
+    
 
 class TopNav extends Component {
-  render() {
-    return (
-      <div className="TopNav">
-	  
-        <Navbar brand='LOGO' right>
-          <NavItem href=''><i className="fa fa-bars fa-2x"></i></NavItem>
-          <NavItem href=''><i className="fa fa-floppy-o fa-2x"></i></NavItem>
-          <NavItem href=''><i className="fa fa-cog fa-2x"></i></NavItem>
-          <NavItem onClick={toggleNav}><i className="fa fa-filter fa-2x"></i></NavItem>
-        </Navbar>
+    render() {
+        return (
+            <MuiThemeProvider> 
+                <div className="TopNav">
 
-		<MuiThemeProvider>
-        <div id="filterNav" className="sidenav">
-          <FilterNav></FilterNav>
-        </div>
-		 </MuiThemeProvider>
-      </div>
-    );
-  }
+                    <AppBar
+                      title={<span style={navLogo.title}>LOGO</span>}
+                      iconElementRight={<IconButton><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
+                    />
+
+                    <div id="filterNav" className="sidenav">
+                        <FilterNav></FilterNav>
+                    </div>
+                    
+                </div>
+          </MuiThemeProvider>
+        );
+    }
 }
 
 // Hides the filter side nav by translating it off the screen so it doesnt resize and 
@@ -40,5 +45,11 @@ function toggleNav() {
         document.getElementById("filterNav").style.transform = "translate(460px, 0px)";
     }
 }
+
+const navLogo = {
+  title: {
+    cursor: 'pointer',
+  },
+};
 
 export default TopNav;
