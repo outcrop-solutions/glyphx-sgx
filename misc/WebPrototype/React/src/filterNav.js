@@ -12,23 +12,23 @@ import {Flex} from 'react-flex-material';
 
 class FilterNav extends Component {
 	
-	 constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state  = {
-      menu:{
-	  open: false,
-	  anchorOrigin: {
-        horizontal: 'left',
-        vertical: 'bottom',
-      },
-      targetOrigin: {
-        horizontal: 'left',
-        vertical: 'top',
-      },
-	  }
-    };
-  }
+        this.state  = {
+            menu: {
+                open: false,
+                anchorOrigin: {
+                    horizontal: 'left',
+                    vertical: 'bottom',
+                },
+                targetOrigin: {
+                    horizontal: 'left',
+                    vertical: 'top',
+                },
+            }
+        };
+    }
   
   handleTouchTap1 = (event) => {
     // This prevents ghost click.
