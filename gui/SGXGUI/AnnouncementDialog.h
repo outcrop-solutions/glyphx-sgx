@@ -43,6 +43,7 @@ namespace SynGlyphX {
 		QVBoxLayout* layout;
 		QLabel* m_label;
 		QWebEngineView* webView;
+		bool firstTime;
 
 		QString UseURLText(QUrl url);
 

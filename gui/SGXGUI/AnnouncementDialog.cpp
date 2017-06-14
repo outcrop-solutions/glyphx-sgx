@@ -8,7 +8,7 @@
 namespace SynGlyphX {
 
 	AnnouncementDialog::AnnouncementDialog(QString title, QWidget *parent)
-		: QDialog(parent)
+		: QDialog(parent), firstTime(true)
 	{
 		setWindowTitle(title);
 
@@ -72,14 +72,16 @@ namespace SynGlyphX {
 
 	void AnnouncementDialog::show(){
 
-		QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
-		layout->addWidget(buttonBox);
+		if (firstTime){
+			QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
+			layout->addWidget(buttonBox);
 
-		setLayout(layout);
+			setLayout(layout);
 
-		QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-		QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
+			QObject::connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+			QObject::connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+			firstTime = false;
+		}
 		QDialog::show();
 
 	}
