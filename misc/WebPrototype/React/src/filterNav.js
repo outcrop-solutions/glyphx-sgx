@@ -14,17 +14,25 @@ import {List, ListItem} from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 
 
-const items = [];
-const items2 = [];
-for (let i = 0; i < 20; i++ ) {
-    items.push(<MenuItem value={i} key={i} primaryText={'View '+i+''} />);
-    items2.push(<MenuItem value={i} key={i} insetChildren={true} checked={false} primaryText={'Table '+i+''} />)
-}
+
 
 class FilterNav extends Component {
 	
+     
     constructor(props) {
+        
         super(props);
+        
+        var viewSelectItems= [];
+        var tableSelectItems = [];
+        var appliedFilters = [];
+
+        for (let i = 0; i < 20; i++ ) {
+            viewSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={i} primaryText={'View '+i+''} />);
+            tableSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={i} insetChildren={true} checked={false} primaryText={'Table '+i+''} />)
+            appliedFilters.push(<ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 1" leftIcon={<i className="fa fa-times cancelIconStyle" onClick={this.onDeleteFilter}  aria-hidden="true" name="Filter1"></i>} />);
+            appliedFilters.push(<Divider />);
+        }
 
         this.state  = {
             menu:{
@@ -32,12 +40,20 @@ class FilterNav extends Component {
             },
             viewSelect:{
                 value: null,
+                items: viewSelectItems
             },
             tableSelect:{
                     values: [],
+                    items: tableSelectItems
+            },
+            appliedFilters:{
+                items: appliedFilters
             }
         };
-    }
+
+        
+        
+    };
 
   
   /**
@@ -139,7 +155,7 @@ class FilterNav extends Component {
                                     style={{width:"100%",fontSize:'13px'}}
                                     hintText="Select View"
                                 >
-                                    {items}
+                                    {this.state.viewSelect.items}
                                 </SelectField>
                             </Flex>
                             
@@ -160,10 +176,11 @@ class FilterNav extends Component {
                                         style={{fontSize: '13px'}}
                                     >
                                         <Menu>
-                                            <MenuItem primaryText="New" style={{fontSize: '13px'}}/>
-                                            <Divider />
-                                            <MenuItem primaryText="Save" style={{fontSize: '13px'}}/>
-                                            <MenuItem primaryText="Save As" style={{fontSize: '13px'}}/>
+                                            <MenuItem primaryText="New" className="menuItemStyling"/>
+                                            
+                                            <MenuItem primaryText="Save" className="menuItemStyling"/>
+                                            
+                                            <MenuItem primaryText="Save As" className="menuItemStyling"/>
                                         </Menu>
                                     </Popover>
                                 </div>
@@ -174,11 +191,7 @@ class FilterNav extends Component {
                         <Flex layout="row" style={{height:'50%'}}>
                             <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}}>
                             <List id="FilterList">
-                                <ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 1" leftIcon={<i className="fa fa-times" onClick={this.onDeleteFilter} aria-hidden="true" name="Filter1"></i>} />
-                                <Divider />
-                                <ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 2" leftIcon={<i className="fa fa-times" onClick={this.onDeleteFilter} aria-hidden="true" name="Filter2"></i>} />
-                                 <Divider />
-                               <ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 3" leftIcon={<i className="fa fa-times" onClick={this.onDeleteFilter} aria-hidden="true" name="Filter3"></i>} />
+                               {this.state.appliedFilters.items}
                             </List>
                             </div>
                         </Flex>
@@ -214,7 +227,7 @@ class FilterNav extends Component {
                                     hintText="Select Table"
                                     multiple={true}
                                 >
-                                    {items2}
+                                    {this.state.tableSelect.items}
                                 </SelectField>
                         </Flex>
                     </Flex>

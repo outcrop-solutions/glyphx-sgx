@@ -1,0 +1,11 @@
+.menuItemStyling {
+    font-size: 13px !important;
+    min-height: 0px !important;
+    height:25px !important;
+    line-height: 30px !important;
+}
+
+.cancelIconStyle {
+    font-size: 1.2em;
+    cursor: pointer;
+}
