@@ -10,10 +10,15 @@ import MenuItem from 'material-ui/MenuItem';
 import Range from './range.js';
 import {Flex} from 'react-flex-material';
 import Divider from 'material-ui/Divider';
+import {List, ListItem} from 'material-ui/List';
+import IconButton from 'material-ui/IconButton';
+
 
 const items = [];
-for (let i = 0; i < 50; i++ ) {
+const items2 = [];
+for (let i = 0; i < 20; i++ ) {
     items.push(<MenuItem value={i} key={i} primaryText={'View '+i+''} />);
+    items2.push(<MenuItem value={i} key={i} insetChildren={true} checked={false} primaryText={'Table '+i+''} />)
 }
 
 class FilterNav extends Component {
@@ -26,10 +31,13 @@ class FilterNav extends Component {
                 open: false,
             },
             viewSelect:{
-                value: 10,
+                value: null,
+            },
+            tableSelect:{
+                    values: [],
             }
         };
-  }
+    }
 
   
   /**
@@ -40,8 +48,10 @@ class FilterNav extends Component {
 
         this.setState(
         {
-            menu: {open: true,
-            anchorEl: event.currentTarget,}
+            menu: {
+                open: true,
+                anchorEl: event.currentTarget,
+            }
         });
     };
   
@@ -51,7 +61,9 @@ class FilterNav extends Component {
     handleRequestClose = () => {
         this.setState(
         {
-        menu: {open: false}
+            menu: {
+                open: false
+            }
         });
     };
   
@@ -59,20 +71,64 @@ class FilterNav extends Component {
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
 	**/
     onSelectViewChange = (event, index, value) => {
-        this.setState({viewSelect:{
-            value: value,
-        }});
+        this.setState(
+        {
+            viewSelect:{
+                    value: value,
+            }
+        }
+        );
         console.log(value);
     };
 
-  
+    /**
+	* This method is called when an item is selected in the "select Table" dropdown that is present in the top left.
+	**/
+    onSelectTableChange = (event, index, value) => {
+        this.setState(
+        {
+            tableSelect:{
+                    value: value,
+            }
+        }
+        );
+        console.log(value);
+    };
+
+    /**
+	* This method is called when the user clicks on one of the 'X' to delete a filter that is applied.
+	**/
+    onDeleteFilter = (event) => {
+        console.log("1");
+    };
+
+    /**
+	* This method is called when the user clicks on one of the 'arrow' to hide the top view of the filter
+	**/
+    toggleTopView = (event) => {
+        var collapseTopViewButton = document.getElementById("collapseTopViewButton");
+        var topView = document.getElementById("TopView");
+
+        if(topView.hidden == true)
+        {
+            topView.hidden = false;
+            collapseTopViewButton.classList.remove('fa-caret-down');
+            collapseTopViewButton.classList.add('fa-caret-up');
+        }
+        else{
+            topView.hidden = true;
+            collapseTopViewButton.classList.remove('fa-caret-up');
+            collapseTopViewButton.classList.add('fa-caret-down');
+        }
+            
+    };
 	
     render() {
         return (
             <div className="TopNav" style={{height: '100%'}}>
                 {/* TOP SECTION */}
                 <Flex layout="column" style={{height: '100%'}}>
-                    <Flex flex="30" id="TopView">
+                    <Flex flex="35" id="TopView">
        
                         {/* Row 1 */}
                         <Flex layout="row" align="space-between center"    style={{height: '20%'}}>
@@ -81,6 +137,7 @@ class FilterNav extends Component {
                                     value={this.state.viewSelect.value}
                                     onChange={this.onSelectViewChange}
                                     style={{width:"100%",fontSize:'13px'}}
+                                    hintText="Select View"
                                 >
                                     {items}
                                 </SelectField>
@@ -92,7 +149,7 @@ class FilterNav extends Component {
                                     <RaisedButton
                                         onClick={this.menuDropdownClick}
                                         label="Menu"
-                                        buttonStyle={{color: 'rgb(0, 188, 212)'}}
+                                    buttonStyle={{height: '28px'}}
                                         labelStyle={{fontSize: '13px'}}
                                         primary={true}
                                     />
@@ -115,20 +172,66 @@ class FilterNav extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'50%'}}>
+                            <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}}>
+                            <List id="FilterList">
+                                <ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 1" leftIcon={<i className="fa fa-times" onClick={this.onDeleteFilter} aria-hidden="true" name="Filter1"></i>} />
+                                <Divider />
+                                <ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 2" leftIcon={<i className="fa fa-times" onClick={this.onDeleteFilter} aria-hidden="true" name="Filter2"></i>} />
+                                 <Divider />
+                               <ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 3" leftIcon={<i className="fa fa-times" onClick={this.onDeleteFilter} aria-hidden="true" name="Filter3"></i>} />
+                            </List>
+                            </div>
                         </Flex>
                         
                         {/* Row 3 */}
-                        <Flex layout="row" style={{height:'15%'}}>
+                        <Flex layout="row" style={{height:'12%'}}>
+                            <Flex flex="25">
+                               <RaisedButton 
+                                    label="Clear All" 
+                                    buttonStyle={{height: '28px',width:'100%',paddingTop: '5px'}}
+                                    labelStyle={{fontSize: '13px',height: '28px',}} 
+                                    style = {{height: '28px',width:'100%',}}
+                                    primary={true} />
+                            </Flex>
+                            <Flex divider />
+                            <Flex flex="25">
+                                <RaisedButton 
+                                    label="Disable" 
+                                    buttonStyle={{height: '28px',paddingTop: '5px'}}
+                                    labelStyle={{fontSize: '13px',height: '28px',}} 
+                                    style = {{height: '28px',width:'100%',}}
+                                    primary={true} />
+                            </Flex>
+                            
                         </Flex>
                         
                         {/* Row 4 */}
-                        <Flex layout="row" style={{height:'15%'}}>
+                        <Flex layout="row" style={{height:'18%'}}>
+                            <SelectField
+                                    value={this.state.tableSelect.value}
+                                    onChange={this.onSelectTableChange}
+                                    style={{width:"100%",fontSize:'13px',height:'44px'}}
+                                    hintText="Select Table"
+                                    multiple={true}
+                                >
+                                    {items2}
+                                </SelectField>
                         </Flex>
                     </Flex>
 
+                    <RaisedButton 
+                        fullWidth={true} 
+                        primary={true} 
+                        onClick={this.toggleTopView}
+                        style = {{height: '20px'}}>
+                        
+                        <i id="collapseTopViewButton" className="fa fa-caret-up" style={{fontSize: '1.6em'}}> 
+                        </i> 
+                    
+                    </RaisedButton>
 
                     {/* BOTTOM SECTION */}
-                    <Flex flex="70">
+                    <Flex flex="65">
                         <Range ></Range >
                     </Flex>
                 </Flex>
