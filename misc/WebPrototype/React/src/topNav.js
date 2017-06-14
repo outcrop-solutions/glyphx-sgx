@@ -16,9 +16,10 @@ class TopNav extends Component {
     render() {
         return (
             <MuiThemeProvider> 
-                <div className="TopNav">
+                <div className="TopNav" style={{width:'100%',height:'100%'}}>
 
                     <AppBar className="navbar-color"
+                        id="AppBar"
                         title={<span style={styles.navLogo}>LOGO</span>}
                         iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
                     />

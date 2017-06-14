@@ -30,28 +30,32 @@ class FilterNav extends Component {
         for (let i = 0; i < 20; i++ ) {
             viewSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={i} primaryText={'View '+i+''} />);
             tableSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={i} insetChildren={true} checked={false} primaryText={'Table '+i+''} />)
-            appliedFilters.push(<ListItem disabled={true} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 1" leftIcon={<i className="fa fa-times cancelIconStyle" onClick={this.onDeleteFilter}  aria-hidden="true" name="Filter1"></i>} />);
-            appliedFilters.push(<Divider />);
+            appliedFilters.push(<ListItem disabled={true} value={i} key={i} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 1" leftIcon={<i className="fa fa-times cancelIconStyle" onClick={this.onDeleteFilter}  aria-hidden="true" name="Filter1"></i>} />);
+            appliedFilters.push(<Divider value={i} key={i+100} />);
         }
 
         this.state  = {
+            topViewVisible: true,
             menu:{
                 open: false,
             },
             viewSelect:{
                 value: null,
-                items: viewSelectItems
             },
             tableSelect:{
-                    values: [],
-                    items: tableSelectItems
+                    value: [],
+                    
             },
             appliedFilters:{
                 items: appliedFilters
             }
         };
 
-        
+        this.data = {
+            viewSelectItems: viewSelectItems,
+            tableSelectItems: tableSelectItems,
+            appliedFiltersItems: appliedFilters
+        }
         
     };
 
@@ -91,9 +95,11 @@ class FilterNav extends Component {
         {
             viewSelect:{
                     value: value,
+
             }
         }
         );
+        //this.state.viewSelect.value = value;
         console.log(value);
     };
 
@@ -124,26 +130,43 @@ class FilterNav extends Component {
     toggleTopView = (event) => {
         var collapseTopViewButton = document.getElementById("collapseTopViewButton");
         var topView = document.getElementById("TopView");
+        var filterWindow = document.getElementById("FilterWindowOuterContiner");
+        var appBar = document.getElementById("AppBar");
 
-        if(topView.hidden == true)
+        if(this.state.topViewVisible == true)
         {
-            topView.hidden = false;
-            collapseTopViewButton.classList.remove('fa-caret-down');
-            collapseTopViewButton.classList.add('fa-caret-up');
-        }
-        else{
-            topView.hidden = true;
+            filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)"
             collapseTopViewButton.classList.remove('fa-caret-up');
             collapseTopViewButton.classList.add('fa-caret-down');
+            this.state.topViewVisible = false;
+        }
+        else{
+            filterWindow.style.transform = "translate(0px,0px)"
+            collapseTopViewButton.classList.remove('fa-caret-down');
+            collapseTopViewButton.classList.add('fa-caret-up');
+            this.state.topViewVisible = true;
         }
             
+    };
+
+    /**
+	* This method is called when the user clicks on one of the 'arrow' to hide the top view of the filter
+	**/
+    onClearAllFilters = (event,b,c) => {
+        console.log("clear all");
+    };
+
+    onHideFilteredData = (event,b,c) => {
+        console.log("Hide");
+        var a = document.getElementById("buttonHideShow");
     };
 	
     render() {
         return (
-            <div className="TopNav" style={{height: '100%'}}>
-                {/* TOP SECTION */}
+            <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s'}}>
+               
                 <Flex layout="column" style={{height: '100%'}}>
+                     {/* TOP SECTION */}
                     <Flex flex="35" id="TopView">
        
                         {/* Row 1 */}
@@ -155,7 +178,7 @@ class FilterNav extends Component {
                                     style={{width:"100%",fontSize:'13px'}}
                                     hintText="Select View"
                                 >
-                                    {this.state.viewSelect.items}
+                                    {this.data.viewSelectItems}
                                 </SelectField>
                             </Flex>
                             
@@ -191,7 +214,7 @@ class FilterNav extends Component {
                         <Flex layout="row" style={{height:'50%'}}>
                             <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}}>
                             <List id="FilterList">
-                               {this.state.appliedFilters.items}
+                               {this.data.appliedFiltersItems}
                             </List>
                             </div>
                         </Flex>
@@ -204,16 +227,25 @@ class FilterNav extends Component {
                                     buttonStyle={{height: '28px',width:'100%',paddingTop: '5px'}}
                                     labelStyle={{fontSize: '13px',height: '28px',}} 
                                     style = {{height: '28px',width:'100%',}}
+                                    onClick={this.onClearAllFilters}
                                     primary={true} />
                             </Flex>
                             <Flex divider />
                             <Flex flex="25">
                                 <RaisedButton 
-                                    label="Disable" 
+                                    label="Hide" 
+                                    id="buttonHideShow"
                                     buttonStyle={{height: '28px',paddingTop: '5px'}}
                                     labelStyle={{fontSize: '13px',height: '28px',}} 
-                                    style = {{height: '28px',width:'100%',}}
+                                    style = {{height: '28px',width:'100%',}} 
+                                    onClick={this.onHideFilteredData}
                                     primary={true} />
+                                    {/*<Toggle
+                                        label="Hide Filtered Data"
+                                        style={{paddingTop:'3px'}}
+                                        labelPosition="right"
+                                        />
+                                    */}
                             </Flex>
                             
                         </Flex>
@@ -227,7 +259,7 @@ class FilterNav extends Component {
                                     hintText="Select Table"
                                     multiple={true}
                                 >
-                                    {this.state.tableSelect.items}
+                                    {this.data.tableSelectItems}
                                 </SelectField>
                         </Flex>
                     </Flex>
