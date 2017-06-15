@@ -12,8 +12,11 @@ import {Flex} from 'react-flex-material';
 import Divider from 'material-ui/Divider';
 import {List, ListItem} from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
-
-
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
+import AlertContainer from 'react-alert'
 
 
 class FilterNav extends Component {
@@ -28,14 +31,16 @@ class FilterNav extends Component {
         var appliedFilters = [];
 
         for (let i = 0; i < 20; i++ ) {
-            viewSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={i} primaryText={'View '+i+''} />);
-            tableSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={i} insetChildren={true} checked={false} primaryText={'Table '+i+''} />)
-            appliedFilters.push(<ListItem disabled={true} value={i} key={i} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText="Filter 1" leftIcon={<i className="fa fa-times cancelIconStyle" onClick={this.onDeleteFilter}  aria-hidden="true" name="Filter1"></i>} />);
+            viewSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={"View "+i} primaryText={'View '+i+''} />);
+            tableSelectItems.push(<MenuItem className="menuItemStyling" value={i} key={"Table "+i} insetChildren={true} checked={false} primaryText={'Table '+i+''} />)
+            appliedFilters.push(<ListItem disabled={true} value={i} key={"item "+i} style={{fontSize: '13px',}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText={'Filter '+ i} leftIcon={<i className="fa fa-times cancelIconStyle" onClick={this.onDeleteFilter}  aria-hidden="true" name="Filter1"></i>} />);
             appliedFilters.push(<Divider value={i} key={i+100} />);
         }
 
+        //Store the states of all the elements inside this data structure.
         this.state  = {
             topViewVisible: true,
+            hideShowButtonTextFlag: true,
             menu:{
                 open: false,
             },
@@ -44,13 +49,16 @@ class FilterNav extends Component {
             },
             tableSelect:{
                     value: [],
-                    
             },
-            appliedFilters:{
-                items: appliedFilters
-            }
+            saveDailog:{
+                open: false,
+            },
+            savedSnackBar: {
+                 open: false,
+            },
         };
-
+        
+        //Store data of all the elements inside this data structure.
         this.data = {
             viewSelectItems: viewSelectItems,
             tableSelectItems: tableSelectItems,
@@ -59,6 +67,80 @@ class FilterNav extends Component {
         
     };
 
+    alertOptions = {
+    offset: 14,
+    position: 'bottom left',
+    theme: 'dark',
+    time: 2000,
+    transition: 'scale'
+  }
+ 
+  showAlert = () => {
+    this.msg.show('Success The View has been saved!', {
+      time: 3000,
+      type: 'success',
+      icon: <i className="fa fa-check-circle" style={{fontSize: '2.5em',color:'green'}}></i>
+    })
+  }
+
+    /**
+	* This method is called when the menu button is clicked. The menu button is in the top right corner of the filerbar.
+	**/
+    handleOpenSaveDailog = () => {
+          this.setState({saveDailog:{
+                open: true
+            }});
+    };
+
+    /**
+	* This method is called when the menu button is clicked
+	**/
+    handleCloseSaveDailog = () => {
+        this.setState({saveDailog:{
+                open: false
+            }});
+    };
+
+    /**
+	* This method is called when the save button is pressed in the save dailog.
+	**/
+    onSaveDailog = (context) => {
+        var viewName = document.getElementById("tf_viewName").value;
+        var nameAlreadyExists = false;
+        var lbl_error = document.getElementById('lbl_saveError');
+        lbl_error.hidden = true;
+
+        if(viewName == null || viewName == "")
+        {
+            //error
+        }    
+        
+        //check if same name view already exists
+        context.data.viewSelectItems.forEach(function(element) {
+            if(element.key == viewName )
+                nameAlreadyExists = true;
+        });
+
+        if(nameAlreadyExists)
+        {
+            console.log("Error! A view with the same name already exists!");
+            lbl_error.hidden = false;
+        }
+        else{
+            
+            //Save the view
+
+
+            //Close the dialog
+            context.handleCloseSaveDailog();
+            console.log("View saved with name: " + viewName);
+
+            //show the success message
+            this.showAlert();
+            
+        }
+        
+    };
   
   /**
 	* This method is called when the menu button is clicked. The menu button is in the top right corner of the filerbar.
@@ -99,8 +181,9 @@ class FilterNav extends Component {
             }
         }
         );
-        //this.state.viewSelect.value = value;
         console.log(value);
+
+        //Load Filters!
     };
 
     /**
@@ -115,6 +198,8 @@ class FilterNav extends Component {
         }
         );
         console.log(value);
+
+        //Load Table Columns
     };
 
     /**
@@ -122,10 +207,12 @@ class FilterNav extends Component {
 	**/
     onDeleteFilter = (event) => {
         console.log("1");
+        var but = document.getElementById("buttonHideShow");
+        but.value
     };
 
     /**
-	* This method is called when the user clicks on one of the 'arrow' to hide the top view of the filter
+	* This method is called when the user clicks on the 'arrow' to hide the top view of the filter
 	**/
     toggleTopView = (event) => {
         var collapseTopViewButton = document.getElementById("collapseTopViewButton");
@@ -150,21 +237,71 @@ class FilterNav extends Component {
     };
 
     /**
-	* This method is called when the user clicks on one of the 'arrow' to hide the top view of the filter
+	* This method is called when the user clicks on the 'clear all' button.
 	**/
-    onClearAllFilters = (event,b,c) => {
+    onClearAllFilters = (event) => {
         console.log("clear all");
     };
 
-    onHideFilteredData = (event,b,c) => {
+    /**
+	* This method is called when the user clicks on the 'Hide/Show'.
+	**/
+    onHideFilteredData = (event) => {
         console.log("Hide");
-        var a = document.getElementById("buttonHideShow");
+        this.setState(
+        {
+            hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
+        });
+        
+        //if the flag true then button --> |HIDE| else button --> |SHOW|
+        if(this.state.hideShowButtonTextFlag)
+        {
+            //hide the glyphs that don't match the filter critera.
+        }
+        else{
+            //show all the glyphs!
+        }
     };
 	
+    /**
+	* This method is called when the user clicks on the 'New' inside the menu.
+	**/
+    onMenuNewClick  = (event) => {
+        console.log("new");
+
+        //close the menu
+        this.handleRequestClose();
+    };
+
+     /**
+	* This method is called when the user clicks on the 'Save' inside the menu.
+	**/
+    onMenuSaveClick = (event) => {
+        console.log("Save");
+        
+        
+        //close the menu
+        this.handleRequestClose();
+    };
+
+    /**
+	* This method is called when the user clicks on the 'Save As' inside the menu.
+	**/
+    onMenuSaveAsClick = (event) => {
+        console.log("Save As");
+        
+        this.handleOpenSaveDailog();
+        //close the menu
+        this.handleRequestClose();
+    };
+
     render() {
+        
         return (
-            <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s'}}>
-               
+            <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
+                <div>
+                    <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
+                </div>
                 <Flex layout="column" style={{height: '100%'}}>
                      {/* TOP SECTION */}
                     <Flex flex="35" id="TopView">
@@ -199,13 +336,31 @@ class FilterNav extends Component {
                                         style={{fontSize: '13px'}}
                                     >
                                         <Menu>
-                                            <MenuItem primaryText="New" className="menuItemStyling"/>
+                                            <MenuItem primaryText="New" className="menuItemStyling" onClick={this.onMenuNewClick}/>
                                             
-                                            <MenuItem primaryText="Save" className="menuItemStyling"/>
-                                            
-                                            <MenuItem primaryText="Save As" className="menuItemStyling"/>
+                                            <MenuItem primaryText="Save" className="menuItemStyling" onClick={this.onMenuSaveClick}/>
+
+                                            <MenuItem primaryText="Save As" className="menuItemStyling" onClick={this.onMenuSaveAsClick}/>
                                         </Menu>
                                     </Popover>
+                                    <Dialog
+                                        title="Save View"
+                                        actions={
+                                            [<FlatButton
+                                                label="Save"
+                                                primary={true}
+                                                onClick={() => this.onSaveDailog(this)}/>,
+                                             <FlatButton
+                                                label="Cancel"
+                                                primary={true}
+                                                onClick={this.handleCloseSaveDailog}/>]
+                                        }
+                                        modal={true}
+                                        open={this.state.saveDailog.open}>
+                                        Please enter a name for the view you are saving. <br />
+                                        <TextField id="tf_viewName" floatingLabelText="View Name" /> <br />
+                                        <label id="lbl_saveError" hidden style={{color:'red'}}> Error! A view with the same name already exists! Please provide a different name! </label>
+                                    </Dialog>
                                 </div>
                             </Flex>
                         </Flex>
@@ -218,6 +373,7 @@ class FilterNav extends Component {
                             </List>
                             </div>
                         </Flex>
+                        
                         
                         {/* Row 3 */}
                         <Flex layout="row" style={{height:'12%'}}>
@@ -233,7 +389,7 @@ class FilterNav extends Component {
                             <Flex divider />
                             <Flex flex="25">
                                 <RaisedButton 
-                                    label="Hide" 
+                                    label={this.state.hideShowButtonTextFlag ? "Hide" : "Show"}
                                     id="buttonHideShow"
                                     buttonStyle={{height: '28px',paddingTop: '5px'}}
                                     labelStyle={{fontSize: '13px',height: '28px',}} 
