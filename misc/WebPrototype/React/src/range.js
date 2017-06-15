@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
+import {Flex} from 'react-flex-material';
+import Range from 'rc-slider/lib/Range'; 
+import {Card, CardText} from 'material-ui/Card';
+import {red500,blue500} from 'material-ui/styles/colors';
+import 'rc-slider/assets/index.css';
+import 'font-awesome/css/font-awesome.css';
 import './range.css';
 
 // Main Range Parent Class
@@ -127,9 +135,22 @@ class RangeTable extends React.Component {
         });
 
         return (
-            <div>
-                <button type="button" onClick={this.props.onRowAdd} className="btn pull-right">Add</button>
+            <div
+                
+            >
                 {range}
+                <Card>
+                    <CardText>
+                        <Flex layout="row">
+                            <FontIcon
+                                onClick={this.props.onRowAdd}
+                                className="fa fa-plus fa-2x"
+                                hoverColor={blue500}
+                                style={iconStyles}
+                            />
+                        </Flex>
+                    </CardText>
+                </Card>   
             </div>
         );
     }
@@ -145,27 +166,77 @@ class RangeRow extends React.Component {
 
     render() {
         return (
-            <div>
-                <input type="button" onClick={this.onDelEvent.bind(this)} value="X" className="del-btn"/>
+            <Card>
+                <CardText 
+                >
+                    <Flex layout="row">        
 
-                <MinInput onTextUpdate={this.props.onTextUpdate} cellData={{
-                    type: "min",
-                    value: this.props.range.min,
-                    id: this.props.range.id
-                }}/>
-                <MaxInput onTextUpdate={this.props.onTextUpdate} cellData={{
-                    type: "max",
-                    value: this.props.range.max,
-                    id: this.props.range.id
-                }}/>
-                <AppliedSwitch onToggle={this.props.onToggle} cellData={{
-                    type: "applied",
-                    toggled: this.props.range.applied,
-                    id: this.props.range.id
-                }}/>
-            </div>
+                        <Flex flex="10">
+                            <FontIcon
+                                onClick={this.onDelEvent.bind(this)}
+                                className="fa fa-trash fa-2x"
+                                hoverColor={red500}
+                                style={iconStyles}
+                            />
+                        </Flex>
+                        
+                        <Flex flex="25">
+                            <MinInput onTextUpdate={this.props.onTextUpdate} cellData={{
+                                type: "min",
+                                value: this.props.range.min,
+                                id: this.props.range.id
+                            }}/>
+                        </Flex>
+
+                        <Flex divider />
+
+                        <Flex flex="30"
+                            style={{
+                                margin: "16px 0px 0px -8px"
+                            }} 
+                        >
+                            <RangeSlider/>
+                            
+                        </Flex>
+
+                        <Flex divider />
+
+                        <Flex flex="25"
+                            style={{
+                                margin: "0px 0px 0px 15px"
+                            }} 
+                        >
+                            <MaxInput 
+                                onTextUpdate={this.props.onTextUpdate} 
+                                cellData={{
+                                    type: "max",
+                                    value: this.props.range.max,
+                                    id: this.props.range.id
+                                }}
+                            />
+                        </Flex>
+
+                        <Flex flex="10"
+                            style={{
+                                margin: "11px 0px 0px -11px"
+                            }} 
+                        >
+                            <AppliedSwitch onToggle={this.props.onToggle} cellData={{
+                                type: "applied",
+                                toggled: this.props.range.applied,
+                                id: this.props.range.id
+                            }}/>
+                        </Flex>
+                    </Flex>
+                </CardText>
+            </Card>
         );
     }
+}
+
+var textStyle = {
+    width: "60px"
+
 }
 
 // Binds the Min-Input text to the data structure data
@@ -175,6 +246,7 @@ class MinInput extends React.Component {
         return (
             <TextField type='text' name={this.props.cellData.type} id={this.props.cellData.id.toString()} value={this.props.cellData.value} onChange={this.props.onTextUpdate}
                 hintText="Min"
+                style = {textStyle}
             />
         );
     }
@@ -187,6 +259,7 @@ class MaxInput extends React.Component {
         return (
             <TextField type='text' name={this.props.cellData.type} id={this.props.cellData.id.toString()} value={this.props.cellData.value} onChange={this.props.onTextUpdate}
                 hintText="Max"
+                style = {textStyle}
             />
         );
     }
@@ -201,6 +274,29 @@ class AppliedSwitch extends React.Component {
         );
     }
 }
+
+class RangeSlider extends React.Component {
+    render() {
+        return (
+            <Range
+                min={0}
+                max={100}
+                defaultValue={[0,100]}
+                allowCross={false}
+                onChange={function() {
+
+                }}
+            />
+        );
+    }
+}
+
+const iconStyles = {
+    fontSize: 26,
+    paddingLeft: 10,
+    paddingRight: 13,
+    margin: "12px 0px 0px -21px"
+};
 
 
 export default RangeForm;

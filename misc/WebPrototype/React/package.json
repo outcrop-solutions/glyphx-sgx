@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "react": "15.5.4",
+    "react-dom": "15.5.4",
 	"react-flex-material": "^1.0.2"
   },
   "peerDependencies": {
@@ -16,7 +16,12 @@
 		"font-awesome": "^4.7.0",
     "material-icons": "^0.1.0",
     "material-ui": "^0.18.3",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "rc-slider": "^8.1.2",
+    "react-swipeable-views": "^0.12.3",
+    "react-materialize": "^1.0.1",
+    "materialize-css": "^0.98.2"
+
   },
   "scripts": {
     "start": "react-scripts start",
