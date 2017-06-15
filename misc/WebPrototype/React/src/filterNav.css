@@ -19,3 +19,26 @@
   -ms-transition: height 0.3s ease-in;
   transition: height 0.3s ease-in;
 }
+
+.menuItemStyling {
+    font-size: 13px !important;
+    min-height: 0px !important;
+    height:25px !important;
+    line-height: 30px !important;
+}
+
+.cancelIconStyle {
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.hideTopView {
+    -webkit-transform: translate(0px, -300px);
+    -moz-transform:    translate(0px, -300px);
+    -ms-transform:     translate(0px, -300px);
+    -o-transform:      translate(0px, -300px);
+    transform: translate(0px, -300px);
+    -webkit-transition:1s;
+    transition:1s;
+
+}
