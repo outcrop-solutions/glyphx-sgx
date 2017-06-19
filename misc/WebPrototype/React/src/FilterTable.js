@@ -12,20 +12,38 @@ class FilterTabs extends React.Component {
         super(props);
         this.state = {
             slideIndex: 0,
+            FilterTable: null,
+            FilterTableSelectedRows: [],
+            Range: null
         };
-    }
-
-    handleChange = (value) => {
-        this.setState({
-            slideIndex: value,
-        });
     };
 
+    handleChange = (value,context) => {
+        context.setState({
+            slideIndex: value,
+            FilterTableSelectedRows: context.state.FilterTable.state.selectedRows
+        });
+
+    };
+
+    /**
+     * This method is called after the table is created inside the tab. We store the instance of the filter table for future use.
+     * @param instance: this is the instance of the filter table created
+     */
+    onCreateTable = (instance) => {
+        this.setState({
+            FilterTable: instance
+        });
+    }
+
+    static COUNT = 0;
+
     render() {
+        var id = ++FilterTabs.COUNT;
         return (
             <div>
                 <Tabs
-                    onChange={this.handleChange}
+                    onChange={(value) => this.handleChange(value,this)}
                     value={this.state.slideIndex}
                 >
                     <Tab 
@@ -58,7 +76,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <FilterTable></FilterTable>
+                        <FilterTable id={id} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
                     </div>
                     <div
                         style={{
@@ -129,6 +147,7 @@ class FilterTable extends Component {
         super(props);
 
         this.state = {
+        id: props.id,
         fixedHeader: true,
         fixedFooter: true,
         stripedRows: false,
@@ -140,7 +159,8 @@ class FilterTable extends Component {
         showCheckboxes: true,
         height: '500px',
         data: tableData,
-        colNum: (props.columnToSearch ? props.columnToSearch : 1)
+        indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
+        selectedRows: (props.selectedRows ? props.selectedRows : [])
         };
     }
     
@@ -159,7 +179,7 @@ class FilterTable extends Component {
         for(index=0;index<len;index++)
             console.log(JSON.stringify(context.state.data[rowSelection[index]]));
 
-        
+        this.setState({selectedRows: rowSelection});
     };
 
     handleToggle = (event, toggled) => {
@@ -171,9 +191,9 @@ class FilterTable extends Component {
     /**
      * This method is called when the keyup event is fired in the search textfield on top of the table. 
      * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
-     * @param colNum: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
+     * @param indexColumnToSearch: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
      */
-    onKeyUp = (id,colNum) => {
+    onKeyUp = (id,indexColumnToSearch) => {
         var input, filter, table, tr, td, i;
         input = document.getElementById("tf-"+id);
         filter = input.value.toUpperCase();
@@ -184,7 +204,7 @@ class FilterTable extends Component {
 
         // Loop through all table rows, and hide those who don't match the search query
         for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[colNum];
+            td = tr[i].getElementsByTagName("td")[indexColumnToSearch];
             if (td) {
             if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
                 tr[i].style.display = "";
@@ -200,14 +220,15 @@ class FilterTable extends Component {
     };
 
     render() {
-        var id = ++FilterTable.COUNT;
+        //var id = ++FilterTable.COUNT;
+        var id = this.state.id;
         return (
             <div>   
                 <TextField
                     type="text" 
                     id={"tf-"+id}
                     className={"tf-"+id} 
-                    onKeyUp={() => this.onKeyUp(id,this.state.colNum)} 
+                    onKeyUp={() => this.onKeyUp(id,this.state.indexColumnToSearch)} 
                     hintText="Search for value.." /> 
                 <br/>
                 <Table
@@ -223,6 +244,7 @@ class FilterTable extends Component {
                     displaySelectAll={this.state.showCheckboxes}
                     adjustForCheckbox={this.state.showCheckboxes}
                     enableSelectAll={this.state.enableSelectAll}
+                    //children={}
                 >
                     <TableRow>
                         <TableHeaderColumn >Value</TableHeaderColumn>
@@ -239,7 +261,10 @@ class FilterTable extends Component {
                     stripedRows={this.state.stripedRows}
                 >
                     {tableData.map( (row, index) => (
-                        <TableRow key={index}>
+                        <TableRow 
+                            key={index}
+                            selected={this.state.selectedRows.indexOf(index) !== -1}
+                        >
                             <TableRowColumn>{row.value}</TableRowColumn>
                             <TableRowColumn>{row.count}</TableRowColumn>
                             <TableRowColumn>{row.percent}</TableRowColumn>
@@ -253,4 +278,4 @@ class FilterTable extends Component {
 }
 
 
-export default FilterTable;
+export default FilterTabs;
