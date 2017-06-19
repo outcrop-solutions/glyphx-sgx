@@ -18,7 +18,9 @@ class RangeForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+
+        };
 
         // Defining data structure to hold information on ranges
         // Starts with a default empty 
@@ -59,7 +61,7 @@ class RangeForm extends React.Component {
 
     // Updates the main data structure when the min or max fields are updated
     // Happens with every new key press
-    handleTextUpdate(e) {
+    handleTextUpdate(e, min, max) {
         var update = {
             id: e.target.id,
             name: e.target.name,
@@ -72,11 +74,21 @@ class RangeForm extends React.Component {
             for (var key in range) {
                 if (key == update.name && range.id == update.id) {
                     range[key] = update.value;
+                    /*
+                    if(key == "min") {
+                        min(update.value);
+                    }
+                    else {
+                        max(update.value);
+                    }
+                    */
                 }
             }
 
             return range;
         });
+
+
 
         this.setState({ranges:newRanges});
     };
@@ -111,10 +123,12 @@ class RangeForm extends React.Component {
         return (
             <RangeTable 
                 onTextUpdate={this.handleTextUpdate.bind(this)} 
-                onToggle={this.handleSwitchToggle.bind(this)} 
+                onToggle={this.handleSwitchToggle.bind(this)}
                 onRowAdd={this.handleAddEvent.bind(this)} 
                 onRowDel={this.handleRowDel.bind(this)} 
-                ranges={this.state.ranges} 
+                ranges={this.state.ranges}
+                minVal={this.props.minVal}
+                maxVal={this.props.maxVal}
             />
         );
     }
@@ -124,14 +138,28 @@ class RangeForm extends React.Component {
 // This displays all the ranges in table format
 class RangeTable extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         var onTextUpdate = this.props.onTextUpdate;
         var onToggle = this.props.onToggle;
         var rowDel = this.props.onRowDel;
+        var min = this.props.minVal;
+        var max = this.props.maxVal;
 
         // Maps all the rows to the view and passes data structure methods to give access
         var range = this.props.ranges.map(function(range) {
-            return (<RangeRow onTextUpdate={onTextUpdate} onToggle={onToggle} range={range} onDelEvent={rowDel.bind(this)} key={range.id}/>)
+            return (<RangeRow 
+                        onTextUpdate={onTextUpdate} 
+                        onToggle={onToggle}
+                        range={range} 
+                        onDelEvent={rowDel.bind(this)} 
+                        key={range.id} 
+                        minVal= {min}
+                        maxVal= {max}
+                    />)
         });
 
         return (
@@ -159,10 +187,26 @@ class RangeTable extends React.Component {
 // This defines how a single range looks and operates
 class RangeRow extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state={
+            minID: (+ new Date() + Math.floor(Math.random() * 999999)).toString(36),
+            slideID: (+ new Date() + Math.floor(Math.random() * 999999)).toString(36),
+            maxID: (+ new Date() + Math.floor(Math.random() * 999999)).toString(36)
+        }
+    }
+
     // Method to bind delete to a button 
     onDelEvent() {
         this.props.onDelEvent(this.props.range);
     }
+
+    handleSliderUpdate(e) {
+        //console.log(e[0]);
+        //e[1] = 100;
+        console.log(document.getElementById(e.title));
+    };
 
     render() {
         return (
@@ -179,12 +223,44 @@ class RangeRow extends React.Component {
                                 style={iconStyles}
                             />
                         </Flex>
+
+                        <Flex flex="80">
+                            <TextSlider
+                                minVal={this.props.minVal}
+                                maxVal={this.props.maxVal}
+                                onTextUpdate={this.props.onTextUpdate}
+                                onSlider={this.handleSliderUpdate.bind(this)}
+                                minData={{
+                                    type: "min",
+                                    value: this.props.range.min,
+                                    id: this.props.range.id,
+                                    minID: this.state.minID,
+                                    slideID: this.state.slideID
+                                }}
+                                slideData={{
+                                    type: "slider",
+                                    minID: this.state.minID,
+                                    maxID: this.state.maxID,
+                                    slideID: this.state.slideID
+                                }}
+                                maxData={{
+                                    type: "max",
+                                    value: this.props.range.max,
+                                    id: this.props.range.id,
+                                    maxID: this.state.maxID
+                                }}
+                            />
+                        </Flex>
+
+                        {/*
                         
                         <Flex flex="25">
                             <MinInput onTextUpdate={this.props.onTextUpdate} cellData={{
                                 type: "min",
                                 value: this.props.range.min,
-                                id: this.props.range.id
+                                id: this.props.range.id,
+                                minID: this.state.minID,
+                                slideID: this.state.slideID
                             }}/>
                         </Flex>
 
@@ -195,7 +271,17 @@ class RangeRow extends React.Component {
                                 margin: "16px 0px 0px -8px"
                             }} 
                         >
-                            <RangeSlider/>
+                            <RangeSlider
+                                minVal={this.props.minVal}
+                                maxVal={this.props.maxVal}
+                                onSlider={this.handleSliderUpdate.bind(this)}
+                                cellData={{
+                                    type: "slider",
+                                    minID: this.state.minID,
+                                    maxID: this.state.maxID,
+                                    slideID: this.state.slideID
+                                }}
+                            />
                             
                         </Flex>
 
@@ -211,10 +297,13 @@ class RangeRow extends React.Component {
                                 cellData={{
                                     type: "max",
                                     value: this.props.range.max,
-                                    id: this.props.range.id
+                                    id: this.props.range.id,
+                                    maxID: this.state.maxID
                                 }}
                             />
                         </Flex>
+
+                        */}
 
                         <Flex flex="10"
                             style={{
@@ -242,11 +331,24 @@ var textStyle = {
 // Binds the Min-Input text to the data structure data
 // Emulates a two-way binding
 class MinInput extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
-            <TextField type='text' name={this.props.cellData.type} id={this.props.cellData.id.toString()} value={this.props.cellData.value} onChange={this.props.onTextUpdate}
+            <TextField 
+                type='text' 
+                ref={this.props.cellData.minID}
+                name={this.props.cellData.type} 
+                id={this.props.cellData.id.toString()} 
+                value={this.props.cellData.value} 
+                //onChange={this.props.onTextUpdate}
+                onChange={(e) => this.props.onTextUpdate(e,this.props.cellData.slideID)}
                 hintText="Min"
                 style = {textStyle}
+                title = {this.props.cellData.title}
             />
         );
     }
@@ -255,11 +357,17 @@ class MinInput extends React.Component {
 // Binds the Max-Input text to the data structure data
 // Emulates a two-way binding
 class MaxInput extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <TextField type='text' name={this.props.cellData.type} id={this.props.cellData.id.toString()} value={this.props.cellData.value} onChange={this.props.onTextUpdate}
                 hintText="Max"
                 style = {textStyle}
+                title = {this.props.cellData.title}
             />
         );
     }
@@ -268,6 +376,11 @@ class MaxInput extends React.Component {
 // Binds the Switch boolean to the data structure data
 // Emulates a two-way binding
 class AppliedSwitch extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <Toggle name={this.props.cellData.type} id={this.props.cellData.id.toString()} toggled={this.props.cellData.toggled} onToggle={this.props.onToggle} />
@@ -276,20 +389,99 @@ class AppliedSwitch extends React.Component {
 }
 
 class RangeSlider extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            min: this.props.minVal,
+            max: this.props.maxVal
+        }
+    }
+
+    updateValues(lowerVal, upperVal) {
+        this.state.min = lowerVal;
+        this.state.max = upperVal;
+        this.setState(this.state);
+    }
+
     render() {
         return (
             <Range
-                min={0}
-                max={100}
-                defaultValue={[0,100]}
+                //ref={this.props.cellData.slideID}
+                min={this.state.min}
+                max={this.state.max}
+                defaultValue={[this.props.minVal,this.props.maxVal]}
                 allowCross={false}
-                onChange={function() {
-
-                }}
+                onChange={this.props.onSlider}
             />
         );
     }
 }
+
+
+class TextSlider extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            min: this.props.minVal,
+            max: this.props.maxVal
+        }
+    }
+
+    updateMin(min) {
+        this.state.min = min;
+        this.setState(this.state);
+    }
+
+    updateMax(max) {
+        this.state.max = max;
+        this.setState(this.state);
+    }
+
+    render() {
+        return (
+            <Flex>
+
+                <TextField 
+                    type='text' 
+                    ref={this.props.minData.minID}
+                    name={this.props.minData.type} 
+                    id={this.props.minData.id.toString()} 
+                    value={this.props.minData.value} 
+                    //onChange={this.props.onTextUpdate}
+                    onChange={(e) => this.props.onTextUpdate(e, this.updateMin, this.updateMin)}
+                    hintText="Min"
+                    style = {textStyle}
+                />
+
+                <Range
+                    //ref={this.props.cellData.slideID}
+                    min={this.state.min}
+                    max={this.state.max}
+                    defaultValue={[this.props.minVal,this.props.maxVal]}
+                    allowCross={false}
+                    onChange={this.props.onSlider}
+                />
+
+
+                <TextField 
+                    type='text' 
+                    name={this.props.maxData.type} 
+                    id={this.props.maxData.id.toString()} 
+                    value={this.props.maxData.value} 
+                    onChange={this.props.onTextUpdate}
+                    hintText="Max"
+                    style = {textStyle}
+                />
+
+            </Flex>
+        );
+    }
+}
+
 
 const iconStyles = {
     fontSize: 26,

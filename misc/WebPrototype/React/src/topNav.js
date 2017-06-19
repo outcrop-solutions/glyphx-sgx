@@ -24,7 +24,7 @@ class TopNav extends Component {
                         iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
                     />
 
-                    <div id="filterNav" className="sidenav">
+                    <div id="filterNav" className="sidenav sidenavbar">
                         <FilterNav></FilterNav>
                     </div>
                     

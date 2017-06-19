@@ -18,7 +18,8 @@
     "material-ui": "^0.18.3",
     "react-tap-event-plugin": "^2.0.1",
     "rc-slider": "^8.1.2",
-    "react-swipeable-views": "^0.12.3"
+    "react-swipeable-views": "^0.12.3",
+    "material-ui-datatables": "^0.18.0"
   },
   "scripts": {
     "start": "react-scripts start",

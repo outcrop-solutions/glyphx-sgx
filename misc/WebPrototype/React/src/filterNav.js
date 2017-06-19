@@ -5,7 +5,7 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Range from './range.js';
+import RangeForm from './range.js';
 import {Flex} from 'react-flex-material';
 import Divider from 'material-ui/Divider';
 import {Tabs, Tab} from 'material-ui/Tabs';
@@ -16,6 +16,7 @@ import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow,
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import {List, ListItem} from 'material-ui/List';
+import DataTables from 'material-ui-datatables';
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
 
@@ -215,10 +216,10 @@ class FilterNav extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'50%'}}>
-                            <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}}>
-                            <List id="FilterList">
-                               {this.data.appliedFiltersItems}
-                            </List>
+                            <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
+                                <List id="FilterList">
+                                    {this.data.appliedFiltersItems}
+                                </List>
                             </div>
                         </Flex>
                         
@@ -274,8 +275,6 @@ class FilterNav extends Component {
                         style = {{height: '20px'}}
                     >
                         
-
-                        
                         <i 
                             id="collapseTopViewButton" 
                             className="fa fa-caret-up" 
@@ -295,7 +294,51 @@ class FilterNav extends Component {
 
                     <Flex flex="65">
 
-                        <Card>
+
+                         {/*
+
+                         
+
+                        <CutsomCollapse
+                            title="Active"
+                            bodyView={<div>ACTIVE VIEW GOES HERE</div>}
+                        ></CutsomCollapse>
+
+                        <CutsomCollapse
+                            title="Filters"
+                            bodyView={
+                                        <div>
+                                            <CutsomCollapse
+                                                title="Age"
+                                                bodyView={
+                                                    <FilterTabs></FilterTabs>
+                                                }
+                                            ></CutsomCollapse>
+
+                                            <CutsomCollapse
+                                                title="Year"
+                                                bodyView={
+                                                    <FilterTabs></FilterTabs>
+                                                }
+                                            ></CutsomCollapse>
+
+                                            <CutsomCollapse
+                                                title="Major"
+                                                bodyView={
+                                                    <FilterTabs></FilterTabs>
+                                                }
+                                            ></CutsomCollapse>
+                                        </div>
+                            }
+                        ></CutsomCollapse>
+
+                        */}
+
+                        
+
+                           
+
+                        <Card>  
                             <CardHeader
                                 title="Active"
                                 titleColor="white"
@@ -304,7 +347,9 @@ class FilterNav extends Component {
                                 className="collapse-header"
                                 iconStyle={{color: "white"}}
                             />
-                                <CardText expandable={true}>
+                                <CardText 
+                                    expandable={true}
+                                >
                                     HUMINA
                                 </CardText>
                             
@@ -323,7 +368,7 @@ class FilterNav extends Component {
                                 
                                 <Card>
                                     <CardHeader
-                                        title="Highschool"
+                                        title="Age"
                                         titleColor="white"
                                         actAsExpander={true}
                                         showExpandableButton={true}
@@ -331,53 +376,13 @@ class FilterNav extends Component {
                                         iconStyle={{color: "white"}}
                                     />
                                     <CardText expandable={true}>
-                                        <Card>
-                                            <CardHeader
-                                                title="Age"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
-
-                                        <Card>
-                                            <CardHeader
-                                                title="Year"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
-
-                                        <Card>
-                                            <CardHeader
-                                                title="GPA"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                                        <FilterTabs></FilterTabs>
                                     </CardText>
                                 </Card>
 
                                 <Card>
                                     <CardHeader
-                                        title="University"
+                                        title="Year"
                                         titleColor="white"
                                         actAsExpander={true}
                                         showExpandableButton={true}
@@ -385,52 +390,29 @@ class FilterNav extends Component {
                                         iconStyle={{color: "white"}}
                                     />
                                     <CardText expandable={true}>
-                                        <Card>
-                                            <CardHeader
-                                                title="Age"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                                        <FilterTabs></FilterTabs>
+                                    </CardText>
+                                </Card>
 
-                                        <Card>
-                                            <CardHeader
-                                                title="Year"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
-
-                                        <Card>
-                                            <CardHeader
-                                                title="GPA"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                                <Card>
+                                    <CardHeader
+                                        title="GPA"
+                                        titleColor="white"
+                                        actAsExpander={true}
+                                        showExpandableButton={true}
+                                        className="collapse-header"
+                                        iconStyle={{color: "white"}}
+                                    />
+                                    <CardText expandable={true}>
+                                        <FilterTabs></FilterTabs>
                                     </CardText>
                                 </Card>
 
                             </CardText>
                         </Card>
+
+                        
+
                     </Flex>
                 </Flex>
             </div>
@@ -459,16 +441,19 @@ class FilterTabs extends React.Component {
                 <Tabs
                     onChange={this.handleChange}
                     value={this.state.slideIndex}
+                    inkBarStyle={{backgroundColor: "#585a5a"}}
                 >
                     <Tab 
                         label="Elastic" 
                         value={0}
                         icon={<FontIcon className="fa fa-list-ul"></FontIcon>}
+
                     />
                     <Tab 
                         label="Range" 
                         value={1}
                         icon={<FontIcon className="fa fa-sliders"></FontIcon>}
+                        
                     />
                 </Tabs>
 
@@ -489,6 +474,7 @@ class FilterTabs extends React.Component {
                             maxHeight: "440px",
                             overflowX: "hidden"
                         }}
+                        className="sidenavbar"
                     >
                         <FilterTable></FilterTable>
                     </div>
@@ -497,8 +483,9 @@ class FilterTabs extends React.Component {
                             maxHeight: "440px",
                             overflowX: "hidden"
                         }}
+                        className="sidenavbar"
                     >
-                        <Range></Range>
+                        <RangeForm minVal={0} maxVal={200} ></RangeForm>
                     </div>
                 </SwipeableViews>
             </div>
@@ -506,68 +493,118 @@ class FilterTabs extends React.Component {
     }
 }
 
-const tableData = [
+
+
+const TABLE_COLUMNS = [
+  {
+    key: 'value',
+    label: 'Value',
+    sortable: true,
+  }, 
+  {
+    key: 'count',
+    label: 'Count',
+    sortable: true,
+  }
+];
+
+const TABLE_DATA = [
     {
-        value: 2000,
-        count: '20/200',
-        percent: '10%',
+        value: "2000",
+        count: '20 (10%)',
     },
     {
         value: 2001,
-        count: '40/200',
-        percent: '20%',
+        count: '40 (20%)',
     },
     {
         value: 2002,
-        count: '2/200',
-        percent: '1%',
+        count: '2 (1%)',
     },
     {
         value: 2003,
-        count: '8/200',
-        percent: '4%',
+        count: '8 (4%)',
     },
     {
         value: 2004,
-        count: '10/200',
-        percent: '5%',
+        count: '10 (5%)',
     },
     {
         value: 2005,
-        count: '60/200',
-        percent: '30%',
+        count: '60 (30%)',
     },
     {
         value: 2006,
-        count: '20/200',
-        percent: '10%',
+        count: '20 (10%)',
     },
     {
         value: 2007,
-        count: '20/200',
-        percent: '10%',
+        count: '20 (10%)',
     },
     {
         value: 2008,
-        count: '20/200',
-        percent: '10%',
+        count: '20 (10%)',
     },
 ];
 
-
 class FilterTable extends Component {
+    constructor(props) {
+        super(props);
+        this.state  = {
+            rows: [],
+        };
+    }
+
+    
+
+    handleCellClick(e) {
+        console.log (e.target);
+        console.log("hit");
+
+    }
+
+    render() {
+        return (
+            <div>
+
+                <DataTables
+                    enableSelectAll={true}
+                    multiSelectable={true}
+                    showCheckboxes={true}
+                    showRowHover={true}
+                    showFooterToolbar={false}
+                    deselectOnClickaway={false}
+                    showHeaderToolbar={true}
+                    //selectedRows={this.state.rows}
+                    
+
+                    onCellClick={this.handleCellClick.bind(this)}
+
+
+                    selectable={true}
+                    columns={TABLE_COLUMNS}
+                    data={TABLE_DATA}
+                />
+
+            </div>
+        );
+    }
+}
+
+                    //onFilterValueChange={this.handleFilterValueChange}
+                    //onSortOrderChange={this.handleSortOrderChange}
+
+
+
+
+class CutsomCollapse extends Component {
     state = {
-        fixedHeader: true,
-        fixedFooter: true,
-        stripedRows: false,
-        showRowHover: true,
-        selectable: true,
-        multiSelectable: true,
-        enableSelectAll: true,
-        deselectOnClickaway: true,
-        showCheckboxes: true,
-        height: '500px',
+
     };
+
+    onExpandChange = (x) => {
+        this.setState({showDetails: x})
+    }
 
     handleToggle = (event, toggled) => {
         this.setState({
@@ -580,46 +617,31 @@ class FilterTable extends Component {
     };
 
     render() {
+
+        var on_show_styles = {maxHeight: "2000px", transition: "max-height 1s ease-in", padding: "0px"};
+        var on_hide_styles = {maxHeight: "0", transition: "max-height .2s ease-out", overflow: "hidden", padding: "0px"};
+        
         return (
-            <div>
-                <Table
-                    height={this.state.height}
-                    fixedHeader={this.state.fixedHeader}
-                    fixedFooter={this.state.fixedFooter}
-                    selectable={this.state.selectable}
-                    multiSelectable={this.state.multiSelectable}
-                >
-                <TableHeader
-                    displaySelectAll={this.state.showCheckboxes}
-                    adjustForCheckbox={this.state.showCheckboxes}
-                    enableSelectAll={this.state.enableSelectAll}
-                >
-                    <TableRow>
-                        <TableHeaderColumn >Value</TableHeaderColumn>
-                        <TableHeaderColumn >Count</TableHeaderColumn>
-                        <TableHeaderColumn >Percent</TableHeaderColumn>
-                    </TableRow>
-
-                </TableHeader>
-
-                <TableBody
-                    displayRowCheckbox={this.state.showCheckboxes}
-                    deselectOnClickaway={this.state.deselectOnClickaway}
-                    showRowHover={this.state.showRowHover}
-                    stripedRows={this.state.stripedRows}
-                >
-                    {tableData.map( (row, index) => (
-                        <TableRow key={index}>
-                            <TableRowColumn>{row.value}</TableRowColumn>
-                            <TableRowColumn>{row.count}</TableRowColumn>
-                            <TableRowColumn>{row.percent}</TableRowColumn>
-                        </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
-            </div>
+            <Card onExpandChange={this.onExpandChange}>
+            <CardHeader
+                title={this.props.title}
+                titleColor="white"
+                className="collapse-header card-list"
+                iconStyle={{color: "white"}}
+                actAsExpander={true}
+                showExpandableButton={true}
+            />
+            <CardText style={this.state.showDetails ? on_show_styles : on_hide_styles}>
+                <span>
+                    <div>
+                        {this.props.bodyView}
+                    </div>
+                </span>
+            </CardText>
+            </Card>
         );
     }
 }
+
 
 export default FilterNav;
