@@ -80,7 +80,7 @@ class FilterNav extends Component {
  
     /**
 	* This method is called when
-	**/
+	*/
     showAlert = () => {
         this.msg.show('Success The View has been saved!', {
         time: 3000,
@@ -91,7 +91,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when
-	**/
+	*/
     makeList = (arrValues,type) => {
         if(!Array.isArray(arrValues))
             return "PLEASE PROVIDE AN ARRAY";
@@ -127,7 +127,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when
-	**/
+	*/
     handleOpenSaveDailog = () => {
           this.setState({saveDailog:{
                 open: true
@@ -139,7 +139,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when
-	**/
+	*/
     handleCloseSaveDailog = () => {
         this.setState({saveDailog:{
                 open: false
@@ -148,7 +148,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the menu button is clicked. The menu button is in the top right corner of the filerbar.
-	**/
+	*/
     handleOpenOptionsMenu = (event) => {
         event.preventDefault();
 
@@ -163,7 +163,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called to close the menu.
-	**/
+	*/
     handleCloseOptionsMenu = () => {
         this.setState(
         {
@@ -175,7 +175,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the save button is pressed in the save dailog.
-	**/
+	*/
     onSaveDailog = (context) => {
         var viewName = document.getElementById("tf_viewName").value;
         var nameAlreadyExists = false;
@@ -232,7 +232,7 @@ class FilterNav extends Component {
   
   /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
-	**/
+	*/
     onSelectViewChange = (event, index, value) => {
         this.setState(
         {
@@ -249,7 +249,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when an item is selected in the "select Table" dropdown that is present in the top left.
-	**/
+	*/
     onSelectTableChange = (event, index, value) => {
         this.setState(
         {
@@ -265,7 +265,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the user clicks on one of the 'X' to delete a filter that is applied.
-	**/
+	*/
     onDeleteFilter = (context,key) => {
         var index = null;
         
@@ -286,7 +286,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
-	**/
+	*/
     toggleTopView = (event) => {
         var collapseTopViewButton = document.getElementById("collapseTopViewButton");
         var topView = document.getElementById("TopView");
@@ -311,7 +311,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the user clicks on the 'clear all' button.
-	**/
+	*/
     onClearAllFilters = (event) => {
         console.log("clear all");
 
@@ -319,7 +319,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the user clicks on the 'Hide/Show'.
-	**/
+	*/
     onHideFilteredData = (event) => {
         console.log("Hide");
         this.setState(
@@ -339,7 +339,7 @@ class FilterNav extends Component {
 	
     /**
 	* This method is called when the user clicks on the 'New' inside the menu.
-	**/
+	*/
     onMenuNewClick  = (event) => {
         console.log("new");
 
@@ -358,7 +358,7 @@ class FilterNav extends Component {
 
      /**
 	* This method is called when the user clicks on the 'Save' inside the menu.
-	**/
+	*/
     onMenuSaveClick = (event) => {
         console.log("Save");
         
@@ -371,7 +371,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the user clicks on the 'Save As' inside the menu.
-	**/
+	*/
     onMenuSaveAsClick = (event) => {
         console.log("Save As");
         
@@ -809,7 +809,7 @@ class FilterTable extends Component {
         deselectOnClickaway: false,
         showCheckboxes: true,
         height: '500px',
-        data:{tableData},
+        data: tableData,
         colNum: (props.columnToSearch ? props.columnToSearch : 1)
         };
     }
@@ -817,11 +817,19 @@ class FilterTable extends Component {
 
     static COUNT = 0;
 
-    onRowSelect = (rowSeletionIndex) => {
-        debugger;
-        for(var i=0;i<rowSeletionIndex.length;i++)
-            console.log(this.state.data[rowSeletionIndex[i]].value);
+    /**
+     * This method is called on selection of the row in the table. 
+     * @param context: This is the actual instance of the FilterTable. Mainly used to access the state and store.
+     * @param rowSelection: This is an array that has index(according to the table rows) of all the rows selected.
+     */
+    onRowSelect = (context,rowSelection) => {
+        
+        var index,len = rowSelection.length;
+        
+        for(index=0;index<len;index++)
+            console.log(JSON.stringify(context.state.data[rowSelection[index]]));
 
+        
     };
 
     handleToggle = (event, toggled) => {
@@ -830,15 +838,19 @@ class FilterTable extends Component {
         });
     };
 
+    /**
+     * This method is called when the keyup event is fired in the search textfield on top of the table. 
+     * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
+     * @param colNum: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
+     */
     onKeyUp = (id,colNum) => {
-       
-    var input, filter, table, tr, td, i;
-    input = document.getElementById("tf-"+id);
-    filter = input.value.toUpperCase();
-    table = document.getElementsByClassName("table-"+id)[1];
-    tr = table.getElementsByTagName("tr");
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("tf-"+id);
+        filter = input.value.toUpperCase();
+        table = document.getElementsByClassName("table-"+id)[1]; // The table header and table data are 2 separate tables. So we fetch the 2nd index as we want the data table.
+        tr = table.getElementsByTagName("tr");
 
-    //typeof input.value == "string" ? input.value.toUpperCase() :  input.value;
+        //typeof input.value == "string" ? input.value.toUpperCase() :  input.value;
 
         // Loop through all table rows, and hide those who don't match the search query
         for (i = 0; i < tr.length; i++) {
@@ -875,7 +887,7 @@ class FilterTable extends Component {
                     fixedFooter={this.state.fixedFooter}
                     selectable={this.state.selectable}
                     multiSelectable={this.state.multiSelectable}
-                    onRowSelection={() => this.onRowSelect()}
+                    onRowSelection={(rowSelection) => this.onRowSelect(this,rowSelection)}
                 >
                 <TableHeader
                     displaySelectAll={this.state.showCheckboxes}
