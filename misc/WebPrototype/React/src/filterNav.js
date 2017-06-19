@@ -455,7 +455,7 @@ class FilterNav extends Component {
                         <Flex layout="row" style={{height:'50%'}}>
                             <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
                                 <List id="FilterList">
-                                    {this.data.appliedFiltersItems}
+                                    {this.state.appliedFiltersItems}
                                 </List>
                             </div>
                         </Flex>
