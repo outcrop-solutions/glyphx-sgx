@@ -794,7 +794,11 @@ const tableData = [
 
 
 class FilterTable extends Component {
-    state = {
+    
+    constructor(props) {
+        super(props);
+
+        this.state = {
         fixedHeader: true,
         fixedFooter: true,
         stripedRows: false,
@@ -805,6 +809,19 @@ class FilterTable extends Component {
         deselectOnClickaway: false,
         showCheckboxes: true,
         height: '500px',
+        data:{tableData},
+        colNum: (props.columnToSearch ? props.columnToSearch : 1)
+        };
+    }
+    
+
+    static COUNT = 0;
+
+    onRowSelect = (rowSeletionIndex) => {
+        debugger;
+        for(var i=0;i<rowSeletionIndex.length;i++)
+            console.log(this.state.data[rowSeletionIndex[i]].value);
+
     };
 
     handleToggle = (event, toggled) => {
@@ -813,19 +830,52 @@ class FilterTable extends Component {
         });
     };
 
+    onKeyUp = (id,colNum) => {
+       
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("tf-"+id);
+    filter = input.value.toUpperCase();
+    table = document.getElementsByClassName("table-"+id)[1];
+    tr = table.getElementsByTagName("tr");
+
+    //typeof input.value == "string" ? input.value.toUpperCase() :  input.value;
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[colNum];
+            if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+            } 
+        }
+    };
+
     handleChange = (event) => {
         this.setState({height: event.target.value});
     };
 
     render() {
+        var id = ++FilterTable.COUNT;
         return (
             <div>   
+                <TextField
+                    type="text" 
+                    id={"tf-"+id}
+                    className={"tf-"+id} 
+                    onKeyUp={() => this.onKeyUp(id,this.state.colNum)} 
+                    hintText="Search for value.." /> 
+                <br/>
                 <Table
+                    className={"table-"+id}
                     height={this.state.height}
                     fixedHeader={this.state.fixedHeader}
                     fixedFooter={this.state.fixedFooter}
                     selectable={this.state.selectable}
                     multiSelectable={this.state.multiSelectable}
+                    onRowSelection={() => this.onRowSelect()}
                 >
                 <TableHeader
                     displaySelectAll={this.state.showCheckboxes}
