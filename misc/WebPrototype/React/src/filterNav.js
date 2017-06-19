@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Range from './range.js';
 import {Flex} from 'react-flex-material';
-import Divider from 'material-ui/Divider';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
@@ -20,6 +14,8 @@ import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import FilterTabs from './FilterTable.js'
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
 
@@ -173,8 +169,9 @@ class FilterNav extends Component {
         });
     };
 
-    /**
+   /**
 	* This method is called when the save button is pressed in the save dailog.
+    * @param context: This is the instance of the current class.
 	*/
     onSaveDailog = (context) => {
         var viewName = document.getElementById("tf_viewName").value;
@@ -230,7 +227,7 @@ class FilterNav extends Component {
   
   
   
-  /**
+    /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
 	*/
     onSelectViewChange = (event, index, value) => {
@@ -284,30 +281,7 @@ class FilterNav extends Component {
 
     };
 
-    /**
-	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
-	*/
-    toggleTopView = (event) => {
-        var collapseTopViewButton = document.getElementById("collapseTopViewButton");
-        var topView = document.getElementById("TopView");
-        var filterWindow = document.getElementById("FilterWindowOuterContiner");
-        var appBar = document.getElementById("AppBar");
-
-        if(this.state.topViewVisible == true)
-        {
-            filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)"
-            collapseTopViewButton.classList.remove('fa-caret-up');
-            collapseTopViewButton.classList.add('fa-caret-down');
-            this.state.topViewVisible = false;
-        }
-        else{
-            filterWindow.style.transform = "translate(0px,0px)"
-            collapseTopViewButton.classList.remove('fa-caret-down');
-            collapseTopViewButton.classList.add('fa-caret-up');
-            this.state.topViewVisible = true;
-        }
-            
-    };
+   
 
     /**
 	* This method is called when the user clicks on the 'clear all' button.
@@ -380,6 +354,31 @@ class FilterNav extends Component {
         this.handleCloseOptionsMenu();
     };
 
+   /**
+	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
+	*/
+    toggleTopView = (event) => {
+        var collapseTopViewButton = document.getElementById("collapseTopViewButton");
+        var topView = document.getElementById("TopView");
+        var filterWindow = document.getElementById("FilterWindowOuterContiner");
+        var appBar = document.getElementById("AppBar");
+
+        if(this.state.topViewVisible == true)
+        {
+            filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)"
+            collapseTopViewButton.classList.remove('fa-caret-up');
+            collapseTopViewButton.classList.add('fa-caret-down');
+            this.state.topViewVisible = false;
+        }
+        else{
+            filterWindow.style.transform = "translate(0px,0px)"
+            collapseTopViewButton.classList.remove('fa-caret-down');
+            collapseTopViewButton.classList.add('fa-caret-up');
+            this.state.topViewVisible = true;
+        }
+            
+    };
+
     render() {
         
         return (
@@ -410,7 +409,7 @@ class FilterNav extends Component {
                                     <RaisedButton
                                         onClick={this.handleOpenOptionsMenu}
                                         label="Menu"
-                                    buttonStyle={{height: '28px'}}
+                                        buttonStyle={{height: '28px'}}
                                         labelStyle={{fontSize: '13px'}}
                                         primary={true}
                                     />
@@ -671,252 +670,6 @@ class FilterNav extends Component {
                         </Card>
                     </Flex>
                 </Flex>
-            </div>
-        );
-    }
-}
-
-class FilterTabs extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            slideIndex: 0,
-        };
-    }
-
-    handleChange = (value) => {
-        this.setState({
-            slideIndex: value,
-        });
-    };
-
-    render() {
-        return (
-            <div>
-                <Tabs
-                    onChange={this.handleChange}
-                    value={this.state.slideIndex}
-                >
-                    <Tab 
-                        label="Elastic" 
-                        value={0}
-                        icon={<FontIcon className="fa fa-list-ul"></FontIcon>}
-                    />
-                    <Tab 
-                        label="Range" 
-                        value={1}
-                        icon={<FontIcon className="fa fa-sliders"></FontIcon>}
-                    />
-                </Tabs>
-
-                
-
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-
-                    style={{
-                        overflowY: "hidden",
-                        height: "440px",
-                    }}
-                            
-                >
-                    <div
-                        style={{
-                            maxHeight: "440px",
-                            overflowX: "hidden"
-                        }}
-                    >
-                        <FilterTable></FilterTable>
-                    </div>
-                    <div
-                        style={{
-                            maxHeight: "440px",
-                            overflowX: "hidden"
-                        }}
-                    >
-                        <Range></Range>
-                    </div>
-                </SwipeableViews>
-            </div>
-        );
-    }
-}
-
-const tableData = [
-    {
-        value: 2000,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2001,
-        count: '40/200',
-        percent: '20%',
-    },
-    {
-        value: 2002,
-        count: '2/200',
-        percent: '1%',
-    },
-    {
-        value: 2003,
-        count: '8/200',
-        percent: '4%',
-    },
-    {
-        value: 2004,
-        count: '10/200',
-        percent: '5%',
-    },
-    {
-        value: 2005,
-        count: '60/200',
-        percent: '30%',
-    },
-    {
-        value: 2006,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2007,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2008,
-        count: '20/200',
-        percent: '10%',
-    },
-];
-
-
-class FilterTable extends Component {
-    
-    constructor(props) {
-        super(props);
-
-        this.state = {
-        fixedHeader: true,
-        fixedFooter: true,
-        stripedRows: false,
-        showRowHover: true,
-        selectable: true,
-        multiSelectable: true,
-        enableSelectAll: true,
-        deselectOnClickaway: false,
-        showCheckboxes: true,
-        height: '500px',
-        data: tableData,
-        colNum: (props.columnToSearch ? props.columnToSearch : 1)
-        };
-    }
-    
-
-    static COUNT = 0;
-
-    /**
-     * This method is called on selection of the row in the table. 
-     * @param context: This is the actual instance of the FilterTable. Mainly used to access the state and store.
-     * @param rowSelection: This is an array that has index(according to the table rows) of all the rows selected.
-     */
-    onRowSelect = (context,rowSelection) => {
-        
-        var index,len = rowSelection.length;
-        
-        for(index=0;index<len;index++)
-            console.log(JSON.stringify(context.state.data[rowSelection[index]]));
-
-        
-    };
-
-    handleToggle = (event, toggled) => {
-        this.setState({
-        [event.target.name]: toggled,
-        });
-    };
-
-    /**
-     * This method is called when the keyup event is fired in the search textfield on top of the table. 
-     * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
-     * @param colNum: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
-     */
-    onKeyUp = (id,colNum) => {
-        var input, filter, table, tr, td, i;
-        input = document.getElementById("tf-"+id);
-        filter = input.value.toUpperCase();
-        table = document.getElementsByClassName("table-"+id)[1]; // The table header and table data are 2 separate tables. So we fetch the 2nd index as we want the data table.
-        tr = table.getElementsByTagName("tr");
-
-        //typeof input.value == "string" ? input.value.toUpperCase() :  input.value;
-
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[colNum];
-            if (td) {
-            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
-            } 
-        }
-    };
-
-    handleChange = (event) => {
-        this.setState({height: event.target.value});
-    };
-
-    render() {
-        var id = ++FilterTable.COUNT;
-        return (
-            <div>   
-                <TextField
-                    type="text" 
-                    id={"tf-"+id}
-                    className={"tf-"+id} 
-                    onKeyUp={() => this.onKeyUp(id,this.state.colNum)} 
-                    hintText="Search for value.." /> 
-                <br/>
-                <Table
-                    className={"table-"+id}
-                    height={this.state.height}
-                    fixedHeader={this.state.fixedHeader}
-                    fixedFooter={this.state.fixedFooter}
-                    selectable={this.state.selectable}
-                    multiSelectable={this.state.multiSelectable}
-                    onRowSelection={(rowSelection) => this.onRowSelect(this,rowSelection)}
-                >
-                <TableHeader
-                    displaySelectAll={this.state.showCheckboxes}
-                    adjustForCheckbox={this.state.showCheckboxes}
-                    enableSelectAll={this.state.enableSelectAll}
-                >
-                    <TableRow>
-                        <TableHeaderColumn >Value</TableHeaderColumn>
-                        <TableHeaderColumn >Count</TableHeaderColumn>
-                        <TableHeaderColumn >Percent</TableHeaderColumn>
-                    </TableRow>
-
-                </TableHeader>
-
-                <TableBody
-                    displayRowCheckbox={this.state.showCheckboxes}
-                    deselectOnClickaway={this.state.deselectOnClickaway}
-                    showRowHover={this.state.showRowHover}
-                    stripedRows={this.state.stripedRows}
-                >
-                    {tableData.map( (row, index) => (
-                        <TableRow key={index}>
-                            <TableRowColumn>{row.value}</TableRowColumn>
-                            <TableRowColumn>{row.count}</TableRowColumn>
-                            <TableRowColumn>{row.percent}</TableRowColumn>
-                        </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
             </div>
         );
     }
