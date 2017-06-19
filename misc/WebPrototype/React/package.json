@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "15.5.4",
     "react-dom": "15.5.4",
-	"react-flex-material": "^1.0.2"
+	  "react-flex-material": "^1.0.2"
   },
   "peerDependencies": {
      "prop-types": "^15.5.7"
@@ -17,6 +17,7 @@
     "material-icons": "^0.1.0",
     "material-ui": "^0.18.3",
     "react-tap-event-plugin": "^2.0.1",
+    "react-alert":"^2.1.1",
     "rc-slider": "^8.1.2",
     "react-swipeable-views": "^0.12.3",
     "material-ui-datatables": "^0.18.0"
