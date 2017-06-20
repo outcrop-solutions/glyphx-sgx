@@ -18,6 +18,7 @@ import {List, ListItem} from 'material-ui/List';
 import DataTables from 'material-ui-datatables';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FilterTabs from './FilterTable.js'
+import Global from './Global.js';
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
 
@@ -44,6 +45,7 @@ class FilterNav extends Component {
         //Store the states of all the elements inside this data structure.
         this.state  = {
             topViewVisible: true,
+            GLOBAL: null,
             hideShowButtonTextFlag: true,
             menu:{
                 open: false,
@@ -67,14 +69,6 @@ class FilterNav extends Component {
         };
         
     };
-
-    alertOptions = {
-    offset: 14,
-    position: 'bottom left',
-    theme: 'dark',
-    time: 2000,
-    transition: 'scale'
-  }
  
     /**
 	* This method is called when
@@ -385,6 +379,7 @@ class FilterNav extends Component {
         
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
+                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalData()})}} />
                 <div>
                     <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
                 </div>

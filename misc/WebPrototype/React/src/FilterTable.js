@@ -4,6 +4,7 @@ import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow,
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
+import Global from './Global.js';
 import Range from './range.js';
 
 class FilterTabs extends React.Component {
@@ -42,6 +43,8 @@ class FilterTabs extends React.Component {
         var id = ++FilterTabs.COUNT;
         return (
             <div>
+                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalData()})}} /> 
+                    
                 <Tabs
                     onChange={(value) => this.handleChange(value,this)}
                     value={this.state.slideIndex}
