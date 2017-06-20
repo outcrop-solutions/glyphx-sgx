@@ -62,12 +62,18 @@ class FilterNav extends Component {
             savedSnackBar: {
                  open: false,
             },
+            tableData: this.fetchData(),
             appliedFiltersItems: appliedFiltersItems,
             viewSelectItems: viewSelectItems,
             tableSelectItems: tableSelectItems,
             viewNameTextFieldError: ""
         };
         
+    };
+
+    fetchData = () => {
+    var data = require('../src/Data/TempData.json');
+    return data.Data;
     };
  
     /**
@@ -376,6 +382,26 @@ class FilterNav extends Component {
     };
 
     render() {
+         var keys = Object.keys(this.state.tableData);
+         var data = this.state.tableData;
+
+        var columns = keys.map(function(column) {
+            return (<Card key={column}>
+                        <CardHeader
+                            title={column}
+                            titleColor="white"
+                            actAsExpander={true}
+                            showExpandableButton={true}
+                            className="collapse-header"
+                            iconStyle={{color: "white"}}
+                            
+                        />
+                        <CardText expandable={true}>
+                            <FilterTabs data={data[column]}></FilterTabs>
+                        </CardText>
+                    </Card>
+                    );
+        });
         
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
@@ -505,8 +531,7 @@ class FilterNav extends Component {
                         fullWidth={true} 
                         primary={true} 
                         onClick={this.toggleTopView}
-                        style = {{height: '20px'}}
-                    >
+                        style = {{height: '20px'}}>
                         
                         <i 
                             id="collapseTopViewButton" 
@@ -532,44 +557,41 @@ class FilterNav extends Component {
 
                          
 
-                        <CutsomCollapse
-                            title="Active"
-                            bodyView={<div>ACTIVE VIEW GOES HERE</div>}
-                        ></CutsomCollapse>
+                                <CutsomCollapse
+                                    title="Active"
+                                    bodyView={<div>ACTIVE VIEW GOES HERE</div>}
+                                ></CutsomCollapse>
 
-                        <CutsomCollapse
-                            title="Filters"
-                            bodyView={
-                                        <div>
-                                            <CutsomCollapse
-                                                title="Age"
-                                                bodyView={
-                                                    <FilterTabs></FilterTabs>
-                                                }
-                                            ></CutsomCollapse>
+                                <CutsomCollapse
+                                    title="Filters"
+                                    bodyView={
+                                                <div>
+                                                    <CutsomCollapse
+                                                        title="Age"
+                                                        bodyView={
+                                                            <FilterTabs></FilterTabs>
+                                                        }
+                                                    ></CutsomCollapse>
 
-                                            <CutsomCollapse
-                                                title="Year"
-                                                bodyView={
-                                                    <FilterTabs></FilterTabs>
-                                                }
-                                            ></CutsomCollapse>
+                                                    <CutsomCollapse
+                                                        title="Year"
+                                                        bodyView={
+                                                            <FilterTabs></FilterTabs>
+                                                        }
+                                                    ></CutsomCollapse>
 
-                                            <CutsomCollapse
-                                                title="Major"
-                                                bodyView={
-                                                    <FilterTabs></FilterTabs>
-                                                }
-                                            ></CutsomCollapse>
-                                        </div>
-                            }
-                        ></CutsomCollapse>
+                                                    <CutsomCollapse
+                                                        title="Major"
+                                                        bodyView={
+                                                            <FilterTabs></FilterTabs>
+                                                        }
+                                                    ></CutsomCollapse>
+                                                </div>
+                                    }
+                                ></CutsomCollapse>
 
                         */}
 
-                        
-
-                           
 
                         <Card>  
                             <CardHeader
@@ -599,47 +621,7 @@ class FilterNav extends Component {
                             />
                             <CardText expandable={true}>
                                 
-                                <Card>
-                                    <CardHeader
-                                        title="Age"
-                                        titleColor="white"
-                                        actAsExpander={true}
-                                        showExpandableButton={true}
-                                        className="collapse-header"
-                                        iconStyle={{color: "white"}}
-                                    />
-                                    <CardText expandable={true}>
-                                        <FilterTabs></FilterTabs>
-                                    </CardText>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader
-                                        title="Year"
-                                        titleColor="white"
-                                        actAsExpander={true}
-                                        showExpandableButton={true}
-                                        className="collapse-header"
-                                        iconStyle={{color: "white"}}
-                                    />
-                                    <CardText expandable={true}>
-                                        <FilterTabs></FilterTabs>
-                                    </CardText>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader
-                                        title="GPA"
-                                        titleColor="white"
-                                        actAsExpander={true}
-                                        showExpandableButton={true}
-                                        className="collapse-header"
-                                        iconStyle={{color: "white"}}
-                                    />
-                                    <CardText expandable={true}>
-                                        <FilterTabs></FilterTabs>
-                                    </CardText>
-                                </Card>
+                                {columns}
 
                             </CardText>
                         </Card>

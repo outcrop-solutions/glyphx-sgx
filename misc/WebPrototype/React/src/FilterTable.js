@@ -15,7 +15,8 @@ class FilterTabs extends React.Component {
             slideIndex: 0,
             FilterTable: null,
             FilterTableSelectedRows: [],
-            Range: null
+            Range: null,
+            tableData: props.data
         };
     };
 
@@ -79,7 +80,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <FilterTable id={id} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
+                        <FilterTable tableData={this.state.tableData} id={id} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
                     </div>
                     <div
                         style={{
@@ -161,7 +162,7 @@ class FilterTable extends Component {
         deselectOnClickaway: false,
         showCheckboxes: true,
         height: '500px',
-        data: tableData,
+        tableData: props.tableData ? props.tableData : [],
         indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
         selectedRows: (props.selectedRows ? props.selectedRows : [])
         };
@@ -263,7 +264,7 @@ class FilterTable extends Component {
                     showRowHover={this.state.showRowHover}
                     stripedRows={this.state.stripedRows}
                 >
-                    {tableData.map( (row, index) => (
+                    {this.state.tableData.map( (row, index) => (
                         <TableRow 
                             key={index}
                             selected={this.state.selectedRows.indexOf(index) !== -1}
