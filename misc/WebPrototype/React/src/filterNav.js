@@ -15,10 +15,10 @@ import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
-import DataTables from 'material-ui-datatables';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FilterTabs from './FilterTable.js'
 import Global from './Global.js';
+import Collapsible from 'react-collapsible';
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
 
@@ -381,25 +381,18 @@ class FilterNav extends Component {
             
     };
 
+    onExpandChange = (e,context,columns) => {
+        debugger;
+    };
+
     render() {
          var keys = Object.keys(this.state.tableData);
          var data = this.state.tableData;
 
         var columns = keys.map(function(column) {
-            return (<Card key={column}>
-                        <CardHeader
-                            title={column}
-                            titleColor="white"
-                            actAsExpander={true}
-                            showExpandableButton={true}
-                            className="collapse-header"
-                            iconStyle={{color: "white"}}
-                            
-                        />
-                        <CardText expandable={true}>
-                            <FilterTabs data={data[column]}></FilterTabs>
-                        </CardText>
-                    </Card>
+            return (<Collapsible key={column} trigger={column}>
+                            <FilterTabs colName={column} data={data[column]}></FilterTabs>
+                    </Collapsible>
                     );
         });
         
@@ -592,39 +585,14 @@ class FilterNav extends Component {
 
                         */}
 
-
-                        <Card>  
-                            <CardHeader
-                                title="Active"
-                                titleColor="white"
-                                actAsExpander={true}
-                                showExpandableButton={true}
-                                className="collapse-header"
-                                iconStyle={{color: "white"}}
-                            />
-                                <CardText 
-                                    expandable={true}
-                                >
-                                    HUMINA
-                                </CardText>
-                            
-                        </Card>
-
-                        <Card>
-                            <CardHeader
-                                title="Filters"
-                                titleColor="white"
-                                actAsExpander={true}
-                                showExpandableButton={true}
-                                className="collapse-header"
-                                iconStyle={{color: "white"}}
-                            />
-                            <CardText expandable={true}>
-                                
+                        <Collapsible 
+                                trigger="Active">
+                        </Collapsible>
+                        
+                        <Collapsible 
+                                trigger="Filter">
                                 {columns}
-
-                            </CardText>
-                        </Card>
+                        </Collapsible>
 
                         
 

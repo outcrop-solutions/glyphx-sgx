@@ -1,5 +1,4 @@
-import React from 'react';
-
+import { Component } from 'react';
 
 /**
  * This is the global class.
@@ -31,7 +30,7 @@ import React from 'react';
  * }
  * 
  */
-class Global extends React.Component {
+class Global extends Component {
     static Global_Data = {
         Filter:{
             Range:[{
