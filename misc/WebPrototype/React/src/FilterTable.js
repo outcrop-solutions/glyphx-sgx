@@ -88,7 +88,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <Range minVal={0} maxVal={100}></Range>
+                        <Range minVal={-100} maxVal={100}></Range>
                     </div>
                 </SwipeableViews>
             </div>
