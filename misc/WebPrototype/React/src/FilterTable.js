@@ -4,6 +4,7 @@ import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow,
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
+import Global from './Global.js';
 import Range from './range.js';
 
 class FilterTabs extends React.Component {
@@ -14,7 +15,8 @@ class FilterTabs extends React.Component {
             slideIndex: 0,
             FilterTable: null,
             FilterTableSelectedRows: [],
-            Range: null
+            Range: null,
+            tableData: props.data
         };
     };
 
@@ -42,6 +44,8 @@ class FilterTabs extends React.Component {
         var id = ++FilterTabs.COUNT;
         return (
             <div>
+                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalData()})}} /> 
+                    
                 <Tabs
                     onChange={(value) => this.handleChange(value,this)}
                     value={this.state.slideIndex}
@@ -76,7 +80,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <FilterTable id={id} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
+                        <FilterTable tableData={this.state.tableData} id={id} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
                     </div>
                     <div
                         style={{
@@ -158,7 +162,7 @@ class FilterTable extends Component {
         deselectOnClickaway: false,
         showCheckboxes: true,
         height: '500px',
-        data: tableData,
+        tableData: props.tableData ? props.tableData : [],
         indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
         selectedRows: (props.selectedRows ? props.selectedRows : [])
         };
@@ -260,7 +264,7 @@ class FilterTable extends Component {
                     showRowHover={this.state.showRowHover}
                     stripedRows={this.state.stripedRows}
                 >
-                    {tableData.map( (row, index) => (
+                    {this.state.tableData.map( (row, index) => (
                         <TableRow 
                             key={index}
                             selected={this.state.selectedRows.indexOf(index) !== -1}

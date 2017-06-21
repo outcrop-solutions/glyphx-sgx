@@ -73,7 +73,7 @@ build/
 *_i.c
 *_p.c
 *.ilk
-*.meta
+# *.meta <-- THIS BREAKS UNITY PROJECTS
 *.obj
 *.pch
 *.pdb

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "sgxgui_global.h"
+#include "sgxutility.h"
 #include <functional>
 
 namespace SynGlyphX
