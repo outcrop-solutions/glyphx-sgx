@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
@@ -96,60 +96,20 @@ class FilterTabs extends React.Component {
     }
 }
 
-const tableData = [
-    {
-        value: 2000,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2001,
-        count: '40/200',
-        percent: '20%',
-    },
-    {
-        value: 2002,
-        count: '2/200',
-        percent: '1%',
-    },
-    {
-        value: 2003,
-        count: '8/200',
-        percent: '4%',
-    },
-    {
-        value: 2004,
-        count: '10/200',
-        percent: '5%',
-    },
-    {
-        value: 2005,
-        count: '60/200',
-        percent: '30%',
-    },
-    {
-        value: 2006,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2007,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2008,
-        count: '20/200',
-        percent: '10%',
-    },
-];
-
+/**
+ * This is the class that represents the Tables.
+ * @param id: id you want to give to the table.
+ * @param columnToSearch: the index of the column you want the search funcationality to work on.
+ * @param selectedRows: array of row positions selected [0,5,...]
+ * @param  tableData: {data:[array of strings],totalCount: integer}
+ *          eg:  tableData: {data:['a','b','c','a'],totalCount: 4}
+ */
 
 class FilterTable extends Component {
     
     constructor(props) {
         super(props);
-
+        
         this.state = {
         id: props.id,
         fixedHeader: true,
@@ -161,12 +121,23 @@ class FilterTable extends Component {
         enableSelectAll: true,
         deselectOnClickaway: false,
         showCheckboxes: true,
-        height: '500px',
-        tableData: props.tableData ? props.tableData : [],
+        tableData: this.processData(props.tableData ? props.tableData : []),
         indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
         selectedRows: (props.selectedRows ? props.selectedRows : [])
         };
     }
+
+    processData(tableData){
+        var temp = {};
+        var totalCount = tableData.length;
+        tableData.map((row) => {
+        if(temp.hasOwnProperty(row))
+            ++temp[row];
+        else
+            temp[row] = 1;
+        });
+        return {'data':temp,'totalCount':totalCount};
+    };
     
 
     static COUNT = 0;
@@ -178,10 +149,10 @@ class FilterTable extends Component {
      */
     onRowSelect = (context,rowSelection) => {
         
-        var index,len = rowSelection.length;
+        //var index,len = rowSelection.length;
         
-        for(index=0;index<len;index++)
-            console.log(JSON.stringify(context.state.data[rowSelection[index]]));
+        //for(index=0;index<len;index++)
+         //   console.log(JSON.stringify(context.state.tableData[rowSelection[index]].value));
 
         this.setState({selectedRows: rowSelection});
     };
@@ -224,8 +195,21 @@ class FilterTable extends Component {
     };
 
     render() {
-        //var id = ++FilterTable.COUNT;
         var id = this.state.id;
+        var data = this.state.tableData.data;
+        var totalCount = this.state.tableData.totalCount;
+        var rows = []; var index=0;
+
+        for(var property in data) {
+            rows.push(<TableRow 
+                key={index}
+                selected={this.state.selectedRows.indexOf(index) !== -1}>
+                    <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
+                    <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
+            </TableRow>);
+            index ++;
+        };
+
         return (
             <div>   
                 <TextField
@@ -237,7 +221,7 @@ class FilterTable extends Component {
                 <br/>
                 <Table
                     className={"table-"+id}
-                    height={this.state.height}
+                    
                     fixedHeader={this.state.fixedHeader}
                     fixedFooter={this.state.fixedFooter}
                     selectable={this.state.selectable}
@@ -248,12 +232,10 @@ class FilterTable extends Component {
                     displaySelectAll={this.state.showCheckboxes}
                     adjustForCheckbox={this.state.showCheckboxes}
                     enableSelectAll={this.state.enableSelectAll}
-                    //children={}
                 >
                     <TableRow>
-                        <TableHeaderColumn >Value</TableHeaderColumn>
-                        <TableHeaderColumn >Count</TableHeaderColumn>
-                        <TableHeaderColumn >Percent</TableHeaderColumn>
+                        <TableHeaderColumn style={{paddingLeft:'0px'}} >Value</TableHeaderColumn>
+                        <TableHeaderColumn >Count(Percent)</TableHeaderColumn>
                     </TableRow>
 
                 </TableHeader>
@@ -264,16 +246,7 @@ class FilterTable extends Component {
                     showRowHover={this.state.showRowHover}
                     stripedRows={this.state.stripedRows}
                 >
-                    {this.state.tableData.map( (row, index) => (
-                        <TableRow 
-                            key={index}
-                            selected={this.state.selectedRows.indexOf(index) !== -1}
-                        >
-                            <TableRowColumn>{row.value}</TableRowColumn>
-                            <TableRowColumn>{row.count}</TableRowColumn>
-                            <TableRowColumn>{row.percent}</TableRowColumn>
-                        </TableRow>
-                    ))}
+                    {rows}
                 </TableBody>
                 </Table>
             </div>
