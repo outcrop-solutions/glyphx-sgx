@@ -40,8 +40,7 @@ class RangeForm extends React.Component {
      * @param range: Range which will be deleted from the range table
      **/
     handleRowDel(range) {
-        var index = this.state.ranges.indexOf(range);
-        this.state.ranges.splice(index, 1);
+        this.state.ranges.splice(this.state.ranges.indexOf(range), 1);
         this.setState(this.state.ranges);
     };
 
