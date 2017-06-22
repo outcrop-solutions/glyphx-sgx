@@ -303,7 +303,7 @@ class FilterNav extends Component {
             hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
         });
 
-        console.log(this.state.GLOBAL.getData());
+        console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
         
         //if the flag true then button --> |HIDE| else button --> |SHOW|
         if(this.state.hideShowButtonTextFlag)
