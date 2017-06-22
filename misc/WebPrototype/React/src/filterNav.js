@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import Range from './range.js';
+import RangeForm from './range.js';
 import {Flex} from 'react-flex-material';
-import Divider from 'material-ui/Divider';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
@@ -20,6 +15,10 @@ import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import FilterTabs from './FilterTable.js'
+import Global from './Global.js';
+import Collapsible from 'react-collapsible';
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
 
@@ -46,6 +45,7 @@ class FilterNav extends Component {
         //Store the states of all the elements inside this data structure.
         this.state  = {
             topViewVisible: true,
+            GLOBAL: null,
             hideShowButtonTextFlag: true,
             menu:{
                 open: false,
@@ -62,6 +62,7 @@ class FilterNav extends Component {
             savedSnackBar: {
                  open: false,
             },
+            tableData: this.fetchData(),
             appliedFiltersItems: appliedFiltersItems,
             viewSelectItems: viewSelectItems,
             tableSelectItems: tableSelectItems,
@@ -70,17 +71,14 @@ class FilterNav extends Component {
         
     };
 
-    alertOptions = {
-    offset: 14,
-    position: 'bottom left',
-    theme: 'dark',
-    time: 2000,
-    transition: 'scale'
-  }
+    fetchData = () => {
+    var data = require('../src/Data/TempData.json');
+    return data.Data;
+    };
  
     /**
 	* This method is called when
-	**/
+	*/
     showAlert = () => {
         this.msg.show('Success The View has been saved!', {
         time: 3000,
@@ -91,7 +89,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when
-	**/
+	*/
     makeList = (arrValues,type) => {
         if(!Array.isArray(arrValues))
             return "PLEASE PROVIDE AN ARRAY";
@@ -127,7 +125,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when
-	**/
+	*/
     handleOpenSaveDailog = () => {
           this.setState({saveDailog:{
                 open: true
@@ -139,7 +137,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when
-	**/
+	*/
     handleCloseSaveDailog = () => {
         this.setState({saveDailog:{
                 open: false
@@ -148,7 +146,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the menu button is clicked. The menu button is in the top right corner of the filerbar.
-	**/
+	*/
     handleOpenOptionsMenu = (event) => {
         event.preventDefault();
 
@@ -163,7 +161,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called to close the menu.
-	**/
+	*/
     handleCloseOptionsMenu = () => {
         this.setState(
         {
@@ -173,9 +171,10 @@ class FilterNav extends Component {
         });
     };
 
-    /**
+   /**
 	* This method is called when the save button is pressed in the save dailog.
-	**/
+    * @param context: This is the instance of the current class.
+	*/
     onSaveDailog = (context) => {
         var viewName = document.getElementById("tf_viewName").value;
         var nameAlreadyExists = false;
@@ -230,9 +229,9 @@ class FilterNav extends Component {
   
   
   
-  /**
+    /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
-	**/
+	*/
     onSelectViewChange = (event, index, value) => {
         this.setState(
         {
@@ -249,7 +248,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when an item is selected in the "select Table" dropdown that is present in the top left.
-	**/
+	*/
     onSelectTableChange = (event, index, value) => {
         this.setState(
         {
@@ -265,7 +264,7 @@ class FilterNav extends Component {
 
     /**
 	* This method is called when the user clicks on one of the 'X' to delete a filter that is applied.
-	**/
+	*/
     onDeleteFilter = (context,key) => {
         var index = null;
         
@@ -284,9 +283,82 @@ class FilterNav extends Component {
 
     };
 
+   
+
     /**
+	* This method is called when the user clicks on the 'clear all' button.
+	*/
+    onClearAllFilters = (event) => {
+        console.log("clear all");
+
+    };
+
+    /**
+	* This method is called when the user clicks on the 'Hide/Show'.
+	*/
+    onHideFilteredData = (event) => {
+        console.log("Hide");
+        this.setState(
+        {
+            hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
+        });
+        
+        //if the flag true then button --> |HIDE| else button --> |SHOW|
+        if(this.state.hideShowButtonTextFlag)
+        {
+            //hide the glyphs that don't match the filter critera.
+        }
+        else{
+            //show all the glyphs!
+        }
+    };
+	
+    /**
+	* This method is called when the user clicks on the 'New' inside the menu.
+	*/
+    onMenuNewClick  = (event) => {
+        console.log("new");
+
+        //Maybe are you sure you don't want to save existing work? if filters applied.
+
+
+        //Clear All Filters
+        this.onClearAllFilters();
+
+        //Clear the value of viewName
+        this.setState ({viewSelect:{value:null}});
+
+        //close the menu
+        this.handleCloseOptionsMenu();
+    };
+
+     /**
+	* This method is called when the user clicks on the 'Save' inside the menu.
+	*/
+    onMenuSaveClick = (event) => {
+        console.log("Save");
+        
+        //Save
+        this.saveView();
+        
+        //close the menu
+        this.handleCloseOptionsMenu();
+    };
+
+    /**
+	* This method is called when the user clicks on the 'Save As' inside the menu.
+	*/
+    onMenuSaveAsClick = (event) => {
+        console.log("Save As");
+        
+        this.handleOpenSaveDailog();
+        //close the menu
+        this.handleCloseOptionsMenu();
+    };
+
+   /**
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
-	**/
+	*/
     toggleTopView = (event) => {
         var collapseTopViewButton = document.getElementById("collapseTopViewButton");
         var topView = document.getElementById("TopView");
@@ -309,81 +381,24 @@ class FilterNav extends Component {
             
     };
 
-    /**
-	* This method is called when the user clicks on the 'clear all' button.
-	**/
-    onClearAllFilters = (event) => {
-        console.log("clear all");
-
-    };
-
-    /**
-	* This method is called when the user clicks on the 'Hide/Show'.
-	**/
-    onHideFilteredData = (event) => {
-        console.log("Hide");
-        this.setState(
-        {
-            hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
-        });
-        
-        //if the flag true then button --> |HIDE| else button --> |SHOW|
-        if(this.state.hideShowButtonTextFlag)
-        {
-            //hide the glyphs that don't match the filter critera.
-        }
-        else{
-            //show all the glyphs!
-        }
-    };
-	
-    /**
-	* This method is called when the user clicks on the 'New' inside the menu.
-	**/
-    onMenuNewClick  = (event) => {
-        console.log("new");
-
-        //Maybe are you sure you don't want to save existing work? if filters applied.
-
-
-        //Clear All Filters
-        this.onClearAllFilters();
-
-        //Clear the value of viewName
-        this.setState ({viewSelect:{value:null}});
-
-        //close the menu
-        this.handleCloseOptionsMenu();
-    };
-
-     /**
-	* This method is called when the user clicks on the 'Save' inside the menu.
-	**/
-    onMenuSaveClick = (event) => {
-        console.log("Save");
-        
-        //Save
-        this.saveView();
-        
-        //close the menu
-        this.handleCloseOptionsMenu();
-    };
-
-    /**
-	* This method is called when the user clicks on the 'Save As' inside the menu.
-	**/
-    onMenuSaveAsClick = (event) => {
-        console.log("Save As");
-        
-        this.handleOpenSaveDailog();
-        //close the menu
-        this.handleCloseOptionsMenu();
+    onExpandChange = (e,context,columns) => {
+        debugger;
     };
 
     render() {
+         var keys = Object.keys(this.state.tableData);
+         var data = this.state.tableData;
+
+        var columns = keys.map(function(column) {
+            return (<Collapsible transitionTime={200} key={column} trigger={column}>
+                            <FilterTabs colName={column} data={data[column]}></FilterTabs>
+                    </Collapsible>
+                    );
+        });
         
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
+                <Global ref={inst => this.state.GLOBAL = inst} />
                 <div>
                     <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
                 </div>
@@ -410,7 +425,7 @@ class FilterNav extends Component {
                                     <RaisedButton
                                         onClick={this.handleOpenOptionsMenu}
                                         label="Menu"
-                                    buttonStyle={{height: '28px'}}
+                                        buttonStyle={{height: '28px'}}
                                         labelStyle={{fontSize: '13px'}}
                                         primary={true}
                                     />
@@ -452,10 +467,10 @@ class FilterNav extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'50%'}}>
-                            <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}}>
-                            <List id="FilterList">
-                               {this.state.appliedFiltersItems}
-                            </List>
+                            <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
+                                <List id="FilterList">
+                                    {this.state.appliedFiltersItems}
+                                </List>
                             </div>
                         </Flex>
                         
@@ -509,10 +524,7 @@ class FilterNav extends Component {
                         fullWidth={true} 
                         primary={true} 
                         onClick={this.toggleTopView}
-                        style = {{height: '20px'}}
-                    >
-                        
-
+                        style = {{height: '20px'}}>
                         
                         <i 
                             id="collapseTopViewButton" 
@@ -533,328 +545,57 @@ class FilterNav extends Component {
 
                     <Flex flex="65">
 
-                        <Card>
-                            <CardHeader
-                                title="Active"
-                                titleColor="white"
-                                actAsExpander={true}
-                                showExpandableButton={true}
-                                className="collapse-header"
-                                iconStyle={{color: "white"}}
-                            />
-                                <CardText expandable={true}>
-                                    HUMINA
-                                </CardText>
-                            
-                        </Card>
 
-                        <Card>
-                            <CardHeader
-                                title="Filters"
-                                titleColor="white"
-                                actAsExpander={true}
-                                showExpandableButton={true}
-                                className="collapse-header"
-                                iconStyle={{color: "white"}}
-                            />
-                            <CardText expandable={true}>
-                                
-                                <Card>
-                                    <CardHeader
-                                        title="Highschool"
-                                        titleColor="white"
-                                        actAsExpander={true}
-                                        showExpandableButton={true}
-                                        className="collapse-header"
-                                        iconStyle={{color: "white"}}
-                                    />
-                                    <CardText expandable={true}>
-                                        <Card>
-                                            <CardHeader
-                                                title="Age"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                         {/*
 
-                                        <Card>
-                                            <CardHeader
-                                                title="Year"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                         
 
-                                        <Card>
-                                            <CardHeader
-                                                title="GPA"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
-                                    </CardText>
-                                </Card>
+                                <CutsomCollapse
+                                    title="Active"
+                                    bodyView={<div>ACTIVE VIEW GOES HERE</div>}
+                                ></CutsomCollapse>
 
-                                <Card>
-                                    <CardHeader
-                                        title="University"
-                                        titleColor="white"
-                                        actAsExpander={true}
-                                        showExpandableButton={true}
-                                        className="collapse-header"
-                                        iconStyle={{color: "white"}}
-                                    />
-                                    <CardText expandable={true}>
-                                        <Card>
-                                            <CardHeader
-                                                title="Age"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                                <CutsomCollapse
+                                    title="Filters"
+                                    bodyView={
+                                                <div>
+                                                    <CutsomCollapse
+                                                        title="Age"
+                                                        bodyView={
+                                                            <FilterTabs></FilterTabs>
+                                                        }
+                                                    ></CutsomCollapse>
 
-                                        <Card>
-                                            <CardHeader
-                                                title="Year"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
+                                                    <CutsomCollapse
+                                                        title="Year"
+                                                        bodyView={
+                                                            <FilterTabs></FilterTabs>
+                                                        }
+                                                    ></CutsomCollapse>
 
-                                        <Card>
-                                            <CardHeader
-                                                title="GPA"
-                                                titleColor="white"
-                                                actAsExpander={true}
-                                                showExpandableButton={true}
-                                                className="collapse-header"
-                                                iconStyle={{color: "white"}}
-                                            />
-                                            <CardText expandable={true}>
-                                                <FilterTabs></FilterTabs>
-                                            </CardText>
-                                        </Card>
-                                    </CardText>
-                                </Card>
+                                                    <CutsomCollapse
+                                                        title="Major"
+                                                        bodyView={
+                                                            <FilterTabs></FilterTabs>
+                                                        }
+                                                    ></CutsomCollapse>
+                                                </div>
+                                    }
+                                ></CutsomCollapse>
 
-                            </CardText>
-                        </Card>
+                        */}
+
+                        <Collapsible transitionTime={200} trigger="Active">
+                        </Collapsible>
+                        
+                        <Collapsible transitionTime={200} trigger="Filter">
+                                {columns}
+                        </Collapsible>
+
+                        
+
                     </Flex>
                 </Flex>
-            </div>
-        );
-    }
-}
-
-class FilterTabs extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            slideIndex: 0,
-        };
-    }
-
-    handleChange = (value) => {
-        this.setState({
-            slideIndex: value,
-        });
-    };
-
-    render() {
-        return (
-            <div>
-                <Tabs
-                    onChange={this.handleChange}
-                    value={this.state.slideIndex}
-                >
-                    <Tab 
-                        label="Elastic" 
-                        value={0}
-                        icon={<FontIcon className="fa fa-list-ul"></FontIcon>}
-                    />
-                    <Tab 
-                        label="Range" 
-                        value={1}
-                        icon={<FontIcon className="fa fa-sliders"></FontIcon>}
-                    />
-                </Tabs>
-
-                
-
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-
-                    style={{
-                        overflowY: "hidden",
-                        height: "440px",
-                    }}
-                            
-                >
-                    <div
-                        style={{
-                            maxHeight: "440px",
-                            overflowX: "hidden"
-                        }}
-                    >
-                        <FilterTable></FilterTable>
-                    </div>
-                    <div
-                        style={{
-                            maxHeight: "440px",
-                            overflowX: "hidden"
-                        }}
-                    >
-                        <Range></Range>
-                    </div>
-                </SwipeableViews>
-            </div>
-        );
-    }
-}
-
-const tableData = [
-    {
-        value: 2000,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2001,
-        count: '40/200',
-        percent: '20%',
-    },
-    {
-        value: 2002,
-        count: '2/200',
-        percent: '1%',
-    },
-    {
-        value: 2003,
-        count: '8/200',
-        percent: '4%',
-    },
-    {
-        value: 2004,
-        count: '10/200',
-        percent: '5%',
-    },
-    {
-        value: 2005,
-        count: '60/200',
-        percent: '30%',
-    },
-    {
-        value: 2006,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2007,
-        count: '20/200',
-        percent: '10%',
-    },
-    {
-        value: 2008,
-        count: '20/200',
-        percent: '10%',
-    },
-];
-
-
-class FilterTable extends Component {
-    state = {
-        fixedHeader: true,
-        fixedFooter: true,
-        stripedRows: false,
-        showRowHover: true,
-        selectable: true,
-        multiSelectable: true,
-        enableSelectAll: true,
-        deselectOnClickaway: false,
-        showCheckboxes: true,
-        height: '500px',
-    };
-
-    handleToggle = (event, toggled) => {
-        this.setState({
-        [event.target.name]: toggled,
-        });
-    };
-
-    handleChange = (event) => {
-        this.setState({height: event.target.value});
-    };
-
-    render() {
-        return (
-            <div>   
-                <Table
-                    height={this.state.height}
-                    fixedHeader={this.state.fixedHeader}
-                    fixedFooter={this.state.fixedFooter}
-                    selectable={this.state.selectable}
-                    multiSelectable={this.state.multiSelectable}
-                >
-                <TableHeader
-                    displaySelectAll={this.state.showCheckboxes}
-                    adjustForCheckbox={this.state.showCheckboxes}
-                    enableSelectAll={this.state.enableSelectAll}
-                >
-                    <TableRow>
-                        <TableHeaderColumn >Value</TableHeaderColumn>
-                        <TableHeaderColumn >Count</TableHeaderColumn>
-                        <TableHeaderColumn >Percent</TableHeaderColumn>
-                    </TableRow>
-
-                </TableHeader>
-
-                <TableBody
-                    displayRowCheckbox={this.state.showCheckboxes}
-                    deselectOnClickaway={this.state.deselectOnClickaway}
-                    showRowHover={this.state.showRowHover}
-                    stripedRows={this.state.stripedRows}
-                >
-                    {tableData.map( (row, index) => (
-                        <TableRow key={index}>
-                            <TableRowColumn>{row.value}</TableRowColumn>
-                            <TableRowColumn>{row.count}</TableRowColumn>
-                            <TableRowColumn>{row.percent}</TableRowColumn>
-                        </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
             </div>
         );
     }
