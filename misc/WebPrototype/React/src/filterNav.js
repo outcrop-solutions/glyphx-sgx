@@ -392,7 +392,7 @@ class FilterNav extends Component {
          var data = this.state.tableData;
 
         var columns = keys.map(function(column) {
-            return (<Collapsible key={column} trigger={column}>
+            return (<Collapsible transitionTime={200} key={column} trigger={column}>
                             <FilterTabs colName={column} data={data[column]}></FilterTabs>
                     </Collapsible>
                     );
@@ -469,7 +469,7 @@ class FilterNav extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'50%'}}>
-                            <div style={{width:'100%',border:'1px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
+                            <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
                                 <List id="FilterList">
                                     {this.state.appliedFiltersItems}
                                 </List>
@@ -587,12 +587,10 @@ class FilterNav extends Component {
 
                         */}
 
-                        <Collapsible 
-                                trigger="Active">
+                        <Collapsible transitionTime={200} trigger="Active">
                         </Collapsible>
                         
-                        <Collapsible 
-                                trigger="Filter">
+                        <Collapsible transitionTime={200} trigger="Filter">
                                 {columns}
                         </Collapsible>
 
@@ -601,52 +599,6 @@ class FilterNav extends Component {
                     </Flex>
                 </Flex>
             </div>
-        );
-    }
-}
-
-class CutsomCollapse extends Component {
-    state = {
-
-    };
-
-    onExpandChange = (x) => {
-        this.setState({showDetails: x})
-    }
-
-    handleToggle = (event, toggled) => {
-        this.setState({
-        [event.target.name]: toggled,
-        });
-    };
-
-    handleChange = (event) => {
-        this.setState({height: event.target.value});
-    };
-
-    render() {
-
-        var on_show_styles = {maxHeight: "2000px", transition: "max-height 1s ease-in", padding: "0px"};
-        var on_hide_styles = {maxHeight: "0", transition: "max-height .2s ease-out", overflow: "hidden", padding: "0px"};
-        
-        return (
-            <Card onExpandChange={this.onExpandChange}>
-            <CardHeader
-                title={this.props.title}
-                titleColor="white"
-                className="collapse-header card-list"
-                iconStyle={{color: "white"}}
-                actAsExpander={true}
-                showExpandableButton={true}
-            />
-            <CardText style={this.state.showDetails ? on_show_styles : on_hide_styles}>
-                <span>
-                    <div>
-                        {this.props.bodyView}
-                    </div>
-                </span>
-            </CardText>
-            </Card>
         );
     }
 }

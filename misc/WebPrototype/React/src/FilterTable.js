@@ -5,7 +5,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
 import Global from './Global.js';
-import Range from './range.js';
+import RangeForm from './range.js';
 
 class FilterTabs extends React.Component {
 
@@ -38,10 +38,7 @@ class FilterTabs extends React.Component {
         });
     }
 
-    static COUNT = 0;
-
     render() {
-        var id = ++FilterTabs.COUNT;
         return (
             <div>
                 <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalInst()})}} /> 
@@ -80,7 +77,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <FilterTable tableData={this.state.tableData} id={id} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
+                        <FilterTable tableData={this.state.tableData} id={this.props.colName} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
                     </div>
                     <div
                         style={{
@@ -88,7 +85,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <Range minVal={-100} maxVal={100}></Range>
+                        <RangeForm colName={this.props.colName} minVal={-100} maxVal={100}></RangeForm>
                     </div>
                 </SwipeableViews>
             </div>
@@ -118,7 +115,7 @@ class FilterTable extends Component {
         showRowHover: true,
         selectable: true,
         multiSelectable: true,
-        enableSelectAll: true,
+        enableSelectAll: false,
         deselectOnClickaway: false,
         showCheckboxes: true,
         tableData: this.processData(props.tableData ? props.tableData : []),
@@ -229,7 +226,7 @@ class FilterTable extends Component {
                     onRowSelection={(rowSelection) => this.onRowSelect(this,rowSelection)}
                 >
                 <TableHeader
-                    displaySelectAll={this.state.showCheckboxes}
+                    displaySelectAll={false} // just need to implement our own select all.
                     adjustForCheckbox={this.state.showCheckboxes}
                     enableSelectAll={this.state.enableSelectAll}
                 >
