@@ -8,6 +8,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QFont>
 #include <QtGui/QPainter>
+#include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
@@ -320,6 +321,12 @@ namespace SynGlyphX
 		if (auto_load_default_scene)
 		{
 			std::vector<std::string> images;
+			QStringList filters;
+			filters << "*.png";
+			QStringList infoList = QDir::current().entryList(filters, QDir::Files);
+			for (QString image : infoList){
+				images.push_back(image.toStdString());
+			}
 			loadScene("glyphs.sgc", "glyphs.sgn", images);
 		}
 	}

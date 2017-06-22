@@ -1602,7 +1602,8 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string cacheDirectoryPath = dcd + ( "/cache_" + boost::uuids::to_string( m_mappingModel->GetDataMapping()->GetID() ) );
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
-		m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
+		//m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
+		SynGlyphX::Filesystem::CopyDirectoryOverwrite(cachePath.toStdString(), csvDirectory.toStdString(), true);
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
