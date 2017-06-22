@@ -35,11 +35,11 @@ class Global extends Component {
         Filter:{
             Range:[{
                 fieldName: 'age',
-                ranges: [[10,20],[30,40],[30,40]],
+                ranges: [[10, 20, 'id'], [30, 40, 'id'], [30, 40, 'id']]
             }],
             Elastic:[{
                 fieldName: 'age',
-                values: [10,20,30,40],
+                values: [[10, 'id'], [20, 'id'], [30, 'id'], [40, 'id']],
             }]
         }
     };
@@ -48,22 +48,37 @@ class Global extends Component {
         return null;
     }
 
-    getGlobalInst(){
-        return this;
+    getData(){
+        return Global.Global_Data;
     }
 
 
     /**
      * Adds range to the global range tracker
      * @param colName: name of the column to add the filter to (example: Age)
-     * @param valueArray: [val1, val2]: min-max range values to filter on
+     * @param valueArray: [val1, val2, id]: min-max range values to filter on
      **/
     addRange(colName, valueArray) {
         var found = false;
-        for (var range in Global.Global_Data.Filter.Range) {
-            if (range.fieldName === colName) {
-                range.ranges.push(valueArray);
-                found = true;
+        var push = true;
+        for (var i = 0; i < Global.Global_Data.Filter.Range.length; i++) {
+            if (Global.Global_Data.Filter.Range[i]["fieldName"] == colName) {
+                if (Global.Global_Data.Filter.Range[i]["ranges"].length == 0) {
+                    Global.Global_Data.Filter.Range[i]["ranges"].push(valueArray);
+                    found = true;
+                }
+                else {
+                    for (var j = 0; j < Global.Global_Data.Filter.Range[i]["ranges"].length; j++) {
+                        if (Global.Global_Data.Filter.Range[i]["ranges"][j][2] == valueArray[2]) {
+                            push = false;
+                            found = true;
+                        }
+                    }
+                    if (push) {
+                        Global.Global_Data.Filter.Range[i]["ranges"].push(valueArray);
+                        found = true;
+                    }
+                }
             }
         }
         if(!found) {
@@ -75,12 +90,17 @@ class Global extends Component {
     /**
      * Removes range from the global range tracker
      * @param colName: name of the column to remove the filter from (example: Age)
-     * @param valueArray: [val1, val2]: min-max range values to remove
+     * @param id: id used to find what to remove
      **/
-    removeRange(colName, valueArray) {
-        for (var range in Global.Global_Data.Filter.Range) {
-            if (range.fieldName === colName) {
-                range.ranges.splice(range.ranges.indexOf(valueArray), 1);
+    removeRange(colName, id) {
+        for (var i = 0; i < Global.Global_Data.Filter.Range.length; i++) {
+            if (Global.Global_Data.Filter.Range[i]["fieldName"] === colName) {
+                for (var j = 0; j < Global.Global_Data.Filter.Range[i]["ranges"].length; j++) {
+                    if (Global.Global_Data.Filter.Range[i]["ranges"][j][2] == id) {
+                        console.log("Removed: [" + Global.Global_Data.Filter.Range[i]["ranges"][j][0] + ", " + Global.Global_Data.Filter.Range[i]["ranges"][j][1] + ", " + Global.Global_Data.Filter.Range[i]["ranges"][j][2] + "]");
+                        Global.Global_Data.Filter.Range[i]["ranges"].splice(j, 1);
+                    }
+                }
             }
         }
     }

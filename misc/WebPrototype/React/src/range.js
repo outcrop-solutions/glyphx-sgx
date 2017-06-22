@@ -43,46 +43,39 @@ class RangeForm extends React.Component {
      * @param min: local min stored by row
      * @param max: local max stored by row
      **/
-    handleAddGlobalRange(min, max) {
-        if (min === "") {
-            min = 0;
+    handleAddGlobalRange(min, max, id) {
+        var id;
+        for (var i = 0;i < this.state.ranges.length; i++) {
+            if (this.state.ranges[i]["min"] == min && this.state.ranges[i]["max"] == max && this.state.ranges[i]["applied"] == true) {
+                id = this.state.ranges[i]["id"];
+            }
         }
-        else if (isNaN(min)) {
+
+        if (min === "" || isNaN(min)) {
             min = this.props.minVal;
         }
 
-        if (max === "") {
-            max = 0;
-        }
-        else if (isNaN(max)) {
+        if (max === "" || isNaN(max)) {
             max = this.props.maxVal;
         }
 
-        this.state.GLOBAL.addRange(this.props.colName, [min, max]);
+        this.state.GLOBAL.addRange(this.props.colName, [min, max, id]);
+        console.log("Added: [" + min + ", " + max + ", " + id + "]");
     }
 
 
     /**
      * Removes a range to the global instance shared by all components that include Global
-     * @param min: local min stored by row
-     * @param max: local max stored by row
+     * @param id: id used to find what to remove
      **/
-    handleRemoveGlobalRange(min, max) {
-        if (min === "") {
-            min = 0;
-        }
-        else if (isNaN(min)) {
-            min = this.props.minVal;
-        }
+    handleRemoveGlobalRange(id) {
+        this.state.GLOBAL.removeRange(this.props.colName, id);
+    }
 
-        if (max === "") {
-            max = 0;
+    handleOnFocusRangeRemove(rangeID) {
+        if (this.getToggleState(rangeID)) {
+            this.handleRemoveGlobalRange(rangeID);
         }
-        else if (isNaN(max)) {
-            max = this.props.maxVal;
-        }
-
-        this.state.GLOBAL.removeRange(this.props.colName, [min, max]);
     }
 
 
@@ -91,8 +84,7 @@ class RangeForm extends React.Component {
      * @param range: Range which will be deleted from the range table
      **/
     handleRowDel(range) {
-        console.log(range);
-        this.handleRemoveGlobalRange(range.min, range.max);
+        this.handleRemoveGlobalRange(range.id);
         this.state.ranges.splice(this.state.ranges.indexOf(range), 1);
         this.setState(this.state.ranges);
     };
@@ -133,6 +125,16 @@ class RangeForm extends React.Component {
             return range;
         });
         this.setState( {ranges: newRanges} );
+    }
+
+    getToggleState(rangeID) {
+        for (var i = 0; i < this.state.ranges.length; i ++) {
+            if (this.state.ranges[i].id === rangeID) {
+                return this.state.ranges[i].applied;
+            }
+        }
+        // ID was not found
+        return -1;
     }
 
 
@@ -215,6 +217,7 @@ class RangeForm extends React.Component {
      * @param setSliderMax(maxVal): A method which updates the row's max value in the slider
      * @param cMin: Current value in the min text field
      * @param cMax: Current value in the max text field
+     * @param getID: returns the Unique ID corresponding to a range row
      * @returns: 1 if input was a valid number, 0 otherwise (nothing returns 0 yet)
      **/
     handleTextBlur(e, rangeID, setMin, setMax, setSliderMin, setSliderMax, cMin, cMax) {
@@ -228,6 +231,10 @@ class RangeForm extends React.Component {
                     setMin(maximum);
                     setSliderMin(maximum);
                     this.handleDataUpdate(rangeID, maximum, null);
+
+                    if (this.getToggleState(rangeID)) {
+                        this.handleAddGlobalRange(maximum, maximum, rangeID);
+                    }
                     return 1;
                 }
             }
@@ -238,11 +245,19 @@ class RangeForm extends React.Component {
                     setMin(cMax);
                     setSliderMin(cMax);
                     this.handleDataUpdate(rangeID, cMax, null);
+
+                    if (this.getToggleState(rangeID)) {
+                        this.handleAddGlobalRange(cMax, cMax, rangeID);
+                    }
                     return 1;
                 }
             }
             setSliderMin(value);
             this.handleDataUpdate(rangeID, value, null);
+
+            if (this.getToggleState(rangeID)) {
+                this.handleAddGlobalRange(value, cMax, rangeID);
+            }
         }
 
         else {
@@ -251,6 +266,10 @@ class RangeForm extends React.Component {
                     setMax(minimum);
                     setSliderMax(minimum);
                     this.handleDataUpdate(rangeID, null, minimum);
+
+                    if (this.getToggleState(rangeID)) {
+                        this.handleAddGlobalRange(minimum, minimum, rangeID);
+                    }
                     return 1;
                 }
             }
@@ -261,11 +280,19 @@ class RangeForm extends React.Component {
                     setMax(cMin);
                     setSliderMax(cMin);
                     this.handleDataUpdate(rangeID, null, cMin);
+
+                    if (this.getToggleState(rangeID)) {
+                        this.handleAddGlobalRange(cMin, cMin, rangeID);
+                    }
                     return 1;
                 }
             }
             setSliderMax(value);
             this.handleDataUpdate(rangeID, null, value);
+
+            if (this.getToggleState(rangeID)) {
+                this.handleAddGlobalRange(cMin, value, rangeID);
+            }
         }
     };
 
@@ -287,6 +314,19 @@ class RangeForm extends React.Component {
         this.handleDataUpdate(rangeID, e[0], e[1]);
     };
 
+    handleSliderClick(e, rangeID) {
+        if (this.getToggleState(rangeID)) {
+            this.handleRemoveGlobalRange(rangeID);
+        }
+    }
+
+    handleSliderLetGo(e, rangeID) {
+        if (this.getToggleState(rangeID)) {
+            this.handleAddGlobalRange(e[0], e[1], rangeID);
+        }
+    }
+    
+
 
     /**
      * Updates the mapping data structure with true false values corresponding to toggle state of a switch
@@ -294,12 +334,23 @@ class RangeForm extends React.Component {
      **/
     handleSwitchToggle(e) {
         var ranges = this.state.ranges.slice();
+        var min, max, id;
         var newRanges = ranges.map( function(range) {
             if (range.id === e.target.id) {
                 range["applied"] = e.target.checked;
+                min = range["min"];
+                max = range["max"];
+                id = range["id"];
             }
             return range;
         });
+
+        if (e.target.checked) {
+            this.handleAddGlobalRange(min, max, id);
+        }
+        else {
+            this.handleRemoveGlobalRange(id);
+        }
 
         // Temporary print to view mapping data when the toggle is switched
         console.log(ranges);
@@ -314,15 +365,15 @@ class RangeForm extends React.Component {
     render() {
         return (
             <div>
-                <Global ref={(inst) => function(inst){
-                    this.setState({GLOBAL: inst});
-                    
-                    }} />
+                <Global ref={inst => this.state.GLOBAL = inst} />
 
-                <RangeTable 
+                <RangeTable
                     onTextUpdate = { this.handleTextUpdate.bind(this) } 
                     onTextBlur = { this.handleTextBlur.bind(this) }
-                    onSlider = { this.handleSliderUpdate.bind(this) } 
+                    removeGlobalRange = { this.handleOnFocusRangeRemove.bind(this) }
+                    onSlider = { this.handleSliderUpdate.bind(this) }
+                    onSliderPress = { this.handleSliderClick.bind(this) }
+                    onSliderRelease = { this.handleSliderLetGo.bind(this) }
                     onToggle = { this.handleSwitchToggle.bind(this) }
                     onRowAdd = { this.handleAddEvent.bind(this) } 
                     onRowDel = { this.handleRowDel.bind(this) } 
@@ -346,7 +397,10 @@ class RangeTable extends React.Component {
         // Lose scope of 'this' in the map function so record what you need to access beforehand
         var onTextUpdate = this.props.onTextUpdate;
         var onTextBlur = this.props.onTextBlur;
+        var removeGlobalRange = this.props.removeGlobalRange;
         var onSlider = this.props.onSlider;
+        var onSliderPress = this.props.onSliderPress;
+        var onSliderRelease = this.props.onSliderRelease;
         var onToggle = this.props.onToggle;
         var rowDel = this.props.onRowDel;
         var min = this.props.minVal;
@@ -357,7 +411,10 @@ class RangeTable extends React.Component {
             return (<RangeRow 
                         onTextUpdate = { onTextUpdate }
                         onTextBlur = { onTextBlur }
+                        removeGlobalRange = { removeGlobalRange }
                         onSlider = { onSlider }
+                        onSliderPress = { onSliderPress }
+                        onSliderRelease = { onSliderRelease }
                         onToggle = { onToggle }
                         range = { range } 
                         onDelEvent = { rowDel.bind(this) } 
@@ -431,7 +488,10 @@ class RangeRow extends React.Component {
                                 maxVal = { this.props.maxVal }
                                 onTextUpdate = { this.props.onTextUpdate }
                                 onTextBlur = { this.props.onTextBlur }
+                                removeGlobalRange = { this.props.removeGlobalRange }
                                 onSlider = { this.props.onSlider }
+                                onSliderPress = { this.props.onSliderPress }
+                                onSliderRelease = { this.props.onSliderRelease }
                                 cellData = {{
                                     id: this.props.range.id,
                                     minValue: this.props.range.min,
@@ -479,7 +539,7 @@ class TextSlider extends React.Component {
             min: "",
             max: "",
             sliderMin: "",
-            sliderMax: ""
+            sliderMax: "",
         }
     }
 
@@ -566,22 +626,25 @@ class TextSlider extends React.Component {
             <Flex layout="row">
                 <Flex flex="25">
                     <TextField 
-                        type='number' 
-                        name="min"
-                        ref={input => this.inputElementMin = input}
-                        id={this.props.cellData.id.toString()} 
-                        value={this.state.min} 
-                        onBlur={
+                        type = 'number' 
+                        name = "min"
+                        ref ={ input => this.inputElementMin = input }
+                        id = { this.props.cellData.id.toString() } 
+                        value = { this.state.min } 
+                        onBlur = {
                             (e) => this.props.onTextBlur(e, this.props.cellData.id, this.updateMin.bind(this), this.updateMax.bind(this), 
                                                             this.updateSliderMin.bind(this), this.updateSliderMax.bind(this),
                                                             this.state.min, this.state.max)
                         }
-                        onChange={
+                        onChange = {
                             (e) => this.props.onTextUpdate(e, this.props.cellData.id, this.updateMin.bind(this), 
                                                             this.updateMax.bind(this), this.state.min, this.state.max)
                         }
-                        onKeyPress={ (e) => this.onKeyPressMin(e) }
-                        hintText={this.props.minVal}
+                        onFocus = {
+                            (e) => this.props.removeGlobalRange(this.props.cellData.id)
+                        }
+                        onKeyPress = { (e) => this.onKeyPressMin(e) }
+                        hintText = { this.props.minVal }
                         style = { styleSet.textfieldStyles }
                     />
                 </Flex>
@@ -596,14 +659,16 @@ class TextSlider extends React.Component {
                     }}
                 >
                     <Range
-                        min={this.props.minVal}
-                        max={this.props.maxVal}
-                        value={this.arrayNumConversion([this.state.sliderMin, this.state.sliderMax])}
-                        defaultValue={[this.props.minVal,this.props.maxVal]}
-                        allowCross={false}
-                        onChange={(e) => this.props.onSlider(e, this.props.cellData.id, this.updateMin.bind(this), this.updateMax.bind(this), 
+                        min = { this.props.minVal }
+                        max = { this.props.maxVal }
+                        value = { this.arrayNumConversion([this.state.sliderMin, this.state.sliderMax]) }
+                        defaultValue = { [this.props.minVal,this.props.maxVal] }
+                        allowCross = { false }
+                        onChange = { (e) => this.props.onSlider(e, this.props.cellData.id, this.updateMin.bind(this), this.updateMax.bind(this), 
                                             this.updateSliderMin.bind(this), this.updateSliderMax.bind(this)) 
                         }
+                        onBeforeChange = { (e) => this.props.onSliderPress(e, this.props.cellData.id) }
+                        onAfterChange = { (e) => this.props.onSliderRelease(e, this.props.cellData.id) }
                     />
                 </Flex>
 
@@ -613,24 +678,27 @@ class TextSlider extends React.Component {
 
                 <Flex flex="25">
                     <TextField 
-                        type='number' 
-                        name="max"
-                        ref={input => this.inputElementMax = input}
-                        id={this.props.cellData.id.toString()} 
-                        value={this.state.max}
-                        onBlur={
+                        type = 'number' 
+                        name = "max"
+                        ref = { input => this.inputElementMax = input }
+                        id = { this.props.cellData.id.toString() } 
+                        value = { this.state.max }
+                        onBlur = {
                             (e) => this.props.onTextBlur(e, this.props.cellData.id, this.updateMin.bind(this), this.updateMax.bind(this), 
                                                             this.updateSliderMin.bind(this), this.updateSliderMax.bind(this),
                                                             this.state.min, this.state.max)
                         }
-                        onChange={
+                        onChange = {
                             (e) => this.props.onTextUpdate(e, this.props.cellData.id, this.updateMin.bind(this), 
                                                             this.updateMax.bind(this), this.state.min, this.state.max)
                         }
-                        onKeyPress={
+                        onFocus = {
+                            (e) => this.props.removeGlobalRange(this.props.cellData.id)
+                        }
+                        onKeyPress = {
                             (e) => this.onKeyPressMax(e)
                         }
-                        hintText={this.props.maxVal}
+                        hintText = { this.props.maxVal }
                         style = { styleSet.textfieldStyles }
                     />
                 </Flex>

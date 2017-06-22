@@ -302,6 +302,8 @@ class FilterNav extends Component {
         {
             hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
         });
+
+        console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
         
         //if the flag true then button --> |HIDE| else button --> |SHOW|
         if(this.state.hideShowButtonTextFlag)
@@ -496,7 +498,7 @@ class FilterNav extends Component {
                                     buttonStyle={{height: '28px',paddingTop: '5px'}}
                                     labelStyle={{fontSize: '13px',height: '28px',}} 
                                     style = {{height: '28px',width:'100%',}} 
-                                    onClick={this.onHideFilteredData}
+                                    onClick={this.onHideFilteredData.bind(this)}
                                     primary={true} />
                                     {/*<Toggle
                                         label="Hide Filtered Data"
