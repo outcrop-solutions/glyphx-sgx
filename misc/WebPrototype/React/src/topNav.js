@@ -15,56 +15,80 @@ import './topNav.css';
 
 injectTapEventPlugin();
 
+
 class TopNav extends Component {
     state = {
         LoadMask : false
     };
 
-    onSaveDailog = (context) => {
-        this.setState(
-            {
-                LoadMask : true
-            }
-        )
+    showLoadMask = () => {
+        document.getElementById("LoadMask").style.visibility = "visible";
     };
+
+    hideLoadMask = () => {
+        document.getElementById("ipl-progress-indicator").style.visibility = "hidden";
+    };
+
+    componentDidMount() {
+        this.hideLoadMask();
+    }
 
     render() {
         return (
             <MuiThemeProvider> 
-                <Flex layout="column" style={{width:'100%',height:'100%'}}>
+                <div style={{width:'100%',height:'100%'}}>
+                    
+                    <div 
+                        id="LoadMask1"  
+                        style={{ 
+                            position: 'absolute',    
+                            width: '100%',
+                            height: '100%',
+                            zIndex: 1500,
+                            backgroundColor: '#000000',
+                            opacity: 0.5,
+                            textAlign: 'center',
+                            visibility: 'hidden',
+                            display: 'table'
+                        }} >
 
-                    <Flex flex="20">
-                        <div className="TopNav" style={{width:'100%',height:'100%'}}>
+                        <CircularProgress id="innerLoadMask"
+                            size={60} 
+                            style={
+                                {
+                                        display: 'table-cell',
+                                        verticalAlign: 'middle'
+                                }
+                            }
+                            thickness={7} />
 
-                            <AppBar className="navbar-color"
-                                id="AppBar"
-                                title={<span style={styles.navLogo}>LOGO</span>}
-                                iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
-                            />
+                    </div>
+                    <Flex layout="column" style={{width:'100%',height:'100%'}}>
 
-                            <div id="filterNav" className="sidenav sidenavbar">
-                                <FilterNav></FilterNav>
+                        <Flex flex="20">
+                            <div className="TopNav" style={{width:'100%',height:'100%'}}>
+
+                                <AppBar className="navbar-color"
+                                    id="AppBar"
+                                    title={<span style={styles.navLogo}>LOGO</span>}
+                                    iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
+                                />
+
+                                <div id="filterNav" className="sidenav sidenavbar">
+                                    <FilterNav></FilterNav>
+                                </div>
+                                
                             </div>
+                        </Flex>
+
+                        <Flex flex="80">
+                            {/* The 3D rendering engine */}
                             
-                        </div>
+                        </Flex>
+
                     </Flex>
 
-                    <Flex flex="80">
-                        {/* The 3D rendering engine */}
-                        <FlatButton
-                            label="Save"
-                            primary={true}
-                            onClick={() => this.onSaveDailog(this)}/>,
-
-                        <Dialog
-                            modal={true}
-                            open={this.state.LoadMask}>
-                            <CircularProgress size={60} style={{left: '50%', top: '50%'}} thickness={7} />
-                        </Dialog>
-                        
-                    </Flex>
-
-                </Flex>
+                </div>
           </MuiThemeProvider>
         );
     }

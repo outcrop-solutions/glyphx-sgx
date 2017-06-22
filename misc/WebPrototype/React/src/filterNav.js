@@ -397,7 +397,7 @@ class FilterNav extends Component {
                     </Collapsible>
                     );
         });
-        
+
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
                 <Global ref={inst => this.state.GLOBAL = inst} />
