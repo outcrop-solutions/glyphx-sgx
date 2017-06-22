@@ -302,6 +302,8 @@ class FilterNav extends Component {
         {
             hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
         });
+
+        console.log(this.state.GLOBAL.getData());
         
         //if the flag true then button --> |HIDE| else button --> |SHOW|
         if(this.state.hideShowButtonTextFlag)
@@ -398,7 +400,7 @@ class FilterNav extends Component {
         
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
-                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalData()})}} />
+                <Global ref={inst => this.state.GLOBAL = inst} />
                 <div>
                     <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
                 </div>
@@ -494,7 +496,7 @@ class FilterNav extends Component {
                                     buttonStyle={{height: '28px',paddingTop: '5px'}}
                                     labelStyle={{fontSize: '13px',height: '28px',}} 
                                     style = {{height: '28px',width:'100%',}} 
-                                    onClick={this.onHideFilteredData}
+                                    onClick={this.onHideFilteredData.bind(this)}
                                     primary={true} />
                                     {/*<Toggle
                                         label="Hide Filtered Data"

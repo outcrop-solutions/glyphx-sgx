@@ -44,17 +44,11 @@ class RangeForm extends React.Component {
      * @param max: local max stored by row
      **/
     handleAddGlobalRange(min, max) {
-        if (min === "") {
-            min = 0;
-        }
-        else if (isNaN(min)) {
+        if (min === "" || isNaN(min)) {
             min = this.props.minVal;
         }
 
-        if (max === "") {
-            max = 0;
-        }
-        else if (isNaN(max)) {
+        if (max === "" || isNaN(max)) {
             max = this.props.maxVal;
         }
 
@@ -68,17 +62,11 @@ class RangeForm extends React.Component {
      * @param max: local max stored by row
      **/
     handleRemoveGlobalRange(min, max) {
-        if (min === "") {
-            min = 0;
-        }
-        else if (isNaN(min)) {
+        if (min === "" || isNaN(min)) {
             min = this.props.minVal;
         }
 
-        if (max === "") {
-            max = 0;
-        }
-        else if (isNaN(max)) {
+        if (max === "" || isNaN(max)) {
             max = this.props.maxVal;
         }
 
@@ -91,7 +79,6 @@ class RangeForm extends React.Component {
      * @param range: Range which will be deleted from the range table
      **/
     handleRowDel(range) {
-        console.log(range);
         this.handleRemoveGlobalRange(range.min, range.max);
         this.state.ranges.splice(this.state.ranges.indexOf(range), 1);
         this.setState(this.state.ranges);
@@ -222,12 +209,15 @@ class RangeForm extends React.Component {
         var maximum = parseInt(this.props.maxVal, 10);
         var value = parseInt(e.target.value, 10);
 
+        this.handleRemoveGlobalRange(cMin, cMax);
+
         if (e.target.name === "min") {
             if (isNaN(cMax) || cMax === "") {
                 if (value > maximum) {
                     setMin(maximum);
                     setSliderMin(maximum);
                     this.handleDataUpdate(rangeID, maximum, null);
+                    this.handleAddGlobalRange(maximum, maximum);
                     return 1;
                 }
             }
@@ -238,11 +228,13 @@ class RangeForm extends React.Component {
                     setMin(cMax);
                     setSliderMin(cMax);
                     this.handleDataUpdate(rangeID, cMax, null);
+                    this.handleAddGlobalRange(cMax, cMax);
                     return 1;
                 }
             }
             setSliderMin(value);
             this.handleDataUpdate(rangeID, value, null);
+            this.handleAddGlobalRange(value, cMax);
         }
 
         else {
@@ -251,6 +243,7 @@ class RangeForm extends React.Component {
                     setMax(minimum);
                     setSliderMax(minimum);
                     this.handleDataUpdate(rangeID, null, minimum);
+                    this.handleAddGlobalRange(minimum, minimum);
                     return 1;
                 }
             }
@@ -261,11 +254,13 @@ class RangeForm extends React.Component {
                     setMax(cMin);
                     setSliderMax(cMin);
                     this.handleDataUpdate(rangeID, null, cMin);
+                    this.handleAddGlobalRange(cMin, cMin);
                     return 1;
                 }
             }
             setSliderMax(value);
             this.handleDataUpdate(rangeID, null, value);
+            this.handleAddGlobalRange(cMin, value);
         }
     };
 
@@ -314,10 +309,7 @@ class RangeForm extends React.Component {
     render() {
         return (
             <div>
-                <Global ref={(inst) => function(inst){
-                    this.setState({GLOBAL: inst});
-                    
-                    }} />
+                <Global ref={inst => this.state.GLOBAL = inst} />
 
                 <RangeTable 
                     onTextUpdate = { this.handleTextUpdate.bind(this) } 

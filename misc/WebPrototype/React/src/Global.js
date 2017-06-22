@@ -48,8 +48,8 @@ class Global extends Component {
         return null;
     }
 
-    getGlobalInst(){
-        return this;
+    getData(){
+        return Global.Global_Data;
     }
 
 
@@ -60,9 +60,9 @@ class Global extends Component {
      **/
     addRange(colName, valueArray) {
         var found = false;
-        for (var range in Global.Global_Data.Filter.Range) {
-            if (range.fieldName === colName) {
-                range.ranges.push(valueArray);
+        for (var i = 0; i < Global.Global_Data.Filter.Range.length; i++) {
+            if (Global.Global_Data.Filter.Range[i]["fieldName"] === colName) {
+                Global.Global_Data.Filter.Range[i]["ranges"].push(valueArray);
                 found = true;
             }
         }
@@ -78,9 +78,10 @@ class Global extends Component {
      * @param valueArray: [val1, val2]: min-max range values to remove
      **/
     removeRange(colName, valueArray) {
-        for (var range in Global.Global_Data.Filter.Range) {
-            if (range.fieldName === colName) {
-                range.ranges.splice(range.ranges.indexOf(valueArray), 1);
+        console.log(Global.Global_Data.Filter.Range[0]["ranges"]);
+        for (var i = 0; i < Global.Global_Data.Filter.Range.length; i++) {
+            if (Global.Global_Data.Filter.Range[i]["fieldName"] === colName) {
+                Global.Global_Data.Filter.Range[i]["ranges"].splice(Global.Global_Data.Filter.Range[i]["ranges"].indexOf(valueArray), 1);
             }
         }
     }
