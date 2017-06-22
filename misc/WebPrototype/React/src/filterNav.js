@@ -154,7 +154,7 @@ class FilterNav extends Component {
         {
             menu: {
                 open: true,
-                anchorEl: event.currentTarget,
+                anchorEl: event.currentTarget
             }
         });
     };
@@ -547,54 +547,12 @@ class FilterNav extends Component {
 
                     <Flex flex="65">
 
-
-                         {/*
-
-                         
-
-                                <CutsomCollapse
-                                    title="Active"
-                                    bodyView={<div>ACTIVE VIEW GOES HERE</div>}
-                                ></CutsomCollapse>
-
-                                <CutsomCollapse
-                                    title="Filters"
-                                    bodyView={
-                                                <div>
-                                                    <CutsomCollapse
-                                                        title="Age"
-                                                        bodyView={
-                                                            <FilterTabs></FilterTabs>
-                                                        }
-                                                    ></CutsomCollapse>
-
-                                                    <CutsomCollapse
-                                                        title="Year"
-                                                        bodyView={
-                                                            <FilterTabs></FilterTabs>
-                                                        }
-                                                    ></CutsomCollapse>
-
-                                                    <CutsomCollapse
-                                                        title="Major"
-                                                        bodyView={
-                                                            <FilterTabs></FilterTabs>
-                                                        }
-                                                    ></CutsomCollapse>
-                                                </div>
-                                    }
-                                ></CutsomCollapse>
-
-                        */}
-
                         <Collapsible transitionTime={200} trigger="Active">
                         </Collapsible>
                         
                         <Collapsible transitionTime={200} trigger="Filter">
                                 {columns}
                         </Collapsible>
-
-                        
 
                     </Flex>
                 </Flex>
