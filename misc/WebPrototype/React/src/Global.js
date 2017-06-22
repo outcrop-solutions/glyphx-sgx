@@ -2,7 +2,7 @@ import { Component } from 'react';
 
 /**
  * This is the global class.
- * Use this by adding the <Global> tag to your component structure, use ref to provide a callback and then call the getGlobalData function to get the instance of the Global_Data
+ * Use this by adding the <Global> tag to your component structure, use ref to provide a callback and then call the getGlobalInst function to get the instance of Global
  * Example usage:
  * 
  * import Global from 'global.js'
@@ -12,7 +12,7 @@ import { Component } from 'react';
  *      ....
  *      ....
  *      onGlobalLoad = (instance) => {
- *      this.setState({GLOBAL:instance.getGlobalData()});
+ *      this.setState({GLOBAL:instance.getGlobalInst()});
  *      }
  * 
  *      render(){
@@ -21,7 +21,7 @@ import { Component } from 'react';
  * 
  *                      or
  *            No Need for the extra function.
- *           <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalData()})}} />    
+ *           <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalInst()})}} />    
  *           ....
  *           ....
  *          </div>
@@ -48,8 +48,8 @@ class Global extends Component {
         return null;
     }
 
-    getGlobalData(){
-        return Global.Global_Data;
+    getGlobalInst(){
+        return this;
     }
 
 
@@ -77,7 +77,7 @@ class Global extends Component {
      * @param colName: name of the column to remove the filter from (example: Age)
      * @param valueArray: [val1, val2]: min-max range values to remove
      **/
-    deleteRange(colName, valueArray) {
+    removeRange(colName, valueArray) {
         for (var range in Global.Global_Data.Filter.Range) {
             if (range.fieldName === colName) {
                 range.ranges.splice(range.ranges.indexOf(valueArray), 1);
@@ -110,7 +110,7 @@ class Global extends Component {
      * @param colName: name of the column to remove the filter from (example: Age)
      * @param value: elastic value to remove
      **/
-    deleteFilter(colName, value) {
+    removeFilter(colName, value) {
         for (var elastic in Global.Global_Data.Filter.Elastic) {
             if (elastic.fieldName === colName) {
                 elastic.values.splice(elastic.values.indexOf(value), 1);

@@ -41,7 +41,7 @@ class FilterTabs extends React.Component {
     render() {
         return (
             <div>
-                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalData()})}} /> 
+                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalInst()})}} /> 
                     
                 <Tabs
                     onChange={(value) => this.handleChange(value,this)}

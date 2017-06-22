@@ -4,6 +4,7 @@ import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
 import {Flex} from 'react-flex-material';
 import Range from 'rc-slider/lib/Range'; 
+import Global from './Global.js';
 import {Card, CardText} from 'material-ui/Card';
 import {red500,blue500} from 'material-ui/styles/colors';
 import 'rc-slider/assets/index.css';
@@ -14,6 +15,7 @@ import './range.css';
  * Main Range parent class which gets exported, holds data structure used to map ranges to the DOM
  * @param minVal: Sets the minimum value allowed for all the ranges within the range table
  * @param maxVal: Sets the maximum value allowed for all the ranges within the range table
+ * @param colName: "tableName|colName": name of the corresponding table|column for this RangeForm
  * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
 class RangeForm extends React.Component {
@@ -30,8 +32,57 @@ class RangeForm extends React.Component {
                     max: this.props.maxVal.toString(),
                     applied: true,
                 }
-            ]
+            ],
+            GLOBAL: null
         };
+    }
+
+
+    /**
+     * Adds a range to the global instance shared by all components that include Global
+     * @param min: local min stored by row
+     * @param max: local max stored by row
+     **/
+    handleAddGlobalRange(min, max) {
+        if (min === "") {
+            min = 0;
+        }
+        else if (isNaN(min)) {
+            min = this.props.minVal;
+        }
+
+        if (max === "") {
+            max = 0;
+        }
+        else if (isNaN(max)) {
+            max = this.props.maxVal;
+        }
+
+        this.state.GLOBAL.addRange(this.props.colName, [min, max]);
+    }
+
+
+    /**
+     * Removes a range to the global instance shared by all components that include Global
+     * @param min: local min stored by row
+     * @param max: local max stored by row
+     **/
+    handleRemoveGlobalRange(min, max) {
+        if (min === "") {
+            min = 0;
+        }
+        else if (isNaN(min)) {
+            min = this.props.minVal;
+        }
+
+        if (max === "") {
+            max = 0;
+        }
+        else if (isNaN(max)) {
+            max = this.props.maxVal;
+        }
+
+        this.state.GLOBAL.removeRange(this.props.colName, [min, max]);
     }
 
 
@@ -40,6 +91,8 @@ class RangeForm extends React.Component {
      * @param range: Range which will be deleted from the range table
      **/
     handleRowDel(range) {
+        console.log(range);
+        this.handleRemoveGlobalRange(range.min, range.max);
         this.state.ranges.splice(this.state.ranges.indexOf(range), 1);
         this.setState(this.state.ranges);
     };
@@ -260,17 +313,24 @@ class RangeForm extends React.Component {
      **/
     render() {
         return (
-            <RangeTable 
-                onTextUpdate = { this.handleTextUpdate.bind(this) } 
-                onTextBlur = { this.handleTextBlur.bind(this) }
-                onSlider = { this.handleSliderUpdate.bind(this) } 
-                onToggle = { this.handleSwitchToggle.bind(this) }
-                onRowAdd = { this.handleAddEvent.bind(this) } 
-                onRowDel = { this.handleRowDel.bind(this) } 
-                ranges = { this.state.ranges }
-                minVal = { this.props.minVal }
-                maxVal = { this.props.maxVal }
-            />
+            <div>
+                <Global ref={(inst) => function(inst){
+                    this.setState({GLOBAL: inst});
+                    
+                    }} />
+
+                <RangeTable 
+                    onTextUpdate = { this.handleTextUpdate.bind(this) } 
+                    onTextBlur = { this.handleTextBlur.bind(this) }
+                    onSlider = { this.handleSliderUpdate.bind(this) } 
+                    onToggle = { this.handleSwitchToggle.bind(this) }
+                    onRowAdd = { this.handleAddEvent.bind(this) } 
+                    onRowDel = { this.handleRowDel.bind(this) } 
+                    ranges = { this.state.ranges }
+                    minVal = { this.props.minVal }
+                    maxVal = { this.props.maxVal }
+                />
+            </div>
         );
     }
 }
