@@ -42,6 +42,7 @@ class RangeForm extends React.Component {
      * Adds a range to the global instance shared by all components that include Global
      * @param min: local min stored by row
      * @param max: local max stored by row
+     * @param id: id of the row
      **/
     handleAddGlobalRange(min, max, id) {
         var id;
@@ -65,16 +66,22 @@ class RangeForm extends React.Component {
 
 
     /**
-     * Removes a range to the global instance shared by all components that include Global
-     * @param id: id used to find what to remove
+     * Removes a range from the global instance shared by all components that include Global
+     * @param id: id used to find what range to remove
      **/
     handleRemoveGlobalRange(id) {
         this.state.GLOBAL.removeRange(this.props.colName, id);
     }
 
-    handleOnFocusRangeRemove(rangeID) {
-        if (this.getToggleState(rangeID)) {
-            this.handleRemoveGlobalRange(rangeID);
+
+    /**
+     * Removes a range from the global instance when text box gets focused
+     * Avoids having to track previous states of text boxes
+     * @param id: id used to find what range to remove
+     **/
+    handleOnFocusRangeRemove(id) {
+        if (this.getToggleState(id)) {
+            this.handleRemoveGlobalRange(id);
         }
     }
 
@@ -127,6 +134,12 @@ class RangeForm extends React.Component {
         this.setState( {ranges: newRanges} );
     }
 
+
+    /**
+     * Gets the toggle state of a row
+     * @param rangeID: ID used to find the range row
+     * @returns: true if row is toggled on, false otherwise
+     **/
     getToggleState(rangeID) {
         for (var i = 0; i < this.state.ranges.length; i ++) {
             if (this.state.ranges[i].id === rangeID) {
@@ -217,7 +230,6 @@ class RangeForm extends React.Component {
      * @param setSliderMax(maxVal): A method which updates the row's max value in the slider
      * @param cMin: Current value in the min text field
      * @param cMax: Current value in the max text field
-     * @param getID: returns the Unique ID corresponding to a range row
      * @returns: 1 if input was a valid number, 0 otherwise (nothing returns 0 yet)
      **/
     handleTextBlur(e, rangeID, setMin, setMax, setSliderMin, setSliderMax, cMin, cMax) {
@@ -314,12 +326,25 @@ class RangeForm extends React.Component {
         this.handleDataUpdate(rangeID, e[0], e[1]);
     };
 
+
+    /**
+     * Removes a range from the global instance when slider is initially clicked (before change)
+     * Allows us to avoid tracking previous states
+     * @param e: the 'html' element that caused this method to be called
+     * @param rangeID: ID used to find the range to remove
+     **/
     handleSliderClick(e, rangeID) {
         if (this.getToggleState(rangeID)) {
             this.handleRemoveGlobalRange(rangeID);
         }
     }
 
+
+    /**
+     * adds a range to the global instance when a slider is let go
+     * @param e: the 'html' element that caused this method to be called
+     * @param rangeID: ID added to track the range when removing at a later time
+     **/
     handleSliderLetGo(e, rangeID) {
         if (this.getToggleState(rangeID)) {
             this.handleAddGlobalRange(e[0], e[1], rangeID);

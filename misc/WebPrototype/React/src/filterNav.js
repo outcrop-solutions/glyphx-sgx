@@ -370,14 +370,16 @@ class FilterNav extends Component {
         if(this.state.topViewVisible == true)
         {
             filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)"
-            collapseTopViewButton.classList.remove('fa-caret-up');
-            collapseTopViewButton.classList.add('fa-caret-down');
+            //collapseTopViewButton.classList.remove('fa-caret-up');
+            //collapseTopViewButton.classList.add('.Collapsible__trigger.is-open:after');
+            collapseTopViewButton.style.transform = 'rotateZ(180deg)';
             this.state.topViewVisible = false;
         }
         else{
             filterWindow.style.transform = "translate(0px,0px)"
-            collapseTopViewButton.classList.remove('fa-caret-down');
-            collapseTopViewButton.classList.add('fa-caret-up');
+            //collapseTopViewButton.classList.remove('fa-caret-down');
+            //collapseTopViewButton.classList.add('fa-caret-up');
+            collapseTopViewButton.style.transform = 'none';
             this.state.topViewVisible = true;
         }
             
@@ -392,7 +394,7 @@ class FilterNav extends Component {
          var data = this.state.tableData;
 
         var columns = keys.map(function(column) {
-            return (<Collapsible transitionTime={200} key={column} trigger={column}>
+            return (<Collapsible transitionTime={200} key={column} trigger={column} triggerClassName='columnNameHeader'>
                             <FilterTabs colName={column} data={data[column]}></FilterTabs>
                     </Collapsible>
                     );
@@ -533,7 +535,8 @@ class FilterNav extends Component {
                             className="fa fa-caret-up" 
                             style={{
                                 fontSize: '1.6em',
-                                color: 'white'
+                                color: 'white',
+                                transition: 'transform 500ms'
                             }}
                         > 
                         </i> 
@@ -547,11 +550,35 @@ class FilterNav extends Component {
 
                     <Flex flex="65">
 
-                        <Collapsible transitionTime={200} trigger="Active">
+                        <Collapsible 
+                            transitionTime={200} 
+                            trigger={
+                                <div>
+                                    <i className="fa fa-thumb-tack" style={{fontSize: '1.3rem'}}></i>
+                                    <span 
+                                        style={{
+                                        paddingLeft: '10px',
+                                        fontSize: '1rem'
+                                    }}>
+                                        Active
+                                    </span>
+                                </div>}>
                         </Collapsible>
-                        
-                        <Collapsible transitionTime={200} trigger="Filter">
-                                {columns}
+
+                        <Collapsible 
+                            transitionTime={200} 
+                            trigger={
+                                <div>
+                                    <i className="fa fa-filter" style={{fontSize: '1.3rem'}}></i>
+                                    <span 
+                                        style={{
+                                        paddingLeft: '10px',
+                                        fontSize: '1rem'
+                                    }}>
+                                        Filter
+                                    </span>
+                                </div>}>
+                                 {columns}
                         </Collapsible>
 
                     </Flex>

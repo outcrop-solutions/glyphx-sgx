@@ -26,7 +26,17 @@ class TopNav extends Component {
     };
 
     hideLoadMask = () => {
-        document.getElementById("ipl-progress-indicator").style.visibility = "hidden";
+
+        var lm = document.getElementById("ipl-progress-indicator");
+        if(lm) {
+            setTimeout(() => {
+                document.getElementById("ipl-progress-indicator").classList.add('available');
+                setTimeout(() => {
+                document.getElementById("ipl-progress-indicator").outerHTML = '';
+                }, 2000)
+            }, 1000)
+        }
+
     };
 
     componentDidMount() {
