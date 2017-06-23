@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-//import TopNav from './topNav';
+import TopNav from './topNav';
 import App from './App.js';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
@@ -18,7 +18,20 @@ const initialFilterState = {
                     applied: true,
                 }
             ],
-            Elastic
+            Elastic: {
+                'colName1': {
+                    selectedValues: [],
+                    highlightedValues:[]
+                },
+                'colName2': {
+                    selectedValues: [],
+                    highlightedValues:[]
+                },
+                'colName3': {
+                    selectedValues: [],
+                    highlightedValues:[]
+                }
+            }
         }
     };
 
@@ -66,4 +79,4 @@ let store = createStore(reducers);
 
 
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><TopNav /></Provider>, document.getElementById('root'));

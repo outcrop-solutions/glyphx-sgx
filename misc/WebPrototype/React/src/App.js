@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = function(state){
   return {
-    stateText: state.rangeState.stateText,
+    stateText: state.filterState.stateText,
   }
 }
 
@@ -16,10 +16,6 @@ export const addRange = (text) => ({
 
 
 class App extends React.Component {
-
-    state={
-        stateText:
-    };
 
     hideLoadMask = () => {
 

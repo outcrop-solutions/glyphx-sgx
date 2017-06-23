@@ -27,8 +27,6 @@ class FilterNav extends Component {
 	
      
     constructor(props) {
-        debugger;
-        console.log(store.getState());
         super(props);
         
         var viewSelectItems= [];
