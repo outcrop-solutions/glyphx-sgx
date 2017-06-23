@@ -11,6 +11,34 @@ import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
 import './range.css';
 
+
+const mapStateToProps = function(state){
+  return {
+    Filter: state.Filter,
+  }
+}
+
+//this.props.dispatch(addRange("Hi2"));
+export const addRange = (text) => ({
+  type: 'ADD_RANGE',
+  text
+});
+
+export const removeRange = (text) => ({
+  type: 'REMOVE_RANGE',
+  text
+});
+
+export const highlightElastic = (text) => ({
+  type: 'ADD_RANGE',
+  text
+});
+
+export const unhighlightElastic = (text) => ({
+  type: 'ADD_RANGE',
+  text
+});
+
 /**
  * Main Range parent class which gets exported, holds data structure used to map ranges to the DOM
  * @param minVal: Sets the minimum value allowed for all the ranges within the range table
@@ -748,5 +776,4 @@ const styleSet = {
     }
 };
 
-
-export default RangeForm;
+export default connect(mapStateToProps)(RangeForm);

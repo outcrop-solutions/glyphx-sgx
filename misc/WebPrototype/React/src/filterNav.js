@@ -16,9 +16,10 @@ import Snackbar from 'material-ui/Snackbar';
 import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import FilterTabs from './FilterTable.js'
+import FilterTabs from './FilterTable.js';
 import Global from './Global.js';
 import Collapsible from 'react-collapsible';
+import store from './index.js';
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
 
@@ -26,7 +27,8 @@ class FilterNav extends Component {
 	
      
     constructor(props) {
-        
+        debugger;
+        console.log(store.getState());
         super(props);
         
         var viewSelectItems= [];
@@ -223,11 +225,19 @@ class FilterNav extends Component {
         
     };
 
+    /**
+     * 
+     */
     saveView = (context,viewName) => {
 
     };
-  
-  
+    
+    /**
+     * 
+     */
+    applyFilter = () => {
+        console.log('Filter Applied');
+    };
   
     /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
@@ -385,16 +395,27 @@ class FilterNav extends Component {
             
     };
 
-    onExpandChange = (e,context,columns) => {
-        debugger;
-    };
-
     render() {
          var keys = Object.keys(this.state.tableData);
          var data = this.state.tableData;
+         var context = this;
 
         var columns = keys.map(function(column) {
-            return (<Collapsible transitionTime={200} key={column} trigger={column} triggerClassName='columnNameHeader'>
+            return (<Collapsible 
+                        transitionTime={200} 
+                        key={column} 
+                        trigger={
+                                <div>
+                                    <span onClick={() => function(){console.log('Hi');}}><i className="fa fa-thumb-tack" style={{fontSize: '1.3rem'}}></i></span>
+                                    <span 
+                                        style={{
+                                        paddingLeft: '10px',
+                                        fontSize: '1rem'
+                                    }}>
+                                        {column}
+                                    </span>
+                                </div>} 
+                        triggerClassName='columnNameHeader'>
                             <FilterTabs colName={column} data={data[column]}></FilterTabs>
                     </Collapsible>
                     );
@@ -550,6 +571,9 @@ class FilterNav extends Component {
 
                     <Flex flex="65">
 
+                        <RaisedButton primary={true} label="Apply Filters" onClick={this.applyFilter} fullWidth={true} />
+                        <br />
+                        <br />
                         <Collapsible 
                             transitionTime={200} 
                             trigger={
