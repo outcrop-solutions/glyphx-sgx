@@ -1,97 +1,20 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
-import Global from './Global.js';
 import RangeForm from './range.js';
+import { connect } from 'react-redux';
 
-class FilterTabs extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            slideIndex: 0,
-            FilterTable: null,
-            FilterTableSelectedRows: [],
-            Range: null,
-            tableData: props.data
-        };
-    };
-
-    handleChange = (value,context) => {
-        context.setState({
-            slideIndex: value,
-            FilterTableSelectedRows: context.state.FilterTable.state.selectedRows
-        });
-
-    };
-
-    /**
-     * This method is called after the table is created inside the tab. We store the instance of the filter table for future use.
-     * @param instance: this is the instance of the filter table created
-     */
-    onCreateTable = (instance) => {
-        this.setState({
-            FilterTable: instance
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <Global ref={(inst) => function(inst){this.setState({GLOBAL: inst.getGlobalInst()})}} /> 
-                    
-                <Tabs
-                    onChange={(value) => this.handleChange(value,this)}
-                    value={this.state.slideIndex}
-                >
-                    <Tab 
-                        label="Elastic" 
-                        value={0}
-                        icon={<FontIcon className="fa fa-list-ul"></FontIcon>}
-                    />
-                    <Tab 
-                        label="Range" 
-                        value={1}
-                        icon={<FontIcon className="fa fa-sliders"></FontIcon>}
-                    />
-                </Tabs>
-
-                
-
-                <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.handleChange}
-
-                    style={{
-                        overflowY: "hidden",
-                        height: "440px",
-                    }}
-                            
-                >
-                    <div
-                        style={{
-                            maxHeight: "440px",
-                            overflowX: "hidden"
-                        }}
-                    >
-                        <FilterTable tableData={this.state.tableData} id={this.props.colName} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
-                    </div>
-                    <div
-                        style={{
-                            maxHeight: "440px",
-                            overflowX: "hidden"
-                        }}
-                    >
-                        <RangeForm colName={this.props.colName} minVal={-100} maxVal={100}></RangeForm>
-                    </div>
-                </SwipeableViews>
-            </div>
-        );
-    }
+const mapStateToProps = function(state){
+  return {
+    tableState: state.filterState.Filter.Elastic,
+  }
 }
+
+export const addRemoveElastic = (filter) => ({
+  type: 'ADD_REMOVE_ELASTIC',
+  filter
+});
 
 /**
  * This is the class that represents the Tables.
@@ -103,6 +26,8 @@ class FilterTabs extends React.Component {
  */
 
 class FilterTable extends Component {
+
+    flatData = [];
     
     constructor(props) {
         super(props);
@@ -150,6 +75,23 @@ class FilterTable extends Component {
         
         //for(index=0;index<len;index++)
          //   console.log(JSON.stringify(context.state.tableData[rowSelection[index]].value));
+
+        var index,len = rowSelection.length;
+        var selectedValues = [];
+        var highlightedValues = [];
+        var tableData = context.state.flatData;
+
+        for(index=0;index<len;index++)
+                selectedValues.push(context.flatData[rowSelection[index]].value);
+
+        var filterStructure = {
+                colName : context.props.id,
+                selectedValues: selectedValues,
+                highlightedValues: highlightedValues
+        }
+
+            context.props.dispatch(addRemoveElastic(filterStructure));
+
 
         this.setState({selectedRows: rowSelection});
     };
@@ -204,6 +146,13 @@ class FilterTable extends Component {
                     <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
                     <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
+
+            this.flatData.push({
+                value: property,
+                count: data[property],
+                index: index
+            });
+
             index ++;
         };
 
@@ -251,5 +200,4 @@ class FilterTable extends Component {
     }
 }
 
-
-export default FilterTabs;
+export default connect(mapStateToProps)(FilterTable);

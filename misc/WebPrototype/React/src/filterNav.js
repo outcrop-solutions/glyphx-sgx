@@ -16,7 +16,7 @@ import Snackbar from 'material-ui/Snackbar';
 import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import FilterTabs from './FilterTable.js';
+import FilterTabs from './FilterTab.js';
 import Global from './Global.js';
 import Collapsible from 'react-collapsible';
 import store from './index.js';

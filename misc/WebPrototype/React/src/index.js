@@ -19,16 +19,8 @@ const initialFilterState = {
                 }
             ],
             Elastic: {
-                'colName1': {
-                    selectedValues: [],
-                    highlightedValues:[]
-                },
-                'colName2': {
-                    selectedValues: [],
-                    highlightedValues:[]
-                },
-                'colName3': {
-                    selectedValues: [],
+                'StaffAssigned': {
+                    selectedValues: ["Alyssa ORourke"],
                     highlightedValues:[]
                 }
             }
@@ -49,17 +41,26 @@ const filterReducer = function(state = initialFilterState, action) {
             var newState = Object.assign({}, state, { foo: 123 });
             return newState;
 
-        case 'ADD_ELASTIC':
-              console.log('ADD');
-            var newState = Object.assign({}, state,{ stateText : action.text} );
+        case 'ADD_REMOVE_ELASTIC': 
+        {
+            console.log('ADD_REMOVE_ELASTIC');
+              
+            var newState = state;
+            var col = action.filter.colName;
+
+            if(action.filter.selectedValues.length < 1 && action.filter.highlightedValues < 1 && newState.Filter.Elastic.hasOwnProperty(col))
+            {
+                delete newState.Filter.Elastic[col];
+            }
+            else
+                newState.Filter.Elastic[col] = { selectedValues: action.filter.selectedValues, highlightedValues:action.filter.highlightedValues };
+            
+            //newState = Object.assign({}, state, elasticFilter);
+
             console.log(newState);
             return newState;
+        }
 
-        case 'REMOVE_ELASTIC':
-            console.log('ADD');
-            var newState = Object.assign({}, state,{ stateText : action.text} );
-            console.log(newState);
-            return newState;          
 
         default:
             return state;
