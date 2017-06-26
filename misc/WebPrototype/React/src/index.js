@@ -50,17 +50,11 @@ const filterReducer = function(state = initialFilterState, action) {
         
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
-            var stateVal;
-
-            if (!(action.colName in state.Filter.Ranges)) {
-                //newState.Filter.Ranges[action.colName] = { rangeList: [action.min, action.max, action.id, action.applied] };
-                stateVal = [action.min, action.max, action.id, action.applied];
-            }
-            else {
-                stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
-                stateVal.push([action.min, action.max, action.id, action.applied]);
-            }
             
+            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal.push([action.min, action.max, action.id, action.applied]);
+            
+            //state.Filter.Ranges[action.colName].rangeList = stateval;
             var newState = {
                 ...state,
                 Filter : {

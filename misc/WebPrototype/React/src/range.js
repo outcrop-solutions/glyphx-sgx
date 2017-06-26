@@ -424,21 +424,8 @@ class RangeTable extends React.Component {
 
         // Maps rows to the DOM and passes data structure methods to rows so they have access
 
-        var rList;
+        var rList = this.props.rangeList[this.props.colName].rangeList;
 
-        if (this.props.colName in this.props.rangeList) {
-            rList = this.props.rangeList[this.props.colName].rangeList;
-            console.log("hit 1");
-            console.log(rList);
-        }
-        else {
-
-            rowAdd();
-
-            rList = this.props.rangeList[this.props.colName].rangeList;
-            console.log("hit 2");
-            console.log(rList);
-        }
         
         var range = rList.map( function(range) {
             return (<RangeRow 

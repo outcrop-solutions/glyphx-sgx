@@ -427,6 +427,7 @@ class FilterNav extends Component {
                 </div>
 
                 <RangeForm minVal = {-100} maxVal = {100} colName = "StaffAssigned" />
+                
                 <Flex layout="column" style={{height: '100%'}}>
                      {/* TOP SECTION */}
                     <Flex flex="35" id="TopView">
