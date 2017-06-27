@@ -98,6 +98,8 @@ class RangeForm extends React.Component {
         var maximum = parseInt(this.props.maxVal, 10);
         var value = parseInt(e.target.value, 10);
 
+        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null));
+
         
     };
 
@@ -376,6 +378,9 @@ class TextSlider extends React.Component {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
                         }
                         onFocus = { () => this.updateLatest("MIN") }
+                        onBlur = {
+                            (e) => this.onTextBlur(e, this.props.cellData.id, this.props.cellData.min, this.props.cellData.max)
+                        }
                         onKeyPress = {
                             (e) => this.onKeyPressMin(e)
                         }
@@ -421,6 +426,9 @@ class TextSlider extends React.Component {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
                         }
                         onFocus = { () => this.updateLatest("MAX") }
+                        onBlur = {
+                            (e) => this.onTextBlur(e, this.props.cellData.id, this.props.cellData.min, this.props.cellData.max)
+                        }
                         onKeyPress = {
                             (e) => this.onKeyPressMax(e)
                         }
