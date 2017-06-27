@@ -142,7 +142,7 @@ class RangeForm extends React.Component {
                     onSlide = { this.handleSliderUpdate.bind(this) }
                     onToggle = { this.handleSwitchToggle.bind(this) }
                     onTextChange = { this.handleTextUpdate.bind(this) }
-                    rangeList = { this.props.rangeList }
+                    filterList = { this.props.filterList }
                     minVal = { this.props.minVal }
                     maxVal = { this.props.maxVal }
                     colName = { this.props.colName } 
@@ -171,7 +171,7 @@ class RangeTable extends React.Component {
 
         // Maps rows to the DOM and passes data structure methods to rows so they have access
 
-        var rList = this.props.rangeList[this.props.colName].rangeList;
+        var rList = this.props.filterList[this.props.colName]["Range"]["rangeList"];
 
         
         var range = rList.map( function(range) {
@@ -496,7 +496,7 @@ export const unhighlightElastic = (text) => ({
  **/
 const mapStateToProps = function(state){
   return {
-    rangeList: state.filterState.Filter.Ranges,
+    filterList: state.filterState.Filter,
   }
 }
 

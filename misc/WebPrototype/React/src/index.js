@@ -26,7 +26,7 @@ const initialFilterState = {
             },
 
             'Academic_Rating': {
-                Ranges: {
+                Range: {
                     // [minVal, maxVal, id generator, true]
                     rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
                     type: 'number',
@@ -41,7 +41,7 @@ const initialFilterState = {
             },
 
             'Last_Decision_Cluster': {
-                Ranges: {
+                Range: {
                     // [minVal, maxVal, id generator, true]
                     rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
                     type: 'number',
@@ -56,7 +56,7 @@ const initialFilterState = {
             },
 
             'Year': {
-                Ranges: {
+                Range: {
                     // [minVal, maxVal, id generator, true]
                     rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
                     type: 'number',
@@ -78,7 +78,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
             
-            var stateVal = state.Filter[action.colName].Range.rangeList.slice();
+            var stateVal = state.Filter[action.colName]["Range"]["rangeList"].slice();
             stateVal.push([action.min, action.max, action.id, action.applied]);
             
             //state.Filter[action.colName].Range.rangeList = stateval;
@@ -102,7 +102,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'REMOVE_RANGE':
             console.log('REMOVE-RANGE');
 
-            var stateVal = state.Filter[action.colName].Ranges.rangeList.slice();
+            var stateVal = state.Filter[action.colName]["Range"]["rangeList"].slice();
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][2] == action.id) {
@@ -130,7 +130,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'UPDATE_RANGE':
             console.log('UPDATE-RANGE');
 
-            var stateVal = state.Filter[action.colName].Ranges.rangeList.slice();
+            var stateVal = state.Filter[action.colName]["Range"]["rangeList"].slice();
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][2] == action.id) {
