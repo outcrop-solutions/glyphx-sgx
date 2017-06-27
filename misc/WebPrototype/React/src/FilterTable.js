@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = function(state){
   return {
-    tableState: state.filterState.Filter,
+    tableState: state.filterState.Filter.Elastic,
   }
 }
 
@@ -134,7 +134,7 @@ class FilterTable extends Component {
         for(var property in data) {
             rows.push(<TableRow 
                 key={index}
-                selected={this.props.tableState[id].Elastic.selectedValues.indexOf(property) !== -1}>
+                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}>
                     <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
                     <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
