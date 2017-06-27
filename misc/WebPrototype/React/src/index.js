@@ -10,43 +10,66 @@ import './index.css';
 
 const initialFilterState = {
         Filter: {
-            Ranges: {
-                'StaffAssigned': {
-                    //ranges: [['min','max','id', 'applied']],
-                    rangeList: [[-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true], [-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true]],
+            'StaffAssigned': {
+                Ranges: {
+                    // [minVal, maxVal, id generator, true]
+                    rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
+                    type: 'number',
+                    applied: false
                 },
-                'Academic_Rating': {
-                    //ranges: [['min','max','id', 'applied']],
-                    rangeList: [[-20, 60, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false] ],
+                Elastic: {
+                    selectedValues: [],
+                    highlightedValues:[],
+                    applied: false
                 },
-                'Last_Decision_Cluster': {
-                    //ranges: [['min','max','id', 'applied']],
-                    rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
-                },
-                'Year': {
-                    //ranges: [['min','max','id', 'applied']],
-                    rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
-                }
+                Data: []
             },
-            Elastic: {
-                'StaffAssigned': {
-                    selectedValues: ["Alyssa ORourke"],
-                    highlightedValues:[]
+
+            'Academic_Rating': {
+                Ranges: {
+                    // [minVal, maxVal, id generator, true]
+                    rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
+                    type: 'number',
+                    applied: false
                 },
-                'Academic_Rating': {
+                Elastic: {
                     selectedValues: [],
-                    highlightedValues:[]
+                    highlightedValues:[],
+                    applied: false
                 },
-                'Last_Decision_Cluster': {
-                    selectedValues: [],
-                    highlightedValues:[]
+                Data: []
+            },
+
+            'Last_Decision_Cluster': {
+                Ranges: {
+                    // [minVal, maxVal, id generator, true]
+                    rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
+                    type: 'number',
+                    applied: false
                 },
-                'Year': {
+                Elastic: {
                     selectedValues: [],
-                    highlightedValues:[]
-                }
+                    highlightedValues:[],
+                    applied: false
+                },
+                Data: []
+            },
+
+            'Year': {
+                Ranges: {
+                    // [minVal, maxVal, id generator, true]
+                    rangeList: [[-100, 100, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
+                    type: 'number',
+                    applied: false
+                },
+                Elastic: {
+                    selectedValues: [],
+                    highlightedValues:[],
+                    applied: false
+                },
+                Data: []
             }
-        }
+        },
     };
 
 const filterReducer = function(state = initialFilterState, action) {
@@ -78,35 +101,64 @@ const filterReducer = function(state = initialFilterState, action) {
 
         case 'REMOVE_RANGE':
             console.log('REMOVE-RANGE');
-            var newState = state;
 
-            var rangeList = newState.Filter.Ranges[action.colName].rangeList;
-            for (var i = 0; i < rangeList.length; i++) {
-                if (rangeList[i][2] == action.id) {
-                    debugger;
-                    rangeList.splice(i, 1);
+            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+
+            for (var i = 0; i < stateVal.length; i++) {
+                if (stateVal[i][2] == action.id) {
+                    stateVal.splice(i, 1);
                 }
             }
-            
-            newState.Filter.Ranges[action.colName] = { rangeList: rangeList };
+
+            var newState = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Ranges : {
+                        ...state.Filter.Ranges,
+                        [action.colName] : {
+                            ...state.Filter.Ranges[action.colName],
+                            rangeList : stateVal
+                        }
+                    }
+                }
+            }
 
             console.log(newState);
             return newState;
 
         case 'UPDATE_RANGE':
             console.log('UPDATE-RANGE');
-            var newState = state;
 
-            var rangeList = newState.Filter.Ranges[action.colName].rangeList;
-            for (var i = 0; i < rangeList.length; i++) {
-                if (rangeList[i][2] == action.id) {
-                    rangeList[i][0] = action.min;
-                    rangeList[i][1] = action.max;
-                    rangeList[i][3] = action.applied;
+            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+
+            for (var i = 0; i < stateVal.length; i++) {
+                if (stateVal[i][2] == action.id) {
+                    if (action.min != null) {
+                        stateVal[i][0] = action.min;
+                    }
+                    if (action.max != null) {
+                        stateVal[i][1] = action.max;
+                    }
+                    if (action.applied != null) {
+                        stateVal[i][3] = action.applied;
+                    }
                 }
             }
-            
-            newState.Filter.Ranges[action.colName] = { rangeList: rangeList };
+
+            var newState = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Ranges : {
+                        ...state.Filter.Ranges,
+                        [action.colName] : {
+                            ...state.Filter.Ranges[action.colName],
+                            rangeList : stateVal
+                        }
+                    }
+                }
+            }
 
             console.log(newState);
             return newState;
