@@ -136,3 +136,13 @@
 .columnNameHeader{
       font-size: 1rem;
   }
+
+  .pinned { color:#1b35ef !important; transform: rotateZ(0deg) !important; }
+
+  .unpinned {
+    color:white !important; transform: rotateZ(35deg) !important;
+  }
+
+  .centerText {
+          text-align: center;
+  }

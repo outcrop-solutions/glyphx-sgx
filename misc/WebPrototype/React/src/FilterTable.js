@@ -80,6 +80,7 @@ class FilterTable extends Component {
 
         var filterStructure = {
                 colName : context.props.id,
+                filterApplied: selectedValues.length > 0 ? true : (highlightedValues.length > 0 ? true : false),
                 selectedValues: selectedValues,
                 highlightedValues: highlightedValues
         }
