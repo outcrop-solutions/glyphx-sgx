@@ -12,34 +12,48 @@ const initialFilterState = {
         Filter: {
             Ranges: {
                 'StaffAssigned': {
-                    rangeList: [[-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true], [-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true]],
+                    //default: rangeList: [minVal, maxVal, generated ID, switch-state]        applied: false        type: what it needs to be
+                    rangeList: [[-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true], ],
+                    type: 'number',
+                    applied: true
                 },
                 'Academic_Rating': {
                     rangeList: [[-20, 60, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false] ],
+                    type: 'number',
+                    applied: true
                 },
                 'Last_Decision_Cluster': {
                     rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
+                    type: 'number',
+                    applied: true
                 },
                 'Year': {
                     rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
+                    type: 'number',
+                    applied: true
                 }
             },
             Elastic: {
                 'StaffAssigned': {
                     selectedValues: ["Alyssa ORourke"],
-                    highlightedValues:[]
+                    highlightedValues:[],
+                    applied: true,
+                    //applyRange: null
                 },
                 'Academic_Rating': {
                     selectedValues: [],
-                    highlightedValues:[]
+                    highlightedValues:[],
+                    applied: false,
                 },
                 'Last_Decision_Cluster': {
                     selectedValues: [],
-                    highlightedValues:[]
+                    highlightedValues:[],
+                    applied: false,
                 },
                 'Year': {
                     selectedValues: [],
-                    highlightedValues:[]
+                    highlightedValues:[],
+                    applied: false,
                 }
             }
         }
