@@ -2,57 +2,15 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
-import {Flex} from 'react-flex-material';
+import { Flex } from 'react-flex-material';
 import Range from 'rc-slider/lib/Range'; 
-import Global from './Global.js';
-import {Card, CardText} from 'material-ui/Card';
-import {red500,blue500} from 'material-ui/styles/colors';
+import { Card, CardText } from 'material-ui/Card';
+import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
 import './range.css';
 
-
-const mapStateToProps = function(state){
-  return {
-    rangeList: state.filterState.Filter.Ranges,
-  }
-}
-
-//this.props.dispatch(addRange(this.props.colName));
-export const addRange = (colName, min, max, id, applied) => ({
-  type: 'ADD_RANGE',
-  colName,
-  min,
-  max,
-  id,
-  applied
-});
-
-export const removeRange = (colName, id) => ({
-  type: 'REMOVE_RANGE',
-  colName,
-  id
-});
-
-export const updateRange = (colName, id, min, max, applied) => ({
-  type: 'UPDATE_RANGE',
-  colName,
-  id,
-  min,
-  max,
-  applied
-});
-
-export const highlightElastic = (text) => ({
-  type: 'ADD_RANGE',
-  text
-});
-
-export const unhighlightElastic = (text) => ({
-  type: 'ADD_RANGE',
-  text
-});
 
 /**
  * Main Range parent class which gets exported, holds data structure used to map rangeList to the DOM
@@ -64,44 +22,12 @@ export const unhighlightElastic = (text) => ({
 class RangeForm extends React.Component {
     constructor(props) {
         super(props);
-
-        // Defining data structure used to map rangeList to the DOM
-        // Starts with an applied default empty range
-        this.state = {
-            /*
-            rangeList: {
-                'colName1': {
-                    //ranges: [['min','max','id', 'applied']],
-                    ranges: [[-10, 50, 1, true] ],
-                },
-                'colName2': {
-                    //ranges: [['min','max','id', 'applied']],
-                    ranges: [[-20, 60, 2, false] ],
-                },
-                'colName3': {
-                    //ranges: [['min','max','id', 'applied']],
-                    ranges: [[-30, 70, 3, true] ],
-                }
-            },
-            */
-
-
-            GLOBAL: null
-        };
-
-        /*
-        store.subscribe(() => {
-            this.setState({
-                rangeList: store.getState().Filter.rangeList
-            });
-        });
-        */
     }
 
 
     /**
-     * Deletes a range by splicing it out of the main data structure and re-mapping
-     * @param range: -----Range which will be deleted from the range table
+     * Deletes a range by splicing it out of the store which causes DOM to re-map
+     * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
         this.props.dispatch(removeRange(this.props.colName, id));
@@ -109,7 +35,8 @@ class RangeForm extends React.Component {
 
 
     /**
-     * Adds a range with default values by pushing it into the main data structure
+     * Adds a range with the default values of the current min being set to the minimum value, current max being set to the maximum value,
+     * a new generated ID, and the applied switch on off.
      **/
     handleAddEvent() {
         this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
@@ -148,71 +75,38 @@ class RangeForm extends React.Component {
 
 
     /**
-     * Updates the state for the range row as well as the data in the main range set
-     * @param rangeID: ID used to find the correct range row to update
-     * @param setMin(minVal): A method which updates the row's data in the min text field
-     * @param setMax(maxVal): A method which updates the row's data in the max text field
-     * @param cMin: Current value in the min text field
-     * @param cMax: Current value in the max text field
-     * @returns: 1 if input was a valid number, 0 otherwise
+     * Updates the store when a text field gets new values
+     * @param e: the event instance of the text field, html element
+     * @param id: ID used to find the range in the store
      **/
-     handleTextUpdate(e, rangeID, setMin, setMax, cMin, cMax) {
-
-        //HANDLENEW UPDATE
+     handleTextUpdate(e, id) {
         var minimum = parseInt(this.props.minVal, 10);
         var maximum = parseInt(this.props.maxVal, 10);
         var value = e.target.value;
 
-        if (isNaN(value) || value === "") {
+        if ( !isNaN(value) ) {
             if (e.target.name === "min") {
-                setMin(value);
-                this.handleDataUpdate(rangeID, value, null);
-                return 0;
-            }
-
-            else {
-                setMax(value);
-                this.handleDataUpdate(rangeID, null, value);
-                return 0;
-            }
-        }
-
-        else {
-            value = parseInt(value, 10);
-            if (e.target.name === "min") {
-                if (minimum > value) {
-                    setMin(minimum);
-                    this.handleDataUpdate(rangeID, minimum, null);
-                    return 1;
+                if ( value > maximum  ) {
+                    this.props.dispatch(updateRange(this.props.colName, maximum, null, id, null));
                 }
-
-                else if (value > maximum) {
-                    setMin(maximum);
-                    this.handleDataUpdate(rangeID, maximum, null);
-                    return 1;
-                }
-
-                setMin(value);
-                this.handleDataUpdate(rangeID, value, null);
-                return 1;
-            }
-
-            else {
-                if (maximum < value) {
-                    setMax(maximum);
-                    this.handleDataUpdate(rangeID, null, maximum);
-                    return 1;
-                }
-
                 else if (value < minimum) {
-                    setMax(minimum);
-                    this.handleDataUpdate(rangeID, null, minimum);
-                    return 1;
+                    this.props.dispatch(updateRange(this.props.colName, minimum, null, id, null));
                 }
+                else {
+                    this.props.dispatch(updateRange(this.props.colName, value, null, id, null));
+                }
+            }
 
-                setMax(value);
-                this.handleDataUpdate(rangeID, null, value);
-                return 1;
+            else {
+                if ( value > maximum  ) {
+                    this.props.dispatch(updateRange(this.props.colName, null, maximum, id, null));
+                }
+                else if (value < minimum) {
+                    this.props.dispatch(updateRange(this.props.colName, null, minimum, id, null));
+                }
+                else {
+                    this.props.dispatch(updateRange(this.props.colName, null, value, id, null));
+                }
             }
         }
     };
@@ -311,78 +205,26 @@ class RangeForm extends React.Component {
     
     /**
      * Updates the visuals of the slider and the text fields when the slider is dragged
-     * @param e: the 'html' element that caused this method to be called
-     * @param rangeID: ID used to find the correct range row to update
-     * @param setMin(minVal): A method which updates the row's data in the min text field
-     * @param setMax(maxVal): A method which updates the row's data in the max text field
-     * @param setSliderMin(minVal): A method which updates the row's min value in the slider
-     * @param setSliderMax(maxVal): A method which updates the row's max value in the slider
+     * @param e: the event instance of the slider: array of [min, max]
+     * @param id: ID used to find the range in the store
      **/
-    handleSliderUpdate(e, rangeID, setMin, setMax, setSliderMin, setSliderMax) {
-
-        //HANDLENEW
-
-        setMin(e[0]);
-        setMax(e[1]);
-        setSliderMin(e[0]);
-        setSliderMax(e[1]);
-        this.handleDataUpdate(rangeID, e[0], e[1]);
+    handleSliderUpdate(e, id) {
+        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null));
     };
 
 
     /**
-     * Removes a range from the global instance when slider is initially clicked (before change)
-     * Allows us to avoid tracking previous states
-     * @param e: the 'html' element that caused this method to be called
-     * @param rangeID: ID used to find the range to remove
-     **/
-    handleSliderClick(e, rangeID) {
-        if (this.getToggleState(rangeID)) {
-            this.handleRemoveGlobalRange(rangeID);
-        }
-    }
-
-
-    /**
-     * adds a range to the global instance when a slider is let go
-     * @param e: the 'html' element that caused this method to be called
-     * @param rangeID: ID added to track the range when removing at a later time
-     **/
-    handleSliderLetGo(e, rangeID) {
-        if (this.getToggleState(rangeID)) {
-            this.handleAddGlobalRange(e[0], e[1], rangeID);
-        }
-    }
-    
-
-
-    /**
      * Updates the mapping data structure with true false values corresponding to toggle state of a switch
-     * @param e: the 'html' element that caused this method to be called
+     * @param e: the event instance of the toggle, html element
+     * @param id: ID used to find the range in the store
      **/
-    handleSwitchToggle(e) {
-        var rangeList = this.state.rangeList.slice();
-        var min, max, id;
-        var newrangeList = rangeList.map( function(range) {
-            if (range.id === e.target.id) {
-                range["applied"] = e.target.checked;
-                min = range["min"];
-                max = range["max"];
-                id = range["id"];
-            }
-            return range;
-        });
-
+    handleSwitchToggle(e, id) {
         if (e.target.checked) {
-            this.handleAddGlobalRange(min, max, id);
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, true));
         }
         else {
-            this.handleRemoveGlobalRange(id);
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, false));
         }
-
-        // Temporary print to view mapping data when the toggle is switched
-        console.log(rangeList);
-        this.setState( {rangeList: newrangeList} );
     };
 
 
@@ -393,11 +235,12 @@ class RangeForm extends React.Component {
     render() {
         return (
             <div>
-                <Global ref={inst => this.state.GLOBAL = inst} />
-
                 <RangeTable
                     onRowAdd = { this.handleAddEvent.bind(this) } 
-                    onRowDel = { this.handleRowDel.bind(this) } 
+                    onRowDel = { this.handleRowDel.bind(this) }
+                    onSlide = { this.handleSliderUpdate.bind(this) }
+                    onToggle = { this.handleSwitchToggle.bind(this) }
+                    onTextChange = { this.handleTextUpdate.bind(this) }
                     rangeList = { this.props.rangeList }
                     minVal = { this.props.minVal }
                     maxVal = { this.props.maxVal }
@@ -419,6 +262,9 @@ class RangeTable extends React.Component {
         // Lose scope of 'this' in the map function so record what you need to access beforehand
         var rowDel = this.props.onRowDel;
         var rowAdd = this.props.onRowAdd;
+        var onSlide = this.props.onSlide;
+        var onToggle = this.props.onToggle;
+        var onTextChange = this.props.onTextChange
         var min = this.props.minVal;
         var max = this.props.maxVal;
 
@@ -431,6 +277,9 @@ class RangeTable extends React.Component {
             return (<RangeRow 
                         range = { range } 
                         onDelEvent = { rowDel.bind(this) } 
+                        onSlide = { onSlide }
+                        onToggle = { onToggle }
+                        onTextChange = { onTextChange }
                         key = { range[2] } 
                         minVal = { min }
                         maxVal = { max }
@@ -459,7 +308,6 @@ class RangeTable extends React.Component {
 
                     </CardText>
                 </Card>
-
             </div>
         );
     }
@@ -499,10 +347,12 @@ class RangeRow extends React.Component {
                             <TextSlider
                                 minVal = { this.props.minVal }
                                 maxVal = { this.props.maxVal }
+                                onSlide = { this.props.onSlide }
+                                onTextChange = { this.props.onTextChange }
                                 cellData = {{
                                     id: this.props.range[2],
-                                    minValue: this.props.range.min,
-                                    maxValue: this.props.range.max
+                                    min: this.props.range[0],
+                                    max: this.props.range[1]
                                 }}
                             />
                         </Flex>
@@ -517,7 +367,10 @@ class RangeRow extends React.Component {
                             <Toggle 
                                 name = "applied" 
                                 id = { this.props.range.id } 
-                                toggled={ this.props.range.applied } 
+                                toggled = { this.props.range[3] } 
+                                onToggle = {  
+                                    (e) => this.props.onToggle(e, this.props.range[2])
+                                }
                             />
                         </Flex>
 
@@ -539,71 +392,52 @@ class TextSlider extends React.Component {
         super(props);
 
         this.state = {
-            //min: this.props.minVal,
-            //max: this.props.maxVal
-
-            min: "",
-            max: "",
-            sliderMin: "",
-            sliderMax: "",
+            latestUpdate: ""
         }
     }
 
-
     /**
-     * Updates the local state value linked to the min text field
-     * @param minVal: the value used to update
+     * Preprocesses min max vals (fixes the case where min value has 10 and user is trying to type 80, 8 is the first digit and 8 < 10)
+     * @param min: the min to be processed 
+     * @param max: the max to be processed 
      **/
-    updateMin(minVal) {
-        this.setState({min: minVal});
-    }
+    arrayNumConversion(min, max, minVal, maxVal) {
 
-
-    /**
-     * Updates the local state value linked to the max text field
-     * @param maxVal: the value used to update
-     **/
-    updateMax(maxVal) {
-        this.setState({max: maxVal});
-    }
-
-
-    /**
-     * Updates the local state value linked to the min slider value
-     * @param minVal: the value used to update
-     **/
-    updateSliderMin(minVal) {
-        this.setState({sliderMin: minVal});
-    }
-
-
-    /**
-     * Updates the local state value linked to the max slider value
-     * @param maxVal: the value used to update
-     **/
-    updateSliderMax(maxVal) {
-        this.setState({sliderMax: maxVal});
-    }
-
-    /**
-     * Interprets data into a format that the slider can always accept without causing error
-     * @param array:[val1,val2]: val1 corresponds to min position and val2 for max position
-     **/
-    arrayNumConversion(array) {
-        if ( (isNaN(array[0]) && isNaN(array[1])) || (array[0] === "" && isNaN(array[1])) || (isNaN(array[0]) && array[1] === "") || (array[0] === "" && array[1] === "") ) {
-            return [parseInt(this.props.minVal, 10), parseInt(this.props.maxVal, 10)];
-        }
-        else if ( isNaN(array[0]) || array[0] === "" ) {
-            return [parseInt(this.props.minVal, 10), parseInt(array[1], 10)];
-        }
-        else if ( isNaN(array[1]) || array[1] === "" )  {
-            return [parseInt(array[0], 10), parseInt(this.props.maxVal, 10)];
+        // Make min valid type
+        if (min == "") {
+            min = this.props.minVal;
         }
         else {
-            return [parseInt(array[0], 10), parseInt(array[1], 10)];
+            min = parseInt(min);
+        }
+
+        // Make max valid type
+        if (max == "") {
+            max = this.props.maxVal;
+        }
+        else {
+            max = parseInt(max);
+        }
+
+        
+        // Apply a valid range
+        if ( min > max) {
+            if (this.state.latestUpdate == "MIN") {
+                return [max, max];
+            }
+            else if (this.state.latestUpdate == "MAX") {
+                return [min, min]; 
+            }
+        }
+
+        else {
+            return [min, max];
         }
     }
 
+    updateLatest(val) {
+        this.setState({latestUpdate: val});
+    }
 
     /**
      * Loses focus from the min text field when the enter key is pressed
@@ -636,9 +470,16 @@ class TextSlider extends React.Component {
                         name = "min"
                         ref ={ input => this.inputElementMin = input }
                         id = { this.props.cellData.id.toString() } 
-                        //value = { this.state.min } 
+                        value = { this.props.cellData.min } 
                         hintText = { this.props.minVal }
                         style = { styleSet.textfieldStyles }
+                        onChange = {
+                            (e) => this.props.onTextChange(e, this.props.cellData.id)
+                        }
+                        onFocus = { () => this.updateLatest("MIN") }
+                        onKeyPress = {
+                            (e) => this.onKeyPressMin(e)
+                        }
                     />
                 </Flex>
 
@@ -654,9 +495,13 @@ class TextSlider extends React.Component {
                     <Range
                         min = { this.props.minVal }
                         max = { this.props.maxVal }
-                        //value = { this.arrayNumConversion([this.state.sliderMin, this.state.sliderMax]) }
+                        value = {this.arrayNumConversion(this.props.cellData.min, this.props.cellData.max) }
+                        //value = { [this.props.cellData.min, this.props.cellData.max] }
                         defaultValue = { [this.props.minVal,this.props.maxVal] }
                         allowCross = { false }
+                        onChange = {
+                            (e) => this.props.onSlide(e, this.props.cellData.id)
+                        }
                     />
                 </Flex>
 
@@ -670,9 +515,16 @@ class TextSlider extends React.Component {
                         name = "max"
                         ref = { input => this.inputElementMax = input }
                         id = { this.props.cellData.id.toString() } 
-                        //value = { this.state.max }
+                        value = { this.props.cellData.max }
                         hintText = { this.props.maxVal }
                         style = { styleSet.textfieldStyles }
+                        onChange = {
+                            (e) => this.props.onTextChange(e, this.props.cellData.id)
+                        }
+                        onFocus = { () => this.updateLatest("MAX") }
+                        onKeyPress = {
+                            (e) => this.onKeyPressMax(e)
+                        }
                     />
                 </Flex>
             </Flex>
@@ -696,4 +548,53 @@ const styleSet = {
     }
 };
 
+
+/**
+ * constants defined to make dispatching for the redux store consistent
+ **/
+export const addRange = (colName, min, max, id, applied) => ({
+    type: 'ADD_RANGE',
+    colName,
+    min,
+    max,
+    id,
+    applied
+});
+export const removeRange = (colName, id) => ({
+    type: 'REMOVE_RANGE',
+    colName,
+    id
+});
+export const updateRange = (colName, min, max, id, applied) => ({
+    type: 'UPDATE_RANGE',
+    colName,
+    id,
+    min,
+    max,
+    applied
+});
+export const highlightElastic = (text) => ({
+    type: 'ADD_RANGE',
+    text
+});
+export const unhighlightElastic = (text) => ({
+    type: 'ADD_RANGE',
+    text
+});
+
+
+/**
+ * maps portions of the store to props of your choosing
+ * @param state: passed down through react-redux's 'connect'
+ **/
+const mapStateToProps = function(state){
+  return {
+    rangeList: state.filterState.Filter.Ranges,
+  }
+}
+
+
+/**
+ * connects the RangeForm component to the redux store
+ **/
 export default connect(mapStateToProps)(RangeForm);
