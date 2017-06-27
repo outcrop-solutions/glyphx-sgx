@@ -19,13 +19,24 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FilterTabs from './FilterTab.js';
 import Global from './Global.js';
 import Collapsible from 'react-collapsible';
-import store from './index.js';
+import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
 import './filterNav.css';
+
+const mapStateToProps = function(state){
+  return {
+    GLOBAL: state.filterState,
+  }
+};
+
+
 
 class FilterNav extends Component {
 	
     columns = [];
+    pinnedIconStlye ={
+
+    }
      
     constructor(props) {
         super(props);
@@ -374,33 +385,36 @@ class FilterNav extends Component {
     onPinClick = (event) => {
         console.log("pinned to active!");
         event.stopPropagation();
-        var colName = event.currentTarget.id.split("btn_")[1];
+        var but = event.currentTarget;
+        var colName = but.id.split("btn_")[1];
         var colInstanceArr = this.state.activeColumns.slice();
         var len = this.columns.length;
+        var icon = but.querySelector("span .fa");
 
-        //looping to find the column and add it into the active section.
-        for(var index = 0; index < len; index++)
+        if(but.classList.contains("Applied"))
         {
-            if(this.columns[index].key == colName)
+            but.classList.remove("Applied");
+            for(var ind = 0; ind < len; ind++)
             {
-                colInstanceArr.push(this.columns[index]);
-                this.setState({activeColumns: colInstanceArr});
-                break;
+                
+            }
+        }
+        else {
+            //looping to find the column and add it into the active section.
+            for(var index = 0; index < len; index++)
+            {
+                if(this.columns[index].key == colName)
+                {
+                    colInstanceArr.push(this.columns[index]);
+                    this.setState({activeColumns: colInstanceArr});
+                    but.classList.add("Applied");
+                    break;
+                }
             }
         }
 
         //Remove again on click of pin!?
 
-
-        /* this.columns.forEach(function(col){
-            
-            if(col.key == colName)
-            {
-                colInstanceArr.push(col);
-                this.setState({activeColumns: colInstanceArr});
-                
-            }
-        }); */
     };
 
    /**
@@ -434,14 +448,20 @@ class FilterNav extends Component {
          var keys = Object.keys(this.state.tableData);
          var data = this.state.tableData;
          var context = this;
+         var pinnedEmptyString = <label> Pinning a filter from filters will cause it to appear here.</label>;
 
         this.columns = keys.map(function(column) {
             return (<Collapsible 
                         transitionTime={200} 
                         key={column} 
+                        contentInnerClassName='centerText'
                         trigger={
                                 <div>
-                                     <IconButton id={"btn_"+column} onClick={context.onPinClick.bind(context)} iconClassName="fa fa-thumb-tack" style={{fontSize: '1.3rem',padding:'0px',width:'inherit',height:'inherit'} } iconStyle={{ color:'white' }}/>
+                                     <IconButton 
+                                        id={"btn_"+column} 
+                                        onClick={context.onPinClick.bind(context)} 
+                                        iconClassName= "fa fa-thumb-tack unpinned" 
+                                        style={{fontSize: '1.3rem',padding:'0px',width:'inherit',height:'inherit'} } />
                                     <span 
                                         style={{
                                         paddingLeft: '10px',
@@ -450,8 +470,9 @@ class FilterNav extends Component {
                                         {column}
                                     </span>
                                 </div>} 
-                        triggerClassName='columnNameHeader'>
-                            <FilterTabs colName={column} data={data[column]}></FilterTabs>
+                        triggerClassName='columnNameHeader'
+                        >
+                            <FilterTabs ref={column} colName={column} data={data[column]}></FilterTabs>
                     </Collapsible>
                     );
         });
@@ -618,10 +639,11 @@ class FilterNav extends Component {
                                         paddingLeft: '10px',
                                         fontSize: '1rem'
                                     }}>
-                                        Active
+                                        Pinned
                                     </span>
                                 </div>}>
-                                {this.state.activeColumns}
+
+                                {this.state.activeColumns.length > 0 ? this.state.activeColumns : pinnedEmptyString}
                         </Collapsible>
 
                         <Collapsible 
@@ -647,4 +669,4 @@ class FilterNav extends Component {
     }
 }
 
-export default FilterNav;
+export default connect(mapStateToProps)(FilterNav);
