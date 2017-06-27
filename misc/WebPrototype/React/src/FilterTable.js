@@ -45,7 +45,6 @@ class FilterTable extends Component {
         showCheckboxes: true,
         tableData: this.processData(props.tableData ? props.tableData : []),
         indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
-        selectedRows: (props.selectedRows ? props.selectedRows : [])
         };
     }
 
@@ -70,11 +69,6 @@ class FilterTable extends Component {
      * @param rowSelection: This is an array that has index(according to the table rows) of all the rows selected.
      */
     onRowSelect = (context,rowSelection) => {
-        
-        //var index,len = rowSelection.length;
-        
-        //for(index=0;index<len;index++)
-         //   console.log(JSON.stringify(context.state.tableData[rowSelection[index]].value));
 
         var index,len = rowSelection.length;
         var selectedValues = [];
@@ -91,9 +85,6 @@ class FilterTable extends Component {
         }
 
             context.props.dispatch(addRemoveElastic(filterStructure));
-
-
-        this.setState({selectedRows: rowSelection});
     };
 
     handleToggle = (event, toggled) => {
@@ -142,7 +133,7 @@ class FilterTable extends Component {
         for(var property in data) {
             rows.push(<TableRow 
                 key={index}
-                selected={this.state.selectedRows.indexOf(index) !== -1}>
+                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}>
                     <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
                     <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);

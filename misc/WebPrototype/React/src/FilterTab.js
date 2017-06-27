@@ -13,9 +13,6 @@ class FilterTabs extends React.Component {
         super(props);
         this.state = {
             slideIndex: 0,
-            FilterTable: null,
-            FilterTableSelectedRows: [],
-            FilterTableHighlightedRows: [],
             Range: null,
             tableData: props.data
         };
@@ -23,21 +20,9 @@ class FilterTabs extends React.Component {
 
     handleChange = (value,context) => {
         context.setState({
-            slideIndex: value,
-            FilterTableSelectedRows: context.state.FilterTable.state.selectedRows
+            slideIndex: value
         });
-
     };
-
-    /**
-     * This method is called after the table is created inside the tab. We store the instance of the filter table for future use.
-     * @param instance: this is the instance of the filter table created
-     */
-    onCreateTable = (instance) => {
-        this.setState({
-            FilterTable: instance
-        });
-    }
 
     render() {
         return (
@@ -76,7 +61,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <FilterTable tableData={this.state.tableData} id={this.props.colName} selectedRows={this.state.FilterTableSelectedRows} ref={this.onCreateTable}></FilterTable>
+                        <FilterTable tableData={this.state.tableData} id={this.props.colName} selectedRows={this.state.FilterTableSelectedRows}></FilterTable>
                     </div>
                     <div
                         style={{
@@ -91,7 +76,5 @@ class FilterTabs extends React.Component {
         );
     }
 }
-
-
 
 export default FilterTabs;

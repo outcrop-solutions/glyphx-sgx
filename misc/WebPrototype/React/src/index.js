@@ -32,6 +32,18 @@ const initialFilterState = {
                 'StaffAssigned': {
                     selectedValues: ["Alyssa ORourke"],
                     highlightedValues:[]
+                },
+                'Academic_Rating': {
+                    selectedValues: [],
+                    highlightedValues:[]
+                },
+                'Last_Decision_Cluster': {
+                    selectedValues: [],
+                    highlightedValues:[]
+                },
+                'Year': {
+                    selectedValues: [],
+                    highlightedValues:[]
                 }
             }
         }
@@ -120,7 +132,7 @@ const filterReducer = function(state = initialFilterState, action) {
                             ...state.Filter.Elastic,
                             [col] : {
                                 selectedValues: action.filter.selectedValues, 
-                                highlightedValues:action.filter.highlightedValues
+                                highlightedValues: action.filter.highlightedValues
                             }
                         }
                     }

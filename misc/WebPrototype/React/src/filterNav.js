@@ -25,6 +25,7 @@ import './filterNav.css';
 
 class FilterNav extends Component {
 	
+    columns = [];
      
     constructor(props) {
         super(props);
@@ -66,6 +67,7 @@ class FilterNav extends Component {
             appliedFiltersItems: appliedFiltersItems,
             viewSelectItems: viewSelectItems,
             tableSelectItems: tableSelectItems,
+            activeColumns: [],
             viewNameTextFieldError: ""
         };
         
@@ -366,6 +368,41 @@ class FilterNav extends Component {
         this.handleCloseOptionsMenu();
     };
 
+    /**
+     * 
+     */
+    onPinClick = (event) => {
+        console.log("pinned to active!");
+        event.stopPropagation();
+        var colName = event.currentTarget.id.split("btn_")[1];
+        var colInstanceArr = this.state.activeColumns.slice();
+        var len = this.columns.length;
+
+        //looping to find the column and add it into the active section.
+        for(var index = 0; index < len; index++)
+        {
+            if(this.columns[index].key == colName)
+            {
+                colInstanceArr.push(this.columns[index]);
+                this.setState({activeColumns: colInstanceArr});
+                break;
+            }
+        }
+
+        //Remove again on click of pin!?
+
+
+        /* this.columns.forEach(function(col){
+            
+            if(col.key == colName)
+            {
+                colInstanceArr.push(col);
+                this.setState({activeColumns: colInstanceArr});
+                
+            }
+        }); */
+    };
+
    /**
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
 	*/
@@ -398,13 +435,13 @@ class FilterNav extends Component {
          var data = this.state.tableData;
          var context = this;
 
-        var columns = keys.map(function(column) {
+        this.columns = keys.map(function(column) {
             return (<Collapsible 
                         transitionTime={200} 
                         key={column} 
                         trigger={
                                 <div>
-                                    <span onClick={() => function(){console.log('Hi');}}><i className="fa fa-thumb-tack" style={{fontSize: '1.3rem'}}></i></span>
+                                     <IconButton id={"btn_"+column} onClick={context.onPinClick.bind(context)} iconClassName="fa fa-thumb-tack" style={{fontSize: '1.3rem',padding:'0px',width:'inherit',height:'inherit'} } iconStyle={{ color:'white' }}/>
                                     <span 
                                         style={{
                                         paddingLeft: '10px',
@@ -421,7 +458,6 @@ class FilterNav extends Component {
 
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
-                <Global ref={inst => this.state.GLOBAL = inst} />
                 <div>
                     <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
                 </div>
@@ -588,6 +624,7 @@ class FilterNav extends Component {
                                         Active
                                     </span>
                                 </div>}>
+                                {this.state.activeColumns}
                         </Collapsible>
 
                         <Collapsible 
@@ -603,7 +640,7 @@ class FilterNav extends Component {
                                         Filter
                                     </span>
                                 </div>}>
-                                 {columns}
+                                 {this.columns}
                         </Collapsible>
 
                     </Flex>
