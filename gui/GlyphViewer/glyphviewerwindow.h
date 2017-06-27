@@ -187,6 +187,7 @@ private:
 	bool m_showErrorFromTransform;
 	bool m_showHomePage;
 	QString m_defaultProject;
+	QStringList m_currentBaseImages;
 
 	QComboBox* m_groupsComboBox;
 

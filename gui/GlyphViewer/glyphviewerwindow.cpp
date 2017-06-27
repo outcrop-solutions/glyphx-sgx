@@ -1059,6 +1059,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 			ge.generateGlyphs(this);
 		}
 		std::vector<std::string> images = ge.getBaseImages();
+		for (const auto& image : images){
+			m_currentBaseImages << QString::fromStdString(image);
+		}
 		
 		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
 
@@ -1603,7 +1606,12 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
 		//m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
-		SynGlyphX::Filesystem::CopyDirectoryOverwrite(cachePath.toStdString(), csvDirectory.toStdString(), true);
+		for (QString cbImg : m_currentBaseImages){
+			SynGlyphX::Filesystem::CopyFileOverwrite(cbImg.toStdString(), csvDirectory.toStdString() + "/base_img.png");
+		}
+		SynGlyphX::Filesystem::CopyFileOverwrite(cachePath.toStdString() + "/glyphs.sgc", csvDirectory.toStdString() + "/glyphs.sgc");
+		SynGlyphX::Filesystem::CopyFileOverwrite(cachePath.toStdString() + "/glyphs.sgn", csvDirectory.toStdString() + "/glyphs.sgn");
+		//SynGlyphX::Filesystem::CopyDirectoryOverwrite(cachePath.toStdString(), csvDirectory.toStdString(), true);
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
