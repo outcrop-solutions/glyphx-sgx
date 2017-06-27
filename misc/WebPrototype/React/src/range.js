@@ -44,37 +44,6 @@ class RangeForm extends React.Component {
 
 
     /**
-     * Finds the corresponding range node by ID used to map rangeList then updates values
-     * @param rangeID: ID used to find the right range row to update
-     * @param min: Value used to update min stored in data
-     * @param max: Value used to update max stored in data
-     **/
-    handleDataUpdate(rangeID, min, max) {
-
-        //HANDLENEW UPDATE
-
-    }
-
-
-    /**
-     * Gets the toggle state of a row
-     * @param rangeID: ID used to find the range row
-     * @returns: true if row is toggled on, false otherwise
-     **/
-    getToggleState(rangeID) {
-        //HANDLENEW TOGGLE
-
-        for (var i = 0; i < this.state.rangeList.length; i ++) {
-            if (this.state.rangeList[i].id === rangeID) {
-                return this.state.rangeList[i].applied;
-            }
-        }
-        // ID was not found
-        return -1;
-    }
-
-
-    /**
      * Updates the store when a text field gets new values
      * @param e: the event instance of the text field, html element
      * @param id: ID used to find the range in the store
@@ -124,82 +93,12 @@ class RangeForm extends React.Component {
      * @param cMax: Current value in the max text field
      * @returns: 1 if input was a valid number, 0 otherwise (nothing returns 0 yet)
      **/
-    handleTextBlur(e, rangeID, setMin, setMax, setSliderMin, setSliderMax, cMin, cMax) {
-
-        //HANDLENEW UPDATE
+    handleTextBlur(e, id) {
         var minimum = parseInt(this.props.minVal, 10);
         var maximum = parseInt(this.props.maxVal, 10);
         var value = parseInt(e.target.value, 10);
 
-        if (e.target.name === "min") {
-            if (isNaN(cMax) || cMax === "") {
-                if (value > maximum) {
-                    setMin(maximum);
-                    setSliderMin(maximum);
-                    this.handleDataUpdate(rangeID, maximum, null);
-
-                    if (this.getToggleState(rangeID)) {
-                        this.handleAddGlobalRange(maximum, maximum, rangeID);
-                    }
-                    return 1;
-                }
-            }
-
-            else if (isNaN(cMax) === false) {
-                cMax = parseInt(cMax, 10);
-                if (value > cMax) {
-                    setMin(cMax);
-                    setSliderMin(cMax);
-                    this.handleDataUpdate(rangeID, cMax, null);
-
-                    if (this.getToggleState(rangeID)) {
-                        this.handleAddGlobalRange(cMax, cMax, rangeID);
-                    }
-                    return 1;
-                }
-            }
-            setSliderMin(value);
-            this.handleDataUpdate(rangeID, value, null);
-
-            if (this.getToggleState(rangeID)) {
-                this.handleAddGlobalRange(value, cMax, rangeID);
-            }
-        }
-
-        else {
-            if (isNaN(cMin) || cMin === "") {
-                if (value < minimum) {
-                    setMax(minimum);
-                    setSliderMax(minimum);
-                    this.handleDataUpdate(rangeID, null, minimum);
-
-                    if (this.getToggleState(rangeID)) {
-                        this.handleAddGlobalRange(minimum, minimum, rangeID);
-                    }
-                    return 1;
-                }
-            }
-
-            else if (isNaN(cMin) === false) {
-                cMax = parseInt(cMin, 10);
-                if (value < cMin) {
-                    setMax(cMin);
-                    setSliderMax(cMin);
-                    this.handleDataUpdate(rangeID, null, cMin);
-
-                    if (this.getToggleState(rangeID)) {
-                        this.handleAddGlobalRange(cMin, cMin, rangeID);
-                    }
-                    return 1;
-                }
-            }
-            setSliderMax(value);
-            this.handleDataUpdate(rangeID, null, value);
-
-            if (this.getToggleState(rangeID)) {
-                this.handleAddGlobalRange(cMin, value, rangeID);
-            }
-        }
+        
     };
 
     
