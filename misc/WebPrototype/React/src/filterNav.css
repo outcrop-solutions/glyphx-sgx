@@ -133,16 +133,23 @@
 .CustomTriggerCSS--open {
   background-color: darkslateblue; }
 
-.columnNameHeader{
-      font-size: 1rem;
+.columnNameHeader {
+    font-size: 1rem;
+    padding: 10px;
   }
 
-  .pinned { color:#1b35ef !important; transform: rotateZ(0deg) !important; }
+.columnNameHeader.Collapsible__trigger:after {
+    right: 15px;
+     top: 13px;
+}
+
+  .pinned { font-size: 20px !important; color:#1b35ef !important; transform: rotateZ(0deg) !important; }
 
   .unpinned {
-    color:white !important; transform: rotateZ(35deg) !important;
+    font-size: 20px !important; color:white !important; transform: rotateZ(35deg) !important;
   }
 
   .centerText {
-          text-align: center;
+    display: block;
+    text-align: center;
   }

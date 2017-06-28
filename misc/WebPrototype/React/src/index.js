@@ -31,24 +31,29 @@ const initialFilterState = {
                     highlightedValues:[],
                     type: 'text',
                     applied: true,
+                    pinned: false
+
                 },
                 'Academic_Rating': {
                     selectedValues: [],
                     highlightedValues:[],
                     type: 'number',
                     applied: false,
+                    pinned: false
                 },
                 'Last_Decision_Cluster': {
                     selectedValues: [],
                     highlightedValues:[],
                     type: 'number',
                     applied: false,
+                    pinned: false
                 },
                 'Year': {
                     selectedValues: [],
                     highlightedValues:[],
                     type: 'number',
                     applied: false,
+                    pinned: false
                 }
             }
         }
@@ -165,8 +170,9 @@ const filterReducer = function(state = initialFilterState, action) {
                         Elastic : {
                             ...state.Filter.Elastic,
                             [col] : {
-                                selectedValues: action.filter.selectedValues, 
-                                highlightedValues: action.filter.highlightedValues
+                                ...state.Filter.Elastic[col],
+                                selectedValues: action.filter.selectedValues,
+                                applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Elastic[col].highlightedValues.length > 0 ? true : false),
                             }
                         }
                     }
@@ -179,6 +185,27 @@ const filterReducer = function(state = initialFilterState, action) {
             return newState;
         }
 
+        case 'Update_Pin':
+        {
+            var col = action.details.colName;
+            var newState;
+            newState  = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Elastic : {
+                        ...state.Filter.Elastic,
+                        [col] : {
+                            ...state.Filter.Elastic[col],
+                            pinned: action.details.pinned
+                        }
+                    }
+                }
+            };
+            
+            console.log(newState);
+            return newState;
+        }
 
         default:
             return state;

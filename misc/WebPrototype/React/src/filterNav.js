@@ -17,8 +17,11 @@ import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FilterTabs from './FilterTab.js';
+<<<<<<< HEAD
 import Global from './Global.js';
 import DualListBox from 'react-dual-listbox';
+=======
+>>>>>>> 75cfef034a6f48fe3dad62c7df918010af848744
 import Collapsible from 'react-collapsible';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
@@ -27,18 +30,13 @@ import './filterNav.css';
 
 const mapStateToProps = function(state){
   return {
-    GLOBAL: state.filterState,
+    GLOBAL: state.filterState.Filter,
   }
 };
 
 
 
 class FilterNav extends Component {
-	
-    columns = [];
-    pinnedIconStlye ={
-
-    }
      
     constructor(props) {
         super(props);
@@ -46,6 +44,8 @@ class FilterNav extends Component {
         var viewSelectItems= [];
         var tableSelectItems = [];
         var appliedFiltersItems = [];
+        var columns = [];
+        var tableData = this.fetchData();
 
         //Load values into the view select dropdown.
         viewSelectItems = this.makeList(['view 0','view 1','view 4','view 5'],"viewSelectItems");
@@ -56,10 +56,13 @@ class FilterNav extends Component {
         //For now! dummy filters too!
         appliedFiltersItems = this.makeList(['Filter 0','Filter 1','Filter 4','Filter 5'],"appliedFiltersItems");
 
+        //Make columns
+        var keys = Object.keys(tableData);
+        columns = this.makeList(keys,'columns',{data:tableData,pinned:false});
+        
         //Store the states of all the elements inside this data structure.
         this.state  = {
             topViewVisible: true,
-            GLOBAL: null,
             hideShowButtonTextFlag: true,
             menu:{
                 open: false,
@@ -76,19 +79,20 @@ class FilterNav extends Component {
             savedSnackBar: {
                  open: false,
             },
-            tableData: this.fetchData(),
+            tableData: tableData,
             appliedFiltersItems: appliedFiltersItems,
             viewSelectItems: viewSelectItems,
             tableSelectItems: tableSelectItems,
             activeColumns: [],
+            columns:columns,
             viewNameTextFieldError: ""
         };
         
     };
 
     fetchData = () => {
-    var data = require('../src/Data/TempData.json');
-    return data.Data;
+        var data = require('../src/Data/TempData.json');
+        return data.Data;
     };
  
     /**
@@ -105,7 +109,7 @@ class FilterNav extends Component {
     /**
 	* This method is called when
 	*/
-    makeList = (arrValues,type) => {
+    makeList = (arrValues,type,extra) => {
         if(!Array.isArray(arrValues))
             return "PLEASE PROVIDE AN ARRAY";
 
@@ -131,6 +135,36 @@ class FilterNav extends Component {
                 {
                     arrReturn.push(<ListItem disabled={true} value={arrValues[index]} key={arrValues[index]} style={{fontSize: '13px'}} innerDivStyle={{padding: '11px 11px 11px 40px'}} primaryText={arrValues[index]} leftIcon={<i className="fa fa-times cancelIconStyle" onClick={() => this.onDeleteFilter(this,arrValues[index])}  aria-hidden="true" name={arrValues[index]}></i>} />);
                     arrReturn.push(<Divider value={arrValues[index]} key={arrValues[index]+'divider'} />);
+                }
+                break;
+            case 'columns':
+                for(index=0;index<len;index++)
+                {
+                    var column = arrValues[index];
+                    var context = this;;
+                    arrReturn.push(<Collapsible 
+                        transitionTime={200} 
+                        key={column} 
+                        triggerOpenedClassName="columnNameHeader"
+                        trigger={
+                                <div>
+                                     <IconButton 
+                                        id={"btn_"+column} 
+                                        onClick={context.onPinClick.bind(context)} 
+                                        iconClassName= {extra.pinned ? "fa fa-thumb-tack pinned " + column : "fa fa-thumb-tack unpinned " + column}
+                                        style={{padding:'0px',width:'inherit',height:'inherit'} } />
+                                    <span 
+                                        style={{
+                                        paddingLeft: '10px',
+                                        fontSize: '1rem'
+                                    }}>
+                                        {column}
+                                    </span>
+                                </div>} 
+                        triggerClassName='columnNameHeader'
+                        >
+                            <FilterTabs colName={column} data={extra.data[column]}></FilterTabs>
+                    </Collapsible>);
                 }
                 break;
         }
@@ -326,7 +360,7 @@ class FilterNav extends Component {
             hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
         });
 
-        console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
+        //console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
         
         //if the flag true then button --> |HIDE| else button --> |SHOW|
         if(this.state.hideShowButtonTextFlag)
@@ -387,36 +421,47 @@ class FilterNav extends Component {
     onPinClick = (event) => {
         console.log("pinned to active!");
         event.stopPropagation();
+
         var but = event.currentTarget;
         var colName = but.id.split("btn_")[1];
         var colInstanceArr = this.state.activeColumns.slice();
-        var len = this.columns.length;
-        var icon = but.querySelector("span .fa");
-
-        if(but.classList.contains("Applied"))
+        var activeColumnLen = this.state.activeColumns.length;
+        var pinned = this.props.GLOBAL.Elastic[colName].pinned;
+        var icon = document.getElementsByClassName(colName);
+        
+        
+        if(pinned)
         {
-            but.classList.remove("Applied");
-            for(var ind = 0; ind < len; ind++)
+            
+            icon[0] ? icon[0].classList.remove("pinned"): icon[0];
+            icon[1] ? icon[1].classList.remove("pinned"): icon[0];
+            icon[0] ? icon[0].classList.add("unpinned") : icon[0];
+            icon[1] ? icon[1].classList.add("unpinned") : icon[0];
+
+            pinned = false;
+
+            for(var index = 0; index < activeColumnLen; index++)
             {
-                
-            }
-        }
-        else {
-            //looping to find the column and add it into the active section.
-            for(var index = 0; index < len; index++)
-            {
-                if(this.columns[index].key == colName)
+                if(colInstanceArr[index].key == colName)
                 {
-                    colInstanceArr.push(this.columns[index]);
-                    this.setState({activeColumns: colInstanceArr});
-                    but.classList.add("Applied");
+                    colInstanceArr.splice(index,1);
                     break;
                 }
             }
+
+        }
+        else {
+            icon[0] ? icon[0].classList.remove("unpinned"): icon[0];
+            icon[1] ? icon[1].classList.remove("unpinned"): icon[0];
+            icon[0] ? icon[0].classList.add("pinned") : icon[0];
+            icon[1] ? icon[1].classList.add("pinned") : icon[0];
+            pinned = true;
+
+            colInstanceArr.push(this.makeList([colName],'columns',{data:this.state.tableData,pinned:true})[0]);
         }
 
-        //Remove again on click of pin!?
-
+        this.setState({activeColumns: colInstanceArr});
+        this.props.dispatch({type:'Update_Pin', details:{colName: colName,pinned: pinned}});
     };
 
    /**
@@ -447,6 +492,7 @@ class FilterNav extends Component {
     };
 
     render() {
+<<<<<<< HEAD
          var keys = Object.keys(this.state.tableData);
          var data = this.state.tableData;
          var context = this;
@@ -478,6 +524,9 @@ class FilterNav extends Component {
                     </Collapsible>
                     );
         });
+=======
+         var pinnedEmptyString = <label className="centerText"> Pinning a filter from filters will cause it to appear here.</label>;
+>>>>>>> 75cfef034a6f48fe3dad62c7df918010af848744
 
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
@@ -549,11 +598,11 @@ class FilterNav extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'50%'}}>
-                            <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
+                            {/* <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
                                 <List id="FilterList">
                                     {this.state.appliedFiltersItems}
                                 </List>
-                            </div>
+                            </div> */}
                         </Flex>
                         
                         
@@ -684,7 +733,7 @@ class FilterNav extends Component {
                                         Filters
                                     </span>
                                 </div>}>
-                                 {this.columns}
+                                 {this.state.columns}
                         </Collapsible>
 
                     </Flex>

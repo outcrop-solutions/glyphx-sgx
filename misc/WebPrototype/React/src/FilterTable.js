@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import FontIcon from 'material-ui/FontIcon';
-import RangeForm from './range.js';
 import { connect } from 'react-redux';
 
 const mapStateToProps = function(state){
@@ -73,14 +71,12 @@ class FilterTable extends Component {
         var index,len = rowSelection.length;
         var selectedValues = [];
         var highlightedValues = [];
-        var tableData = context.state.flatData;
 
         for(index=0;index<len;index++)
                 selectedValues.push(context.flatData[rowSelection[index]].value);
 
         var filterStructure = {
                 colName : context.props.id,
-                filterApplied: selectedValues.length > 0 ? true : (highlightedValues.length > 0 ? true : false),
                 selectedValues: selectedValues,
                 highlightedValues: highlightedValues
         }
@@ -134,7 +130,9 @@ class FilterTable extends Component {
         for(var property in data) {
             rows.push(<TableRow 
                 key={index}
-                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}>
+                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}
+                striped={this.props.tableState[id].highlightedValues.indexOf(property) !== -1}
+                >
                     <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
                     <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
