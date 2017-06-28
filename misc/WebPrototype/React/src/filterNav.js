@@ -17,12 +17,9 @@ import AlertContainer from 'react-alert';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FilterTabs from './FilterTab.js';
-<<<<<<< HEAD
-import Global from './Global.js';
 import DualListBox from 'react-dual-listbox';
-=======
->>>>>>> 75cfef034a6f48fe3dad62c7df918010af848744
 import Collapsible from 'react-collapsible';
+import FilterViewForm from './filterView.js';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -492,41 +489,7 @@ class FilterNav extends Component {
     };
 
     render() {
-<<<<<<< HEAD
-         var keys = Object.keys(this.state.tableData);
-         var data = this.state.tableData;
-         var context = this;
-         var pinnedEmptyString = <label> Pinning a filter will cause it to appear here.</label>;
-
-        this.columns = keys.map(function(column) {
-            return (<Collapsible 
-                        transitionTime={200} 
-                        key={column} 
-                        contentInnerClassName='centerText'
-                        trigger={
-                                <div>
-                                     <IconButton 
-                                        id={"btn_"+column} 
-                                        onClick={context.onPinClick.bind(context)} 
-                                        iconClassName= "fa fa-thumb-tack unpinned" 
-                                        style={{fontSize: '1.3rem',padding:'0px',width:'inherit',height:'inherit'} } />
-                                    <span 
-                                        style={{
-                                        paddingLeft: '10px',
-                                        fontSize: '1rem'
-                                    }}>
-                                        {column}
-                                    </span>
-                                </div>} 
-                        triggerClassName='columnNameHeader'
-                        >
-                            <FilterTabs ref={column} colName={column} data={data[column]}></FilterTabs>
-                    </Collapsible>
-                    );
-        });
-=======
-         var pinnedEmptyString = <label className="centerText"> Pinning a filter from filters will cause it to appear here.</label>;
->>>>>>> 75cfef034a6f48fe3dad62c7df918010af848744
+         var pinnedEmptyString = <label className="centerText"> Pinning a filter will cause it to appear here.</label>;
 
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
@@ -603,6 +566,8 @@ class FilterNav extends Component {
                                     {this.state.appliedFiltersItems}
                                 </List>
                             </div> */}
+
+                            <FilterViewForm />
                         </Flex>
                         
                         

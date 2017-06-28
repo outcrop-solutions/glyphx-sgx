@@ -29,7 +29,7 @@ const initialFilterState = {
                 'StaffAssigned': {
                     selectedValues: ["Alyssa ORourke"],
                     highlightedValues:[],
-                    type: 'text',
+                    type: 'Text',
                     applied: true,
                     pinned: false
 
@@ -37,21 +37,21 @@ const initialFilterState = {
                 'Academic_Rating': {
                     selectedValues: [],
                     highlightedValues:[],
-                    type: 'number',
+                    type: 'Number',
                     applied: false,
                     pinned: false
                 },
                 'Last_Decision_Cluster': {
                     selectedValues: [],
                     highlightedValues:[],
-                    type: 'number',
+                    type: 'Text',
                     applied: false,
                     pinned: false
                 },
                 'Year': {
                     selectedValues: [],
                     highlightedValues:[],
-                    type: 'number',
+                    type: 'Number',
                     applied: false,
                     pinned: false
                 }
