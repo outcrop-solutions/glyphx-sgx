@@ -80,7 +80,6 @@ class FilterTable extends Component {
 
         var filterStructure = {
                 colName : context.props.id,
-                filterApplied: selectedValues.length > 0 ? true : (highlightedValues.length > 0 ? true : false),
                 selectedValues: selectedValues,
                 highlightedValues: highlightedValues
         }
@@ -134,7 +133,9 @@ class FilterTable extends Component {
         for(var property in data) {
             rows.push(<TableRow 
                 key={index}
-                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}>
+                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}
+                striped={this.props.tableState[id].highlightedValues.indexOf(property) !== -1}
+                >
                     <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
                     <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
