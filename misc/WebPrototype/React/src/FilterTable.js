@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import FontIcon from 'material-ui/FontIcon';
-import RangeForm from './range.js';
 import { connect } from 'react-redux';
 
 const mapStateToProps = function(state){
@@ -73,7 +71,6 @@ class FilterTable extends Component {
         var index,len = rowSelection.length;
         var selectedValues = [];
         var highlightedValues = [];
-        var tableData = context.state.flatData;
 
         for(index=0;index<len;index++)
                 selectedValues.push(context.flatData[rowSelection[index]].value);

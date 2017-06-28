@@ -1,6 +1,4 @@
-import React, { Component } from 'react';
-import TextField from 'material-ui/TextField';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';

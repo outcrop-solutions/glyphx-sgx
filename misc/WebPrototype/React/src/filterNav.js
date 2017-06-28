@@ -139,7 +139,7 @@ class FilterNav extends Component {
                     arrReturn.push(<Collapsible 
                         transitionTime={200} 
                         key={column} 
-                        contentInnerClassName='centerText'
+                        triggerOpenedClassName="columnNameHeader"
                         trigger={
                                 <div>
                                      <IconButton 
@@ -486,7 +486,7 @@ class FilterNav extends Component {
     };
 
     render() {
-         var pinnedEmptyString = <label> Pinning a filter from filters will cause it to appear here.</label>;
+         var pinnedEmptyString = <label className="centerText"> Pinning a filter from filters will cause it to appear here.</label>;
 
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
@@ -558,11 +558,11 @@ class FilterNav extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'50%'}}>
-                            <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
+                            {/* <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
                                 <List id="FilterList">
                                     {this.state.appliedFiltersItems}
                                 </List>
-                            </div>
+                            </div> */}
                         </Flex>
                         
                         
