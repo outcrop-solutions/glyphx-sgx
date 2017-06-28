@@ -152,4 +152,9 @@
   .centerText {
     display: block;
     text-align: center;
+    cursor: normal;
+  }
+
+  .cursorNormal {
+      cursor: default;
   }

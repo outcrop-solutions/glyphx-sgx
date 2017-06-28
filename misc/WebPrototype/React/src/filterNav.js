@@ -140,6 +140,7 @@ class FilterNav extends Component {
                         transitionTime={200} 
                         key={column} 
                         triggerOpenedClassName="columnNameHeader"
+                        contentOuterClassName="cursorNormal"
                         trigger={
                                 <div>
                                      <IconButton 
@@ -486,7 +487,7 @@ class FilterNav extends Component {
     };
 
     render() {
-         var pinnedEmptyString = <label className="centerText"> Pinning a filter from filters will cause it to appear here.</label>;
+         var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label></div>;
 
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
@@ -642,6 +643,7 @@ class FilterNav extends Component {
                         <br />
                         <Collapsible 
                             transitionTime={200} 
+                            contentOuterClassName="cursorNormal"
                             trigger={
                                 <div>
                                     <i className="fa fa-thumb-tack" style={{fontSize: '1.3rem'}}></i>
@@ -659,6 +661,7 @@ class FilterNav extends Component {
 
                         <Collapsible 
                             transitionTime={200} 
+                            contentOuterClassName="cursorNormal"
                             trigger={
                                 <div>
                                     <i className="fa fa-filter" style={{fontSize: '1.3rem'}}></i>
