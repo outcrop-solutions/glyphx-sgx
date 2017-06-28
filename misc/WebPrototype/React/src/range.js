@@ -83,24 +83,38 @@ class RangeForm extends React.Component {
 
     /**
      * Updates the visuals of the slider , and the text fields if needed, when a text field loses focus
-     * @param e: the 'html' element that caused this method to be called
-     * @param rangeID: ID used to find the correct range row to update
-     * @param setMin(minVal): A method which updates the row's data in the min text field
-     * @param setMax(maxVal): A method which updates the row's data in the max text field
-     * @param setSliderMin(minVal): A method which updates the row's min value in the slider
-     * @param setSliderMax(maxVal): A method which updates the row's max value in the slider
-     * @param cMin: Current value in the min text field
-     * @param cMax: Current value in the max text field
-     * @returns: 1 if input was a valid number, 0 otherwise (nothing returns 0 yet)
+     * @param e: the event instance of the toggle, html element
+     * @param id: ID used to find the range
+     * @param min: A method which updates the row's data in the min text field
+     * @param max: A method which updates the row's data in the max text field
      **/
-    handleTextBlur(e, id) {
-        var minimum = parseInt(this.props.minVal, 10);
-        var maximum = parseInt(this.props.maxVal, 10);
-        var value = parseInt(e.target.value, 10);
+    handleTextBlur(id, min, max, latestChange) {
+        // Make min a valid type
+        if (min == "") {
+            min = this.props.minVal;
+        }
+        else {
+            min = parseInt(min);
+        }
 
-        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null));
+        // Make max a valid type
+        if (max == "") {
+            max = this.props.maxVal;
+        }
+        else {
+            max = parseInt(max);
+        }
 
-        
+        if (min > max) {
+            if (latestChange == "MIN") {
+                this.props.dispatch(updateRange(this.props.colName, max, max, id, null));
+                console.log("DISPATCHED MAX VALUE");
+            }
+            else if (latestChange == "MAX") {
+                this.props.dispatch(updateRange(this.props.colName, min, min, id, null));
+                console.log("DISPATCHED MIN VALUE");
+            }
+        }
     };
 
     
@@ -142,6 +156,7 @@ class RangeForm extends React.Component {
                     onSlide = { this.handleSliderUpdate.bind(this) }
                     onToggle = { this.handleSwitchToggle.bind(this) }
                     onTextChange = { this.handleTextUpdate.bind(this) }
+                    onTextBlur = { this.handleTextBlur.bind(this) }
                     rangeList = { this.props.rangeList }
                     minVal = { this.props.minVal }
                     maxVal = { this.props.maxVal }
@@ -165,7 +180,8 @@ class RangeTable extends React.Component {
         var rowAdd = this.props.onRowAdd;
         var onSlide = this.props.onSlide;
         var onToggle = this.props.onToggle;
-        var onTextChange = this.props.onTextChange
+        var onTextChange = this.props.onTextChange;
+        var onTextBlur = this.props.onTextBlur;
         var min = this.props.minVal;
         var max = this.props.maxVal;
 
@@ -181,6 +197,7 @@ class RangeTable extends React.Component {
                         onSlide = { onSlide }
                         onToggle = { onToggle }
                         onTextChange = { onTextChange }
+                        onTextBlur = { onTextBlur }
                         key = { range[2] } 
                         minVal = { min }
                         maxVal = { max }
@@ -250,6 +267,7 @@ class RangeRow extends React.Component {
                                 maxVal = { this.props.maxVal }
                                 onSlide = { this.props.onSlide }
                                 onTextChange = { this.props.onTextChange }
+                                onTextBlur = { this.props.onTextBlur }
                                 cellData = {{
                                     id: this.props.range[2],
                                     min: this.props.range[0],
@@ -302,9 +320,9 @@ class TextSlider extends React.Component {
      * @param min: the min to be processed 
      * @param max: the max to be processed 
      **/
-    arrayNumConversion(min, max, minVal, maxVal) {
+    arrayNumConversion(min, max) {
 
-        // Make min valid type
+        // Make min a valid type
         if (min == "") {
             min = this.props.minVal;
         }
@@ -312,7 +330,7 @@ class TextSlider extends React.Component {
             min = parseInt(min);
         }
 
-        // Make max valid type
+        // Make max a valid type
         if (max == "") {
             max = this.props.maxVal;
         }
@@ -320,7 +338,6 @@ class TextSlider extends React.Component {
             max = parseInt(max);
         }
 
-        
         // Apply a valid range
         if ( min > max) {
             if (this.state.latestUpdate == "MIN") {
@@ -330,15 +347,20 @@ class TextSlider extends React.Component {
                 return [min, min]; 
             }
         }
-
         else {
             return [min, max];
         }
     }
 
+
+    /**
+     * Updates the local state (used to allow real time text-slider changing without pushing overlap bounds)
+     * @param val: "MIN" or "MAX", text field that called this
+     **/
     updateLatest(val) {
         this.setState({latestUpdate: val});
     }
+
 
     /**
      * Loses focus from the min text field when the enter key is pressed
@@ -379,7 +401,7 @@ class TextSlider extends React.Component {
                         }
                         onFocus = { () => this.updateLatest("MIN") }
                         onBlur = {
-                            (e) => this.onTextBlur(e, this.props.cellData.id, this.props.cellData.min, this.props.cellData.max)
+                            () => this.props.onTextBlur(this.props.cellData.id, this.props.cellData.min, this.props.cellData.max, this.state.latestUpdate)
                         }
                         onKeyPress = {
                             (e) => this.onKeyPressMin(e)
@@ -427,7 +449,7 @@ class TextSlider extends React.Component {
                         }
                         onFocus = { () => this.updateLatest("MAX") }
                         onBlur = {
-                            (e) => this.onTextBlur(e, this.props.cellData.id, this.props.cellData.min, this.props.cellData.max)
+                            () => this.props.onTextBlur(this.props.cellData.id, this.props.cellData.min, this.props.cellData.max, this.state.latestUpdate)
                         }
                         onKeyPress = {
                             (e) => this.onKeyPressMax(e)
