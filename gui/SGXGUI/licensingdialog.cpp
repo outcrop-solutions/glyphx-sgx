@@ -17,6 +17,8 @@
 #include <QtCore/QCryptographicHash>
 #include "filesystem.h"
 #include <QtWidgets/QLabel>
+#include <stdio.h>
+#include <sstream>
 
 #ifdef USE_LICENSING
 
@@ -294,9 +296,12 @@ namespace SynGlyphX {
 
 	std::string LicensingDialog::DecimalToHex(long long to_convert) {
 
-		char buffer[33];
-		itoa(to_convert, buffer, 16);
-		return std::string(buffer);
+		//char buffer[33];
+		//itoa(to_convert, buffer, 16);
+		std::stringstream ss;
+		ss << std::hex << to_convert;
+		//return std::string(buffer);
+		return ss.str();
 	}
 
 	QString LicensingDialog::GetLicenseDirectory() {
