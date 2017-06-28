@@ -20,10 +20,6 @@ import './range.css';
  * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
 class RangeForm extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
 
     /**
      * Deletes a range by splicing it out of the store which causes DOM to re-map
@@ -83,34 +79,34 @@ class RangeForm extends React.Component {
 
     /**
      * Updates the visuals of the slider , and the text fields if needed, when a text field loses focus
-     * @param e: the event instance of the toggle, html element
      * @param id: ID used to find the range
-     * @param min: A method which updates the row's data in the min text field
-     * @param max: A method which updates the row's data in the max text field
+     * @param min: current min stored in store
+     * @param max: current max stored in store
+     * @param latestChange: 'MIN' or 'MAX', last focused text box
      **/
     handleTextBlur(id, min, max, latestChange) {
         // Make min a valid type
-        if (min == "") {
+        if (min === "") {
             min = this.props.minVal;
         }
         else {
-            min = parseInt(min);
+            min = parseInt(min, 10);
         }
 
         // Make max a valid type
-        if (max == "") {
+        if (max === "") {
             max = this.props.maxVal;
         }
         else {
-            max = parseInt(max);
+            max = parseInt(max, 10);
         }
 
         if (min > max) {
-            if (latestChange == "MIN") {
+            if (latestChange === "MIN") {
                 this.props.dispatch(updateRange(this.props.colName, max, max, id, null));
                 console.log("DISPATCHED MAX VALUE");
             }
-            else if (latestChange == "MAX") {
+            else if (latestChange === "MAX") {
                 this.props.dispatch(updateRange(this.props.colName, min, min, id, null));
                 console.log("DISPATCHED MIN VALUE");
             }
@@ -177,7 +173,6 @@ class RangeTable extends React.Component {
     render() {
         // Lose scope of 'this' in the map function so record what you need to access beforehand
         var rowDel = this.props.onRowDel;
-        var rowAdd = this.props.onRowAdd;
         var onSlide = this.props.onSlide;
         var onToggle = this.props.onToggle;
         var onTextChange = this.props.onTextChange;
@@ -189,7 +184,6 @@ class RangeTable extends React.Component {
 
         var rList = this.props.rangeList[this.props.colName].rangeList;
 
-        
         var range = rList.map( function(range) {
             return (<RangeRow 
                         range = { range } 
@@ -207,7 +201,7 @@ class RangeTable extends React.Component {
         return (
             <div>
 
-                {/* Displays all the mapped rangeList */}
+                {/* Displays the mapped ranges*/}
                 {range}
 
                 {/* Add range button, onRowAdd from the RangeForm Component */}
@@ -323,27 +317,27 @@ class TextSlider extends React.Component {
     arrayNumConversion(min, max) {
 
         // Make min a valid type
-        if (min == "") {
+        if (min === "") {
             min = this.props.minVal;
         }
         else {
-            min = parseInt(min);
+            min = parseInt(min, 10);
         }
 
         // Make max a valid type
-        if (max == "") {
+        if (max === "") {
             max = this.props.maxVal;
         }
         else {
-            max = parseInt(max);
+            max = parseInt(max, 10);
         }
 
         // Apply a valid range
         if ( min > max) {
-            if (this.state.latestUpdate == "MIN") {
+            if (this.state.latestUpdate === "MIN") {
                 return [max, max];
             }
-            else if (this.state.latestUpdate == "MAX") {
+            else if (this.state.latestUpdate === "MAX") {
                 return [min, min]; 
             }
         }

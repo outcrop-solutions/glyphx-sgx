@@ -14,7 +14,6 @@
     "react-scripts": "^1.0.7",
     "jquery": "^3.2.1",
 		"font-awesome": "^4.7.0",
-    "material-icons": "^0.1.0",
     "material-ui": "^0.18.3",
     "react-tap-event-plugin": "^2.0.1",
     "react-alert":"^2.1.1",
@@ -22,7 +21,8 @@
     "react-collapsible":"^1.4.0",
     "react-swipeable-views": "^0.12.3",
     "redux": "3.7.0",
-    "react-redux":"5.0.5"
+    "react-redux":"5.0.5",
+    "react-dual-listbox": "1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

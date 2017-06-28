@@ -18,9 +18,11 @@ import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FilterTabs from './FilterTab.js';
 import Global from './Global.js';
+import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
+import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './filterNav.css';
 
 const mapStateToProps = function(state){
@@ -448,7 +450,7 @@ class FilterNav extends Component {
          var keys = Object.keys(this.state.tableData);
          var data = this.state.tableData;
          var context = this;
-         var pinnedEmptyString = <label> Pinning a filter from filters will cause it to appear here.</label>;
+         var pinnedEmptyString = <label> Pinning a filter will cause it to appear here.</label>;
 
         this.columns = keys.map(function(column) {
             return (<Collapsible 
@@ -643,6 +645,29 @@ class FilterNav extends Component {
                                     </span>
                                 </div>}>
 
+                                <DualListBox
+                                    canFilter
+                                    options={[
+                                        { value: 1, label: 'Staff Assigned' },
+                                        { value: 2, label: 'Academic Rating' },
+                                        { value: 3, label: 'Last Decision Cluster' },
+                                        { value: 4, label: 'Year' },
+                                    ]}
+                                    onChange={(selected) => {
+                                        console.log(selected);
+                                    }}
+                                />
+
+                                <RaisedButton 
+                                    primary={true} 
+                                    style = {{height: '30px',}}>
+
+                                        Find Filters
+                                
+                                </RaisedButton>
+                                <br />
+                                <br />
+
                                 {this.state.activeColumns.length > 0 ? this.state.activeColumns : pinnedEmptyString}
                         </Collapsible>
 
@@ -656,7 +681,7 @@ class FilterNav extends Component {
                                         paddingLeft: '10px',
                                         fontSize: '1rem'
                                     }}>
-                                        Filter
+                                        Filters
                                     </span>
                                 </div>}>
                                  {this.columns}
