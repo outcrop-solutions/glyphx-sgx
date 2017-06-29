@@ -12,50 +12,46 @@ const initialFilterState = {
         Filter: {
             Ranges: {
                 'StaffAssigned': {
-                    //default: rangeList: [minVal, maxVal, generated ID, switch-state]        applied: false        type: what it needs to be
+                    //default: rangeList: [minVal, maxVal, generated ID, switch-state]
                     rangeList: [[-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true], ],
-                    type: 'number',
-                    applied: true
                 },
                 'Academic_Rating': {
                     rangeList: [[-20, 60, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false] ],
-                    type: 'number',
-                    applied: true
                 },
                 'Last_Decision_Cluster': {
                     rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
-                    type: 'number',
-                    applied: true
                 },
                 'Year': {
                     rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
-                    type: 'number',
-                    applied: true
                 }
             },
             Elastic: {
                 'StaffAssigned': {
                     selectedValues: ["Alyssa ORourke"],
                     highlightedValues:[],
+                    type: 'Text',
                     applied: true,
                     pinned: false
-                    //applyRange: null
+
                 },
                 'Academic_Rating': {
                     selectedValues: [],
                     highlightedValues:[],
+                    type: 'Number',
                     applied: false,
                     pinned: false
                 },
                 'Last_Decision_Cluster': {
                     selectedValues: [],
                     highlightedValues:[],
+                    type: 'Text',
                     applied: false,
                     pinned: false
                 },
                 'Year': {
                     selectedValues: [],
                     highlightedValues:[],
+                    type: 'Number',
                     applied: false,
                     pinned: false
                 }

@@ -3,12 +3,9 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import 'font-awesome/css/font-awesome.css';
 import FilterNav from './filterNav';
 import {Flex} from 'react-flex-material';
-import TextField from 'material-ui/TextField';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
-import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import './topNav.css';
@@ -107,7 +104,7 @@ class TopNav extends Component {
 // Hides the filter side nav by translating it off the screen so it doesnt resize and 
 // wont have to be reloaded after it is "closed"
 function toggleNav() {
-    if (document.getElementById("filterNav").style.transform == "translate(460px, 0px)") {
+    if (document.getElementById("filterNav").style.transform === "translate(460px, 0px)") {
         document.getElementById("filterNav").style.transform = "translate(0px, 0px)";
     }
     else {
