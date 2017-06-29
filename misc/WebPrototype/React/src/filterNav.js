@@ -31,6 +31,10 @@ const mapStateToProps = function(state){
   }
 };
 
+export const init = (storeFilterStruc) => ({
+  type: 'INIT',
+  storeFilterStruc
+});
 
 
 class FilterNav extends Component {
@@ -53,9 +57,10 @@ class FilterNav extends Component {
         //For now! dummy filters too!
         appliedFiltersItems = this.makeList(['Filter 0','Filter 1','Filter 4','Filter 5'],"appliedFiltersItems");
 
-        //Make columns
+        //Make columns and global store structure
         var keys = Object.keys(tableData);
-        columns = this.makeList(keys,'columns',{data:tableData,pinned:false});
+
+        columns = this.makeList(keys,'columns',{data:tableData,pinned:false,makeFilterStructure:true});
         
         //Store the states of all the elements inside this data structure.
         this.state  = {
@@ -104,9 +109,13 @@ class FilterNav extends Component {
     };
 
     /**
-	* This method is called when
-	*/
-    makeList = (arrValues,type,extra) => {
+     * This function holds the templates of certain UI elements. Call this and pass a type
+     * to generate a JSX code that you can use to render that particular element.
+     * @param {array} arrValues: Single dimension array of values.
+     * @param {string} type: any one of [viewSelectItems,tableSelectItems,appliedFiltersItems,columns]
+     * @param {object} extra: An object to pass extra params.
+     */
+    makeList(arrValues,type,extra){
         if(!Array.isArray(arrValues))
             return "PLEASE PROVIDE AN ARRAY";
 
@@ -135,10 +144,38 @@ class FilterNav extends Component {
                 }
                 break;
             case 'columns':
+                var rangeStructure = {};
+                var elasticStructure = {};
                 for(index=0;index<len;index++)
                 {
                     var column = arrValues[index];
-                    var context = this;;
+                    var context = this;
+                    var minMax;
+                    var displayName = "";
+
+                    if(extra.makeFilterStructure) {
+                        var type = isNaN(extra.data[column][0]) ? 'text' : 'number';
+
+                        minMax = type=='number'? this.findMinMax(extra.data[column]) : {min:0,max:0};
+
+                        rangeStructure[column] = {
+                            rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
+                            rangeType: type,
+                            bounds:[minMax.min,minMax.max]
+                        };
+                        
+                        elasticStructure[column] = {
+                            selectedValues: [],
+                            highlightedValues:[],
+                            applied: false,
+                            pinned: false,
+                            type: type,
+                            displayName: this.generateDisplayName(column)
+                        };
+                    }
+
+                    displayName = elasticStructure[column] ? elasticStructure[column].displayName : extra.displayName;
+
                     arrReturn.push(<Collapsible 
                         transitionTime={200} 
                         key={column} 
@@ -156,18 +193,81 @@ class FilterNav extends Component {
                                         paddingLeft: '10px',
                                         fontSize: '1rem'
                                     }}>
-                                        {column}
+                                        {displayName}
                                     </span>
                                 </div>} 
                         triggerClassName='columnNameHeader'
                         >
-                            <FilterTabs colName={column} data={extra.data[column]}></FilterTabs>
+                            <FilterTabs internalColName={extra.pinned ? column+"_pinned" : column} id={column} displayName={displayName} data={extra.data[column]}></FilterTabs>
                     </Collapsible>);
+
+                    if(elasticStructure[column] ? elasticStructure[column].pinned : false)
+                    {
+                        //Add it to the pinned tabs!
+                    }
                 }
+                
+                if(extra.makeFilterStructure)
+                    this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
+                
                 break;
         }
 
         return arrReturn;
+    };
+
+    /**
+     * This function replaces "_" with "<space>" and replaces "<Capital letter>" with "<space><Capital letter>" to make the display name!
+     * @param str: The column name as it is.
+     * @return display name string.
+     */
+    generateDisplayName(str){
+        var newString = str.charAt(0);
+        var len = str.length;
+        for(var i=1;i<len;i++){
+            var ch = str.charAt(i);
+            if(isNaN(ch))
+            {
+                
+                if(ch == "_")
+                {
+                    newString = newString + " ";
+                }
+                else if(ch == ch.toUpperCase())
+                {
+                    newString = newString + " " + ch;
+                }
+                else{
+                    newString = newString + ch;
+                }
+            }
+        }
+        return newString;
+    };
+
+    /**
+     * This function caculates the min and max of the value in an array.
+     * @param arrValues: an array of column data.
+     * @return Object: {min: <MinValue>, max:<MaxValue>}
+     */
+    findMinMax(arrValues){
+        var len = arrValues.length;
+        
+        var obj = {
+            min: arrValues[0],
+            max: arrValues[0]
+        };
+
+        for(var i=0;i<len;i++)
+        {
+            if(arrValues[i] > obj.max)
+                obj.max = arrValues[i];
+
+            if(arrValues[i] < obj.min)
+                obj.min = arrValues[i];
+        }
+
+        return obj;
     };
 
     /**
@@ -454,8 +554,7 @@ class FilterNav extends Component {
             icon[0] ? icon[0].classList.add("pinned") : icon[0];
             icon[1] ? icon[1].classList.add("pinned") : icon[0];
             pinned = true;
-
-            colInstanceArr.push(this.makeList([colName],'columns',{data:this.state.tableData,pinned:true})[0]);
+            colInstanceArr.push(this.makeList([colName],'columns',{data:this.state.tableData,pinned:true,displayName:this.props.GLOBAL.Elastic[colName].displayName})[0]);
         }
 
         this.setState({activeColumns: colInstanceArr});

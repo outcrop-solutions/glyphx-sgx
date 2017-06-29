@@ -10,58 +10,21 @@ import './index.css';
 
 const initialFilterState = {
         Filter: {
-            Ranges: {
-                'StaffAssigned': {
-                    //default: rangeList: [minVal, maxVal, generated ID, switch-state]
-                    rangeList: [[-10, 50, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true], ],
-                },
-                'Academic_Rating': {
-                    rangeList: [[-20, 60, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false] ],
-                },
-                'Last_Decision_Cluster': {
-                    rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
-                },
-                'Year': {
-                    rangeList: [[-30, 70, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), true] ],
-                }
-            },
-            Elastic: {
-                'StaffAssigned': {
-                    selectedValues: ["Alyssa ORourke"],
-                    highlightedValues:[],
-                    type: 'Text',
-                    applied: true,
-                    pinned: false
-
-                },
-                'Academic_Rating': {
-                    selectedValues: [],
-                    highlightedValues:[],
-                    type: 'Number',
-                    applied: false,
-                    pinned: false
-                },
-                'Last_Decision_Cluster': {
-                    selectedValues: [],
-                    highlightedValues:[],
-                    type: 'Text',
-                    applied: false,
-                    pinned: false
-                },
-                'Year': {
-                    selectedValues: [],
-                    highlightedValues:[],
-                    type: 'Number',
-                    applied: false,
-                    pinned: false
-                }
-            }
         }
     };
 
 const filterReducer = function(state = initialFilterState, action) {
     switch (action.type) {
-        
+        case 'INIT':
+        {
+            var newState;
+            newState  = {
+                    ...state,
+                    Filter : action.storeFilterStruc
+            }
+            console.log(newState);
+            return newState;
+        }
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
             
