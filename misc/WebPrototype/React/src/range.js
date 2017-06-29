@@ -36,6 +36,26 @@ class RangeForm extends React.Component {
      **/
     handleAddEvent() {
         this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
+        this.updateHighlighted();
+        
+    }
+
+    updateHighlighted() {
+        var rList = this.props.rangeList[this.props.colName].rangeList;
+        var highlighted = [];
+
+        for (var i = 0; i < rList.length; i++) {
+            if (rList[i][3] == true) {
+                for (var j = 0; j < this.props.data.length; j++) {
+                    if (highlighted.indexOf(this.props.data[j]) == -1) {
+                        highlighted.push(this.props.data[j])
+                    }
+                }
+                
+            }
+        }
+        console.log(this.props.data);
+        console.log(highlighted);
     }
 
 
@@ -497,11 +517,11 @@ export const updateRange = (colName, min, max, id, applied) => ({
     applied
 });
 export const highlightElastic = (text) => ({
-    type: 'ADD_RANGE',
+    type: 'HIGHLIGHT_ELASTIC',
     text
 });
 export const unhighlightElastic = (text) => ({
-    type: 'ADD_RANGE',
+    type: 'UNHIGHLIGHT_ELASTIC',
     text
 });
 

@@ -278,25 +278,33 @@ class FilterViewRow extends React.Component {
 
 
                     <Flex flex="80">
-                        <Flex layout="row"> 
-                            <Flex flex="30">
+                        <Flex layout="row" style = {{ display: "table" }}> 
+                            <Flex flex="30" style = {{ display: "table-cell", verticalAlign: "middle" }}>
 
-                                {this.props.view[0]}
+                                 <Textfit mode="single">
+                                     {this.props.view[0]}
+                                </Textfit>
+                                
                                 
 
                             </Flex>
 
-                            <Flex flex="20"  >
+                            <Flex divider /> 
+
+                            <Flex flex="20"  style = {{ display: "table-cell", verticalAlign: "middle" }}>
                                 {this.props.view[1]}
 
                             </Flex>
 
-                            <Flex flex="25">
+                             <Flex divider /> 
+                             <Flex divider /> 
+
+                            <Flex flex="25" style = {{ display: "table-cell", verticalAlign: "middle" }}>
                                 {this.props.view[2]}
                                 
                             </Flex>
                             
-                            <Flex flex="25">
+                            <Flex flex="25" style = {{ display: "table-cell", verticalAlign: "middle" }}>
                                 {this.props.view[3]}
                                 
                             </Flex>
