@@ -52,6 +52,10 @@ while getopts "drvegbcimj:q:" opt; do
 			app=DataMapper
 			((appcount++))
 			;;
+        p)
+            app=GlyphPortable
+            ((appcount++))
+            ;;
 		b)
 			do_build=1
 			;;
@@ -90,7 +94,7 @@ fi
 
 if [ $appcount != 1 ]; then
 	echo Exactly one app parameter required [got $appcount]:
-	echo Specify -v for GlyphViewer, -b for GlyphDesigner, -m for DataMapper, -e for GlyphEd.
+	echo Specify -v for GlyphViewer, -g for GlyphDesigner, -m for DataMapper, -e for GlyphEd.
 	quit=true
 fi
 
@@ -174,13 +178,14 @@ cp -R ../../DataEngine/JavaDataEngine/converthash/libconverthash.dylib ../../bin
 echo Deploying miscellaneous data files...
 cp -R ../../Misc/InstallerFiles/* ../../bin/OSX64/$build/$app.app/Contents/MacOS
 
-if [ $app = GlyphViewer ] || [ $app = DataMapper ] || [ $app = GlyphEd ]; then
+if [ $app = GlyphViewer ] || [ $app = GlyphEd ]; then
 	echo Deploying ANTz Templates to $app app bundle...
-	cp -R ../../ANTzPlus/ANTzMacTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
-	cp -R ../../ANTzPlus/ANTzTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
-	cp -R ../../ANTzPlus/ANTzzSpaceTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
-	cp ../tools/vc120redist/*.dll ../../bin/OSX64/$build/$app.app/Contents/MacOS/ANTzTemplate
-	cp ../tools/vc120redist/*.dll ../../bin/OSX64/$build/$app.app/Contents/MacOS/ANTzzSpaceTemplate
+    cp -R ../../portable/GlyphPortableOSX ../../bin/OSX64/$build/$app.app/Contents/MacOS
+#   cp -R ../../ANTzPlus/ANTzMacTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
+#	cp -R ../../ANTzPlus/ANTzTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
+#	cp -R ../../ANTzPlus/ANTzzSpaceTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
+#	cp ../tools/vc120redist/*.dll ../../bin/OSX64/$build/$app.app/Contents/MacOS/ANTzTemplate
+#	cp ../tools/vc120redist/*.dll ../../bin/OSX64/$build/$app.app/Contents/MacOS/ANTzzSpaceTemplate
 fi
 
 echo Copying icon into app bundle...

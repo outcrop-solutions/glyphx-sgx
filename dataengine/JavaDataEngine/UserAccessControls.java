@@ -272,7 +272,7 @@ public class UserAccessControls {
 		String os = System.getProperty("os.name").toLowerCase();
 		String default_path = "C:/ProgramData/SynGlyphX/Content";
 		if(os.contains("mac")){
-			default_path = "/Users/synglyphx/Library/Application Support/SynGlyphX/Content";
+			default_path = "/Users/bryan/Library/Application Support/SynGlyphX/Content";
 		}
 		//UserAccessControls.generateLicenseKey("C:/ProgramData/SynGlyphX");
 		//System.out.println(getListOfFormattedGroupNames());

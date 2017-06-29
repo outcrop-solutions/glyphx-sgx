@@ -1,6 +1,7 @@
 #include "portablevisualizationexport.h"
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include "glyphbuilderapplication.h"
 #include "filesystem.h"
 #include <iostream>
@@ -93,8 +94,11 @@ namespace SynGlyphX {
 			destDir.mkpath(destinationDir);
 		}
 
+        qDebug() << m_sourceDirectories.at(platform);
+        qDebug() << destinationDir;
+        qDebug() << QDir(m_sourceDirectories.at(platform)).exists();
 		Filesystem::CopyDirectoryOverwrite(m_sourceDirectories.at(platform).toStdString(), destinationDir.toStdString(), true);
-		if ((platform == Platform::Windows)) {
+		if (platform == Platform::Windows) {
 
 			QString appPath = SynGlyphX::Application::applicationDirPath() + QDir::separator();
 

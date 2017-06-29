@@ -239,6 +239,8 @@ namespace SynGlyphX {
 	void MainWindow::UpdateUserMenu(QString username){
 
 		QString user = username + " " + QString(QChar(0x23F7));
+        
+        qDebug() << user;
 
 #ifdef WIN32
 		userMenuBar->clear();
@@ -246,6 +248,7 @@ namespace SynGlyphX {
 #elif __APPLE__
 		m_loginMenu->setTitle(user);
 #endif
+        qDebug() << "After title is set";
 
 		m_userSettingsMenu = m_loginMenu->addAction("User Settings");
 		QObject::connect(m_userSettingsMenu, &QAction::triggered, this, &MainWindow::UserSettings);

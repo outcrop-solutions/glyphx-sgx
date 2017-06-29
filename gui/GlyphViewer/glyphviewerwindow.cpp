@@ -552,7 +552,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 	{	
 		//QString contact = SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? "<a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a>" : "<a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a>";
 		QString contact = "<a href=\"http://www.synglyphx.com\">SynGlyphX</a>";
-		int ret = QMessageBox::information(this, tr("No Active User"),
+		QMessageBox::information(this, tr("No Active User"),
 			QString::fromStdWString(L"<p>This application requires an active user account to perform this action. Please log in to continue.</p>"
 			L"<p>To obtain an account, or to renew your license please contact " + contact.toStdWString() + L".</p>"),
 			QMessageBox::Ok);
@@ -931,7 +931,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTable
 	{
 		//QString contact = SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? "<a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a>" : "<a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a>";
 		QString contact = "<a href=\"http://www.synglyphx.com\">SynGlyphX</a>";
-		int ret = QMessageBox::information(this, tr("No Active User"),
+		QMessageBox::information(this, tr("No Active User"),
 			QString::fromStdWString(L"<p>This application requires an active user account to perform this action. Please log in to continue.</p>"
 			L"<p>To obtain an account, or to renew your license please contact " + contact.toStdWString() + L".</p>"),
 			QMessageBox::Ok);

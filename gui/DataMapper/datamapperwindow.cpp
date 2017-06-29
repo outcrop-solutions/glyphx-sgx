@@ -308,6 +308,11 @@ void DataMapperWindow::CreateMenus() {
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
 
 	CreateHelpMenu();
+    
+#ifdef __APPLE__
+    menuBar()->addSeparator();
+#endif
+    SynGlyphX::MainWindow::CreateLoginMenu();
 
 	EnableProjectDependentActions(false);
 }

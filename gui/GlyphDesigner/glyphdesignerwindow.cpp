@@ -19,13 +19,14 @@
 #include "glyphbuilderapplication.h"
 #include "GDGlobal.h"
 #include "version.h"
+#include <QtCore/QDebug>
 
 GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
-	m_3dView(nullptr),
+	m_dataEngineConnection(nullptr),
+    m_3dView(nullptr),
     m_treeView(nullptr),
     m_glyphTreeModel(nullptr),
-	m_dataEngineConnection(nullptr),
 	m_isFileLoadingOrDefaultGlyphSet(false)
 {
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -95,6 +96,8 @@ GlyphDesignerWindow::GlyphDesignerWindow(QWidget *parent)
 	loginDialog->setLayout(layout);
 
 	QObject::connect(loginDialog, &QDialog::rejected, this, &QWidget::close);
+    
+    qDebug() << "Before Login Check";
 
 	if (IsUserLoggedIn()){
 		Login();
@@ -192,6 +195,11 @@ void GlyphDesignerWindow::CreateMenus() {
 	QObject::connect(optionsAction, &QAction::triggered, this, &GlyphDesignerWindow::ChangeGlobalOptions);
 
     CreateHelpMenu();
+    
+#ifdef __APPLE__
+    menuBar()->addSeparator();
+#endif
+    SynGlyphX::MainWindow::CreateLoginMenu();
 }
 
 void GlyphDesignerWindow::CreateDockWidgets() {
@@ -474,6 +482,8 @@ void GlyphDesignerWindow::ChangeGlobalOptions() {
 
 bool GlyphDesignerWindow::IsUserLoggedIn() {
 
+    qDebug() << "Enter IsUserLoggedIn";
+    
 	QSettings settings;
 	settings.beginGroup("LoggedInUser");
 	QString user = settings.value("Username", "Guest").toString();
@@ -482,14 +492,20 @@ bool GlyphDesignerWindow::IsUserLoggedIn() {
 	QString inst = settings.value("Institution", "").toString();
 	bool logged = settings.value("StayLogged", false).toBool();
 	settings.endGroup();
+    
+    qDebug() << "Retrieved LoggedInUser";
 
 	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
+        qDebug() << "Valid Connection";
 		return true;
 	}
 	else{
+        qDebug() << "Invalid Connection";
 		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+        qDebug() << "Connection Initialized";
 		if (logged){
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+            qDebug() << "Validated Credentials";
 			if (valid == 1 || valid == 2){
 				return true;
 			}
@@ -500,17 +516,24 @@ bool GlyphDesignerWindow::IsUserLoggedIn() {
 
 void GlyphDesignerWindow::Login(){
 
+    qDebug() << "Enter Login";
+    
 	if (loginWidget->Login()){
+        qDebug() << "Inside Login If";
 		MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		UpdateUserMenu();
+        qDebug() << "Updated User Menu";
 		if (MainWindow::HasValidLicense()){
+            qDebug() << "Valid License";
 			loginDialog->hide();
 		}
 		else{
+            qDebug() << "Invalid License";
 			QTimer::singleShot(0, this, SLOT(Logout()));
 		}
 	}
 	else{
+        qDebug() << "Inside Login Else";
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
 		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
 		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
