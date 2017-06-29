@@ -1,8 +1,11 @@
 import React from 'react';
 import FontIcon from 'material-ui/FontIcon';
+import Divider from 'material-ui/Divider';
+import Badge from 'material-ui/Badge';
 import { Flex } from 'react-flex-material';
 import { Card, CardText } from 'material-ui/Card';
-import { red500, blue500 } from 'material-ui/styles/colors';
+import { red500 } from 'material-ui/styles/colors';
+import { Textfit } from 'react-textfit';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
 
@@ -18,10 +21,11 @@ class FilterViewForm extends React.Component {
 
     render() {
         return (
-            <div style = {{ overflow: 'auto', width: '100%' }} >
+            <div style = {{ overflow: 'auto', width: '100%', borderStyle: "solid", borderWidth: "1px" }} >
                 <FilterViewTable
                     onRowDel = { this.handleRowDel.bind(this) }
                     elasticList = { this.props.elasticList }
+                    rangeList = { this.props.rangeList }
                 />
             </div>
         );
@@ -45,50 +49,101 @@ class FilterViewTable extends React.Component {
 
             var filterType = eList[colName].type;
             var min, max;
-            var foundElastic = false;
-            var foundRange = false;
+            var rCount = 0;
 
-            if (eList[colName].selectedValues.length) {
-                min = eList[colName].selectedValues[0];
-                max = eList[colName].selectedValues[0];
+            if (filterType == "Text") {
+                if (eList[colName].selectedValues.length) {
+                    min = eList[colName].selectedValues[0];
+                    max = eList[colName].selectedValues[0];
+                }
+                else if (eList[colName].highlightedValues.length) {
+                    min = eList[colName].highlightedValues[0];
+                    max = eList[colName].highlightedValues[0];
+                }
+                else {
+                    continue;
+                }
+
+                if ( eList[colName].selectedValues.length) {
+                    for (var i = 0; i < eList[colName].selectedValues.length; i++) {
+                        if (eList[colName].selectedValues[i] < min) {
+                            min = eList[colName].selectedValues[i];
+                        }
+                        else if (eList[colName].selectedValues[i] > max) {
+                            max = eList[colName].selectedValues[i];
+                        }
+                    }
+                }
+
+                if ( eList[colName].highlightedValues.length ) {
+                    for (var i = 0; i < eList[colName].highlightedValues.length; i++) {
+                        if (eList[colName].highlightedValues[i] < min) {
+                            min = eList[colName].highlightedValues[i];
+                        }
+                        else if (eList[colName].highlightedValues[i] > max) {
+                            max = eList[colName].highlightedValues[i];
+                        }
+                    }
+                }
             }
-            else if (eList[colName].highlightedValues.length) {
-                min = eList[colName].highlightedValues[0];
-                max = eList[colName].highlightedValues[0];
+
+            else if (filterType == "Number") {
+                if (eList[colName].selectedValues.length) {
+                    min = parseInt(eList[colName].selectedValues[0], 10);
+                    max = parseInt(eList[colName].selectedValues[0], 10);
+                }
+                else if (eList[colName].highlightedValues.length) {
+                    min = parseInt(eList[colName].highlightedValues[0], 10);
+                    max = parseInt(eList[colName].highlightedValues[0], 10);
+                }
+                else {
+                    continue;
+                }
+
+                if ( eList[colName].selectedValues.length) {
+                    for (var i = 0; i < eList[colName].selectedValues.length; i++) {
+                        var curNum = parseInt(eList[colName].selectedValues[i], 10);
+                        if (curNum < min) {
+                            min = curNum;
+                        }
+                        else if (curNum > max) {
+                            max = curNum;
+                        }
+                    }
+                }
+
+                if ( eList[colName].highlightedValues.length ) {
+                    for (var i = 0; i < eList[colName].highlightedValues.length; i++) {
+                        var curNum = parseInt(eList[colName].highlightedValues[i], 10);
+                        if (curNum < min) {
+                            min = curNum;
+                        }
+                        else if (curNum > max) {
+                            max = curNum;
+                        }
+                    }
+                }
             }
+
+            else if (filterType == "Date") {
+                console.log("Not implemented yet...");
+                break;
+            }
+
             else {
-                continue;
+                console.log("Oh no, something went wrong when reading the filter type into the filterView!");
+                break;
             }
 
-            if ( eList[colName].selectedValues.length) {
-
-                foundElastic = true;
-
-                for (var i = 0; i < eList[colName].selectedValues.length; i++) {
-                    if (eList[colName].selectedValues[i] < min) {
-                        min = eList[colName].selectedValues[i];
-                    }
-                    else if (eList[colName].selectedValues[i] > max) {
-                        max = eList[colName].selectedValues[i];
-                    }
+            var rList = this.props.rangeList[colName].rangeList;
+            
+            for (var i = 0; i < rList.length; i ++) {
+                if (rList[i][3] == true) {
+                    rCount++;
                 }
             }
 
-            if ( eList[colName].highlightedValues.length ) {
-
-                foundRange = true;
-
-                for (var i = 0; i < eList[colName].highlightedValues.length; i++) {
-                    if (eList[colName].highlightedValues[i] < min) {
-                        min = eList[colName].highlightedValues[i];
-                    }
-                    else if (eList[colName].highlightedValues[i] > max) {
-                        max = eList[colName].highlightedValues[i];
-                    }
-                }
-            }
-
-            viewList.push([colName, filterType, min, max, foundElastic, foundRange]);
+            viewList.push([colName, filterType, min, max, eList[colName].selectedValues.length, rCount]);
         }
 
         
@@ -105,7 +160,50 @@ class FilterViewTable extends React.Component {
         return (
             <div>
                 {/* Displays the mapped ranges*/}
-                {view}
+
+
+
+                        <Flex divider />  
+
+                        <Flex layout="row"> 
+                            <Flex flex="35">
+                            </Flex>
+
+
+                            <Flex flex="15">
+
+                                <span style = {{ color: "#b2b2b2" }} > Filter </span>
+                                
+
+                            </Flex>
+
+                            <Flex flex="15"  >
+                                <span style = {{ color: "#b2b2b2" }} > Type </span>
+
+                            </Flex>
+
+                            <Flex flex="20">
+                                <span style = {{ color: "#b2b2b2" }} > Min </span>
+                                
+                            </Flex>
+                            
+                            <Flex flex="5">
+                                <span style = {{ color: "#b2b2b2" }} > Max </span>
+                                
+                            </Flex>
+                        </Flex>
+
+                        <Flex divider /> 
+                        <Divider />
+                        <Flex divider /> 
+
+                                
+
+                        {view}
+                        
+
+
+                
             </div>
         );
     }
@@ -120,75 +218,97 @@ class FilterViewRow extends React.Component {
 
     render() {
         return (
-            <Card>
-                <CardText 
-                    style = {{
-                        padding: '0px' 
-                    }} 
-                >
-                    <Flex layout="row">      
+            <div>
 
-                        <Flex divider />  
+                
 
-                        <Flex flex="10">
-                            <FontIcon
-                                //onClick = { this.onDelEvent.bind(this) }
-                                className = "fa fa-trash fa-2x"
-                                //style = { styleSet.iconStyles }
-                            />
-                        </Flex>
+                <Flex layout="row" style = {{  height: "40px" }}>
+                    <Flex divider />  
 
-                        <Flex flex="10">
-                            <FontIcon
-                                //onClick = { this.onDelEvent.bind(this) }
-                                className = "fa fa-list-ul fa-2x"
-                                //style = { styleSet.iconStyles }
-                            />
-                            <FontIcon
-                                //onClick = { this.onDelEvent.bind(this) }
-                                className = "fa fa-sliders fa-2x"
-                                //style = { styleSet.iconStyles }
-                            />
-                        </Flex>
-
-                        <Flex flex="30">
-                            {this.props.view[0]}
-
-                            {/* 
-                            <TextSlider
-                                minVal = { this.props.minVal }
-                                maxVal = { this.props.maxVal }
-                                onSlide = { this.props.onSlide }
-                                onTextChange = { this.props.onTextChange }
-                                onTextBlur = { this.props.onTextBlur }
-                                cellData = {{
-                                    id: this.props.range[2],
-                                    min: this.props.range[0],
-                                    max: this.props.range[1]
-                                }}
-                            />
-                            */}
-
-                        </Flex>
-
-                        <Flex flex="10">
-                            {this.props.view[1]}
-
-                        </Flex>
-
-                        <Flex flex="20">
-                            {this.props.view[2]}
-                            
-                        </Flex>
-                        
-                        <Flex flex="20">
-                            {this.props.view[3]}
-                            
-                        </Flex>
-
+                    <Flex flex="5">
+                        <FontIcon
+                            //onClick = { this.onDelEvent.bind(this) }
+                            className = "fa fa-trash fa-2x"
+                            hoverColor = { red500 }
+                            //style = { styleSet.iconStyles }
+                        />
                     </Flex>
-                </CardText>
-            </Card>
+                    <Flex divider /> 
+
+                    <Flex flex="15">
+                        <Flex layout="row"> 
+                            
+                            <Flex flex="50">
+                                <Badge
+                                    badgeContent={this.props.view[4]}
+                                    primary={true}
+                                    style = {{ padding: "0px 0px 0px 0px" }}
+                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px" }}
+                                    >
+                                    <FontIcon
+                                        //onClick = { this.onDelEvent.bind(this) }
+                                        className = "fa fa-list-ul fa-2x"
+                                        //style = { styleSet.iconStyles }
+                                    />
+                                </Badge>
+                            </Flex>
+
+                            <Flex divider /> 
+                            <Flex divider /> 
+
+                            <Flex flex="50">
+                                <Badge
+                                    badgeContent={this.props.view[5]}
+                                    primary={true}
+                                    style = {{ padding: "0px 0px 0px 0px" }}
+                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px" }}
+                                    >
+                                    <FontIcon
+                                        //onClick = { this.onDelEvent.bind(this) }
+                                        className = "fa fa-sliders fa-2x"
+                                        //style = { styleSet.iconStyles }
+                                    />
+                                </Badge>
+                            </Flex>
+                        </Flex> 
+                    </Flex>
+
+                    <Flex divider /> 
+                    <Flex divider /> 
+
+
+                    <Flex flex="80">
+                        <Flex layout="row"> 
+                            <Flex flex="30">
+
+                                {this.props.view[0]}
+                                
+
+                            </Flex>
+
+                            <Flex flex="20"  >
+                                {this.props.view[1]}
+
+                            </Flex>
+
+                            <Flex flex="25">
+                                {this.props.view[2]}
+                                
+                            </Flex>
+                            
+                            <Flex flex="25">
+                                {this.props.view[3]}
+                                
+                            </Flex>
+                        </Flex>
+                    </Flex>
+
+                </Flex>
+
+              
+
+            </div>
+            
         );
     }
 }
@@ -234,6 +354,7 @@ export const unhighlightAllElastic = (colName) => ({
 const mapStateToProps = function(state){
   return {
     elasticList: state.filterState.Filter.Elastic,
+    rangeList: state.filterState.Filter.Ranges,
   }
 }
 

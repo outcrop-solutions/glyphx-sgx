@@ -150,6 +150,60 @@ const filterReducer = function(state = initialFilterState, action) {
             console.log(newState);
             return newState;
 
+        case 'HIGHLIGHT_ELASTIC': 
+            console.log('HIGHLIGHT_ELASTIC');
+            
+            var stateVal = state.Filter.Elastic[action.colName].highlightedValues.slice();
+
+            for (var i = 0; i < stateVal.length; i++) {
+
+            }
+
+
+            var newState  = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Elastic : {
+                        ...state.Filter.Elastic,
+                        [action.colName] : {
+                            ...state.Filter.Elastic[action.colName],
+                            highlightedValues: stateVal,
+                        }
+                    }
+                }
+            };
+
+            console.log(newState);
+            return newState;
+
+
+        case 'UNHIGHLIGHT_ELASTIC': 
+            console.log('UNHIGHLIGHT_ELASTIC');
+            
+            var stateVal = state.Filter.Elastic[action.colName].highlightedValues.slice();
+
+            for (var i = 0; i < stateVal.length; i++) {
+
+            }
+
+            var newState  = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Elastic : {
+                        ...state.Filter.Elastic,
+                        [action.colName] : {
+                            ...state.Filter.Elastic[action.colName],
+                            highlightedValues: stateVal,
+                        }
+                    }
+                }
+            };
+
+            console.log(newState);
+            return newState;
+
         case 'ADD_REMOVE_ELASTIC': 
         {
             console.log('ADD_REMOVE_ELASTIC');
@@ -162,7 +216,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 delete newState.Filter.Elastic[col];
             }
             else*/
-            {
+            //{
                 newState  = {
                     ...state,
                     Filter : {
@@ -177,7 +231,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         }
                     }
                 };
-            }
+            //}
             
             //newState = Object.assign({}, state, elasticFilter);
 

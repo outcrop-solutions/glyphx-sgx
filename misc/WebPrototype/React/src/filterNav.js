@@ -637,8 +637,6 @@ class FilterNav extends Component {
                     
                     </RaisedButton>
 
-                    <Flex divider />
-                    <Flex divider />
 
                     {/* BOTTOM SECTION */}
 
