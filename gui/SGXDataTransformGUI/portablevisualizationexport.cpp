@@ -97,6 +97,7 @@ namespace SynGlyphX {
         qDebug() << m_sourceDirectories.at(platform);
         qDebug() << destinationDir;
         qDebug() << QDir(m_sourceDirectories.at(platform)).exists();
+        qDebug() << QDir(m_sourceDirectories.at(platform)).count();
 		Filesystem::CopyDirectoryOverwrite(m_sourceDirectories.at(platform).toStdString(), destinationDir.toStdString(), true);
 		if (platform == Platform::Windows) {
 
@@ -109,7 +110,7 @@ namespace SynGlyphX {
         
 #ifdef __APPLE__
         // On OSX the exectuable won't automatically have the execute permission bit set. Change it.
-        Filesystem::SetExecutable( destinationDir.toStdString() + "/GlyphPortable" );
+        //Filesystem::SetExecutable( destinationDir.toStdString() + "/GlyphPortable" );
 #endif
 	}
 

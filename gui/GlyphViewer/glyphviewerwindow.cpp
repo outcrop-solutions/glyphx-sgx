@@ -1606,6 +1606,9 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
 		//m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
+#ifdef __APPLE__
+        csvDirectory += "/GlyphPortable.app/Contents/MacOS";
+#endif
 		for (QString cbImg : m_currentBaseImages){
 			SynGlyphX::Filesystem::CopyFileOverwrite(cbImg.toStdString(), csvDirectory.toStdString() + "/base_img.png");
 		}
