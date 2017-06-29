@@ -59,7 +59,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <FilterTable ref={this.props.colName} tableData={this.state.tableData} id={this.props.colName} selectedRows={this.state.FilterTableSelectedRows}></FilterTable>
+                        <FilterTable internalColName={this.props.internalColName} displayName={this.props.displayName} tableData={this.state.tableData} id={this.props.id} selectedRows={this.state.FilterTableSelectedRows}></FilterTable>
                     </div>
                     <div
                         style={{
@@ -67,7 +67,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <RangeForm colName={this.props.colName} data={this.state.tableData} minVal={-100} maxVal={100}></RangeForm>
+                        <RangeForm colName={this.props.id} data={this.state.tableData} minVal={-100} maxVal={100}></RangeForm>
                     </div>
                 </SwipeableViews>
             </div>

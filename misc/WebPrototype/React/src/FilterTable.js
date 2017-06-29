@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import Checkbox from 'material-ui/Checkbox';
 import { connect } from 'react-redux';
 
 const mapStateToProps = function(state){
@@ -31,7 +32,6 @@ class FilterTable extends Component {
         super(props);
         
         this.state = {
-        id: props.id,
         fixedHeader: true,
         fixedFooter: true,
         stripedRows: false,
@@ -40,7 +40,9 @@ class FilterTable extends Component {
         multiSelectable: true,
         enableSelectAll: false,
         deselectOnClickaway: false,
-        showCheckboxes: true,
+        showCheckboxes: false,
+        selectAll: false,
+        checkboxClicked:false,
         tableData: this.processData(props.tableData ? props.tableData : []),
         indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
         };
@@ -65,24 +67,35 @@ class FilterTable extends Component {
      * This method is called on selection of the row in the table. 
      * @param context: This is the actual instance of the FilterTable. Mainly used to access the state and store.
      * @param rowSelection: This is an array that has index(according to the table rows) of all the rows selected.
+     * @param all: boolean value stating whether or not select all is clicked.
      */
-    onRowSelect = (context,rowSelection) => {
+    onRowSelect = (context,rowSelection,all) => {
+            var index,len = all ? context.flatData.length : rowSelection.length;
+            var selectedValues = [];
+            var highlightedValues = [];
 
-        var index,len = rowSelection.length;
-        var selectedValues = [];
-        var highlightedValues = [];
+            if(all || rowSelection.length == context.flatData.length)
+            {
+                this.setState({selectAll:true});
+                for(index=0;index<len;index++)
+                    selectedValues.push(context.flatData[index].value);
+            }
+            else{
+                this.setState({selectAll:false});
+                for(index=0;index<len;index++)
+                    selectedValues.push(context.flatData[rowSelection[index]].value);
+            }
+            
 
-        for(index=0;index<len;index++)
-                selectedValues.push(context.flatData[rowSelection[index]].value);
-
-        var filterStructure = {
-                colName : context.props.id,
-                selectedValues: selectedValues,
-                highlightedValues: highlightedValues
-        }
+            var filterStructure = {
+                    colName : context.props.id,
+                    selectedValues: selectedValues,
+            }
 
             context.props.dispatch(addRemoveElastic(filterStructure));
+        
     };
+
 
     handleToggle = (event, toggled) => {
         this.setState({
@@ -95,12 +108,11 @@ class FilterTable extends Component {
      * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
      * @param indexColumnToSearch: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
      */
-    onKeyUp = (id,indexColumnToSearch) => {
+    onKeyUp = (context,id,indexColumnToSearch) => {
         var input, filter, table, tr, td, i;
         input = document.getElementById("tf-"+id);
         filter = input.value.toUpperCase();
-        table = document.getElementsByClassName("table-"+id)[1]; // The table header and table data are 2 separate tables. So we fetch the 2nd index as we want the data table.
-        tr = table.getElementsByTagName("tr");
+        tr = this.fetchTableRows(this.getInternalTableName());
 
         //typeof input.value == "string" ? input.value.toUpperCase() :  input.value;
 
@@ -117,24 +129,46 @@ class FilterTable extends Component {
         }
     };
 
+    /**
+     * Returns the rendered table rows(HTML).
+     * @param id: tableId
+     * @returns: array of table rows.
+     */
+    fetchTableRows = (id) => {
+        var table = document.getElementsByClassName(id)[1]; // The table header and table data are 2 separate tables. So we fetch the 2nd index as we want the data table.
+        var tr = table.getElementsByTagName("tr");
+        return tr;
+    };
+
+    /**
+     * 
+     */
+    getInternalTableName = () => {
+        return "table-" + this.props.internalColName;
+    }
+
     handleChange = (event) => {
         this.setState({height: event.target.value});
     };
 
     render() {
-        var id = this.state.id;
+        var id = this.props.id;
+        var internalColName = this.props.internalColName;
         var data = this.state.tableData.data;
         var totalCount = this.state.tableData.totalCount;
         var rows = []; var index=0;
+        this.flatData = [];
 
         for(var property in data) {
             rows.push(<TableRow 
                 key={index}
+                style={{height:'30px'}}
                 selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}
                 striped={this.props.tableState[id].highlightedValues.indexOf(property) !== -1}
                 >
-                    <TableRowColumn style={{paddingLeft:'0px'}}>{property}</TableRowColumn>
-                    <TableRowColumn>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
+                    <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
+                    <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{property}</TableRowColumn>
+                    <TableRowColumn style={{height:'inherit'}}>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
 
             this.flatData.push({
@@ -150,14 +184,14 @@ class FilterTable extends Component {
             <div>   
                 <TextField
                     type="text" 
-                    id={"tf-"+id}
-                    className={"tf-"+id} 
-                    onKeyUp={() => this.onKeyUp(id,this.state.indexColumnToSearch)} 
+                    id={"tf-"+internalColName}
+                    className={"tf-"+internalColName} 
+                    onKeyUp={() => this.onKeyUp(this,internalColName,this.state.indexColumnToSearch)} 
                     hintText="Search for value.." /> 
                 <br/>
                 <Table
-                    className={"table-"+id}
-                    
+                    className={"table-"+internalColName}
+                    height='300px'
                     fixedHeader={this.state.fixedHeader}
                     fixedFooter={this.state.fixedFooter}
                     selectable={this.state.selectable}
@@ -169,9 +203,10 @@ class FilterTable extends Component {
                     adjustForCheckbox={this.state.showCheckboxes}
                     enableSelectAll={this.state.enableSelectAll}
                 >
-                    <TableRow>
-                        <TableHeaderColumn style={{paddingLeft:'0px'}} >Value</TableHeaderColumn>
-                        <TableHeaderColumn >Count(Percent)</TableHeaderColumn>
+                    <TableRow  style={{height:'30px'}}>
+                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.state.selectAll} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
+                        <TableHeaderColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}} >Value</TableHeaderColumn>
+                        <TableHeaderColumn style={{height:'inherit'}}>Count(Percent)</TableHeaderColumn>
                     </TableRow>
 
                 </TableHeader>

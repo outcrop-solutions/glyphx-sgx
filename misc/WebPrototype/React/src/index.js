@@ -65,7 +65,16 @@ const initialFilterState = {
 
 const filterReducer = function(state = initialFilterState, action) {
     switch (action.type) {
-        
+        case 'INIT':
+        {
+            var newState;
+            newState  = {
+                    ...state,
+                    Filter : action.storeFilterStruc
+            }
+            console.log(newState);
+            return newState;
+        }
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
             
