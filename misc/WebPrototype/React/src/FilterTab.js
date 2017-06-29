@@ -96,7 +96,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <RangeForm colName={this.props.id} data={this.state.tableData} minVal={-100} maxVal={100}></RangeForm>
+                        <RangeForm colName={this.props.id} data={this.state.tableData}></RangeForm>
                     </div>
                 </SwipeableViews>
             </div>

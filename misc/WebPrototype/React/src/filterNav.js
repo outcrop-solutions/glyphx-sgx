@@ -554,7 +554,6 @@ class FilterNav extends Component {
             icon[0] ? icon[0].classList.add("pinned") : icon[0];
             icon[1] ? icon[1].classList.add("pinned") : icon[0];
             pinned = true;
-            debugger;
             colInstanceArr.push(this.makeList([colName],'columns',{data:this.state.tableData,pinned:true,displayName:this.props.GLOBAL.Elastic[colName].displayName})[0]);
         }
 
