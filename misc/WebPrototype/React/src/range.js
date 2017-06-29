@@ -14,12 +14,18 @@ import './range.css';
 
 /**
  * Main Range parent class which gets exported, holds data structure used to map rangeList to the DOM
- * @param minVal: Sets the minimum value allowed for all the rangeList within the range table
- * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
  * @param colName: "tableName|colName": name of the corresponding table|column for this RangeForm
- * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
+ * @param data: all the fields within the elastic table for the corresponding colName
  **/
 class RangeForm extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        debugger;
+        this.props.minVal = this.props.rangeList[this.props.colName].bounds[0];
+        this.props.maxVal = this.props.rangeList[this.props.colName].bounds[1];
+    }
 
     /**
      * Deletes a range by splicing it out of the store which causes DOM to re-map
