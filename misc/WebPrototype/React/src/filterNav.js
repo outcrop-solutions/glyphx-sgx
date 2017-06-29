@@ -154,13 +154,12 @@ class FilterNav extends Component {
                     var displayName = "";
 
                     if(extra.makeFilterStructure) {
-                        var type = isNaN(extra.data[column][0]) ? 'text' : 'number';
+                        var type = isNaN(extra.data[column][0]) ? 'Text' : 'Number';
 
-                        minMax = type=='number'? this.findMinMax(extra.data[column]) : {min:0,max:0};
+                        minMax = type=='Number'? this.findMinMax(extra.data[column]) : {min:0,max:0};
 
                         rangeStructure[column] = {
                             rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
-                            rangeType: type,
                             bounds:[minMax.min,minMax.max]
                         };
                         

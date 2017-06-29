@@ -14,18 +14,13 @@ import './range.css';
 
 /**
  * Main Range parent class which gets exported, holds data structure used to map rangeList to the DOM
+ * @param minVal: Sets the minimum value allowed for all the rangeList within the range table
+ * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
  * @param colName: "tableName|colName": name of the corresponding table|column for this RangeForm
- * @param data: all the fields within the elastic table for the corresponding colName
+ * @param data: array of values from the eleastic table for the corresponding colName
+ * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
 class RangeForm extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        debugger;
-        this.props.minVal = this.props.rangeList[this.props.colName].bounds[0];
-        this.props.maxVal = this.props.rangeList[this.props.colName].bounds[1];
-    }
 
     /**
      * Deletes a range by splicing it out of the store which causes DOM to re-map
@@ -33,6 +28,7 @@ class RangeForm extends React.Component {
      **/
     handleRowDel(id) {
         this.props.dispatch(removeRange(this.props.colName, id));
+        this.updateHighlighted();
     };
 
 
@@ -42,26 +38,32 @@ class RangeForm extends React.Component {
      **/
     handleAddEvent() {
         this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
-        this.updateHighlighted();
-        
     }
 
+
+    /**
+     * Determines what should be highlighted in the elastic list based on applied ranges
+     **/
     updateHighlighted() {
         var rList = this.props.rangeList[this.props.colName].rangeList;
         var highlighted = [];
 
-        for (var i = 0; i < rList.length; i++) {
-            if (rList[i][3] == true) {
-                for (var j = 0; j < this.props.data.length; j++) {
-                    if (highlighted.indexOf(this.props.data[j]) == -1) {
-                        highlighted.push(this.props.data[j])
+        if (this.props.rangeType == "Number") {
+            for (var i = 0; i < rList.length; i++) {
+                if (rList[i][3] == true) {
+                    for (var j = 0; j < this.props.data.length; j++) {
+                        if (highlighted.indexOf(this.props.data[j]) == -1) {
+                            var curNum = parseInt(this.props.data[j], 10)
+                            //console.log("curNum: " + curNum + ", min: " + );
+                            if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
+                                highlighted.push(this.props.data[j]);
+                            }
+                        }
                     }
                 }
-                
             }
         }
-        console.log(this.props.data);
-        console.log(highlighted);
+        this.props.dispatch(highlightElastic(this.props.colName, highlighted));
     }
 
 
@@ -131,10 +133,12 @@ class RangeForm extends React.Component {
             if (latestChange === "MIN") {
                 this.props.dispatch(updateRange(this.props.colName, max, max, id, null));
                 console.log("DISPATCHED MAX VALUE");
+                this.updateHighlighted();
             }
             else if (latestChange === "MAX") {
                 this.props.dispatch(updateRange(this.props.colName, min, min, id, null));
                 console.log("DISPATCHED MIN VALUE");
+                this.updateHighlighted();
             }
         }
     };
@@ -147,6 +151,7 @@ class RangeForm extends React.Component {
      **/
     handleSliderUpdate(e, id) {
         this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null));
+        this.updateHighlighted();
     };
 
 
@@ -158,9 +163,11 @@ class RangeForm extends React.Component {
     handleSwitchToggle(e, id) {
         if (e.target.checked) {
             this.props.dispatch(updateRange(this.props.colName, null, null, id, true));
+            this.updateHighlighted();
         }
         else {
             this.props.dispatch(updateRange(this.props.colName, null, null, id, false));
+            this.updateHighlighted();
         }
     };
 
@@ -335,6 +342,7 @@ class TextSlider extends React.Component {
         }
     }
 
+
     /**
      * Preprocesses min max vals (fixes the case where min value has 10 and user is trying to type 80, 8 is the first digit and 8 < 10)
      * @param min: the min to be processed 
@@ -414,7 +422,7 @@ class TextSlider extends React.Component {
                         ref ={ input => this.inputElementMin = input }
                         id = { this.props.cellData.id.toString() } 
                         value = { this.props.cellData.min } 
-                        hintText = { this.props.minVal }
+                        hintText = { this.props.minVal.toString() }
                         style = { styleSet.textfieldStyles }
                         onChange = {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
@@ -462,7 +470,7 @@ class TextSlider extends React.Component {
                         ref = { input => this.inputElementMax = input }
                         id = { this.props.cellData.id.toString() } 
                         value = { this.props.cellData.max }
-                        hintText = { this.props.maxVal }
+                        hintText = { this.props.maxVal.toString() }
                         style = { styleSet.textfieldStyles }
                         onChange = {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
@@ -522,13 +530,10 @@ export const updateRange = (colName, min, max, id, applied) => ({
     max,
     applied
 });
-export const highlightElastic = (text) => ({
+export const highlightElastic = (colName, highlighted) => ({
     type: 'HIGHLIGHT_ELASTIC',
-    text
-});
-export const unhighlightElastic = (text) => ({
-    type: 'UNHIGHLIGHT_ELASTIC',
-    text
+    colName,
+    highlighted
 });
 
 

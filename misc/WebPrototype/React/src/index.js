@@ -116,13 +116,6 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'HIGHLIGHT_ELASTIC': 
             console.log('HIGHLIGHT_ELASTIC');
             
-            var stateVal = state.Filter.Elastic[action.colName].highlightedValues.slice();
-
-            for (var i = 0; i < stateVal.length; i++) {
-
-            }
-
-
             var newState  = {
                 ...state,
                 Filter : {
@@ -131,34 +124,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter.Elastic,
                         [action.colName] : {
                             ...state.Filter.Elastic[action.colName],
-                            highlightedValues: stateVal,
-                        }
-                    }
-                }
-            };
-
-            console.log(newState);
-            return newState;
-
-
-        case 'UNHIGHLIGHT_ELASTIC': 
-            console.log('UNHIGHLIGHT_ELASTIC');
-            
-            var stateVal = state.Filter.Elastic[action.colName].highlightedValues.slice();
-
-            for (var i = 0; i < stateVal.length; i++) {
-
-            }
-
-            var newState  = {
-                ...state,
-                Filter : {
-                    ...state.Filter,
-                    Elastic : {
-                        ...state.Filter.Elastic,
-                        [action.colName] : {
-                            ...state.Filter.Elastic[action.colName],
-                            highlightedValues: stateVal,
+                            highlightedValues: action.highlighted,
                         }
                     }
                 }

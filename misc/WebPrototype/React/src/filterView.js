@@ -147,7 +147,7 @@ class FilterViewTable extends React.Component {
         }
 
         
-        console.log(viewList);
+        //console.log(viewList);
 
         var view = viewList.map( function(view) {
             return (<FilterViewRow 
