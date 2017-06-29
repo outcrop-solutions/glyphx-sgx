@@ -297,14 +297,13 @@ namespace SynGlyphX {
 	}
 
 	std::string LicensingDialog::DecimalToHex(long long to_convert) {
-        /*
-		char buffer[33];
-        itoa(to_convert, buffer, 16);
-		return std::string(buffer);
-         */
-        std::stringstream ss;
-        ss << std::hex << to_convert;
-        return ss.str();
+
+		//char buffer[33];
+		//itoa(to_convert, buffer, 16);
+		std::stringstream ss;
+		ss << std::hex << to_convert;
+		//return std::string(buffer);
+		return ss.str();
 	}
 
 	QString LicensingDialog::GetLicenseDirectory() {
