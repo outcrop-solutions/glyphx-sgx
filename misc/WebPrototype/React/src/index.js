@@ -68,7 +68,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter.Ranges,
                         [action.colName] : {
                             ...state.Filter.Ranges[action.colName],
-                            rangeList : stateVal
+                            rangeList : stateVal,
+                            highlightedValues: action.highlighted,
                         }
                     }
                 }
@@ -96,6 +97,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
+
             var newState = {
                 ...state,
                 Filter : {
@@ -104,11 +106,13 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter.Ranges,
                         [action.colName] : {
                             ...state.Filter.Ranges[action.colName],
-                            rangeList : stateVal
+                            rangeList : stateVal,
+                            highlightedValues: action.highlighted,
                         }
                     }
                 }
             }
+            
 
             console.log(newState);
             return newState;

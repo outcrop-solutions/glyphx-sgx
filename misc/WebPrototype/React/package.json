@@ -23,7 +23,9 @@
     "redux": "3.7.0",
     "react-redux":"5.0.5",
     "react-dual-listbox": "1.1.0",
-    "react-textfit": "1.0.1"
+    "react-textfit": "1.0.1",
+    "rc-tooltip": "3.4.6",
+    "worker-loader": "0.8.0"
   },
   "scripts": {
     "start": "react-scripts start",

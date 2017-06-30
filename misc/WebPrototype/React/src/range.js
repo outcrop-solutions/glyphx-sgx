@@ -27,24 +27,15 @@ class RangeForm extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        this.props.dispatch(removeRange(this.props.colName, id));
-        this.updateHighlighted();
+        
+        this.props.dispatch(removeRange(this.props.colName, id, this.calcHighlighted()));
     };
-
-
-    /**
-     * Adds a range with the default values of the current min being set to the minimum value, current max being set to the maximum value,
-     * a new generated ID, and the applied switch on off.
-     **/
-    handleAddEvent() {
-        this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
-    }
 
 
     /**
      * Determines what should be highlighted in the elastic list based on applied ranges
      **/
-    updateHighlighted() {
+    calcHighlighted() {
         var rList = this.props.rangeList[this.props.colName].rangeList;
         var highlighted = [];
 
@@ -63,7 +54,16 @@ class RangeForm extends React.Component {
                 }
             }
         }
-        this.props.dispatch(highlightElastic(this.props.colName, highlighted));
+        return highlighted;
+    }
+
+
+    /**
+     * Adds a range with the default values of the current min being set to the minimum value, current max being set to the maximum value,
+     * a new generated ID, and the applied switch on off.
+     **/
+    handleAddEvent() {
+        this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
     }
 
 
@@ -80,25 +80,25 @@ class RangeForm extends React.Component {
         if ( !isNaN(value) ) {
             if (e.target.name === "min") {
                 if ( value > maximum  ) {
-                    this.props.dispatch(updateRange(this.props.colName, maximum, null, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, maximum, null, id, null, null));
                 }
                 else if (value < minimum) {
-                    this.props.dispatch(updateRange(this.props.colName, minimum, null, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, minimum, null, id, null, null));
                 }
                 else {
-                    this.props.dispatch(updateRange(this.props.colName, value, null, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, value, null, id, null, null));
                 }
             }
 
             else {
                 if ( value > maximum  ) {
-                    this.props.dispatch(updateRange(this.props.colName, null, maximum, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, null, maximum, id, null, null));
                 }
                 else if (value < minimum) {
-                    this.props.dispatch(updateRange(this.props.colName, null, minimum, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, null, minimum, id, null, null));
                 }
                 else {
-                    this.props.dispatch(updateRange(this.props.colName, null, value, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, null, value, id, null, null));
                 }
             }
         }
@@ -131,14 +131,12 @@ class RangeForm extends React.Component {
 
         if (min > max) {
             if (latestChange === "MIN") {
-                this.props.dispatch(updateRange(this.props.colName, max, max, id, null));
+                this.props.dispatch(updateRange(this.props.colName, max, max, id, null, this.calcHighlighted()));
                 console.log("DISPATCHED MAX VALUE");
-                this.updateHighlighted();
             }
             else if (latestChange === "MAX") {
-                this.props.dispatch(updateRange(this.props.colName, min, min, id, null));
+                this.props.dispatch(updateRange(this.props.colName, min, min, id, null, this.calcHighlighted()));
                 console.log("DISPATCHED MIN VALUE");
-                this.updateHighlighted();
             }
         }
     };
@@ -150,8 +148,7 @@ class RangeForm extends React.Component {
      * @param id: ID used to find the range in the store
      **/
     handleSliderUpdate(e, id) {
-        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null));
-        this.updateHighlighted();
+        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.calcHighlighted()));
     };
 
 
@@ -162,12 +159,10 @@ class RangeForm extends React.Component {
      **/
     handleSwitchToggle(e, id) {
         if (e.target.checked) {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, true));
-            this.updateHighlighted();
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, true, this.calcHighlighted()));
         }
         else {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, false));
-            this.updateHighlighted();
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, false, this.calcHighlighted()));
         }
     };
 
@@ -517,22 +512,19 @@ export const addRange = (colName, min, max, id, applied) => ({
     id,
     applied
 });
-export const removeRange = (colName, id) => ({
+export const removeRange = (colName, id, highlighted) => ({
     type: 'REMOVE_RANGE',
     colName,
-    id
+    id,
+    highlighted
 });
-export const updateRange = (colName, min, max, id, applied) => ({
+export const updateRange = (colName, min, max, id, applied, highlighted) => ({
     type: 'UPDATE_RANGE',
     colName,
     id,
     min,
     max,
-    applied
-});
-export const highlightElastic = (colName, highlighted) => ({
-    type: 'HIGHLIGHT_ELASTIC',
-    colName,
+    applied, 
     highlighted
 });
 

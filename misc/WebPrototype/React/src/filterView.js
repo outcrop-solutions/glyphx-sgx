@@ -7,27 +7,34 @@ import { Card, CardText } from 'material-ui/Card';
 import { red500 } from 'material-ui/styles/colors';
 import { Textfit } from 'react-textfit';
 import { connect } from 'react-redux';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import Tooltip from 'rc-tooltip';
+import placements from 'rc-tooltip/lib/placements';
+import 'rc-tooltip/assets/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 
 
 class FilterViewForm extends React.Component {
 
     handleRowDel() {
-        this.props.dispatch(removeAllRange(this.props.colName));
+        this.props.dispatch(disableAllRangeAndRemoveHighlighted(this.props.colName));
         this.props.dispatch(removeAllElastic(this.props.colName));
-        this.props.dispatch(unhighlightAllElastic(this.props.colName));
     };
 
 
     render() {
         return (
-            <div style = {{ overflow: 'auto', width: '100%', borderStyle: "solid", borderWidth: "1px" }} >
+            //<div style = {{ overflow: 'auto', width: '100%', borderStyle: "solid", borderWidth: "1px" }} >
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px"}}>
+                <CardText>
                 <FilterViewTable
                     onRowDel = { this.handleRowDel.bind(this) }
                     elasticList = { this.props.elasticList }
                     rangeList = { this.props.rangeList }
                 />
-            </div>
+                </CardText>
+            </Card>
+            //</div>
         );
     }
 }
@@ -43,7 +50,6 @@ class FilterViewTable extends React.Component {
         var eList = this.props.elasticList;
 
         var viewList = [];
-        // [colName, type, min, max, foundElastic, FoundRange]
 
         for (var colName in eList) {
 
@@ -143,7 +149,7 @@ class FilterViewTable extends React.Component {
                 }
             }
 
-            viewList.push([colName, filterType, min, max, eList[colName].selectedValues.length, rCount]);
+            viewList.push([eList[colName].displayName, filterType, min, max, eList[colName].selectedValues.length, rCount]);
         }
 
         
@@ -217,15 +223,30 @@ class FilterViewRow extends React.Component {
     }
 
     render() {
+
+        var displayName = this.props.view[0];
+        var min = this.props.view[2];
+        var max = this.props.view[3];
+
+        if(displayName.length > 25) {
+            displayName = displayName.substring(0,24) + "...";
+        }
+
+        if(min.length > 12) {
+            min = min.substring(0,11) + "...";
+        }
+
+        if(max.length > 12) {
+            max = max.substring(0,11) + "...";
+        }
+
         return (
             <div>
 
-                
-
-                <Flex layout="row" style = {{  height: "40px" }}>
+                <Flex layout="row" style = {{  height: "50px" }}>
                     <Flex divider />  
 
-                    <Flex flex="5">
+                    <Flex flex="1">
                         <FontIcon
                             //onClick = { this.onDelEvent.bind(this) }
                             className = "fa fa-trash fa-2x"
@@ -234,8 +255,10 @@ class FilterViewRow extends React.Component {
                         />
                     </Flex>
                     <Flex divider /> 
+                    <Flex divider /> 
 
-                    <Flex flex="15">
+
+                    <Flex flex="14">
                         <Flex layout="row"> 
                             
                             <Flex flex="50">
@@ -248,7 +271,6 @@ class FilterViewRow extends React.Component {
                                     <FontIcon
                                         //onClick = { this.onDelEvent.bind(this) }
                                         className = "fa fa-list-ul fa-2x"
-                                        //style = { styleSet.iconStyles }
                                     />
                                 </Badge>
                             </Flex>
@@ -256,7 +278,7 @@ class FilterViewRow extends React.Component {
                             <Flex divider /> 
                             <Flex divider /> 
 
-                            <Flex flex="50">
+                            <Flex flex="50" >
                                 <Badge
                                     badgeContent={this.props.view[5]}
                                     primary={true}
@@ -266,7 +288,6 @@ class FilterViewRow extends React.Component {
                                     <FontIcon
                                         //onClick = { this.onDelEvent.bind(this) }
                                         className = "fa fa-sliders fa-2x"
-                                        //style = { styleSet.iconStyles }
                                     />
                                 </Badge>
                             </Flex>
@@ -276,45 +297,67 @@ class FilterViewRow extends React.Component {
                     <Flex divider /> 
                     <Flex divider /> 
 
+                    <Flex flex="85">
 
-                    <Flex flex="80">
-                        <Flex layout="row" style = {{ display: "table" }}> 
-                            <Flex flex="30" style = {{ display: "table-cell", verticalAlign: "middle" }}>
+                        <Flex layout="row"> 
 
-                                 <Textfit mode="single">
-                                     {this.props.view[0]}
-                                </Textfit>
+                            <Flex flex="40">
+
+                                <Tooltip
+                                    placement = 'bottom'
+                                    mouseEnterDelay = { 0.5 }
+                                    mouseLeaveDelay = { 0.15 }
+                                    destroyTooltipOnHide = { false }
+                                    trigger = { Object.keys( {hover: 1} ) }
+                                    overlay = { <div> {this.props.view[0]} </div> }
+                                >
+                                    <span style = {{  wordWrap: "break-word", display: "block" }}>
+                                        {displayName}
+                                    </span> 
+                                </Tooltip>
                                 
-                                
-
                             </Flex>
 
                             <Flex divider /> 
 
-                            <Flex flex="20"  style = {{ display: "table-cell", verticalAlign: "middle" }}>
-                                {this.props.view[1]}
-
+                            <Flex flex="30">
+                                <Tooltip
+                                    placement = 'bottom'
+                                    mouseEnterDelay = { 0.5 }
+                                    mouseLeaveDelay = { 0.15 }
+                                    destroyTooltipOnHide = { false }
+                                    trigger = { Object.keys( {hover: 1} ) }
+                                    overlay = { <div> {this.props.view[2]} </div> }
+                                >
+                                    <span style = {{  wordWrap: "break-word" }}>
+                                        {min}
+                                    </span>
+                                </Tooltip>
                             </Flex>
 
-                             <Flex divider /> 
-                             <Flex divider /> 
+                            <Flex divider /> 
 
-                            <Flex flex="25" style = {{ display: "table-cell", verticalAlign: "middle" }}>
-                                {this.props.view[2]}
-                                
-                            </Flex>
-                            
-                            <Flex flex="25" style = {{ display: "table-cell", verticalAlign: "middle" }}>
-                                {this.props.view[3]}
-                                
+                            <Flex flex="30">
+
+                                <Tooltip
+                                    placement = 'bottom'
+                                    mouseEnterDelay = { 0.5 }
+                                    mouseLeaveDelay = { 0.15 }
+                                    destroyTooltipOnHide = { false }
+                                    trigger = { Object.keys( {hover: 1} ) }
+                                    overlay = { <div> {this.props.view[3]} </div> }
+                                >
+                                    <span style = {{  wordWrap: "break-word" }}>
+                                        {max}
+                                    </span>
+                                </Tooltip>
+
                             </Flex>
                         </Flex>
+
                     </Flex>
 
                 </Flex>
-
-              
-
             </div>
             
         );
@@ -341,16 +384,12 @@ const styleSet = {
 /**
  * constants defined to make dispatching for the redux store consistent
  **/
-export const removeAllRange = (colName) => ({
-    type: 'REMOVE_RANGE',
+export const disableAllRangeAndRemoveHighlighted = (colName) => ({
+    type: 'DISABLE_ALL_RANGE',
     colName
 });
 export const removeAllElastic = (colName) => ({
-    type: 'REMOVE_RANGE',
-    colName
-});
-export const unhighlightAllElastic = (colName) => ({
-    type: 'ADD_RANGE',
+    type: 'REMOVE_ALL_ELESTIC',
     colName
 });
 
