@@ -4,6 +4,7 @@ import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
 import FilterTable from './FilterTable.js';
 import RangeForm from './range.js';
+import { connect } from 'react-redux';
 
 class FilterTabs extends React.Component {
 
@@ -96,7 +97,14 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <RangeForm colName={this.props.id} data={this.state.tableData}></RangeForm>
+                        <RangeForm 
+                            colName = { this.props.id } 
+                            data = { this.state.tableData } 
+                            minVal = { this.props.filterList.Ranges[this.props.id].bounds[0] } 
+                            maxVal = { this.props.filterList.Ranges[this.props.id].bounds[1] }
+                            rangeType = { this.props.filterList.Elastic[this.props.id].type }
+                        />
+
                     </div>
                 </SwipeableViews>
             </div>
@@ -104,4 +112,18 @@ class FilterTabs extends React.Component {
     }
 }
 
-export default FilterTabs;
+/**
+ * maps portions of the store to props of your choosing
+ * @param state: passed down through react-redux's 'connect'
+ **/
+const mapStateToProps = function(state){
+  return {
+    filterList: state.filterState.Filter
+  }
+}
+
+
+/**
+ * connects the FilterTabs component to the redux store
+ **/
+export default connect(mapStateToProps)(FilterTabs);

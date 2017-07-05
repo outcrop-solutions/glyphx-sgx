@@ -13,10 +13,11 @@ import './range.css';
 
 
 /**
- * Main Range parent class which gets exported, holds data structure used to map rangeList to the DOM
+ * Main Range parent class which gets exported
  * @param minVal: Sets the minimum value allowed for all the rangeList within the range table
  * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
- * @param colName: "tableName|colName": name of the corresponding table|column for this RangeForm
+ * @param colName: Name of the corresponding column for this RangeForm
+ * @param data: array of values from the eleastic table for the corresponding colName
  * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
 class RangeForm extends React.Component {
@@ -26,8 +27,36 @@ class RangeForm extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        this.props.dispatch(removeRange(this.props.colName, id));
+        this.props.dispatch(removeRange(this.props.colName, id, this.calcHighlighted()));
     };
+
+
+    /**
+     * Determines what should be highlighted in the elastic list based on applied ranges
+     **/
+    calcHighlighted() {
+        console.log("Start highlighted", performance.now());
+        var rList = this.props.rangeList[this.props.colName].rangeList;
+        var highlighted = [];
+
+        if (this.props.rangeType == "Number") {
+            for (var i = 0; i < rList.length; i++) {
+                if (rList[i][3] == true) {
+                    for (var j = 0; j < this.props.data.length; j++) {
+                        if (highlighted.indexOf(this.props.data[j]) == -1) {
+                            var curNum = parseInt(this.props.data[j], 10)
+                            //console.log("curNum: " + curNum + ", min: " + );
+                            if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
+                                highlighted.push(this.props.data[j]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log("Finish highlighted", performance.now());
+        return highlighted;
+    }
 
 
     /**
@@ -45,6 +74,7 @@ class RangeForm extends React.Component {
      * @param id: ID used to find the range in the store
      **/
      handleTextUpdate(e, id) {
+         console.log("Start text update", performance.now());
         var minimum = parseInt(this.props.minVal, 10);
         var maximum = parseInt(this.props.maxVal, 10);
         var value = e.target.value;
@@ -52,28 +82,29 @@ class RangeForm extends React.Component {
         if ( !isNaN(value) ) {
             if (e.target.name === "min") {
                 if ( value > maximum  ) {
-                    this.props.dispatch(updateRange(this.props.colName, maximum, null, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, maximum, null, id, null, null));
                 }
                 else if (value < minimum) {
-                    this.props.dispatch(updateRange(this.props.colName, minimum, null, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, minimum, null, id, null, null));
                 }
                 else {
-                    this.props.dispatch(updateRange(this.props.colName, value, null, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, value, null, id, null, null));
                 }
             }
 
             else {
                 if ( value > maximum  ) {
-                    this.props.dispatch(updateRange(this.props.colName, null, maximum, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, null, maximum, id, null, null));
                 }
                 else if (value < minimum) {
-                    this.props.dispatch(updateRange(this.props.colName, null, minimum, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, null, minimum, id, null, null));
                 }
                 else {
-                    this.props.dispatch(updateRange(this.props.colName, null, value, id, null));
+                    this.props.dispatch(updateRange(this.props.colName, null, value, id, null, null));
                 }
             }
         }
+        console.log("Finish text update", performance.now());
     };
 
 
@@ -103,11 +134,11 @@ class RangeForm extends React.Component {
 
         if (min > max) {
             if (latestChange === "MIN") {
-                this.props.dispatch(updateRange(this.props.colName, max, max, id, null));
+                this.props.dispatch(updateRange(this.props.colName, max, max, id, null, this.calcHighlighted()));
                 console.log("DISPATCHED MAX VALUE");
             }
             else if (latestChange === "MAX") {
-                this.props.dispatch(updateRange(this.props.colName, min, min, id, null));
+                this.props.dispatch(updateRange(this.props.colName, min, min, id, null, this.calcHighlighted()));
                 console.log("DISPATCHED MIN VALUE");
             }
         }
@@ -120,7 +151,9 @@ class RangeForm extends React.Component {
      * @param id: ID used to find the range in the store
      **/
     handleSliderUpdate(e, id) {
-        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null));
+        console.log("Start slider update", performance.now());
+        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.calcHighlighted()));
+        console.log("Finish slider update", performance.now());
     };
 
 
@@ -131,10 +164,10 @@ class RangeForm extends React.Component {
      **/
     handleSwitchToggle(e, id) {
         if (e.target.checked) {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, true));
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, true, this.calcHighlighted()));
         }
         else {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, false));
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, false, this.calcHighlighted()));
         }
     };
 
@@ -180,10 +213,7 @@ class RangeTable extends React.Component {
         var min = this.props.minVal;
         var max = this.props.maxVal;
 
-        // Maps rows to the DOM and passes data structure methods to rows so they have access
-
         var rList = this.props.rangeList[this.props.colName].rangeList;
-
         var range = rList.map( function(range) {
             return (<RangeRow 
                         range = { range } 
@@ -309,6 +339,7 @@ class TextSlider extends React.Component {
         }
     }
 
+
     /**
      * Preprocesses min max vals (fixes the case where min value has 10 and user is trying to type 80, 8 is the first digit and 8 < 10)
      * @param min: the min to be processed 
@@ -388,7 +419,7 @@ class TextSlider extends React.Component {
                         ref ={ input => this.inputElementMin = input }
                         id = { this.props.cellData.id.toString() } 
                         value = { this.props.cellData.min } 
-                        hintText = { this.props.minVal }
+                        hintText = { this.props.minVal.toString() }
                         style = { styleSet.textfieldStyles }
                         onChange = {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
@@ -416,7 +447,6 @@ class TextSlider extends React.Component {
                         min = { this.props.minVal }
                         max = { this.props.maxVal }
                         value = {this.arrayNumConversion(this.props.cellData.min, this.props.cellData.max) }
-                        //value = { [this.props.cellData.min, this.props.cellData.max] }
                         defaultValue = { [this.props.minVal,this.props.maxVal] }
                         allowCross = { false }
                         onChange = {
@@ -436,7 +466,7 @@ class TextSlider extends React.Component {
                         ref = { input => this.inputElementMax = input }
                         id = { this.props.cellData.id.toString() } 
                         value = { this.props.cellData.max }
-                        hintText = { this.props.maxVal }
+                        hintText = { this.props.maxVal.toString() }
                         style = { styleSet.textfieldStyles }
                         onChange = {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
@@ -473,7 +503,7 @@ const styleSet = {
 
 
 /**
- * constants defined to make dispatching for the redux store consistent
+ * Constants defined to make dispatching for the redux store consistent
  **/
 export const addRange = (colName, min, max, id, applied) => ({
     type: 'ADD_RANGE',
@@ -483,31 +513,25 @@ export const addRange = (colName, min, max, id, applied) => ({
     id,
     applied
 });
-export const removeRange = (colName, id) => ({
+export const removeRange = (colName, id, highlighted) => ({
     type: 'REMOVE_RANGE',
     colName,
-    id
+    id,
+    highlighted
 });
-export const updateRange = (colName, min, max, id, applied) => ({
+export const updateRange = (colName, min, max, id, applied, highlighted) => ({
     type: 'UPDATE_RANGE',
     colName,
     id,
     min,
     max,
-    applied
-});
-export const highlightElastic = (text) => ({
-    type: 'ADD_RANGE',
-    text
-});
-export const unhighlightElastic = (text) => ({
-    type: 'ADD_RANGE',
-    text
+    applied, 
+    highlighted
 });
 
 
 /**
- * maps portions of the store to props of your choosing
+ * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state){
@@ -518,6 +542,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * connects the RangeForm component to the redux store
+ * Connects the RangeForm component to the redux store
  **/
 export default connect(mapStateToProps)(RangeForm);

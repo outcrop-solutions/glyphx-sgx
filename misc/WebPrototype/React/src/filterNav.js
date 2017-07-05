@@ -183,7 +183,7 @@ class FilterNav extends Component {
             };
         }
         this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
-    }
+    };
 
     /**
      * This function will make columns and filterStructure
@@ -636,10 +636,10 @@ class FilterNav extends Component {
                 </div>
                 <Flex layout="column" style={{height: '100%'}}>
                      {/* TOP SECTION */}
-                    <Flex flex="35" id="TopView">
+                    <Flex flex="50" id="TopView">
        
                         {/* Row 1 */}
-                        <Flex layout="row" align="space-between center"    style={{height: '20%'}}>
+                        <Flex layout="row" align="space-between center"    style={{height: '15%'}}>
                             <Flex flex="80">
                                 <SelectField
                                     value={this.state.viewSelect.value}
@@ -698,7 +698,7 @@ class FilterNav extends Component {
                         </Flex>
                                         
                         {/* Row 2 */}
-                        <Flex layout="row" style={{height:'50%'}}>
+                        <Flex layout="row" style={{height:'65%'}}>
                             {/* <div style={{width:'100%',border:'1px',borderColor: '#e0e0e0',borderRadius:'10px',borderStyle: 'double',margin:'2px',overflow:'auto'}} className="sidenavbar">
                                 <List id="FilterList">
                                     {this.state.appliedFiltersItems}
@@ -710,7 +710,7 @@ class FilterNav extends Component {
                         
                         
                         {/* Row 3 */}
-                        <Flex layout="row" style={{height:'12%'}}>
+                        <Flex layout="row" style={{height:'10%'}}>
                             <Flex flex="25">
                                <RaisedButton 
                                     label="Clear All" 
@@ -752,7 +752,7 @@ class FilterNav extends Component {
                         </Flex>
                         
                         {/* Row 4 */}
-                        <Flex layout="row" style={{height:'18%'}}>
+                        <Flex layout="row" style={{height:'10%'}}>
                             <SelectField
                                     value={this.state.tableSelect.value}
                                     onChange={this.onSelectTableChange}
@@ -784,12 +784,10 @@ class FilterNav extends Component {
                     
                     </RaisedButton>
 
-                    <Flex divider />
-                    <Flex divider />
 
                     {/* BOTTOM SECTION */}
 
-                    <Flex flex="65">
+                    <Flex flex="50">
 
                         
                         <Collapsible 
