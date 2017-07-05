@@ -13,10 +13,10 @@ import './range.css';
 
 
 /**
- * Main Range parent class which gets exported, holds data structure used to map rangeList to the DOM
+ * Main Range parent class which gets exported
  * @param minVal: Sets the minimum value allowed for all the rangeList within the range table
  * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
- * @param colName: "tableName|colName": name of the corresponding table|column for this RangeForm
+ * @param colName: Name of the corresponding column for this RangeForm
  * @param data: array of values from the eleastic table for the corresponding colName
  * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
@@ -27,7 +27,6 @@ class RangeForm extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        
         this.props.dispatch(removeRange(this.props.colName, id, this.calcHighlighted()));
     };
 
@@ -36,6 +35,7 @@ class RangeForm extends React.Component {
      * Determines what should be highlighted in the elastic list based on applied ranges
      **/
     calcHighlighted() {
+        console.log("Start highlighted", performance.now());
         var rList = this.props.rangeList[this.props.colName].rangeList;
         var highlighted = [];
 
@@ -54,6 +54,7 @@ class RangeForm extends React.Component {
                 }
             }
         }
+        console.log("Finish highlighted", performance.now());
         return highlighted;
     }
 
@@ -73,6 +74,7 @@ class RangeForm extends React.Component {
      * @param id: ID used to find the range in the store
      **/
      handleTextUpdate(e, id) {
+         console.log("Start text update", performance.now());
         var minimum = parseInt(this.props.minVal, 10);
         var maximum = parseInt(this.props.maxVal, 10);
         var value = e.target.value;
@@ -102,6 +104,7 @@ class RangeForm extends React.Component {
                 }
             }
         }
+        console.log("Finish text update", performance.now());
     };
 
 
@@ -148,7 +151,9 @@ class RangeForm extends React.Component {
      * @param id: ID used to find the range in the store
      **/
     handleSliderUpdate(e, id) {
+        console.log("Start slider update", performance.now());
         this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.calcHighlighted()));
+        console.log("Finish slider update", performance.now());
     };
 
 
@@ -208,10 +213,7 @@ class RangeTable extends React.Component {
         var min = this.props.minVal;
         var max = this.props.maxVal;
 
-        // Maps rows to the DOM and passes data structure methods to rows so they have access
-
         var rList = this.props.rangeList[this.props.colName].rangeList;
-
         var range = rList.map( function(range) {
             return (<RangeRow 
                         range = { range } 
@@ -445,7 +447,6 @@ class TextSlider extends React.Component {
                         min = { this.props.minVal }
                         max = { this.props.maxVal }
                         value = {this.arrayNumConversion(this.props.cellData.min, this.props.cellData.max) }
-                        //value = { [this.props.cellData.min, this.props.cellData.max] }
                         defaultValue = { [this.props.minVal,this.props.maxVal] }
                         allowCross = { false }
                         onChange = {
@@ -502,7 +503,7 @@ const styleSet = {
 
 
 /**
- * constants defined to make dispatching for the redux store consistent
+ * Constants defined to make dispatching for the redux store consistent
  **/
 export const addRange = (colName, min, max, id, applied) => ({
     type: 'ADD_RANGE',
@@ -530,7 +531,7 @@ export const updateRange = (colName, min, max, id, applied, highlighted) => ({
 
 
 /**
- * maps portions of the store to props of your choosing
+ * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state){
@@ -541,6 +542,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * connects the RangeForm component to the redux store
+ * Connects the RangeForm component to the redux store
  **/
 export default connect(mapStateToProps)(RangeForm);

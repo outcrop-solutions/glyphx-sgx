@@ -81,6 +81,8 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'UPDATE_RANGE':
             console.log('UPDATE-RANGE');
 
+            console.log("Start new state", performance.now());
+
             var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
 
             for (var i = 0; i < stateVal.length; i++) {
@@ -97,6 +99,8 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
+            console.log("Changed values", performance.now());
+
 
             var newState = {
                 ...state,
@@ -112,28 +116,51 @@ const filterReducer = function(state = initialFilterState, action) {
                     }
                 }
             }
+
+            console.log("Finished new state", performance.now());
             
 
             console.log(newState);
             return newState;
 
-        case 'HIGHLIGHT_ELASTIC': 
-            console.log('HIGHLIGHT_ELASTIC');
-            
-            var newState  = {
+        
+
+         case 'REMOVE_FILTER_VIEW': 
+            console.log('REMOVE_FILTER_VIEW');
+
+            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+
+            for (var i = 0; i < stateVal.length; i++) {
+                if (stateVal[i][3]) {
+                    stateVal[i][3] = false;
+                }
+            }
+
+
+            var newState = {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Elastic : {
-                        ...state.Filter.Elastic,
+                    Ranges : {
+                        ...state.Filter.Ranges,
                         [action.colName] : {
-                            ...state.Filter.Elastic[action.colName],
-                            highlightedValues: action.highlighted,
+                            ...state.Filter.Ranges[action.colName],
+                            rangeList : stateVal,
                         }
-                    }
-                }
-            };
+                    },
+                    Elastic : {
+                            ...state.Filter.Elastic,
+                            [action.colName] : {
+                                ...state.Filter.Elastic[action.colName],
+                                selectedValues: [],
+                                applied: false,
+                            }
+                        }
 
+                }
+            }
+            
+            
             console.log(newState);
             return newState;
 
@@ -199,13 +226,13 @@ const filterReducer = function(state = initialFilterState, action) {
     }
 };
 
-const elasticReducer = function(state = initialFilterState, action) {
+const dummyReducer = function(state = initialFilterState, action) {
   return state;
 }
 
 const reducers = combineReducers({
   filterState: filterReducer,
-  elasticState: elasticReducer
+  dummyState: dummyReducer
 });
 
 let store = createStore(reducers);
