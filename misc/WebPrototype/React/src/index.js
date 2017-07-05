@@ -186,7 +186,7 @@ const filterReducer = function(state = initialFilterState, action) {
                             [col] : {
                                 ...state.Filter.Elastic[col],
                                 selectedValues: action.filter.selectedValues,
-                                applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Range[col].highlightedValues.length > 0 ? true : false),
+                                applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Ranges[col].highlightedValues.length > 0 ? true : false),
                             }
                         }
                     }

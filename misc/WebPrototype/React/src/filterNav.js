@@ -834,14 +834,10 @@ class FilterNav extends Component {
                             </Dialog>
 
                                 
-                                <RaisedButton 
+                                <IconButton 
                                     onClick={() => this.handleOpenClose('pin',true)}
-                                        label="Menu"
-                                        buttonStyle={{height: '28px'}}
-                                        labelStyle={{fontSize: '13px'}}
-                                        primary={true} />
-                                <br />
-                                <br />
+                                        iconClassName="fa fa-plus-square"
+                                        iconStyle={{color: '#00bcd4'}} />
 
                                 {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
                         </Collapsible>

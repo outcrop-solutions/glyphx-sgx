@@ -150,10 +150,10 @@ class FilterTable extends Component {
             rows.push(<TableRow 
                 key={index}
                 style={{height:'30px'}}
-                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}
-                striped={this.props.tableState[id].highlightedValues.indexOf(property) !== -1}
+                selected={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1}
+                striped={this.props.tableState.Ranges[id].highlightedValues.indexOf(property) !== -1}
                 >
-                    <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
+                    <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
                     <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{property}</TableRowColumn>
                     <TableRowColumn style={{height:'inherit'}}>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
@@ -191,7 +191,7 @@ class FilterTable extends Component {
                     enableSelectAll={this.state.enableSelectAll}
                 >
                     <TableRow  style={{height:'30px'}}>
-                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
+                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
                         <TableHeaderColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}} >Value</TableHeaderColumn>
                         <TableHeaderColumn style={{height:'inherit'}}>Count(Percent)</TableHeaderColumn>
                     </TableRow>
@@ -222,7 +222,7 @@ export const addRemoveElastic = (filter) => ({
 
 const mapStateToProps = function(state){
   return {
-    tableState: state.filterState.Filter.Elastic,
+    tableState: state.filterState.Filter,
   }
 };
 
