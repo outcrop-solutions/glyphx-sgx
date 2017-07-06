@@ -332,60 +332,6 @@ class RangeRow extends React.Component {
  * Custom range slider component that consists of two text fields and a min-max slider
  **/
 class NumberSlider extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            latestUpdate: ""
-        }
-    }
-
-
-    /**
-     * Preprocesses min max vals (fixes the case where min value has 10 and user is trying to type 80, 8 is the first digit and 8 < 10)
-     * @param min: the min to be processed 
-     * @param max: the max to be processed 
-     **/
-    arrayNumConversion(min, max) {
-
-        // Make min a valid type
-        if (min === "") {
-            min = this.props.minVal;
-        }
-        else {
-            min = parseInt(min, 10);
-        }
-
-        // Make max a valid type
-        if (max === "") {
-            max = this.props.maxVal;
-        }
-        else {
-            max = parseInt(max, 10);
-        }
-
-        // Apply a valid range
-        if ( min > max) {
-            if (this.state.latestUpdate === "MIN") {
-                return [max, max];
-            }
-            else if (this.state.latestUpdate === "MAX") {
-                return [min, min]; 
-            }
-        }
-        else {
-            return [min, max];
-        }
-    }
-
-
-    /**
-     * Updates the local state (used to allow real time text-slider changing without pushing overlap bounds)
-     * @param val: "MIN" or "MAX", text field that called this
-     **/
-    updateLatest(val) {
-        this.setState({latestUpdate: val});
-    }
 
 
     /**
@@ -415,12 +361,12 @@ class NumberSlider extends React.Component {
             <Flex layout="row">
                 <Flex flex="25">
                     <TextField 
-                        type = 'number' 
+                        type = 'text' 
                         name = "min"
                         ref ={ input => this.inputElementMin = input }
                         id = { this.props.cellData.id.toString() } 
                         value = { this.props.cellData.min } 
-                        hintText = { this.props.minVal.toString() }
+                        hintText = 'Z'
                         style = { styleSet.textfieldStyles }
                         onChange = {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)

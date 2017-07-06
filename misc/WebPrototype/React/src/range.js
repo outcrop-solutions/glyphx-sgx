@@ -27,36 +27,8 @@ class RangeForm extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        this.props.dispatch(removeRange(this.props.colName, id, this.calcHighlighted()));
+        this.props.dispatch(removeRange(this.props.colName, id, this.props.data, this.props.rangeType));
     };
-
-
-    /**
-     * Determines what should be highlighted in the elastic list based on applied ranges
-     **/
-    calcHighlighted() {
-        console.log("Start highlighted", performance.now());
-        var rList = this.props.rangeList[this.props.colName].rangeList;
-        var highlighted = [];
-
-        if (this.props.rangeType == "Number") {
-            for (var i = 0; i < rList.length; i++) {
-                if (rList[i][3] == true) {
-                    for (var j = 0; j < this.props.data.length; j++) {
-                        if (highlighted.indexOf(this.props.data[j]) == -1) {
-                            var curNum = parseInt(this.props.data[j], 10)
-                            //console.log("curNum: " + curNum + ", min: " + );
-                            if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
-                                highlighted.push(this.props.data[j]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        console.log("Finish highlighted", performance.now());
-        return highlighted;
-    }
 
 
     /**
@@ -134,11 +106,11 @@ class RangeForm extends React.Component {
 
         if (min > max) {
             if (latestChange === "MIN") {
-                this.props.dispatch(updateRange(this.props.colName, max, max, id, null, this.calcHighlighted()));
+                this.props.dispatch(updateRange(this.props.colName, max, max, id, null, this.props.data, this.props.rangeType));
                 console.log("DISPATCHED MAX VALUE");
             }
             else if (latestChange === "MAX") {
-                this.props.dispatch(updateRange(this.props.colName, min, min, id, null, this.calcHighlighted()));
+                this.props.dispatch(updateRange(this.props.colName, min, min, id, null, this.props.data, this.props.rangeType));
                 console.log("DISPATCHED MIN VALUE");
             }
         }
@@ -152,7 +124,7 @@ class RangeForm extends React.Component {
      **/
     handleSliderUpdate(e, id) {
         console.log("Start slider update", performance.now());
-        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.calcHighlighted()));
+        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.props.data, this.props.rangeType));
         console.log("Finish slider update", performance.now());
     };
 
@@ -164,10 +136,10 @@ class RangeForm extends React.Component {
      **/
     handleSwitchToggle(e, id) {
         if (e.target.checked) {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, true, this.calcHighlighted()));
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, true, this.props.data, this.props.rangeType));
         }
         else {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, false, this.calcHighlighted()));
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, false, this.props.data, this.props.rangeType));
         }
     };
 
@@ -514,20 +486,22 @@ export const addRange = (colName, min, max, id, applied) => ({
     id,
     applied
 });
-export const removeRange = (colName, id, highlighted) => ({
+export const removeRange = (colName, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',
     colName,
     id,
-    highlighted
+    data,
+    rangeType
 });
-export const updateRange = (colName, min, max, id, applied, highlighted) => ({
+export const updateRange = (colName, min, max, id, applied, data, rangeType) => ({
     type: 'UPDATE_RANGE',
     colName,
     id,
     min,
     max,
     applied, 
-    highlighted
+    data,
+    rangeType
 });
 
 

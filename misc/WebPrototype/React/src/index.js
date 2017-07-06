@@ -60,6 +60,8 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
+            var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
+
             var newState = {
                 ...state,
                 Filter : {
@@ -69,7 +71,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         [action.colName] : {
                             ...state.Filter.Ranges[action.colName],
                             rangeList : stateVal,
-                            highlightedValues: action.highlighted,
+                            highlightedValues: highlighted,
                         }
                     }
                 }
@@ -99,6 +101,9 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
+            var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
+
+
             console.log("Changed values", performance.now());
 
 
@@ -111,7 +116,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         [action.colName] : {
                             ...state.Filter.Ranges[action.colName],
                             rangeList : stateVal,
-                            highlightedValues: action.highlighted,
+                            highlightedValues: highlighted,
                         }
                     }
                 }
@@ -259,6 +264,29 @@ const filterReducer = function(state = initialFilterState, action) {
             return state;
     }
 };
+
+function calcHighlighted(rList, rangeType, data) {
+    console.log("Start highlighted", performance.now());
+        var highlighted = [];
+
+        if (rangeType == "Number") {
+            for (var i = 0; i < rList.length; i++) {
+                if (rList[i][3] == true) {
+                    for (var j = 0; j < data.length; j++) {
+                        if (highlighted.indexOf(data[j]) == -1) {
+                            var curNum = parseInt(data[j], 10)
+                            if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
+                                highlighted.push(data[j]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log("Finish highlighted", performance.now());
+        console.log(highlighted);
+        return highlighted;
+}
 
 const dummyReducer = function(state = initialFilterState, action) {
   return state;

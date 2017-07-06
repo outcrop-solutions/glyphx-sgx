@@ -145,7 +145,7 @@ class FilterViewTable extends React.Component {
             }
 
             else {
-                console.log("Oh no, something went wrong when reading the filter type into the filterView!");
+                console.log("Oh no, something went wrong when reading the filter type into the filterView:" + filterType);
                 break;
             }
 
