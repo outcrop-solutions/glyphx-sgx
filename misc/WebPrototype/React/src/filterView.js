@@ -67,7 +67,6 @@ class FilterViewTable extends React.Component {
             var min, max, i, curNum;
             var rCount = 0;
 
-            debugger;
             if (filterType === "Text") {
                 if (eList[colName].selectedValues.length) {
                     min = eList[colName].selectedValues[0];
