@@ -27,8 +27,36 @@ class RangeForm extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        this.props.dispatch(removeRange(this.props.colName, id, this.props.data, this.props.rangeType));
+        this.props.dispatch(removeRange(this.props.colName, id, this.calcHighlighted()));
     };
+
+
+    /**
+     * Determines what should be highlighted in the elastic list based on applied ranges
+     **/
+    calcHighlighted() {
+        console.log("Start highlighted", performance.now());
+        var rList = this.props.rangeList[this.props.colName].rangeList;
+        var highlighted = [];
+
+        if (this.props.rangeType == "Number") {
+            for (var i = 0; i < rList.length; i++) {
+                if (rList[i][3] == true) {
+                    for (var j = 0; j < this.props.data.length; j++) {
+                        if (highlighted.indexOf(this.props.data[j]) == -1) {
+                            var curNum = parseInt(this.props.data[j], 10)
+                            //console.log("curNum: " + curNum + ", min: " + );
+                            if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
+                                highlighted.push(this.props.data[j]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log("Finish highlighted", performance.now());
+        return highlighted;
+    }
 
 
     /**
@@ -106,11 +134,11 @@ class RangeForm extends React.Component {
 
         if (min > max) {
             if (latestChange === "MIN") {
-                this.props.dispatch(updateRange(this.props.colName, max, max, id, null, this.props.data, this.props.rangeType));
+                this.props.dispatch(updateRange(this.props.colName, max, max, id, null, this.calcHighlighted()));
                 console.log("DISPATCHED MAX VALUE");
             }
             else if (latestChange === "MAX") {
-                this.props.dispatch(updateRange(this.props.colName, min, min, id, null, this.props.data, this.props.rangeType));
+                this.props.dispatch(updateRange(this.props.colName, min, min, id, null, this.calcHighlighted()));
                 console.log("DISPATCHED MIN VALUE");
             }
         }
@@ -124,7 +152,7 @@ class RangeForm extends React.Component {
      **/
     handleSliderUpdate(e, id) {
         console.log("Start slider update", performance.now());
-        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.props.data, this.props.rangeType));
+        this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.calcHighlighted()));
         console.log("Finish slider update", performance.now());
     };
 
@@ -136,10 +164,10 @@ class RangeForm extends React.Component {
      **/
     handleSwitchToggle(e, id) {
         if (e.target.checked) {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, true, this.props.data, this.props.rangeType));
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, true, this.calcHighlighted()));
         }
         else {
-            this.props.dispatch(updateRange(this.props.colName, null, null, id, false, this.props.data, this.props.rangeType));
+            this.props.dispatch(updateRange(this.props.colName, null, null, id, false, this.calcHighlighted()));
         }
     };
 
@@ -304,60 +332,6 @@ class RangeRow extends React.Component {
  * Custom range slider component that consists of two text fields and a min-max slider
  **/
 class NumberSlider extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            latestUpdate: ""
-        }
-    }
-
-
-    /**
-     * Preprocesses min max vals (fixes the case where min value has 10 and user is trying to type 80, 8 is the first digit and 8 < 10)
-     * @param min: the min to be processed 
-     * @param max: the max to be processed 
-     **/
-    arrayNumConversion(min, max) {
-
-        // Make min a valid type
-        if (min === "") {
-            min = this.props.minVal;
-        }
-        else {
-            min = parseInt(min, 10);
-        }
-
-        // Make max a valid type
-        if (max === "") {
-            max = this.props.maxVal;
-        }
-        else {
-            max = parseInt(max, 10);
-        }
-
-        // Apply a valid range
-        if ( min > max) {
-            if (this.state.latestUpdate === "MIN") {
-                return [max, max];
-            }
-            else if (this.state.latestUpdate === "MAX") {
-                return [min, min]; 
-            }
-        }
-        else {
-            return [min, max];
-        }
-    }
-
-
-    /**
-     * Updates the local state (used to allow real time text-slider changing without pushing overlap bounds)
-     * @param val: "MIN" or "MAX", text field that called this
-     **/
-    updateLatest(val) {
-        this.setState({latestUpdate: val});
-    }
 
 
     /**
@@ -387,12 +361,12 @@ class NumberSlider extends React.Component {
             <Flex layout="row">
                 <Flex flex="25">
                     <TextField 
-                        type = 'number' 
+                        type = 'text' 
                         name = "min"
                         ref ={ input => this.inputElementMin = input }
                         id = { this.props.cellData.id.toString() } 
                         value = { this.props.cellData.min } 
-                        hintText = { this.props.minVal.toString() }
+                        hintText = 'Z'
                         style = { styleSet.textfieldStyles }
                         onChange = {
                             (e) => this.props.onTextChange(e, this.props.cellData.id)
@@ -486,22 +460,20 @@ export const addRange = (colName, min, max, id, applied) => ({
     id,
     applied
 });
-export const removeRange = (colName, id, data, rangeType) => ({
+export const removeRange = (colName, id, highlighted) => ({
     type: 'REMOVE_RANGE',
     colName,
     id,
-    data,
-    rangeType
+    highlighted
 });
-export const updateRange = (colName, min, max, id, applied, data, rangeType) => ({
+export const updateRange = (colName, min, max, id, applied, highlighted) => ({
     type: 'UPDATE_RANGE',
     colName,
     id,
     min,
     max,
     applied, 
-    data,
-    rangeType
+    highlighted
 });
 
 

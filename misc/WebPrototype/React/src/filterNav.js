@@ -163,9 +163,9 @@ class FilterNav extends Component {
             var minMax;
             var displayName = "";
             
-            var type = isNaN(Obj[property][0]) ? 'text' : 'number';
+            var type = isNaN(Obj[property][0]) ? 'Text' : 'Number';
 
-            minMax = type=='number'? this.findMinMax(Obj[property]) : {min:0,max:0};
+            minMax = type=='Number'? this.findMinMax(Obj[property]) : {min:0,max:0};
 
             rangeStructure[column] = {
                 rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
