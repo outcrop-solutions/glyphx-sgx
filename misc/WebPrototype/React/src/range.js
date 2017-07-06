@@ -22,6 +22,23 @@ import './range.css';
  **/
 class RangeForm extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
+    
+    shouldComponentUpdate(nextProps, nextState) {
+        var curList = this.props.rangeList[this.props.colName].rangeList;
+        var nextList = nextProps.rangeList[this.props.colName].rangeList;
+
+        if (curList != nextList) {
+            return true;
+        }
+
+        return false;
+    }
+    
+
     /**
      * Deletes a range by splicing it out of the store which causes DOM to re-map
      * @param id: ID of the row which is to be deleted
@@ -237,6 +254,7 @@ class RangeTable extends React.Component {
  * Inherits props given to it from RangeTable's render method
  **/
 class RangeRow extends React.Component {
+
     /**
      * Deletes a row from the range table by calling parent delete method
      **/

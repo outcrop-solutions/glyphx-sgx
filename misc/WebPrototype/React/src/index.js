@@ -87,17 +87,25 @@ const filterReducer = function(state = initialFilterState, action) {
 
             var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
 
+
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][2] == action.id) {
-                    if (action.min != null) {
-                        stateVal[i][0] = action.min;
+                    var min = stateVal[i][0];
+                    var max = stateVal[i][1];
+                    var applied = stateVal[i][3];
+
+
+                    if (action.min) {
+                        min = action.min;
                     }
-                    if (action.max != null) {
-                        stateVal[i][1] = action.max;
+                    if (action.max) {
+                        max = action.max;
                     }
                     if (action.applied != null) {
-                        stateVal[i][3] = action.applied;
+                        applied = action.applied;
                     }
+
+                    stateVal[i] = [min, max, action.id, applied];
                 }
             }
 
