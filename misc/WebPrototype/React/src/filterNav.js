@@ -574,6 +574,7 @@ class FilterNav extends Component {
         console.log("pinned to active!");
         var but, colName;
         var pinned;
+        var selectedValues = this.state.pinnedDialogSelectedValues;
         
         if(event)
         {
@@ -581,6 +582,12 @@ class FilterNav extends Component {
             but = event.currentTarget;
             colName = but.id.split("btn_")[1];
             pinned = this.props.GLOBAL.Elastic[colName].pinned;
+            if(pinned)
+                selectedValues.splice(selectedValues.indexOf(colName),1);
+            else
+                selectedValues.push(colName);
+
+            this.setState({pinnedDialogSelectedValues: selectedValues});
             this.props.dispatch({type:'Update_Pin', details:{colName: colName,pinned: !pinned}});
         }
         else{
@@ -828,7 +835,6 @@ class FilterNav extends Component {
                                         onChange={(selected) => {
                                             this.setState({pinnedDialogSelectedValues: selected});
                                             //this.onPinClick(null,{pinnedValues: []})
-                                            debugger;
                                         }}
                                     />
                             </Dialog>

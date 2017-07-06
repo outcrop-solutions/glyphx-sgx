@@ -221,40 +221,6 @@ const filterReducer = function(state = initialFilterState, action) {
             return newState;
         }
 
-        case 'UPDATE_PINS':
-        {
-            var cols = action.details.colNames;
-            var newState;
-            var elist = {};
-
-            for(var i=0;i<cols.len;i++)
-            {
-                elist[cols[i]] = {
-                    ...state.Filter.Elastic[col],
-                    pinned: action.details.pinned
-                }
-            }
-
-            debugger;
-
-            newState  = {
-                ...state,
-                Filter : {
-                    ...state.Filter,
-                    Elastic : {
-                        ...state.Filter.Elastic,
-                        [col] : {
-                            ...state.Filter.Elastic[col],
-                            pinned: action.details.pinned
-                        }
-                    }
-                }
-            };
-            
-            console.log(newState);
-            return newState;
-        }
-
         default:
             return state;
     }

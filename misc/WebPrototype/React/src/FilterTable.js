@@ -137,6 +137,15 @@ class FilterTable extends Component {
         return "table-" + this.props.internalColName;
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if(this.props.tableState.Elastic[this.props.id].selectedValues != nextProps.tableState.Elastic[this.props.id].selectedValues)
+            return true;
+        else if(this.props.tableState.Ranges[this.props.id].highlightedValues != nextProps.tableState.Ranges[this.props.id].highlightedValues)
+            return true;
+        else
+            return false;
+    }
+
 
     render() {
         var id = this.props.id;
@@ -151,7 +160,8 @@ class FilterTable extends Component {
                 key={index}
                 style={{height:'30px'}}
                 selected={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1}
-                striped={this.props.tableState.Ranges[id].highlightedValues.indexOf(property) !== -1}
+                //striped={this.props.tableState.Ranges[id].highlightedValues.indexOf(property) !== -1}
+                striped={true}
                 >
                     <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
                     <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{property}</TableRowColumn>
