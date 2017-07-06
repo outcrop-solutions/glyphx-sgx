@@ -28,13 +28,9 @@ class RangeForm extends React.Component {
 
     
     shouldComponentUpdate(nextProps, nextState) {
-        var curList = this.props.rangeList[this.props.colName].rangeList;
-        var nextList = nextProps.rangeList[this.props.colName].rangeList;
-
-        if (curList != nextList) {
+        if (this.props.rangeList[this.props.colName].rangeList != nextProps.rangeList[this.props.colName].rangeList) {
             return true;
         }
-
         return false;
     }
     
@@ -141,6 +137,7 @@ class RangeForm extends React.Component {
      **/
     handleSliderUpdate(e, id) {
         console.log("Start slider update", performance.now());
+        console.log(" MIN: " + e[0] + "MAX: " + e[1] + "   ------------------------------------------------");
         this.props.dispatch(updateRange(this.props.colName, e[0], e[1], id, null, this.props.data, this.props.rangeType));
         console.log("Finish slider update", performance.now());
     };
@@ -166,58 +163,30 @@ class RangeForm extends React.Component {
      * Passes data methods as props so that RangeTable has access
      **/
     render() {
-        return (
-            <div>
-                <RangeTable
-                    onRowAdd = { this.handleAddEvent.bind(this) } 
-                    onRowDel = { this.handleRowDel.bind(this) }
-                    onSlide = { this.handleSliderUpdate.bind(this) }
-                    onToggle = { this.handleSwitchToggle.bind(this) }
-                    onTextChange = { this.handleTextUpdate.bind(this) }
-                    onTextBlur = { this.handleTextBlur.bind(this) }
-                    rangeList = { this.props.rangeList }
-                    rangeType = { this.props.rangeType }
-                    minVal = { this.props.minVal }
-                    maxVal = { this.props.maxVal }
-                    colName = { this.props.colName } 
-                />
-            </div>
-        );
-    }
-}
-
-
-/**
- * Displays all the rangeList in table format by mapping the data to range rows
- * Inherits props given to it from RangeForm's render method
- **/
-class RangeTable extends React.Component {
-
-    render() {
-        // Lose scope of 'this' in the map function so record what you need to access beforehand
-        var rowDel = this.props.onRowDel;
-        var onSlide = this.props.onSlide;
-        var onToggle = this.props.onToggle;
-        var onTextChange = this.props.onTextChange;
-        var onTextBlur = this.props.onTextBlur;
-        var min = this.props.minVal;
-        var max = this.props.maxVal;
+        var onRowDel = this.handleRowDel.bind(this);
+        var onSlide = this.handleSliderUpdate.bind(this);
+        var onToggle = this.handleSwitchToggle.bind(this);
+        var onTextChange = this.handleTextUpdate.bind(this);
+        var onTextBlur = this.handleTextBlur.bind(this);
+        var rangeList = this.props.rangeList;
         var rangeType = this.props.rangeType;
+        var minVal = this.props.minVal;
+        var maxVal = this.props.maxVal;
 
         var rList = this.props.rangeList[this.props.colName].rangeList;
 
         var range = rList.map( function(range) {
             return (<RangeRow 
                         range = { range } 
-                        onDelEvent = { rowDel.bind(this) } 
+                        onDelEvent = { onRowDel.bind(this) } 
                         onSlide = { onSlide }
                         onToggle = { onToggle }
                         onTextChange = { onTextChange }
                         onTextBlur = { onTextBlur }
                         key = { range[2] }
                         rangeType = { rangeType }
-                        minVal = { min }
-                        maxVal = { max }
+                        minVal = { minVal }
+                        maxVal = { maxVal }
                     />)
         });
 
@@ -234,7 +203,7 @@ class RangeTable extends React.Component {
                         <Flex layout="row">
                             <Flex divider />
                             <FontIcon
-                                onClick = { this.props.onRowAdd }
+                                onClick = { this.handleAddEvent.bind(this) }
                                 className = "fa fa-plus fa-2x"
                                 hoverColor = { blue500 }
                                 style = { styleSet.iconStyles }
@@ -255,77 +224,6 @@ class RangeTable extends React.Component {
  **/
 class RangeRow extends React.Component {
 
-    /**
-     * Deletes a row from the range table by calling parent delete method
-     **/
-    onDelEvent() {
-        this.props.onDelEvent(this.props.range[2]);
-    }
-
-    render() {
-        return (
-            <Card>
-                <CardText>
-                    <Flex layout="row">      
-
-                        <Flex divider />  
-
-                        <Flex flex="10">
-                            <FontIcon
-                                onClick = { this.onDelEvent.bind(this) }
-                                className = "fa fa-trash fa-2x"
-                                hoverColor = { red500 }
-                                style = { styleSet.iconStyles }
-                            />
-                        </Flex>
-
-                        <Flex flex="80">
-
-                            <NumberSlider
-                                minVal = { this.props.minVal }
-                                maxVal = { this.props.maxVal }
-                                onSlide = { this.props.onSlide }
-                                onTextChange = { this.props.onTextChange }
-                                onTextBlur = { this.props.onTextBlur }
-                                cellData = {{
-                                    id: this.props.range[2],
-                                    min: this.props.range[0],
-                                    max: this.props.range[1]
-                                }}
-                            />
-                        </Flex>
-
-                        <Flex divider />
-
-                        <Flex flex="10"
-                            style = {{
-                                margin: "11px 0px 0px -11px"
-                            }} 
-                        >
-                            <Toggle 
-                                name = "applied" 
-                                id = { this.props.range.id } 
-                                toggled = { this.props.range[3] } 
-                                onToggle = {  
-                                    (e) => this.props.onToggle(e, this.props.range[2])
-                                }
-                            />
-                        </Flex>
-
-                        <Flex divider />
-
-                    </Flex>
-                </CardText>
-            </Card>
-        );
-    }
-}
-
-
-/**
- * Custom range slider component that consists of two text fields and a min-max slider
- **/
-class NumberSlider extends React.Component {
     constructor(props) {
         super(props);
 
@@ -334,6 +232,19 @@ class NumberSlider extends React.Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.range != nextProps.range) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deletes a row from the range table by calling parent delete method
+     **/
+    onDelEvent() {
+        this.props.onDelEvent(this.props.range[2]);
+    }
 
     /**
      * Preprocesses min max vals (fixes the case where min value has 10 and user is trying to type 80, 8 is the first digit and 8 < 10)
@@ -403,79 +314,115 @@ class NumberSlider extends React.Component {
         } 
     }
 
-
     render() {
         return (
-            <Flex layout="row">
-                <Flex flex="25">
-                    <TextField 
-                        type = 'number' 
-                        name = "min"
-                        ref ={ input => this.inputElementMin = input }
-                        id = { this.props.cellData.id.toString() } 
-                        value = { this.props.cellData.min } 
-                        hintText = { this.props.minVal.toString() }
-                        style = { styleSet.textfieldStyles }
-                        onChange = {
-                            (e) => this.props.onTextChange(e, this.props.cellData.id)
-                        }
-                        onFocus = { () => this.updateLatest("MIN") }
-                        onBlur = {
-                            () => this.props.onTextBlur(this.props.cellData.id, this.props.cellData.min, this.props.cellData.max, this.state.latestUpdate)
-                        }
-                        onKeyPress = {
-                            (e) => this.onKeyPressMin(e)
-                        }
-                    />
-                </Flex>
+            <Card>
+                <CardText>
+                    <Flex layout="row">      
 
-                <Flex divider />
-                <Flex divider />
-                <Flex divider />
+                        <Flex divider />  
 
-                <Flex flex="50"
-                    style={{
-                        margin: "16px 0px 0px -8px"
-                    }}
-                >
-                    <Range
-                        min = { this.props.minVal }
-                        max = { this.props.maxVal }
-                        value = {this.arrayNumConversion(this.props.cellData.min, this.props.cellData.max) }
-                        defaultValue = { [this.props.minVal,this.props.maxVal] }
-                        allowCross = { false }
-                        onChange = {
-                            (e) => this.props.onSlide(e, this.props.cellData.id)
-                        }
-                    />
-                </Flex>
+                        <Flex flex="10">
+                            <FontIcon
+                                onClick = { this.onDelEvent.bind(this) }
+                                className = "fa fa-trash fa-2x"
+                                hoverColor = { red500 }
+                                style = { styleSet.iconStyles }
+                            />
+                        </Flex>
 
-                <Flex divider />
-                <Flex divider />
-                <Flex divider />
 
-                <Flex flex="25">
-                    <TextField 
-                        type = 'number' 
-                        name = "max"
-                        ref = { input => this.inputElementMax = input }
-                        id = { this.props.cellData.id.toString() } 
-                        value = { this.props.cellData.max }
-                        hintText = { this.props.maxVal.toString() }
-                        style = { styleSet.textfieldStyles }
-                        onChange = {
-                            (e) => this.props.onTextChange(e, this.props.cellData.id)
-                        }
-                        onFocus = { () => this.updateLatest("MAX") }
-                        onBlur = {
-                            () => this.props.onTextBlur(this.props.cellData.id, this.props.cellData.min, this.props.cellData.max, this.state.latestUpdate)
-                        }
-                        onKeyPress = {
-                            (e) => this.onKeyPressMax(e)
-                        }
-                    />
-                </Flex>
-            </Flex>
+
+                        <Flex flex="20">
+                            <TextField 
+                                type = 'number' 
+                                name = "min"
+                                ref ={ input => this.inputElementMin = input }
+                                id = { this.props.range[2].toString() } 
+                                value = { this.props.range[0] } 
+                                hintText = { this.props.minVal.toString() }
+                                style = { styleSet.textfieldStyles }
+                                onChange = {
+                                    (e) => this.props.onTextChange(e, this.props.range[2])
+                                }
+                                onFocus = { () => this.updateLatest("MIN") }
+                                onBlur = {
+                                    () => this.props.onTextBlur(this.props.range[2], this.props.range[0], this.props.range[1], this.state.latestUpdate)
+                                }
+                                onKeyPress = {
+                                    (e) => this.onKeyPressMin(e)
+                                }
+                            />
+                        </Flex>
+
+                        <Flex divider />
+                        <Flex divider />
+
+                        <Flex flex="40"
+                            style={{
+                                margin: "16px 0px 0px -8px",
+                                width: "20px"
+                            }}
+                        >
+                            <Range
+                                min = { this.props.minVal }
+                                max = { this.props.maxVal }
+                                value = {this.arrayNumConversion(this.props.range[0], this.props.range[1]) }
+                                defaultValue = { [this.props.minVal,this.props.maxVal] }
+                                allowCross = { false }
+                                onChange = {
+                                    (e) => this.props.onSlide(e, this.props.range[2])
+                                }
+                            />
+                        </Flex>
+
+                        <Flex divider />
+                        <Flex divider />
+
+                        <Flex flex="20">
+                            <TextField 
+                                type = 'number' 
+                                name = "max"
+                                ref = { input => this.inputElementMax = input }
+                                id = { this.props.range[2].toString() } 
+                                value = { this.props.range[1] }
+                                hintText = { this.props.maxVal.toString() }
+                                style = { styleSet.textfieldStyles }
+                                onChange = {
+                                    (e) => this.props.onTextChange(e, this.props.range[2])
+                                }
+                                onFocus = { () => this.updateLatest("MAX") }
+                                onBlur = {
+                                    () => this.props.onTextBlur(this.props.range[2], this.props.range[0], this.props.range[1], this.state.latestUpdate)
+                                }
+                                onKeyPress = {
+                                    (e) => this.onKeyPressMax(e)
+                                }
+                            />
+                        </Flex>
+
+                        <Flex divider />
+
+
+                        <Flex flex="10"
+                            style = {{
+                                margin: "11px 0px 0px -11px"
+                            }} 
+                        >
+                            <Toggle 
+                                name = "applied" 
+                                id = { this.props.range.id } 
+                                toggled = { this.props.range[3] } 
+                                onToggle = {  
+                                    (e) => this.props.onToggle(e, this.props.range[2])
+                                }
+                            />
+                        </Flex>
+
+
+                    </Flex>
+                </CardText>
+            </Card>
         );
     }
 }

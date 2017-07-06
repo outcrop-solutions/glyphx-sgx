@@ -95,10 +95,10 @@ const filterReducer = function(state = initialFilterState, action) {
                     var applied = stateVal[i][3];
 
 
-                    if (action.min) {
+                    if (action.min != null) {
                         min = action.min;
                     }
-                    if (action.max) {
+                    if (action.max != null) {
                         max = action.max;
                     }
                     if (action.applied != null) {
@@ -145,7 +145,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][3]) {
-                    stateVal[i][3] = false;
+                    stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false]
                 }
             }
 
@@ -159,6 +159,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         [action.colName] : {
                             ...state.Filter.Ranges[action.colName],
                             rangeList : stateVal,
+                            highlightedValues: []
                         }
                     },
                     Elastic : {
