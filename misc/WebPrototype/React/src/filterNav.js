@@ -38,14 +38,14 @@ export const init = (storeFilterStruc) => ({
 
 
 class FilterNav extends Component {
-     
+
     constructor(props) {
         super(props);
         
         var viewSelectItems= [];
         var tableSelectItems = [];
         var appliedFiltersItems = [];
-        var columns = [];
+        var objCols = {};
         var tableData = this.fetchData();
 
         //Load values into the view select dropdown.
@@ -58,9 +58,7 @@ class FilterNav extends Component {
         appliedFiltersItems = this.makeList(['Filter 0','Filter 1','Filter 4','Filter 5'],"appliedFiltersItems");
 
         //Make columns and global store structure
-        var keys = Object.keys(tableData);
-
-        columns = this.makeList(keys,'columns',{data:tableData,pinned:false,makeFilterStructure:true});
+        this.makeFilterStructure(tableData);
         
         //Store the states of all the elements inside this data structure.
         this.state  = {
@@ -81,12 +79,16 @@ class FilterNav extends Component {
             savedSnackBar: {
                  open: false,
             },
+            pinDailog: {
+                open: false,
+            },
             tableData: tableData,
             appliedFiltersItems: appliedFiltersItems,
             viewSelectItems: viewSelectItems,
             tableSelectItems: tableSelectItems,
             activeColumns: [],
-            columns:columns,
+            pinnedDialogOptionValues: [],
+            pinnedDialogSelectedValues: [],
             viewNameTextFieldError: ""
         };
         
@@ -122,6 +124,7 @@ class FilterNav extends Component {
         var len = arrValues.length;
         var index;
         var arrReturn =[];
+        var objReturn = null;
 
         switch(type){
             case 'viewSelectItems':
@@ -143,78 +146,109 @@ class FilterNav extends Component {
                     arrReturn.push(<Divider value={arrValues[index]} key={arrValues[index]+'divider'} />);
                 }
                 break;
-            case 'columns':
-                var rangeStructure = {};
-                var elasticStructure = {};
-                for(index=0;index<len;index++)
-                {
-                    var column = arrValues[index];
-                    var context = this;
-                    var minMax;
-                    var displayName = "";
-
-                    if(extra.makeFilterStructure) {
-                        var type = isNaN(extra.data[column][0]) ? 'Text' : 'Number';
-
-                        minMax = type=='Number'? this.findMinMax(extra.data[column]) : {min:0,max:0};
-
-                        rangeStructure[column] = {
-                            rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
-                            bounds:[minMax.min,minMax.max]
-                        };
-                        
-                        elasticStructure[column] = {
-                            selectedValues: [],
-                            highlightedValues:[],
-                            //properties: [false, false, type, this.generateDisplayName(column)]
-                            applied: false,
-                            pinned: false,
-                            type: type,
-                            displayName: this.generateDisplayName(column)
-        
-                        };
-                    }
-
-                    displayName = elasticStructure[column] ? elasticStructure[column].displayName : extra.displayName;
-
-                    arrReturn.push(<Collapsible 
-                        transitionTime={200} 
-                        key={column} 
-                        triggerOpenedClassName="columnNameHeader"
-                        contentOuterClassName="cursorNormal"
-                        trigger={
-                                <div>
-                                     <IconButton 
-                                        id={"btn_"+column} 
-                                        onClick={context.onPinClick.bind(context)} 
-                                        iconClassName= {extra.pinned ? "fa fa-thumb-tack pinned " + column : "fa fa-thumb-tack unpinned " + column}
-                                        style={{padding:'0px',width:'inherit',height:'inherit'} } />
-                                    <span 
-                                        style={{
-                                        paddingLeft: '10px',
-                                        fontSize: '1rem'
-                                    }}>
-                                        {displayName}
-                                    </span>
-                                </div>} 
-                        triggerClassName='columnNameHeader'
-                        >
-                            <FilterTabs internalColName={extra.pinned ? column+"_pinned" : column} id={column} displayName={displayName} data={extra.data[column]}></FilterTabs>
-                    </Collapsible>);
-
-                    if(elasticStructure[column] ? elasticStructure[column].pinned : false)
-                    {
-                        //Add it to the pinned tabs!
-                    }
-                }
-                
-                if(extra.makeFilterStructure)
-                    this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
-                
-                break;
         }
+        return objReturn != null ? objReturn : arrReturn;
+    };
 
-        return arrReturn;
+    /**
+     * 
+     */
+    makeFilterStructure = (Obj,Options) => {
+        var rangeStructure = {};
+        var elasticStructure = {};
+        
+        for(var property in Obj){
+            var column = property;
+            var context = this;
+            var minMax;
+            var displayName = "";
+            
+            var type = isNaN(Obj[property][0]) ? 'text' : 'number';
+
+            minMax = type=='number'? this.findMinMax(Obj[property]) : {min:0,max:0};
+
+            rangeStructure[column] = {
+                rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
+                highlightedValues:[],
+                bounds:[minMax.min,minMax.max]
+            };
+            
+            elasticStructure[column] = {
+                selectedValues: [],
+                highlightedValues:[],
+                applied: false,
+                pinned: false,
+                type: type,
+                displayName: this.generateDisplayName(column)
+            };
+        }
+        this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
+    };
+
+    /**
+     * This function will make columns and filterStructure
+     * @param {Object} data - pass object of objects
+     *  Eg: {
+     *     colName: {
+     *        data: []
+     *      }      
+     * }
+     */
+     makeColumns = (data,extra) => {
+        var pinnedDialogValues = [];
+        var pinnedColumns = [];
+        var temp = null;
+        var index;
+        var columnsFilterStructure = this.props.GLOBAL;
+        var arrColumnsReturn = [];
+        var arrPinnedColumnsReturn = [];
+        var arrPinDialogOptions = [];
+        var arrPinDialogSelected = [];
+        var objReturn = {};
+
+        for(var property in data)
+        {
+            var columnName = property;
+            var colElasticFilterStruc = columnsFilterStructure.Elastic ? columnsFilterStructure.Elastic[property] : {};
+            var colRangeFilterStruc = columnsFilterStructure.Range ? columnsFilterStructure.Range[property] : {};
+            var context = this;
+            var displayName = colElasticFilterStruc.displayName;
+
+            temp = <Collapsible 
+                transitionTime={200} 
+                key={columnName} 
+                triggerOpenedClassName="columnNameHeader"
+                contentOuterClassName="cursorNormal"
+                trigger={
+                        <div>
+                                <IconButton 
+                                id={"btn_"+columnName} 
+                                onClick={context.onPinClick.bind(context)} 
+                                iconClassName= {colElasticFilterStruc.pinned ? "fa fa-thumb-tack pinned " + columnName : "fa fa-thumb-tack unpinned " + columnName}
+                                style={{padding:'0px',width:'inherit',height:'inherit'} } />
+                            <span 
+                                style={{
+                                paddingLeft: '10px',
+                                fontSize: '1rem'
+                            }}>
+                                {displayName}
+                            </span>
+                        </div>} 
+                triggerClassName='columnNameHeader'
+                >
+                    <FilterTabs internalColName={colElasticFilterStruc.pinned ? columnName+"_pinned" : columnName} id={columnName} displayName={displayName} data={data[columnName]}></FilterTabs>
+            </Collapsible>;
+
+            arrColumnsReturn.push(temp);
+            arrPinDialogOptions.push({value: columnName, label: displayName});
+            if(colElasticFilterStruc.pinned) 
+            {
+                arrPinnedColumnsReturn.push(temp);
+                arrPinDialogSelected.push({value: columnName, label: displayName});
+            }
+        }
+        objReturn = {columns:arrColumnsReturn,pinnnedColumns:arrPinnedColumnsReturn,pinnedOptions:arrPinDialogOptions,pinSelected:arrPinDialogSelected};
+        return objReturn;
     };
 
     /**
@@ -222,7 +256,7 @@ class FilterNav extends Component {
      * @param str: The column name as it is.
      * @return display name string.
      */
-    generateDisplayName(str){
+    generateDisplayName = (str) => {
         var newString = str.charAt(0);
         var len = str.length;
         for(var i=1;i<len;i++){
@@ -251,7 +285,7 @@ class FilterNav extends Component {
      * @param arrValues: an array of column data.
      * @return Object: {min: <MinValue>, max:<MaxValue>}
      */
-    findMinMax(arrValues){
+    findMinMax = (arrValues) => {
         var len = arrValues.length;
         
         var obj = {
@@ -272,53 +306,65 @@ class FilterNav extends Component {
     };
 
     /**
-	* This method is called when
-	*/
-    handleOpenSaveDailog = () => {
-          this.setState({saveDailog:{
-                open: true
-            },
-            viewNameTextFieldError: ""
-        });
-            
-    };
-
-    /**
-	* This method is called when
-	*/
-    handleCloseSaveDailog = () => {
-        this.setState({saveDailog:{
-                open: false
-            }});
-    };
-
-    /**
-	* This method is called when the menu button is clicked. The menu button is in the top right corner of the filerbar.
-	*/
-    handleOpenOptionsMenu = (event) => {
-        event.preventDefault();
-
-        this.setState(
-        {
-            menu: {
-                open: true,
-                anchorEl: event.currentTarget
+     * 
+     */
+    handleOpenClose = (strName,open,evt) =>{
+        switch(strName){
+            case 'save':
+            {
+                if(open){
+                    this.setState({saveDailog:{
+                            open: true
+                        },
+                        viewNameTextFieldError: ""
+                    }); 
+                }
+                else{
+                    this.setState({saveDailog:{
+                        open: false
+                    }});
+                }
+                break;
             }
-        });
-    };
-
-    /**
-	* This method is called to close the menu.
-	*/
-    handleCloseOptionsMenu = () => {
-        this.setState(
-        {
-            menu: {
-                open: false
+            case 'pin':
+            {
+                if(open){
+                    this.setState({pinDailog:{
+                            open: true
+                        }
+                    }); 
+                }else{
+                    this.setState({pinDailog:{
+                        open: false
+                    }});
+                }
+                break;
             }
-        });
-    };
+            case 'menu':
+            {
+                 if(open){
+                   evt.preventDefault();
 
+                    this.setState(
+                    {
+                        menu: {
+                            open: true,
+                            anchorEl: evt.currentTarget
+                        }
+                    });
+                }else{
+                    this.setState(
+                    {
+                        menu: {
+                            open: false
+                        }
+                    });
+                }
+                break;
+            }
+        }
+    };
+    
    /**
 	* This method is called when the save button is pressed in the save dailog.
     * @param context: This is the instance of the current class.
@@ -360,7 +406,7 @@ class FilterNav extends Component {
                 context.setState({viewSelect:{ value: viewName}});
 
                 //Close the dialog
-                context.handleCloseSaveDailog();
+                context.handleOpenClose('save',false);
                 console.log("View saved with name: " + viewName);
 
                 //show the success message
@@ -439,8 +485,6 @@ class FilterNav extends Component {
 
     };
 
-   
-
     /**
 	* This method is called when the user clicks on the 'clear all' button.
 	*/
@@ -484,10 +528,10 @@ class FilterNav extends Component {
         this.onClearAllFilters();
 
         //Clear the value of viewName
-        this.setState ({viewSelect:{value:null}});
+        this.setState({viewSelect:{value:null}});
 
         //close the menu
-        this.handleCloseOptionsMenu();
+        this.handleOpenClose('menu',false,event);
     };
 
      /**
@@ -500,7 +544,7 @@ class FilterNav extends Component {
         this.saveView();
         
         //close the menu
-        this.handleCloseOptionsMenu();
+        this.handleOpenClose('menu',false,event);
     };
 
     /**
@@ -509,58 +553,50 @@ class FilterNav extends Component {
     onMenuSaveAsClick = (event) => {
         console.log("Save As");
         
-        this.handleOpenSaveDailog();
+        this.handleOpenClose('save',true);
         //close the menu
-        this.handleCloseOptionsMenu();
+        this.handleOpenClose('menu',false,event);
     };
 
     /**
      * 
      */
-    onPinClick = (event) => {
-        console.log("pinned to active!");
-        event.stopPropagation();
-
-        var but = event.currentTarget;
-        var colName = but.id.split("btn_")[1];
-        var colInstanceArr = this.state.activeColumns.slice();
-        var activeColumnLen = this.state.activeColumns.length;
-        var pinned = this.props.GLOBAL.Elastic[colName].pinned;
-        var icon = document.getElementsByClassName(colName);
-        
-        
-        if(pinned)
-        {
-            
-            icon[0] ? icon[0].classList.remove("pinned"): icon[0];
-            icon[1] ? icon[1].classList.remove("pinned"): icon[0];
-            icon[0] ? icon[0].classList.add("unpinned") : icon[0];
-            icon[1] ? icon[1].classList.add("unpinned") : icon[0];
-
-            pinned = false;
-
-            for(var index = 0; index < activeColumnLen; index++)
-            {
-                if(colInstanceArr[index].key == colName)
-                {
-                    colInstanceArr.splice(index,1);
-                    break;
-                }
-            }
-
-        }
-        else {
-            icon[0] ? icon[0].classList.remove("unpinned"): icon[0];
-            icon[1] ? icon[1].classList.remove("unpinned"): icon[0];
-            icon[0] ? icon[0].classList.add("pinned") : icon[0];
-            icon[1] ? icon[1].classList.add("pinned") : icon[0];
-            pinned = true;
-            colInstanceArr.push(this.makeList([colName],'columns',{data:this.state.tableData,pinned:true,displayName:this.props.GLOBAL.Elastic[colName].displayName})[0]);
-        }
-
-        this.setState({activeColumns: colInstanceArr});
-        this.props.dispatch({type:'Update_Pin', details:{colName: colName,pinned: pinned}});
+    onPinnedOkDailog = (context) => {
+        var pinnedValues = context.state.pinnedDialogSelectedValues;
+        context.onPinClick(null,{pinnedValues: pinnedValues});
+        this.handleOpenClose('pin',false);
     };
+
+    /**
+     * 
+     */
+    onPinClick = (event,extra) => {
+        console.log("pinned to active!");
+        var but, colName;
+        var pinned;
+        
+        if(event)
+        {
+            event.stopPropagation();
+            but = event.currentTarget;
+            colName = but.id.split("btn_")[1];
+            pinned = this.props.GLOBAL.Elastic[colName].pinned;
+            this.props.dispatch({type:'Update_Pin', details:{colName: colName,pinned: !pinned}});
+        }
+        else{
+            colName = extra.pinnedValues;
+            var len = colName.length;
+            //pin all together.
+            for(var i=0;i<len;i++)
+            {
+                this.props.dispatch({type:'Update_Pin', details:{colName: colName[i],pinned: !pinned}});
+            }
+        }
+    };
+
+    componentDidMount = () => {
+        //this.setState({ 'abc':'123'});
+    }
 
    /**
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
@@ -589,9 +625,9 @@ class FilterNav extends Component {
             
     };
 
-    render() {
-
+    render = () => {
          var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label></div>;
+         var columnsObj = this.makeColumns(this.state.tableData);
 
         return (
             <div className="TopNav" id="FilterWindowOuterContiner" style={{height: '100%',transition:'1s',paddingLeft:'1%',paddingRight: '1%'}}>
@@ -619,7 +655,7 @@ class FilterNav extends Component {
                             <Flex flex="20">
                                 <div>
                                     <RaisedButton
-                                        onClick={this.handleOpenOptionsMenu}
+                                        onClick={(evt) => this.handleOpenClose('menu',true,evt)}
                                         label="Menu"
                                         buttonStyle={{height: '28px'}}
                                         labelStyle={{fontSize: '13px'}}
@@ -628,7 +664,7 @@ class FilterNav extends Component {
                                     <Popover
                                         open={this.state.menu.open}
                                         anchorEl={this.state.menu.anchorEl}
-                                        onRequestClose={this.handleCloseOptionsMenu}
+                                        onRequestClose={(evt) => this.handleOpenClose('menu',false,evt)}
                                         style={{fontSize: '13px'}}
                                     >
                                         <Menu>
@@ -649,7 +685,7 @@ class FilterNav extends Component {
                                              <FlatButton
                                                 label="Cancel"
                                                 primary={true}
-                                                onClick={this.handleCloseSaveDailog}/>]
+                                                onClick={() => this.handleOpenClose('save',false)}/>]
                                         }
                                         modal={true}
                                         open={this.state.saveDailog.open}>
@@ -701,6 +737,17 @@ class FilterNav extends Component {
                                         />
                                     */}
                             </Flex>
+                            <Flex divider />
+                            <Flex flex="35">
+                            <RaisedButton 
+                                primary={true} 
+                                label="Apply Filters" 
+                                onClick={this.applyFilter.bind(this)} 
+                                buttonStyle={{height: '28px',paddingTop: '5px'}}
+                                labelStyle={{fontSize: '13px',height: '28px',}} 
+                                style = {{height: '28px',width:'100%',}} 
+                                    />
+                            </Flex>
                             
                         </Flex>
                         
@@ -742,9 +789,7 @@ class FilterNav extends Component {
 
                     <Flex flex="50">
 
-                        <RaisedButton primary={true} label="Apply Filters" onClick={this.applyFilter} fullWidth={true} />
-                        <br />
-                        <br />
+                        
                         <Collapsible 
                             transitionTime={200} 
                             contentOuterClassName="cursorNormal"
@@ -760,30 +805,41 @@ class FilterNav extends Component {
                                     </span>
                                 </div>}>
 
-                                <DualListBox
-                                    canFilter
-                                    options={[
-                                        { value: 1, label: 'Staff Assigned' },
-                                        { value: 2, label: 'Academic Rating' },
-                                        { value: 3, label: 'Last Decision Cluster' },
-                                        { value: 4, label: 'Year' },
-                                    ]}
-                                    onChange={(selected) => {
-                                        console.log(selected);
-                                    }}
-                                />
+                            <Dialog
+                                title="Pinning Views!"
+                                actions={
+                                    [<FlatButton
+                                        label="Ok"
+                                        primary={true}
+                                        onClick={() => this.onPinnedOkDailog(this)}/>,
+                                        <FlatButton
+                                        label="Cancel"
+                                        primary={true}
+                                        onClick={() => this.handleOpenClose('pin',false)}/>]
+                                }
+                                modal={true}
+                                open={this.state.pinDailog.open}>
+                                    <DualListBox
+                                        canFilter
+                                        preserveSelectOrder 
+                                        ref="pinnedDialog"
+                                        options={columnsObj.pinnedOptions}
+                                        selected={this.state.pinnedDialogSelectedValues}
+                                        onChange={(selected) => {
+                                            this.setState({pinnedDialogSelectedValues: selected});
+                                            //this.onPinClick(null,{pinnedValues: []})
+                                            debugger;
+                                        }}
+                                    />
+                            </Dialog>
 
-                                <RaisedButton 
-                                    primary={true} 
-                                    style = {{height: '30px',}}>
-
-                                        Find Filters
                                 
-                                </RaisedButton>
-                                <br />
-                                <br />
+                                <IconButton 
+                                    onClick={() => this.handleOpenClose('pin',true)}
+                                        iconClassName="fa fa-plus-square"
+                                        iconStyle={{color: '#00bcd4'}} />
 
-                                {this.state.activeColumns.length > 0 ? this.state.activeColumns : pinnedEmptyString}
+                                {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
                         </Collapsible>
 
                         <Collapsible 
@@ -800,7 +856,7 @@ class FilterNav extends Component {
                                         Filters
                                     </span>
                                 </div>}>
-                                 {this.state.columns}
+                               {columnsObj.columns}
                         </Collapsible>
 
                     </Flex>
@@ -810,4 +866,7 @@ class FilterNav extends Component {
     }
 }
 
+
 export default connect(mapStateToProps)(FilterNav);
+
+//{this.columnsObj.columns}

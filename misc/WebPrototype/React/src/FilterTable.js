@@ -4,22 +4,13 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import Checkbox from 'material-ui/Checkbox';
 import { connect } from 'react-redux';
 
-const mapStateToProps = function(state){
-  return {
-    tableState: state.filterState.Filter.Elastic,
-  }
-}
-
-export const addRemoveElastic = (filter) => ({
-  type: 'ADD_REMOVE_ELASTIC',
-  filter
-});
 
 /**
  * This is the class that represents the Tables.
  * @param id: id you want to give to the table.
  * @param columnToSearch: the index of the column you want the search funcationality to work on.
- * @param selectedRows: array of row positions selected [0,5,...]
+ * @param internalColName: name of the column used for internal mapping purposes
+ * @param displayName: the name of the column as showed on the UI.
  * @param  tableData: {data:[array of strings],totalCount: integer}
  *          eg:  tableData: {data:['a','b','c','a'],totalCount: 4}
  */
@@ -30,7 +21,6 @@ class FilterTable extends Component {
     
     constructor(props) {
         super(props);
-        
         this.state = {
         fixedHeader: true,
         fixedFooter: true,
@@ -48,6 +38,11 @@ class FilterTable extends Component {
         };
     }
 
+    /**
+     * This processes the data and counts the number of ocurrences and removes duplicates.
+     * @param tableData 
+     * @return Object : {'data':<object of data in form of "dataValue : count",'totalCount': totalCount}
+     */
     processData(tableData){
         var temp = {};
         var totalCount = tableData.length;
@@ -96,15 +91,9 @@ class FilterTable extends Component {
         
     };
 
-
-    handleToggle = (event, toggled) => {
-        this.setState({
-        [event.target.name]: toggled,
-        });
-    };
-
     /**
      * This method is called when the keyup event is fired in the search textfield on top of the table. 
+     * @param context: the instance of this react element.
      * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
      * @param indexColumnToSearch: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
      */
@@ -141,15 +130,13 @@ class FilterTable extends Component {
     };
 
     /**
-     * 
+     * This method returns the internalTableName.
+     * @return string - internal table name.
      */
     getInternalTableName = () => {
         return "table-" + this.props.internalColName;
     }
 
-    handleChange = (event) => {
-        this.setState({height: event.target.value});
-    };
 
     render() {
         var id = this.props.id;
@@ -163,10 +150,10 @@ class FilterTable extends Component {
             rows.push(<TableRow 
                 key={index}
                 style={{height:'30px'}}
-                selected={this.props.tableState[id].selectedValues.indexOf(property) !== -1}
-                striped={this.props.tableState[id].highlightedValues.indexOf(property) !== -1}
+                selected={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1}
+                striped={this.props.tableState.Ranges[id].highlightedValues.indexOf(property) !== -1}
                 >
-                    <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
+                    <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
                     <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{property}</TableRowColumn>
                     <TableRowColumn style={{height:'inherit'}}>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
             </TableRow>);
@@ -204,7 +191,7 @@ class FilterTable extends Component {
                     enableSelectAll={this.state.enableSelectAll}
                 >
                     <TableRow  style={{height:'30px'}}>
-                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
+                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
                         <TableHeaderColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}} >Value</TableHeaderColumn>
                         <TableHeaderColumn style={{height:'inherit'}}>Count(Percent)</TableHeaderColumn>
                     </TableRow>
@@ -224,5 +211,19 @@ class FilterTable extends Component {
         );
     }
 }
+
+
+
+export const addRemoveElastic = (filter) => ({
+  type: 'ADD_REMOVE_ELASTIC',
+  filter
+});
+
+
+const mapStateToProps = function(state){
+  return {
+    tableState: state.filterState.Filter,
+  }
+};
 
 export default connect(mapStateToProps)(FilterTable);

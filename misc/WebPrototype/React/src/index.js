@@ -164,7 +164,7 @@ const filterReducer = function(state = initialFilterState, action) {
             console.log(newState);
             return newState;
 
-        case 'ADD_REMOVE_ELASTIC': 
+        case 'ADD_REMOVE_ELASTIC':
         {
             console.log('ADD_REMOVE_ELASTIC');
             var col = action.filter.colName;
@@ -186,7 +186,7 @@ const filterReducer = function(state = initialFilterState, action) {
                             [col] : {
                                 ...state.Filter.Elastic[col],
                                 selectedValues: action.filter.selectedValues,
-                                applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Elastic[col].highlightedValues.length > 0 ? true : false),
+                                applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Ranges[col].highlightedValues.length > 0 ? true : false),
                             }
                         }
                     }
@@ -203,6 +203,40 @@ const filterReducer = function(state = initialFilterState, action) {
         {
             var col = action.details.colName;
             var newState;
+            newState  = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Elastic : {
+                        ...state.Filter.Elastic,
+                        [col] : {
+                            ...state.Filter.Elastic[col],
+                            pinned: action.details.pinned
+                        }
+                    }
+                }
+            };
+            
+            console.log(newState);
+            return newState;
+        }
+
+        case 'UPDATE_PINS':
+        {
+            var cols = action.details.colNames;
+            var newState;
+            var elist = {};
+
+            for(var i=0;i<cols.len;i++)
+            {
+                elist[cols[i]] = {
+                    ...state.Filter.Elastic[col],
+                    pinned: action.details.pinned
+                }
+            }
+
+            debugger;
+
             newState  = {
                 ...state,
                 Filter : {
