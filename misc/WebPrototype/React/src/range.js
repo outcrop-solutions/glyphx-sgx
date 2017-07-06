@@ -159,6 +159,7 @@ class RangeForm extends React.Component {
                     onTextChange = { this.handleTextUpdate.bind(this) }
                     onTextBlur = { this.handleTextBlur.bind(this) }
                     rangeList = { this.props.rangeList }
+                    rangeType = { this.props.rangeType }
                     minVal = { this.props.minVal }
                     maxVal = { this.props.maxVal }
                     colName = { this.props.colName } 
@@ -184,6 +185,7 @@ class RangeTable extends React.Component {
         var onTextBlur = this.props.onTextBlur;
         var min = this.props.minVal;
         var max = this.props.maxVal;
+        var rangeType = this.props.rangeType;
 
         var rList = this.props.rangeList[this.props.colName].rangeList;
 
@@ -195,7 +197,8 @@ class RangeTable extends React.Component {
                         onToggle = { onToggle }
                         onTextChange = { onTextChange }
                         onTextBlur = { onTextBlur }
-                        key = { range[2] } 
+                        key = { range[2] }
+                        rangeType = { rangeType }
                         minVal = { min }
                         maxVal = { max }
                     />)
@@ -259,6 +262,7 @@ class RangeRow extends React.Component {
                         </Flex>
 
                         <Flex flex="80">
+
                             <NumberSlider
                                 minVal = { this.props.minVal }
                                 maxVal = { this.props.maxVal }
