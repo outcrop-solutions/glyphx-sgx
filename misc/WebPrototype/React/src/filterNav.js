@@ -25,16 +25,6 @@ import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './filterNav.css';
 
-const mapStateToProps = function(state){
-  return {
-    GLOBAL: state.filterState.Filter,
-  }
-};
-
-export const init = (storeFilterStruc) => ({
-  type: 'INIT',
-  storeFilterStruc
-});
 
 
 class FilterNav extends Component {
@@ -871,6 +861,17 @@ class FilterNav extends Component {
     }
 }
 
+
+export const init = (storeFilterStruc) => ({
+  type: 'INIT',
+  storeFilterStruc
+});
+
+const mapStateToProps = function(state){
+  return {
+    GLOBAL: state.filterState.Filter,
+  }
+};
 
 export default connect(mapStateToProps)(FilterNav);
 

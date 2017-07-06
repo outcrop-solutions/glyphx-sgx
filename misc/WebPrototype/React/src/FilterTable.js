@@ -156,12 +156,12 @@ class FilterTable extends Component {
         this.flatData = [];
 
         for(var property in data) {
-            rows.push(<TableRow 
+            rows.push(<TableRow striped={true}
                 key={index}
                 style={{height:'30px'}}
                 selected={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1}
                 //striped={this.props.tableState.Ranges[id].highlightedValues.indexOf(property) !== -1}
-                striped={true}
+                
                 >
                     <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
                     <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{property}</TableRowColumn>
