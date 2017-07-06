@@ -55,6 +55,8 @@ class FilterViewTable extends React.Component {
 
 
         var eList = this.props.elasticList;
+        var hList = this.props.rangeList;
+        
         var viewList = [];
 
         console.log("Start FilterView", performance.now());
@@ -65,14 +67,15 @@ class FilterViewTable extends React.Component {
             var min, max, i, curNum;
             var rCount = 0;
 
+            debugger;
             if (filterType === "Text") {
                 if (eList[colName].selectedValues.length) {
                     min = eList[colName].selectedValues[0];
                     max = eList[colName].selectedValues[0];
                 }
-                else if (eList[colName].highlightedValues.length) {
-                    min = eList[colName].highlightedValues[0];
-                    max = eList[colName].highlightedValues[0];
+                else if (hList[colName].highlightedValues.length) {
+                    min = hList[colName].highlightedValues[0];
+                    max = hList[colName].highlightedValues[0];
                 }
                 else {
                     continue;
@@ -89,13 +92,13 @@ class FilterViewTable extends React.Component {
                     }
                 }
 
-                if ( eList[colName].highlightedValues.length ) {
-                    for (i = 0; i < eList[colName].highlightedValues.length; i++) {
-                        if (eList[colName].highlightedValues[i] < min) {
-                            min = eList[colName].highlightedValues[i];
+                if ( hList[colName].highlightedValues.length ) {
+                    for (i = 0; i < hList[colName].highlightedValues.length; i++) {
+                        if (hList[colName].highlightedValues[i] < min) {
+                            min = hList[colName].highlightedValues[i];
                         }
-                        else if (eList[colName].highlightedValues[i] > max) {
-                            max = eList[colName].highlightedValues[i];
+                        else if (hList[colName].highlightedValues[i] > max) {
+                            max = hList[colName].highlightedValues[i];
                         }
                     }
                 }
@@ -106,9 +109,9 @@ class FilterViewTable extends React.Component {
                     min = parseInt(eList[colName].selectedValues[0], 10);
                     max = parseInt(eList[colName].selectedValues[0], 10);
                 }
-                else if (eList[colName].highlightedValues.length) {
-                    min = parseInt(eList[colName].highlightedValues[0], 10);
-                    max = parseInt(eList[colName].highlightedValues[0], 10);
+                else if (hList[colName].highlightedValues.length) {
+                    min = parseInt(hList[colName].highlightedValues[0], 10);
+                    max = parseInt(hList[colName].highlightedValues[0], 10);
                 }
                 else {
                     continue;
@@ -126,9 +129,9 @@ class FilterViewTable extends React.Component {
                     }
                 }
 
-                if ( eList[colName].highlightedValues.length ) {
-                    for (i = 0; i < eList[colName].highlightedValues.length; i++) {
-                        curNum = parseInt(eList[colName].highlightedValues[i], 10);
+                if ( hList[colName].highlightedValues.length ) {
+                    for (i = 0; i < hList[colName].highlightedValues.length; i++) {
+                        curNum = parseInt(hList[colName].highlightedValues[i], 10);
                         if (curNum < min) {
                             min = curNum;
                         }

@@ -175,7 +175,6 @@ class FilterNav extends Component {
             
             elasticStructure[column] = {
                 selectedValues: [],
-                highlightedValues:[],
                 applied: false,
                 pinned: false,
                 type: type,
