@@ -217,14 +217,40 @@ class FilterNav extends Component {
                         </div>} 
                 triggerClassName='columnNameHeader'
                 >
-                    <FilterTabs internalColName={colElasticFilterStruc.pinned ? columnName+"_pinned" : columnName} id={columnName} displayName={displayName} data={data[columnName]}></FilterTabs>
+                    <FilterTabs internalColName={columnName} id={columnName} displayName={displayName} data={data[columnName]}></FilterTabs>
             </Collapsible>;
 
             arrColumnsReturn.push(temp);
             arrPinDialogOptions.push({value: columnName, label: displayName});
+
+
             if(colElasticFilterStruc.pinned) 
             {
-                arrPinnedColumnsReturn.push(temp);
+                arrPinnedColumnsReturn.push(
+                    <Collapsible 
+                        transitionTime={200} 
+                        key={columnName} 
+                        triggerOpenedClassName="columnNameHeader"
+                        contentOuterClassName="cursorNormal"
+                        trigger={
+                                <div>
+                                        <IconButton 
+                                        id={"btn_"+columnName} 
+                                        onClick={context.onPinClick.bind(context)} 
+                                        iconClassName= {colElasticFilterStruc.pinned ? "fa fa-thumb-tack pinned " + columnName : "fa fa-thumb-tack unpinned " + columnName}
+                                        style={{padding:'0px',width:'inherit',height:'inherit'} } />
+                                    <span 
+                                        style={{
+                                        paddingLeft: '10px',
+                                        fontSize: '1rem'
+                                    }}>
+                                        {displayName}
+                                    </span>
+                                </div>} 
+                        triggerClassName='columnNameHeader'
+                        >
+                        <FilterTabs internalColName={columnName+"_pinned"} id={columnName} displayName={displayName} data={data[columnName]}></FilterTabs>
+                    </Collapsible>);
                 arrPinDialogSelected.push({value: columnName, label: displayName});
             }
         }
