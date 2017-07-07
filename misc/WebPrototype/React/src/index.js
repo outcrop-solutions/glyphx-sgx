@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TopNav from './topNav';
-import App from './App.js';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
-import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
 
@@ -14,10 +12,12 @@ const initialFilterState = {
     };
 
 const filterReducer = function(state = initialFilterState, action) {
+    var newState;
+    var stateVal;
+    
     switch (action.type) {
         case 'INIT':
         {
-            var newState;
             newState  = {
                     ...state,
                     Filter : action.storeFilterStruc
@@ -28,11 +28,11 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
             
-            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
             stateVal.push(["", "", action.id, action.applied]);
             
             //state.Filter.Ranges[action.colName].rangeList = stateval;
-            var newState = {
+            newState = {
                 ...state,
                 Filter : {
                     ...state.Filter,
@@ -52,7 +52,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'REMOVE_RANGE':
             console.log('REMOVE-RANGE');
 
-            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][2] == action.id) {
@@ -62,7 +62,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
 
-            var newState = {
+            newState = {
                 ...state,
                 Filter : {
                     ...state.Filter,
@@ -85,7 +85,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             console.log("Start new state", performance.now());
 
-            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
 
 
             for (var i = 0; i < stateVal.length; i++) {
@@ -115,7 +115,7 @@ const filterReducer = function(state = initialFilterState, action) {
             console.log("Changed values", performance.now());
 
 
-            var newState = {
+            newState = {
                 ...state,
                 Filter : {
                     ...state.Filter,
@@ -141,7 +141,7 @@ const filterReducer = function(state = initialFilterState, action) {
          case 'REMOVE_FILTER_VIEW': 
             console.log('REMOVE_FILTER_VIEW');
 
-            var stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][3]) {
@@ -150,7 +150,7 @@ const filterReducer = function(state = initialFilterState, action) {
             }
 
 
-            var newState = {
+            newState = {
                 ...state,
                 Filter : {
                     ...state.Filter,
@@ -183,40 +183,6 @@ const filterReducer = function(state = initialFilterState, action) {
             console.log('ADD_REMOVE_ELASTIC');
             var col = action.filter.colName;
 
-            var newState;
-
-            /*if(action.filter.selectedValues.length < 1 && action.filter.highlightedValues < 1 && newState.Filter.Elastic.hasOwnProperty(col))
-            {
-                delete newState.Filter.Elastic[col];
-            }
-            else*/
-            //{
-                newState  = {
-                    ...state,
-                    Filter : {
-                        ...state.Filter,
-                        Elastic : {
-                            ...state.Filter.Elastic,
-                            [col] : {
-                                ...state.Filter.Elastic[col],
-                                selectedValues: action.filter.selectedValues,
-                                applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Ranges[col].highlightedValues.length > 0 ? true : false),
-                            }
-                        }
-                    }
-                };
-            //}
-            
-            //newState = Object.assign({}, state, elasticFilter);
-
-            console.log(newState);
-            return newState;
-        }
-
-        case 'Update_Pin':
-        {
-            var col = action.details.colName;
-            var newState;
             newState  = {
                 ...state,
                 Filter : {
@@ -225,6 +191,28 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter.Elastic,
                         [col] : {
                             ...state.Filter.Elastic[col],
+                            selectedValues: action.filter.selectedValues,
+                            applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Ranges[col].highlightedValues.length > 0 ? true : false),
+                        }
+                    }
+                }
+            };
+
+            console.log(newState);
+            return newState;
+        }
+
+        case 'Update_Pin':
+        {
+            var colName = action.details.colName;
+            newState  = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    Elastic : {
+                        ...state.Filter.Elastic,
+                        [colName] : {
+                            ...state.Filter.Elastic[colName],
                             pinned: action.details.pinned
                         }
                     }
