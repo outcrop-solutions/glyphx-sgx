@@ -3,7 +3,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
 import FilterTable from './FilterTable.js';
-import RangeForm from './range.js';
+import NumberRangeTable from './NumberRange.js';
 import { connect } from 'react-redux';
 
 class FilterTabs extends React.Component {
@@ -97,7 +97,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <RangeForm 
+                        <NumberRangeTable 
                             colName = { this.props.id } 
                             data = { this.state.tableData } 
                             minVal = { this.props.filterList.Ranges[this.props.id].bounds[0] } 

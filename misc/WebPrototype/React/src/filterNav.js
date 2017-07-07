@@ -4,7 +4,7 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import RangeForm from './range.js';
+import NumberRangeTable from './NumberRange.js';
 import {Flex} from 'react-flex-material';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
