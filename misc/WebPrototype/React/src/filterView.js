@@ -16,6 +16,18 @@ import 'font-awesome/css/font-awesome.css';
  **/
 class FilterViewForm extends React.Component {
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.elasticList != nextProps.elasticList) {
+            return true;
+        }
+        for (var colName in this.props.rangeList) {
+            if (this.props.rangeList[colName].highlightedValues != nextProps.rangeList[colName].highlightedValues) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Unselects all ranges and removes all elastic selections from a column
