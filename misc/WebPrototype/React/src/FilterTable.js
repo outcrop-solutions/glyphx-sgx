@@ -67,9 +67,8 @@ class FilterTable extends Component {
     onRowSelect = (context,rowSelection,all) => {
             var index,len = all ? context.flatData.length : rowSelection.length;
             var selectedValues = [];
-            var highlightedValues = [];
 
-            if(all || rowSelection.length == context.flatData.length)
+            if(all || rowSelection.length === context.flatData.length)
             {
                 this.setState({selectAll:true});
                 for(index=0;index<len;index++)
@@ -98,7 +97,7 @@ class FilterTable extends Component {
      * @param indexColumnToSearch: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
      */
     onKeyUp = (context,id,indexColumnToSearch) => {
-        var input, filter, table, tr, td, i;
+        var input, filter, tr, td, i;
         input = document.getElementById("tf-"+id);
         filter = input.value.toUpperCase();
         tr = this.fetchTableRows(this.getInternalTableName());
@@ -157,17 +156,16 @@ class FilterTable extends Component {
 
         for(var property in data) {
             var prop = isNaN(property) ? property : parseFloat(property);
-            
+            var percentStr =  data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")";
             rows.push(<TableRow 
                 key={index}
                 style={{height:'30px'}}
                 className = {this.props.tableState.Ranges[id].highlightedValues.indexOf(prop) !== -1 ? 'highlightedRows' : ''}
                 selected={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1}
-                //striped={this.props.tableState.Ranges[id].highlightedValues.indexOf(property) !== -1}
                 >
                     <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1} /></TableRowColumn>
                     <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{property}</TableRowColumn>
-                    <TableRowColumn style={{height:'inherit'}}>{data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")"}</TableRowColumn>
+                    <TableRowColumn style={{height:'inherit'}}>{percentStr}</TableRowColumn>
             </TableRow>);
 
             this.flatData.push({

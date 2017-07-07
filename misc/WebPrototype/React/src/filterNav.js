@@ -4,18 +4,14 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import RangeForm from './range.js';
 import {Flex} from 'react-flex-material';
-import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import Snackbar from 'material-ui/Snackbar';
 import AlertContainer from 'react-alert';
-import {List, ListItem} from 'material-ui/List';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import ListItem from 'material-ui/List';
 import FilterTabs from './FilterTab.js';
 import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
@@ -35,7 +31,6 @@ class FilterNav extends Component {
         var viewSelectItems= [];
         var tableSelectItems = [];
         var appliedFiltersItems = [];
-        var objCols = {};
         var tableData = this.fetchData();
 
         //Load values into the view select dropdown.
@@ -79,6 +74,7 @@ class FilterNav extends Component {
             activeColumns: [],
             pinnedDialogOptionValues: [],
             pinnedDialogSelectedValues: [],
+			pinnedDialogPrevState:[],
             viewNameTextFieldError: ""
         };
         
@@ -136,6 +132,8 @@ class FilterNav extends Component {
                     arrReturn.push(<Divider value={arrValues[index]} key={arrValues[index]+'divider'} />);
                 }
                 break;
+            default:
+            return null;
         }
         return objReturn != null ? objReturn : arrReturn;
     };
@@ -149,13 +147,11 @@ class FilterNav extends Component {
         
         for(var property in Obj){
             var column = property;
-            var context = this;
             var minMax;
-            var displayName = "";
             
             var type = isNaN(Obj[property][0]) ? 'Text' : 'Number';
 
-            minMax = type=='Number'? this.findMinMax(Obj[property]) : {min:0,max:0};
+            minMax = (type == 'Number'? this.findMinMax(Obj[property]) : {min:0,max:0});
 
             rangeStructure[column] = {
                 rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
@@ -184,10 +180,7 @@ class FilterNav extends Component {
      * }
      */
      makeColumns = (data,extra) => {
-        var pinnedDialogValues = [];
-        var pinnedColumns = [];
         var temp = null;
-        var index;
         var columnsFilterStructure = this.props.GLOBAL;
         var arrColumnsReturn = [];
         var arrPinnedColumnsReturn = [];
@@ -199,7 +192,6 @@ class FilterNav extends Component {
         {
             var columnName = property;
             var colElasticFilterStruc = columnsFilterStructure.Elastic ? columnsFilterStructure.Elastic[property] : {};
-            var colRangeFilterStruc = columnsFilterStructure.Range ? columnsFilterStructure.Range[property] : {};
             var context = this;
             var displayName = colElasticFilterStruc.displayName;
 
@@ -297,7 +289,7 @@ class FilterNav extends Component {
     /**
      * 
      */
-    handleOpenClose = (strName,open,evt) =>{
+    handleOpenClose = (strName,open,evt,extra) =>{
         switch(strName){
             case 'save':
             {
@@ -318,11 +310,17 @@ class FilterNav extends Component {
             case 'pin':
             {
                 if(open){
+					this.setState({pinnedDialogPrevState: this.state.pinnedDialogSelectedValues});
                     this.setState({pinDailog:{
                             open: true
                         }
                     }); 
                 }else{
+					if(extra ? extra.cancel : false)
+					{
+						this.setState({pinnedDialogSelectedValues: this.state.pinnedDialogPrevState});
+					}
+					
                     this.setState({pinDailog:{
                         open: false
                     }});
@@ -351,6 +349,8 @@ class FilterNav extends Component {
                 }
                 break;
             }
+            default:
+                return null;
         }
     };
     
@@ -551,8 +551,39 @@ class FilterNav extends Component {
      * 
      */
     onPinnedOkDailog = (context) => {
-        var pinnedValues = context.state.pinnedDialogSelectedValues;
-        context.onPinClick(null,{pinnedValues: pinnedValues});
+        var pinnedValues = context.state.pinnedDialogSelectedValues.slice();
+		var prevSelectedValues = context.state.pinnedDialogPrevState;
+        var unpinnedArray = [];
+		var len=prevSelectedValues.length;
+        var len2;
+		
+		//find values that were unpinned
+		for(var i=0;i <len; i++)
+		{
+			if(pinnedValues.indexOf(prevSelectedValues[i]) == -1)
+			{
+				unpinnedArray.push(prevSelectedValues[i]);
+			}
+		}
+		
+        len2 = unpinnedArray.length;
+            
+        //unpin previously pinned together.
+        for(var k=0;k<len2;k++)
+        {
+            this.props.dispatch({type:'Update_Pin', details:{colName: unpinnedArray[k],pinned: false}});
+        }
+
+        len2 = pinnedValues.length;
+        //pin new values
+        for(var j=0;j<len2;j++)
+        {
+            if(!this.props.GLOBAL.Elastic[pinnedValues[j]].pinned)
+            {
+                this.props.dispatch({type:'Update_Pin', details:{colName: pinnedValues[j],pinned: true}});
+            }
+        }
+
         this.handleOpenClose('pin',false);
     };
 
@@ -579,20 +610,8 @@ class FilterNav extends Component {
             this.setState({pinnedDialogSelectedValues: selectedValues});
             this.props.dispatch({type:'Update_Pin', details:{colName: colName,pinned: !pinned}});
         }
-        else{
-            colName = extra.pinnedValues;
-            var len = colName.length;
-            //pin all together.
-            for(var i=0;i<len;i++)
-            {
-                this.props.dispatch({type:'Update_Pin', details:{colName: colName[i],pinned: !pinned}});
-            }
-        }
     };
 
-    componentDidMount = () => {
-        //this.setState({ 'abc':'123'});
-    }
 
    /**
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
@@ -601,22 +620,21 @@ class FilterNav extends Component {
         var collapseTopViewButton = document.getElementById("collapseTopViewButton");
         var topView = document.getElementById("TopView");
         var filterWindow = document.getElementById("FilterWindowOuterContiner");
-        var appBar = document.getElementById("AppBar");
-
+        
         if(this.state.topViewVisible == true)
         {
             filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)"
             //collapseTopViewButton.classList.remove('fa-caret-up');
             //collapseTopViewButton.classList.add('.Collapsible__trigger.is-open:after');
             collapseTopViewButton.style.transform = 'rotateZ(180deg)';
-            this.state.topViewVisible = false;
+            this.setState({topViewVisible : false});
         }
         else{
             filterWindow.style.transform = "translate(0px,0px)"
             //collapseTopViewButton.classList.remove('fa-caret-down');
             //collapseTopViewButton.classList.add('fa-caret-up');
             collapseTopViewButton.style.transform = 'none';
-            this.state.topViewVisible = true;
+            this.setState({topViewVisible : true});
         }
             
     };
@@ -811,7 +829,7 @@ class FilterNav extends Component {
                                         <FlatButton
                                         label="Cancel"
                                         primary={true}
-                                        onClick={() => this.handleOpenClose('pin',false)}/>]
+                                        onClick={() => this.handleOpenClose('pin',false,null,{'cancel':true})}/>]
                                 }
                                 modal={true}
                                 open={this.state.pinDailog.open}>
@@ -822,7 +840,8 @@ class FilterNav extends Component {
                                         options={columnsObj.pinnedOptions}
                                         selected={this.state.pinnedDialogSelectedValues}
                                         onChange={(selected) => {
-                                            this.setState({pinnedDialogSelectedValues: selected});
+                                            
+											this.setState({pinnedDialogSelectedValues: selected});
                                             //this.onPinClick(null,{pinnedValues: []})
                                         }}
                                     />
@@ -874,5 +893,3 @@ const mapStateToProps = function(state){
 };
 
 export default connect(mapStateToProps)(FilterNav);
-
-//{this.columnsObj.columns}
