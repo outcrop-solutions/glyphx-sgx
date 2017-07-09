@@ -94,7 +94,7 @@ class FilterTable extends Component {
             }
             else{
                 
-                selectedValues = context.props.tableState.Elastic[context.props.id].selectedValues.slice();
+                selectedValues = context.props.tableState[context.props.id].selectedValues.slice();
 
                 if(checked){
                     selectedValues.push(context.flatData[rowSelection].value);
@@ -168,16 +168,16 @@ class FilterTable extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.tableState.Elastic[this.props.id].selectedValues != nextProps.tableState.Elastic[this.props.id].selectedValues)
+        if(this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues)
             return true;
-        else if(this.props.tableState.Ranges[this.props.id].highlightedValues != nextProps.tableState.Ranges[this.props.id].highlightedValues)
+        else if(this.props.tableState[this.props.id].highlightedValues != nextProps.tableState[this.props.id].highlightedValues)
             return true;
         else
             return false;
     }
 
     componentDidUpdate(){
-        if(this.props.tableState.Elastic[this.props.id].selectedValues.length == this.flatData.length)
+        if(this.props.tableState[this.props.id].selectedValues.length == this.flatData.length)
             this.setState({selectAll: true});
         else
             this.setState({selectAll: false});
@@ -200,7 +200,7 @@ class FilterTable extends Component {
             var prop = isNaN(property) ? property : parseFloat(property);
             var percentStr =  data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")";
             
-            rows.push(<FilterRow onRowSelect={(evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked)} key={prop} index={index} checked={this.props.tableState.Elastic[id].selectedValues.indexOf(property) !== -1} value={prop} percentStr={percentStr} highlighted={this.props.tableState.Ranges[id].highlightedValues.indexOf(prop) !== -1 ? 'highlightedRows' : ''}> </FilterRow> );
+            rows.push(<FilterRow onRowSelect={(evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked)} key={prop} index={index} checked={this.props.tableState[id].selectedValues.indexOf(property) !== -1} value={prop} percentStr={percentStr} highlighted={this.props.tableState[id].highlightedValues.indexOf(prop) !== -1 ? 'highlightedRows' : ''}> </FilterRow> );
 
             this.flatData.push({
                 value: property,
@@ -234,7 +234,7 @@ class FilterTable extends Component {
                     enableSelectAll={this.state.enableSelectAll}
                 >
                     <TableRow  style={{height:'30px'}}>
-                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox id={"cb-"+internalColName} checked={this.props.tableState.Elastic[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
+                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox id={"cb-"+internalColName} checked={this.props.tableState[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
                         <TableHeaderColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}} >Value</TableHeaderColumn>
                         <TableHeaderColumn style={{height:'inherit'}}>Count(Percent)</TableHeaderColumn>
                     </TableRow>

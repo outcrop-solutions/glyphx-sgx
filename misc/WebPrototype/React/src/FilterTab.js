@@ -100,9 +100,9 @@ class FilterTabs extends React.Component {
                         <NumberRangeTable 
                             colName = { this.props.id } 
                             data = { this.state.tableData } 
-                            minVal = { this.props.filterList.Ranges[this.props.id].bounds[0] } 
-                            maxVal = { this.props.filterList.Ranges[this.props.id].bounds[1] }
-                            rangeType = { this.props.filterList.Elastic[this.props.id].type }
+                            minVal = { this.props.filterList[this.props.id].bounds[0] } 
+                            maxVal = { this.props.filterList[this.props.id].bounds[1] }
+                            rangeType = { this.props.filterList[this.props.id].type }
                         />
 
                     </div>

@@ -144,16 +144,16 @@ class FilterNav extends Component {
     makeFilterStructure = (Obj,Options) => {
         var rangeStructure = {};
         var elasticStructure = {};
-        
+        var returnObj ={};
+
         for(var property in Obj){
             var column = property;
             var minMax;
-            
             var type = isNaN(Obj[property][0]) ? 'Text' : 'Number';
 
             minMax = (type == 'Number'? this.findMinMax(Obj[property]) : {min:0,max:0});
 
-            rangeStructure[column] = {
+            /* rangeStructure[column] = {
                 rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
                 highlightedValues:[],
                 bounds:[minMax.min,minMax.max]
@@ -165,9 +165,20 @@ class FilterNav extends Component {
                 pinned: false,
                 type: type,
                 displayName: this.generateDisplayName(column)
-            };
+            }; */
+
+            returnObj[property] = {
+                rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
+                highlightedValues:[],
+                bounds:[minMax.min,minMax.max],
+                selectedValues: [],
+                pinned: false,
+                type: type,
+                displayName: this.generateDisplayName(column)
+            }
         }
-        this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
+        //this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
+        this.props.dispatch(init(returnObj));
     };
 
     /**
@@ -191,7 +202,7 @@ class FilterNav extends Component {
         for(var property in data)
         {
             var columnName = property;
-            var colElasticFilterStruc = columnsFilterStructure.Elastic ? columnsFilterStructure.Elastic[property] : {};
+            var colElasticFilterStruc = columnsFilterStructure[property] ? columnsFilterStructure[property] : columnsFilterStructure;
             var context = this;
             var displayName = colElasticFilterStruc.displayName;
 
@@ -604,7 +615,7 @@ class FilterNav extends Component {
         //pin new values
         for(var j=0;j<len2;j++)
         {
-            if(!this.props.GLOBAL.Elastic[pinnedValues[j]].pinned)
+            if(!this.props.GLOBAL[pinnedValues[j]].pinned)
             {
                 this.props.dispatch({type:'Update_Pin', details:{colName: pinnedValues[j],pinned: true}});
             }
@@ -627,7 +638,7 @@ class FilterNav extends Component {
             event.stopPropagation();
             but = event.currentTarget;
             colName = but.id.split("btn_")[1];
-            pinned = this.props.GLOBAL.Elastic[colName].pinned;
+            pinned = this.props.GLOBAL[colName].pinned;
             if(pinned)
                 selectedValues.splice(selectedValues.indexOf(colName),1);
             else

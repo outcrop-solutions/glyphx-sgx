@@ -519,7 +519,7 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType) => 
  **/
 const mapStateToProps = function(state){
   return {
-    rangeList: state.filterState.Filter.Ranges,
+    rangeList: state.filterState.Filter,
   }
 }
 
