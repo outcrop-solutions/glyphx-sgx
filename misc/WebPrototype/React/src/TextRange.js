@@ -13,12 +13,12 @@ import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
 import './range.css';
 
+const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 /**
  * Main Range parent class which gets exported
  * @param colName: Name of the corresponding column for this RangeForm
  * @param data: array of values from the eleastic table for the corresponding colName
- * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
 class TextRangeTable extends React.Component {
     /**
@@ -26,7 +26,7 @@ class TextRangeTable extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        this.props.dispatch(removeRange(this.props.colName, id, this.props.data, this.props.rangeType));
+        this.props.dispatch(removeRange(this.props.colName, id, this.props.data, "Text"));
     };
 
 
@@ -35,8 +35,8 @@ class TextRangeTable extends React.Component {
      * a new generated ID, and the applied switch on off.
      **/
     handleAddEvent() {
-        this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
-    }
+        this.props.dispatch(addTextRange(this.props.colName, 1, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
+    };
 
 
     /**
@@ -46,9 +46,9 @@ class TextRangeTable extends React.Component {
      * @param max: Max value to update
      * @param applied: Applied status to update
      **/
-    handleStoreUpdate(id, min, max, applied) { 
-        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, this.props.rangeType));
-    }
+    handleStoreUpdate(selectType, id, min, max, applied) { 
+        this.props.dispatch(updateRange(this.props.colName, selectType, min, max, id, applied, this.props.data, "Text"));
+    };
 
 
     /**
@@ -60,7 +60,7 @@ class TextRangeTable extends React.Component {
         var minVal = this.props.minVal;
         var maxVal = this.props.maxVal;
 
-        var rList = this.props.rangeList[this.props.colName].rangeList;
+        var rList = this.props.filterList[this.props.colName].rangeList;
 
         var range = rList.map( function(range) {
             return (<TextRangeRow 
@@ -73,9 +73,9 @@ class TextRangeTable extends React.Component {
                     />)
         });
 
+
         return (
             <div>
-
                 {/* Displays the mapped ranges */}
                 {range}
 
@@ -104,7 +104,6 @@ class TextRangeTable extends React.Component {
  * Inherits props from RangeTable
  **/
 class TextRangeRow extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -112,7 +111,6 @@ class TextRangeRow extends React.Component {
             epoch: 0,
             value: 1,
             textValue: "temp",
-            alphabet: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         }
     }
 
@@ -135,6 +133,7 @@ class TextRangeRow extends React.Component {
     };
     */
 
+
     /**
      * Updates the state when the component gets new props from the store
      * @param nextProps: The props the component would have after the change
@@ -144,16 +143,12 @@ class TextRangeRow extends React.Component {
     };
 
 
-    
-
-
     /**
      * Updates toggle state in store but only once every 300 miliseconds (prevents a queue of actions on the store)
      * @param e: the event instance of the toggle, html element
      **/
     onToggle(e) {
         var epoch = (new Date()).getTime();
-
         if (epoch > this.state.epoch + 300) {
             if (e.target.checked) {
                 this.props.updateStore(this.props.range[2], null, null, true);
@@ -171,14 +166,7 @@ class TextRangeRow extends React.Component {
      **/
     onDelEvent() {
         this.props.onDelEvent(this.props.range[2]);
-    }
-
-
-    /**
-     * Preprocesses min max vals, allows min > max while typing
-     * @param min: the min to be processed 
-     * @param max: the max to be processed 
-     **/
+    };
     
 
     handleChange = (event, index, value) => this.setState({value: value});
@@ -200,44 +188,43 @@ class TextRangeRow extends React.Component {
                             />
                         </Flex>
 
-                        <Flex flex="34" style = {{ width: "132px", margin: "-7px 0px 0px -19px" }}>
+                        <Flex flex="34" style = {{ width: "132px", margin: "-8px 0px 0px -19px" }}>
                             <DropDownMenu value = { this.state.value } onChange = { this.handleChange } >
                                 <MenuItem value = {1} label="Begins [R]" primaryText = "Begins With [Range]" />
                                 <MenuItem value = {2} label="Ends [R]" primaryText = "Ends With [Range]" />
-                                <MenuItem value = {3} label="Begins" primaryText = "Begins With" />
-                                <MenuItem value = {4} label="Ends" primaryText = "Ends With" />
+                                <MenuItem value = {3} label="Begins With" primaryText = "Begins With" />
+                                <MenuItem value = {4} label="Ends With" primaryText = "Ends With" />
                                 <MenuItem value = {5} label="Contains" primaryText = "Contains" />
                                 <MenuItem value = {6} label="Not Contain" primaryText = "Does Not Contain" />
                             </DropDownMenu>
                         </Flex>
 
+                        <Flex divider />
 
                         <Flex flex="55">
-
-                            {this.state.value === 1 || this.state.value === 2 ? <RangeView alphabet = {this.state.alphabet}/> : 
-                            
-                                                <TextField 
-                                                    type = 'text' 
-                                                    name = "min"
-                                                    ref = { input => this.inputElementMin = input }
-                                                    value = { this.state.textValue } 
-                                                    onChange = {
-                                                        (e) => this.onTextChange(e)
-                                                    }
-                                                    onBlur = {
-                                                        () => this.onTextBlur()
-                                                    }
-                                                    onKeyPress = {
-                                                        (e) => this.onKeyPressMin(e)
-                                                    }
-                                                /> 
+                            {this.state.value === 1 || this.state.value === 2 ? <RangeView /> : 
+                                        <TextField 
+                                            type = 'text' 
+                                            name = "min"
+                                            ref = { input => this.inputElementMin = input }
+                                            value = { this.state.textValue } 
+                                            style = {{
+                                                width: "190px"
+                                            }}
+                                            onChange = {
+                                                (e) => this.onTextChange(e)
+                                            }
+                                            onBlur = {
+                                                () => this.onTextBlur()
+                                            }
+                                            onKeyPress = {
+                                                (e) => this.onKeyPressMin(e)
+                                            }
+                                        /> 
                             }
-                            
-
                         </Flex>
 
                         <Flex divider />
-
 
                         <Flex flex="10"
                             style = {{
@@ -253,8 +240,6 @@ class TextRangeRow extends React.Component {
                                 }
                             />
                         </Flex>
-
-
                     </Flex>
                 </CardText>
             </Card>
@@ -264,7 +249,6 @@ class TextRangeRow extends React.Component {
 
 
 class RangeView extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -293,12 +277,34 @@ class RangeView extends React.Component {
         //this.props.updateStore(this.props.range[2], e[0], e[1], null);
     };
 
+
     /**
      * Updates state values of min and max based on text field input
      * @param e: the event instance of the text field, html element
      **/
      onTextChange(e) {
+         console.log("hit");
+         if (e.target.value.length <= 1) {
+             if (e.target.value == "") {
+                 if (e.target.name == "min") {
+                    this.setState({ min: "" });
+                 }
+                 else {
+                     this.setState({ max: "" });
+                 }
+             }
 
+             var value = e.target.value.toUpperCase();
+             var index = alphabet.indexOf(value);
+             if (index != -1) {
+                 if (e.target.name == "min") {
+                    this.setState({ min: index });
+                 }
+                 else {
+                     this.setState({ max: index });
+                 }
+             }
+         }
     };
 
 
@@ -306,12 +312,38 @@ class RangeView extends React.Component {
      * Updates the text fields if (min > max) and updates the store
      **/
     onTextBlur() {
+        var min = this.state.min;
+        var max = this.state.max;
+
+        if (this.state.min == "") {
+            this.setState({ min: 0 });
+            min = 0;
+        }
+        if (this.state.max == "") {
+            this.setState({ max: 25 });
+            max = 25;
+        }
 
     };
 
 
-    arrayNumConversion(min, max) {
-       
+    arrayTextConversion(min, max) {
+        if (min == "" && max == "") {
+            return [0, 25];
+        }
+
+        else if (min == "") {
+            return [0, parseInt(max, 10)];
+        }
+
+        else if (max == "") {
+            return [parseInt(min, 10), 25];
+        }
+        else {
+            return [parseInt(min, 10), parseInt(max, 10)];
+        }
+
+        
     }
 
 
@@ -346,10 +378,8 @@ class RangeView extends React.Component {
     }
 
 
-
     render() {
         return (
-
             <Flex layout="row">
 
                 <Flex flex="25">
@@ -357,7 +387,7 @@ class RangeView extends React.Component {
                         type = 'text' 
                         name = "min"
                         ref = { input => this.inputElementMin = input }
-                        value = { this.props.alphabet[this.state.min] } 
+                        value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
                         hintText = 'A'
                         style = { styleSet.textfieldStyles }
                         onChange = {
@@ -385,7 +415,7 @@ class RangeView extends React.Component {
                     <Range
                         min = { 0 }
                         max = { 25 }
-                        value = { [parseInt(this.state.min, 10), parseInt(this.state.max, 10)] }
+                        value = { this.arrayTextConversion(this.state.min, this.state.max) }
                         defaultValue = { [0, 25] }
                         allowCross = { false }
                         onChange = {
@@ -405,7 +435,7 @@ class RangeView extends React.Component {
                         type = 'text' 
                         name = "max"
                         ref = { input => this.inputElementMax = input }
-                        value = { this.props.alphabet[this.state.max] }
+                        value = { alphabet[this.state.max] }
                         hintText = 'Z'
                         style = { styleSet.textfieldStyles }
                         onChange = {
@@ -420,16 +450,10 @@ class RangeView extends React.Component {
                         }
                     />
                 </Flex>
-
             </Flex>
         );
     }
-
 }
-
-
-
-   
 
 
 /**
@@ -451,24 +475,27 @@ const styleSet = {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const addRange = (colName, min, max, id, applied) => ({
+export const addTextRange = (colName, selectType, min, max, id, applied) => ({
     type: 'ADD_RANGE',
     colName,
+    selectType,
     min,
     max,
     id,
     applied
 });
-export const removeRange = (colName, id, data, rangeType) => ({
+export const removeRange = (colName, selectType, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',
     colName,
+    selectType,
     id,
     data,
     rangeType
 });
-export const updateRange = (colName, min, max, id, applied, data, rangeType) => ({
+export const updateRange = (colName, selectType, min, max, id, applied, data, rangeType) => ({
     type: 'UPDATE_RANGE',
     colName,
+    selectType,
     id,
     min,
     max,
@@ -484,7 +511,7 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType) => 
  **/
 const mapStateToProps = function(state){
   return {
-    rangeList: state.filterState.Filter.Ranges,
+    filterList: state.filterState.Filter,
   }
 }
 
