@@ -16,6 +16,7 @@ import FilterTabs from './FilterTab.js';
 import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import FilterViewForm from './filterView.js';
+import TextRangeTable from './TextRange.js';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -802,6 +803,8 @@ class FilterNav extends Component {
                     {/* BOTTOM SECTION */}
 
                     <Flex flex="50">
+
+                        <TextRangeTable colName = "StaffAssigned" />
 
                         
                         <Collapsible 

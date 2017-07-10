@@ -336,7 +336,7 @@ class NumberRangeRow extends React.Component {
      * Loses focus from the min text field when the enter key is pressed
      * @param e: key that was pressed
      **/
-    onKeyPressMin (e) {
+    onKeyPressMin(e) {
         if(e.key === 'Enter') { 
             this.inputElementMin.blur();
         } 
@@ -347,7 +347,7 @@ class NumberRangeRow extends React.Component {
      * Loses focus from the max text field when the enter key is pressed
      * @param e: key that was pressed
      **/
-    onKeyPressMax (e) {
+    onKeyPressMax(e) {
         if(e.key === 'Enter') { 
             this.inputElementMax.blur();
         } 
