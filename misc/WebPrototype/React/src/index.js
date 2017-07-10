@@ -28,7 +28,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
             
-            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter[action.colName].rangeList.slice();
             stateVal.push(["", "", action.id, action.applied]);
             
             //state.Filter.Ranges[action.colName].rangeList = stateval;
@@ -36,12 +36,9 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Ranges : {
-                        ...state.Filter.Ranges,
-                        [action.colName] : {
-                            ...state.Filter.Ranges[action.colName],
-                            rangeList : stateVal
-                        }
+                    [action.colName] : {
+                        ...state.Filter[action.colName],
+                        rangeList : stateVal
                     }
                 }
             }
@@ -66,15 +63,12 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Ranges : {
-                        ...state.Filter.Ranges,
-                        [action.colName] : {
-                            ...state.Filter.Ranges[action.colName],
-                            rangeList : stateVal,
-                            highlightedValues: highlighted,
-                        }
+                    [action.colName] : {
+                        ...state.Filter[action.colName],
+                        rangeList : stateVal,
+                        highlightedValues: highlighted,
                     }
-                }
+            }
             }
 
             console.log(newState);
@@ -85,7 +79,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             console.log("Start new state", performance.now());
 
-            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter[action.colName].rangeList.slice();
 
 
             for (var i = 0; i < stateVal.length; i++) {
@@ -119,13 +113,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Ranges : {
-                        ...state.Filter.Ranges,
-                        [action.colName] : {
-                            ...state.Filter.Ranges[action.colName],
-                            rangeList : stateVal,
-                            highlightedValues: highlighted,
-                        }
+                    [action.colName] : {
+                        ...state.Filter[action.colName],
+                        rangeList : stateVal,
+                        highlightedValues: highlighted,
                     }
                 }
             }
@@ -141,7 +132,7 @@ const filterReducer = function(state = initialFilterState, action) {
          case 'REMOVE_FILTER_VIEW': 
             console.log('REMOVE_FILTER_VIEW');
 
-            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter[action.colName].rangeList.slice();
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][3]) {
@@ -154,23 +145,13 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Ranges : {
-                        ...state.Filter.Ranges,
                         [action.colName] : {
-                            ...state.Filter.Ranges[action.colName],
+                            ...state.Filter[action.colName],
                             rangeList : stateVal,
-                            highlightedValues: []
+                            highlightedValues: [],
+                            selectedValues: [],
+                            applied: false,
                         }
-                    },
-                    Elastic : {
-                            ...state.Filter.Elastic,
-                            [action.colName] : {
-                                ...state.Filter.Elastic[action.colName],
-                                selectedValues: [],
-                                applied: false,
-                            }
-                        }
-
                 }
             }
             
@@ -187,13 +168,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Elastic : {
-                        ...state.Filter.Elastic,
-                        [col] : {
-                            ...state.Filter.Elastic[col],
-                            selectedValues: action.filter.selectedValues,
-                            applied: action.filter.selectedValues.length > 0 ? true : (state.Filter.Ranges[col].highlightedValues.length > 0 ? true : false),
-                        }
+                    [col] : {
+                        ...state.Filter[col],
+                        selectedValues: action.filter.selectedValues,
+                        applied: action.filter.selectedValues.length > 0 ? true : (state.Filter[col].highlightedValues.length > 0 ? true : false),
                     }
                 }
             };
@@ -205,16 +183,13 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'Update_Pin':
         {
             var colName = action.details.colName;
-            newState  = {
+            newState  = { 
                 ...state,
                 Filter : {
                     ...state.Filter,
-                    Elastic : {
-                        ...state.Filter.Elastic,
-                        [colName] : {
-                            ...state.Filter.Elastic[colName],
-                            pinned: action.details.pinned
-                        }
+                    [colName] : {
+                        ...state.Filter[colName],
+                        pinned: action.details.pinned
                     }
                 }
             };
