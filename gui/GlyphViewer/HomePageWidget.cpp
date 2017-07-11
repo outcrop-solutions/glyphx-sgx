@@ -519,7 +519,7 @@ void HomePageWidget::SetCustomerLogo() {
 	if (!QFileInfo::exists(upperRightLogo)) {
 		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/sgx_x.png").toString();
 		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
-			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico").toString();
+			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/ucollege.png").toString();
 		}
 	}
 	else{
