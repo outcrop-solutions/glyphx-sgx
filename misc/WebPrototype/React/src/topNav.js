@@ -73,7 +73,7 @@ class TopNav extends Component {
                     </div>
                     <Flex layout="column" style={{position:'absolute',width:'100%',height:'100%'}}>
 
-                        <Flex flex="10">
+                        <Flex >
                             <div className="TopNav" style={{width:'100%',height:'100%'}}>
 
                                 {/*<AppBar className="navbar-color"
@@ -136,7 +136,8 @@ class TopNav extends Component {
                             </div>
                         </Flex>
 
-                        <Flex flex="90">
+                        <Flex flex="100"  style={{overflow: 'hidden'}}>
+                            {/* The 3D rendering engine */}
                             <iframe title="3D rendering engine" style={{width:'100%',height:'100%'}} src="https://s3.amazonaws.com/synglyphx/demo.html" />
                         </Flex>
 

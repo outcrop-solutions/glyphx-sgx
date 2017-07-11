@@ -39,6 +39,7 @@ class FilterNav extends Component {
             activeColumns: [],
             pinnedDialogOptionValues: [],
             pinnedDialogSelectedValues: [],
+            topViewVisible: true,
 			pinnedDialogPrevState:[],
             viewNameTextFieldError: ""
         };

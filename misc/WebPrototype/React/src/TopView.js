@@ -14,7 +14,9 @@ import FilterViewForm from './filterView.js';
 import { connect } from 'react-redux';
 import './filterNav.css';
 
-
+/**
+ * 
+ */
 class TopView extends Component {
 	
 	constructor(props) {
@@ -34,7 +36,6 @@ class TopView extends Component {
             tableSelectValues: [],
             saveDailogOpen: false,
             viewSelectItems: viewSelectItems,
-            //tableSelectItems: tableSelectItems,
             viewNameTextFieldError: ""
         };
 	}
@@ -233,7 +234,15 @@ class TopView extends Component {
 	*/
     onClearAllFilters = (event) => {
         console.log("clear all");
-
+        var filterSummaryView = this.refs.filterSummaryView.getWrappedInstance();
+        var columnsFilterApplied = filterSummaryView.refs;
+        //filterSummaryView.handleRowDel('StaffAssigned');
+        
+        for(var property in columnsFilterApplied)
+        {
+            columnsFilterApplied[property].onDelEvent();
+        }
+        
     };
 
     /**
@@ -284,7 +293,7 @@ class TopView extends Component {
         console.log("Save");
         
         //Save
-        this.saveView();
+        this.saveView(this,this.state.viewSelectValue);
         
         //close the menu
         this.handleOpenClose('menu',false,event);
@@ -300,10 +309,19 @@ class TopView extends Component {
         //close the menu
         this.handleOpenClose('menu',false,event);
     };
+
+    shouldComponentUpdate(newProps,newState){
+        if(this.state != newState)
+            return true;
+        else if(this.props.initParams != newProps.initParams)
+            return true;
+
+        return false;
+    };
 	
 	render = () => {
 		 //Load values into the table select dropdown.
-        var tableSelectItems = [];//this.makeList(this.props.initParams.tableSelectItems,"tableSelectItems");
+        var tableSelectItems = [];
         var context = this;
 		
 		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value){
@@ -367,7 +385,7 @@ class TopView extends Component {
                                                 label="Cancel"
                                                 primary={true}
                                                 onClick={() => this.handleOpenClose('save',false)}/>]
-                                        }
+                                        } 
                                         modal={true}
                                         open={this.state.saveDailogOpen}>
                                         Please enter a name for the view you are saving. <br />
@@ -380,7 +398,7 @@ class TopView extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'65%'}}>
-                            <FilterViewForm />
+                            <FilterViewForm ref='filterSummaryView'/>
                         </Flex>
                         
                         
