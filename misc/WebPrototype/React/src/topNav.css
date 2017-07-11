@@ -27,7 +27,7 @@ nav ul a {
 /*-----------------         SIDE BAR           ----------------*/
 /* The side navigation menu */
 .sidenav {
-    height: 93.5%; /* 100% Full-height */
+    height: 94.5%; /* 100% Full-height */
     width: 450px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */

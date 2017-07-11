@@ -151,7 +151,8 @@ class FilterViewForm extends React.Component {
             return (<FilterViewRow 
                         view = { view } 
                         onDelEvent = { rowDel.bind(this) } 
-                        key = { view[0] } 
+                        key = { view[0] }
+                        ref= { view[0] }
                     />)
         });
 
@@ -361,4 +362,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the FilterViewForm component to the redux store
  **/
-export default connect(mapStateToProps)(FilterViewForm);
+export default connect(mapStateToProps,null,null,{withRef:true})(FilterViewForm);
