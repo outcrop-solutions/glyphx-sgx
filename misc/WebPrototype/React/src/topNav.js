@@ -4,6 +4,7 @@ import 'font-awesome/css/font-awesome.css';
 import FilterNav from './filterNav';
 import {Flex} from 'react-flex-material';
 import AppBar from 'material-ui/AppBar';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -70,16 +71,63 @@ class TopNav extends Component {
                             thickness={7} />
 
                     </div>
-                    <Flex layout="column" style={{width:'100%',height:'100%'}}>
+                    <Flex layout="column" style={{position:'absolute',width:'100%',height:'100%'}}>
 
-                        <Flex flex="20">
+                        <Flex flex="10">
                             <div className="TopNav" style={{width:'100%',height:'100%'}}>
 
-                                <AppBar className="navbar-color"
+                                {/*<AppBar className="navbar-color"
                                     id="AppBar"
-                                    title={<span style={styles.navLogo}>LOGO</span>}
+									style={{paddingLeft: '0px'}}
+                                    title={
+										<span style={styles.navLogo}>
+											<a href="http://www.synglyphx.com/" target="_blank" rel="noopener noreferrer">
+												<img src="./logo.webp" style={{width:'300px'}} alt="SynGlyphX"/>
+											</a>
+										</span>}
+									iconElementLeft={<span />}
                                     iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
-                                />
+                                />*/}
+								
+								<Toolbar className="navbar-color" style={{backgroundColor:'#00bcd4'}}>
+									<ToolbarGroup firstChild={true}>
+										<span style={styles.navLogo}>
+											<a href="http://www.synglyphx.com/" target="_blank" rel="noopener noreferrer">
+												<img src="./Res/Img/logo.webp" style={{width:'300px'}} alt="SynGlyphX"/>
+											</a>
+										</span>
+									</ToolbarGroup>
+									
+									{/*<ToolbarGroup>
+										<IconButton style={{color:'white'}}>
+											<FontIcon className="fa fa-arrows fa-2x" style={{color:'white'}}/>
+										</IconButton>
+										<IconButton style={{color:'white'}}>
+											<FontIcon className="fa fa-video-camera fa-2x" style={{color:'white'}}/>
+										</IconButton>
+										<IconButton  style={{color:'white'}}>
+											<FontIcon className="fa fa-user-o fa-2x" style={{color:'white'}}/>
+										</IconButton>
+										<IconButton  style={{color:'white'}}>
+											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
+										</IconButton>
+										<IconButton  style={{color:'white'}}>
+											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
+										</IconButton>
+										<IconButton style={{color:'white'}}>
+											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
+										</IconButton>
+									</ToolbarGroup>
+									*/}
+									
+									<ToolbarGroup>
+									  
+										<ToolbarSeparator />
+										<IconButton onClick={toggleNav} style={{color:'white'}}>
+											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
+										</IconButton>
+									</ToolbarGroup>
+								</Toolbar>
 
                                 <div id="filterNav" className="sidenav sidenavbar">
                                     <FilterNav></FilterNav>
@@ -88,9 +136,9 @@ class TopNav extends Component {
                             </div>
                         </Flex>
 
-                        <Flex flex="80">
-                            {/* The 3D rendering engine */}
-                            
+                        <Flex flex="90">
+                            {/* The 3D rendering engine 
+                            <iframe title="3D rendering engine" style={{width:'100%',height:'100%'}} src="https://s3.amazonaws.com/synglyphx/demo.html" />*/}
                         </Flex>
 
                     </Flex>
