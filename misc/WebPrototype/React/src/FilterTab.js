@@ -4,6 +4,7 @@ import SwipeableViews from 'react-swipeable-views';
 import FontIcon from 'material-ui/FontIcon';
 import FilterTable from './FilterTable.js';
 import NumberRangeTable from './NumberRange.js';
+import TextRangeTable from './TextRange.js';
 import { connect } from 'react-redux';
 
 class FilterTabs extends React.Component {
@@ -97,13 +98,21 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                        <NumberRangeTable 
-                            colName = { this.props.id } 
-                            data = { this.state.tableData } 
-                            minVal = { this.props.filterList[this.props.id].bounds[0] } 
-                            maxVal = { this.props.filterList[this.props.id].bounds[1] }
-                            rangeType = { this.props.filterList[this.props.id].type }
-                        />
+                        {this.props.filterList[this.props.id].type === "Number" ? 
+                                <NumberRangeTable 
+                                    colName = { this.props.id } 
+                                    data = { this.state.tableData } 
+                                    minVal = { this.props.filterList[this.props.id].bounds[0] } 
+                                    maxVal = { this.props.filterList[this.props.id].bounds[1] }
+                                /> : 
+                            (this.props.filterList[this.props.id].type === "Text" ? 
+                                    <TextRangeTable 
+                                        colName = { this.props.id } 
+                                        data = { this.state.tableData } 
+                                    /> :  
+                            "") 
+                        }
+                        
 
                     </div>
                 </SwipeableViews>

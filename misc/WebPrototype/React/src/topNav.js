@@ -137,8 +137,7 @@ class TopNav extends Component {
                         </Flex>
 
                         <Flex flex="90">
-                            {/* The 3D rendering engine 
-                            <iframe title="3D rendering engine" style={{width:'100%',height:'100%'}} src="https://s3.amazonaws.com/synglyphx/demo.html" />*/}
+                            <iframe title="3D rendering engine" style={{width:'100%',height:'100%'}} src="https://s3.amazonaws.com/synglyphx/demo.html" />
                         </Flex>
 
                     </Flex>

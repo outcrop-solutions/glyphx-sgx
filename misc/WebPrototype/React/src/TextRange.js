@@ -11,7 +11,6 @@ import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
-import './range.css';
 
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
@@ -46,8 +45,8 @@ class TextRangeTable extends React.Component {
      * @param max: Max value to update
      * @param applied: Applied status to update
      **/
-    handleStoreUpdate(selectType, id, min, max, applied) { 
-        this.props.dispatch(updateRange(this.props.colName, selectType, min, max, id, applied, this.props.data, "Text"));
+    handleStoreUpdate(selectType, id, min, max, text, applied) { 
+        this.props.dispatch(updateRange(this.props.colName, selectType, min, max, text, id, applied, this.props.data, "Text"));
     };
 
 
@@ -107,10 +106,14 @@ class TextRangeRow extends React.Component {
     constructor(props) {
         super(props);
 
+        //[min, max, id, applied, selectType, text]
         this.state = {
             epoch: 0,
-            value: 1,
-            textValue: "temp",
+            value: this.props.range[4],
+            latestUpdate: "",
+            min: this.props.range[0],
+            max: this.props.range[1],
+            text: this.props.range[5],
         }
     }
 
@@ -133,14 +136,154 @@ class TextRangeRow extends React.Component {
     };
     */
 
-
     /**
      * Updates the state when the component gets new props from the store
      * @param nextProps: The props the component would have after the change
      **/
     componentWillReceiveProps(nextProps) {
-        this.setState({ min: nextProps.range[0], max: nextProps.range[1]});
+        this.setState({ min: nextProps.range[0], max: nextProps.range[1], value: nextProps.range[4], text: nextProps.range[5] });
     };
+    
+
+
+    /**
+     * Updates the visuals of the slider and the text fields when the slider is dragged
+     * @param e: the event instance of the slider: array of [min, max]
+     **/
+    onSlide(e) {
+        this.setState({ min: e[0], max: e[1] });
+    };
+
+
+    /**
+     * Updates the store when the slider gets released
+     * @param e: the event instance of the slider: array of [min, max]
+     **/
+    onAfterSlide(e) {
+        //this.props.updateStore(this.props.range[2], e[0], e[1], null);
+        console.log(this.props);
+    };
+
+
+    /**
+     * Updates state values of min and max based on text field input
+     * @param e: the event instance of the text field, html element
+     **/
+     onSliderTextChange(e) {
+         console.log("hit");
+         if (e.target.value.length <= 1) {
+             if (e.target.value == "") {
+                 if (e.target.name == "min") {
+                    this.setState({ min: "" });
+                 }
+                 else {
+                     this.setState({ max: "" });
+                 }
+             }
+
+             var value = e.target.value.toUpperCase();
+             var index = alphabet.indexOf(value);
+             if (index != -1) {
+                 if (e.target.name == "min") {
+                    this.setState({ min: index });
+                 }
+                 else {
+                     this.setState({ max: index });
+                 }
+             }
+         }
+    };
+
+
+    /**
+     * Updates the text fields if (min > max) and updates the store
+     **/
+    onSliderTextBlur() {
+        var min = this.state.min;
+        var max = this.state.max;
+
+        if (this.state.min === "") {
+            this.setState({ min: 0 });
+            min = 0;
+        }
+        if (this.state.max === "") {
+            this.setState({ max: 25 });
+            max = 25;
+        }
+
+        if (min > max) {
+            if (this.state.latestUpdate === "MIN") {
+                this.setState({ min: max });
+                min = max;
+            }
+
+            else if (this.state.latestUpdate === "MAX") {
+                this.setState({ max: min });
+                max = min;
+            }
+        }
+    };
+
+
+    arrayTextConversion(min, max) {
+        var min
+        if (min === "" && max === "") {
+            return [0, 25];
+        }
+
+        else if (min === "") {
+            return [0, parseInt(max, 10)];
+        }
+
+        else if (max === "") {
+            return [parseInt(min, 10), 25];
+        }
+
+        else if (min > max) {
+             if (this.state.latestUpdate === "MIN") {
+                return [max, max];
+            }
+
+            else if (this.state.latestUpdate === "MAX") {
+                return [parseInt(min, 10), parseInt(min, 10)]; 
+            }
+        }
+
+        else {
+            return [parseInt(min, 10), parseInt(max, 10)];
+        }
+    }
+
+
+    /**
+     * Updates the local state (used to allow real time text-slider changing without pushing overlap bounds)
+     * @param val: "MIN" or "MAX", text field that called this
+     **/
+    updateLatest(val) {
+        this.setState({latestUpdate: val});
+    }
+
+
+    /**
+     * Loses focus from the min text field when the enter key is pressed
+     * @param e: key that was pressed
+     **/
+    onKeyPressMin(e) {
+        if(e.key === 'Enter') { 
+            this.inputElementMin.blur();
+        } 
+    }
+
+
+    /**
+     * Loses focus from the max text field when the enter key is pressed
+     * @param e: key that was pressed
+     **/
+    onKeyPressMax(e) {
+        if(e.key === 'Enter') { 
+            this.inputElementMax.blur();
+        } 
+    }
 
 
     /**
@@ -169,7 +312,12 @@ class TextRangeRow extends React.Component {
     };
     
 
-    handleChange = (event, index, value) => this.setState({value: value});
+    promptSelectChange = (event, index, value) => this.handleSelectChange(event, index, value);
+
+    handleSelectChange(event, index, value) {
+        this.setState({ value: value });
+        this.props.updateStore(this.state.value, this.props.range[2], 0, 25, "", null);
+    }
 
     render() {
         return (
@@ -189,7 +337,7 @@ class TextRangeRow extends React.Component {
                         </Flex>
 
                         <Flex flex="34" style = {{ width: "132px", margin: "-8px 0px 0px -19px" }}>
-                            <DropDownMenu value = { this.state.value } onChange = { this.handleChange } >
+                            <DropDownMenu value = { this.state.value } onChange = { this.promptSelectChange } >
                                 <MenuItem value = {1} label="Begins [R]" primaryText = "Begins With [Range]" />
                                 <MenuItem value = {2} label="Ends [R]" primaryText = "Ends With [Range]" />
                                 <MenuItem value = {3} label="Begins With" primaryText = "Begins With" />
@@ -202,14 +350,87 @@ class TextRangeRow extends React.Component {
                         <Flex divider />
 
                         <Flex flex="55">
-                            {this.state.value === 1 || this.state.value === 2 ? <RangeView /> : 
+                            {this.state.value === 1 || this.state.value === 2 ? 
+                                        <Flex layout="row">
+                                            <Flex flex="25">
+                                                <TextField 
+                                                    type = 'text' 
+                                                    name = "min"
+                                                    ref = { input => this.inputElementMin = input }
+                                                    value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
+                                                    hintText = 'A'
+                                                    style = { styleSet.textfieldStyles }
+                                                    onChange = {
+                                                        (e) => this.onSliderTextChange(e)
+                                                    }
+                                                    onFocus = { () => this.updateLatest("MIN") }
+                                                    onBlur = {
+                                                        () => this.onSliderTextBlur()
+                                                    }
+                                                    onKeyPress = {
+                                                        (e) => this.onKeyPressMin(e)
+                                                    }
+                                                />
+                                            </Flex>
+
+                                            <Flex divider />
+                                            <Flex divider />
+
+                                            <Flex flex="50"
+                                                style = {{
+                                                    margin: "16px 0px 0px -8px",
+                                                    width: "20px"
+                                                }}
+                                            >
+                                                <Range
+                                                    min = { 0 }
+                                                    max = { 25 }
+                                                    value = { this.arrayTextConversion(this.state.min, this.state.max) }
+                                                    defaultValue = { [0, 25] }
+                                                    allowCross = { false }
+                                                    onChange = {
+                                                        (e) => this.onSlide(e)
+                                                    }
+                                                    onAfterChange = {
+                                                        (e) => this.onAfterSlide(e)
+                                                    }
+                                                />
+                                            </Flex>
+
+                                            <Flex divider />
+                                            <Flex divider />
+
+                                            <Flex flex="25">
+                                                <TextField 
+                                                    type = 'text' 
+                                                    name = "max"
+                                                    ref = { input => this.inputElementMax = input }
+                                                    value = { this.state.max === "" ? "" : alphabet[this.state.max] }
+                                                    hintText = 'Z'
+                                                    style = { styleSet.textfieldStyles }
+                                                    onChange = {
+                                                        (e) => this.onSliderTextChange(e)
+                                                    }
+                                                    onFocus = { () => this.updateLatest("MAX") }
+                                                    onBlur = {
+                                                        () => this.onSliderTextBlur()
+                                                    }
+                                                    onKeyPress = {
+                                                        (e) => this.onKeyPressMax(e)
+                                                    }
+                                                />
+                                            </Flex>
+                                        </Flex>
+                                        
+                                        : 
+
                                         <TextField 
                                             type = 'text' 
                                             name = "min"
                                             ref = { input => this.inputElementMin = input }
                                             value = { this.state.textValue } 
                                             style = {{
-                                                width: "190px"
+                                                width: "150px"
                                             }}
                                             onChange = {
                                                 (e) => this.onTextChange(e)
@@ -248,214 +469,6 @@ class TextRangeRow extends React.Component {
 }
 
 
-class RangeView extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            latestUpdate: "",
-            min: 0,
-            max: 25,
-        }
-    }
-
-
-    /**
-     * Updates the visuals of the slider and the text fields when the slider is dragged
-     * @param e: the event instance of the slider: array of [min, max]
-     **/
-    onSlide(e) {
-        this.setState({ min: e[0], max: e[1] });
-    };
-
-
-    /**
-     * Updates the store when the slider gets released
-     * @param e: the event instance of the slider: array of [min, max]
-     **/
-    onAfterSlide(e) {
-        //this.props.updateStore(this.props.range[2], e[0], e[1], null);
-    };
-
-
-    /**
-     * Updates state values of min and max based on text field input
-     * @param e: the event instance of the text field, html element
-     **/
-     onTextChange(e) {
-         console.log("hit");
-         if (e.target.value.length <= 1) {
-             if (e.target.value == "") {
-                 if (e.target.name == "min") {
-                    this.setState({ min: "" });
-                 }
-                 else {
-                     this.setState({ max: "" });
-                 }
-             }
-
-             var value = e.target.value.toUpperCase();
-             var index = alphabet.indexOf(value);
-             if (index != -1) {
-                 if (e.target.name == "min") {
-                    this.setState({ min: index });
-                 }
-                 else {
-                     this.setState({ max: index });
-                 }
-             }
-         }
-    };
-
-
-    /**
-     * Updates the text fields if (min > max) and updates the store
-     **/
-    onTextBlur() {
-        var min = this.state.min;
-        var max = this.state.max;
-
-        if (this.state.min == "") {
-            this.setState({ min: 0 });
-            min = 0;
-        }
-        if (this.state.max == "") {
-            this.setState({ max: 25 });
-            max = 25;
-        }
-
-    };
-
-
-    arrayTextConversion(min, max) {
-        if (min == "" && max == "") {
-            return [0, 25];
-        }
-
-        else if (min == "") {
-            return [0, parseInt(max, 10)];
-        }
-
-        else if (max == "") {
-            return [parseInt(min, 10), 25];
-        }
-        else {
-            return [parseInt(min, 10), parseInt(max, 10)];
-        }
-
-        
-    }
-
-
-    /**
-     * Updates the local state (used to allow real time text-slider changing without pushing overlap bounds)
-     * @param val: "MIN" or "MAX", text field that called this
-     **/
-    updateLatest(val) {
-        this.setState({latestUpdate: val});
-    }
-
-
-    /**
-     * Loses focus from the min text field when the enter key is pressed
-     * @param e: key that was pressed
-     **/
-    onKeyPressMin(e) {
-        if(e.key === 'Enter') { 
-            this.inputElementMin.blur();
-        } 
-    }
-
-
-    /**
-     * Loses focus from the max text field when the enter key is pressed
-     * @param e: key that was pressed
-     **/
-    onKeyPressMax(e) {
-        if(e.key === 'Enter') { 
-            this.inputElementMax.blur();
-        } 
-    }
-
-
-    render() {
-        return (
-            <Flex layout="row">
-
-                <Flex flex="25">
-                    <TextField 
-                        type = 'text' 
-                        name = "min"
-                        ref = { input => this.inputElementMin = input }
-                        value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
-                        hintText = 'A'
-                        style = { styleSet.textfieldStyles }
-                        onChange = {
-                            (e) => this.onTextChange(e)
-                        }
-                        onFocus = { () => this.updateLatest("MIN") }
-                        onBlur = {
-                            () => this.onTextBlur()
-                        }
-                        onKeyPress = {
-                            (e) => this.onKeyPressMin(e)
-                        }
-                    />
-                </Flex>
-
-                <Flex divider />
-                <Flex divider />
-
-                <Flex flex="50"
-                    style = {{
-                        margin: "16px 0px 0px -8px",
-                        width: "20px"
-                    }}
-                >
-                    <Range
-                        min = { 0 }
-                        max = { 25 }
-                        value = { this.arrayTextConversion(this.state.min, this.state.max) }
-                        defaultValue = { [0, 25] }
-                        allowCross = { false }
-                        onChange = {
-                            (e) => this.onSlide(e)
-                        }
-                        onAfterChange = {
-                            (e) => this.onAfterSlide(e)
-                        }
-                    />
-                </Flex>
-
-                <Flex divider />
-                <Flex divider />
-
-                <Flex flex="25">
-                    <TextField 
-                        type = 'text' 
-                        name = "max"
-                        ref = { input => this.inputElementMax = input }
-                        value = { alphabet[this.state.max] }
-                        hintText = 'Z'
-                        style = { styleSet.textfieldStyles }
-                        onChange = {
-                            (e) => this.onTextChange(e)
-                        }
-                        onFocus = { () => this.updateLatest("MAX") }
-                        onBlur = {
-                            () => this.onTextBlur()
-                        }
-                        onKeyPress = {
-                            (e) => this.onKeyPressMax(e)
-                        }
-                    />
-                </Flex>
-            </Flex>
-        );
-    }
-}
-
-
 /**
  * Local styling
  **/
@@ -475,30 +488,31 @@ const styleSet = {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const addTextRange = (colName, selectType, min, max, id, applied) => ({
+export const addTextRange = (colName, selectType, min, max, text, id, applied) => ({
     type: 'ADD_RANGE',
     colName,
     selectType,
     min,
     max,
+    text,
     id,
     applied
 });
-export const removeRange = (colName, selectType, id, data, rangeType) => ({
+export const removeRange = (colName, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',
     colName,
-    selectType,
     id,
     data,
     rangeType
 });
-export const updateRange = (colName, selectType, min, max, id, applied, data, rangeType) => ({
+export const updateRange = (colName, selectType, min, max, text, id, applied, data, rangeType) => ({
     type: 'UPDATE_RANGE',
     colName,
     selectType,
     id,
     min,
     max,
+    text,
     applied, 
     data,
     rangeType

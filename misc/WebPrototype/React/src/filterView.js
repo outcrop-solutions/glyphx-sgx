@@ -102,30 +102,28 @@ class FilterViewForm extends React.Component {
                     continue;
                 }
 
-                if ( filterList[colName].selectedValues.length) {
-                    for (i = 0; i < filterList[colName].selectedValues.length; i++) {
-                        curNum = parseInt(filterList[colName].selectedValues[i], 10);
-                        if (curNum < min) {
-                            min = curNum;
-                        }
-                        else if (curNum > max) {
-                            max = curNum;
-                        }
+
+                for (i = 0; i < filterList[colName].selectedValues.length; i++) {
+                    curNum = parseInt(filterList[colName].selectedValues[i], 10);
+                    if (curNum < min) {
+                        min = curNum;
+                    }
+                    else if (curNum > max) {
+                        max = curNum;
                     }
                 }
 
-                if ( filterList[colName].highlightedValues.length ) {
-                    for (i = 0; i < filterList[colName].highlightedValues.length; i++) {
-                        curNum = parseInt(filterList[colName].highlightedValues[i], 10);
-                        if (curNum < min) {
-                            min = curNum;
-                        }
-                        else if (curNum > max) {
-                            max = curNum;
-                        }
+                for (i = 0; i < filterList[colName].highlightedValues.length; i++) {
+                    curNum = parseInt(filterList[colName].highlightedValues[i], 10);
+                    if (curNum < min) {
+                        min = curNum;
+                    }
+                    else if (curNum > max) {
+                        max = curNum;
                     }
                 }
             }
+
 
             else if (filterType === "Date") {
                 console.log("Not implemented yet...");

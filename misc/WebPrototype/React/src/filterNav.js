@@ -9,7 +9,6 @@ import FilterTabs from './FilterTab.js';
 import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import TopView from './TopView.js';
-import TextRangeTable from './TextRange.js';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -72,10 +71,19 @@ class FilterNav extends Component {
 
         for(var property in Obj){
             var column = property;
-            var minMax;
+            var range;
             var type = isNaN(Obj[property][0]) ? 'Text' : 'Number';
 
-            minMax = (type == 'Number'? this.findMinMax(Obj[property]) : {min:0,max:0});
+            if (type === "Number") {
+                var minMax = this.findMinMax(Obj[property]);
+                range = [minMax.min, minMax.max, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false];
+            }
+            else if (type === "Text") {
+                range = [0, 25, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false, 1, ""];
+            }
+            else {
+
+            }
 
             /* rangeStructure[column] = {
                 rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
@@ -92,9 +100,9 @@ class FilterNav extends Component {
             }; */
 
             returnObj[property] = {
-                rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
+                rangeList: [range],
                 highlightedValues:[],
-                bounds:[minMax.min,minMax.max],
+                bounds:[range[0],range[1]],
                 selectedValues: [],
                 pinned: false,
                 type: type,
@@ -408,9 +416,6 @@ class FilterNav extends Component {
                     {/* BOTTOM SECTION */}
 
                     <Flex flex="50">
-
-                        <TextRangeTable colName = "StaffAssigned" />
-
                         
                         <Collapsible 
                             transitionTime={200} 

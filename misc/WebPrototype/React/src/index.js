@@ -17,21 +17,19 @@ const filterReducer = function(state = initialFilterState, action) {
     
     switch (action.type) {
         case 'INIT':
-        {
             newState  = {
                     ...state,
                     Filter : action.storeFilterStruc
             }
             console.log(newState);
             return newState;
-        }
+
         case 'ADD_RANGE':
             console.log('ADD-RANGE');
             
             stateVal = state.Filter[action.colName].rangeList.slice();
-            stateVal.push(["", "", action.id, action.applied]);
-            
-            //state.Filter.Ranges[action.colName].rangeList = stateval;
+            stateVal.push( ["", "", action.id, action.applied] );
+
             newState = {
                 ...state,
                 Filter : {
@@ -68,7 +66,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         rangeList : stateVal,
                         highlightedValues: highlighted,
                     }
-            }
+                }
             }
 
             console.log(newState);
@@ -79,27 +77,52 @@ const filterReducer = function(state = initialFilterState, action) {
 
             stateVal = state.Filter[action.colName].rangeList.slice();
 
+            if (action.rangeType == "Number") {
+                for (var i = 0; i < stateVal.length; i++) {
+                    if (stateVal[i][2] == action.id) {
+                        var min = stateVal[i][0];
+                        var max = stateVal[i][1];
+                        var applied = stateVal[i][3];
 
-            for (var i = 0; i < stateVal.length; i++) {
-                if (stateVal[i][2] == action.id) {
-                    var min = stateVal[i][0];
-                    var max = stateVal[i][1];
-                    var applied = stateVal[i][3];
 
+                        if (action.min != null) {
+                            min = action.min;
+                        }
+                        if (action.max != null) {
+                            max = action.max;
+                        }
+                        if (action.applied != null) {
+                            applied = action.applied;
+                        }
 
-                    if (action.min != null) {
-                        min = action.min;
+                        stateVal[i] = [min, max, action.id, applied];
                     }
-                    if (action.max != null) {
-                        max = action.max;
-                    }
-                    if (action.applied != null) {
-                        applied = action.applied;
-                    }
-
-                    stateVal[i] = [min, max, action.id, applied];
                 }
             }
+
+            else if (action.rangeType == "Text") {
+                for (var i = 0; i < stateVal.length; i++) {
+                    if (stateVal[i][2] == action.id) {
+                        var min = stateVal[i][0];
+                        var max = stateVal[i][1];
+                        var applied = stateVal[i][3];
+
+
+                        if (action.min != null) {
+                            min = action.min;
+                        }
+                        if (action.max != null) {
+                            max = action.max;
+                        }
+                        if (action.applied != null) {
+                            applied = action.applied;
+                        }
+
+                        stateVal[i] = [min, max, action.id, applied];
+                    }
+                }
+            }
+            
 
             var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
 
