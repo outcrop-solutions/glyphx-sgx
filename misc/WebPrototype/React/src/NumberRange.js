@@ -18,7 +18,6 @@ import './range.css';
  * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
  * @param colName: Name of the corresponding column for this RangeForm
  * @param data: array of values from the eleastic table for the corresponding colName
- * @param rangeType: "slider", "date". Sets what stype of range to display (only slider implemented as of now)
  **/
 class NumberRangeTable extends React.Component {
     /**
@@ -26,7 +25,7 @@ class NumberRangeTable extends React.Component {
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
-        this.props.dispatch(removeRange(this.props.colName, id, this.props.data, this.props.rangeType));
+        this.props.dispatch(removeRange(this.props.colName, id, this.props.data, "Number"));
     };
 
 
@@ -47,7 +46,7 @@ class NumberRangeTable extends React.Component {
      * @param applied: Applied status to update
      **/
     handleStoreUpdate(id, min, max, applied) { 
-        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, this.props.rangeType));
+        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, "Number"));
     }
 
 
@@ -336,7 +335,7 @@ class NumberRangeRow extends React.Component {
      * Loses focus from the min text field when the enter key is pressed
      * @param e: key that was pressed
      **/
-    onKeyPressMin (e) {
+    onKeyPressMin(e) {
         if(e.key === 'Enter') { 
             this.inputElementMin.blur();
         } 
@@ -347,7 +346,7 @@ class NumberRangeRow extends React.Component {
      * Loses focus from the max text field when the enter key is pressed
      * @param e: key that was pressed
      **/
-    onKeyPressMax (e) {
+    onKeyPressMax(e) {
         if(e.key === 'Enter') { 
             this.inputElementMax.blur();
         } 

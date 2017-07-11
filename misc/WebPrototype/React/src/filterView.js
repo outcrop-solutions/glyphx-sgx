@@ -17,11 +17,12 @@ import 'font-awesome/css/font-awesome.css';
 class FilterViewForm extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.elasticList != nextProps.elasticList) {
-            return true;
-        }
-        for (var colName in this.props.rangeList) {
-            if (this.props.rangeList[colName].highlightedValues != nextProps.rangeList[colName].highlightedValues) {
+        for (var colName in this.props.filterList) {
+            if (this.props.filterList[colName].selectedValues != nextProps.filterList[colName].selectedValues) {
+                return true;
+            }
+
+            if (this.props.filterList[colName].highlightedValues != nextProps.filterList[colName].highlightedValues) {
                 return true;
             }
         }
@@ -34,103 +35,76 @@ class FilterViewForm extends React.Component {
      * @param colName: name of the corresponding column to be deleted
      **/
     handleRowDel(colName) {
-        console.log("Start FilterView remove", performance.now());
         this.props.dispatch(removeFilterView(colName));
-        console.log("Finish FilterView remove", performance.now());
     };
-
-
-    render() {
-        return (
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px"}}>
-                <CardText>
-                    <FilterViewTable
-                        onRowDel = { this.handleRowDel.bind(this) }
-                        elasticList = { this.props.elasticList }
-                        rangeList = { this.props.rangeList }
-                    />
-                </CardText>
-            </Card>
-        );
-    }
-}
-
-
-/**
- * Maps FilterView Rows based on the elastic and range selections for each column
- **/
-class FilterViewTable extends React.Component {
 
     render() {
         // Lose scope of 'this' in the map function
-        var rowDel = this.props.onRowDel;
+        var rowDel = this.handleRowDel.bind(this);
 
 
-        var eList = this.props.elasticList;
-        var hList = this.props.rangeList;
+        var filterList = this.props.filterList;
         
         var viewList = [];
 
-        console.log("Start FilterView", performance.now());
-
         // Find the min and max values selected bsed on the type (Text, Number, Date)
-        for (var colName in eList) {
-            var filterType = eList[colName].type;
+        for (var colName in filterList) {
+            var filterType = filterList[colName].type;
             var min, max, i, curNum;
             var rCount = 0;
 
             if (filterType === "Text") {
-                if (eList[colName].selectedValues.length) {
-                    min = eList[colName].selectedValues[0];
-                    max = eList[colName].selectedValues[0];
+                if (filterList[colName].selectedValues.length) {
+                    min = filterList[colName].selectedValues[0];
+                    max = filterList[colName].selectedValues[0];
                 }
-                else if (hList[colName].highlightedValues.length) {
-                    min = hList[colName].highlightedValues[0];
-                    max = hList[colName].highlightedValues[0];
+                else if (filterList[colName].highlightedValues.length) {
+                    min = filterList[colName].highlightedValues[0];
+                    max = filterList[colName].highlightedValues[0];
                 }
                 else {
                     continue;
                 }
 
-                if ( eList[colName].selectedValues.length) {
-                    for (i = 0; i < eList[colName].selectedValues.length; i++) {
-                        if (eList[colName].selectedValues[i] < min) {
-                            min = eList[colName].selectedValues[i];
+                if ( filterList[colName].selectedValues.length) {
+                    for (i = 0; i < filterList[colName].selectedValues.length; i++) {
+                        if (filterList[colName].selectedValues[i] < min) {
+                            min = filterList[colName].selectedValues[i];
                         }
-                        else if (eList[colName].selectedValues[i] > max) {
-                            max = eList[colName].selectedValues[i];
+                        else if (filterList[colName].selectedValues[i] > max) {
+                            max = filterList[colName].selectedValues[i];
                         }
                     }
                 }
 
-                if ( hList[colName].highlightedValues.length ) {
-                    for (i = 0; i < hList[colName].highlightedValues.length; i++) {
-                        if (hList[colName].highlightedValues[i] < min) {
-                            min = hList[colName].highlightedValues[i];
+                if ( filterList[colName].highlightedValues.length ) {
+                    for (i = 0; i < filterList[colName].highlightedValues.length; i++) {
+                        if (filterList[colName].highlightedValues[i] < min) {
+                            min = filterList[colName].highlightedValues[i];
                         }
-                        else if (hList[colName].highlightedValues[i] > max) {
-                            max = hList[colName].highlightedValues[i];
+                        else if (filterList[colName].highlightedValues[i] > max) {
+                            max = filterList[colName].highlightedValues[i];
                         }
                     }
                 }
             }
 
             else if (filterType === "Number") {
-                if (eList[colName].selectedValues.length) {
-                    min = parseInt(eList[colName].selectedValues[0], 10);
-                    max = parseInt(eList[colName].selectedValues[0], 10);
+                if (filterList[colName].selectedValues.length) {
+                    min = parseInt(filterList[colName].selectedValues[0], 10);
+                    max = parseInt(filterList[colName].selectedValues[0], 10);
                 }
-                else if (hList[colName].highlightedValues.length) {
-                    min = parseInt(hList[colName].highlightedValues[0], 10);
-                    max = parseInt(hList[colName].highlightedValues[0], 10);
+                else if (filterList[colName].highlightedValues.length) {
+                    min = parseInt(filterList[colName].highlightedValues[0], 10);
+                    max = parseInt(filterList[colName].highlightedValues[0], 10);
                 }
                 else {
                     continue;
                 }
 
-                if ( eList[colName].selectedValues.length) {
-                    for (i = 0; i < eList[colName].selectedValues.length; i++) {
-                        curNum = parseInt(eList[colName].selectedValues[i], 10);
+                if ( filterList[colName].selectedValues.length) {
+                    for (i = 0; i < filterList[colName].selectedValues.length; i++) {
+                        curNum = parseInt(filterList[colName].selectedValues[i], 10);
                         if (curNum < min) {
                             min = curNum;
                         }
@@ -140,9 +114,9 @@ class FilterViewTable extends React.Component {
                     }
                 }
 
-                if ( hList[colName].highlightedValues.length ) {
-                    for (i = 0; i < hList[colName].highlightedValues.length; i++) {
-                        curNum = parseInt(hList[colName].highlightedValues[i], 10);
+                if ( filterList[colName].highlightedValues.length ) {
+                    for (i = 0; i < filterList[colName].highlightedValues.length; i++) {
+                        curNum = parseInt(filterList[colName].highlightedValues[i], 10);
                         if (curNum < min) {
                             min = curNum;
                         }
@@ -164,16 +138,14 @@ class FilterViewTable extends React.Component {
             }
 
             // Find how many ranges are selected
-            var rList = this.props.rangeList[colName].rangeList;
+            var rList = this.props.filterList[colName].rangeList;
             for (i = 0; i < rList.length; i ++) {
                 if (rList[i][3] === true) {
                     rCount++;
                 }
             }
-            viewList.push([eList[colName].displayName, filterType, min, max, eList[colName].selectedValues.length, rCount, colName]);
+            viewList.push([filterList[colName].displayName, filterType, min, max, filterList[colName].selectedValues.length, rCount, colName]);
         }
-
-        console.log("Finish FilterView", performance.now());
 
         var view = viewList.map( function(view) {
             return (<FilterViewRow 
@@ -184,24 +156,30 @@ class FilterViewTable extends React.Component {
         });
 
         return (
-            <div>
-                <Flex divider />  
 
-                <Flex layout="row"> 
-                    <span style = {{ color: "#b2b2b2", width: "11px" }} ></span>
-                    <span style = {{ color: "#b2b2b2", width: "123px" }} > Options </span>
-                    <span style = {{ color: "#b2b2b2", width: "106px"}} > Filter </span>
-                    <span style = {{ color: "#b2b2b2", width: "84px" }} > Min </span>
-                    <span style = {{ color: "#b2b2b2" }} > Max </span>
-                </Flex>
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px"}}>
+                <CardText>
+                    <div>
+                        <Flex divider />  
 
-                <Flex divider /> 
-                <Divider />
-                <Flex divider /> 
+                        <Flex layout="row"> 
+                            <span style = {{ color: "#b2b2b2", width: "11px" }} ></span>
+                            <span style = {{ color: "#b2b2b2", width: "123px" }} > Options </span>
+                            <span style = {{ color: "#b2b2b2", width: "106px"}} > Filter </span>
+                            <span style = {{ color: "#b2b2b2", width: "84px" }} > Min </span>
+                            <span style = {{ color: "#b2b2b2" }} > Max </span>
+                        </Flex>
 
-                {/* Displays the mapped views*/}
-                {view}
-            </div>
+                        <Flex divider /> 
+                        <Divider />
+                        <Flex divider /> 
+
+                        {/* Displays the mapped views*/}
+                        {view}
+                    </div>
+
+                </CardText>
+            </Card>
         );
     }
 }
@@ -375,8 +353,7 @@ export const removeFilterView = (colName) => ({
  **/
 const mapStateToProps = function(state){
   return {
-    elasticList: state.filterState.Filter.Elastic,
-    rangeList: state.filterState.Filter.Ranges,
+    filterList: state.filterState.Filter,
   }
 }
 

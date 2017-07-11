@@ -49,7 +49,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'REMOVE_RANGE':
             console.log('REMOVE-RANGE');
 
-            stateVal = state.Filter.Ranges[action.colName].rangeList.slice();
+            stateVal = state.Filter[action.colName].rangeList.slice();
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][2] == action.id) {
@@ -76,8 +76,6 @@ const filterReducer = function(state = initialFilterState, action) {
 
         case 'UPDATE_RANGE':
             console.log('UPDATE-RANGE');
-
-            console.log("Start new state", performance.now());
 
             stateVal = state.Filter[action.colName].rangeList.slice();
 
@@ -106,9 +104,6 @@ const filterReducer = function(state = initialFilterState, action) {
             var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
 
 
-            console.log("Changed values", performance.now());
-
-
             newState = {
                 ...state,
                 Filter : {
@@ -120,8 +115,6 @@ const filterReducer = function(state = initialFilterState, action) {
                     }
                 }
             }
-
-            console.log("Finished new state", performance.now());
             
 
             console.log(newState);
@@ -204,7 +197,6 @@ const filterReducer = function(state = initialFilterState, action) {
 };
 
 function calcHighlighted(rList, rangeType, data) {
-    console.log("Start highlighted", performance.now());
         var highlighted = [];
 
         if (rangeType == "Number") {
@@ -221,7 +213,6 @@ function calcHighlighted(rList, rangeType, data) {
                 }
             }
         }
-        console.log("Finish highlighted", performance.now());
         console.log(highlighted);
         return highlighted;
 }
