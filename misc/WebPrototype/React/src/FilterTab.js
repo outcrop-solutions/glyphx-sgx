@@ -12,7 +12,7 @@ class FilterTabs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            slideIndex: 0,
+            slideIndex: 0, //0 is Elastic, 1 is Range
             Range: null,
             tableData: props.data,
             tableID: ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),
@@ -135,4 +135,4 @@ const mapStateToProps = function(state){
 /**
  * connects the FilterTabs component to the redux store
  **/
-export default connect(mapStateToProps)(FilterTabs);
+export default connect(mapStateToProps,null,null,{withRef:true})(FilterTabs);
