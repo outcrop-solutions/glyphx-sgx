@@ -398,7 +398,7 @@ class TopView extends Component {
                                         
                         {/* Row 2 */}
                         <Flex layout="row" style={{height:'65%'}}>
-                            <FilterViewForm ref='filterSummaryView'/>
+                            <FilterViewForm ref='filterSummaryView' onScroll={(element,elastic) => this.props.initParams.scrollToElement(element,elastic)}/>
                         </Flex>
                         
                         

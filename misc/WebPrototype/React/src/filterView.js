@@ -145,12 +145,15 @@ class FilterViewForm extends React.Component {
             viewList.push([filterList[colName].displayName, filterType, min, max, filterList[colName].selectedValues.length, rCount, colName]);
         }
 
+        var context = this;
+
         var view = viewList.map( function(view) {
             return (<FilterViewRow 
                         view = { view } 
                         onDelEvent = { rowDel.bind(this) } 
                         key = { view[0] }
                         ref= { view[0] }
+                        onScroll={(element,elastic) => context.props.onScroll(element,elastic)}
                     />)
         });
 
@@ -189,6 +192,11 @@ class FilterViewRow extends React.Component {
     onDelEvent() {
         this.props.onDelEvent(this.props.view[6]);
     }
+
+    onClickIcon(evt,context,Elastic){
+        context.props.onScroll(context.props.view[6],Elastic);
+    }
+
 
     render() {
 
@@ -235,7 +243,7 @@ class FilterViewRow extends React.Component {
                                     badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px" }}
                                     >
                                     <FontIcon
-                                        //onClick = { this.onDelEvent.bind(this) }
+                                        onClick = { (evt) => this.onClickIcon(evt,this,true) }
                                         className = "fa fa-list-ul fa-2x"
                                         hoverColor = { blue500 }
                                     />
@@ -253,7 +261,7 @@ class FilterViewRow extends React.Component {
                                     badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px" }}
                                     >
                                     <FontIcon
-                                        //onClick = { this.onDelEvent.bind(this) }
+                                        onClick = { (evt) => this.onClickIcon(evt,this,false) }
                                         className = "fa fa-sliders fa-2x"
                                         hoverColor = { blue500 }
                                     />
