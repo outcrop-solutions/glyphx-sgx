@@ -160,8 +160,8 @@ class TextRangeRow extends React.Component {
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onAfterSlide(e) {
-        //this.props.updateStore(this.props.range[2], e[0], e[1], null);
-        console.log(this.props);
+        //(selectType, id, min, max, text, applied)
+        this.props.updateStore(null, this.props.range[2], e[0], e[1], null, true);
     };
 
 
@@ -316,7 +316,7 @@ class TextRangeRow extends React.Component {
 
     handleSelectChange(event, index, value) {
         this.setState({ value: value });
-        this.props.updateStore(this.state.value, this.props.range[2], 0, 25, "", null);
+        this.props.updateStore(value, this.props.range[2], 0, 25, "", null);
     }
 
     render() {

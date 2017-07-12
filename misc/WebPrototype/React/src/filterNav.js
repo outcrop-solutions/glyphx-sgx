@@ -132,6 +132,27 @@ class FilterNav extends Component {
         var arrPinDialogSelected = [];
         var objReturn = {};
 
+
+        
+        var style = (function() {
+            // Create the <style> tag
+            var style = document.createElement("style");
+
+            // WebKit hack
+            style.appendChild(document.createTextNode(""));
+
+            // Add the <style> element to the page
+            document.head.appendChild(style);
+        
+            console.log(style.sheet.cssRules); // length is 0, and no rules
+
+            return style;
+        })();
+
+        style.sheet.insertRule('.Collapsible__trigger { display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.primaryColor + '; color: white; font-size: 1rem; }', 0);
+        style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.secondaryColor + '; }', 1);
+
+
         for(var property in data)
         {
             var columnName = property;
@@ -503,6 +524,7 @@ export const init = (storeFilterStruc) => ({
 const mapStateToProps = function(state){
   return {
     GLOBAL: state.filterState.Filter,
+    settings: state.filterState.Settings
   }
 };
 

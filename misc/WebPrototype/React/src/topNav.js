@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
+import { connect } from 'react-redux';
 import './topNav.css';
 
 injectTapEventPlugin();
@@ -89,11 +90,11 @@ class TopNav extends Component {
                                     iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
                                 />*/}
 								
-								<Toolbar className="navbar-color" style={{backgroundColor:'#00bcd4'}}>
+								<Toolbar className="navbar-color" style={{backgroundColor: this.props.settings.primaryColor}}>
 									<ToolbarGroup firstChild={true}>
 										<span style={styles.navLogo}>
 											<a href="http://www.synglyphx.com/" target="_blank" rel="noopener noreferrer">
-												<img src="./Res/Img/logo.webp" style={{width:'300px'}} alt="SynGlyphX"/>
+												<img src="./Res/Img/synglyphx-wht-3.png" style={{width:'300px'}} alt="SynGlyphX"/>
 											</a>
 										</span>
 									</ToolbarGroup>
@@ -121,10 +122,9 @@ class TopNav extends Component {
 									*/}
 									
 									<ToolbarGroup>
-									  
 										<ToolbarSeparator />
-										<IconButton onClick={toggleNav} style={{color:'white'}}>
-											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
+										<IconButton onClick={toggleNav} style = {{color:'white'}}>
+											<FontIcon className="fa fa-filter fa-2x" style = {{color:'white'}}/>
 										</IconButton>
 									</ToolbarGroup>
 								</Toolbar>
@@ -138,6 +138,7 @@ class TopNav extends Component {
 
                         <Flex flex="100"  style={{overflow: 'hidden'}}>
                             {/* The 3D rendering engine */}
+
                             <iframe title="3D rendering engine" style={{width:'100%',height:'100%'}} src="https://s3.amazonaws.com/synglyphx/demo.html" />
                         </Flex>
 
@@ -166,4 +167,22 @@ const styles = {
     },
 };
 
-export default TopNav;
+//export default TopNav;
+
+
+
+/**
+ * Maps portions of the store to props of your choosing
+ * @param state: passed down through react-redux's 'connect'
+ **/
+const mapStateToProps = function(state){
+  return {
+    settings: state.filterState.Settings,
+  }
+}
+
+
+/**
+ * Connects the RangeForm component to the redux store
+ **/
+export default connect(mapStateToProps)(TopNav);

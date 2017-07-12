@@ -8,6 +8,10 @@ import './index.css';
 
 const initialFilterState = {
         Filter: {
+        },
+        Settings: {
+            primaryColor: "#2d3091",
+            secondaryColor: "#6d7475",
         }
     };
 
@@ -19,7 +23,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'INIT':
             newState  = {
                     ...state,
-                    Filter : action.storeFilterStruc
+                    Filter : action.storeFilterStruc,
             }
             console.log(newState);
             return newState;
@@ -55,7 +59,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
-            var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
+            var highlighted = calcSelected(stateVal, action.rangeType, action.data);
 
             newState = {
                 ...state,
@@ -84,7 +88,6 @@ const filterReducer = function(state = initialFilterState, action) {
                         var max = stateVal[i][1];
                         var applied = stateVal[i][3];
 
-
                         if (action.min != null) {
                             min = action.min;
                         }
@@ -106,7 +109,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         var min = stateVal[i][0];
                         var max = stateVal[i][1];
                         var applied = stateVal[i][3];
-
+                        var selectType = stateVal[i][4];
+                        var text = stateVal[i][5];
 
                         if (action.min != null) {
                             min = action.min;
@@ -117,16 +121,21 @@ const filterReducer = function(state = initialFilterState, action) {
                         if (action.applied != null) {
                             applied = action.applied;
                         }
+                        if (action.selectType != null) {
+                            selectType = action.selectType;
+                        }
+                        if (action.text != null) {
+                            text = action.text;
+                        }
 
-                        stateVal[i] = [min, max, action.id, applied];
+                        stateVal[i] = [min, max, action.id, applied, selectType, text];
                     }
                 }
             }
+
+
+            var selected = calcSelected(stateVal, action.rangeType, action.data, action.previousRange, state.Filter[action.colName].selectedValues.slice());
             
-
-            var highlighted = calcHighlighted(stateVal, action.rangeType, action.data);
-
-
             newState = {
                 ...state,
                 Filter : {
@@ -134,10 +143,13 @@ const filterReducer = function(state = initialFilterState, action) {
                     [action.colName] : {
                         ...state.Filter[action.colName],
                         rangeList : stateVal,
-                        highlightedValues: highlighted,
+                        selectedValues: selected,
                     }
                 }
             }
+
+
+            console.log(newState.Filter[action.colName].selectedValues);
             
 
             console.log(newState);
@@ -161,13 +173,13 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter : {
                     ...state.Filter,
-                        [action.colName] : {
-                            ...state.Filter[action.colName],
-                            rangeList : stateVal,
-                            highlightedValues: [],
-                            selectedValues: [],
-                            applied: false,
-                        }
+                    [action.colName] : {
+                        ...state.Filter[action.colName],
+                        rangeList : stateVal,
+                        highlightedValues: [],
+                        selectedValues: [],
+                        applied: false,
+                    }
                 }
             }
             
@@ -180,6 +192,19 @@ const filterReducer = function(state = initialFilterState, action) {
             console.log('ADD_REMOVE_ELASTIC');
             var col = action.filter.colName;
 
+            stateVal = state.Filter[col].rangeList.slice();
+
+            if (!action.filter.checked) {
+                debugger;
+                for (var i = 0; i < stateVal.length; i++) {
+                    if (stateVal[i][3]) {
+                        if (parseFloat(action.filter.value) >= stateVal[i][0] && parseFloat(action.filter.value) <= stateVal[i][1]) {
+                            stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                        }
+                    }
+                }
+            }
+
             newState  = {
                 ...state,
                 Filter : {
@@ -187,6 +212,7 @@ const filterReducer = function(state = initialFilterState, action) {
                     [col] : {
                         ...state.Filter[col],
                         selectedValues: action.filter.selectedValues,
+                        rangeList: stateVal,
                         applied: action.filter.selectedValues.length > 0 ? true : (state.Filter[col].highlightedValues.length > 0 ? true : false),
                     }
                 }
@@ -219,25 +245,60 @@ const filterReducer = function(state = initialFilterState, action) {
     }
 };
 
-function calcHighlighted(rList, rangeType, data) {
-        var highlighted = [];
+function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
+    if (rangeType == "Number") {
+        for (var i = 0; i < rList.length; i++) {
+            if (rList[i][3] == true) {
 
-        if (rangeType == "Number") {
-            for (var i = 0; i < rList.length; i++) {
-                if (rList[i][3] == true) {
+                if (previousRange && rList[i][2] == previousRange[2] && previousRange[3] == true && (rList[i][0] != previousRange[0] || rList[i][1] != previousRange[1]) ) {
+                    var previousList = [];
+                    var newList = [];
+
                     for (var j = 0; j < data.length; j++) {
-                        if (highlighted.indexOf(data[j]) == -1) {
-                            var curNum = parseInt(data[j], 10)
+                        var curNum = parseFloat(data[j], 10)
+                        if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
+                            newList.push(data[j]);
+                        }
+
+                        if (curNum >= previousRange[0] && curNum  <= previousRange[1]) {
+                            previousList.push(data[j]);
+                        }
+                    }
+
+                    for (j = 0; j < newList.length; j++) {
+                        if (selectedValues.indexOf(newList[j]) == -1) {
+                            selectedValues.push(newList[j]);
+                        }
+                    }
+
+                    for (j = 0; j < previousList.length; j++) {
+                        if (newList.indexOf(previousList[j]) == -1) {
+                            var index = selectedValues.indexOf(previousList[j]);
+                            if (index != -1) {
+                                selectedValues.splice(index, 1);
+                            }
+                        }
+                    }
+                }
+
+                else {
+
+                    for (var j = 0; j < data.length; j++) {
+                        if (selectedValues.indexOf(data[j]) == -1) {
+                            var curNum = parseFloat(data[j], 10)
                             if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
-                                highlighted.push(data[j]);
+                                selectedValues.push(data[j]);
                             }
                         }
                     }
                 }
             }
         }
-        console.log(highlighted);
-        return highlighted;
+    }
+
+    console.log("selectedValues: ");
+    console.log(selectedValues);
+    return selectedValues;
 }
 
 const dummyReducer = function(state = initialFilterState, action) {

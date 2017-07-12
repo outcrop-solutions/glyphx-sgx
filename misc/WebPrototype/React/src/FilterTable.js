@@ -97,7 +97,14 @@ class FilterTable extends Component {
                 selectedValues = context.props.tableState[context.props.id].selectedValues.slice();
 
                 if(checked){
-                    selectedValues.push(context.flatData[rowSelection].value);
+                    if (context.props.tableState[context.props.id].type == "Number") {
+                        selectedValues.push(parseFloat(context.flatData[rowSelection].value));
+                        
+                    }
+                    else {
+                        selectedValues.push(context.flatData[rowSelection].value);
+                    }
+                    
                     
                     if(selectedValues.length === len)
                         this.setState({selectAll:true});
@@ -106,7 +113,12 @@ class FilterTable extends Component {
                     if(this.state.selectAll === true)
                         this.setState({selectAll:false});
                     
-                    selectedValues.splice(selectedValues.indexOf(context.flatData[rowSelection].value),1);
+                    if (context.props.tableState[context.props.id].type == "Number") {
+                        selectedValues.splice(selectedValues.indexOf(parseFloat(context.flatData[rowSelection].value)), 1);
+                    }
+                    else {
+                        selectedValues.splice(selectedValues.indexOf(context.flatData[rowSelection].value),1);
+                    }
                     
                 }
                     
@@ -115,6 +127,10 @@ class FilterTable extends Component {
             var filterStructure = {
                     colName : context.props.id,
                     selectedValues: selectedValues,
+                    value: context.flatData[rowSelection].value,
+                    checked: checked,
+                    type: context.props.tableState[context.props.id].type
+
             }
 
             context.props.dispatch(addRemoveElastic(filterStructure));
@@ -170,8 +186,6 @@ class FilterTable extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if(this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues)
             return true;
-        else if(this.props.tableState[this.props.id].highlightedValues != nextProps.tableState[this.props.id].highlightedValues)
-            return true;
         else
             return false;
     }
@@ -200,7 +214,15 @@ class FilterTable extends Component {
             var prop = isNaN(property) ? property : parseFloat(property);
             var percentStr =  data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")";
             
-            rows.push(<FilterRow onRowSelect={(evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked)} key={prop} index={index} checked={this.props.tableState[id].selectedValues.indexOf(property) !== -1} value={prop} percentStr={percentStr} highlighted={this.props.tableState[id].highlightedValues.indexOf(prop) !== -1 ? 'highlightedRows' : ''}> </FilterRow> );
+            rows.push(<FilterRow 
+                            onRowSelect={(evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked)} 
+                            key={prop} 
+                            index={index} 
+                            checked={this.props.tableState[id].selectedValues.indexOf(parseFloat(property)) !== -1} 
+                            value={prop} 
+                            percentStr={percentStr} 
+                            highlighted={this.props.tableState[id].highlightedValues.indexOf(prop) !== -1 ? 'highlightedRows' : ''} 
+                        /> );
 
             this.flatData.push({
                 value: property,
@@ -262,9 +284,7 @@ class FilterRow extends Component {
         if(this.props.checked != nextProps.checked)
             return true;
         else if(this.props.value != nextProps.value)
-            return true;
-        else if(this.props.highlighted != nextProps.highlighted)
-            return true;    
+            return true; 
         else
             return false;
     }

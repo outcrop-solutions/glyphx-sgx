@@ -44,8 +44,8 @@ class NumberRangeTable extends React.Component {
      * @param max: Max value to update
      * @param applied: Applied status to update
      **/
-    handleStoreUpdate(id, min, max, applied) { 
-        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, "Number"));
+    handleStoreUpdate(id, min, max, applied, previousRange) { 
+        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, "Number", previousRange));
     }
 
 
@@ -125,7 +125,7 @@ class NumberRangeRow extends React.Component {
         if (this.props.range != nextProps.range) {
             return true;
         }
-        if (this.state.min != nextState.min || this.state.max != nextState.max) {
+        if (this.state.min !== nextState.min || this.state.max !== nextState.max) {
             return true;
         }
         return false;
@@ -155,7 +155,7 @@ class NumberRangeRow extends React.Component {
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onAfterSlide(e) {
-        this.props.updateStore(this.props.range[2], e[0], e[1], null);
+        this.props.updateStore(this.props.range[2], e[0], e[1], true, this.props.range);
     };
 
     /**
@@ -163,12 +163,12 @@ class NumberRangeRow extends React.Component {
      * @param e: the event instance of the text field, html element
      **/
      onTextChange(e) {
-        var minimum = parseInt(this.props.minVal, 10);
-        var maximum = parseInt(this.props.maxVal, 10);
+        var minimum = parseFloat(this.props.minVal, 10);
+        var maximum = parseFloat(this.props.maxVal, 10);
         var value = e.target.value;
 
         if ( !isNaN(value) && value !== "" ) {
-            value = parseInt(value, 10);
+            value = parseFloat(value, 10);
             if (e.target.name === "min") {
                 if ( value > maximum  ) {
                     this.setState({ min: maximum });
@@ -201,7 +201,7 @@ class NumberRangeRow extends React.Component {
         else {
             if (e.target.name === "min") {
                 if (value === "") {
-                    this.setState({ min: value });
+                    this.setState({ min: "" });
                 }
 
                 else {
@@ -211,7 +211,7 @@ class NumberRangeRow extends React.Component {
 
             else {
                 if (value === "") {
-                    this.setState({ max: value });
+                    this.setState({ max: "" });
                 }
 
                 else {
@@ -253,7 +253,7 @@ class NumberRangeRow extends React.Component {
             }
         }
 
-        this.props.updateStore(this.props.range[2], min, max, null);
+        this.props.updateStore(this.props.range[2], min, max, true);
     };
 
 
@@ -295,7 +295,7 @@ class NumberRangeRow extends React.Component {
             min = this.props.minVal;
         }
         else {
-            min = parseInt(min, 10);
+            min = parseFloat(min, 10);
         }
 
         // Make max a valid type
@@ -303,7 +303,7 @@ class NumberRangeRow extends React.Component {
             max = this.props.maxVal;
         }
         else {
-            max = parseInt(max, 10);
+            max = parseFloat(max, 10);
         }
 
         // Apply a valid range
@@ -499,7 +499,7 @@ export const removeRange = (colName, id, data, rangeType) => ({
     data,
     rangeType
 });
-export const updateRange = (colName, min, max, id, applied, data, rangeType) => ({
+export const updateRange = (colName, min, max, id, applied, data, rangeType, previousRange) => ({
     type: 'UPDATE_RANGE',
     colName,
     id,
@@ -507,7 +507,8 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType) => 
     max,
     applied, 
     data,
-    rangeType
+    rangeType,
+    previousRange
 });
 
 

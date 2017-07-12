@@ -114,9 +114,7 @@
     transition: transform 300ms; 
 }
 
-.Collapsible__trigger.is-open {
-    background: rgb(11, 127, 142);
-}
+
   
   .Collapsible__trigger.is-open:after {
     transform: rotateZ(180deg); 
