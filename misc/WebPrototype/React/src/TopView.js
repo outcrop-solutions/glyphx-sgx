@@ -331,6 +331,9 @@ class TopView extends Component {
         else if (this.props.initParams != newProps.initParams) {
             return true;
         }
+        else if (this.props.settings != newProps.settings) {
+            return true;
+        }
 
         return false;
     };
@@ -362,6 +365,7 @@ class TopView extends Component {
                             onChange = { this.onSelectViewChange }
                             style = {{ width:"100%",fontSize:'13px' }}
                             hintText = "Select View"
+                            selectedMenuItemStyle = {{ backgroundColor: this.props.settings.primaryColor, color: this.props.settings.textColor}}
                         >
                             {this.state.viewSelectItems}
                         </SelectField>
@@ -373,15 +377,15 @@ class TopView extends Component {
                             <RaisedButton
                                 onClick = { (evt) => this.handleOpenClose('menu',true,evt) }
                                 label = "Menu"
-                                buttonStyle = {{ height: '28px' }}
-                                labelStyle = {{ fontSize: '13px' }}
+                                buttonStyle = {{ height: '28px', backgroundColor: this.props.settings.primaryColor }}
+                                labelStyle = {{ fontSize: '13px', color: this.props.settings.textColor }}
                                 primary = { true }
                             />
 
                             <Popover
                                 open = { this.state.menu.open }
                                 anchorEl = { this.state.menu.anchorEl }
-                                onRequestClose = { (evt) => this.handleOpenClose('menu',false,evt) }
+                                onRequestClose = { (evt) => this.handleOpenClose('menu', false,evt) }
                                 style = {{ fontSize: '13px' }}
                             >
                                 <Menu>
@@ -399,11 +403,13 @@ class TopView extends Component {
                                             label = "Save"
                                             primary = { true }
                                             onClick = { () => this.onSaveDailog(this) }
+                                            style = {{ color: this.props.settings.primaryColor }}
                                         />,
                                         <FlatButton
                                             label = "Cancel"
                                             primary = { true }
                                             onClick = { () => this.handleOpenClose('save', false) }
+                                            style = {{ color: this.props.settings.secondaryColor }}
                                         />
                                     ]
                                 } 
@@ -411,7 +417,13 @@ class TopView extends Component {
                                 open = { this.state.saveDailogOpen }
                             >
                                 Please enter a name for the view you are saving. <br />
-                                <TextField id = "tf_viewName" errorText = { this.state.viewNameTextFieldError } floatingLabelText = "View Name" /> <br />
+                                <TextField 
+                                    id = "tf_viewName" 
+                                    errorText = { this.state.viewNameTextFieldError } 
+                                    floatingLabelText = "View Name" 
+                                    underlineFocusStyle = {{ borderColor: this.props.settings.primaryColor }}
+                                    floatingLabelStyle = {{ color: this.props.settings.primaryColor }}
+                                /> <br />
                                 <label id = "lbl_saveError" hidden style = {{ color:'red' }}> Error! A view with the same name already exists! Please provide a different name! </label>
                             </Dialog>
 
@@ -430,8 +442,8 @@ class TopView extends Component {
                     <Flex flex = "25">
                         <RaisedButton 
                             label = "Clear All" 
-                            buttonStyle = {{ height: '28px', width:'100%', paddingTop: '5px' }}
-                            labelStyle = {{ fontSize: '13px', height: '28px' }} 
+                            buttonStyle = {{ height: '28px', width:'100%', paddingTop: '5px', backgroundColor: this.props.settings.primaryColor }}
+                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.textColor }} 
                             style = {{ height: '28px', width:'100%' }}
                             onClick = { this.onClearAllFilters }
                             primary = {true } />
@@ -443,9 +455,9 @@ class TopView extends Component {
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
-                            buttonStyle = {{ height: '28px',paddingTop: '5px' }}
-                            labelStyle = {{ fontSize: '13px',height: '28px' }} 
-                            style = {{ height: '28px',width:'100%' }} 
+                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.primaryColor }}
+                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.textColor }} 
+                            style = {{ height: '28px', width:'100%' }} 
                             onClick = { this.onHideFilteredData.bind(this) }
                             primary = { true } />
 
@@ -464,9 +476,9 @@ class TopView extends Component {
                             primary = { true } 
                             label = "Apply Filters" 
                             onClick = { this.applyFilter.bind(this) } 
-                            buttonStyle = {{ height: '28px',paddingTop: '5px' }}
-                            labelStyle = {{ fontSize: '13px',height: '28px' }} 
-                            style = {{ height: '28px',width:'100%' }} 
+                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.primaryColor }}
+                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.textColor }} 
+                            style = {{ height: '28px', width:'100%' }} 
                         />
                     </Flex>
                     
@@ -480,6 +492,7 @@ class TopView extends Component {
                         style = {{ width:"100%", fontSize:'13px', height:'44px' }}
                         hintText = "Select Table"
                         multiple = { true }
+                        selectedMenuItemStyle = {{ backgroundColor: this.props.settings.primaryColor, color: this.props.settings.textColor}}
                     >
                         {tableSelectItems}
                     </SelectField>
@@ -492,6 +505,7 @@ class TopView extends Component {
 const mapStateToProps = function(state){
   return {
     GLOBALSTORE: state.filterState,
+    settings: state.filterState.Settings
   }
 };
 

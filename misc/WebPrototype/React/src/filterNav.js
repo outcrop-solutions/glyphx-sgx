@@ -177,8 +177,8 @@ class FilterNav extends Component {
         style.sheet.insertRule('.Collapsible__trigger { display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.primaryColor + '; color: white; font-size: 1rem; }', 0);
         style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.primaryColorDark + '; }', 1);
         style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.primaryColorLight + '; }', 2);
-        style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.textColor + '!important; }', 3);
-        style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.secondaryColorLight + '!important; }', 4);
+        style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.secondaryColorLight + '!important; }', 3);
+        style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.textColor + '!important; }', 4);
 
 
         for (var property in data) {
@@ -604,11 +604,13 @@ class FilterNav extends Component {
                                             label = "Ok"
                                             primary = { true }
                                             onClick = { () => this.onPinnedOkDailog(this) }
+                                            style = {{ color: this.props.settings.primaryColor }}
                                         />,
                                         <FlatButton
                                             label = "Cancel"
                                             primary = { true }
                                             onClick = { () => this.handleOpenClose('pin',false,{'cancel':true}) }
+                                            style = {{ color: this.props.settings.secondaryColor }}
                                         />
                                     ]
                                 }

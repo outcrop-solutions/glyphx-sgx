@@ -57,8 +57,8 @@ class NumberRangeTable extends React.Component {
         var updateStore = this.handleStoreUpdate.bind(this);
         var minVal = this.props.minVal;
         var maxVal = this.props.maxVal;
-
         var rList = this.props.rangeList[this.props.colName].rangeList;
+        var settings = this.props.settings;
 
         var range = rList.map( function(range) {
             return (<NumberRangeRow 
@@ -68,6 +68,7 @@ class NumberRangeTable extends React.Component {
                         key = { range[2] }
                         minVal = { minVal }
                         maxVal = { maxVal }
+                        settings = { settings }
                     />)
         });
 
@@ -122,7 +123,7 @@ class NumberRangeRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.range != nextProps.range) {
+        if (this.props.range != nextProps.range || this.props.settings != nextProps.settings) {
             return true;
         }
         if (this.state.min !== nextState.min || this.state.max !== nextState.max) {
@@ -387,6 +388,7 @@ class NumberRangeRow extends React.Component {
                                 onKeyPress = {
                                     (e) => this.onKeyPressMin(e)
                                 }
+                                underlineFocusStyle = {{ borderColor: this.props.settings.primaryColor }}
                             />
                         </Flex>
 
@@ -411,6 +413,8 @@ class NumberRangeRow extends React.Component {
                                 onAfterChange = {
                                     (e) => this.onAfterSlide(e)
                                 }
+                                trackStyle = { [{ backgroundColor: this.props.settings.primaryColorLight }] }
+                                handleStyle = {[{ backgroundColor: this.props.settings.primaryColor, borderColor: this.props.settings.primaryColorDark }, { backgroundColor: this.props.settings.primaryColor, borderColor: this.props.settings.primaryColorDark }]}
                             />
                         </Flex>
 
@@ -435,6 +439,7 @@ class NumberRangeRow extends React.Component {
                                 onKeyPress = {
                                     (e) => this.onKeyPressMax(e)
                                 }
+                                underlineFocusStyle = {{ borderColor: this.props.settings.primaryColor }}
                             />
                         </Flex>
 
@@ -453,6 +458,8 @@ class NumberRangeRow extends React.Component {
                                 onToggle = {  
                                     (e) => this.onToggle(e)
                                 }
+                                trackSwitchedStyle = {{ backgroundColor: this.props.settings.primaryColorLight }}
+                                thumbSwitchedStyle = {{ backgroundColor: this.props.settings.primaryColor, borderColor: this.props.primaryColorDark }}
                             />
                         </Flex>
 
@@ -519,6 +526,7 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType, pre
 const mapStateToProps = function(state){
   return {
     rangeList: state.filterState.Filter,
+    settings: state.filterState.Settings
   }
 }
 

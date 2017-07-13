@@ -9,7 +9,11 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import './topNav.css';
 
 injectTapEventPlugin();
@@ -17,7 +21,10 @@ injectTapEventPlugin();
 
 class TopNav extends Component {
     state = {
-        LoadMask : false
+        LoadMask : false,
+        openSettings: false,
+        themeSelection: 0,
+        themeTempSelection: 0
     };
 
     showLoadMask = () => {
@@ -27,7 +34,7 @@ class TopNav extends Component {
     hideLoadMask = () => {
 
         var lm = document.getElementById("ipl-progress-indicator");
-        if(lm) {
+        if (lm) {
             setTimeout(() => {
                 document.getElementById("ipl-progress-indicator").classList.add('available');
                 setTimeout(() => {
@@ -42,14 +49,27 @@ class TopNav extends Component {
         this.hideLoadMask();
     }
 
+
+    promptSelectChange = (event, index, value) => this.handleSelectChange(event, index, value);
+
+    handleSelectChange(event, index, value) {
+        this.setState({ themeTempSelection: value });
+        
+    }
+
+    onSettingsSave() {
+        this.setState({ themeSelection: this.state.themeTempSelection, openSettings: false });
+        this.props.dispatch(editThemeSettings(this.state.themeTempSelection));
+    }
+
     render() {
         return (
             <MuiThemeProvider> 
-                <div style={{width:'100%',height:'100%'}}>
+                <div style = {{ width:'100%', height:'100%' }}>
                     
                     <div 
-                        id="LoadMask1"  
-                        style={{ 
+                        id = "LoadMask1"  
+                        style = {{ 
                             position: 'absolute',    
                             width: '100%',
                             height: '100%',
@@ -62,20 +82,19 @@ class TopNav extends Component {
                         }} >
 
                         <CircularProgress id="innerLoadMask"
-                            size={60} 
-                            style={
-                                {
-                                        display: 'table-cell',
-                                        verticalAlign: 'middle'
-                                }
-                            }
-                            thickness={7} />
-
+                            size = { 60 } 
+                            style = {{
+                                display: 'table-cell',
+                                verticalAlign: 'middle'
+                            }}
+                            thickness = { 7 } 
+                        />
                     </div>
-                    <Flex layout="column" style={{position:'absolute',width:'100%',height:'100%'}}>
+
+                    <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
 
                         <Flex >
-                            <div className="TopNav" style={{width:'100%',height:'100%'}}>
+                            <div className = "TopNav" style = {{ width:'100%', height:'100%' }}>
 
                                 {/*<AppBar className="navbar-color"
                                     id="AppBar"
@@ -127,7 +146,7 @@ class TopNav extends Component {
 											<FontIcon className="fa fa-filter fa-2x" color='white'/>
 										</IconButton>
 
-                                        <IconButton onClick={toggleNav}>
+                                        <IconButton onClick = { () => this.setState({ openSettings: true }) }>
 											<FontIcon className="fa fa-cogs fa-2x" color='white'/>
 										</IconButton>
                                         
@@ -146,18 +165,50 @@ class TopNav extends Component {
                                 <div id="filterNav" className="sidenav sidenavbar">
                                     <FilterNav></FilterNav>
                                 </div>
+
+                                <Dialog
+                                    title = "Settings"
+                                    actions = {
+                                        [
+                                            <FlatButton
+                                                label = "Save"
+                                                primary = { true }
+                                                onClick = { () => this.onSettingsSave() }
+                                                style = {{ color: this.props.settings.primaryColor }}
+                                            />,
+                                            <FlatButton
+                                                label = "Cancel"
+                                                primary = { true }
+                                                onClick = { () => this.setState({ openSettings: false, themeTempSelection: this.state.themeSelection }) }
+                                                style = {{ color: this.props.settings.secondaryColor }}
+                                            />
+                                        ]
+                                    }
+                                    modal = { true }
+                                    open = { this.state.openSettings }
+                                >
+                                    <DropDownMenu
+                                        value = {this.state.themeTempSelection}
+                                        onChange = { this.promptSelectChange }
+                                        style = {{ width: "300px" }}
+                                        autoWidth = { false }
+                                    >
+                                        <MenuItem value = { 0 } primaryText = "SynGlyphX" />
+                                        <MenuItem value = { 1 } primaryText = "SynGlyphX Reversed" />
+                                        <MenuItem value = { 2 } primaryText = "Notre Dame" />
+                                        <MenuItem value = { 3 } primaryText = "Notre Dame Reversed" />
+                                    </DropDownMenu>
+                                </Dialog>
                                 
                             </div>
                         </Flex>
 
-                        <Flex flex="100"  style={{overflow: 'hidden'}}>
+                        <Flex flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
-                            <iframe title="3D rendering engine" style={{width:'100%',height:'100%'}} src="https://s3.amazonaws.com/synglyphx/demo.html" />
+                            <iframe title = "3D rendering engine" style = {{ width:'100%', height:'100%' }} src = "https://s3.amazonaws.com/synglyphx/demo.html" />
                         </Flex>
-
                     </Flex>
-
                 </div>
           </MuiThemeProvider>
         );
@@ -181,9 +232,14 @@ const styles = {
     },
 };
 
-//export default TopNav;
 
-
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
+export const editThemeSettings = (theme) => ({
+    type: 'EDIT_THEME',
+    theme
+});
 
 /**
  * Maps portions of the store to props of your choosing

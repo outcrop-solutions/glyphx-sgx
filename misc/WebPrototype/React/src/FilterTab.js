@@ -32,15 +32,6 @@ class FilterTabs extends React.Component {
         scrollSpy.update();
         */
 
-        //debugger;
-        /*
-        var collapsibles = document.getElementsByClassName('Collapsible__trigger');
-
-        for (var i = 0; i < collapsibles.length; i++) {
-            collapsibles[i].style.setProperty('--text-color', this.props.settings.textColor);
-        }
-        */
-
     };
 
 
@@ -84,14 +75,14 @@ class FilterTabs extends React.Component {
                     <Tab 
                         label = "Elastic" 
                         value = { 0 }
-                        icon = { <FontIcon className="fa fa-list-ul"></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: "#0b7f8e"} }
+                        icon = { <FontIcon className="fa fa-list-ul" ></FontIcon> }
+                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.secondaryColor, color: this.props.settings.textColor} }
                     />
                     <Tab 
                         label = "Range" 
                         value = { 1 }
                         icon = { <FontIcon className="fa fa-sliders"></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: "#0b7f8e"} }
+                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.secondaryColor, color: this.props.settings.textColor} }
                     />
                 </Tabs>
 

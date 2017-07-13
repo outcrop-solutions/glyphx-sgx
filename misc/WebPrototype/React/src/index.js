@@ -7,18 +7,20 @@ import './index.css';
 
 
 const initialFilterState = {
-        Filter: {
-        },
-        Settings: {
-            primaryColor: "#2d3091",
-            primaryColorLight: shadeHexColors("#2d3091", 0.2),
-            primaryColorDark: shadeHexColors("#2d3091", -0.5),
-            secondaryColor: "#979797",
-            secondaryColorLight: shadeHexColors("#6d7475", 0.3),
-            secondaryColorDark: shadeHexColors("#6d7475", -0.5),
-            textColor: "#f1f012"
-        }
-    };
+    Filter: {
+    },
+    Settings: {
+        primaryColor: "#2d3091",
+        primaryColorLight: shadeHexColors("#2d3091", 0.2),
+        primaryColorDark: shadeHexColors("#2d3091", -0.4),
+        secondaryColor: "#575d5e",
+        secondaryColorLight: shadeHexColors("#575d5e", 0.4),
+        secondaryColorDark: shadeHexColors("#575d5e", -0.4),
+        textColor: "#ffffff"
+    }
+};
+
+const themeSettingColors = [["#2d3091", "#575d5e", "#ffffff"], ["#575d5e", "#2d3091", "#ffffff"], ["#bb8c00", "#012c70", "#ffffff"], ["#012c70", "#bb8c00", "#ffffff"]];
 
 // Will darken or lighten a color by a percent (-1.0 to 1.0) input
 function shadeHexColors(color, percent) {   
@@ -207,7 +209,6 @@ const filterReducer = function(state = initialFilterState, action) {
             stateVal = state.Filter[col].rangeList.slice();
 
             if (!action.filter.checked) {
-                debugger;
                 if(action.filter.selectedValues.length > 0)
                 {    
                     for (var i = 0; i < stateVal.length; i++) {
@@ -243,7 +244,6 @@ const filterReducer = function(state = initialFilterState, action) {
         }
 
         case 'Update_Pin':
-        {
             var colName = action.details.colName;
             newState  = { 
                 ...state,
@@ -258,7 +258,27 @@ const filterReducer = function(state = initialFilterState, action) {
             
             console.log(newState);
             return newState;
-        }
+
+        case 'EDIT_THEME':
+            newState  = { 
+                ...state,
+                Settings : {
+                    primaryColor: themeSettingColors[action.theme][0],
+                    primaryColorLight: shadeHexColors(themeSettingColors[action.theme][0], 0.2),
+                    primaryColorDark: shadeHexColors(themeSettingColors[action.theme][0], -0.4),
+                    secondaryColor: themeSettingColors[action.theme][1],
+                    secondaryColorLight: shadeHexColors(themeSettingColors[action.theme][1], 0.4),
+                    secondaryColorDark: shadeHexColors(themeSettingColors[action.theme][1], -0.4),
+                    textColor: themeSettingColors[action.theme][2]
+                }
+            };
+            
+            console.log(newState);
+            return newState;
+        
+
+
+        
 
         default:
             return state;

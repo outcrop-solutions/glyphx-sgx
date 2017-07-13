@@ -52,10 +52,12 @@ class FilterTable extends Component {
         var temp = {};
         var totalCount = tableData.length;
         tableData.map((row) => {
-            if(temp.hasOwnProperty(row))
+            if(temp.hasOwnProperty(row)) {
                 ++temp[row]['count'];
-            else
+            }
+            else {
                 temp[row] = {value:row, count:1};
+            }
         });
         return {'data':temp,'totalCount':totalCount};
     };
@@ -73,50 +75,46 @@ class FilterTable extends Component {
             var index,len = context.flatData.length;
             var selectedValues;
 
-            if(this.state.prevSelectedIndex == null)
-            {
+            if (this.state.prevSelectedIndex == null) {
                 this.setState({prevSelectedIndex : rowSelection});
             }
 
-            if(evt && evt.shiftKey)
-            {
+            if (evt && evt.shiftKey) {
                 //Implementation for shift key selection!
             }
 
-            if(all)
+            if (all)
             {
                 this.setState({selectAll:true});
                 selectedValues = [];
 
-                for(index=0;index<len;index++)
-                {
+                for (index = 0; index < len; index++) {
                         selectedValues.push(context.flatData[index].value);
                 }
                 checked = true;
             }
-            else if(false === all){
+            else if (false === all) {
                 this.setState({selectAll:false});
                 selectedValues = [];
                 checked = false;
             }
-            else{
-                
+            else {
                 selectedValues = context.props.tableState[context.props.id].selectedValues.slice();
 
-                if(checked){
+                if (checked) {
                     selectedValues.push(context.flatData[rowSelection].value);
                     
-                    if(selectedValues.length === len)
+                    if (selectedValues.length === len) {
                         this.setState({selectAll:true});
+                    }
                 }
-                else{
-                    if(this.state.selectAll === true)
+                else {
+                    if (this.state.selectAll === true) {
                         this.setState({selectAll:false});
+                    }
                     
                         selectedValues.splice(selectedValues.indexOf(context.flatData[rowSelection].value),1);
-                    
                 }
-                    
             }
 
             var filterStructure = {
@@ -150,11 +148,12 @@ class FilterTable extends Component {
         for (i = 0; i < tr.length; i++) {
             td = tr[i].getElementsByTagName("td")[indexColumnToSearch];
             if (td) {
-            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } 
+                else {
+                    tr[i].style.display = "none";
+                }
             } 
         }
     };
@@ -179,20 +178,25 @@ class FilterTable extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues)
+        if (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues) {
             return true;
-        else
+        }
+        if (this.props.settings != nextProps.settings) {
+            return true;
+        }
+        else {
             return false;
+        }
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         if(this.props.tableState[this.props.id].selectedValues.length == this.flatData.length)
-            this.setState({selectAll: true});
+            this.setState({ selectAll: true });
         else
-            this.setState({selectAll: false});
+            this.setState({ selectAll: false });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.componentDidUpdate();
     }
 
@@ -202,7 +206,7 @@ class FilterTable extends Component {
         var data = this.state.tableData.data;
         var totalCount = this.state.tableData.totalCount;
         var selectedValues = this.props.tableState[id].selectedValues;
-        var rows = []; var index=0;
+        var rows = []; var index = 0;
         this.flatData = [];
 
         /**
@@ -218,14 +222,16 @@ class FilterTable extends Component {
 
             var prop = data[property].value;
             var percentStr =  data[property].count + " (" + ((data[property].count/totalCount)*100).toFixed(2) + "%" + ")";
-            
+            var context = this;
+
             rows.push(<FilterRow 
-                            onRowSelect={(evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked)} 
-                            key={prop} 
-                            index={index} 
-                            checked={selectedValues.indexOf(prop) !== -1} 
-                            value={prop} 
-                            percentStr={percentStr}
+                            onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked) } 
+                            key = { prop } 
+                            index = { index } 
+                            checked = { selectedValues.indexOf(prop) !== -1 } 
+                            value = { prop } 
+                            percentStr = { percentStr }
+                            settings = { context.props.settings }
                         /> );
 
             this.flatData.push({
@@ -240,44 +246,46 @@ class FilterTable extends Component {
         return (
             <div>   
                 <TextField
-                    type="text" 
-                    id={"tf-"+internalColName}
-                    className={"tf-"+internalColName} 
-                    onKeyUp={() => this.onKeyUp(this,internalColName,this.state.indexColumnToSearch)} 
-                    hintText="Search for value.." /> 
+                    type = "text" 
+                    id = { "tf-" + internalColName }
+                    className = { "tf-" + internalColName } 
+                    onKeyUp = { () => this.onKeyUp(this,internalColName,this.state.indexColumnToSearch) } 
+                    hintText = "Search for value.." /> 
                 <br/>
                 <Table
-                    className={"table-"+internalColName}
-                    height='300px'
-                    fixedHeader={this.state.fixedHeader}
-                    fixedFooter={this.state.fixedFooter}
-                    selectable={this.state.selectable}
-                    multiSelectable={this.state.multiSelectable}
-                    onRowSelection={(rowSelection) => this.onRowSelect(this,rowSelection)}
+                    className = { "table-" + internalColName }
+                    height = '300px'
+                    fixedHeader = { this.state.fixedHeader }
+                    fixedFooter = { this.state.fixedFooter }
+                    selectable = { this.state.selectable }
+                    multiSelectable = { this.state.multiSelectable }
+                    onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
                 >
                 <TableHeader
-                    displaySelectAll={false} // just need to implement our own select all.
-                    adjustForCheckbox={this.state.showCheckboxes}
-                    enableSelectAll={this.state.enableSelectAll}
+                    displaySelectAll = { false } // just need to implement our own select all.
+                    adjustForCheckbox = { this.state.showCheckboxes }
+                    enableSelectAll = { this.state.enableSelectAll }
                 >
-                    <TableRow  style={{height:'30px'}}>
-                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}>
+                    <TableRow style = {{ height:'30px' }}>
+                        <TableHeaderColumn style = {{ height:'inherit', width:'25px' }}>
                             <Checkbox 
-                                id={"cb-"+internalColName} 
-                                checked={this.props.tableState[id].selectedValues.length == this.flatData.length} 
-                                onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/>
+                                id = { "cb-" + internalColName } 
+                                checked = { this.props.tableState[id].selectedValues.length == this.flatData.length } 
+                                onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
+                                iconStyle = {{ fill: this.props.settings.primaryColor }}
+                            />
                         </TableHeaderColumn>
-                        <TableHeaderColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}} >Value</TableHeaderColumn>
-                        <TableHeaderColumn style={{height:'inherit'}}>Count(Percent)</TableHeaderColumn>
+                        <TableHeaderColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }} >Value</TableHeaderColumn>
+                        <TableHeaderColumn style = {{ height:'inherit' }}>Count(Percent)</TableHeaderColumn>
                     </TableRow>
 
                 </TableHeader>
 
                 <TableBody
-                    displayRowCheckbox={this.state.showCheckboxes}
-                    deselectOnClickaway={this.state.deselectOnClickaway}
-                    showRowHover={this.state.showRowHover}
-                    stripedRows={false}
+                    displayRowCheckbox = { this.state.showCheckboxes }
+                    deselectOnClickaway = { this.state.deselectOnClickaway }
+                    showRowHover = { this.state.showRowHover }
+                    stripedRows = { false }
                 >
                     {rows}
                 </TableBody>
@@ -291,29 +299,33 @@ class FilterTable extends Component {
 class FilterRow extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
-        if(this.props.checked != nextProps.checked)
+        if (this.props.checked != nextProps.checked || this.props.settings != nextProps.settings) {
             return true;
-        else if(this.props.value != nextProps.value)
+        }
+        else if (this.props.value != nextProps.value) {
             return true; 
-        else
+        }
+        else {
             return false;
+        }
     }
 
     onClickRow = (evt,) => {
-        this.props.onRowSelect(evt,this.props.rowNumber,!this.props.checked)
+        this.props.onRowSelect(evt, this.props.rowNumber, !this.props.checked);
     }
 
     render(){
-        return(<TableRow 
-                key={this.props.index}
-                style={{height:'30px'}}
-                //className = {this.props.highlighted ? 'highlightedRows' : ''}
-                selected={this.props.checked}
-                onClick={this.onClickRow}
-                >
-            <TableRowColumn style={{height:'inherit', width:'25px'}}><Checkbox checked={this.props.checked} /></TableRowColumn>
-            <TableRowColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}}>{this.props.value}</TableRowColumn>
-            <TableRowColumn style={{height:'inherit'}}>{this.props.percentStr}</TableRowColumn>
+        return(
+            <TableRow 
+                key = { this.props.index }
+                style = {{ height:'30px' }}
+                //className = {this.props.highlighted ? 'highlightedRows' : '' }
+                selected = { this.props.checked }
+                onClick = { this.onClickRow }
+            >
+            <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.primaryColor }}/></TableRowColumn>
+            <TableRowColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
+            <TableRowColumn style = {{ height:'inherit' }}>{this.props.percentStr}</TableRowColumn>
             </TableRow>
         );
     };
@@ -329,6 +341,7 @@ export const addRemoveElastic = (filter) => ({
 const mapStateToProps = function(state){
   return {
     tableState: state.filterState.Filter,
+    settings: state.filterState.Settings
   }
 };
 
