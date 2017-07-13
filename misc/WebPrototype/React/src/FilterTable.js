@@ -21,6 +21,10 @@ class FilterTable extends Component {
     
     constructor(props) {
         super(props);
+        
+        var processedData =  this.processData(props.tableData ? props.tableData : []);
+        var tableData = processedData;
+
         this.state = {
         fixedHeader: true,
         fixedFooter: true,
@@ -34,7 +38,7 @@ class FilterTable extends Component {
         selectAll: false,
         prevSelectedIndex: null,
         checkboxClicked:false,
-        tableData: this.processData(props.tableData ? props.tableData : []),
+        tableData: tableData,
         indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
         };
     }
@@ -48,10 +52,10 @@ class FilterTable extends Component {
         var temp = {};
         var totalCount = tableData.length;
         tableData.map((row) => {
-        if(temp.hasOwnProperty(row))
-            ++temp[row];
-        else
-            temp[row] = 1;
+            if(temp.hasOwnProperty(row))
+                ++temp[row]['count'];
+            else
+                temp[row] = {value:row, count:1};
         });
         return {'data':temp,'totalCount':totalCount};
     };
@@ -68,7 +72,6 @@ class FilterTable extends Component {
     onRowSelect = (context,rowSelection,all,evt,checked) => {
             var index,len = context.flatData.length;
             var selectedValues;
-            var prevSelectedIndex = this.state.prevSelectedIndex;
 
             if(this.state.prevSelectedIndex == null)
             {
@@ -86,25 +89,22 @@ class FilterTable extends Component {
                 selectedValues = [];
 
                 for(index=0;index<len;index++)
-                    selectedValues.push(context.flatData[index].value);
+                {
+                        selectedValues.push(context.flatData[index].value);
+                }
+                checked = true;
             }
             else if(false === all){
                 this.setState({selectAll:false});
                 selectedValues = [];
+                checked = false;
             }
             else{
                 
                 selectedValues = context.props.tableState[context.props.id].selectedValues.slice();
 
                 if(checked){
-                    if (context.props.tableState[context.props.id].type == "Number") {
-                        selectedValues.push(parseFloat(context.flatData[rowSelection].value));
-                        
-                    }
-                    else {
-                        selectedValues.push(context.flatData[rowSelection].value);
-                    }
-                    
+                    selectedValues.push(context.flatData[rowSelection].value);
                     
                     if(selectedValues.length === len)
                         this.setState({selectAll:true});
@@ -113,12 +113,7 @@ class FilterTable extends Component {
                     if(this.state.selectAll === true)
                         this.setState({selectAll:false});
                     
-                    if (context.props.tableState[context.props.id].type == "Number") {
-                        selectedValues.splice(selectedValues.indexOf(parseFloat(context.flatData[rowSelection].value)), 1);
-                    }
-                    else {
                         selectedValues.splice(selectedValues.indexOf(context.flatData[rowSelection].value),1);
-                    }
                     
                 }
                     
@@ -127,7 +122,7 @@ class FilterTable extends Component {
             var filterStructure = {
                     colName : context.props.id,
                     selectedValues: selectedValues,
-                    value: context.flatData[rowSelection].value,
+                    value: (context.flatData[rowSelection] ? context.flatData[rowSelection].value : null),
                     checked: checked,
                     type: context.props.tableState[context.props.id].type
 
@@ -206,29 +201,39 @@ class FilterTable extends Component {
         var internalColName = this.props.internalColName;
         var data = this.state.tableData.data;
         var totalCount = this.state.tableData.totalCount;
+        var selectedValues = this.props.tableState[id].selectedValues;
         var rows = []; var index=0;
         this.flatData = [];
 
+        /**
+         * structure of data is:
+         * {
+         *      abc/num: {
+         *          value: 'abc' or num,
+         *          count: num
+         *          }
+         * }
+         */
         for(var property in data) {
 
-            var prop = isNaN(property) ? property : parseFloat(property);
-            var percentStr =  data[property] + " (" + ((data[property]/totalCount)*100).toFixed(2) + "%" + ")";
+            var prop = data[property].value;
+            var percentStr =  data[property].count + " (" + ((data[property].count/totalCount)*100).toFixed(2) + "%" + ")";
             
             rows.push(<FilterRow 
                             onRowSelect={(evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked)} 
                             key={prop} 
                             index={index} 
-                            checked={this.props.tableState[id].selectedValues.indexOf(parseFloat(property)) !== -1} 
+                            checked={selectedValues.indexOf(prop) !== -1} 
                             value={prop} 
-                            percentStr={percentStr} 
-                            highlighted={this.props.tableState[id].highlightedValues.indexOf(prop) !== -1 ? 'highlightedRows' : ''} 
+                            percentStr={percentStr}
                         /> );
 
             this.flatData.push({
-                value: property,
-                count: data[property],
-                index: index
+                    value: prop,
+                    count: data[property].count,
+                    index: index
             });
+        
 
             index ++;
         }
@@ -256,7 +261,12 @@ class FilterTable extends Component {
                     enableSelectAll={this.state.enableSelectAll}
                 >
                     <TableRow  style={{height:'30px'}}>
-                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}><Checkbox id={"cb-"+internalColName} checked={this.props.tableState[id].selectedValues.length == this.flatData.length} onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/></TableHeaderColumn>
+                        <TableHeaderColumn style={{height:'inherit', width:'25px'}}>
+                            <Checkbox 
+                                id={"cb-"+internalColName} 
+                                checked={this.props.tableState[id].selectedValues.length == this.flatData.length} 
+                                onCheck={(evt) =>  this.onRowSelect(this,[],!this.state.selectAll)}/>
+                        </TableHeaderColumn>
                         <TableHeaderColumn style={{paddingLeft:'0px',paddingRight: '0px',height:'inherit'}} >Value</TableHeaderColumn>
                         <TableHeaderColumn style={{height:'inherit'}}>Count(Percent)</TableHeaderColumn>
                     </TableRow>
@@ -297,7 +307,7 @@ class FilterRow extends Component {
         return(<TableRow 
                 key={this.props.index}
                 style={{height:'30px'}}
-                className = {this.props.highlighted ? 'highlightedRows' : ''}
+                //className = {this.props.highlighted ? 'highlightedRows' : ''}
                 selected={this.props.checked}
                 onClick={this.onClickRow}
                 >

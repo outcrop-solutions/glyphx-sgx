@@ -80,7 +80,7 @@ class FilterNav extends Component {
             var type = isNaN(Obj[property][0]) ? 'Text' : 'Number';
 
             if (type === "Number") {
-                var minMax = this.findMinMax(Obj[property]);
+                var minMax = this.findMinMax(Obj[property],type);
                 range = [minMax.min, minMax.max, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false];
             }
             else if (type === "Text") {
@@ -113,6 +113,8 @@ class FilterNav extends Component {
                 type: type,
                 displayName: this.generateDisplayName(column)
             }
+
+
         }
         //this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
         this.props.dispatch(init(returnObj));
@@ -269,7 +271,7 @@ class FilterNav extends Component {
      * @param arrValues: an array of column data.
      * @return Object: {min: <MinValue>, max:<MaxValue>}
      */
-    findMinMax = (arrValues) => {
+    findMinMax = (arrValues,type) => {
         var len = arrValues.length;
         
         var obj = {
@@ -279,6 +281,7 @@ class FilterNav extends Component {
 
         for(var i=0;i<len;i++)
         {
+
             if(arrValues[i] > obj.max)
                 obj.max = arrValues[i];
 
