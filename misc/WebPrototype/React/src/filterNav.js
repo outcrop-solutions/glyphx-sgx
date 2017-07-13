@@ -101,6 +101,7 @@ class FilterNav extends Component {
 
             if (type === "Number") {
                 var minMax = this.findMinMax( Obj[property] );
+
                 range = [minMax.min, minMax.max, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false];
             }
             else if (type === "Text") {
@@ -133,6 +134,8 @@ class FilterNav extends Component {
                 type: type,
                 displayName: this.generateDisplayName(column)
             }
+
+
         }
         //this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
         this.props.dispatch(init(returnObj));

@@ -208,11 +208,19 @@ const filterReducer = function(state = initialFilterState, action) {
 
             if (!action.filter.checked) {
                 debugger;
-                for (var i = 0; i < stateVal.length; i++) {
-                    if (stateVal[i][3]) {
-                        if (parseFloat(action.filter.value) >= stateVal[i][0] && parseFloat(action.filter.value) <= stateVal[i][1]) {
-                            stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                if(action.filter.selectedValues.length > 0)
+                {    
+                    for (var i = 0; i < stateVal.length; i++) {
+                        if (stateVal[i][3]) {
+                            if (parseFloat(action.filter.value) >= stateVal[i][0] && parseFloat(action.filter.value) <= stateVal[i][1]) {
+                                stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                            }
                         }
+                    }
+                }
+                else {
+                    for (var j = 0; j < stateVal.length; j++) {
+                        stateVal[j] = [stateVal[j][0], stateVal[j][1], stateVal[j][2], false ];
                     }
                 }
             }
