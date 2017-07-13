@@ -127,7 +127,7 @@ class FilterTable extends Component {
             var filterStructure = {
                     colName : context.props.id,
                     selectedValues: selectedValues,
-                    value: context.flatData[rowSelection].value,
+                    value: (context.flatData[rowSelection] ? context.flatData[rowSelection].value : null),
                     checked: checked,
                     type: context.props.tableState[context.props.id].type
 

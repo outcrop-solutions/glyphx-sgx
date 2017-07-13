@@ -20,6 +20,29 @@ class FilterTabs extends React.Component {
         };
     };
 
+    componentDidMount() {
+        /*Events.scrollEvent.register('begin', function(to, element) {
+        console.log("begin", arguments);
+        });
+    
+        Events.scrollEvent.register('end', function(to, element) {
+        console.log("end", arguments);
+        });
+        
+        scrollSpy.update();
+        */
+
+        //debugger;
+        /*
+        var collapsibles = document.getElementsByClassName('Collapsible__trigger');
+
+        for (var i = 0; i < collapsibles.length; i++) {
+            collapsibles[i].style.setProperty('--text-color', this.props.settings.textColor);
+        }
+        */
+
+    };
+
 
     active = "RANGE";
 
@@ -127,7 +150,8 @@ class FilterTabs extends React.Component {
  **/
 const mapStateToProps = function(state){
   return {
-    filterList: state.filterState.Filter
+    filterList: state.filterState.Filter,
+    settings: state.filterState.Settings
   }
 }
 

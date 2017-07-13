@@ -1,3 +1,8 @@
+
+:root {
+  --text-color: white; /* the default */
+}
+
 .collapse-header {
     background-color: rgb(0, 188, 212);
 }
@@ -68,10 +73,6 @@
     background-color: white;
 }
 
-
-
-
-
 .Collapsible {
   background-color: white; 
       cursor: pointer;
@@ -94,24 +95,23 @@
   display: block;
   font-weight: 400;
   text-decoration: none;
-  color: #333333;
   position: relative;
   border: 1px solid white;
   padding: 15px;
-  background: #00bcd4;
   color: white; 
   font-size: 1rem;
   }
 
   .Collapsible__trigger:after {
-    font-family: 'FontAwesome';
-    content: '\f107';
+    font-family: "FontAwesome";
+    content: "\f107";
     position: absolute;
     right: 15px;
     top: 18px;
     display: block;
     font-size: 1rem;
-    transition: transform 300ms; 
+    transition: transform 300ms;
+    color: var(--text-color);
 }
 
 
@@ -141,11 +141,9 @@
      top: 13px;
 }
 
-  .pinned { font-size: 20px !important; color:#1b35ef !important; transform: rotateZ(0deg) !important; }
+  
 
-  .unpinned {
-    font-size: 20px !important; color:white !important; transform: rotateZ(35deg) !important;
-  }
+  
 
   .centerText {
     display: block;

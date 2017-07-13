@@ -26,12 +26,10 @@ class TopView extends Component {
         var viewSelectItems = this.makeList(props.initParams.viewSelectItems,"viewSelectItems");
 
         //Store the states of all the elements inside this data structure.
-        this.state  = {
+        this.state = {
             topViewVisible: true,
             hideShowButtonTextFlag: true,
-            menu:{
-                open: false,
-            },
+            menu: { open: false },
             viewSelectValue: null,
             tableSelectValues: [],
             saveDailogOpen: false,
@@ -48,79 +46,98 @@ class TopView extends Component {
      * @param {object} extra: An object to pass extra params.
      */
     makeList(arrValues,type,extra){
-        if(!Array.isArray(arrValues))
+        if (!Array.isArray(arrValues)) {
             return "PLEASE PROVIDE AN ARRAY";
+        }
 
         var len = arrValues.length;
         var index;
-        var arrReturn =[];
+        var arrReturn = [];
         var objReturn = null;
 
-        switch(type){
+        switch (type) {
             case 'viewSelectItems':
-                for(index=0;index<len;index++)
-                {
-                    arrReturn.push(<MenuItem className="menuItemStyling" value={arrValues[index]} key={arrValues[index]} primaryText={arrValues[index]} />);
+                for (index = 0; index < len; index++) {
+                    arrReturn.push(
+                        <MenuItem 
+                            className = "menuItemStyling" 
+                            value = {arrValues[index]} 
+                            key = { arrValues[index] } 
+                            primaryText = { arrValues[index] } 
+                        />
+                    );
                 }
+
                 break;
+
             case 'tableSelectItems':
-                for(index=0;index<len;index++)
-                {
-                    arrReturn.push(<MenuItem className="menuItemStyling" value={arrValues[index]} key={arrValues[index]} insetChildren={true} checked={false} primaryText={arrValues[index]} />)
+                for (index = 0; index < len; index++) {
+                    arrReturn.push(
+                        <MenuItem 
+                            className = "menuItemStyling" 
+                            value = { arrValues[index] } 
+                            key = { arrValues[index] } 
+                            insetChildren = { true } 
+                            checked = { false } 
+                            primaryText = { arrValues[index] } 
+                        />
+                    );
                 }
+
                 break;
+                 
             default:
-            return null;
+                return null;
         }
         return objReturn != null ? objReturn : arrReturn;
     };
+
 	
 	/**
      * 
      */
     handleOpenClose = (strName,open,evt) =>{
-        switch(strName){
+        switch (strName){
             case 'save':
-            {
-                if(open){
+                if (open) {
                     this.setState({
 						saveDailogOpen: true,
                         viewNameTextFieldError: ""
                     }); 
                 }
-                else{
-                    this.setState({saveDailogOpen: false
-                    });
+                else {
+                    this.setState({ saveDailogOpen: false });
                 }
+                
                 break;
-            }
+            
             case 'menu':
-            {
-                 if(open){
-                   evt.preventDefault();
+                 if (open) {
+                    evt.preventDefault();
 
-                    this.setState(
-                    {
+                    this.setState({
                         menu: {
                             open: true,
                             anchorEl: evt.currentTarget
                         }
                     });
-                }else{
-                    this.setState(
-                    {
+                }
+                else {
+                    this.setState({
                         menu: {
                             open: false
                         }
                     });
                 }
+
                 break;
-            }
+            
             default:
                 return null;
         }
     };
 	
+
 	/**
 	* This method is called when the save button is pressed in the save dailog.
     * @param context: This is the instance of the current class.
@@ -131,35 +148,34 @@ class TopView extends Component {
         var lbl_error = document.getElementById('lbl_saveError');
         lbl_error.hidden = true;
 
-        if(viewName == null || viewName.trim() == "")
+        if( viewName == null || viewName.trim() == "" )
         {
             //error
-            context.setState({viewNameTextFieldError: "This textfield is required!"});
+            context.setState({ viewNameTextFieldError: "This textfield is required!" });
         }
-        else{
+        else {
         
             //check if same name view already exists
             context.state.viewSelectItems.forEach(function(element) {
-                if(element.key == viewName )
+                if (element.key == viewName ) {
                     nameAlreadyExists = true;
+                }
             });
 
-            if(nameAlreadyExists)
-            {
+            if (nameAlreadyExists) {
                 console.log("Error! A view with the same name already exists!");
                 lbl_error.hidden = false;
             }
-            else{
+            else {
                 
                 //Save the view
-                if(context.saveView(context,viewName))
-				{
+                if (context.saveView(context,viewName)) {
 					//Actually Add it to the existing list of views!
 					context.state.viewSelectItems.push(context.makeList([viewName],'viewSelectItems')[0]);
-					context.setState({viewSelectItems: context.state.viewSelectItems,});
+					context.setState({ viewSelectItems: context.state.viewSelectItems });
 
 					//Make it selected in the list of views
-					context.setState({viewSelectValue: viewName});
+					context.setState({ viewSelectValue: viewName });
 
 					//Close the dialog
 					context.handleOpenClose('save',false);
@@ -173,8 +189,8 @@ class TopView extends Component {
 				}
             }
         }
-        
     };
+
 
     /**
      * 
@@ -193,6 +209,7 @@ class TopView extends Component {
 		
 		return true;
     };
+
     
     /**
      * 
@@ -201,33 +218,32 @@ class TopView extends Component {
         console.log('Filter Applied');
     };
   
+
     /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
 	*/
     onSelectViewChange = (event, index, value) => {
-        this.setState(
-        {
+        this.setState({
             viewSelectValue: value
-        }
-        );
+        });
         console.log(value);
 
         //Load Filters!
     };
 
+
     /**
 	* This method is called when an item is selected in the "select Table" dropdown that is present in the top left.
 	*/
     onSelectTableChange = (event, index, value) => {
-        this.setState(
-        {
+        this.setState({
             tableSelectValues: value
-        }
-        );
+        });
         console.log(value);
 
         //Load Table Columns
     };
+
 
     /**
 	* This method is called when the user clicks on the 'clear all' button.
@@ -238,31 +254,29 @@ class TopView extends Component {
         var columnsFilterApplied = filterSummaryView.refs;
         //filterSummaryView.handleRowDel('StaffAssigned');
         
-        for(var property in columnsFilterApplied)
-        {
+        for (var property in columnsFilterApplied) {
             columnsFilterApplied[property].onDelEvent();
         }
         
     };
+
 
     /**
 	* This method is called when the user clicks on the 'Hide/Show'.
 	*/
     onHideFilteredData = (event) => {
         console.log("Hide");
-        this.setState(
-        {
+        this.setState({
             hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
         });
 
         //console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
         
         //if the flag true then button --> |HIDE| else button --> |SHOW|
-        if(this.state.hideShowButtonTextFlag)
-        {
+        if (this.state.hideShowButtonTextFlag) {
             //hide the glyphs that don't match the filter critera.
         }
-        else{
+        else {
             //show all the glyphs!
         }
     };
@@ -280,7 +294,7 @@ class TopView extends Component {
         this.onClearAllFilters();
 
         //Clear the value of viewName
-        this.setState({viewSelectValue:null});
+        this.setState({ viewSelectValue:null });
 
         //close the menu
         this.handleOpenClose('menu',false,event);
@@ -311,10 +325,12 @@ class TopView extends Component {
     };
 
     shouldComponentUpdate(newProps,newState){
-        if(this.state != newState)
+        if (this.state != newState) {
             return true;
-        else if(this.props.initParams != newProps.initParams)
+        }
+        else if (this.props.initParams != newProps.initParams) {
             return true;
+        }
 
         return false;
     };
@@ -325,142 +341,152 @@ class TopView extends Component {
         var context = this;
 		
 		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value){
-			return(<MenuItem
-				key={value}
-				insetChildren={true}
-				checked={context.state.tableSelectValues && context.state.tableSelectValues.indexOf(value) > -1}
-				value={value}
-				primaryText={value}
-			/>);
+			return(
+                <MenuItem
+                    key = { value }
+                    insetChildren = { true }
+                    checked = { context.state.tableSelectValues && context.state.tableSelectValues.indexOf(value) > -1 }
+                    value = { value }
+                    primaryText = { value }
+			    />
+            );
 		});
 		
 		return(
-			<Flex flex="50" id="TopView">
-       
-                        {/* Row 1 */}
-                        <Flex layout="row" align="space-between center"    style={{height: '15%'}}>
-                            <Flex flex="80">
-                                <SelectField
-                                    value={this.state.viewSelectValue}
-                                    onChange={this.onSelectViewChange}
-                                    style={{width:"100%",fontSize:'13px'}}
-                                    hintText="Select View"
-                                >
-                                    {this.state.viewSelectItems}
-                                </SelectField>
-                            </Flex>
-                            
-                            <Flex divider />
-                            <Flex flex="20">
-                                <div>
-                                    <RaisedButton
-                                        onClick={(evt) => this.handleOpenClose('menu',true,evt)}
-                                        label="Menu"
-                                        buttonStyle={{height: '28px'}}
-                                        labelStyle={{fontSize: '13px'}}
-                                        primary={true}
-                                    />
-                                    <Popover
-                                        open={this.state.menu.open}
-                                        anchorEl={this.state.menu.anchorEl}
-                                        onRequestClose={(evt) => this.handleOpenClose('menu',false,evt)}
-                                        style={{fontSize: '13px'}}
-                                    >
-                                        <Menu>
-                                            <MenuItem primaryText="New" className="menuItemStyling" onClick={this.onMenuNewClick}/>
-                                            
-                                            <MenuItem primaryText="Save" className="menuItemStyling" onClick={this.onMenuSaveClick}/>
+			<Flex flex = "50" id = "TopView">
+                {/* Row 1 */}
+                <Flex layout = "row" align = "space-between center" style = {{ height: '15%' }}>
+                    <Flex flex="80">
+                        <SelectField
+                            value = { this.state.viewSelectValue }
+                            onChange = { this.onSelectViewChange }
+                            style = {{ width:"100%",fontSize:'13px' }}
+                            hintText = "Select View"
+                        >
+                            {this.state.viewSelectItems}
+                        </SelectField>
+                    </Flex>
+                    
+                    <Flex divider />
+                    <Flex flex = "20">
+                        <div>
+                            <RaisedButton
+                                onClick = { (evt) => this.handleOpenClose('menu',true,evt) }
+                                label = "Menu"
+                                buttonStyle = {{ height: '28px' }}
+                                labelStyle = {{ fontSize: '13px' }}
+                                primary = { true }
+                            />
 
-                                            <MenuItem primaryText="Save As" className="menuItemStyling" onClick={this.onMenuSaveAsClick}/>
-                                        </Menu>
-                                    </Popover>
-                                    <Dialog
-                                        title="Save View"
-                                        actions={
-                                            [<FlatButton
-                                                label="Save"
-                                                primary={true}
-                                                onClick={() => this.onSaveDailog(this)}/>,
-                                             <FlatButton
-                                                label="Cancel"
-                                                primary={true}
-                                                onClick={() => this.handleOpenClose('save',false)}/>]
-                                        } 
-                                        modal={true}
-                                        open={this.state.saveDailogOpen}>
-                                        Please enter a name for the view you are saving. <br />
-                                        <TextField id="tf_viewName" errorText={this.state.viewNameTextFieldError} floatingLabelText="View Name" /> <br />
-                                        <label id="lbl_saveError" hidden style={{color:'red'}}> Error! A view with the same name already exists! Please provide a different name! </label>
-                                    </Dialog>
-                                </div>
-                            </Flex>
-                        </Flex>
-                                        
-                        {/* Row 2 */}
-                        <Flex layout="row" style={{height:'65%'}}>
-                            <FilterViewForm ref='filterSummaryView' onScroll={(element,elastic) => this.props.initParams.scrollToElement(element,elastic)}/>
-                        </Flex>
-                        
-                        
-                        {/* Row 3 */}
-                        <Flex layout="row" style={{height:'10%'}}>
-                            <Flex flex="25">
-                               <RaisedButton 
-                                    label="Clear All" 
-                                    buttonStyle={{height: '28px',width:'100%',paddingTop: '5px'}}
-                                    labelStyle={{fontSize: '13px',height: '28px',}} 
-                                    style = {{height: '28px',width:'100%',}}
-                                    onClick={this.onClearAllFilters}
-                                    primary={true} />
-                            </Flex>
-                            <Flex divider />
-                            <Flex flex="25">
-                                <RaisedButton 
-                                    label={this.state.hideShowButtonTextFlag ? "Hide" : "Show"}
-                                    id="buttonHideShow"
-                                    buttonStyle={{height: '28px',paddingTop: '5px'}}
-                                    labelStyle={{fontSize: '13px',height: '28px',}} 
-                                    style = {{height: '28px',width:'100%',}} 
-                                    onClick={this.onHideFilteredData.bind(this)}
-                                    primary={true} />
-                                    {/*<Toggle
-                                        label="Hide Filtered Data"
-                                        style={{paddingTop:'3px'}}
-                                        labelPosition="right"
+                            <Popover
+                                open = { this.state.menu.open }
+                                anchorEl = { this.state.menu.anchorEl }
+                                onRequestClose = { (evt) => this.handleOpenClose('menu',false,evt) }
+                                style = {{ fontSize: '13px' }}
+                            >
+                                <Menu>
+                                    <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
+                                    <MenuItem primaryText = "Save" className = "menuItemStyling" onClick = { this.onMenuSaveClick }/>
+                                    <MenuItem primaryText = "Save As" className = "menuItemStyling" onClick = { this.onMenuSaveAsClick }/>
+                                </Menu>
+                            </Popover>
+
+                            <Dialog
+                                title = "Save View"
+                                actions = {
+                                    [
+                                        <FlatButton
+                                            label = "Save"
+                                            primary = { true }
+                                            onClick = { () => this.onSaveDailog(this) }
+                                        />,
+                                        <FlatButton
+                                            label = "Cancel"
+                                            primary = { true }
+                                            onClick = { () => this.handleOpenClose('save', false) }
                                         />
-                                    */}
-                            </Flex>
-                            <Flex divider />
-                            <Flex flex="35">
-                            <RaisedButton 
-                                primary={true} 
-                                label="Apply Filters" 
-                                onClick={this.applyFilter.bind(this)} 
-                                buttonStyle={{height: '28px',paddingTop: '5px'}}
-                                labelStyle={{fontSize: '13px',height: '28px',}} 
-                                style = {{height: '28px',width:'100%',}} 
-                                    />
-                            </Flex>
-                            
-                        </Flex>
-                        
-                        {/* Row 4 */}
-                        <Flex layout="row" style={{height:'10%'}}>
-                            <SelectField
-                                    value={this.state.tableSelectValues}
-                                    onChange={this.onSelectTableChange}
-                                    style={{width:"100%",fontSize:'13px',height:'44px'}}
-                                    hintText="Select Table"
-                                    multiple={true}
-                                >
-                                    {tableSelectItems}
-                                </SelectField>
-                        </Flex>
+                                    ]
+                                } 
+                                modal = { true }
+                                open = { this.state.saveDailogOpen }
+                            >
+                                Please enter a name for the view you are saving. <br />
+                                <TextField id = "tf_viewName" errorText = { this.state.viewNameTextFieldError } floatingLabelText = "View Name" /> <br />
+                                <label id = "lbl_saveError" hidden style = {{ color:'red' }}> Error! A view with the same name already exists! Please provide a different name! </label>
+                            </Dialog>
+
+                        </div>
+                    </Flex>
+                </Flex>
+                                
+                {/* Row 2 */}
+                <Flex layout = "row" style = {{ height:'65%' }}>
+                    <FilterViewForm ref = 'filterSummaryView' onScroll = { (element,elastic) => this.props.initParams.scrollToElement(element, elastic) }/>
+                </Flex>
+                
+                
+                {/* Row 3 */}
+                <Flex layout = "row" style = {{ height:'10%' }}>
+                    <Flex flex = "25">
+                        <RaisedButton 
+                            label = "Clear All" 
+                            buttonStyle = {{ height: '28px', width:'100%', paddingTop: '5px' }}
+                            labelStyle = {{ fontSize: '13px', height: '28px' }} 
+                            style = {{ height: '28px', width:'100%' }}
+                            onClick = { this.onClearAllFilters }
+                            primary = {true } />
+                    </Flex>
+
+                    <Flex divider />
+
+                    <Flex flex = "25">
+                        <RaisedButton 
+                            label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
+                            id = "buttonHideShow"
+                            buttonStyle = {{ height: '28px',paddingTop: '5px' }}
+                            labelStyle = {{ fontSize: '13px',height: '28px' }} 
+                            style = {{ height: '28px',width:'100%' }} 
+                            onClick = { this.onHideFilteredData.bind(this) }
+                            primary = { true } />
+
+                            {/*<Toggle
+                                label="Hide Filtered Data"
+                                style={{paddingTop:'3px'}}
+                                labelPosition="right"
+                                />
+                            */}
+                    </Flex>
+
+                    <Flex divider />
+
+                    <Flex flex = "35">
+                        <RaisedButton 
+                            primary = { true } 
+                            label = "Apply Filters" 
+                            onClick = { this.applyFilter.bind(this) } 
+                            buttonStyle = {{ height: '28px',paddingTop: '5px' }}
+                            labelStyle = {{ fontSize: '13px',height: '28px' }} 
+                            style = {{ height: '28px',width:'100%' }} 
+                        />
+                    </Flex>
+                    
+                </Flex>
+                
+                {/* Row 4 */}
+                <Flex layout = "row" style = {{ height:'10%' }}>
+                    <SelectField
+                        value = { this.state.tableSelectValues }
+                        onChange = { this.onSelectTableChange }
+                        style = {{ width:"100%", fontSize:'13px', height:'44px' }}
+                        hintText = "Select Table"
+                        multiple = { true }
+                    >
+                        {tableSelectItems}
+                    </SelectField>
+                </Flex>
             </Flex>
 		);
 	}
-
-
 }
 
 const mapStateToProps = function(state){
