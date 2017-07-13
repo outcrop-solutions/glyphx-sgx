@@ -123,9 +123,23 @@ class TopNav extends Component {
 									
 									<ToolbarGroup>
 										<ToolbarSeparator />
-										<IconButton onClick={toggleNav} style = {{color:'white'}}>
-											<FontIcon className="fa fa-filter fa-2x" style = {{color:'white'}}/>
+										<IconButton onClick={toggleNav}>
+											<FontIcon className="fa fa-filter fa-2x" color='white'/>
 										</IconButton>
+
+                                        <IconButton onClick={toggleNav}>
+											<FontIcon className="fa fa-cogs fa-2x" color='white'/>
+										</IconButton>
+                                        
+                                        <IconButton onClick={toggleNav}>
+											<FontIcon className="fa fa-info fa-2x" color='white'/>
+										</IconButton>
+                                        
+                                        <IconButton onClick={toggleNav}>
+											<FontIcon className="fa fa-user fa-2x" color='white'/>
+										</IconButton>
+                                        
+                                        
 									</ToolbarGroup>
 								</Toolbar>
 
