@@ -11,10 +11,12 @@ import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import TopView from './TopView.js';
 import { connect } from 'react-redux';
-import {Scroll,Element,Events,scroller} from 'react-scroll';
 import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './filterNav.css';
+
+
+require('smoothscroll-polyfill').polyfill();
 
 class FilterNav extends Component {
 
@@ -48,26 +50,21 @@ class FilterNav extends Component {
 
 
     componentDidMount() {
-        /*Events.scrollEvent.register('begin', function(to, element) {
-        console.log("begin", arguments);
-        });
-    
-        Events.scrollEvent.register('end', function(to, element) {
-        console.log("end", arguments);
-        });
-        
-        scrollSpy.update();
-        */
-        
+        //var filterNavHeight = document.getElementById('filterNav').clientHeight;
+        //document.getElementById('FilterWindowOuterContiner').style.height = '1000px'
+        //console.log(filterNavHeight);
+        //var topViewHeight = (filterWindow.style.minHeight) * 0.35;
+        //var bottomViewHeight = filterWindow.style.minHeight - topViewHeight;
+
+        //document.getElementById('FilterWindowOuterContiner').style.height = filterNavHeight;
+        //document.getElementById('TopView').style.height = topViewHeight;
+        //document.getElementById('BottomView').style.height = bottomViewHeight;
+
+
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
         for (var i = 0; i < collapsibles.length; i++) {
             collapsibles[i].style.setProperty('--text-color', this.props.settings.textColor);
         }
-    };
-
-    componentWillUnmount() {
-        /*Events.scrollEvent.remove('begin');
-        Events.scrollEvent.remove('end');*/
     };
 
     fetchData = () => {
@@ -76,7 +73,8 @@ class FilterNav extends Component {
     };
  
     /**
-	* This method is called when
+	* This method shows a little popup alert on the left bottom screen
+    * @param {string} strMsg: the message you want to be displayed.
 	*/
     showAlert = (strMsg) => {
         this.msg.show(strMsg, {
@@ -87,11 +85,10 @@ class FilterNav extends Component {
     };
 
     /**
-     * 
+     * This method constructs the structure of the Filter that is saved in the store and accessed everywhere throughout the applciation.
+     * @param {Object} Obj:
      */
     makeFilterStructure = (Obj,Options) => {
-        //var rangeStructure = {};
-        //var elasticStructure = {};
         var returnObj = {};
 
         for(var property in Obj){
@@ -111,20 +108,6 @@ class FilterNav extends Component {
                 // Date range
             }
 
-            /* rangeStructure[column] = {
-                rangeList: [[minMax.min,minMax.max,( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),false]],
-                highlightedValues:[],
-                bounds:[minMax.min,minMax.max]
-            };
-            
-            elasticStructure[column] = {
-                selectedValues: [],
-                applied: false,
-                pinned: false,
-                type: type,
-                displayName: this.generateDisplayName(column)
-            }; */
-
             returnObj[property] = {
                 rangeList: [range],
                 highlightedValues: [],
@@ -137,7 +120,7 @@ class FilterNav extends Component {
 
 
         }
-        //this.props.dispatch(init({Ranges:rangeStructure,Elastic:elasticStructure}));
+
         this.props.dispatch(init(returnObj));
     };
 
@@ -188,11 +171,12 @@ class FilterNav extends Component {
             var displayName = colElasticFilterStruc.displayName;
 
             arrColumnsReturn.push(
-                <Element name = { columnName } key = { columnName }>
+                <div id = { columnName } key = { columnName } >
                     <Collapsible 
                         transitionTime = { 200 }
                         key = { columnName }
                         ref = { columnName }
+                        id = { columnName }
                         triggerOpenedClassName = "columnNameHeader"
                         handleTriggerClick = { this.onTriggerClick.bind(this,columnName) }
                         contentOuterClassName = "cursorNormal"
@@ -229,7 +213,7 @@ class FilterNav extends Component {
                             data = { data[columnName] } 
                         />
                     </Collapsible>
-                </Element>
+                </div>
             );
 
             arrPinDialogOptions.push( {value: columnName, label: displayName} );
@@ -237,7 +221,7 @@ class FilterNav extends Component {
 
             if (colElasticFilterStruc.pinned) {
                 arrPinnedColumnsReturn.push(
-                    <Element name = { columnName + "_pinned" } key = { columnName + "_pinned" }>
+                    <div id = { columnName } key = { columnName } >
                         <Collapsible 
                             transitionTime = { 200 } 
                             key = { columnName + "_pinned" }
@@ -278,7 +262,7 @@ class FilterNav extends Component {
                                 data = { data[columnName] } 
                             />
                         </Collapsible>
-                    </Element>
+                    </div>
                 );
                 arrPinDialogSelected.push( {value: columnName, label: displayName} );
             }
@@ -362,12 +346,8 @@ class FilterNav extends Component {
                 columnCollapisble.openCollapsible();
             }
 
-            scroller.scrollTo(element + "_pinned", {
-                duration: 1000,
-                delay: 100,
-                smooth: true,
-                containerId: 'filterNav',
-            });
+            this.scroll(element);
+
         }
         else {
             if (filterCollapisble.state.isClosed) {
@@ -380,12 +360,8 @@ class FilterNav extends Component {
                 columnCollapisble.openCollapsible();
             }
 
-            scroller.scrollTo(element, {
-                duration: 1000,
-                delay: 100,
-                smooth: true,
-                containerId: 'filterNav',
-            });
+            this.scroll(element);
+
         }
 
         if (Elastic && tab.state.slideIndex != 0) {
@@ -394,6 +370,22 @@ class FilterNav extends Component {
         else if (!Elastic && tab.state.slideIndex != 1) {
             tab.handleChange(1, tab);
         }
+    }
+
+    /**
+     * This function will bring the scroll to that element.
+     * @param {String/Object} element: this is the name of the column
+     */
+    scroll = (element) => {
+        if(typeof element == 'string')
+            element = document.getElementById(element);
+
+        if(element)
+            element.scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        else
+            return false;
     }
 
 
@@ -422,8 +414,6 @@ class FilterNav extends Component {
                 return null;
         }
     };
-    
-   
 
     /**
      * 
@@ -492,38 +482,47 @@ class FilterNav extends Component {
 	*/
     toggleTopView = (event) => {
         var collapseTopViewButton = document.getElementById("collapseTopViewButton");
+        var filterNavHeight = document.getElementById('filterNav').clientHeight;
         var topView = document.getElementById("TopView");
         var filterWindow = document.getElementById("FilterWindowOuterContiner");
-        
+
+        console.log(filterNavHeight);
+
         if (this.state.topViewVisible == true) {
-            filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)"
-            //collapseTopViewButton.classList.remove('fa-caret-up');
-            //collapseTopViewButton.classList.add('.Collapsible__trigger.is-open:after');
+            filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)";
             collapseTopViewButton.style.transform = 'rotateZ(180deg)';
+            filterWindow.style.minHeight = filterNavHeight + topView.clientHeight;
             this.setState({topViewVisible : false});
         }
         else {
-            filterWindow.style.transform = "translate(0px,0px)"
-            //collapseTopViewButton.classList.remove('fa-caret-down');
-            //collapseTopViewButton.classList.add('fa-caret-up');
+            filterWindow.style.transform = "";
             collapseTopViewButton.style.transform = 'none';
+            filterWindow.style.height = "100%"
             this.setState({topViewVisible : true});
         }
-            
+
+        console.log("updated height: " +  filterWindow.style.height);      
     };
 
+    /**
+     * This is called when the collapsibles are clicked.
+     * @param {string} element- this is the name of the element that surrounds the collapsible. Used to scrollTo.
+     */
     onTriggerClick = (element) => {
         var elem = this.refs[element];
 
         if (elem.state.isClosed) {
             elem.openCollapsible();
-
-            scroller.scrollTo(element, {
-                duration: 1000,
-                delay: 100,
-                smooth: true,
-                containerId: 'filterNav',
-            });
+            var context = this;
+            
+            window.sessionStorage['timeout'] = window.setInterval(function() {
+                console.log('timout');
+                 if (!elem.state.isClosed)
+                 {
+                    context.scroll(element);
+                    clearInterval(window.sessionStorage['timeout']);
+                 }
+            }, 250);
         }
         else {
             elem.closeCollapsible();
@@ -535,22 +534,22 @@ class FilterNav extends Component {
          var columnsObj = this.makeColumns(this.state.tableData);
 
         return (
-            <div 
-                className = "TopNav" 
-                id = "FilterWindowOuterContiner" 
-                style = {{
-                    height: '100%',
-                    transition: '1s',
-                    paddingLeft: '1%',
-                    paddingRight: '1%'
-                }}
-            >
-                <div>
-                    <AlertContainer ref = { a => this.msg = a } />
-                </div>
-                <Flex layout="column" style = {{ height: '100%' }}>
+                <Flex 
+                    layout="column" 
+                    id = "FilterWindowOuterContiner"
+                    style = {{ 
+                        height: '100%',
+                        overflow:'hidden',
+                        transition: '1s',
+                        paddingLeft: '1%',
+                        paddingRight: '1%'
+                    }}
+                >
                      {/* TOP SECTION */}
-                    
+                     <div>
+                        <AlertContainer ref = { a => this.msg = a } />
+                    </div>
+                
 					<TopView initParams = { this.state.topViewInitParams } showAlert = { (strMsg) => this.showAlert(strMsg) }/>
 
                     <RaisedButton 
@@ -574,99 +573,103 @@ class FilterNav extends Component {
 
                     {/* BOTTOM SECTION */}
 
-                    <Flex flex="50">
-                        <Collapsible 
-                            transitionTime = {200} 
-                            ref = 'pinnedCollapisble'
-                            contentOuterClassName = "cursorNormal"
-                            handleTriggerClick = { this.onTriggerClick.bind(this,'pinnedCollapisble') }
-                            trigger = {
-                                <div>
-                                    <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.textColor }} />
-                                    <span 
-                                        style={{
-                                            paddingLeft: '10px',
-                                            fontSize: '1rem',
-                                            color: this.props.settings.textColor
-                                        }}
-                                    >
-                                        Pinned
-                                    </span>
-                                </div>
-                            }
-                        >
-
-                            <Dialog
-                                title = "Pinning Views!"
-                                actions = {
-                                    [
-                                        <FlatButton
-                                            label = "Ok"
-                                            primary = { true }
-                                            onClick = { () => this.onPinnedOkDailog(this) }
-                                        />,
-                                        <FlatButton
-                                            label = "Cancel"
-                                            primary = { true }
-                                            onClick = { () => this.handleOpenClose('pin',false,{'cancel':true}) }
-                                        />
-                                    ]
+                    <Flex flex="65" id='BottomView' style={{ overflow: 'auto'}}>
+                        <div id='pinnedCollapisble'>
+                            <Collapsible 
+                                transitionTime = {200} 
+                                ref = 'pinnedCollapisble'
+                                contentOuterClassName = "cursorNormal"
+                                handleTriggerClick = { this.onTriggerClick.bind(this,'pinnedCollapisble') }
+                                trigger = {
+                                    <div>
+                                        <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.textColor }} />
+                                        <span 
+                                            style={{
+                                                paddingLeft: '10px',
+                                                fontSize: '1rem',
+                                                color: this.props.settings.textColor
+                                            }}
+                                        >
+                                            Pinned
+                                        </span>
+                                    </div>
                                 }
-                                modal = { true }
-                                open = { this.state.pinDailog.open }
                             >
-                                <DualListBox
-                                    canFilter
-                                    preserveSelectOrder 
-                                    ref = "pinnedDialog"
-                                    options = { columnsObj.pinnedOptions }
-                                    selected = { this.state.pinnedDialogSelectedValues }
-                                    onChange = { 
-                                        (selected) => {
-                                            this.setState({pinnedDialogSelectedValues: selected});
-                                            //this.onPinClick(null,{pinnedValues: []})
-                                        }
+                        
+
+                                <Dialog
+                                    title = "Pinning Views!"
+                                    actions = {
+                                        [
+                                            <FlatButton
+                                                label = "Ok"
+                                                primary = { true }
+                                                onClick = { () => this.onPinnedOkDailog(this) }
+                                            />,
+                                            <FlatButton
+                                                label = "Cancel"
+                                                primary = { true }
+                                                onClick = { () => this.handleOpenClose('pin',false,{'cancel':true}) }
+                                            />
+                                        ]
                                     }
+                                    modal = { true }
+                                    open = { this.state.pinDailog.open }
+                                >
+                                    <DualListBox
+                                        canFilter
+                                        preserveSelectOrder 
+                                        ref = "pinnedDialog"
+                                        options = { columnsObj.pinnedOptions }
+                                        selected = { this.state.pinnedDialogSelectedValues }
+                                        onChange = { 
+                                            (selected) => {
+                                                this.setState({pinnedDialogSelectedValues: selected});
+                                                //this.onPinClick(null,{pinnedValues: []})
+                                            }
+                                        }
+                                    />
+                                </Dialog>
+                                    
+                                <IconButton 
+                                    onClick = { () => this.handleOpenClose('pin',true) }
+                                    iconClassName = "fa fa-plus-square"
+                                    iconStyle = {{ color: this.props.settings.primaryColor }} 
                                 />
-                            </Dialog>
-                                
-                            <IconButton 
-                                onClick = { () => this.handleOpenClose('pin',true) }
-                                iconClassName = "fa fa-plus-square"
-                                iconStyle = {{ color: this.props.settings.primaryColor }} 
-                            />
 
-                            {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
+                                {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
 
-                        </Collapsible>
+                            </Collapsible>
+                        </div>
 
-                        <Collapsible 
-                            transitionTime = {200} 
-                            ref = 'filterCollapisble'
-                            contentOuterClassName = "cursorNormal"
-                            handleTriggerClick = { this.onTriggerClick.bind(this,'filterCollapisble') }
-                            trigger = {
-                                <div>
-                                    <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.textColor }} />
-                                    <span 
-                                        style = {{
-                                            paddingLeft: '10px',
-                                            fontSize: '1rem',
-                                            color: this.props.settings.textColor
-                                        }}
-                                    >
-                                        Filters
-                                    </span>
-                                </div>
-                            }
-                        >
+                        <div id='filterCollapisble'>
+                            <Collapsible 
+                                transitionTime = {200} 
+                                ref = 'filterCollapisble'
+                                contentOuterClassName = "cursorNormal"
+                                handleTriggerClick = { this.onTriggerClick.bind(this,'filterCollapisble') }
+                                trigger = {
+                                    <div>
+                                        <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.textColor }} />
+                                        <span 
+                                            style = {{
+                                                paddingLeft: '10px',
+                                                fontSize: '1rem',
+                                                color: this.props.settings.textColor
+                                            }}
+                                        >
+                                            Filters
+                                        </span>
+                                    </div>
+                                }
+                            >
 
-                            {columnsObj.columns}
+                                {columnsObj.columns}
 
-                        </Collapsible>
+                            </Collapsible>
+                        </div>
                     </Flex>
                 </Flex>
-            </div>
         );
     }
 }

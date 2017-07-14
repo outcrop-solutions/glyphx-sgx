@@ -353,7 +353,7 @@ class TopView extends Component {
 		});
 		
 		return(
-			<Flex flex = "50" id = "TopView">
+			<Flex flex = "35" id = "TopView">
                 {/* Row 1 */}
                 <Flex layout = "row" align = "space-between center" style = {{ height: '15%' }}>
                     <Flex flex="80">

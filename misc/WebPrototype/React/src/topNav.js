@@ -143,7 +143,10 @@ class TopNav extends Component {
 									</ToolbarGroup>
 								</Toolbar>
 
-                                <div id="filterNav" className="sidenav sidenavbar">
+                                <div 
+                                    id="filterNav" 
+                                    className="sidenav sidenavbar"
+                                >
                                     <FilterNav></FilterNav>
                                 </div>
                                 
