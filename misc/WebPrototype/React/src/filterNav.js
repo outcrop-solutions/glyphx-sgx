@@ -37,7 +37,7 @@ class FilterNav extends Component {
 			topViewInitParams: {
 				viewSelectItems: ['view 0', 'view 1', 'view 4', 'view 5'],
 				tableSelectItems: ['table 0', 'table 1', 'table 4', 'table 5'],
-                scrollToElement: this.scrollToElement
+                scrollToElement: this.scrollToCollapsibleElement
 			},
             activeColumns: [],
             pinnedDialogOptionValues: [],
@@ -50,17 +50,6 @@ class FilterNav extends Component {
 
 
     componentDidMount() {
-        //var filterNavHeight = document.getElementById('filterNav').clientHeight;
-        //document.getElementById('FilterWindowOuterContiner').style.height = '1000px'
-        //console.log(filterNavHeight);
-        //var topViewHeight = (filterWindow.style.minHeight) * 0.35;
-        //var bottomViewHeight = filterWindow.style.minHeight - topViewHeight;
-
-        //document.getElementById('FilterWindowOuterContiner').style.height = filterNavHeight;
-        //document.getElementById('TopView').style.height = topViewHeight;
-        //document.getElementById('BottomView').style.height = bottomViewHeight;
-
-
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
         for (var i = 0; i < collapsibles.length; i++) {
             collapsibles[i].style.setProperty('--text-color', this.props.settings.textColor);
@@ -353,7 +342,7 @@ class FilterNav extends Component {
      * @param {string} element: this is the name of the column
      * @param {boolean} Elastic: the value will be true if the elastic icon is clicked or false if Range Icon is clicked. 
      */
-    scrollToElement = (element, Elastic) => {
+    scrollToCollapsibleElement = (element, Elastic) => {
         var filterCollapisble = this.refs.filterCollapisble;
         var pinnedCollapisble = this.refs.pinnedCollapisble;
         var columnCollapisble = this.refs[element + "_pinned"] ? this.refs[element + "_pinned"] : this.refs[element];
@@ -362,7 +351,7 @@ class FilterNav extends Component {
 
         if (this.refs[element + "_pinned"]) {
             element = element + "_pinned";
-            
+
             if (pinnedCollapisble.state.isClosed) {
                 //filterCollapisble.prepareToOpen();
                 pinnedCollapisble.openCollapsible();
@@ -394,6 +383,8 @@ class FilterNav extends Component {
             tab.handleChange(1, tab);
         }
 
+
+        //Sometimes scrollbars only appear after the collapisbles have expanded. So we wait for them to expand and then scroll.
         window.sessionStorage['counter'] = 0;
         clearInterval(window.sessionStorage['timeout']);
         window.sessionStorage['timeout'] = window.setInterval(function() {
