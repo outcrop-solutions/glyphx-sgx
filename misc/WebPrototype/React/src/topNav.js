@@ -109,8 +109,8 @@ class TopNav extends Component {
                                     iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
                                 />*/}
 								
-								<Toolbar className="navbar-color" style={{backgroundColor: this.props.settings.primaryColor}}>
-									<ToolbarGroup firstChild={true}>
+								<Toolbar className="navbar-color" style={{padding: '0px',backgroundColor: this.props.settings.primaryColor}}>
+									<ToolbarGroup>
 										<span style={styles.navLogo}>
 											<a href="http://www.synglyphx.com/" target="_blank" rel="noopener noreferrer">
 												<img src="./Res/Img/synglyphx-wht-3.png" style={{width:'300px'}} alt="SynGlyphX"/>

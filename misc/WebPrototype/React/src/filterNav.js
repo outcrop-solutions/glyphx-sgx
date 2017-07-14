@@ -221,7 +221,7 @@ class FilterNav extends Component {
 
             if (colElasticFilterStruc.pinned) {
                 arrPinnedColumnsReturn.push(
-                    <div id = { columnName } key = { columnName } >
+                    <div id = { columnName + "_pinned" } key = { columnName + "_pinned" } >
                         <Collapsible 
                             transitionTime = { 200 } 
                             key = { columnName + "_pinned" }
@@ -322,6 +322,31 @@ class FilterNav extends Component {
         return obj;
     };
 
+     /**
+     * This is called when the collapsibles are clicked.
+     * @param {string} element- this is the name of the element that surrounds the collapsible. Used to scrollTo.
+     */
+    onTriggerClick = (element) => {
+        var elem = this.refs[element];
+
+        if (elem.state.isClosed) {
+            elem.openCollapsible();
+            var context = this;
+            
+            window.sessionStorage['timeout'] = window.setInterval(function() {
+                console.log('timeout');
+                 if (!elem.state.isClosed)
+                 {
+                    context.scroll(element);
+                    clearInterval(window.sessionStorage['timeout']);
+                 }
+            }, 250);
+        }
+        else {
+            elem.closeCollapsible();
+        }
+    }
+
     /**
      * This function is called when the "Elastic/Range" Icon is clicked on from the filterView.
      * It will expand the correspoding column and bring the scroll to that element.
@@ -333,9 +358,11 @@ class FilterNav extends Component {
         var pinnedCollapisble = this.refs.pinnedCollapisble;
         var columnCollapisble = this.refs[element + "_pinned"] ? this.refs[element + "_pinned"] : this.refs[element];
         var tab = this.refs['tab-' + element + "_pinned"] ? this.refs['tab-'+ element + "_pinned"].getWrappedInstance() : this.refs['tab-' + element].getWrappedInstance();
-
+        var context = this;
 
         if (this.refs[element + "_pinned"]) {
+            element = element + "_pinned";
+            
             if (pinnedCollapisble.state.isClosed) {
                 //filterCollapisble.prepareToOpen();
                 pinnedCollapisble.openCollapsible();
@@ -345,8 +372,6 @@ class FilterNav extends Component {
                 //columnCollapisble.prepareToOpen();
                 columnCollapisble.openCollapsible();
             }
-
-            this.scroll(element);
 
         }
         else {
@@ -360,8 +385,6 @@ class FilterNav extends Component {
                 columnCollapisble.openCollapsible();
             }
 
-            this.scroll(element);
-
         }
 
         if (Elastic && tab.state.slideIndex != 0) {
@@ -370,6 +393,19 @@ class FilterNav extends Component {
         else if (!Elastic && tab.state.slideIndex != 1) {
             tab.handleChange(1, tab);
         }
+
+        window.sessionStorage['counter'] = 0;
+        clearInterval(window.sessionStorage['timeout']);
+        window.sessionStorage['timeout'] = window.setInterval(function() {
+                window.sessionStorage['counter']++;
+                console.log('timeout');
+                 if (!columnCollapisble.state.isClosed || parseInt(window.sessionStorage['counter']) > 10)
+                 {
+                    context.scroll(element);
+                    clearInterval(window.sessionStorage['timeout']);
+                 }
+        }, 250);
+
     }
 
     /**
@@ -491,43 +527,18 @@ class FilterNav extends Component {
         if (this.state.topViewVisible == true) {
             filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)";
             collapseTopViewButton.style.transform = 'rotateZ(180deg)';
-            filterWindow.style.minHeight = filterNavHeight + topView.clientHeight;
+            //filterWindow.style.minHeight = filterNavHeight + topView.clientHeight;
             this.setState({topViewVisible : false});
         }
         else {
             filterWindow.style.transform = "";
             collapseTopViewButton.style.transform = 'none';
-            filterWindow.style.height = "100%"
+            //filterWindow.style.height = "100%"
             this.setState({topViewVisible : true});
         }
 
         console.log("updated height: " +  filterWindow.style.height);      
     };
-
-    /**
-     * This is called when the collapsibles are clicked.
-     * @param {string} element- this is the name of the element that surrounds the collapsible. Used to scrollTo.
-     */
-    onTriggerClick = (element) => {
-        var elem = this.refs[element];
-
-        if (elem.state.isClosed) {
-            elem.openCollapsible();
-            var context = this;
-            
-            window.sessionStorage['timeout'] = window.setInterval(function() {
-                console.log('timeout');
-                 if (!elem.state.isClosed)
-                 {
-                    context.scroll(element);
-                    clearInterval(window.sessionStorage['timeout']);
-                 }
-            }, 250);
-        }
-        else {
-            elem.closeCollapsible();
-        }
-    }
 
     render = () => {
          var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label></div>;
