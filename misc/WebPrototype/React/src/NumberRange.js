@@ -86,7 +86,7 @@ class NumberRangeTable extends React.Component {
                             <FontIcon
                                 onClick = { this.handleAddEvent.bind(this) }
                                 className = "fa fa-plus fa-2x"
-                                hoverColor = { blue500 }
+                                hoverColor = { this.props.settings.rangeColor.addHover }
                                 style = { styleSet.iconStyles }
                             />
                         </Flex>
@@ -364,7 +364,7 @@ class NumberRangeRow extends React.Component {
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash fa-2x"
-                                hoverColor = { red500 }
+                                hoverColor = { this.props.settings.rangeColor.deleteHover }
                                 style = { styleSet.iconStyles }
                             />
                         </Flex>
@@ -388,7 +388,7 @@ class NumberRangeRow extends React.Component {
                                 onKeyPress = {
                                     (e) => this.onKeyPressMin(e)
                                 }
-                                underlineFocusStyle = {{ borderColor: this.props.settings.primaryColor }}
+                                underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
                             />
                         </Flex>
 
@@ -413,8 +413,8 @@ class NumberRangeRow extends React.Component {
                                 onAfterChange = {
                                     (e) => this.onAfterSlide(e)
                                 }
-                                trackStyle = { [{ backgroundColor: this.props.settings.primaryColorLight }] }
-                                handleStyle = {[{ backgroundColor: this.props.settings.primaryColor, borderColor: this.props.settings.primaryColorDark }, { backgroundColor: this.props.settings.primaryColor, borderColor: this.props.settings.primaryColorDark }]}
+                                trackStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderTrack }] }
+                                handleStyle = {[{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }]}
                             />
                         </Flex>
 
@@ -439,7 +439,7 @@ class NumberRangeRow extends React.Component {
                                 onKeyPress = {
                                     (e) => this.onKeyPressMax(e)
                                 }
-                                underlineFocusStyle = {{ borderColor: this.props.settings.primaryColor }}
+                                underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
                             />
                         </Flex>
 
@@ -458,8 +458,8 @@ class NumberRangeRow extends React.Component {
                                 onToggle = {  
                                     (e) => this.onToggle(e)
                                 }
-                                trackSwitchedStyle = {{ backgroundColor: this.props.settings.primaryColorLight }}
-                                thumbSwitchedStyle = {{ backgroundColor: this.props.settings.primaryColor, borderColor: this.props.primaryColorDark }}
+                                trackSwitchedStyle = {{ backgroundColor: this.props.settings.rangeColor.toggleTrack }}
+                                thumbSwitchedStyle = {{ backgroundColor: this.props.settings.rangeColor.toggleCircle }}
                             />
                         </Flex>
 

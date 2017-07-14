@@ -250,7 +250,9 @@ class FilterTable extends Component {
                     id = { "tf-" + internalColName }
                     className = { "tf-" + internalColName } 
                     onKeyUp = { () => this.onKeyUp(this,internalColName,this.state.indexColumnToSearch) } 
-                    hintText = "Search for value.." /> 
+                    hintText = "Search for value.." 
+                    underlineFocusStyle = {{ borderColor: this.props.settings.elasticColor.searchBoxUnderline }}
+                /> 
                 <br/>
                 <Table
                     className = { "table-" + internalColName }
@@ -272,7 +274,7 @@ class FilterTable extends Component {
                                 id = { "cb-" + internalColName } 
                                 checked = { this.props.tableState[id].selectedValues.length == this.flatData.length } 
                                 onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
-                                iconStyle = {{ fill: this.props.settings.primaryColor }}
+                                iconStyle = {{ fill: this.props.settings.elasticColor.checkAllBox }}
                             />
                         </TableHeaderColumn>
                         <TableHeaderColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }} >Value</TableHeaderColumn>
@@ -323,7 +325,7 @@ class FilterRow extends Component {
                 selected = { this.props.checked }
                 onClick = { this.onClickRow }
             >
-            <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.primaryColor }}/></TableRowColumn>
+            <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.elasticColor.checkBox }}/></TableRowColumn>
             <TableRowColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
             <TableRowColumn style = {{ height:'inherit' }}>{this.props.percentStr}</TableRowColumn>
             </TableRow>

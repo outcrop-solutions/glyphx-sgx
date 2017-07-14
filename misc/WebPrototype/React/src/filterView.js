@@ -22,7 +22,7 @@ class FilterViewForm extends React.Component {
                 return true;
             }
 
-            if (this.props.filterList[colName].highlightedValues != nextProps.filterList[colName].highlightedValues) {
+            if (this.props.filterList[colName].rangeList != nextProps.filterList[colName].rangeList) {
                 return true;
             }
         }
@@ -63,10 +63,6 @@ class FilterViewForm extends React.Component {
                     min = filterList[colName].selectedValues[0];
                     max = filterList[colName].selectedValues[0];
                 }
-                else if (filterList[colName].highlightedValues.length) {
-                    min = filterList[colName].highlightedValues[0];
-                    max = filterList[colName].highlightedValues[0];
-                }
                 else {
                     continue;
                 }
@@ -82,26 +78,12 @@ class FilterViewForm extends React.Component {
                     }
                 }
 
-                if ( filterList[colName].highlightedValues.length ) {
-                    for (i = 0; i < filterList[colName].highlightedValues.length; i++) {
-                        if (filterList[colName].highlightedValues[i] < min) {
-                            min = filterList[colName].highlightedValues[i];
-                        }
-                        else if (filterList[colName].highlightedValues[i] > max) {
-                            max = filterList[colName].highlightedValues[i];
-                        }
-                    }
-                }
             }
 
             else if (filterType === "Number") {
                 if (filterList[colName].selectedValues.length) {
                     min = parseInt(filterList[colName].selectedValues[0], 10);
                     max = parseInt(filterList[colName].selectedValues[0], 10);
-                }
-                else if (filterList[colName].highlightedValues.length) {
-                    min = parseInt(filterList[colName].highlightedValues[0], 10);
-                    max = parseInt(filterList[colName].highlightedValues[0], 10);
                 }
                 else {
                     continue;
@@ -118,15 +100,6 @@ class FilterViewForm extends React.Component {
                     }
                 }
 
-                for (i = 0; i < filterList[colName].highlightedValues.length; i++) {
-                    curNum = parseInt(filterList[colName].highlightedValues[i], 10);
-                    if (curNum < min) {
-                        min = curNum;
-                    }
-                    else if (curNum > max) {
-                        max = curNum;
-                    }
-                }
             }
 
 
