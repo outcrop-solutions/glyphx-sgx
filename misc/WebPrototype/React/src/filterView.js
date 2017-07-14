@@ -26,6 +26,11 @@ class FilterViewForm extends React.Component {
                 return true;
             }
         }
+
+        if (this.props.settings != nextProps.settings) {
+            return true;
+        }
+        
         return false;
     }
 
@@ -152,8 +157,9 @@ class FilterViewForm extends React.Component {
                         view = { view } 
                         onDelEvent = { rowDel.bind(this) } 
                         key = { view[0] }
-                        ref= { view[0] }
-                        onScroll={(element,elastic) => context.props.onScroll(element,elastic)}
+                        ref = { view[0] }
+                        settings = { context.props.settings }
+                        onScroll = { (element,elastic) => context.props.onScroll(element,elastic) }
                     />)
         });
 
@@ -237,10 +243,10 @@ class FilterViewRow extends React.Component {
                         <Flex layout="row"> 
                             <Flex flex="50">
                                 <Badge
-                                    badgeContent={this.props.view[4]}
-                                    primary={true}
+                                    badgeContent = { this.props.view[4] }
+                                    primary = { true }
                                     style = {{ padding: "0px 0px 0px 0px" }}
-                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px" }}
+                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.primaryColor, color: this.props.settings.textColor}}
                                     >
                                     <FontIcon
                                         onClick = { (evt) => this.onClickIcon(evt,this,true) }
@@ -255,10 +261,10 @@ class FilterViewRow extends React.Component {
 
                             <Flex flex="50" >
                                 <Badge
-                                    badgeContent={this.props.view[5]}
-                                    primary={true}
+                                    badgeContent = { this.props.view[5] }
+                                    primary = { true }
                                     style = {{ padding: "0px 0px 0px 0px" }}
-                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px" }}
+                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.primaryColor, color: this.props.settings.textColor }}
                                     >
                                     <FontIcon
                                         onClick = { (evt) => this.onClickIcon(evt,this,false) }
@@ -361,6 +367,7 @@ export const removeFilterView = (colName) => ({
 const mapStateToProps = function(state){
   return {
     filterList: state.filterState.Filter,
+    settings: state.filterState.Settings
   }
 }
 
