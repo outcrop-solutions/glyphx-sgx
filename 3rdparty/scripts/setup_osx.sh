@@ -180,7 +180,7 @@ cp -R ../../Misc/InstallerFiles/* ../../bin/OSX64/$build/$app.app/Contents/MacOS
 
 if [ $app = GlyphViewer ] || [ $app = GlyphEd ]; then
 	echo Deploying ANTz Templates to $app app bundle...
-    cp -R ../../portable/GlyphPortableOSX ../../bin/OSX64/$build/$app.app/Contents/MacOS
+#    cp -R ../../portable/GlyphPortableOSX ../../bin/OSX64/$build/$app.app/Contents/MacOS
 #   cp -R ../../ANTzPlus/ANTzMacTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
 #	cp -R ../../ANTzPlus/ANTzTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
 #	cp -R ../../ANTzPlus/ANTzzSpaceTemplate ../../bin/OSX64/$build/$app.app/Contents/MacOS
