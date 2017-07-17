@@ -141,9 +141,12 @@
      top: 13px;
 }
 
-  
+.noHeaderTrigger{
+	background-color: white !important;
+	font-size: 0rem !important;
+    padding: 0px !important;
+}
 
-  
 
   .centerText {
     display: block;

@@ -322,14 +322,7 @@ class FilterNav extends Component {
             elem.openCollapsible();
             var context = this;
             
-            window.sessionStorage['timeout'] = window.setInterval(function() {
-                console.log('timeout');
-                 if (!elem.state.isClosed)
-                 {
-                    context.scroll(element);
-                    clearInterval(window.sessionStorage['timeout']);
-                 }
-            }, 250);
+            this.checkToScroll(element,elem,this);
         }
         else {
             elem.closeCollapsible();
@@ -382,21 +375,8 @@ class FilterNav extends Component {
         else if (!Elastic && tab.state.slideIndex != 1) {
             tab.handleChange(1, tab);
         }
-
-
-        //Sometimes scrollbars only appear after the collapisbles have expanded. So we wait for them to expand and then scroll.
-        window.sessionStorage['counter'] = 0;
-        clearInterval(window.sessionStorage['timeout']);
-        window.sessionStorage['timeout'] = window.setInterval(function() {
-                window.sessionStorage['counter']++;
-                console.log('timeout');
-                 if (!columnCollapisble.state.isClosed || parseInt(window.sessionStorage['counter']) > 10)
-                 {
-                    context.scroll(element);
-                    clearInterval(window.sessionStorage['timeout']);
-                 }
-        }, 250);
-
+		
+		this.checkToScroll(element,columnCollapisble,this);
     }
 
     /**
@@ -414,7 +394,23 @@ class FilterNav extends Component {
         else
             return false;
     }
-
+	
+	/**
+	 * Sometimes scrollbars only appear after the collapisbles have expanded. So we wait for them to expand and then scroll
+	 */
+	checkToScroll = (elementName,element,context) => {
+        clearInterval(context['timeout']);
+        context['counter'] = 0;
+        context['timeout'] = window.setInterval(function() {
+                context['counter']++;
+                console.log('timeout');
+                 if (!element.state.isClosed || context['counter'] > 10)
+                 {
+                    context.scroll(elementName);
+                    clearInterval(context['timeout']);
+                 }
+        }, 250);
+	}
 
     /**
      * 
@@ -508,27 +504,18 @@ class FilterNav extends Component {
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
 	*/
     toggleTopView = (event) => {
-        var collapseTopViewButton = document.getElementById("collapseTopViewButton");
-        var filterNavHeight = document.getElementById('filterNav').clientHeight;
-        var topView = document.getElementById("TopView");
-        var filterWindow = document.getElementById("FilterWindowOuterContiner");
-
-        console.log(filterNavHeight);
-
-        if (this.state.topViewVisible == true) {
-            filterWindow.style.transform = "translate(0px,-"+topView.clientHeight+"px)";
-            collapseTopViewButton.style.transform = 'rotateZ(180deg)';
-            //filterWindow.style.minHeight = filterNavHeight + topView.clientHeight;
-            this.setState({topViewVisible : false});
-        }
-        else {
-            filterWindow.style.transform = "";
-            collapseTopViewButton.style.transform = 'none';
-            //filterWindow.style.height = "100%"
-            this.setState({topViewVisible : true});
-        }
-
-        console.log("updated height: " +  filterWindow.style.height);      
+		var collapseTopViewButton = document.getElementById("collapseTopViewButton");
+		
+        if(this.refs['topCollapisble'].state.isClosed)
+		{
+			collapseTopViewButton.style.transform = '';
+		    this.refs['topCollapisble'].openCollapsible();
+		}
+        else{
+			collapseTopViewButton.style.transform = 'rotateZ(180deg)';
+		    this.refs['topCollapisble'].closeCollapsible();
+		}
+        
     };
 
     render = () => {
@@ -551,13 +538,28 @@ class FilterNav extends Component {
                      <div>
                         <AlertContainer ref = { a => this.msg = a } />
                     </div>
-                
-					<TopView initParams = { this.state.topViewInitParams } showAlert = { (strMsg) => this.showAlert(strMsg) }/>
 
+
+                    <Collapsible
+                        transitionTime = {200} 
+                        open = {true}
+                        contentInnerClassName  = "Flex__layout-column"
+                        ref = 'topCollapisble'
+						triggerClassName = 'noHeaderTrigger cursorNormal'
+						triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
+                        contentOuterClassName = "cursorNormal"
+                        handleTriggerClick = { this.onTriggerClick.bind(this,'topCollapisble') }
+                    >
+
+                        <TopView initParams = { this.state.topViewInitParams } showAlert = { (strMsg) => this.showAlert(strMsg) }/>
+
+                    </Collapsible>
+                
+					
                     <RaisedButton 
                         fullWidth = { true } 
                         primary = { true } 
-                        onClick = { this.toggleTopView }
+                        onClick = { this.toggleTopView.bind(this) }
                         buttonStyle = {{ backgroundColor: this.props.settings.secondaryColor }}
                         style = {{ height: '20px' }}
                     >
@@ -572,14 +574,23 @@ class FilterNav extends Component {
                         /> 
                     </RaisedButton>
 
-
                     {/* BOTTOM SECTION */}
 
-                    <Flex flex="65" style={{'overflow':'auto'}}>
+                    <Flex  
+                        style={{
+                            'overflow':'auto',
+                            'transition': '1s',
+                            'zIndex':'2'
+                            }} 
+                        id='BottomView'
+                        
+                    >
+
                         <div id='pinnedCollapisble'>
                             <Collapsible 
                                 transitionTime = {200} 
                                 ref = 'pinnedCollapisble'
+								key = 'pinnedCollapisble'
                                 contentOuterClassName = "cursorNormal"
                                 handleTriggerClick = { this.onTriggerClick.bind(this,'pinnedCollapisble') }
                                 trigger = {
@@ -649,6 +660,7 @@ class FilterNav extends Component {
                             <Collapsible 
                                 transitionTime = {200} 
                                 ref = 'filterCollapisble'
+								key = 'filterCollapisble'
                                 contentOuterClassName = "cursorNormal"
                                 handleTriggerClick = { this.onTriggerClick.bind(this,'filterCollapisble') }
                                 trigger = {
