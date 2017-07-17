@@ -5,11 +5,13 @@ import {Flex} from 'react-flex-material';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import AlertContainer from 'react-alert';
 import FilterTabs from './FilterTab.js';
 import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import TopView from './TopView.js';
+import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -160,7 +162,7 @@ class FilterNav extends Component {
             var displayName = colElasticFilterStruc.displayName;
 
             arrColumnsReturn.push(
-                <div id = { columnName } key = { columnName } >
+                <div id = { columnName } key = { columnName } name= {displayName} className="searchableColumn">
                     <Collapsible 
                         transitionTime = { 200 }
                         key = { columnName }
@@ -210,7 +212,7 @@ class FilterNav extends Component {
 
             if (colElasticFilterStruc.pinned) {
                 arrPinnedColumnsReturn.push(
-                    <div id = { columnName + "_pinned" } key = { columnName + "_pinned" } >
+                    <div id = { columnName + "_pinned" } name= { displayName } key = { columnName + "_pinned" } className="searchableColumnPinned">
                         <Collapsible 
                             transitionTime = { 200 } 
                             key = { columnName + "_pinned" }
@@ -397,6 +399,9 @@ class FilterNav extends Component {
 	
 	/**
 	 * Sometimes scrollbars only appear after the collapisbles have expanded. So we wait for them to expand and then scroll
+	 * @param {string} elementName: the name of the element(usually the internalColName).
+	 * @param {Obj} element: the actual element object.
+	 * @param {Obj} context: the context of FilterNav. 
 	 */
 	checkToScroll = (elementName,element,context) => {
         clearInterval(context['timeout']);
@@ -410,6 +415,43 @@ class FilterNav extends Component {
                     clearInterval(context['timeout']);
                  }
         }, 250);
+	}
+	
+	clearSearchBox = (evt,strSearchBoxId) => {
+		var sb = document.getElementById(strSearchBoxId);
+		var evtObj = {};
+		evtObj.currentTarget = sb;
+		if(sb){
+			sb.value = '';
+			this.searchColumns(evtObj, (strSearchBoxId.indexOf('pin') > -1 ? true : false));
+		}
+	}
+	
+	
+	/**
+	 * This function is called on key up on the search bars inside pinned and filters collapisbles.
+	 * This will search for the underlying collapisbles and show only those that match the textfield.
+	 * @param {Obj} evt: actual event object
+	 * @param {Obj} context: the context of FilterNav
+	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
+	 */
+	searchColumns = (evt,pinned) => {
+		var inputValue = evt.currentTarget.value.toUpperCase();
+		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
+		var len = divList.length;
+		var name,i;
+		
+		for (i = 0; i < len; i++) {
+            name = divList[i].getAttribute('name');
+            if (name) {
+                if (name.toUpperCase().indexOf(inputValue) > -1) {
+                    divList[i].style.display = "";
+                } 
+                else {
+                    divList[i].style.display = "none";
+                }
+            } 
+        }
 	}
 
     /**
@@ -521,6 +563,42 @@ class FilterNav extends Component {
     render = () => {
          var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label></div>;
          var columnsObj = this.makeColumns(this.state.tableData);
+		 var pinnedSearchBar = <div>
+									<IconButton 
+										iconClassName="fa fa-search" 
+										style={{
+											padding: '0px',
+											width: '24px',
+											height: '24px'
+										}}
+										iconStyle= {{
+											fontSize: '20px'
+										}}
+										onClick = { function(evt) { document.getElementById('pinnedCollapisbleSearch').focus(); } }
+									/>
+									<TextField
+										type = "text" 
+										id='pinnedCollapisbleSearch'
+										style = {{
+											width:'85%'
+										}}
+										onKeyUp = { (evt) => this.searchColumns(evt,true) } 
+										hintText = "Search for column names.."
+									/> 
+									<IconButton 
+										iconClassName="fa fa-times" 
+										style={{
+											padding: '0px',
+											width: '24px',
+											height: '24px'
+										}}
+										iconStyle= {{
+											fontSize: '20px'
+										}}
+										onClick = { (evt) => this.clearSearchBox(evt,'pinnedCollapisbleSearch') }
+									/>
+									<br/>
+								</div>;
 
         return (
                 <Flex 
@@ -650,7 +728,9 @@ class FilterNav extends Component {
                                     iconClassName = "fa fa-plus-square"
                                     iconStyle = {{ color: this.props.settings.primaryColor }} 
                                 />
-
+								
+								
+                                {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
                                 {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
 
                             </Collapsible>
@@ -678,9 +758,41 @@ class FilterNav extends Component {
                                     </div>
                                 }
                             >
-
+								<IconButton 
+									iconClassName="fa fa-search" 
+									style={{
+										padding: '0px',
+										width: '24px',
+										height: '24px'
+									}}
+									iconStyle= {{
+										fontSize: '20px'
+									}}
+									onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
+								/>
+								<TextField
+									type = "text" 
+									id='filterCollapisbleSearch'
+									style = {{
+										width:'85%'
+									}}
+									onKeyUp = { (evt) => this.searchColumns(evt) } 
+									hintText = "Search for column names.."
+								/> 
+								<IconButton 
+									iconClassName="fa fa-times" 
+									style={{
+										padding: '0px',
+										width: '24px',
+										height: '24px'
+									}}
+									iconStyle= {{
+										fontSize: '20px'
+									}}
+									onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
+								/>
+								<br/>
                                 {columnsObj.columns}
-
                             </Collapsible>
                         </div>
                     </Flex>
