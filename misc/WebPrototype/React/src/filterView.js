@@ -138,7 +138,7 @@ class FilterViewForm extends React.Component {
 
         return (
 
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px"}}>
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}}>
                 <CardText>
                     <div>
                         <Flex divider />  
@@ -197,7 +197,7 @@ class FilterViewRow extends React.Component {
         }
 
         return (
-            <div>
+            <div >
                 <Flex layout="row" style = {{  height: "50px" }}>
                     <Flex divider />  
 

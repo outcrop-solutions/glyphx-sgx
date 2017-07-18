@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
+import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 
 
@@ -176,7 +177,15 @@ class FilterTable extends Component {
     getInternalTableName = () => {
         return "table-" + this.props.internalColName;
     }
-
+	
+	clearSearchBox = (evt,strSearchBoxId) => {
+		var sb = document.getElementById("tf-" + strSearchBoxId);
+		if(sb){
+			sb.value = '';
+			this.onKeyUp(this, strSearchBoxId, this.state.indexColumnToSearch);
+		}
+	}
+	
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues) {
             return true;
@@ -244,16 +253,45 @@ class FilterTable extends Component {
             index ++;
         }
         return (
-            <div>   
-                <TextField
+            <div>  
+				<IconButton 
+					iconClassName="fa fa-search" 
+					style={{
+						padding: '0px',
+						width: '24px',
+						height: '24px'
+					}}
+					iconStyle= {{
+						fontSize: '17px'
+					}}
+					onClick = { function(evt) { document.getElementById("tf-" + internalColName).focus(); } }
+				/>
+				<TextField
                     type = "text" 
                     id = { "tf-" + internalColName }
+					style = {{
+						width:'85%'
+					}}
                     className = { "tf-" + internalColName } 
                     onKeyUp = { () => this.onKeyUp(this,internalColName,this.state.indexColumnToSearch) } 
                     hintText = "Search for value.." 
                     underlineFocusStyle = {{ borderColor: this.props.settings.elasticColor.searchBoxUnderline }}
                 /> 
-                <br/>
+                
+				<IconButton 
+					iconClassName="fa fa-times" 
+					style={{
+						padding: '0px',
+						width: '24px',
+						height: '24px'
+					}}
+					iconStyle= {{
+						fontSize: '17px'
+					}}
+					onClick = { (evt) => this.clearSearchBox(evt,internalColName) }
+				/>
+				<br/>
+				
                 <Table
                     className = { "table-" + internalColName }
                     height = '300px'
