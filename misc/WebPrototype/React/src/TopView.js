@@ -11,6 +11,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import ListItem from 'material-ui/List';
 import FilterViewForm from './filterView.js';
+import FilterNavTabs from './FilterNavTabs.js';
 import { connect } from 'react-redux';
 import './filterNav.css';
 
@@ -356,16 +357,19 @@ class TopView extends Component {
 		});
 		
 		return(
-			<Flex flex = "50" id = "TopView">
+			<Flex flex = "35" id = "TopView">
                 {/* Row 1 */}
                 <Flex layout = "row" align = "space-between center" style = {{ height: '15%' }}>
-                    <Flex flex="80">
+                    <Flex flex = "80" style = {{ marginLeft: "16px" }}>
                         <SelectField
                             value = { this.state.viewSelectValue }
                             onChange = { this.onSelectViewChange }
                             style = {{ width:"100%",fontSize:'13px' }}
                             hintText = "Select View"
-                            selectedMenuItemStyle = {{ backgroundColor: this.props.settings.primaryColor, color: this.props.settings.textColor}}
+                            hintStyle = {{ color: this.props.settings.viewSelectColor.text }}
+                            iconStyle = {{ fill: this.props.settings.viewSelectColor.text}}
+                            underlineStyle = {{ borderColor: this.props.settings.viewSelectColor.text }}
+                            selectedMenuItemStyle = {{ backgroundColor: this.props.settings.viewSelectColor.selectedBackground, color: this.props.settings.viewSelectColor.selectedText}}
                         >
                             {this.state.viewSelectItems}
                         </SelectField>
@@ -377,8 +381,8 @@ class TopView extends Component {
                             <RaisedButton
                                 onClick = { (evt) => this.handleOpenClose('menu',true,evt) }
                                 label = "Menu"
-                                buttonStyle = {{ height: '28px', backgroundColor: this.props.settings.primaryColor }}
-                                labelStyle = {{ fontSize: '13px', color: this.props.settings.textColor }}
+                                buttonStyle = {{ height: '28px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
+                                labelStyle = {{ fontSize: '13px', color: this.props.settings.overviewButtonsColor.text }}
                                 primary = { true }
                             />
 
@@ -403,13 +407,13 @@ class TopView extends Component {
                                             label = "Save"
                                             primary = { true }
                                             onClick = { () => this.onSaveDailog(this) }
-                                            style = {{ color: this.props.settings.primaryColor }}
+                                            style = {{ color: this.props.settings.saveModalColor.saveButton }}
                                         />,
                                         <FlatButton
                                             label = "Cancel"
                                             primary = { true }
                                             onClick = { () => this.handleOpenClose('save', false) }
-                                            style = {{ color: this.props.settings.secondaryColor }}
+                                            style = {{ color: this.props.settings.saveModalColor.cancelButton }}
                                         />
                                     ]
                                 } 
@@ -421,8 +425,8 @@ class TopView extends Component {
                                     id = "tf_viewName" 
                                     errorText = { this.state.viewNameTextFieldError } 
                                     floatingLabelText = "View Name" 
-                                    underlineFocusStyle = {{ borderColor: this.props.settings.primaryColor }}
-                                    floatingLabelStyle = {{ color: this.props.settings.primaryColor }}
+                                    underlineFocusStyle = {{ borderColor: this.props.settings.saveModalColor.textFieldUnderline }}
+                                    floatingLabelStyle = {{ color: this.props.settings.saveModalColor.textFieldUnderline }}
                                 /> <br />
                                 <label id = "lbl_saveError" hidden style = {{ color:'red' }}> Error! A view with the same name already exists! Please provide a different name! </label>
                             </Dialog>
@@ -433,8 +437,12 @@ class TopView extends Component {
                                 
                 {/* Row 2 */}
                 <Flex layout = "row" style = {{ height:'65%' }}>
-                    <FilterViewForm ref = 'filterSummaryView' onScroll = { (element,elastic) => this.props.initParams.scrollToElement(element, elastic) }/>
+                    {/* <FilterNavTabs scrollToElement = {this.props.initParams.scrollToElement} /> */}
+                    <FilterViewForm ref = 'filterSummaryView' onScroll = { (element,elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
                 </Flex>
+
+                
+                
                 
                 
                 {/* Row 3 */}
@@ -442,8 +450,8 @@ class TopView extends Component {
                     <Flex flex = "25">
                         <RaisedButton 
                             label = "Clear All" 
-                            buttonStyle = {{ height: '28px', width:'100%', paddingTop: '5px', backgroundColor: this.props.settings.primaryColor }}
-                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.textColor }} 
+                            buttonStyle = {{ height: '28px', width:'100%', paddingTop: '5px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
+                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.overviewButtonsColor.text }} 
                             style = {{ height: '28px', width:'100%' }}
                             onClick = { this.onClearAllFilters }
                             primary = {true } />
@@ -455,8 +463,8 @@ class TopView extends Component {
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
-                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.primaryColor }}
-                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.textColor }} 
+                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
+                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.overviewButtonsColor.text }} 
                             style = {{ height: '28px', width:'100%' }} 
                             onClick = { this.onHideFilteredData.bind(this) }
                             primary = { true } />
@@ -476,8 +484,8 @@ class TopView extends Component {
                             primary = { true } 
                             label = "Apply Filters" 
                             onClick = { this.applyFilter.bind(this) } 
-                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.primaryColor }}
-                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.textColor }} 
+                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
+                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.overviewButtonsColor.text }} 
                             style = {{ height: '28px', width:'100%' }} 
                         />
                     </Flex>
@@ -492,7 +500,10 @@ class TopView extends Component {
                         style = {{ width:"100%", fontSize:'13px', height:'44px' }}
                         hintText = "Select Table"
                         multiple = { true }
-                        selectedMenuItemStyle = {{ backgroundColor: this.props.settings.primaryColor, color: this.props.settings.textColor}}
+                        hintStyle = {{ color: this.props.settings.tableSelectColor.text }}
+                        iconStyle = {{ fill: this.props.settings.tableSelectColor.text}}
+                        underlineStyle = {{ borderColor: this.props.settings.tableSelectColor.text }}
+                        selectedMenuItemStyle = {{ backgroundColor: this.props.settings.tableSelectColor.selectedBackground, color: this.props.settings.tableSelectColor.selectedText}}
                     >
                         {tableSelectItems}
                     </SelectField>

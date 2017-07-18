@@ -41,7 +41,7 @@ class FilterTabs extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style = {{width: "100%" }}>
                 <Tabs
                     onChange = { (value) => this.handleChange(value, this) }
                     value = { this.state.slideIndex }
@@ -49,14 +49,12 @@ class FilterTabs extends React.Component {
                     <Tab 
                         label = "Overview" 
                         value = { 0 }
-                        icon = { <FontIcon className="fa fa-sitemap" ></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.secondaryColor, color: this.props.settings.textColor} }
+                        //buttonStyle = { {height: "55px", backgroundColor: this.props.settings.secondaryColor, color: this.props.settings.textColor} }
                     />
                     <Tab 
                         label = "Statistics" 
                         value = { 1 }
-                        icon = { <FontIcon className="fa fa-bar-chart"></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.secondaryColor, color: this.props.settings.textColor} }
+                        //buttonStyle = { {height: "55px", backgroundColor: this.props.settings.secondaryColor, color: this.props.settings.textColor} }
                     />
                 </Tabs>
 
@@ -77,7 +75,7 @@ class FilterTabs extends React.Component {
                             overflowX: "hidden"
                         }}
                     >
-                    
+                        <FilterViewForm ref = 'filterSummaryView' onScroll = { (element,elastic) => this.props.scrollToElement(element, elastic) }/>
                     
                     </div>
 
