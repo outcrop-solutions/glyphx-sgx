@@ -658,7 +658,6 @@ class FilterNav extends Component {
                         <AlertContainer ref = { a => this.msg = a } />
                     </div>
 
-
                     <Collapsible
                         transitionTime = {200} 
                         open = {true}
@@ -701,7 +700,7 @@ class FilterNav extends Component {
                             'zIndex':'2'
                             }} 
                         id='BottomView'
-                        
+                        className="sidenavbar"
                     >
                         <div id='pinnedCollapisble'>
                             <Collapsible 
