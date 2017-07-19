@@ -346,6 +346,7 @@ class FilterNav extends Component {
 
         if (this.refs[element + "_pinned"]) {
             element = element + "_pinned";
+			context.clearSearchBox(null,'pinnedCollapisbleSearch');
 
             if (pinnedCollapisble.state.isClosed) {
                 //filterCollapisble.prepareToOpen();
@@ -359,6 +360,7 @@ class FilterNav extends Component {
 
         }
         else {
+			context.clearSearchBox(null,'filterCollapisbleSearch');
             if (filterCollapisble.state.isClosed) {
                 //filterCollapisble.prepareToOpen();
                 filterCollapisble.openCollapsible();
@@ -417,6 +419,9 @@ class FilterNav extends Component {
         }, 250);
 	}
 	
+	/**
+	 * 
+	 */
 	clearSearchBox = (evt,strSearchBoxId) => {
 		var sb = document.getElementById(strSearchBoxId);
 		var evtObj = {};
@@ -427,12 +432,41 @@ class FilterNav extends Component {
 		}
 	}
 	
+	/**
+	 * This function is called on key up on the search bars inside pinned and filters collapisbles.
+	 * This will perform multiple search for the underlying collapisbles and show only those that match the textfield.
+	 * @param {Obj} evt: actual event object
+	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
+	 */
+	searchMultipleColumns = (evt,pinned) => {
+		var inputValue = evt.currentTarget.value.toUpperCase();
+		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
+		var len = divList.length;
+		var name,i;
+		var shouldBeVisible;
+		var inputValues = inputValue.split(',');
+		
+		for (i = 0; i < len; i++) {
+            name = divList[i].getAttribute('name');
+			shouldBeVisible = false;
+            if (name) {
+				
+				for(var j=0; j < inputValue.length; j++)
+				{
+					if (name.toUpperCase().indexOf(inputValues[j]) > -1) {
+						shouldBeVisible = true;
+					} 
+				}
+				
+				!shouldBeVisible ? divList[i].style.display = "none" : divList[i].style.display = "" ;
+            } 
+        }
+	}
 	
 	/**
 	 * This function is called on key up on the search bars inside pinned and filters collapisbles.
 	 * This will search for the underlying collapisbles and show only those that match the textfield.
 	 * @param {Obj} evt: actual event object
-	 * @param {Obj} context: the context of FilterNav
 	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
 	 */
 	searchColumns = (evt,pinned) => {
@@ -541,7 +575,6 @@ class FilterNav extends Component {
         }
     };
 
-
    /**
 	* This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
 	*/
@@ -582,7 +615,7 @@ class FilterNav extends Component {
 										style = {{
 											width:'85%'
 										}}
-										onKeyUp = { (evt) => this.searchColumns(evt,true) } 
+										onKeyUp = { (evt) => this.searchMultipleColumns(evt,true) } 
 										hintText = "Search for column names.."
 									/> 
 									<IconButton 
@@ -776,7 +809,7 @@ class FilterNav extends Component {
 									style = {{
 										width:'85%'
 									}}
-									onKeyUp = { (evt) => this.searchColumns(evt) } 
+									onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
 									hintText = "Search for column names.."
 								/> 
 								<IconButton 

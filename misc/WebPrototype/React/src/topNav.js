@@ -154,7 +154,7 @@ class TopNav extends Component {
 											<FontIcon className="fa fa-info fa-2x" color='white'/>
 										</IconButton>
                                         
-                                        <IconButton onClick={toggleNav}>
+                                        <IconButton onClick={openUserProfileMenu}>
 											<FontIcon className="fa fa-user fa-2x" color='white'/>
 										</IconButton>
                                         
@@ -209,13 +209,17 @@ class TopNav extends Component {
                         <Flex flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
-                            <iframe title = "3D rendering engine" style = {{ width:'100%', height:'100%' }} src = "https://s3.amazonaws.com/synglyphx/demo.html" />
+                            <iframe title = "3D rendering engine" style = {{ width:'100%', height:'100%' }} src = "https://s3.amazonaws.com/synglyphx/demo.html" /> 
                         </Flex>
                     </Flex>
                 </div>
           </MuiThemeProvider>
         );
     }
+}
+
+function openUserProfileMenu(){
+	
 }
 
 // Hides the filter side nav by translating it off the screen so it doesnt resize and 

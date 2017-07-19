@@ -158,6 +158,31 @@ class FilterTable extends Component {
             } 
         }
     };
+	
+	onKeyUpMultiSearch = (context,id,indexColumnToSearch) => {
+		var input, filter, tr, td, i;
+        input = document.getElementById("tf-"+id);
+        filter = input.value.toUpperCase();
+        tr = this.fetchTableRows(this.getInternalTableName());
+		var shouldBeVisible;
+		var filterValues = filter.split(',');
+		
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[indexColumnToSearch];
+			shouldBeVisible = false;
+            if (td) {
+				for(var j=0; j < filterValues.length; j++)
+				{
+					if (td.innerHTML.toUpperCase().indexOf(filterValues[j]) > -1) {
+						shouldBeVisible = true;
+					} 
+				}
+				
+				!shouldBeVisible ? tr[i].style.display = "none" : tr[i].style.display = "" ;
+            } 
+        }
+	}
 
     /**
      * Returns the rendered table rows(HTML).
@@ -178,6 +203,9 @@ class FilterTable extends Component {
         return "table-" + this.props.internalColName;
     }
 	
+	/**
+	 *
+	 */
 	clearSearchBox = (evt,strSearchBoxId) => {
 		var sb = document.getElementById("tf-" + strSearchBoxId);
 		if(sb){
@@ -252,6 +280,7 @@ class FilterTable extends Component {
 
             index ++;
         }
+		
         return (
             <div>  
 				<IconButton 
@@ -273,7 +302,7 @@ class FilterTable extends Component {
 						width:'85%'
 					}}
                     className = { "tf-" + internalColName } 
-                    onKeyUp = { () => this.onKeyUp(this,internalColName,this.state.indexColumnToSearch) } 
+                    onKeyUp = { () => this.onKeyUpMultiSearch(this,internalColName,this.state.indexColumnToSearch) } 
                     hintText = "Search for value.." /> 
 				<IconButton 
 					iconClassName="fa fa-times" 
