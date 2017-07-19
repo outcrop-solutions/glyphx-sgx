@@ -109,11 +109,11 @@ class TopNav extends Component {
                                     iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
                                 />*/}
 								
-								<Toolbar className="navbar-color" style={{padding: '0px',backgroundColor: this.props.settings.primaryColor}}>
+								<Toolbar className="navbar-color" style = {{ padding: '0px', backgroundColor: this.props.settings.topNavbar.barBackground}}>
 									<ToolbarGroup>
-										<span style={styles.navLogo}>
-											<a href="http://www.synglyphx.com/" target="_blank" rel="noopener noreferrer">
-												<img src="./Res/Img/synglyphx-wht-3.png" style={{width:'300px'}} alt="SynGlyphX"/>
+										<span style = { styles.navLogo }>
+											<a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
+												<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
 											</a>
 										</span>
 									</ToolbarGroup>
@@ -177,13 +177,13 @@ class TopNav extends Component {
                                                 label = "Save"
                                                 primary = { true }
                                                 onClick = { () => this.onSettingsSave() }
-                                                style = {{ color: this.props.settings.primaryColor }}
+                                                style = {{ color: this.props.settings.settingsModalColor.saveButton }}
                                             />,
                                             <FlatButton
                                                 label = "Cancel"
                                                 primary = { true }
                                                 onClick = { () => this.setState({ openSettings: false, themeTempSelection: this.state.themeSelection }) }
-                                                style = {{ color: this.props.settings.secondaryColor }}
+                                                style = {{ color: this.props.settings.settingsModalColor.cancelButton }}
                                             />
                                         ]
                                     }
@@ -198,8 +198,8 @@ class TopNav extends Component {
                                     >
                                         <MenuItem value = { 0 } primaryText = "SynGlyphX" />
                                         <MenuItem value = { 1 } primaryText = "SynGlyphX Reversed" />
-                                        <MenuItem value = { 2 } primaryText = "Notre Dame" />
-                                        <MenuItem value = { 3 } primaryText = "Notre Dame Reversed" />
+                                        <MenuItem value = { 2 } primaryText = "Gannon" />
+                                        <MenuItem value = { 3 } primaryText = "Gannon Reversed" />
                                     </DropDownMenu>
                                 </Dialog>
                                 

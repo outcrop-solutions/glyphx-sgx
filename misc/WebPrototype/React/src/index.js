@@ -3,30 +3,109 @@ import ReactDOM from 'react-dom';
 import TopNav from './topNav';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import themeSettingColors from './ColorThemes.js';
 import './index.css';
+
+// Will darken or lighten a color by a percent (-1.0 to 1.0) input
+function shadeHexColors(color, percent) {   
+    var f = parseInt(color.slice(1),16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
+    return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+}
+
 
 
 const initialFilterState = {
     Filter: {
     },
     Settings: {
-        primaryColor: "#2d3091",
-        primaryColorLight: shadeHexColors("#2d3091", 0.2),
-        primaryColorDark: shadeHexColors("#2d3091", -0.4),
-        secondaryColor: "#575d5e",
-        secondaryColorLight: shadeHexColors("#575d5e", 0.4),
-        secondaryColorDark: shadeHexColors("#575d5e", -0.4),
-        textColor: "#ffffff"
+        rangeColor: {
+            sliderCircle: "#2d3091",
+            sliderTrack: shadeHexColors("#2d3091", 0.4),
+            textFieldUnderline: "#2d3091",
+            toggleCircle: "#2d3091",
+            toggleTrack: shadeHexColors("#2d3091", 0.4),
+            deleteHover: "#b81616",
+            addHover: "#339cee"
+        },
+
+        elasticColor: {
+            checkBox: "#2d3091",
+            checkAllBox: shadeHexColors("#575d5e", -0.4),
+            searchBoxUnderline: "#2d3091"
+        },
+
+        filterTabColor: {
+            titleText: "#ffffff",
+            tabBackground: shadeHexColors("#2d3091", -0.4),
+        },
+
+        collapsibleColor: {
+            mainBackground: "#2d3091",
+            mainCollapsed: shadeHexColors("#2d3091", -0.4),
+            mainHover: shadeHexColors("#2d3091", 0.2),
+            mainText: "#ffffff",
+            mainIcon: "#ffffff",
+
+            subBackground: "#575d5e",
+            subCollapsed: "#575d5e",
+            subHover: shadeHexColors("#2d3091", 0.2),
+            subText: "#ffffff",
+            pinned: "#ffffff",
+            unpinned: shadeHexColors("#2d3091", -0.4)
+        },
+
+        pinFilterColor: {
+            addPinBackground: shadeHexColors("#2d3091", -0.4),
+            okButton: "#2d3091",
+            cancelButton: "#575d5e"
+        },
+
+        hideTopViewButtonColor: {
+            background:  shadeHexColors("#575d5e", -0.4),
+            icon: "#ffffff"
+        },
+
+        settingsModalColor: {
+            saveButton: "#2d3091",
+            cancelButton: "#575d5e"
+        },
+
+        saveModalColor: {
+            saveButton: "#2d3091",
+            cancelButton: "#575d5e",
+            textFieldUnderline: "#2d3091",
+        },
+
+        viewSelectColor: {
+            text: "black",
+            selectedBackground: "#2d3091",
+            selectedText: "#ffffff"
+        },
+
+        tableSelectColor: {
+            text: "black",
+            selectedBackground: "#2d3091",
+            selectedText: "#ffffff"
+        },
+
+        topNavbar: {
+            barBackground: "#2d3091"
+        },
+
+        overviewButtonsColor: {
+            background: "#2d3091",
+            text: "white"
+        },
+
+        filterOverviewColor: {
+            badgeBackground: shadeHexColors("#2d3091", -0.4),
+            badgeText: "white",
+            deleteHover: "#b81616",
+            elasticHover: "#339cee",
+            rangeHover: "#339cee"
+        },
     }
 };
-
-const themeSettingColors = [["#2d3091", "#575d5e", "#ffffff"], ["#575d5e", "#2d3091", "#ffffff"], ["#bb8c00", "#012c70", "#ffffff"], ["#012c70", "#bb8c00", "#ffffff"]];
-
-// Will darken or lighten a color by a percent (-1.0 to 1.0) input
-function shadeHexColors(color, percent) {   
-    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
-}
 
 
 const filterReducer = function(state = initialFilterState, action) {
@@ -73,8 +152,6 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
-            var highlighted = calcSelected(stateVal, action.rangeType, action.data);
-
             newState = {
                 ...state,
                 Filter : {
@@ -82,7 +159,6 @@ const filterReducer = function(state = initialFilterState, action) {
                     [action.colName] : {
                         ...state.Filter[action.colName],
                         rangeList : stateVal,
-                        highlightedValues: highlighted,
                     }
                 }
             }
@@ -234,7 +310,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter[col],
                         selectedValues: action.filter.selectedValues,
                         rangeList: stateVal,
-                        applied: action.filter.selectedValues.length > 0 ? true : (state.Filter[col].highlightedValues.length > 0 ? true : false),
+                        //applied: action.filter.selectedValues.length > 0 ? true : (state.Filter[col].highlightedValues.length > 0 ? true : false),
                     }
                 }
             };
@@ -262,23 +338,12 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'EDIT_THEME':
             newState  = { 
                 ...state,
-                Settings : {
-                    primaryColor: themeSettingColors[action.theme][0],
-                    primaryColorLight: shadeHexColors(themeSettingColors[action.theme][0], 0.2),
-                    primaryColorDark: shadeHexColors(themeSettingColors[action.theme][0], -0.4),
-                    secondaryColor: themeSettingColors[action.theme][1],
-                    secondaryColorLight: shadeHexColors(themeSettingColors[action.theme][1], 0.4),
-                    secondaryColorDark: shadeHexColors(themeSettingColors[action.theme][1], -0.4),
-                    textColor: themeSettingColors[action.theme][2]
-                }
+                Settings : themeSettingColors[action.theme]
             };
             
             console.log(newState);
             return newState;
-        
-
-
-        
+    
 
         default:
             return state;

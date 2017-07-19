@@ -1,6 +1,7 @@
 
 :root {
-  --text-color: white; /* the default */
+  --collapsible-text-color-main: white; /* the default */
+  --collapsible-text-color-sub: white; /* the default */
 }
 
 .collapse-header {
@@ -111,7 +112,7 @@
     display: block;
     font-size: 1rem;
     transition: transform 300ms;
-    color: var(--text-color);
+    color: var(--collapsible-text-color-main);
 }
 
 
@@ -131,14 +132,11 @@
 .CustomTriggerCSS--open {
   background-color: darkslateblue; }
 
-.columnNameHeader {
-    font-size: 1rem !important;
-    padding: 10px !important;
-  }
 
 .columnNameHeader.Collapsible__trigger:after {
     right: 15px;
      top: 13px;
+     color: var(--collapsible-text-color-sub);
 }
 
 .noHeaderTrigger{

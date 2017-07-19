@@ -54,7 +54,8 @@ class FilterNav extends Component {
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
         for (var i = 0; i < collapsibles.length; i++) {
-            collapsibles[i].style.setProperty('--text-color', this.props.settings.textColor);
+            collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.collapsibleColor.mainText);
+            collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.collapsibleColor.subText);
         }
     };
 
@@ -148,11 +149,18 @@ class FilterNav extends Component {
             return style;
         })();
 
-        style.sheet.insertRule('.Collapsible__trigger { display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.primaryColor + '; color: white; font-size: 1rem; }', 0);
-        style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.primaryColorDark + '; }', 1);
-        style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.primaryColorLight + '; }', 2);
-        style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.secondaryColorLight + '!important; }', 3);
-        style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.textColor + '!important; }', 4);
+        style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+        style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.collapsibleColor.mainCollapsed + '; }', 1);
+        style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.collapsibleColor.mainHover + '; }', 2);
+        style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.collapsibleColor.unpinned + '!important; }', 3);
+        style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.collapsibleColor.pinned + '!important; }', 4);
+        style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.collapsibleColor.subBackground + '!important; }', 5);
+        style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.collapsibleColor.subCollapsed + '!important; }', 6);
+        style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.collapsibleColor.subHover + '!important; }', 7);
+
+        
+
+        
 
 
         for (var property in data) {
@@ -187,7 +195,7 @@ class FilterNav extends Component {
                                     style={{
                                         paddingLeft: '10px',
                                         fontSize: '1rem',
-                                        color: this.props.settings.textColor
+                                        color: this.props.settings.collapsibleColor.subText
                                     }}
                                 >
                                     {displayName}
@@ -236,7 +244,7 @@ class FilterNav extends Component {
                                         style = {{
                                             paddingLeft: '10px',
                                             fontSize: '1rem',
-                                            color: this.props.settings.textColor
+                                            color: this.props.settings.collapsibleColor.subText
                                         }}
                                     >
                                         {displayName}
@@ -671,7 +679,7 @@ class FilterNav extends Component {
                         fullWidth = { true } 
                         primary = { true } 
                         onClick = { this.toggleTopView.bind(this) }
-                        buttonStyle = {{ backgroundColor: this.props.settings.secondaryColor }}
+                        buttonStyle = {{ backgroundColor: this.props.settings.hideTopViewButtonColor.background }}
                         style = {{ height: '20px' }}
                     >
                         <i 
@@ -679,14 +687,13 @@ class FilterNav extends Component {
                             className = "fa fa-caret-up" 
                             style = {{
                                 fontSize: '1.6em',
-                                color: this.props.settings.textColor,
+                                color: this.props.settings.hideTopViewButtonColor.icon,
                                 transition: 'transform 500ms'
                             }}
                         /> 
                     </RaisedButton>
 
                     {/* BOTTOM SECTION */}
-
                     <Flex  
                         style={{
                             'overflow':'auto',
@@ -696,7 +703,6 @@ class FilterNav extends Component {
                         id='BottomView'
                         
                     >
-
                         <div id='pinnedCollapisble'>
                             <Collapsible 
                                 transitionTime = {200} 
@@ -706,12 +712,12 @@ class FilterNav extends Component {
                                 handleTriggerClick = { this.onTriggerClick.bind(this,'pinnedCollapisble') }
                                 trigger = {
                                     <div>
-                                        <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.textColor }} />
+                                        <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
                                         <span 
                                             style={{
                                                 paddingLeft: '10px',
                                                 fontSize: '1rem',
-                                                color: this.props.settings.textColor
+                                                color: this.props.settings.collapsibleColor.mainText
                                             }}
                                         >
                                             Pinned
@@ -728,13 +734,13 @@ class FilterNav extends Component {
                                             label = "Ok"
                                             primary = { true }
                                             onClick = { () => this.onPinnedOkDailog(this) }
-                                            style = {{ color: this.props.settings.primaryColor }}
+                                            style = {{ color: this.props.settings.pinFilterColor.okButton }}
                                         />,
                                         <FlatButton
                                             label = "Cancel"
                                             primary = { true }
                                             onClick = { () => this.handleOpenClose('pin',false,{'cancel':true}) }
-                                            style = {{ color: this.props.settings.secondaryColor }}
+                                            style = {{ color: this.props.settings.pinFilterColor.cancelButton }}
                                         />
                                     ]
                                 }
@@ -754,22 +760,25 @@ class FilterNav extends Component {
                                             }
                                         }
                                     />
-                                </Dialog>
-                                    
-                                <IconButton 
-                                    onClick = { () => this.handleOpenClose('pin',true) }
-                                    iconClassName = "fa fa-plus-square"
-                                    iconStyle = {{ color: this.props.settings.primaryColor }} 
-                                />
-								
-								
-                                {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
-                                {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
 
-                            </Collapsible>
+                            </Dialog>
+                                
+                            <IconButton 
+                                onClick = { () => this.handleOpenClose('pin', true) }
+                                iconClassName = "fa fa-plus-square"
+                                iconStyle = {{ color: this.props.settings.pinFilterColor.addPinBackground }} 
+                            />
+                            
+                            {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
+                            {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : pinnedEmptyString}
+
+                        </Collapsible>
+
                         </div>
 
+                    
                         <div id='filterCollapisble'>
+
                             <Collapsible 
                                 transitionTime = {200} 
                                 ref = 'filterCollapisble'
@@ -778,12 +787,12 @@ class FilterNav extends Component {
                                 handleTriggerClick = { this.onTriggerClick.bind(this,'filterCollapisble') }
                                 trigger = {
                                     <div>
-                                        <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.textColor }} />
+                                        <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
                                         <span 
                                             style = {{
                                                 paddingLeft: '10px',
                                                 fontSize: '1rem',
-                                                color: this.props.settings.textColor
+                                                color: this.props.settings.collapsibleColor.mainText
                                             }}
                                         >
                                             Filters
@@ -791,6 +800,7 @@ class FilterNav extends Component {
                                     </div>
                                 }
                             >
+
 								<IconButton 
 									iconClassName="fa fa-search" 
 									style={{
