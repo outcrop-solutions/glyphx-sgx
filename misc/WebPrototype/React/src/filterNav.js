@@ -452,14 +452,21 @@ class FilterNav extends Component {
 		var len = divList.length;
 		var name,i;
 		var shouldBeVisible;
+        var ref;
 		var inputValues = inputValue.split(',');
 		
 		for (i = 0; i < len; i++) {
             name = divList[i].getAttribute('name');
-			shouldBeVisible = false;
+            ref = this.refs[divList[i].getAttribute('id')] 
+            
+            if(ref)
+                ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
+			
+            shouldBeVisible = false;
+            
             if (name) {
 				
-				for(var j=0; j < inputValue.length; j++)
+				for(var j=0; j < inputValues.length; j++)
 				{
 					if (name.toUpperCase().indexOf(inputValues[j]) > -1) {
 						shouldBeVisible = true;
