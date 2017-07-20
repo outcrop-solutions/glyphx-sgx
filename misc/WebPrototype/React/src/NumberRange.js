@@ -12,15 +12,16 @@ import 'font-awesome/css/font-awesome.css';
 
 
 /**
- * Main Range parent class which gets exported
  * @param minVal: Sets the minimum value allowed for all the rangeList within the range table
  * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
  * @param colName: Name of the corresponding column for this RangeForm
  * @param data: array of values from the eleastic table for the corresponding colName
  **/
 class NumberRangeTable extends React.Component {
+
+
     /**
-     * Deletes a range by splicing it out of the store
+     * Deletes a range from the store
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
@@ -29,8 +30,7 @@ class NumberRangeTable extends React.Component {
 
 
     /**
-     * Adds a range with the default values of the current min being set to the minimum value, current max being set to the maximum value,
-     * a new generated ID, and the applied switch on off.
+     * Adds a range with the default values of: [minimum value for the column, maximum value for the column, random generated ID, false]
      **/
     handleAddEvent() {
         this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
@@ -44,8 +44,8 @@ class NumberRangeTable extends React.Component {
      * @param max: Max value to update
      * @param applied: Applied status to update
      **/
-    handleStoreUpdate(id, min, max, applied, previousRange) { 
-        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, "Number", previousRange));
+    handleStoreUpdate(id, min, max, applied) { 
+        this.props.dispatch(updateRange(this.props.colName, min, max, id, applied, this.props.data, "Number"));
     }
 
 
@@ -78,7 +78,7 @@ class NumberRangeTable extends React.Component {
                 {/* Displays the mapped ranges */}
                 {range}
 
-                {/* Add range button */}
+                {/* Add range button below*/}
                 <Card>
                     <CardText>
                         <Flex layout="row">
@@ -100,7 +100,7 @@ class NumberRangeTable extends React.Component {
 
 /**
  * Defines what a row should render as on the DOM
- * Inherits props from RangeTable
+ * Inherits props from NumberRangeTable
  **/
 class NumberRangeRow extends React.Component {
 
@@ -143,7 +143,7 @@ class NumberRangeRow extends React.Component {
 
 
     /**
-     * Updates the visuals of the slider and the text fields when the slider is dragged
+     * Updates the local state when the slider is dragged
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onSlide(e) {
@@ -156,11 +156,12 @@ class NumberRangeRow extends React.Component {
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onAfterSlide(e) {
-        this.props.updateStore(this.props.range[2], e[0], e[1], true, this.props.range);
+        this.props.updateStore(this.props.range[2], e[0], e[1], null, this.props.range);
     };
 
+
     /**
-     * Updates state values of min and max based on text field input
+     * Updates local state values of min and max based on text field input
      * @param e: the event instance of the text field, html element
      **/
      onTextChange(e) {
@@ -232,29 +233,24 @@ class NumberRangeRow extends React.Component {
         var max = this.state.max;
 
         if (min === "") {
-            this.setState({ min: this.props.minVal });
             min = this.props.minVal;
         }
 
         if (max === "") {
-            this.setState({ max: this.props.maxVal });
             max = this.props.maxVal;
         }
 
         if (min > max) {
-
             if (this.state.latestUpdate === "MIN") {
-                this.setState({ min: max });
                 min = max;
             }
 
             else if (this.state.latestUpdate === "MAX") {
-                this.setState({ max: min });
                 max = min;
             }
         }
 
-        this.props.updateStore(this.props.range[2], min, max, true);
+        this.props.updateStore(this.props.range[2], min, max, null, this.props.range);
     };
 
 
@@ -267,7 +263,15 @@ class NumberRangeRow extends React.Component {
 
         if (epoch > this.state.epoch + 300) {
             if (e.target.checked) {
-                this.props.updateStore(this.props.range[2], null, null, true);
+                var min = null;
+                var max = null;
+                if (this.state.min == "") {
+                    min = this.props.minVal;
+                }
+                if (this.state.max == "") {
+                    max = this.props.maxVal;
+                }
+                this.props.updateStore(this.props.range[2], min, max, true);
             }
             else {
                 this.props.updateStore(this.props.range[2], null, null, false);
@@ -278,7 +282,7 @@ class NumberRangeRow extends React.Component {
 
 
     /**
-     * Deletes a row from the range table by calling parent delete method
+     * Deletes a row from the range table
      **/
     onDelEvent() {
         this.props.onDelEvent(this.props.range[2]);
@@ -356,11 +360,11 @@ class NumberRangeRow extends React.Component {
         return (
             <Card>
                 <CardText>
-                    <Flex layout="row">      
+                    <Flex layout = "row">      
 
                         <Flex divider />  
 
-                        <Flex flex="10">
+                        <Flex flex = "10">
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash fa-2x"
@@ -370,7 +374,7 @@ class NumberRangeRow extends React.Component {
                         </Flex>
 
 
-                        <Flex flex="20">
+                        <Flex flex = "20">
                             <TextField 
                                 type = 'number' 
                                 name = "min"
@@ -395,7 +399,7 @@ class NumberRangeRow extends React.Component {
                         <Flex divider />
                         <Flex divider />
 
-                        <Flex flex="40"
+                        <Flex flex = "40"
                             style = {{
                                 margin: "16px 0px 0px -8px",
                                 width: "20px"
@@ -414,14 +418,14 @@ class NumberRangeRow extends React.Component {
                                     (e) => this.onAfterSlide(e)
                                 }
                                 trackStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderTrack }] }
-                                handleStyle = {[{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }]}
+                                handleStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }] }
                             />
                         </Flex>
 
                         <Flex divider />
                         <Flex divider />
 
-                        <Flex flex="20">
+                        <Flex flex = "20">
                             <TextField 
                                 type = 'number' 
                                 name = "max"
@@ -446,7 +450,7 @@ class NumberRangeRow extends React.Component {
                         <Flex divider />
 
 
-                        <Flex flex="10"
+                        <Flex flex = "10"
                             style = {{
                                 margin: "11px 0px 0px -11px"
                             }} 
@@ -506,7 +510,7 @@ export const removeRange = (colName, id, data, rangeType) => ({
     data,
     rangeType
 });
-export const updateRange = (colName, min, max, id, applied, data, rangeType, previousRange) => ({
+export const updateRange = (colName, min, max, id, applied, data, rangeType) => ({
     type: 'UPDATE_RANGE',
     colName,
     id,
@@ -515,7 +519,6 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType, pre
     applied, 
     data,
     rangeType,
-    previousRange
 });
 
 

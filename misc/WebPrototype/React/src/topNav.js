@@ -12,7 +12,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
-import DropDownMenu from 'material-ui/DropDownMenu';
+import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import './topNav.css';
 
@@ -190,17 +190,19 @@ class TopNav extends Component {
                                     modal = { true }
                                     open = { this.state.openSettings }
                                 >
-                                    <DropDownMenu
-                                        value = {this.state.themeTempSelection}
+
+                                    <SelectField
+                                        floatingLabelText = "Color Theme"
+                                        value = { this.state.themeTempSelection }
                                         onChange = { this.promptSelectChange }
-                                        style = {{ width: "300px" }}
-                                        autoWidth = { false }
+                                        hintStyle = {{ color: this.props.settings.settingsModalColor.text }}
+                                        iconStyle = {{ fill: this.props.settings.settingsModalColor.text}}
+                                        underlineStyle = {{ borderColor: this.props.settings.settingsModalColor.text }}
+                                        selectedMenuItemStyle = {{ backgroundColor: this.props.settings.settingsModalColor.selectedBackground, color: this.props.settings.settingsModalColor.selectedText}}
                                     >
                                         <MenuItem value = { 0 } primaryText = "SynGlyphX" />
-                                        <MenuItem value = { 1 } primaryText = "SynGlyphX Reversed" />
-                                        <MenuItem value = { 2 } primaryText = "Gannon" />
-                                        <MenuItem value = { 3 } primaryText = "Gannon Reversed" />
-                                    </DropDownMenu>
+                                        <MenuItem value = { 1 } primaryText = "Gannon" />
+                                    </SelectField>
                                 </Dialog>
                                 
                             </div>

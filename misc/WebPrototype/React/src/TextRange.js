@@ -12,16 +12,18 @@ import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
 
+// Used to translate slider values to letters
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 /**
- * Main Range parent class which gets exported
  * @param colName: Name of the corresponding column for this RangeForm
  * @param data: array of values from the eleastic table for the corresponding colName
  **/
 class TextRangeTable extends React.Component {
+
+
     /**
-     * Deletes a range by splicing it out of the store
+     * Deletes a range from the store
      * @param id: ID of the row which is to be deleted
      **/
     handleRowDel(id) {
@@ -30,11 +32,10 @@ class TextRangeTable extends React.Component {
 
 
     /**
-     * Adds a range with the default values of the current min being set to the minimum value, current max being set to the maximum value,
-     * a new generated ID, and the applied switch on off.
+     * Adds a range with the default values: [0, 25, generated ID, false, 1, ""]
      **/
     handleAddEvent() {
-        this.props.dispatch(addTextRange(this.props.colName, 1, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
+        this.props.dispatch(addTextRange(this.props.colName, 1, 0, 25, "", ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
     };
 
 
@@ -44,8 +45,10 @@ class TextRangeTable extends React.Component {
      * @param min: Min value to update
      * @param max: Max value to update
      * @param applied: Applied status to update
+     * @param selectType: Select Type to update
+     * @param text: Text input to update
      **/
-    handleStoreUpdate(selectType, id, min, max, text, applied) { 
+    handleStoreUpdate(min, max, id, applied, selectType, text) { 
         this.props.dispatch(updateRange(this.props.colName, selectType, min, max, text, id, applied, this.props.data, "Text"));
     };
 
@@ -58,6 +61,7 @@ class TextRangeTable extends React.Component {
         var updateStore = this.handleStoreUpdate.bind(this);
         var minVal = this.props.minVal;
         var maxVal = this.props.maxVal;
+        var settings = this.props.settings;
 
         var rList = this.props.filterList[this.props.colName].rangeList;
 
@@ -69,6 +73,7 @@ class TextRangeTable extends React.Component {
                         key = { range[2] }
                         minVal = { minVal }
                         maxVal = { maxVal }
+                        settings = { settings }
                     />)
         });
 
@@ -78,7 +83,7 @@ class TextRangeTable extends React.Component {
                 {/* Displays the mapped ranges */}
                 {range}
 
-                {/* Add range button */}
+                {/* Add range button below*/}
                 <Card>
                     <CardText>
                         <Flex layout="row">
@@ -86,7 +91,7 @@ class TextRangeTable extends React.Component {
                             <FontIcon
                                 onClick = { this.handleAddEvent.bind(this) }
                                 className = "fa fa-plus fa-2x"
-                                hoverColor = { blue500 }
+                                hoverColor = { this.props.settings.rangeColor.addHover }
                                 style = { styleSet.iconStyles }
                             />
                         </Flex>
@@ -100,13 +105,12 @@ class TextRangeTable extends React.Component {
 
 /**
  * Defines what a row should render as on the DOM
- * Inherits props from RangeTable
+ * Inherits props from TextRangeTable
  **/
 class TextRangeRow extends React.Component {
     constructor(props) {
         super(props);
 
-        //[min, max, id, applied, selectType, text]
         this.state = {
             epoch: 0,
             value: this.props.range[4],
@@ -124,17 +128,16 @@ class TextRangeRow extends React.Component {
      * @param nextState: The state the component would have after the change
      * @returns: true if it should render and false if it shouldn't
      **/
-    /*
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.range != nextProps.range) {
+        if (this.props.range != nextProps.range || this.props.settings != nextProps.settings) {
             return true;
         }
-        if (this.state.min != nextState.min || this.state.max != nextState.max) {
+        if (this.state.min != nextState.min || this.state.max != nextState.max || this.state.text != nextState.text) {
             return true;
         }
         return false;
     };
-    */
+    
 
     /**
      * Updates the state when the component gets new props from the store
@@ -147,7 +150,7 @@ class TextRangeRow extends React.Component {
 
 
     /**
-     * Updates the visuals of the slider and the text fields when the slider is dragged
+     * Updates the local state when the slider is dragged
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onSlide(e) {
@@ -160,17 +163,15 @@ class TextRangeRow extends React.Component {
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onAfterSlide(e) {
-        //(selectType, id, min, max, text, applied)
-        this.props.updateStore(null, this.props.range[2], e[0], e[1], null, true);
+        this.props.updateStore(e[0], e[1], this.props.range[2], null, null, null, this.props.range);
     };
 
 
     /**
-     * Updates state values of min and max based on text field input
+     * Updates local state values of min and max based on text field input
      * @param e: the event instance of the text field, html element
      **/
      onSliderTextChange(e) {
-         console.log("hit");
          if (e.target.value.length <= 1) {
              if (e.target.value == "") {
                  if (e.target.name == "min") {
@@ -203,30 +204,31 @@ class TextRangeRow extends React.Component {
         var max = this.state.max;
 
         if (this.state.min === "") {
-            this.setState({ min: 0 });
             min = 0;
         }
         if (this.state.max === "") {
-            this.setState({ max: 25 });
             max = 25;
         }
 
         if (min > max) {
             if (this.state.latestUpdate === "MIN") {
-                this.setState({ min: max });
                 min = max;
             }
 
             else if (this.state.latestUpdate === "MAX") {
-                this.setState({ max: min });
                 max = min;
             }
         }
+        this.props.updateStore(min, max, this.props.range[2], null, null, null, this.props.range);
     };
 
 
+    /**
+     * Preprocesses min max vals, allows min > max while typing
+     * @param min: the min to be processed 
+     * @param max: the max to be processed 
+     **/
     arrayTextConversion(min, max) {
-        var min
         if (min === "" && max === "") {
             return [0, 25];
         }
@@ -269,7 +271,7 @@ class TextRangeRow extends React.Component {
      * @param e: key that was pressed
      **/
     onKeyPressMin(e) {
-        if(e.key === 'Enter') { 
+        if (e.key === 'Enter') { 
             this.inputElementMin.blur();
         } 
     }
@@ -280,7 +282,7 @@ class TextRangeRow extends React.Component {
      * @param e: key that was pressed
      **/
     onKeyPressMax(e) {
-        if(e.key === 'Enter') { 
+        if (e.key === 'Enter') { 
             this.inputElementMax.blur();
         } 
     }
@@ -294,10 +296,18 @@ class TextRangeRow extends React.Component {
         var epoch = (new Date()).getTime();
         if (epoch > this.state.epoch + 300) {
             if (e.target.checked) {
-                this.props.updateStore(this.props.range[2], null, null, true);
+                var min = null;
+                var max = null;
+                if (this.state.min == "") {
+                    min = 0;
+                }
+                if (this.state.max == "") {
+                    max = 25;
+                }
+                this.props.updateStore(min, max, this.props.range[2], true, null, null);
             }
             else {
-                this.props.updateStore(this.props.range[2], null, null, false);
+                this.props.updateStore(null, null, this.props.range[2], false, null, null);
             }
             this.setState({ epoch: epoch });
         }        
@@ -305,54 +315,80 @@ class TextRangeRow extends React.Component {
 
 
     /**
-     * Deletes a row from the range table by calling parent delete method
+     * Deletes a row from the range table
      **/
     onDelEvent() {
         this.props.onDelEvent(this.props.range[2]);
     };
+
+
+    /**
+     * Updates local state when text changes
+     * @param e: the event instance of the text field, html element
+     **/
+     onTextChange(e) {
+        this.setState({ text: e.target.value });
+    };
+
+
+    /**
+     * Pushes local state to store on blur
+     **/
+    onTextBlur() {
+        // [min, max, id, applied, selectType, text]
+        this.props.updateStore(null, null, this.props.range[2], null, null, this.state.text, this.props.range);
+    };
     
 
+    /**
+     * Handles change of drop-down choice
+     **/
     promptSelectChange = (event, index, value) => this.handleSelectChange(event, index, value);
-
     handleSelectChange(event, index, value) {
         this.setState({ value: value });
-        this.props.updateStore(value, this.props.range[2], 0, 25, "", null);
+        this.props.updateStore("", "", this.props.range[2], false, value, "", this.props.range);
     }
 
     render() {
         return (
             <Card>
                 <CardText>
-                    <Flex layout="row">      
+                    <Flex layout = "row">      
 
                         <Flex divider />  
 
-                        <Flex flex="1">
+                        <Flex flex = "1">
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash fa-2x"
-                                hoverColor = { red500 }
+                                hoverColor = { this.props.settings.rangeColor.deleteHover }
                                 style = { styleSet.iconStyles }
                             />
                         </Flex>
 
-                        <Flex flex="34" style = {{ width: "132px", margin: "-8px 0px 0px -19px" }}>
-                            <DropDownMenu value = { this.state.value } onChange = { this.promptSelectChange } >
-                                <MenuItem value = {1} label="Begins [R]" primaryText = "Begins With [Range]" />
-                                <MenuItem value = {2} label="Ends [R]" primaryText = "Ends With [Range]" />
-                                <MenuItem value = {3} label="Begins With" primaryText = "Begins With" />
-                                <MenuItem value = {4} label="Ends With" primaryText = "Ends With" />
-                                <MenuItem value = {5} label="Contains" primaryText = "Contains" />
-                                <MenuItem value = {6} label="Not Contain" primaryText = "Does Not Contain" />
+                        <Flex flex = "34" style = {{ width: "132px", margin: "-8px 0px 0px -19px" }}>
+                            <DropDownMenu 
+                                value = { this.state.value } 
+                                onChange = { this.promptSelectChange } 
+                                iconStyle = {{ fill: this.props.settings.rangeColor.text}}
+                                //underlineStyle = {{ borderColor: this.props.settings.rangeColor.text }}
+                                selectedMenuItemStyle = {{ backgroundColor: this.props.settings.rangeColor.selectedBackground, color: this.props.settings.rangeColor.selectedText}}
+                            >
+                                <MenuItem value = {1} label = "Contains" primaryText = "Contains" />
+                                <MenuItem value = {2} label = "Not Contain" primaryText = "Does Not Contain" />
+                                <MenuItem value = {3} label = "Begins With" primaryText = "Begins With" />
+                                <MenuItem value = {4} label = "Ends With" primaryText = "Ends With" />
+                                <MenuItem value = {5} label = "Begins [R]" primaryText = "Begins With [Range]" />
+                                <MenuItem value = {6} label = "Ends [R]" primaryText = "Ends With [Range]" />        
                             </DropDownMenu>
                         </Flex>
 
                         <Flex divider />
 
-                        <Flex flex="55">
-                            {this.state.value === 1 || this.state.value === 2 ? 
-                                        <Flex layout="row">
-                                            <Flex flex="25">
+                        <Flex flex = "55">
+                            {this.state.value === 5 || this.state.value === 6 ? 
+                                        <Flex layout = "row">
+                                            <Flex flex = "25">
                                                 <TextField 
                                                     type = 'text' 
                                                     name = "min"
@@ -360,6 +396,7 @@ class TextRangeRow extends React.Component {
                                                     value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
                                                     hintText = 'A'
                                                     style = { styleSet.textfieldStyles }
+                                                    underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
                                                     onChange = {
                                                         (e) => this.onSliderTextChange(e)
                                                     }
@@ -376,7 +413,7 @@ class TextRangeRow extends React.Component {
                                             <Flex divider />
                                             <Flex divider />
 
-                                            <Flex flex="50"
+                                            <Flex flex = "50"
                                                 style = {{
                                                     margin: "16px 0px 0px -8px",
                                                     width: "20px"
@@ -394,13 +431,15 @@ class TextRangeRow extends React.Component {
                                                     onAfterChange = {
                                                         (e) => this.onAfterSlide(e)
                                                     }
+                                                    trackStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderTrack }] }
+                                                    handleStyle = {[{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }]}
                                                 />
                                             </Flex>
 
                                             <Flex divider />
                                             <Flex divider />
 
-                                            <Flex flex="25">
+                                            <Flex flex = "25">
                                                 <TextField 
                                                     type = 'text' 
                                                     name = "max"
@@ -408,6 +447,7 @@ class TextRangeRow extends React.Component {
                                                     value = { this.state.max === "" ? "" : alphabet[this.state.max] }
                                                     hintText = 'Z'
                                                     style = { styleSet.textfieldStyles }
+                                                    underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
                                                     onChange = {
                                                         (e) => this.onSliderTextChange(e)
                                                     }
@@ -428,10 +468,12 @@ class TextRangeRow extends React.Component {
                                             type = 'text' 
                                             name = "min"
                                             ref = { input => this.inputElementMin = input }
-                                            value = { this.state.textValue } 
+                                            value = { this.state.text } 
                                             style = {{
                                                 width: "150px"
                                             }}
+                                            underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
+                                            hintText = "Letter or Phrase"
                                             onChange = {
                                                 (e) => this.onTextChange(e)
                                             }
@@ -447,7 +489,7 @@ class TextRangeRow extends React.Component {
 
                         <Flex divider />
 
-                        <Flex flex="10"
+                        <Flex flex = "10"
                             style = {{
                                 margin: "11px 0px 0px -11px"
                             }} 
@@ -459,6 +501,8 @@ class TextRangeRow extends React.Component {
                                 onToggle = {  
                                     (e) => this.onToggle(e)
                                 }
+                                trackSwitchedStyle = {{ backgroundColor: this.props.settings.rangeColor.toggleTrack }}
+                                thumbSwitchedStyle = {{ backgroundColor: this.props.settings.rangeColor.toggleCircle }}
                             />
                         </Flex>
                     </Flex>
@@ -489,7 +533,7 @@ const styleSet = {
  * Constants defined to make dispatching for the redux store consistent
  **/
 export const addTextRange = (colName, selectType, min, max, text, id, applied) => ({
-    type: 'ADD_RANGE',
+    type: 'ADD_TEXT_RANGE',
     colName,
     selectType,
     min,
@@ -526,6 +570,7 @@ export const updateRange = (colName, selectType, min, max, text, id, applied, da
 const mapStateToProps = function(state){
   return {
     filterList: state.filterState.Filter,
+    settings: state.filterState.Settings
   }
 }
 

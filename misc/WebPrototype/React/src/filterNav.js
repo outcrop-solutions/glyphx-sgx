@@ -606,13 +606,13 @@ class FilterNav extends Component {
          var columnsObj = this.makeColumns(this.state.tableData);
 		 var pinnedSearchBar = <div>
 									<IconButton 
-										iconClassName="fa fa-search" 
-										style={{
+										iconClassName = "fa fa-search" 
+										style = {{
 											padding: '0px',
 											width: '24px',
 											height: '24px'
 										}}
-										iconStyle= {{
+										iconStyle = {{
 											fontSize: '20px'
 										}}
 										onClick = { function(evt) { document.getElementById('pinnedCollapisbleSearch').focus(); } }
@@ -625,15 +625,16 @@ class FilterNav extends Component {
 										}}
 										onKeyUp = { (evt) => this.searchMultipleColumns(evt,true) } 
 										hintText = "Search for column names.."
+                                        underlineFocusStyle = {{ borderColor: this.props.settings.pinFilterColor.searchBoxUnderline }}
 									/> 
 									<IconButton 
 										iconClassName="fa fa-times" 
-										style={{
+										style = {{
 											padding: '0px',
 											width: '24px',
 											height: '24px'
 										}}
-										iconStyle= {{
+										iconStyle = {{
 											fontSize: '20px'
 										}}
 										onClick = { (evt) => this.clearSearchBox(evt,'pinnedCollapisbleSearch') }
@@ -803,12 +804,12 @@ class FilterNav extends Component {
 
 								<IconButton 
 									iconClassName="fa fa-search" 
-									style={{
+									style = {{
 										padding: '0px',
 										width: '24px',
 										height: '24px'
 									}}
-									iconStyle= {{
+									iconStyle = {{
 										fontSize: '20px'
 									}}
 									onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
@@ -821,15 +822,16 @@ class FilterNav extends Component {
 									}}
 									onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
 									hintText = "Search for column names.."
+                                    underlineFocusStyle = {{ borderColor: this.props.settings.pinFilterColor.searchBoxUnderline }}
 								/> 
 								<IconButton 
 									iconClassName="fa fa-times" 
-									style={{
+									style = {{
 										padding: '0px',
 										width: '24px',
 										height: '24px'
 									}}
-									iconStyle= {{
+									iconStyle = {{
 										fontSize: '20px'
 									}}
 									onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }

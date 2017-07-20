@@ -12,7 +12,7 @@ function shadeHexColors(color, percent) {
     return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
 }
 
-
+const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 const initialFilterState = {
     Filter: {
@@ -141,15 +141,52 @@ const filterReducer = function(state = initialFilterState, action) {
             console.log(newState);
             return newState;
 
+        case 'ADD_TEXT_RANGE':
+            console.log('ADD_TEXT_RANGE');
+            
+            stateVal = state.Filter[action.colName].rangeList.slice();
+            // [min, max, id, applied, selectType, text]
+            stateVal.push( ["", "", action.id, action.applied, action.selectType, ""] );
+
+            newState = {
+                ...state,
+                Filter : {
+                    ...state.Filter,
+                    [action.colName] : {
+                        ...state.Filter[action.colName],
+                        rangeList : stateVal
+                    }
+                }
+            }
+
+            console.log(newState);
+            return newState;
+
         case 'REMOVE_RANGE':
             console.log('REMOVE-RANGE');
 
             stateVal = state.Filter[action.colName].rangeList.slice();
+            var previousRange, selected;
 
             for (var i = 0; i < stateVal.length; i++) {
                 if (stateVal[i][2] == action.id) {
+                    previousRange = stateVal[i];
                     stateVal.splice(i, 1);
                 }
+            }
+
+
+            if (previousRange[3]) {
+                if (action.rangeType == "Number") {
+                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                }
+                else if (action.rangeType == "Text") {
+                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                }
+                else {
+
+                }
+                
             }
 
             newState = {
@@ -159,6 +196,7 @@ const filterReducer = function(state = initialFilterState, action) {
                     [action.colName] : {
                         ...state.Filter[action.colName],
                         rangeList : stateVal,
+                        selectedValues : selected
                     }
                 }
             }
@@ -194,6 +232,7 @@ const filterReducer = function(state = initialFilterState, action) {
             }
 
             else if (action.rangeType == "Text") {
+                var previousRange;
                 for (var i = 0; i < stateVal.length; i++) {
                     if (stateVal[i][2] == action.id) {
                         var min = stateVal[i][0];
@@ -217,14 +256,38 @@ const filterReducer = function(state = initialFilterState, action) {
                         if (action.text != null) {
                             text = action.text;
                         }
+                        previousRange = stateVal[i];
 
                         stateVal[i] = [min, max, action.id, applied, selectType, text];
                     }
                 }
             }
 
+            var selected = state.Filter[action.colName].selectedValues.slice()
 
-            var selected = calcSelected(stateVal, action.rangeType, action.data, action.previousRange, state.Filter[action.colName].selectedValues.slice());
+            if (action.selectType != null) {
+                selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+            }
+            else if (action.applied == false) {
+                if (action.rangeType == "Number") {
+                    //ADD NUMBER UNTOGGLE HERE
+                    console.log("Num untoggle");
+                    console.log(stateVal);
+                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                }
+                else if (action.rangeType == "Text") {
+                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                }
+                else {
+
+                }
+
+                //stateVal = checkUntoggle(stateVal, selected, action.data);
+            }
+            else {
+                selected = calcSelected(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
+            }
+
             
             newState = {
                 ...state,
@@ -289,15 +352,30 @@ const filterReducer = function(state = initialFilterState, action) {
                 {    
                     for (var i = 0; i < stateVal.length; i++) {
                         if (stateVal[i][3]) {
-                            if (parseFloat(action.filter.value) >= stateVal[i][0] && parseFloat(action.filter.value) <= stateVal[i][1]) {
-                                stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                            if (stateVal[i].length == 6) {
+                                var selected = calcTextSelected(stateVal[i], action.filter.data);
+
+                                if (selected.indexOf(action.filter.value) != -1) {
+                                    stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false, stateVal[i][4], stateVal[i][5] ];
+                                }
+                            }
+                            else {  
+                                if (parseFloat(action.filter.value) >= stateVal[i][0] && parseFloat(action.filter.value) <= stateVal[i][1]) {
+                                    stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                                }
                             }
                         }
                     }
                 }
                 else {
                     for (var j = 0; j < stateVal.length; j++) {
-                        stateVal[j] = [stateVal[j][0], stateVal[j][1], stateVal[j][2], false ];
+                        
+                        if (stateVal[i].length == 6) {
+                            stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false, stateVal[i][4], stateVal[i][5] ];
+                        }
+                        else {  
+                            stateVal[j] = [stateVal[j][0], stateVal[j][1], stateVal[j][2], false ];
+                        }
                     }
                 }
             }
@@ -400,6 +478,167 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
             }
         }
     }
+
+    // [min, max, id, applied, selectType, text]
+    // (rList, rangeType, data, previousRange, selectedValues)
+    else if (rangeType == "Text") {
+        for (var i = 0; i < rList.length; i++) {
+            if (rList[i][3] == true) {
+
+                if (previousRange && rList[i][2] == previousRange[2] && previousRange[3] == true && (rList[i][0] != previousRange[0] || rList[i][1] != previousRange[1] || rList[i][5] != previousRange[5]) ) {
+                    var previousList = calcTextSelected(previousRange, data);
+                    var newList = calcTextSelected(rList[i], data);
+
+                    for (j = 0; j < newList.length; j++) {
+                        if (selectedValues.indexOf(newList[j]) == -1) {
+                            selectedValues.push(newList[j]);
+                        }
+                    }
+
+                    for (j = 0; j < previousList.length; j++) {
+                        if (newList.indexOf(previousList[j]) == -1) {
+                            var index = selectedValues.indexOf(previousList[j]);
+                            if (index != -1) {
+                                selectedValues.splice(index, 1);
+                            }
+                        }
+                    }
+                }
+
+                else {
+
+                    var newList = calcTextSelected(rList[i], data);
+
+                    for (j = 0; j < newList.length; j++) {
+                        if (selectedValues.indexOf(newList[j]) == -1) {
+                            selectedValues.push(newList[j]);
+                        }
+                    }
+                }
+            
+            }
+        }
+    }
+
+    console.log("selectedValues: ");
+    console.log(selectedValues);
+    return selectedValues;
+}
+
+function calcTextSelected(range, data) {
+    var selectedValues = [];
+
+    if (range[4] == 1) {
+        for (var j = 0; j < data.length; j++) {
+            if (selectedValues.indexOf(data[j]) == -1) {
+                if ( data[j].toUpperCase().includes(range[5].toUpperCase()) ) {
+                    selectedValues.push(data[j]);
+                }
+            }
+        }
+
+    }
+    else if (range[4] == 2) {
+
+        for (var j = 0; j < data.length; j++) {
+            if (selectedValues.indexOf(data[j]) == -1) {
+                if ( !data[j].toUpperCase().includes(range[5].toUpperCase()) ) {
+                    selectedValues.push(data[j]);
+                }
+            }
+        }
+        
+    }
+    else if (range[4] == 3) {
+        var regx = new RegExp("^" + range[5].toUpperCase() );
+
+        for (var j = 0; j < data.length; j++) {
+            if (selectedValues.indexOf(data[j]) == -1) {
+                if ( regx.test(data[j].toUpperCase()) ) {
+                    selectedValues.push(data[j]);
+                }
+            }
+        }
+    }
+    else if (range[4] == 4) {
+        var regx = new RegExp(range[5].toUpperCase() + "$");
+
+        for (var j = 0; j < data.length; j++) {
+            if (selectedValues.indexOf(data[j]) == -1) {
+                if ( regx.test(data[j].toUpperCase()) ) {
+                    selectedValues.push(data[j]);
+                }
+            }
+        }
+    }
+    else if (range[4] == 5) {
+        console.log("5");
+
+        for (var j = parseInt(range[0], 10); j <= parseInt(range[1], 10); j++) {
+            var regx = new RegExp("^" + alphabet[j] );
+
+            for (var d = 0; d < data.length; d++) {
+                if (selectedValues.indexOf(data[d]) == -1) {
+                    if ( regx.test(data[d].toUpperCase()) ) {
+                        selectedValues.push(data[d]);
+                    }
+                }
+            }
+        }
+
+    }
+    else if (range[4] == 6) {
+        console.log("6");
+
+        for (var j = parseInt(range[0], 10); j <= parseInt(range[1], 10); j++) {
+            var regx = new RegExp(alphabet[j] + "$");
+
+            for (var d = 0; d < data.length; d++) {
+                if (selectedValues.indexOf(data[d]) == -1) {
+                    if ( regx.test(data[d].toUpperCase()) ) {
+                        selectedValues.push(data[d]);
+                    }
+                }
+            }
+        }
+
+    }
+
+    return selectedValues;
+}
+
+function calcSelectedNoPrevious(rList, rangeType, data) {
+    var selectedValues = [];
+
+    if (rangeType == "Number") {
+        //debugger;
+        for (var i = 0; i < rList.length; i++) {
+            if (rList[i][3]) {
+                for (var j = 0; j < data.length; j++) {
+                    if (parseFloat(data[j], 10) >= rList[i][0] && parseFloat(data[j], 10) <= rList[i][1]) {
+                        selectedValues.push(data[j]);
+                    }
+                }
+            }
+        }
+    }
+
+    else if (rangeType == "Text") {
+        for (var i = 0; i < rList.length; i++) {
+            if (rList[i][3]) {
+                var newList = calcTextSelected(rList[i], data);
+                for (var j = 0; j < newList.length; j++) {
+                    if (selectedValues.indexOf(newList[j]) == -1) {
+                        selectedValues.push(newList[j]);
+                    }
+                }
+            }
+        }
+    }
+    else {
+
+    }
+    
 
     console.log("selectedValues: ");
     console.log(selectedValues);

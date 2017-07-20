@@ -123,8 +123,8 @@ class FilterTable extends Component {
                     selectedValues: selectedValues,
                     value: (context.flatData[rowSelection] ? context.flatData[rowSelection].value : null),
                     checked: checked,
-                    type: context.props.tableState[context.props.id].type
-
+                    type: context.props.tableState[context.props.id].type,
+                    data: context.props.tableData
             }
 
             context.props.dispatch(addRemoveElastic(filterStructure));
