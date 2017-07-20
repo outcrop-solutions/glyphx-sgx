@@ -12,12 +12,15 @@ import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
 
-// Used to translate slider values to letters
+
+/**
+ * Used to translate slider values to letters
+ **/
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 /**
  * @param colName: Name of the corresponding column for this RangeForm
- * @param data: array of values from the eleastic table for the corresponding colName
+ * @param data: Array of values from the eleastic table for the corresponding colName
  **/
 class TextRangeTable extends React.Component {
 
@@ -35,7 +38,7 @@ class TextRangeTable extends React.Component {
      * Adds a range with the default values: [0, 25, generated ID, false, 1, ""]
      **/
     handleAddEvent() {
-        this.props.dispatch(addTextRange(this.props.colName, 1, 0, 25, "", ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
+        this.props.dispatch(addRange(this.props.colName, 1, 0, 25, "", ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false, "Text"));
     };
 
 
@@ -532,15 +535,16 @@ const styleSet = {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const addTextRange = (colName, selectType, min, max, text, id, applied) => ({
-    type: 'ADD_TEXT_RANGE',
+export const addRange = (colName, selectType, min, max, text, id, applied, rangeType) => ({
+    type: 'ADD_RANGE',
     colName,
     selectType,
     min,
     max,
     text,
     id,
-    applied
+    applied,
+    rangeType
 });
 export const removeRange = (colName, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',

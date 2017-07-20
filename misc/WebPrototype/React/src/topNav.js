@@ -9,10 +9,12 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
-import SelectField from 'material-ui/SelectField';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
 import './topNav.css';
 
@@ -24,7 +26,9 @@ class TopNav extends Component {
         LoadMask : false,
         openSettings: false,
         themeSelection: 0,
-        themeTempSelection: 0
+        themeTempSelection: 0,
+        glyphViewLoaded: false,
+        menuOpen: false
     };
 
     showLoadMask = () => {
@@ -46,9 +50,20 @@ class TopNav extends Component {
     };
 
     componentDidMount() {
-        this.hideLoadMask();
+        var context = this;
+        context.timeout = window.setInterval(function(){
+            if(context.state.glyphViewLoaded){
+                context.hideLoadMask();
+                clearInterval(context['timeout']);
+            }
+        },250);
     }
 
+    onLoadGlyphView(){
+        this.setState({
+            glyphViewLoaded: true
+        });
+    }
 
     promptSelectChange = (event, index, value) => this.handleSelectChange(event, index, value);
 
@@ -60,6 +75,27 @@ class TopNav extends Component {
     onSettingsSave() {
         this.setState({ themeSelection: this.state.themeTempSelection, openSettings: false });
         this.props.dispatch(editThemeSettings(this.state.themeTempSelection));
+    }
+
+    openCloseMenu() {
+        var menuItems = document.getElementsByClassName('toggleOptionsMenuItems');
+        var len = menuItems.length;
+        var translate = 70;
+
+        if(this.state.menuOpen)
+        {
+            for(var i=0;i<len;i++){
+                menuItems[i].style.transform = '';
+            }
+            this.setState({menuOpen:false});
+        }
+        else{
+            for(var i=0;i<len;i++){
+                menuItems[i].style.transform = 'translate(0px,-'+translate+'px)';
+                translate = translate + 50;
+            }
+            this.setState({menuOpen:true});
+        }
     }
 
     render() {
@@ -95,21 +131,8 @@ class TopNav extends Component {
 
                         <Flex >
                             <div className = "TopNav" style = {{ width:'100%', height:'100%' }}>
-
-                                {/*<AppBar className="navbar-color"
-                                    id="AppBar"
-									style={{paddingLeft: '0px'}}
-                                    title={
-										<span style={styles.navLogo}>
-											<a href="http://www.synglyphx.com/" target="_blank" rel="noopener noreferrer">
-												<img src="./logo.webp" style={{width:'300px'}} alt="SynGlyphX"/>
-											</a>
-										</span>}
-									iconElementLeft={<span />}
-                                    iconElementRight={<IconButton onClick={toggleNav}><FontIcon className="fa fa-filter fa-2x" /></IconButton>}
-                                />*/}
 								
-								<Toolbar className="navbar-color" style = {{ padding: '0px', backgroundColor: this.props.settings.topNavbar.barBackground}}>
+								<Toolbar className = "navbar-color" style = {{ padding: '0px', backgroundColor: this.props.settings.topNavbarColor.barBackground }}>
 									<ToolbarGroup>
 										<span style = { styles.navLogo }>
 											<a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
@@ -191,18 +214,16 @@ class TopNav extends Component {
                                     open = { this.state.openSettings }
                                 >
 
-                                    <SelectField
-                                        floatingLabelText = "Color Theme"
+                                    <DropDownMenu
                                         value = { this.state.themeTempSelection }
                                         onChange = { this.promptSelectChange }
-                                        hintStyle = {{ color: this.props.settings.settingsModalColor.text }}
                                         iconStyle = {{ fill: this.props.settings.settingsModalColor.text}}
                                         underlineStyle = {{ borderColor: this.props.settings.settingsModalColor.text }}
                                         selectedMenuItemStyle = {{ backgroundColor: this.props.settings.settingsModalColor.selectedBackground, color: this.props.settings.settingsModalColor.selectedText}}
                                     >
                                         <MenuItem value = { 0 } primaryText = "SynGlyphX" />
                                         <MenuItem value = { 1 } primaryText = "Gannon" />
-                                    </SelectField>
+                                    </DropDownMenu>
                                 </Dialog>
                                 
                             </div>
@@ -211,7 +232,107 @@ class TopNav extends Component {
                         <Flex flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
-                            <iframe title = "3D rendering engine" style = {{ width:'100%', height:'100%' }} src = "https://s3.amazonaws.com/synglyphx/demo.html" /> 
+                            <iframe 
+                                id="GlyphViewer" 
+                                onLoad={this.onLoadGlyphView.bind(this)} 
+                                title = "3D rendering engine" 
+                                style = {{ transition:'1s' ,width:'100%', height:'100%' }} 
+                                src = "https://s3.amazonaws.com/synglyphx/demo.html" 
+                            /> 
+                            <FloatingActionButton 
+                                style={{
+                                    bottom: '20px',
+                                    left: '20px',
+                                    position: 'absolute',
+                                    zIndex: '10',
+                                    transition: '0.5s'
+                                }} 
+                                onClick={this.openCloseMenu.bind(this)}
+                            >
+
+                                <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                            
+                            </FloatingActionButton>
+                            
+                            <FloatingActionButton 
+                                style={{
+                                    bottom: '25px',
+                                    left: "30px",
+                                    position: 'absolute',
+                                    zIndex: '5',
+                                    transition: '0.5s'
+                                }} 
+                                className="toggleOptionsMenuItems"
+                                mini={true}
+                            >
+
+                                <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                            
+                            </FloatingActionButton>
+                            
+                            <FloatingActionButton 
+                                style={{
+                                    bottom: '25px',
+                                    left: "30px",
+                                    position: 'absolute',
+                                    zIndex: '5',
+                                   transition: '0.5s'
+                                }} 
+                                className="toggleOptionsMenuItems"
+                                mini={true}
+                            >
+
+                                <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                            
+                            </FloatingActionButton>
+                            
+                            <FloatingActionButton 
+                                style={{
+                                    bottom: '25px',
+                                    left: "30px",
+                                    position: 'absolute',
+                                    zIndex: '5',
+                                    transition: '0.5s'
+                                }} 
+                                className="toggleOptionsMenuItems"
+                                mini={true}
+                            >
+
+                                <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                            
+                            </FloatingActionButton>
+                            
+                            <FloatingActionButton 
+                                style={{
+                                    bottom: '25px',
+                                    left: "30px",
+                                    position: 'absolute',
+                                    zIndex: '5',
+                                    transition: '0.5s'
+                                }} 
+                                className="toggleOptionsMenuItems"
+                                mini={true}
+                            >
+
+                                <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                            
+                            </FloatingActionButton>
+                            
+                            <FloatingActionButton 
+                                style={{
+                                    bottom: '25px',
+                                    left: "30px",
+                                    position: 'absolute',
+                                    zIndex: '5',
+                                    transition: '0.5s'
+                                }} 
+                                className="toggleOptionsMenuItems"
+                                mini={true}
+                            >
+
+                                <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                            
+                            </FloatingActionButton>
                         </Flex>
                     </Flex>
                 </div>
@@ -221,17 +342,25 @@ class TopNav extends Component {
 }
 
 function openUserProfileMenu(){
-	
+	//Open a userProfileMenu.
 }
 
 // Hides the filter side nav by translating it off the screen so it doesnt resize and 
 // wont have to be reloaded after it is "closed"
 function toggleNav() {
-    if (document.getElementById("filterNav").style.transform === "translate(460px, 0px)") {
-        document.getElementById("filterNav").style.transform = "translate(0px, 0px)";
+    var gv = document.getElementById('GlyphViewer');
+    var filterNav = document.getElementById("filterNav");
+    var width = gv.clientWidth - filterNav.clientWidth;
+
+    if (filterNav.style.transform === "translate(460px, 0px)") {
+        
+        gv.style.width = width + "px";
+        filterNav.style.transform = "translate(0px, 0px)";
     }
     else {
-        document.getElementById("filterNav").style.transform = "translate(460px, 0px)";
+        
+        gv.style.width = "100%";
+        filterNav.style.transform = "translate(460px, 0px)";
     }
 }
 

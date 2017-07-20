@@ -86,7 +86,7 @@ const themeSettingColors = [
             selectedText: "#ffffff"
         },
 
-        topNavbar: {
+        topNavbarColor: {
             barBackground: "#2d3091"
         },
 
@@ -184,7 +184,7 @@ const themeSettingColors = [
             selectedText: "#ffffff"
         },
 
-        topNavbar: {
+        topNavbarColor: {
             barBackground: "#9d2235"
         },
 

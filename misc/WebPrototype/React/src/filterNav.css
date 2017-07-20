@@ -144,8 +144,6 @@
 	font-size: 0rem !important;
     padding: 0px !important;
 }
-
-
   .centerText {
     display: block;
     text-align: center;
@@ -156,6 +154,18 @@
       cursor: default;
   }
 
-  .highlightedRows {
-      background-color: rgba(127, 221, 233, 0.4);
+  .selectViewName {
+      width:100%;
+      z-index: 3;
+      font-size: 13px;
+  }
+
+  .selectTableName {
+      width:100%;
+      z-index: 2;
+      font-size: 13px;
+  }
+
+  .Select-value {
+      font-size: 13px !important;
   }

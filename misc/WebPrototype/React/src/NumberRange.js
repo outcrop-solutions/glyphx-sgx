@@ -15,7 +15,7 @@ import 'font-awesome/css/font-awesome.css';
  * @param minVal: Sets the minimum value allowed for all the rangeList within the range table
  * @param maxVal: Sets the maximum value allowed for all the rangeList within the range table
  * @param colName: Name of the corresponding column for this RangeForm
- * @param data: array of values from the eleastic table for the corresponding colName
+ * @param data: Array of values from the eleastic table for the corresponding colName
  **/
 class NumberRangeTable extends React.Component {
 
@@ -33,7 +33,7 @@ class NumberRangeTable extends React.Component {
      * Adds a range with the default values of: [minimum value for the column, maximum value for the column, random generated ID, false]
      **/
     handleAddEvent() {
-        this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false));
+        this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false, "Number"));
     }
 
 
@@ -495,13 +495,14 @@ const styleSet = {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const addRange = (colName, min, max, id, applied) => ({
+export const addRange = (colName, min, max, id, applied, rangeType) => ({
     type: 'ADD_RANGE',
     colName,
     min,
     max,
     id,
-    applied
+    applied,
+    rangeType
 });
 export const removeRange = (colName, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',

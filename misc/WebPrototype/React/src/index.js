@@ -6,215 +6,148 @@ import { createStore, combineReducers } from 'redux';
 import themeSettingColors from './ColorThemes.js';
 import './index.css';
 
-// Will darken or lighten a color by a percent (-1.0 to 1.0) input
-function shadeHexColors(color, percent) {   
-    var f = parseInt(color.slice(1),16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
-    return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
-}
 
-const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
+/**
+ * The initial state of the store (prior to loading table data)
+ **/
 const initialFilterState = {
-    Filter: {
-    },
-    Settings: {
-        rangeColor: {
-            sliderCircle: "#2d3091",
-            sliderTrack: shadeHexColors("#2d3091", 0.4),
-            textFieldUnderline: "#2d3091",
-            toggleCircle: "#2d3091",
-            toggleTrack: shadeHexColors("#2d3091", 0.4),
-            deleteHover: "#b81616",
-            addHover: "#339cee"
-        },
-
-        elasticColor: {
-            checkBox: "#2d3091",
-            checkAllBox: shadeHexColors("#575d5e", -0.4),
-            searchBoxUnderline: "#2d3091"
-        },
-
-        filterTabColor: {
-            titleText: "#ffffff",
-            tabBackground: shadeHexColors("#2d3091", -0.4),
-        },
-
-        collapsibleColor: {
-            mainBackground: "#2d3091",
-            mainCollapsed: shadeHexColors("#2d3091", -0.4),
-            mainHover: shadeHexColors("#2d3091", 0.2),
-            mainText: "#ffffff",
-            mainIcon: "#ffffff",
-
-            subBackground: "#575d5e",
-            subCollapsed: "#575d5e",
-            subHover: shadeHexColors("#2d3091", 0.2),
-            subText: "#ffffff",
-            pinned: "#ffffff",
-            unpinned: shadeHexColors("#2d3091", -0.4)
-        },
-
-        pinFilterColor: {
-            addPinBackground: shadeHexColors("#2d3091", -0.4),
-            okButton: "#2d3091",
-            cancelButton: "#575d5e"
-        },
-
-        hideTopViewButtonColor: {
-            background:  shadeHexColors("#575d5e", -0.4),
-            icon: "#ffffff"
-        },
-
-        settingsModalColor: {
-            saveButton: "#2d3091",
-            cancelButton: "#575d5e"
-        },
-
-        saveModalColor: {
-            saveButton: "#2d3091",
-            cancelButton: "#575d5e",
-            textFieldUnderline: "#2d3091",
-        },
-
-        viewSelectColor: {
-            text: "black",
-            selectedBackground: "#2d3091",
-            selectedText: "#ffffff"
-        },
-
-        tableSelectColor: {
-            text: "black",
-            selectedBackground: "#2d3091",
-            selectedText: "#ffffff"
-        },
-
-        topNavbar: {
-            barBackground: "#2d3091"
-        },
-
-        overviewButtonsColor: {
-            background: "#2d3091",
-            text: "white"
-        },
-
-        filterOverviewColor: {
-            badgeBackground: shadeHexColors("#2d3091", -0.4),
-            badgeText: "white",
-            deleteHover: "#b81616",
-            elasticHover: "#339cee",
-            rangeHover: "#339cee"
-        },
-    }
+    Filter: {},
+    Settings: themeSettingColors[0]
 };
 
 
+/**
+ * Redux Reducer which handles all changes to the store
+ * @param state: The current state of the store
+ * @param action: The action that called for a change on the store
+ **/
 const filterReducer = function(state = initialFilterState, action) {
-    var newState;
-    var stateVal;
+    var newState, stateVal, previousRange, selected, i;
     
     switch (action.type) {
+        /**
+         * Initializes the Filter structure
+         * @param action.storeFilterStruc: What to set the initial Filter sub-structure to
+         **/
         case 'INIT':
-            newState  = {
-                    ...state,
-                    Filter : action.storeFilterStruc,
+            return newState = {
+                ...state,
+                Filter: action.storeFilterStruc,
             }
-            console.log(newState);
-            return newState;
 
+
+        /**
+         * Adds a range to the rangeList of the Filter structure
+         * @param action.colName: The column which represents the range
+         * @param action.applied: Whether or not the range is applied
+         * @param action.id: Generated ID for the new range row
+         * @param action.rangeType: Type of the range (Number, Text, Date)
+         * @param action.selectType: Only gets a value for Text-Ranges (1 = Contains, 2 = Does Not Contain, 3 = Begins With, 4 = Ends With, 5 = Begins With [Range], 6 = Ends With [Range])
+         **/
         case 'ADD_RANGE':
-            console.log('ADD-RANGE');
-            
             stateVal = state.Filter[action.colName].rangeList.slice();
-            stateVal.push( ["", "", action.id, action.applied] );
 
-            newState = {
+            if (action.rangeType === "Number") {
+                stateVal.push( ["", "", action.id, action.applied] );
+            }
+            else if (action.rangeType === "Text") {
+                stateVal.push( ["", "", action.id, action.applied, action.selectType, ""] );
+            }
+            else {
+                // Date range
+            }
+
+            return newState = {
                 ...state,
-                Filter : {
+                Filter: {
                     ...state.Filter,
-                    [action.colName] : {
+                    [action.colName]: {
                         ...state.Filter[action.colName],
-                        rangeList : stateVal
+                        rangeList: stateVal
                     }
                 }
             }
 
-            console.log(newState);
-            return newState;
 
-        case 'ADD_TEXT_RANGE':
-            console.log('ADD_TEXT_RANGE');
-            
-            stateVal = state.Filter[action.colName].rangeList.slice();
-            // [min, max, id, applied, selectType, text]
-            stateVal.push( ["", "", action.id, action.applied, action.selectType, ""] );
-
-            newState = {
-                ...state,
-                Filter : {
-                    ...state.Filter,
-                    [action.colName] : {
-                        ...state.Filter[action.colName],
-                        rangeList : stateVal
-                    }
-                }
-            }
-
-            console.log(newState);
-            return newState;
-
+        /**
+         * Removes a range from the rangeList of the Filter structure
+         * @param action.colName: The column which represents the range
+         * @param action.data: The data which corresponds to the column
+         * @param action.rangeType: Type of the range (Number, Text, Date)
+         * @param action.id: ID of the row to be removed
+         **/
         case 'REMOVE_RANGE':
-            console.log('REMOVE-RANGE');
-
             stateVal = state.Filter[action.colName].rangeList.slice();
-            var previousRange, selected;
 
-            for (var i = 0; i < stateVal.length; i++) {
-                if (stateVal[i][2] == action.id) {
+            // Remove the range and keep track of the node that was removed
+            for (i = 0; i < stateVal.length; i++) {
+                if (stateVal[i][2] === action.id) {
                     previousRange = stateVal[i];
                     stateVal.splice(i, 1);
                 }
             }
 
-
+            // If what was removed was applied, then recaculate what should be selected in the elastic list now
             if (previousRange[3]) {
-                if (action.rangeType == "Number") {
+                if (action.rangeType === "Number") {
                     selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
                 }
-                else if (action.rangeType == "Text") {
+                else if (action.rangeType === "Text") {
                     selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
                 }
                 else {
-
+                    // TODO: Add Date range here
                 }
-                
-            }
 
-            newState = {
-                ...state,
-                Filter : {
-                    ...state.Filter,
-                    [action.colName] : {
-                        ...state.Filter[action.colName],
-                        rangeList : stateVal,
-                        selectedValues : selected
+                return newState = {
+                    ...state,
+                    Filter: {
+                        ...state.Filter,
+                        [action.colName]: {
+                            ...state.Filter[action.colName],
+                            rangeList: stateVal,
+                            selectedValues: selected
+                        }
                     }
                 }
             }
 
-            console.log(newState);
-            return newState;
+            // Removed node was not applied so no need to recalculate selected elastic items
+            return newState = {
+                ...state,
+                Filter: {
+                    ...state.Filter,
+                    [action.colName]: {
+                        ...state.Filter[action.colName],
+                        rangeList: stateVal
+                    }
+                }
+            }
 
+
+        /**
+         * Updates the values in an existing range
+         * @param action.colName: The column which the represents the range
+         * @param action.data: The data which corresponds to the column
+         * @param action.rangeType: Type of the range (Number, Text, Date)
+         * @param action.id: ID of the row to be updated
+         * @param action.min: Min value of the slider
+         * @param action.max: Max value of the slider
+         * @param action.applied: Applied status of the range row
+         * @param action.selectType: Only gets a value for Text-Ranges (1 = Contains, 2 = Does Not Contain, 3 = Begins With, 4 = Ends With, 5 = Begins With [Range], 6 = Ends With [Range])
+         * @param action.text: Only gets a value for Text-Ranges (input for Contains, Does Not Contain, Begins With, Ends With)
+         **/
         case 'UPDATE_RANGE':
-            console.log('UPDATE-RANGE');
-
             stateVal = state.Filter[action.colName].rangeList.slice();
+            var min, max, applied, selectType, text;
 
-            if (action.rangeType == "Number") {
-                for (var i = 0; i < stateVal.length; i++) {
-                    if (stateVal[i][2] == action.id) {
-                        var min = stateVal[i][0];
-                        var max = stateVal[i][1];
-                        var applied = stateVal[i][3];
+            if (action.rangeType === "Number") {
+                // Update the values of the target range row, but also save the old ones
+                for (i = 0; i < stateVal.length; i++) {
+                    if (stateVal[i][2] === action.id) {
+                        min = stateVal[i][0];
+                        max = stateVal[i][1];
+                        applied = stateVal[i][3];
 
                         if (action.min != null) {
                             min = action.min;
@@ -226,20 +159,22 @@ const filterReducer = function(state = initialFilterState, action) {
                             applied = action.applied;
                         }
 
+                        previousRange = stateVal[i];
                         stateVal[i] = [min, max, action.id, applied];
+                        break;
                     }
                 }
             }
 
-            else if (action.rangeType == "Text") {
-                var previousRange;
-                for (var i = 0; i < stateVal.length; i++) {
-                    if (stateVal[i][2] == action.id) {
-                        var min = stateVal[i][0];
-                        var max = stateVal[i][1];
-                        var applied = stateVal[i][3];
-                        var selectType = stateVal[i][4];
-                        var text = stateVal[i][5];
+            else if (action.rangeType === "Text") {
+                // Update the values of the target range row, but also save the old ones
+                for (i = 0; i < stateVal.length; i++) {
+                    if (stateVal[i][2] === action.id) {
+                        min = stateVal[i][0];
+                        max = stateVal[i][1];
+                        applied = stateVal[i][3];
+                        selectType = stateVal[i][4];
+                        text = stateVal[i][5];
 
                         if (action.min != null) {
                             min = action.min;
@@ -256,178 +191,217 @@ const filterReducer = function(state = initialFilterState, action) {
                         if (action.text != null) {
                             text = action.text;
                         }
-                        previousRange = stateVal[i];
 
+                        previousRange = stateVal[i];
                         stateVal[i] = [min, max, action.id, applied, selectType, text];
+                        break;
                     }
                 }
             }
 
-            var selected = state.Filter[action.colName].selectedValues.slice()
-
-            if (action.selectType != null) {
-                selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+            else {
+                // TODO: Add Date range here
             }
-            else if (action.applied == false) {
-                if (action.rangeType == "Number") {
-                    //ADD NUMBER UNTOGGLE HERE
-                    console.log("Num untoggle");
-                    console.log(stateVal);
+
+            // Determines if selected values should be recalculated
+            if (previousRange[3] || action.applied) {
+                if (action.selectType != null) {
                     selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
                 }
-                else if (action.rangeType == "Text") {
-                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                else if (action.applied === false) {
+                    if (action.rangeType === "Number") {
+                        selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                    }
+                    else if (action.rangeType === "Text") {
+                        selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                    }
+                    else {
+                        // TODO: Add Date range here
+                    }
                 }
                 else {
-
+                    selected = calcSelected(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
                 }
 
-                //stateVal = checkUntoggle(stateVal, selected, action.data);
+                return newState = {
+                    ...state,
+                    Filter: {
+                        ...state.Filter,
+                        [action.colName]: {
+                            ...state.Filter[action.colName],
+                            rangeList: stateVal,
+                            selectedValues: selected
+                        }
+                    }
+                }
             }
-            else {
-                selected = calcSelected(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
-            }
-
-            
-            newState = {
+         
+            return newState = {
                 ...state,
-                Filter : {
+                Filter: {
                     ...state.Filter,
-                    [action.colName] : {
+                    [action.colName]: {
                         ...state.Filter[action.colName],
-                        rangeList : stateVal,
-                        selectedValues: selected,
+                        rangeList: stateVal,
                     }
                 }
             }
 
 
-            console.log(newState.Filter[action.colName].selectedValues);
-            
+        /**
+         * Removes all elastic selections and unapplies all ranges from a target column
+         * @param action.colName: The column which the represents the range
+         **/
+         case 'REMOVE_FILTER_VIEW': 
+            stateVal = state.Filter[action.colName].rangeList.slice();
+            for (i = 0; i < stateVal.length; i++) {
+                if (stateVal[i][3]) {
 
-            console.log(newState);
-            return newState;
+                    //debugger;
+                    if (stateVal[i].length === 6) {
+                        stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false, stateVal[i][4], stateVal[i][5]];
+                    }
+                    else {
+                        stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false];
+                    }
+                }
+            }
+
+            return newState = {
+                ...state,
+                Filter: {
+                    ...state.Filter,
+                    [action.colName]: {
+                        ...state.Filter[action.colName],
+                        rangeList: stateVal,
+                        selectedValues: [],
+                    }
+                }
+            }
 
         
-
-         case 'REMOVE_FILTER_VIEW': 
-            console.log('REMOVE_FILTER_VIEW');
-
-            stateVal = state.Filter[action.colName].rangeList.slice();
-
-            for (var i = 0; i < stateVal.length; i++) {
-                if (stateVal[i][3]) {
-                    stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false]
-                }
-            }
-
-
-            newState = {
-                ...state,
-                Filter : {
-                    ...state.Filter,
-                    [action.colName] : {
-                        ...state.Filter[action.colName],
-                        rangeList : stateVal,
-                        highlightedValues: [],
-                        selectedValues: [],
-                        applied: false,
-                    }
-                }
-            }
-            
-            
-            console.log(newState);
-            return newState;
-
+        /**
+         * Checks or unchecks an elastic table row, unapplies ranges if they include the target value
+         * @param action.filter.colName: The column which the represents the elastic table
+         * @param action.filter.checked: Boolean informing if checkbox was checked or unchecked
+         * @param action.filter.selectedValues: Array of currently selected values (after change)
+         * @param action.filter.data: The data which corresponds to the column
+         * @param action.filter.value: The value of the row which had its checked status changed
+         **/
         case 'ADD_REMOVE_ELASTIC':
-        {
-            console.log('ADD_REMOVE_ELASTIC');
             var col = action.filter.colName;
-
-            stateVal = state.Filter[col].rangeList.slice();
+            var shouldUpdateRange = false;
+            stateVal = state.Filter[action.filter.colName].rangeList.slice();
 
             if (!action.filter.checked) {
-                if(action.filter.selectedValues.length > 0)
-                {    
-                    for (var i = 0; i < stateVal.length; i++) {
+                if (action.filter.selectedValues.length > 0) {    
+                    for (i = 0; i < stateVal.length; i++) {
                         if (stateVal[i][3]) {
-                            if (stateVal[i].length == 6) {
-                                var selected = calcTextSelected(stateVal[i], action.filter.data);
-
-                                if (selected.indexOf(action.filter.value) != -1) {
+                            if (stateVal[i].length === 6) {
+                                selected = calcTextSelected(stateVal[i], action.filter.data);
+                                if (selected.indexOf(action.filter.value) !== -1) {
                                     stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false, stateVal[i][4], stateVal[i][5] ];
+                                    shouldUpdateRange = true;
                                 }
                             }
                             else {  
                                 if (parseFloat(action.filter.value) >= stateVal[i][0] && parseFloat(action.filter.value) <= stateVal[i][1]) {
                                     stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                                    shouldUpdateRange = true;
                                 }
                             }
                         }
                     }
                 }
+
                 else {
-                    for (var j = 0; j < stateVal.length; j++) {
-                        
-                        if (stateVal[i].length == 6) {
+                    for (i = 0; i < stateVal.length; i++) {
+                        if (stateVal[i].length === 6) {
                             stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false, stateVal[i][4], stateVal[i][5] ];
+                            shouldUpdateRange = true;
                         }
                         else {  
-                            stateVal[j] = [stateVal[j][0], stateVal[j][1], stateVal[j][2], false ];
+                            stateVal[i] = [stateVal[i][0], stateVal[i][1], stateVal[i][2], false ];
+                            shouldUpdateRange = true;
                         }
                     }
                 }
             }
 
-            newState  = {
+            if (shouldUpdateRange) {
+                return newState = {
+                    ...state,
+                    Filter: {
+                        ...state.Filter,
+                        [col]: {
+                            ...state.Filter[col],
+                            selectedValues: action.filter.selectedValues,
+                            rangeList: stateVal,
+                        }
+                    }
+                };
+            }
+
+            return newState = {
                 ...state,
-                Filter : {
+                Filter: {
                     ...state.Filter,
-                    [col] : {
+                    [col]: {
                         ...state.Filter[col],
                         selectedValues: action.filter.selectedValues,
-                        rangeList: stateVal,
-                        //applied: action.filter.selectedValues.length > 0 ? true : (state.Filter[col].highlightedValues.length > 0 ? true : false),
                     }
                 }
             };
 
-            console.log(newState);
-            return newState;
-        }
 
+        /**
+         * Toggles the pinned status of a column
+         * @param action.details.colName: Column name to be pinned or unpinned
+         * @param action.details.pinned: Boolean indicating whether or not the column is pinned
+         **/
         case 'Update_Pin':
-            var colName = action.details.colName;
-            newState  = { 
+            return newState = { 
                 ...state,
-                Filter : {
+                Filter: {
                     ...state.Filter,
-                    [colName] : {
-                        ...state.Filter[colName],
+                    [action.details.colName]: {
+                        ...state.Filter[action.details.colName],
                         pinned: action.details.pinned
                     }
                 }
             };
-            
-            console.log(newState);
-            return newState;
 
+
+        /**
+         * Changes the color theme
+         * @param action.theme: theme to change to
+         **/
         case 'EDIT_THEME':
-            newState  = { 
+            return newState = { 
                 ...state,
-                Settings : themeSettingColors[action.theme]
+                Settings: themeSettingColors[action.theme]
             };
-            
-            console.log(newState);
-            return newState;
-    
 
+
+        /**
+         * Shouldn't reach here unless theres a typo in the action
+         **/
         default:
+            console.log("TYPO IN ACTION: " + action.type);
+            //debugger;
             return state;
     }
 };
 
+
+/**
+ * Calculates selected values given the updated range List as well as the range prior to its edit
+ * @param rList: List of all ranges for one column
+ * @param rangeType: Type of the column (Number, Text, Date)
+ * @param data: Data corresponding to the column
+ * @param previousRange: range that was edited prior to edit
+ * @param selectedValues: list of currently selected values
+ **/
 function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
     if (rangeType == "Number") {
         for (var i = 0; i < rList.length; i++) {
@@ -479,8 +453,6 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
         }
     }
 
-    // [min, max, id, applied, selectType, text]
-    // (rList, rangeType, data, previousRange, selectedValues)
     else if (rangeType == "Text") {
         for (var i = 0; i < rList.length; i++) {
             if (rList[i][3] == true) {
@@ -520,11 +492,21 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
         }
     }
 
+    else {
+        // TODO: Add Date Range here
+    }
+
     console.log("selectedValues: ");
     console.log(selectedValues);
     return selectedValues;
 }
 
+
+/**
+ * Only for text ranges, calculates selected values for one range based on its drop-down menu choice
+ * @param range: Single range [min, max, id, applied, selectType, text]
+ * @param data: Data corresponding to the column
+ **/
 function calcTextSelected(range, data) {
     var selectedValues = [];
 
@@ -536,7 +518,6 @@ function calcTextSelected(range, data) {
                 }
             }
         }
-
     }
     else if (range[4] == 2) {
 
@@ -547,7 +528,6 @@ function calcTextSelected(range, data) {
                 }
             }
         }
-        
     }
     else if (range[4] == 3) {
         var regx = new RegExp("^" + range[5].toUpperCase() );
@@ -585,7 +565,6 @@ function calcTextSelected(range, data) {
                 }
             }
         }
-
     }
     else if (range[4] == 6) {
         console.log("6");
@@ -601,17 +580,22 @@ function calcTextSelected(range, data) {
                 }
             }
         }
-
     }
 
     return selectedValues;
 }
 
+
+/**
+ * Calculate the selected values not worrying about the previous range
+ * @param rList: List of all ranges for one column
+ * @param rangeType: Type of the range (Number, Text, Date)
+ * @param data: Data corresponding to the column
+ **/
 function calcSelectedNoPrevious(rList, rangeType, data) {
     var selectedValues = [];
 
     if (rangeType == "Number") {
-        //debugger;
         for (var i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 for (var j = 0; j < data.length; j++) {
@@ -636,14 +620,31 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
         }
     }
     else {
-
+        // TODO: Add Date Range here
     }
     
-
     console.log("selectedValues: ");
     console.log(selectedValues);
     return selectedValues;
 }
+
+
+/**
+ * Darkens or Lightens a hex color by a percentage
+ * @param color: hex color
+ * @param percent: -1 to 1 (negative darkens, positive lightens)
+ **/
+function shadeHexColors(color, percent) {   
+    var f = parseInt(color.slice(1),16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
+    return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+}
+
+
+/**
+ * Used to translate slider values to letters
+ **/
+const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
 
 const dummyReducer = function(state = initialFilterState, action) {
   return state;
