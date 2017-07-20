@@ -142,6 +142,7 @@ class FilterNav extends Component {
 
             // WebKit hack
             style.appendChild(document.createTextNode(""));
+            style.setAttribute('id','themeStyles');
 
             // Add the <style> element to the page
             document.head.appendChild(style);
@@ -158,10 +159,6 @@ class FilterNav extends Component {
         style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.collapsibleColor.subCollapsed + '!important; }', 6);
         style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.collapsibleColor.subHover + '!important; }', 7);
 
-        
-
-        
-
 
         for (var property in data) {
             var columnName = property;
@@ -177,7 +174,7 @@ class FilterNav extends Component {
                         ref = { columnName }
                         id = { columnName }
                         triggerOpenedClassName = "columnNameHeader"
-                        handleTriggerClick = { this.onTriggerClick.bind(this,columnName) }
+                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,columnName) }
                         contentOuterClassName = "cursorNormal"
                         trigger = {
                             <div>
@@ -226,7 +223,7 @@ class FilterNav extends Component {
                             key = { columnName + "_pinned" }
                             ref = { columnName + "_pinned" }
                             triggerOpenedClassName = "columnNameHeader"
-                            handleTriggerClick = { this.onTriggerClick.bind(this,columnName + "_pinned") }
+                            handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,columnName + "_pinned") }
                             contentOuterClassName = "cursorNormal"
                             trigger = {
                                 <div>
@@ -325,7 +322,7 @@ class FilterNav extends Component {
      * This is called when the collapsibles are clicked.
      * @param {string} element- this is the name of the element that surrounds the collapsible. Used to scrollTo.
      */
-    onTriggerClick = (element) => {
+    onCollapsibleTriggerClick = (element) => {
         var elem = this.refs[element];
 
         if (elem.state.isClosed) {
@@ -673,7 +670,8 @@ class FilterNav extends Component {
 						triggerClassName = 'noHeaderTrigger cursorNormal'
 						triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
                         contentOuterClassName = "cursorNormal"
-                        handleTriggerClick = { this.onTriggerClick.bind(this,'topCollapisble') }
+                        overflowWhenOpen= "visible"
+                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'topCollapisble') }
                     >
 
                         <TopView initParams = { this.state.topViewInitParams } showAlert = { (strMsg) => this.showAlert(strMsg) }/>
@@ -702,9 +700,7 @@ class FilterNav extends Component {
                     {/* BOTTOM SECTION */}
                     <Flex  
                         style={{
-                            'overflow':'auto',
-                            'transition': '1s',
-                            'zIndex':'2'
+                            'overflow':'auto'
                             }} 
                         id='BottomView'
                         className="sidenavbar"
@@ -715,7 +711,7 @@ class FilterNav extends Component {
                                 ref = 'pinnedCollapisble'
 								key = 'pinnedCollapisble'
                                 contentOuterClassName = "cursorNormal"
-                                handleTriggerClick = { this.onTriggerClick.bind(this,'pinnedCollapisble') }
+                                handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'pinnedCollapisble') }
                                 trigger = {
                                     <div>
                                         <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
@@ -790,7 +786,7 @@ class FilterNav extends Component {
                                 ref = 'filterCollapisble'
 								key = 'filterCollapisble'
                                 contentOuterClassName = "cursorNormal"
-                                handleTriggerClick = { this.onTriggerClick.bind(this,'filterCollapisble') }
+                                handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'filterCollapisble') }
                                 trigger = {
                                     <div>
                                         <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />

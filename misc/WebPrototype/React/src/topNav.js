@@ -14,6 +14,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
 import './topNav.css';
 
@@ -223,6 +224,9 @@ class TopNav extends Component {
                                         <MenuItem value = { 2 } primaryText = "Gannon" />
                                         <MenuItem value = { 3 } primaryText = "Gannon Reversed" />
                                     </DropDownMenu>
+
+                                    
+
                                 </Dialog>
                                 
                             </div>
@@ -231,7 +235,13 @@ class TopNav extends Component {
                         <Flex flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
-                            <iframe onLoad={this.onLoadGlyphView.bind(this)} title = "3D rendering engine" style = {{ width:'100%', height:'100%' }} src = "https://s3.amazonaws.com/synglyphx/demo.html" /> 
+                            <iframe 
+                                id="GlyphViewer" 
+                                onLoad={this.onLoadGlyphView.bind(this)} 
+                                title = "3D rendering engine" 
+                                style = {{ transition:'1s' ,width:'100%', height:'100%' }} 
+                                src = "https://s3.amazonaws.com/synglyphx/demo.html" 
+                            /> 
                             <FloatingActionButton 
                                 style={{
                                     bottom: '20px',
@@ -341,11 +351,19 @@ function openUserProfileMenu(){
 // Hides the filter side nav by translating it off the screen so it doesnt resize and 
 // wont have to be reloaded after it is "closed"
 function toggleNav() {
-    if (document.getElementById("filterNav").style.transform === "translate(460px, 0px)") {
-        document.getElementById("filterNav").style.transform = "translate(0px, 0px)";
+    var gv = document.getElementById('GlyphViewer');
+    var filterNav = document.getElementById("filterNav");
+    var width = gv.clientWidth - filterNav.clientWidth;
+
+    if (filterNav.style.transform === "translate(460px, 0px)") {
+        
+        gv.style.width = width + "px";
+        filterNav.style.transform = "translate(0px, 0px)";
     }
     else {
-        document.getElementById("filterNav").style.transform = "translate(460px, 0px)";
+        
+        gv.style.width = "100%";
+        filterNav.style.transform = "translate(460px, 0px)";
     }
 }
 

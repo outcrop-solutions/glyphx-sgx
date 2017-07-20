@@ -12,8 +12,10 @@ import FlatButton from 'material-ui/FlatButton';
 import ListItem from 'material-ui/List';
 import FilterViewForm from './filterView.js';
 import FilterNavTabs from './FilterNavTabs.js';
+import Select from 'react-select';
 import { connect } from 'react-redux';
 import './filterNav.css';
+import 'react-select/dist/react-select.css';
 
 /**
  * 
@@ -60,12 +62,9 @@ class TopView extends Component {
             case 'viewSelectItems':
                 for (index = 0; index < len; index++) {
                     arrReturn.push(
-                        <MenuItem 
-                            className = "menuItemStyling" 
-                            value = {arrValues[index]} 
-                            key = { arrValues[index] } 
-                            primaryText = { arrValues[index] } 
-                        />
+                        {
+                            label: arrValues[index], value: arrValues[index]
+                        }
                     );
                 }
 
@@ -223,7 +222,7 @@ class TopView extends Component {
     /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
 	*/
-    onSelectViewChange = (event, index, value) => {
+    onSelectViewChange = (value) => {
         this.setState({
             viewSelectValue: value
         });
@@ -236,7 +235,7 @@ class TopView extends Component {
     /**
 	* This method is called when an item is selected in the "select Table" dropdown that is present in the top left.
 	*/
-    onSelectTableChange = (event, index, value) => {
+    onSelectTableChange = (value) => {
         this.setState({
             tableSelectValues: value
         });
@@ -307,6 +306,13 @@ class TopView extends Component {
     onMenuSaveClick = (event) => {
         console.log("Save");
         
+        //Save As call
+        if(this.state.viewSelectValue == null || this.state.viewSelectValue == "")
+        {
+            this.onMenuSaveAsClick(event);
+            return;
+        }
+
         //Save
         this.saveView(this,this.state.viewSelectValue);
         
@@ -346,33 +352,25 @@ class TopView extends Component {
 		
 		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value){
 			return(
-                <MenuItem
-                    key = { value }
-                    insetChildren = { true }
-                    checked = { context.state.tableSelectValues && context.state.tableSelectValues.indexOf(value) > -1 }
-                    value = { value }
-                    primaryText = { value }
-			    />
+                {
+                    label: value, value: value
+                }
             );
 		});
 		
 		return(
 			<Flex id = "TopView">
                 {/* Row 1 */}
-                <Flex layout = "row" align = "space-between center" style = {{ height: '15%' }}>
-                    <Flex flex = "80" style = {{ marginLeft: "16px" }}>
-                        <SelectField
-                            value = { this.state.viewSelectValue }
-                            onChange = { this.onSelectViewChange }
-                            style = {{ width:"100%",fontSize:'13px' }}
-                            hintText = "Select View"
-                            hintStyle = {{ color: this.props.settings.viewSelectColor.text }}
-                            iconStyle = {{ fill: this.props.settings.viewSelectColor.text}}
-                            underlineStyle = {{ borderColor: this.props.settings.viewSelectColor.text }}
-                            selectedMenuItemStyle = {{ backgroundColor: this.props.settings.viewSelectColor.selectedBackground, color: this.props.settings.viewSelectColor.selectedText}}
-                        >
-                            {this.state.viewSelectItems}
-                        </SelectField>
+                <Flex layout = "row" align = "space-between center" style = {{ height: '15%',marginBottom: '5px' }}>
+                    <Flex flex = "80">
+                        <Select 
+                        className="selectViewName"
+                        simpleValue
+                        value={this.state.viewSelectValue} 
+                        placeholder="Select a view" 
+                        options={this.state.viewSelectItems} 
+                        onChange={this.onSelectViewChange} 
+                    />
                     </Flex>
                     
                     <Flex divider />
@@ -436,7 +434,7 @@ class TopView extends Component {
                 </Flex>
                                 
                 {/* Row 2 */}
-                <Flex layout = "row" style = {{ height:'65%' }}>
+                <Flex layout = "row" style = {{ height:'65%',marginBottom: '5px' }}>
                     {/* <FilterNavTabs scrollToElement = {this.props.initParams.scrollToElement} /> */}
                     <FilterViewForm ref = 'filterSummaryView' onScroll = { (element,elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
                 </Flex>
@@ -446,7 +444,7 @@ class TopView extends Component {
                 
                 
                 {/* Row 3 */}
-                <Flex layout = "row" style = {{ height:'10%' }}>
+                <Flex layout = "row" style = {{ height:'10%',marginBottom: '5px' }}>
                     <Flex flex = "25">
                         <RaisedButton 
                             label = "Clear All" 
@@ -494,24 +492,67 @@ class TopView extends Component {
                 
                 {/* Row 4 */}
                 <Flex layout = "row" style = {{ height:'10%' }}>
-                    <SelectField
+                    {/*<SelectField
                         value = { this.state.tableSelectValues }
                         onChange = { this.onSelectTableChange }
-                        style = {{ width:"100%", fontSize:'13px', height:'44px' }}
+                        style = {this.selectStyle.style}
                         hintText = "Select Table"
                         multiple = { true }
-                        hintStyle = {{ color: this.props.settings.tableSelectColor.text }}
-                        iconStyle = {{ fill: this.props.settings.tableSelectColor.text}}
-                        underlineStyle = {{ borderColor: this.props.settings.tableSelectColor.text }}
-                        selectedMenuItemStyle = {{ backgroundColor: this.props.settings.tableSelectColor.selectedBackground, color: this.props.settings.tableSelectColor.selectedText}}
+                        hintStyle = {this.selectStyle.hintStyle}
+                        iconStyle = {this.selectStyle.iconStyle}
+                        underlineStyle = {this.selectStyle.underlineStyle}
+                        selectedMenuItemStyle = {this.selectStyle.selectedMenuItemStyle}
                     >
                         {tableSelectItems}
-                    </SelectField>
+                    </SelectField>*/}
+
+                    <Select 
+                        multi 
+                        className="selectTableName"
+                        simpleValue
+                        value={this.state.tableSelectValues} 
+                        placeholder="Select your table(s)" 
+                        options={tableSelectItems} 
+                        onChange={this.onSelectTableChange.bind(this)} 
+                    />
+
                 </Flex>
+                
+                
             </Flex>
 		);
 	}
+
+    selectStyle ={
+        style:{
+            width:"100%", fontSize:'13px', maxHeight:'30px', border:'1px solid #aaaaaa',borderRadius:'5px'
+        },
+        hintStyle : { 
+            color: this.props.settings.tableSelectColor.text ,
+            bottom: '3px'
+        },
+        iconStyle : { 
+            fill: this.props.settings.tableSelectColor.text, height: '30px',padding: '0px'
+        },
+        underlineStyle : { 
+            borderColor: this.props.settings.tableSelectColor.text, display:'none', 
+        },
+        selectedMenuItemStyle : { 
+            backgroundColor: this.props.settings.tableSelectColor.selectedBackground, color: this.props.settings.tableSelectColor.selectedText
+        }
+    };
 }
+
+
+const FLAVOURS = [
+	{ label: 'Chocolate', value: 'chocolate' },
+	{ label: 'Vanilla', value: 'vanilla' },
+	{ label: 'Strawberry', value: 'strawberry' },
+	{ label: 'Caramel', value: 'caramel' },
+	{ label: 'Cookies and Cream', value: 'cookiescream' },
+	{ label: 'Peppermint', value: 'peppermint' },
+];
+
 
 const mapStateToProps = function(state){
   return {
