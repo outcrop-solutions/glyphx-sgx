@@ -28,7 +28,9 @@ class TopNav extends Component {
         themeSelection: 0,
         themeTempSelection: 0,
         glyphViewLoaded: false,
-        menuOpen: false
+        menuOpen: false,
+        overlapFilterNav: true,
+        iframeWidthNonOverlap: 0
     };
 
     showLoadMask = () => {
@@ -57,6 +59,12 @@ class TopNav extends Component {
                 clearInterval(context['timeout']);
             }
         },250);
+
+        var gv = document.getElementById('GlyphViewer');
+        var filterNav = document.getElementById("filterNav");
+        var width = gv.clientWidth - filterNav.clientWidth;
+
+        this.setState({iframeWidthNonOverlap: width});
     }
 
     onLoadGlyphView(){
@@ -75,6 +83,18 @@ class TopNav extends Component {
     onSettingsSave() {
         this.setState({ themeSelection: this.state.themeTempSelection, openSettings: false });
         this.props.dispatch(editThemeSettings(this.state.themeTempSelection));
+
+        //Handle change in OverLapping of filterNav
+        var overlap = this.refs["radioControl"].getSelectedValue();
+        var filterNav = document.getElementById("filterNav");
+        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
+        this.setState({overlapFilterNav: overlap});
+
+        if(filterNavOpen)
+        {
+            this.updateGlyphViewer(overlap);
+        }
+
     }
 
     openCloseMenu() {
@@ -96,6 +116,37 @@ class TopNav extends Component {
             }
             this.setState({menuOpen:true});
         }
+    }
+
+    updateGlyphViewer(fullWidth){
+        var gv = document.getElementById('GlyphViewer');
+
+        if(fullWidth){
+            gv.style.width = "100%";
+        }
+        else {
+            gv.style.width = this.state.iframeWidthNonOverlap + "px";
+        }
+    }
+
+    // Hides the filter side nav by translating it off the screen so it doesnt resize and 
+    // wont have to be reloaded after it is "closed"
+    toggleNav() {
+        var gv = document.getElementById('GlyphViewer');
+        var filterNav = document.getElementById("filterNav");
+        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
+        var overlap = this.state.overlapFilterNav;
+        
+        if (!filterNavOpen) {
+            //open the filterNav sidebar
+            filterNav.style.transform = "translate(0px, 0px)";
+        }
+        else {
+                filterNav.style.transform = "translate(460px, 0px)";
+        }
+
+        if(!overlap)
+            this.updateGlyphViewer(filterNavOpen);
     }
 
     render() {
@@ -165,7 +216,7 @@ class TopNav extends Component {
 									
 									<ToolbarGroup>
 										<ToolbarSeparator />
-										<IconButton onClick={toggleNav}>
+										<IconButton onClick={this.toggleNav.bind(this)}>
 											<FontIcon className="fa fa-filter fa-2x" color='white'/>
 										</IconButton>
 
@@ -173,7 +224,7 @@ class TopNav extends Component {
 											<FontIcon className="fa fa-cogs fa-2x" color='white'/>
 										</IconButton>
                                         
-                                        <IconButton onClick={toggleNav}>
+                                        <IconButton onClick={this.toggleNav.bind(this)}>
 											<FontIcon className="fa fa-info fa-2x" color='white'/>
 										</IconButton>
                                         
@@ -194,6 +245,7 @@ class TopNav extends Component {
 
                                 <Dialog
                                     title = "Settings"
+                                    ref = "Settings"
                                     actions = {
                                         [
                                             <FlatButton
@@ -213,7 +265,7 @@ class TopNav extends Component {
                                     modal = { true }
                                     open = { this.state.openSettings }
                                 >
-
+                                <label><h4> Theme Settings </h4></label>
                                     <DropDownMenu
                                         value = { this.state.themeTempSelection }
                                         onChange = { this.promptSelectChange }
@@ -224,6 +276,25 @@ class TopNav extends Component {
                                         <MenuItem value = { 0 } primaryText = "SynGlyphX" />
                                         <MenuItem value = { 1 } primaryText = "Gannon" />
                                     </DropDownMenu>
+
+                                    <br />
+                                    <label><h4> Overlap Settings </h4></label>
+
+                                    <RadioButtonGroup 
+                                        name="Overlap Control" 
+                                        defaultSelected={this.state.overlapFilterNav}
+                                        ref = "radioControl"
+                                    >
+                                        <RadioButton
+                                            value={true}
+                                            label="Overlap Filter Window(Does Not Resize the GlyphViewer)"
+                                        />
+                                        <RadioButton
+                                            value={false}
+                                            label="Not Overlap Filter Window(Resizes the GlyphViewer)"
+                                        />
+                                    </RadioButtonGroup>
+
                                 </Dialog>
                                 
                             </div>
@@ -343,25 +414,6 @@ class TopNav extends Component {
 
 function openUserProfileMenu(){
 	//Open a userProfileMenu.
-}
-
-// Hides the filter side nav by translating it off the screen so it doesnt resize and 
-// wont have to be reloaded after it is "closed"
-function toggleNav() {
-    var gv = document.getElementById('GlyphViewer');
-    var filterNav = document.getElementById("filterNav");
-    var width = gv.clientWidth - filterNav.clientWidth;
-
-    if (filterNav.style.transform === "translate(460px, 0px)") {
-        
-        gv.style.width = width + "px";
-        filterNav.style.transform = "translate(0px, 0px)";
-    }
-    else {
-        
-        gv.style.width = "100%";
-        filterNav.style.transform = "translate(460px, 0px)";
-    }
 }
 
 const styles = {
