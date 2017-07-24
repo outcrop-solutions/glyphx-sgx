@@ -379,8 +379,19 @@ class TopView extends Component {
                             <RaisedButton
                                 onClick = { (evt) => this.handleOpenClose('menu',true,evt) }
                                 label = "Menu"
-                                buttonStyle = {{ height: '28px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
-                                labelStyle = {{ fontSize: '13px', color: this.props.settings.overviewButtonsColor.text }}
+								buttonStyle={{
+									height: '28px',
+									lineHeight: '28px',
+									backgroundColor: this.props.settings.overviewButtonsColor.background
+								}} 
+								labelStyle= {{
+									fontSize: '13px',
+									color: this.props.settings.overviewButtonsColor.text
+								}}
+								overlayStyle = {{
+									height: '28px',
+									lineHeight: '28px'
+								}}
                                 primary = { true }
                             />
 
@@ -448,9 +459,19 @@ class TopView extends Component {
                     <Flex flex = "25">
                         <RaisedButton 
                             label = "Clear All" 
-                            buttonStyle = {{ height: '28px', width:'100%', paddingTop: '5px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
-                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.overviewButtonsColor.text }} 
-                            style = {{ height: '28px', width:'100%' }}
+                            buttonStyle={{
+								height: '28px',
+								lineHeight: '28px',
+								backgroundColor: this.props.settings.overviewButtonsColor.background
+							}} 
+							labelStyle= {{
+								fontSize: '13px',
+								color: this.props.settings.overviewButtonsColor.text
+							}}
+							overlayStyle = {{
+								height: '28px',
+								lineHeight: '28px'
+							}}
                             onClick = { this.onClearAllFilters }
                             primary = {true } />
                     </Flex>
@@ -461,10 +482,19 @@ class TopView extends Component {
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
-                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
-                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.overviewButtonsColor.text }} 
-                            style = {{ height: '28px', width:'100%' }} 
-                            onClick = { this.onHideFilteredData.bind(this) }
+                            buttonStyle={{
+								height: '28px',
+								lineHeight: '28px',
+								backgroundColor: this.props.settings.overviewButtonsColor.background
+							}} 
+							labelStyle= {{
+								fontSize: '13px',
+								color: this.props.settings.overviewButtonsColor.text
+							}}
+							overlayStyle = {{
+								height: '28px',
+								lineHeight: '28px'
+							}}onClick = { this.onHideFilteredData.bind(this) }
                             primary = { true } />
 
                             {/*<Toggle
@@ -482,10 +512,20 @@ class TopView extends Component {
                             primary = { true } 
                             label = "Apply Filters" 
                             onClick = { this.applyFilter.bind(this) } 
-                            buttonStyle = {{ height: '28px', paddingTop: '5px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
-                            labelStyle = {{ fontSize: '13px', height: '28px', color: this.props.settings.overviewButtonsColor.text }} 
-                            style = {{ height: '28px', width:'100%' }} 
-                        />
+                            buttonStyle={{
+								height: '28px',
+								lineHeight: '28px',
+								backgroundColor: this.props.settings.overviewButtonsColor.background
+							}} 
+							labelStyle= {{
+								fontSize: '13px',
+								color: this.props.settings.overviewButtonsColor.text
+							}}
+							overlayStyle = {{
+								height: '28px',
+								lineHeight: '28px'
+							}}
+					/>
                     </Flex>
                     
                 </Flex>
@@ -542,17 +582,6 @@ class TopView extends Component {
         }
     };
 }
-
-
-const FLAVOURS = [
-	{ label: 'Chocolate', value: 'chocolate' },
-	{ label: 'Vanilla', value: 'vanilla' },
-	{ label: 'Strawberry', value: 'strawberry' },
-	{ label: 'Caramel', value: 'caramel' },
-	{ label: 'Cookies and Cream', value: 'cookiescream' },
-	{ label: 'Peppermint', value: 'peppermint' },
-];
-
 
 const mapStateToProps = function(state){
   return {

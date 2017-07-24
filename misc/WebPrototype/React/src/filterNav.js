@@ -133,32 +133,8 @@ class FilterNav extends Component {
         var arrPinDialogOptions = [];
         var arrPinDialogSelected = [];
         var objReturn = {};
-
-
-        
-        var style = (function() {
-            // Create the <style> tag
-            var style = document.createElement("style");
-
-            // WebKit hack
-            style.appendChild(document.createTextNode(""));
-            style.setAttribute('id','themeStyles');
-
-            // Add the <style> element to the page
-            document.head.appendChild(style);
-
-            return style;
-        })();
-
-        style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
-        style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.collapsibleColor.mainCollapsed + '; }', 1);
-        style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.collapsibleColor.mainHover + '; }', 2);
-        style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.collapsibleColor.unpinned + '!important; }', 3);
-        style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.collapsibleColor.pinned + '!important; }', 4);
-        style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.collapsibleColor.subBackground + '!important; }', 5);
-        style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.collapsibleColor.subCollapsed + '!important; }', 6);
-        style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.collapsibleColor.subHover + '!important; }', 7);
-
+		
+		this.insertStyles();
 
         for (var property in data) {
             var columnName = property;
@@ -266,6 +242,41 @@ class FilterNav extends Component {
         objReturn = {columns:arrColumnsReturn,pinnnedColumns:arrPinnedColumnsReturn,pinnedOptions:arrPinDialogOptions,pinSelected:arrPinDialogSelected};
         return objReturn;
     };
+	
+	insertStyles = () => {
+		var style = document.getElementById('themeStyles');
+		
+		if(style != null)
+		{
+			style.parentElement.removeChild(style);
+			console.log('deleting old rules');
+		}
+		
+		style = document.createElement("style");
+
+		// WebKit hack
+		style.appendChild(document.createTextNode(""));
+		style.setAttribute('id','themeStyles');
+
+		// Add the <style> element to the page
+		document.head.appendChild(style);
+		
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.collapsibleColor.mainCollapsed + '; }', 1);
+		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.collapsibleColor.mainHover + '; }', 2);
+		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.collapsibleColor.unpinned + '!important; }', 3);
+		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.collapsibleColor.pinned + '!important; }', 4);
+		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.collapsibleColor.subBackground + '!important; }', 5);
+		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.collapsibleColor.subCollapsed + '!important; }', 6);
+		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.collapsibleColor.subHover + '!important; }', 7);
+		
+		//For the selectboxes
+		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.tableSelectColor.text + '!important; }', 8);
+		style.sheet.insertRule('.Select-arrow {  fill: ' + this.props.settings.tableSelectColor.text + '!important; }', 9);
+		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 10);
+		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.tableSelectColor.selectedText +'}', 10);
+			
+	}
 
     /**
      * This function replaces "_" with "<space>" and replaces "<Capital letter>" with "<space><Capital letter>" to make the display name!
@@ -476,6 +487,24 @@ class FilterNav extends Component {
 	}
 	
 	/**
+	 * This function is called on click of the "collapse All" button. All the collapsibles in the selected tab will collapse.
+	 * @param {Obj} evt: actual event object
+	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
+	 */
+	collapseAll = (evt,pinned) => {
+		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
+		var len = divList.length;
+		var i,ref;
+		
+		for (i = 0; i < len; i++) {
+            ref = this.refs[divList[i].getAttribute('id')] 
+            
+            if(ref)
+                ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
+		}
+	}
+	
+	/**
 	 * This function is called on key up on the search bars inside pinned and filters collapisbles.
 	 * This will search for the underlying collapisbles and show only those that match the textfield.
 	 * @param {Obj} evt: actual event object
@@ -625,7 +654,7 @@ class FilterNav extends Component {
 										type = "text" 
 										id='pinnedCollapisbleSearch'
 										style = {{
-											width:'85%'
+											width:'65%'
 										}}
 										onKeyUp = { (evt) => this.searchMultipleColumns(evt,true) } 
 										hintText = "Search for column names.."
@@ -642,6 +671,24 @@ class FilterNav extends Component {
 											fontSize: '20px'
 										}}
 										onClick = { (evt) => this.clearSearchBox(evt,'pinnedCollapisbleSearch') }
+									/>
+									<RaisedButton 
+										label="Collapse All" 
+										primary={true} 
+										buttonStyle={{
+											height: '28px',
+											lineHeight: '28px',
+											backgroundColor: this.props.settings.overviewButtonsColor.background
+										}} 
+										labelStyle= {{
+											fontSize: '13px',
+											color: this.props.settings.overviewButtonsColor.text
+										}}
+										overlayStyle = {{
+											height: '28px',
+											lineHeight: '28px'
+										}}
+										onClick={(evt) => this.collapseAll(evt,true)}
 									/>
 									<br/>
 								</div>;
@@ -820,7 +867,7 @@ class FilterNav extends Component {
 									type = "text" 
 									id='filterCollapisbleSearch'
 									style = {{
-										width:'85%'
+										width:'65%'
 									}}
 									onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
 									hintText = "Search for column names.."
@@ -837,6 +884,24 @@ class FilterNav extends Component {
 										fontSize: '20px'
 									}}
 									onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
+								/>
+								<RaisedButton 
+									label="Collapse All" 
+									primary={true} 
+									buttonStyle={{
+										height: '28px',
+										lineHeight: '28px',
+										backgroundColor: this.props.settings.overviewButtonsColor.background
+									}} 
+									labelStyle= {{
+										fontSize: '13px',
+										color: this.props.settings.overviewButtonsColor.text
+									}}
+									overlayStyle = {{
+										height: '28px',
+										lineHeight: '28px'
+									}}
+									onClick={(evt) => this.collapseAll(evt,false)}
 								/>
 								<br/>
                                 {columnsObj.columns}
