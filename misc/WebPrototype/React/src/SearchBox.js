@@ -10,10 +10,6 @@ class SearchBox extends Component {
 
     constructor(props){
         super(props);
-
-        this.state ={
-
-        };
     }
 
     render() {
@@ -40,7 +36,7 @@ class SearchBox extends Component {
                         underlineStyle = {{
                             margin: "0px 0px -8px 0px"
                         }}
-                        onKeyUp = { (evt) => this.props.searchMultipleColumns(evt) } 
+                        onKeyUp = { (evt) => this.props.searchMultipleColumns(evt,this.props.pinned) } 
                         hintText = {
                             <span 
                                 style = {{
