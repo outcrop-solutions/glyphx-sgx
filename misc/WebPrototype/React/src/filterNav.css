@@ -166,10 +166,6 @@
       font-size: 13px;
   }
 
-  .Select-value {
-      font-size: 13px !important;
-  }
-
   .cursorHand:Hover {
     cursor: pointer
-}
+    }
