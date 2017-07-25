@@ -43,6 +43,7 @@ namespace SynGlyphX {
 		static void ClearRecentFileList() { s_recentFileList.ClearFiles(); }
 		void SetCurrentUserDirectory(const QString& userdir){ m_userDirectory = userdir; }
 		void UpdateUserMenu(QString username);
+		bool HasValidLicense(){ return m_validLicense; };
 
     protected slots:
         void SwitchBetweenFullAndNormalScreen();
@@ -73,6 +74,7 @@ namespace SynGlyphX {
 		QAction* LogoutMenu();
 		void UserLogOut();
 		virtual QString GetApplicationDisplayName() const;
+		void SetUserSettingsDialog(QDialog* userSettings){ m_userSettings = userSettings; }
 
 		QString GetFileNameOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
 		QStringList GetFileNamesOpenDialog(const QString& settingKey = "", const QString& caption = "", const QString& defaultDir = "", const QString& filter = "");
@@ -114,6 +116,7 @@ namespace SynGlyphX {
 
 		static SettingsStoredFileList s_recentFileList;
 		static const QString s_noFileName;
+		QDialog* m_userSettings;
 
     private slots:
         void OnRecentFileSelected();
@@ -126,6 +129,7 @@ namespace SynGlyphX {
 	private:
 		bool m_needToReadSettings;
 		unsigned int m_stateVersion;
+		bool m_validLicense;
 
     };
 

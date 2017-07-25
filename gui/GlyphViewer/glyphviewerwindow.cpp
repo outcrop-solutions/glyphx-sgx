@@ -45,7 +45,9 @@
 #include "networkdownloader.h"
 #include "InteractiveLegend.h"
 #include <hal/hal.h>
+#include <QtWidgets/QDialogButtonBox>
 #include "FieldProperties.h"
+#include "version.h"
 #include "filesystem.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
@@ -98,6 +100,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 			m_dataEngineConnection->createJVM();
 			de_version = m_dataEngineConnection->VersionNumber();
+			m_dataEngineConnection->UserAccessControls()->SetAppVersionNumber(SynGlyphX::getAppVersionString());
 			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
 		}
 	}
@@ -513,34 +516,46 @@ void GlyphViewerWindow::OpenProject() {
 
 void GlyphViewerWindow::OpenVisualisation() {
 
-	QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt);;SynGlyphX Data Transform Files (*.sdt)"));
-	if (!openFile.isEmpty()) {
+	if (HasValidLicense()){
 
-		try {
+		QString openFile = GetFileNameOpenDialog("VisualizationDir", tr("Open Visualization"), "", tr("SynGlyphX Visualization Files (*.sdt);;SynGlyphX Data Transform Files (*.sdt)"));
+		if (!openFile.isEmpty()) {
 
-			SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
-			mapping->ReadFromFile(openFile.toStdString());
+			try {
 
-			ValidateDataMappingFile(mapping, openFile);
+				SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+				mapping->ReadFromFile(openFile.toStdString());
 
-			MultiTableDistinctValueFilteringParameters filters;
-			if (!mapping->GetFrontEndFilters().empty()) {
+				ValidateDataMappingFile(mapping, openFile);
 
-				LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
-				loadingFilterDialog.SetupFilters(*mapping);
-				if (loadingFilterDialog.exec() == QDialog::Rejected) {
+				MultiTableDistinctValueFilteringParameters filters;
+				if (!mapping->GetFrontEndFilters().empty()) {
 
-					return;
+					LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
+					loadingFilterDialog.SetupFilters(*mapping);
+					if (loadingFilterDialog.exec() == QDialog::Rejected) {
+
+						return;
+					}
+					filters = loadingFilterDialog.GetFilterValues();
 				}
-				filters = loadingFilterDialog.GetFilterValues();
+
+				LoadNewVisualization(openFile, filters, filters.size() > 0);
 			}
+			catch (const std::exception& e) {
 
-			LoadNewVisualization(openFile, filters, filters.size() > 0);
+				QMessageBox::critical(this, tr("Visualization failed to load"), tr("Visualization failed to load: ") + e.what());
+			}
 		}
-		catch (const std::exception& e) {
-
-			QMessageBox::critical(this, tr("Visualization failed to load"), tr("Visualization failed to load: ") + e.what());
-		}
+	}
+	else
+	{	
+		//QString contact = SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? "<a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a>" : "<a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a>";
+		QString contact = "<a href=\"http://www.synglyphx.com\">SynGlyphX</a>";
+		QMessageBox::information(this, tr("No Active User"),
+			QString::fromStdWString(L"<p>This application requires an active user account to perform this action. Please log in to continue.</p>"
+			L"<p>To obtain an account, or to renew your license please contact " + contact.toStdWString() + L".</p>"),
+			QMessageBox::Ok);
 	}
 }
 
@@ -651,7 +666,7 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 		if (logged){
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
 			if (valid == 1 || valid == 2){
-				m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
+				//m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
 				MainWindow::UpdateUserMenu(name);
 				UpdateUserMenu();
 				return true;
@@ -681,10 +696,122 @@ void GlyphViewerWindow::Logout(){
 	settings.setValue("StayLogged", false);
 	settings.endGroup();
 
+	if (MainWindow::HasValidLicense()){
+		m_groupsComboBox->clear();
+	}
+
 	m_dataEngineConnection->UserAccessControls()->ResetConnection();
 
 	m_homePage->ResetViews();
 	m_homePage->LoggedOut();
+	SynGlyphX::Application::restoreOverrideCursor();
+}
+
+void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
+
+	QSettings settings;
+	settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+	QString groupName = settings.value("GroupName", "Default").toString();
+	bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+	bool reqOnStartupChecked = settings.value("ReqOnStartupChecked", true).toBool();
+	settings.endGroup();
+
+	QDialog* s = new QDialog(this);
+	s->setWindowTitle(tr("User Settings"));
+	QVBoxLayout* mainLayout = new QVBoxLayout(s);
+
+	QGroupBox *groupBox = new QGroupBox(tr("Visualization Groups"));
+	groupBox->setStyleSheet("QGroupBox{background-color:white;}");
+	
+	QVBoxLayout* vlayout = new QVBoxLayout(s);
+
+	QCheckBox *autoLoadCheckbox = new QCheckBox(this);
+	autoLoadCheckbox->setText("Require Selection on Startup");
+	autoLoadCheckbox->setChecked(reqOnStartupChecked);
+	autoLoadCheckbox->setDisabled(groups.size() <= 1);
+	vlayout->addWidget(autoLoadCheckbox);
+
+	QCheckBox *checkbox = new QCheckBox(this);
+	checkbox->setText("Load "+groupName+" on Startup");
+	checkbox->setChecked(onStartupChecked);
+	checkbox->setDisabled(groups.size() <= 1);
+	vlayout->addWidget(checkbox);
+
+	m_groupsComboBox = new QComboBox(s);
+	m_groupsComboBox->addItems(groups);
+	vlayout->addWidget(m_groupsComboBox);
+
+	QHBoxLayout* hlayout = new QHBoxLayout(s);
+	QPushButton* defButton = new QPushButton(tr("Set as Default"), s);
+	defButton->setDisabled(groups.size() <= 1);
+	hlayout->addWidget(defButton, 1);
+	QPushButton* loadButton = new QPushButton(tr("Load"), s);
+	loadButton->setDisabled(groups.isEmpty());
+	hlayout->addWidget(loadButton, 1);
+
+	vlayout->addLayout(hlayout);
+	groupBox->setLayout(vlayout);
+
+	mainLayout->addWidget(groupBox);
+
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, s);
+	mainLayout->addWidget(buttonBox);
+
+	s->setLayout(mainLayout);
+
+	QObject::connect(defButton, &QPushButton::clicked, checkbox, [=](){
+		checkbox->setText("Load " + m_groupsComboBox->currentText() + " on Startup");
+		autoLoadCheckbox->setChecked(false);
+		checkbox->setChecked(true);
+		QSettings st1;
+		st1.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		st1.setValue("GroupName", m_groupsComboBox->currentText());
+		st1.endGroup();
+	});
+	QObject::connect(checkbox, &QCheckBox::stateChanged, checkbox, [=](){
+		QSettings st2;
+		st2.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		st2.setValue("OnStartupChecked", checkbox->isChecked());
+		st2.endGroup();
+	});
+	QObject::connect(autoLoadCheckbox, &QCheckBox::stateChanged, autoLoadCheckbox, [=](){
+		QSettings st3;
+		st3.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		st3.setValue("ReqOnStartupChecked", autoLoadCheckbox->isChecked());
+		st3.endGroup();
+	});
+	QObject::connect(loadButton, &QPushButton::clicked, this, &GlyphViewerWindow::SwitchVisualizationGroup);
+	QObject::connect(buttonBox, &QDialogButtonBox::rejected, s, &QDialog::reject);
+
+	SetUserSettingsDialog(s);
+}
+
+void GlyphViewerWindow::SwitchVisualizationGroup() {
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+	m_userSettings->accept();
+
+	QString groupName = m_groupsComboBox->currentText();
+
+	if (MainWindow::HasOpenFile()){
+		CloseVisualization();
+	}
+	m_homePage->ResetViews();
+
+	m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+
+	m_dataEngineConnection->UserAccessControls()->FlushOutFilterSetup();
+
+	m_homePage->ReSyncFilesAndLoadViews();
+
+	QSettings groupSettings;
+	groupSettings.beginGroup(groupName);
+	groupSettings.setValue("LastUserToAccess", m_dataEngineConnection->UserAccessControls()->GetUserID());
+	groupSettings.setValue("DirectoryPath", m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
+	groupSettings.setValue("VisualizationNames", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
+	groupSettings.endGroup();
+
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -746,56 +873,70 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 }
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTableDistinctValueFilteringParameters filters, bool useFEFilterList) {
-	SGX_PROFILE_SCOPE
-	QString nativeFilename = QDir::toNativeSeparators(filename);
-	if (nativeFilename == m_currentFilename) {
-		
-		return true;
-	}
 
-	if (useFEFilterList)
-	{
-		m_FEfilterListWidget->update(nativeFilename.toStdString().c_str(), filters);
+	if (HasValidLicense()){
+
+		SGX_PROFILE_SCOPE
+		QString nativeFilename = QDir::toNativeSeparators(filename);
+		if (nativeFilename == m_currentFilename) {
+
+			return true;
+		}
+
+		if (useFEFilterList)
+		{
+			m_FEfilterListWidget->update(nativeFilename.toStdString().c_str(), filters);
+		}
+		else
+		{
+			m_leftDockWidget->hide();
+		}
+
+		GVGlobal::Services()->ClearUndoStack();
+		try {
+
+			LoadVisualization(nativeFilename, filters);
+		}
+		catch (const std::exception& e) {
+
+			QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok, this);
+			critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+			critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+			critical_error.setStandardButtons(QMessageBox::Ok);
+			critical_error.setDefaultButton(QMessageBox::Ok);
+			critical_error.setEscapeButton(QMessageBox::Ok);
+			critical_error.exec();
+			m_dataEngineConnection->ClearJavaErrors();
+			CloseVisualization();
+			//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
+			return false;
+		}
+
+		SetCurrentFile(nativeFilename);
+		if (!filters.empty()) {
+
+			s_recentFilters[nativeFilename] = filters;
+		}
+		else if (s_recentFilters.contains(nativeFilename)) {
+
+			s_recentFilters.remove(nativeFilename);
+		}
+		EnableLoadedVisualizationDependentActions(true);
+		m_ToggleFEFilterListAction->setEnabled(useFEFilterList);
+
+		statusBar()->showMessage("Visualization successfully opened", 3000);
+		return true;
 	}
 	else
 	{
-		m_leftDockWidget->hide();
+		//QString contact = SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? "<a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a>" : "<a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a>";
+		QString contact = "<a href=\"http://www.synglyphx.com\">SynGlyphX</a>";
+		QMessageBox::information(this, tr("No Active User"),
+			QString::fromStdWString(L"<p>This application requires an active user account to perform this action. Please log in to continue.</p>"
+			L"<p>To obtain an account, or to renew your license please contact " + contact.toStdWString() + L".</p>"),
+			QMessageBox::Ok);
+		return true;
 	}
-
-	GVGlobal::Services()->ClearUndoStack();
-	try {
-
-		LoadVisualization(nativeFilename, filters);
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok, this);
-		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
-		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
-		critical_error.setStandardButtons(QMessageBox::Ok);
-		critical_error.setDefaultButton(QMessageBox::Ok);
-		critical_error.setEscapeButton(QMessageBox::Ok);
-		critical_error.exec();
-		m_dataEngineConnection->ClearJavaErrors();
-		CloseVisualization();
-		//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
-		return false;
-	}
-
-	SetCurrentFile(nativeFilename);
-	if (!filters.empty()) {
-
-		s_recentFilters[nativeFilename] = filters;
-	}
-	else if (s_recentFilters.contains(nativeFilename)) {
-
-		s_recentFilters.remove(nativeFilename);
-	}
-	EnableLoadedVisualizationDependentActions(true);
-	m_ToggleFEFilterListAction->setEnabled(useFEFilterList);
-
-	statusBar()->showMessage("Visualization successfully opened", 3000);
-	return true;
 }
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
@@ -918,6 +1059,9 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 			ge.generateGlyphs(this);
 		}
 		std::vector<std::string> images = ge.getBaseImages();
+		for (const auto& image : images){
+			m_currentBaseImages << QString::fromStdString(image);
+		}
 		
 		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
 
@@ -1461,7 +1605,16 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 		std::string cacheDirectoryPath = dcd + ( "/cache_" + boost::uuids::to_string( m_mappingModel->GetDataMapping()->GetID() ) );
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
-		m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
+		//m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );
+#ifdef __APPLE__
+        csvDirectory += "/GlyphPortable.app/Contents/MacOS";
+#endif
+		for (QString cbImg : m_currentBaseImages){
+			SynGlyphX::Filesystem::CopyFileOverwrite(cbImg.toStdString(), csvDirectory.toStdString() + "/base_img.png");
+		}
+		SynGlyphX::Filesystem::CopyFileOverwrite(cachePath.toStdString() + "/glyphs.sgc", csvDirectory.toStdString() + "/glyphs.sgc");
+		SynGlyphX::Filesystem::CopyFileOverwrite(cachePath.toStdString() + "/glyphs.sgn", csvDirectory.toStdString() + "/glyphs.sgn");
+		//SynGlyphX::Filesystem::CopyDirectoryOverwrite(cachePath.toStdString(), csvDirectory.toStdString(), true);
 
 		SynGlyphX::Application::restoreOverrideCursor();
 	}

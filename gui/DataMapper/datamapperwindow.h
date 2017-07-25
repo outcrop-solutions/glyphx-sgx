@@ -37,6 +37,7 @@
 #include "datamappingdefaults.h"
 #include "sceneproperties.h"
 #include "aliaseswidget.h"
+#include "userlogindialog.h"
 
 class LinksListView;
 class LinksDialog;
@@ -88,6 +89,7 @@ private slots:
 	void ChangeFrontEndFilters();
 	void OnFrontEndFiltersDialogAccepted();
 	void ChangeElasticListFilters();
+	void Logout();
 
 private:
     void CreateMenus();
@@ -105,6 +107,12 @@ private:
 	void ClearAndInitializeDataMapping();
 	void SelectFirstBaseObject();
 	void OnLinkDialogAccepted();
+	bool IsUserLoggedIn();
+	void Login();
+	void UpdateUserMenu();
+
+	QDialog* loginDialog;
+	DataEngine::UserLoginDialog* loginWidget;
 
     QMenu* m_fileMenu;
     QMenu* m_glyphMenu;

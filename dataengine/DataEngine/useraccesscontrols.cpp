@@ -1,11 +1,13 @@
 #include "useraccesscontrols.h"
+#include <QtCore/QSettings>
 
 namespace DataEngine
 {
 	UserAccessControls::UserAccessControls(JNIEnv *env) :
 		jniEnv(env),
 		validConnection(false),
-        synced(false)
+        synced(false),
+		appVersion("")
 	{
 		jcls = jniEnv->FindClass("UserAccessControls");
 	}
@@ -46,16 +48,30 @@ namespace DataEngine
 		}
 	}
 
+	void UserAccessControls::FlushOutFilterSetup(){
+		synced = false;
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"flushOutFilterSetup", "()V");
+		if (methodId != NULL) {
+			jniEnv->CallStaticVoidMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+	}
+
 	int UserAccessControls::ValidateCredentials(QString username, QString password){
 
 		valid = 0;
 		if (jcls != NULL) {
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-				"validateCredentials", "(Ljava/lang/String;Ljava/lang/String;)I");
+				"validateCredentials", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
 			if (methodId != NULL) {
 				jstring un = jniEnv->NewStringUTF(username.toStdString().c_str());
 				jstring pw = jniEnv->NewStringUTF(password.toStdString().c_str());
-				valid = jniEnv->CallStaticIntMethod(jcls, methodId, un, pw);
+				jstring vn = jniEnv->NewStringUTF(appVersion.toStdString().c_str());
+				valid = jniEnv->CallStaticIntMethod(jcls, methodId, un, pw, vn);
 
 				if (jniEnv->ExceptionCheck()) {
 					jniEnv->ExceptionDescribe();
@@ -63,9 +79,56 @@ namespace DataEngine
 				}
 			}
 		}
-
 		return valid;
+	}
 
+	bool UserAccessControls::GenerateLicenseKey(QString path){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"generateLicenseKey", "(Ljava/lang/String;)Z");
+		bool success = false;
+		if (methodId != NULL) {
+			jstring fp = jniEnv->NewStringUTF(path.toStdString().c_str());
+			success = jniEnv->CallStaticBooleanMethod(jcls, methodId, fp);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return success;
+	}
+
+	int UserAccessControls::GetUserID(){
+
+		if (valid == 2){
+			return presetId.toInt();
+		}
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getUserID", "()I");
+		int id = 0;
+		if (methodId != NULL) {
+			id = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return id;
+	}
+
+	int UserAccessControls::GetLicenseType(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getLicenseType", "()I");
+		int type = 0;
+		if (methodId != NULL) {
+			type = (jint)jniEnv->CallStaticIntMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return type;
 	}
 
 	QString UserAccessControls::NameOfUser(){
@@ -75,6 +138,21 @@ namespace DataEngine
 		}
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"nameOfUser", "()Ljava/lang/String;");
+		jstring itr = NULL;
+		if (methodId != NULL) {
+			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+		return QString(jniEnv->GetStringUTFChars(itr, JNI_FALSE));
+	}
+
+	QString UserAccessControls::NameOfDirectory(){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getS3Directory", "()Ljava/lang/String;");
 		jstring itr = NULL;
 		if (methodId != NULL) {
 			itr = (jstring)jniEnv->CallStaticObjectMethod(jcls, methodId);
@@ -149,6 +227,17 @@ namespace DataEngine
 
 	QStringList UserAccessControls::GetFormattedGroupNames(){
 
+		if (valid == 2){
+			QSettings settings;
+			QStringList childGroups = settings.childGroups();
+			for (auto group : groupNames){
+				if (!childGroups.contains(group)){
+					groupNames.removeAll(group);
+				}
+			}
+			return groupNames;
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"getListOfFormattedGroupNames", "()[Ljava/lang/String;");
 		jobjectArray itr;
@@ -174,6 +263,15 @@ namespace DataEngine
 
 	void UserAccessControls::SetChosenGroup(QString name){
 
+		if (valid == 2){
+			QSettings groupSettings;
+			groupSettings.beginGroup(name);
+			PresetLogoPath(groupSettings.value("DirectoryPath", "").toString());
+			SetVisualizationNames(groupSettings.value("VisualizationNames", "").toStringList());
+			groupSettings.endGroup();
+			return;
+		}
+
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 			"setChosenGroup", "(Ljava/lang/String;)V");
 		if (methodId != NULL) {
@@ -184,6 +282,7 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+
 	}
 
 	bool UserAccessControls::FileSyncSetup(QString path){
@@ -278,10 +377,14 @@ namespace DataEngine
 		presetLogoPath = path;
 	}
 
+	void UserAccessControls::SetVisualizationGroupNames(QStringList groups){
+		groupNames = groups;
+	}
+
 	void UserAccessControls::SetVisualizationNames(QStringList vizs){
 		
 		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
-			"", "(Ljava/lang/String;[Ljava/lang/String;)V");
+			"setVisualizationNames", "(Ljava/lang/String;[Ljava/lang/String;)V");
 
 		jstring fp = jniEnv->NewStringUTF(presetLogoPath.toStdString().c_str());
 		jobjectArray selected = (jobjectArray)jniEnv->NewObjectArray(vizs.size(), jniEnv->FindClass("java/lang/String"), jniEnv->NewStringUTF(""));
@@ -299,14 +402,20 @@ namespace DataEngine
 			}
 			vizNames = vizs;
 		}
+		
 	}
 
-	void UserAccessControls::SetUsersNameAndInstitution(QString name, QString inst){
+	void UserAccessControls::SetUsersInformation(QString id, QString name, QString inst){
+		presetId = id;
 		presetName = name;
 		presetInstitution = inst;
 	}
 
 	int UserAccessControls::CheckAvailableGroups(){
+
+		if (valid == 2){
+			return groupNames.size();
+		}
 
 		int group_count = 0;
 		if (jcls != NULL) {
@@ -343,6 +452,10 @@ namespace DataEngine
 	}
 
 	bool UserAccessControls::IsDoneSyncing(){
+
+		if (valid == 2){
+			return true;
+		}
 
 		bool done = false;
 		if (jcls != NULL) {

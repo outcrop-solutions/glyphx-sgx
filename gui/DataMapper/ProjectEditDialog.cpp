@@ -128,7 +128,7 @@ public:
 	{
 		QTreeWidgetItem *item = new QTreeWidgetItem();
 		item->setFlags(item->flags() | Qt::ItemIsEditable);
-		item->setText(0, tr("New Visualisation"));
+		item->setText(0, tr("New Visualization"));
 		VisDialog dlg (this, item);
 		if (dlg.exec() == QDialog::Accepted)
 		{
@@ -278,7 +278,7 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 	m_currentTreeWidget = new TreeWidget(this);
 	queryLayout->addWidget(m_currentTreeWidget);
 
-	QPushButton* addConditionButton = new QPushButton(tr("Add Visualisation"), this);
+	QPushButton* addConditionButton = new QPushButton(tr("Add Visualization"), this);
 	QObject::connect(addConditionButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddVisualization(); });
 	queryLayout->addWidget(addConditionButton);
 
@@ -286,7 +286,7 @@ ProjectEditDialog::ProjectEditDialog(QWidget* parent) : QDialog(parent)
 	QObject::connect(addGroupButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnAddGroup(); });
 	queryLayout->addWidget(addGroupButton);
 
-	QPushButton* editButton = new QPushButton(tr("Change visualisation"), this);
+	QPushButton* editButton = new QPushButton(tr("Change Visualization"), this);
 	editButton->setEnabled(false);
 	QObject::connect(editButton, &QPushButton::clicked, this, [=]() { m_currentTreeWidget->OnEdit(); });
 	queryLayout->addWidget(editButton);
