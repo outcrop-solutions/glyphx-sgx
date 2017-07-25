@@ -364,20 +364,20 @@ class TopView extends Component {
                 <Flex layout = "row" align = "space-between center" style = {{ height: '15%',marginBottom: '5px' }}>
                     <Flex flex = "80">
                         <Select 
-                        className="selectViewName"
-                        simpleValue
-                        value={this.state.viewSelectValue} 
-                        placeholder="Select a view" 
-                        options={this.state.viewSelectItems} 
-                        onChange={this.onSelectViewChange} 
-                    />
+                            className = "selectViewName"
+                            simpleValue
+                            value = { this.state.viewSelectValue } 
+                            placeholder = "Select a view" 
+                            options = { this.state.viewSelectItems } 
+                            onChange = { this.onSelectViewChange } 
+                        />
                     </Flex>
                     
                     <Flex divider />
                     <Flex flex = "20">
                         <div>
                             <RaisedButton
-                                onClick = { (evt) => this.handleOpenClose('menu',true,evt) }
+                                onClick = { (evt) => this.handleOpenClose('menu', true,evt) }
                                 label = "Menu"
                                 buttonStyle = {{ height: '28px', backgroundColor: this.props.settings.overviewButtonsColor.background }}
                                 labelStyle = {{ fontSize: '13px', color: this.props.settings.overviewButtonsColor.text }}
@@ -436,7 +436,7 @@ class TopView extends Component {
                 {/* Row 2 */}
                 <Flex layout = "row" style = {{ height:'65%',marginBottom: '5px' }}>
                     {/* <FilterNavTabs scrollToElement = {this.props.initParams.scrollToElement} /> */}
-                    <FilterViewForm ref = 'filterSummaryView' onScroll = { (element,elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
+                    <FilterViewForm ref = 'filterSummaryView' onScroll = { (element, elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
                 </Flex>
 
                 

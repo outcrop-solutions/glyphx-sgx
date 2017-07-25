@@ -169,3 +169,7 @@
   .Select-value {
       font-size: 13px !important;
   }
+
+  .cursorHand:Hover {
+    cursor: pointer
+}

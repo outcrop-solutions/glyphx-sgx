@@ -22,7 +22,7 @@ const initialFilterState = {
  * @param action: The action that called for a change on the store
  **/
 const filterReducer = function(state = initialFilterState, action) {
-    var newState, stateVal, previousRange, selected, i;
+    var stateVal, previousRange, selected, i;
     
     switch (action.type) {
         /**
@@ -30,7 +30,7 @@ const filterReducer = function(state = initialFilterState, action) {
          * @param action.storeFilterStruc: What to set the initial Filter sub-structure to
          **/
         case 'INIT':
-            return newState = {
+            return {
                 ...state,
                 Filter: action.storeFilterStruc,
             }
@@ -57,7 +57,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 // Date range
             }
 
-            return newState = {
+            return {
                 ...state,
                 Filter: {
                     ...state.Filter,
@@ -99,7 +99,7 @@ const filterReducer = function(state = initialFilterState, action) {
                     // TODO: Add Date range here
                 }
 
-                return newState = {
+                return {
                     ...state,
                     Filter: {
                         ...state.Filter,
@@ -113,7 +113,7 @@ const filterReducer = function(state = initialFilterState, action) {
             }
 
             // Removed node was not applied so no need to recalculate selected elastic items
-            return newState = {
+            return {
                 ...state,
                 Filter: {
                     ...state.Filter,
@@ -223,7 +223,7 @@ const filterReducer = function(state = initialFilterState, action) {
                     selected = calcSelected(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
                 }
 
-                return newState = {
+                return {
                     ...state,
                     Filter: {
                         ...state.Filter,
@@ -236,7 +236,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
          
-            return newState = {
+            return {
                 ...state,
                 Filter: {
                     ...state.Filter,
@@ -267,7 +267,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 }
             }
 
-            return newState = {
+            return {
                 ...state,
                 Filter: {
                     ...state.Filter,
@@ -329,7 +329,7 @@ const filterReducer = function(state = initialFilterState, action) {
             }
 
             if (shouldUpdateRange) {
-                return newState = {
+                return {
                     ...state,
                     Filter: {
                         ...state.Filter,
@@ -342,7 +342,7 @@ const filterReducer = function(state = initialFilterState, action) {
                 };
             }
 
-            return newState = {
+            return {
                 ...state,
                 Filter: {
                     ...state.Filter,
@@ -360,7 +360,7 @@ const filterReducer = function(state = initialFilterState, action) {
          * @param action.details.pinned: Boolean indicating whether or not the column is pinned
          **/
         case 'Update_Pin':
-            return newState = { 
+            return { 
                 ...state,
                 Filter: {
                     ...state.Filter,
@@ -377,7 +377,7 @@ const filterReducer = function(state = initialFilterState, action) {
          * @param action.theme: theme to change to
          **/
         case 'EDIT_THEME':
-            return newState = { 
+            return { 
                 ...state,
                 Settings: themeSettingColors[action.theme]
             };
@@ -403,16 +403,16 @@ const filterReducer = function(state = initialFilterState, action) {
  * @param selectedValues: list of currently selected values
  **/
 function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
-    if (rangeType == "Number") {
-        for (var i = 0; i < rList.length; i++) {
-            if (rList[i][3] == true) {
+    var i, j, curNum, previousList, newList, index;
+    if (rangeType === "Number") {
+        for (i = 0; i < rList.length; i++) {
+            if (rList[i][3]) {
+                if (previousRange && rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1]) ) {
+                    previousList = [];
+                    newList = [];
 
-                if (previousRange && rList[i][2] == previousRange[2] && previousRange[3] == true && (rList[i][0] != previousRange[0] || rList[i][1] != previousRange[1]) ) {
-                    var previousList = [];
-                    var newList = [];
-
-                    for (var j = 0; j < data.length; j++) {
-                        var curNum = parseFloat(data[j], 10)
+                    for (j = 0; j < data.length; j++) {
+                        curNum = parseFloat(data[j], 10);
                         if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
                             newList.push(data[j]);
                         }
@@ -423,15 +423,15 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
                     }
 
                     for (j = 0; j < newList.length; j++) {
-                        if (selectedValues.indexOf(newList[j]) == -1) {
+                        if (selectedValues.indexOf(newList[j]) === -1) {
                             selectedValues.push(newList[j]);
                         }
                     }
 
                     for (j = 0; j < previousList.length; j++) {
-                        if (newList.indexOf(previousList[j]) == -1) {
-                            var index = selectedValues.indexOf(previousList[j]);
-                            if (index != -1) {
+                        if (newList.indexOf(previousList[j]) === -1) {
+                            index = selectedValues.indexOf(previousList[j]);
+                            if (index !== -1) {
                                 selectedValues.splice(index, 1);
                             }
                         }
@@ -439,10 +439,9 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
                 }
 
                 else {
-
-                    for (var j = 0; j < data.length; j++) {
-                        if (selectedValues.indexOf(data[j]) == -1) {
-                            var curNum = parseFloat(data[j], 10)
+                    for (j = 0; j < data.length; j++) {
+                        if (selectedValues.indexOf(data[j]) === -1) {
+                            curNum = parseFloat(data[j], 10)
                             if (curNum >= rList[i][0] && curNum  <= rList[i][1]) {
                                 selectedValues.push(data[j]);
                             }
@@ -453,24 +452,23 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
         }
     }
 
-    else if (rangeType == "Text") {
-        for (var i = 0; i < rList.length; i++) {
-            if (rList[i][3] == true) {
-
-                if (previousRange && rList[i][2] == previousRange[2] && previousRange[3] == true && (rList[i][0] != previousRange[0] || rList[i][1] != previousRange[1] || rList[i][5] != previousRange[5]) ) {
-                    var previousList = calcTextSelected(previousRange, data);
-                    var newList = calcTextSelected(rList[i], data);
+    else if (rangeType === "Text") {
+        for (i = 0; i < rList.length; i++) {
+            if (rList[i][3]) {
+                if (previousRange && rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1] || rList[i][5] !== previousRange[5]) ) {
+                    previousList = calcTextSelected(previousRange, data);
+                    newList = calcTextSelected(rList[i], data);
 
                     for (j = 0; j < newList.length; j++) {
-                        if (selectedValues.indexOf(newList[j]) == -1) {
+                        if (selectedValues.indexOf(newList[j]) === -1) {
                             selectedValues.push(newList[j]);
                         }
                     }
 
                     for (j = 0; j < previousList.length; j++) {
-                        if (newList.indexOf(previousList[j]) == -1) {
-                            var index = selectedValues.indexOf(previousList[j]);
-                            if (index != -1) {
+                        if (newList.indexOf(previousList[j]) === -1) {
+                            index = selectedValues.indexOf(previousList[j]);
+                            if (index !== -1) {
                                 selectedValues.splice(index, 1);
                             }
                         }
@@ -478,16 +476,13 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
                 }
 
                 else {
-
-                    var newList = calcTextSelected(rList[i], data);
-
+                    newList = calcTextSelected(rList[i], data);
                     for (j = 0; j < newList.length; j++) {
-                        if (selectedValues.indexOf(newList[j]) == -1) {
+                        if (selectedValues.indexOf(newList[j]) === -1) {
                             selectedValues.push(newList[j]);
                         }
                     }
                 }
-            
             }
         }
     }
@@ -509,79 +504,80 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
  **/
 function calcTextSelected(range, data) {
     var selectedValues = [];
+    var i, j, regx;
 
-    if (range[4] == 1) {
-        for (var j = 0; j < data.length; j++) {
-            if (selectedValues.indexOf(data[j]) == -1) {
-                if ( data[j].toUpperCase().includes(range[5].toUpperCase()) ) {
-                    selectedValues.push(data[j]);
+    if (range[4] === 1) {
+        for (i = 0; i < data.length; i++) {
+            if (selectedValues.indexOf(data[i]) === -1) {
+                if ( data[i].toUpperCase().includes(range[5].toUpperCase()) ) {
+                    selectedValues.push(data[i]);
                 }
             }
         }
     }
-    else if (range[4] == 2) {
 
-        for (var j = 0; j < data.length; j++) {
-            if (selectedValues.indexOf(data[j]) == -1) {
-                if ( !data[j].toUpperCase().includes(range[5].toUpperCase()) ) {
-                    selectedValues.push(data[j]);
+    else if (range[4] === 2) {
+
+        for (i = 0; i < data.length; i++) {
+            if (selectedValues.indexOf(data[i]) === -1) {
+                if ( !data[i].toUpperCase().includes(range[5].toUpperCase()) ) {
+                    selectedValues.push(data[i]);
                 }
             }
         }
     }
-    else if (range[4] == 3) {
-        var regx = new RegExp("^" + range[5].toUpperCase() );
 
-        for (var j = 0; j < data.length; j++) {
-            if (selectedValues.indexOf(data[j]) == -1) {
-                if ( regx.test(data[j].toUpperCase()) ) {
-                    selectedValues.push(data[j]);
+    else if (range[4] === 3) {
+        regx = new RegExp("^" + range[5].toUpperCase() );
+
+        for (i = 0; i < data.length; i++) {
+            if (selectedValues.indexOf(data[i]) === -1) {
+                if ( regx.test(data[i].toUpperCase()) ) {
+                    selectedValues.push(data[i]);
                 }
             }
         }
     }
-    else if (range[4] == 4) {
-        var regx = new RegExp(range[5].toUpperCase() + "$");
 
-        for (var j = 0; j < data.length; j++) {
-            if (selectedValues.indexOf(data[j]) == -1) {
-                if ( regx.test(data[j].toUpperCase()) ) {
-                    selectedValues.push(data[j]);
+    else if (range[4] === 4) {
+        regx = new RegExp(range[5].toUpperCase() + "$");
+
+        for (i = 0; i < data.length; i++) {
+            if (selectedValues.indexOf(data[i]) === -1) {
+                if ( regx.test(data[i].toUpperCase()) ) {
+                    selectedValues.push(data[i]);
                 }
             }
         }
     }
-    else if (range[4] == 5) {
-        console.log("5");
 
-        for (var j = parseInt(range[0], 10); j <= parseInt(range[1], 10); j++) {
-            var regx = new RegExp("^" + alphabet[j] );
+    else if (range[4] === 5) {
+        for (i = parseInt(range[0], 10); i <= parseInt(range[1], 10); i++) {
+            regx = new RegExp("^" + alphabet[i] );
 
-            for (var d = 0; d < data.length; d++) {
-                if (selectedValues.indexOf(data[d]) == -1) {
-                    if ( regx.test(data[d].toUpperCase()) ) {
-                        selectedValues.push(data[d]);
-                    }
-                }
-            }
-        }
-    }
-    else if (range[4] == 6) {
-        console.log("6");
-
-        for (var j = parseInt(range[0], 10); j <= parseInt(range[1], 10); j++) {
-            var regx = new RegExp(alphabet[j] + "$");
-
-            for (var d = 0; d < data.length; d++) {
-                if (selectedValues.indexOf(data[d]) == -1) {
-                    if ( regx.test(data[d].toUpperCase()) ) {
-                        selectedValues.push(data[d]);
+            for (j = 0; j < data.length; j++) {
+                if (selectedValues.indexOf(data[j]) === -1) {
+                    if ( regx.test(data[j].toUpperCase()) ) {
+                        selectedValues.push(data[j]);
                     }
                 }
             }
         }
     }
 
+    else if (range[4] === 6) {
+        for (i = parseInt(range[0], 10); i <= parseInt(range[1], 10); i++) {
+            regx = new RegExp(alphabet[i] + "$");
+
+            for (j = 0; j < data.length; j++) {
+                if (selectedValues.indexOf(data[j]) === -1) {
+                    if ( regx.test(data[j].toUpperCase()) ) {
+                        selectedValues.push(data[j]);
+                    }
+                }
+            }
+        }
+    }
     return selectedValues;
 }
 
@@ -594,11 +590,12 @@ function calcTextSelected(range, data) {
  **/
 function calcSelectedNoPrevious(rList, rangeType, data) {
     var selectedValues = [];
+    var i, j;
 
-    if (rangeType == "Number") {
-        for (var i = 0; i < rList.length; i++) {
+    if (rangeType === "Number") {
+        for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
-                for (var j = 0; j < data.length; j++) {
+                for (j = 0; j < data.length; j++) {
                     if (parseFloat(data[j], 10) >= rList[i][0] && parseFloat(data[j], 10) <= rList[i][1]) {
                         selectedValues.push(data[j]);
                     }
@@ -607,18 +604,19 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
         }
     }
 
-    else if (rangeType == "Text") {
-        for (var i = 0; i < rList.length; i++) {
+    else if (rangeType === "Text") {
+        for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 var newList = calcTextSelected(rList[i], data);
-                for (var j = 0; j < newList.length; j++) {
-                    if (selectedValues.indexOf(newList[j]) == -1) {
+                for (j = 0; j < newList.length; j++) {
+                    if (selectedValues.indexOf(newList[j]) === -1) {
                         selectedValues.push(newList[j]);
                     }
                 }
             }
         }
     }
+
     else {
         // TODO: Add Date Range here
     }
@@ -627,18 +625,6 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
     console.log(selectedValues);
     return selectedValues;
 }
-
-
-/**
- * Darkens or Lightens a hex color by a percentage
- * @param color: hex color
- * @param percent: -1 to 1 (negative darkens, positive lightens)
- **/
-function shadeHexColors(color, percent) {   
-    var f = parseInt(color.slice(1),16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
-    return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
-}
-
 
 /**
  * Used to translate slider values to letters

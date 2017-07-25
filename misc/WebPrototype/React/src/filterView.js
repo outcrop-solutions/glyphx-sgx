@@ -138,7 +138,7 @@ class FilterViewForm extends React.Component {
 
         return (
 
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}}>
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}} containerStyle = {{ padding: "0px" }}>
                 <CardText>
                     <div>
                         <Flex divider />  

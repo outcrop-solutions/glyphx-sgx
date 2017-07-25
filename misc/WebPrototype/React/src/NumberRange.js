@@ -9,6 +9,7 @@ import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
+import './Range.css';
 
 
 /**
@@ -74,20 +75,26 @@ class NumberRangeTable extends React.Component {
 
         return (
             <div>
-
                 {/* Displays the mapped ranges */}
                 {range}
 
                 {/* Add range button below*/}
-                <Card>
-                    <CardText>
-                        <Flex layout="row">
+                <Card containerStyle = {{ padding: "0px" }}>
+                    <CardText
+                        style = {{
+                            padding: "5px"
+                        }}
+                    >
+                        <Flex layout = "row">
                             <Flex divider />
                             <FontIcon
                                 onClick = { this.handleAddEvent.bind(this) }
-                                className = "fa fa-plus fa-2x"
+                                className = "fa fa-plus cursorHand"
                                 hoverColor = { this.props.settings.rangeColor.addHover }
-                                style = { styleSet.iconStyles }
+                                style = {{
+                                    fontSize: "1.7rem",
+                                    margin: "13px 0px 0px -11px"
+                                }}
                             />
                         </Flex>
                     </CardText>
@@ -359,20 +366,25 @@ class NumberRangeRow extends React.Component {
     render() {
         return (
             <Card>
-                <CardText>
-                    <Flex layout = "row">      
-
-                        <Flex divider />  
+                <CardText
+                    style = {{
+                        padding: "5px"
+                    }}
+                >
+                    <Flex layout = "row">
+                        <Flex divider /> 
 
                         <Flex flex = "10">
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
-                                className = "fa fa-trash fa-2x"
+                                className = "fa fa-trash cursorHand"
                                 hoverColor = { this.props.settings.rangeColor.deleteHover }
-                                style = { styleSet.iconStyles }
+                                style = {{
+                                    fontSize: "1.7rem",
+                                    margin: "13px 0px 0px -10px"
+                                }}
                             />
                         </Flex>
-
 
                         <Flex flex = "20">
                             <TextField 
@@ -401,7 +413,7 @@ class NumberRangeRow extends React.Component {
 
                         <Flex flex = "40"
                             style = {{
-                                margin: "16px 0px 0px -8px",
+                                margin: "20px 0px 0px -8px",
                                 width: "20px"
                             }}
                         >
@@ -449,10 +461,9 @@ class NumberRangeRow extends React.Component {
 
                         <Flex divider />
 
-
                         <Flex flex = "10"
                             style = {{
-                                margin: "11px 0px 0px -11px"
+                                margin: "16px 9px 0px -8px"
                             }} 
                         >
                             <Toggle 
@@ -467,7 +478,6 @@ class NumberRangeRow extends React.Component {
                             />
                         </Flex>
 
-
                     </Flex>
                 </CardText>
             </Card>
@@ -480,12 +490,6 @@ class NumberRangeRow extends React.Component {
  * Local styling
  **/
 const styleSet = {
-    iconStyles: {
-        fontSize: 26,
-        paddingLeft: 10,
-        paddingRight: 13,
-        margin: "12px 0px 0px -21px"
-    },
     textfieldStyles: {
         width: "60px"
     }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Flex} from 'react-flex-material';
 import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -803,41 +804,64 @@ class FilterNav extends Component {
                                     </div>
                                 }
                             >
+                                <Flex layout = "row">
+                                    <Flex flex = "1">
+                                        <FontIcon
+                                            className="fa fa-search cursorHand" 
+                                            style = {{
+                                                padding: '0px',
+                                                width: '24px',
+                                                height: '24px'
+                                            }}
+                                            iconStyle = {{
+                                                fontSize: '20px'
+                                            }}
+                                            onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
+                                        />
+                                    </Flex>
 
-								<IconButton 
-									iconClassName="fa fa-search" 
-									style = {{
-										padding: '0px',
-										width: '24px',
-										height: '24px'
-									}}
-									iconStyle = {{
-										fontSize: '20px'
-									}}
-									onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
-								/>
-								<TextField
-									type = "text" 
-									id='filterCollapisbleSearch'
-									style = {{
-										width:'85%'
-									}}
-									onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
-									hintText = "Search for column names.."
-                                    underlineFocusStyle = {{ borderColor: this.props.settings.pinFilterColor.searchBoxUnderline }}
-								/> 
-								<IconButton 
-									iconClassName="fa fa-times" 
-									style = {{
-										padding: '0px',
-										width: '24px',
-										height: '24px'
-									}}
-									iconStyle = {{
-										fontSize: '20px'
-									}}
-									onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
-								/>
+                                    <Flex flex = "90" style = {{ minWidth: "418px", margin: "0px -49px 0px 0px" }} >
+                                        <TextField
+                                            type = "text" 
+                                            id = 'filterCollapisbleSearch'
+                                            style = {{
+                                                borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                                borderRadius: "4px",
+                                                border: "1px solid #ccc",
+                                                width: "93%",
+                                                height: "30px",
+                                                margin: "-7px 0px -8px 3px"
+                                            }}
+                                            inputStyle = {{
+                                                margin: "0px 0px 0px 8px"
+                                            }}
+                                            hintStyle = {{
+                                                margin: "0px 0px -10px 9px"
+                                            }}
+                                            underlineStyle = {{
+                                                margin: "0px 0px -8px 0px"
+                                            }}
+                                            onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
+                                            hintText = "Search for columns... "
+                                            underlineFocusStyle = {{ borderColor: this.props.settings.pinFilterColor.searchBoxUnderline, margin: "0px 0px -8px 0px", /*width: "99%"*/ }}
+                                        /> 
+                                    </Flex>
+
+                                    <Flex flex = "1">
+                                        <FontIcon
+                                            className="fa fa-times cursorHand" 
+                                            style = {{
+                                                padding: '0px',
+                                                fontSize: "20px",
+                                                margin: "-2px 0px 0px 4px"
+                                            }}
+                                            iconStyle = {{
+                                                fontSize: '20px'
+                                            }}
+                                            onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
+                                        />
+                                    </Flex>
+                                </Flex>
 								<br/>
                                 {columnsObj.columns}
                             </Collapsible>

@@ -11,7 +11,7 @@ import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 import 'font-awesome/css/font-awesome.css';
-
+import './Range.css';
 
 /**
  * Used to translate slider values to letters
@@ -87,15 +87,22 @@ class TextRangeTable extends React.Component {
                 {range}
 
                 {/* Add range button below*/}
-                <Card>
-                    <CardText>
-                        <Flex layout="row">
+                <Card containerStyle = {{ padding: "0px" }} >
+                    <CardText
+                        style = {{
+                            padding: "5px"
+                        }}
+                    >
+                        <Flex layout = "row">
                             <Flex divider />
                             <FontIcon
                                 onClick = { this.handleAddEvent.bind(this) }
-                                className = "fa fa-plus fa-2x"
+                                className = "fa fa-plus cursorHand"
                                 hoverColor = { this.props.settings.rangeColor.addHover }
-                                style = { styleSet.iconStyles }
+                                style = {{
+                                    fontSize: "1.7rem",
+                                    margin: "13px 0px 0px -11px"
+                                }}
                             />
                         </Flex>
                     </CardText>
@@ -354,28 +361,41 @@ class TextRangeRow extends React.Component {
 
     render() {
         return (
-            <Card>
-                <CardText>
+            <Card containerStyle = {{ padding: "0px" }}>
+                <CardText
+                    style = {{
+                        padding: "5px 5px 9px 5px"
+                    }}
+                >
                     <Flex layout = "row">      
 
                         <Flex divider />  
 
-                        <Flex flex = "1">
+                        <Flex flex = "10">
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
-                                className = "fa fa-trash fa-2x"
+                                className = "fa fa-trash cursorHand"
                                 hoverColor = { this.props.settings.rangeColor.deleteHover }
-                                style = { styleSet.iconStyles }
+                                style = {{
+                                    fontSize: "1.7rem",
+                                    margin: "13px 0px 0px -10px"
+                                }}
                             />
                         </Flex>
 
-                        <Flex flex = "34" style = {{ width: "132px", margin: "-8px 0px 0px -19px" }}>
+                        <Flex flex = "25" style = {{ width: "132px", margin: "-8px 0px 0px 9px" }}>
                             <DropDownMenu 
                                 value = { this.state.value } 
                                 onChange = { this.promptSelectChange } 
                                 iconStyle = {{ fill: this.props.settings.rangeColor.text}}
                                 //underlineStyle = {{ borderColor: this.props.settings.rangeColor.text }}
                                 selectedMenuItemStyle = {{ backgroundColor: this.props.settings.rangeColor.selectedBackground, color: this.props.settings.rangeColor.selectedText}}
+                                labelStyle = {{ margin: "4px -6px -3px -10px", paddingLeft: "0px" }}
+                                underlineStyle = {{ margin: "0px 34px 0px -11px" }}
+                                menuStyle = {{ width: "185px" }}
+                                listStyle = {{ paddingTop: "0px", paddingBottom: "0px" }}
+
+                                autoWidth = { false }
                             >
                                 <MenuItem value = {1} label = "Contains" primaryText = "Contains" />
                                 <MenuItem value = {2} label = "Not Contain" primaryText = "Does Not Contain" />
@@ -388,7 +408,7 @@ class TextRangeRow extends React.Component {
 
                         <Flex divider />
 
-                        <Flex flex = "55">
+                        <Flex flex = "55" style = {{ margin: "-1px -18px 0px 2px" }}>
                             {this.state.value === 5 || this.state.value === 6 ? 
                                         <Flex layout = "row">
                                             <Flex flex = "25">
@@ -435,7 +455,7 @@ class TextRangeRow extends React.Component {
                                                         (e) => this.onAfterSlide(e)
                                                     }
                                                     trackStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderTrack }] }
-                                                    handleStyle = {[{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }]}
+                                                    handleStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }] }
                                                 />
                                             </Flex>
 
@@ -494,8 +514,8 @@ class TextRangeRow extends React.Component {
 
                         <Flex flex = "10"
                             style = {{
-                                margin: "11px 0px 0px -11px"
-                            }} 
+                                margin: "16px 9px 0px -8px"
+                            }}  
                         >
                             <Toggle 
                                 name = "applied" 
@@ -520,12 +540,6 @@ class TextRangeRow extends React.Component {
  * Local styling
  **/
 const styleSet = {
-    iconStyles: {
-        fontSize: 26,
-        paddingLeft: 10,
-        paddingRight: 13,
-        margin: "12px 0px 0px -21px"
-    },
     textfieldStyles: {
         width: "25px"
     }

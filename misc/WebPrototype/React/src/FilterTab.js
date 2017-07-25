@@ -94,6 +94,7 @@ class FilterTabs extends React.Component {
 
                     style = {{
                         overflowY: "hidden",
+                        padding: "0px"
                     }}           
                 >
                     <div
@@ -109,7 +110,7 @@ class FilterTabs extends React.Component {
                         id = { this.state.rangeID }
                         style = {{
                             maxHeight: "440px",
-                            overflowX: "hidden"
+                            overflowX: "hidden",
                         }}
                     >
                         {this.props.filterList[this.props.id].type === "Number" ? 
@@ -124,7 +125,7 @@ class FilterTabs extends React.Component {
                                         colName = { this.props.id } 
                                         data = { this.state.tableData } 
                                     /> :  
-                            "") 
+                            "TODO: Add Date Range Here") 
                         }
                         
 
