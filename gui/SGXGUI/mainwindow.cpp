@@ -30,6 +30,7 @@ namespace SynGlyphX {
 		m_needToReadSettings(true),
         m_stateVersion(stateVersion)
     {
+		m_validLicense = false;
         //Make sure Status Bar gets created for all applications
         statusBar();
 
@@ -53,6 +54,14 @@ namespace SynGlyphX {
 		m_undoStack = new QUndoStack(this);
 
 		QObject::connect(&s_recentFileList, &SettingsStoredFileList::FileListChanged, this, &MainWindow::UpdateRecentFileList);
+
+		QSettings settings;
+		settings.beginGroup("LoggedInUser");
+		bool sl = settings.value("StayLogged", false).toBool();
+		if (!sl){
+			settings.setValue("Username", "Guest");
+		}
+		settings.endGroup();
 
 #ifdef WIN32
 		userMenuBar = new QMenuBar(menuBar());
@@ -230,6 +239,8 @@ namespace SynGlyphX {
 	void MainWindow::UpdateUserMenu(QString username){
 
 		QString user = username + " " + QString(QChar(0x23F7));
+        
+        qDebug() << user;
 
 #ifdef WIN32
 		userMenuBar->clear();
@@ -237,9 +248,14 @@ namespace SynGlyphX {
 #elif __APPLE__
 		m_loginMenu->setTitle(user);
 #endif
+        qDebug() << "After title is set";
 
 		m_userSettingsMenu = m_loginMenu->addAction("User Settings");
 		QObject::connect(m_userSettingsMenu, &QAction::triggered, this, &MainWindow::UserSettings);
+		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+		if (appfile.contains("DataMapper") || appfile.contains("GlyphDesigner")){
+			m_userSettingsMenu->setDisabled(true);
+		}
 
 		m_loginMenu->addSeparator();
 
@@ -250,6 +266,7 @@ namespace SynGlyphX {
 #elif __APPLE__
 		m_loginMenu->menuAction()->setVisible(true);
 #endif
+		m_validLicense = SynGlyphX::LicensingDialog::CheckLicense();
 	}
 
 	QAction* MainWindow::LogoutMenu(){
@@ -258,17 +275,12 @@ namespace SynGlyphX {
 
 	void MainWindow::UserSettings() {
 
-		QDialog* s = new QDialog(this);
-		s->setWindowTitle(tr("User Settings"));
-		QVBoxLayout* layout = new QVBoxLayout(s);
-		QWidget *placeHolder = new QWidget(s);
-		placeHolder->setMinimumSize(300, 300);
-		layout->addWidget(placeHolder);
-		s->setLayout(layout);
-		s->exec();
+		m_userSettings->exec();
 	}
 
 	void MainWindow::UserLogOut(){
+
+		m_validLicense = false;
 
 		m_userDirectory.clear();
 #ifdef WIN32

@@ -1,6 +1,7 @@
 #include "HomePageWidget.h"
 #include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
+#include <QtCore/QSettings>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QMessageBox>
 #include "TitleListWidget.h"
@@ -25,6 +26,7 @@
 #include <boost/algorithm/string.hpp>
 #include "AnnouncementDialog.h"
 #include "S3FileManager.h"
+#include "GroupSelectionDialog.h"
 #include "version.h"
 
 HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
@@ -40,7 +42,14 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	m_mainLayout->setColumnStretch(1, 1);
 	m_mainLayout->setHorizontalSpacing(0);
 	m_mainLayout->setContentsMargins(0, 8, 16, 16);
-
+	/*
+	QSettings settings;
+	QStringList keys = settings.allKeys();
+	for (auto key : keys){
+		settings.remove(key);
+	}
+	settings.clear();
+	*/
 	QLabel* logoLabel = new QLabel(this);
 	logoLabel->setAlignment(Qt::AlignCenter);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
@@ -88,7 +97,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	CheckForNewRelease();
 
 	if (loggedOn){
-		QTimer::singleShot(0, this, SLOT(SyncFilesAndLoadViews()));
+		//QTimer::singleShot(0, this, SLOT(Login()));
+		Login();
 	}
 	else if(releaseDialog){
 		releaseDialog->show();
@@ -469,13 +479,13 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 		loggedOutLayout->setColumnStretch(2, 1);
 		loggedOutLayout->setSpacing(15);
 
-		loginWidget = new SynGlyphX::UserLoginDialog(m_dataEngineConnection, this);
+		loginWidget = new DataEngine::UserLoginDialog(m_dataEngineConnection, this);
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
 		loginWidget->setMidLineWidth(3);
 		//loginWidget->setMinimumHeight(250);
 		loginWidget->setStyleSheet("background-color: white;");
-		QObject::connect(loginWidget, &SynGlyphX::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
+		QObject::connect(loginWidget, &DataEngine::UserLoginDialog::LoginActivated, this, &HomePageWidget::Login);
 
 		loginWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 		loggedOutLayout->addWidget(loginWidget, 0, 1, 1, 1);//, Qt::AlignCenter | Qt::AlignTop); //1,1
@@ -488,14 +498,38 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 
 void HomePageWidget::SetCustomerLogo() {
 
-	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
-	if (QFileInfo::exists(upperRightLogo)) {
 
-		QPixmap p(upperRightLogo);
-		upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
-		upperRightDashboardImage->AddPadding(25, 0, 25, 0);
-		
+	QSettings st1;
+	st1.beginGroup("LogoSettings");
+
+	bool onStartupChecked = false;
+	bool reqOnStartupChecked = false;
+	if (m_dataEngineConnection->UserAccessControls()->GetUserID() != 0){
+		QSettings settings;
+		settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+		reqOnStartupChecked = settings.value("ReqOnStartupChecked", false).toBool();
+		settings.endGroup();
+		if (!onStartupChecked && !reqOnStartupChecked){
+			st1.setValue("LastLogo", SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico" : ":SGXGUI/Resources/sgx_x.png");
+		}
 	}
+
+	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
+	if (!QFileInfo::exists(upperRightLogo)) {
+		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/sgx_x.png").toString();
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico").toString();
+		}
+	}
+	else{
+		st1.setValue("LastLogo", upperRightLogo);
+	}
+	st1.endGroup();
+
+	QPixmap p(upperRightLogo);
+	upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
+	upperRightDashboardImage->AddPadding(25, 0, 25, 0);
 }
 
 QWidget* HomePageWidget::CreateLowerDashboardWidget() {
@@ -555,12 +589,8 @@ void HomePageWidget::Login(){
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
-		if (m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups() > 1){
-			//Add dialog to select which group the user would like to load
-			//m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
-			//m_dataEngineConnection->UserAccessControls()->SetChosenGroup(QString);
-		}
-		SyncFilesAndLoadViews();
+		SwitchDashboardLayout();
+		QTimer::singleShot(0, this, SLOT(ContinueWithLogin()));
 	}
 	else{
 		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
@@ -570,6 +600,62 @@ void HomePageWidget::Login(){
 		critical_error.setDefaultButton(QMessageBox::Ok);
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
+	}
+}
+
+void HomePageWidget::ContinueWithLogin(){
+
+	if (m_mainWindow->MainWindow::HasValidLicense()){
+
+		QSettings settings;
+		settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
+		QString groupName = settings.value("GroupName", "Default").toString();
+		bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
+		bool reqOnStartupChecked = settings.value("ReqOnStartupChecked", true).toBool();
+		settings.endGroup();
+
+		int ag = m_dataEngineConnection->UserAccessControls()->CheckAvailableGroups();
+		QStringList fgns = m_dataEngineConnection->UserAccessControls()->GetFormattedGroupNames();
+		m_mainWindow->CreateUserSettingsDialog(fgns);
+
+		if (ag > 1 && (reqOnStartupChecked || onStartupChecked)){
+
+			if (fgns.size() == 1){
+				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(fgns.at(0));
+			}
+			else if (onStartupChecked && fgns.contains(groupName)){
+				m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+				m_mainWindow->SetSelectedGroup(groupName);
+			}
+			else{
+				GroupSelectionDialog* gsd = new GroupSelectionDialog(fgns, this);
+				if (gsd->exec() == QDialog::Accepted) {
+					groupName = gsd->GetSelectedGroup();
+					m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+					m_mainWindow->SetSelectedGroup(groupName);
+				}
+				else{
+					ag = 0;
+				}
+			}
+		}
+
+		if (ag == 0 || (!reqOnStartupChecked && !onStartupChecked)){
+			SwitchDashboardLayout();
+		}
+		else{
+			SyncFilesAndLoadViews();
+
+			QSettings groupSettings;
+			groupSettings.beginGroup(groupName);
+			groupSettings.setValue("LastUserToAccess", m_dataEngineConnection->UserAccessControls()->GetUserID());
+			groupSettings.setValue("DirectoryPath", m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
+			groupSettings.setValue("VisualizationNames", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
+			groupSettings.endGroup();
+		}
+	}
+	else{
+		m_mainWindow->Logout();
 	}
 }
 
@@ -589,6 +675,13 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 	if (showReleaseNow && releaseDialog){
 		releaseDialog->show();
 	}
+}
+
+void HomePageWidget::ReSyncFilesAndLoadViews(){
+
+	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
+	d->exec();
+	LoggedOut();
 }
 
 void HomePageWidget::ResetViews(){

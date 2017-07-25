@@ -14,6 +14,7 @@
 /// LAWS AND INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS  
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
+#pragma warning (disable: 4267)
 #pragma once
 #ifndef SYNGLYPHX_LICENSINGDIALOG_H
 #define SYNGLYPHX_LICENSINGDIALOG_H
@@ -42,6 +43,9 @@ namespace SynGlyphX {
 	private:
 		static QString LicenseStatusToString(int licenseStatus, int numberOfDaysLeft);
 		static QString GetLicenseDirectory();
+		static int SGXLicenseCheckout(char *product, char *ver, int &days);
+		static QString GenerateLicenseKeyString(QString userId, QString type, QString timestamp);
+		static std::string DecimalToHex(long long to_convert);
 		void ResetStatusLabel();
 
 		QLabel* m_licenseLabel;

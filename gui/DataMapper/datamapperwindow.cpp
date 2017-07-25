@@ -46,8 +46,10 @@
 #include "FilterSetupWidget.h"
 #include "ProjectEditDialog.h"
 #include "ElasticListSetupDialog.h"
+#include <QtWidgets/QVBoxLayout>
 #include "datastatsmodel.h"
 #include "inputfield.h"
+#include "version.h"
 
 DataMapperWindow::DataMapperWindow(QWidget *parent)
     : SynGlyphX::MainWindow(0, parent),
@@ -102,6 +104,8 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 			m_dataEngineConnection->createJVM();
 			m_dataTransformModel->SetDataEngineConnection(m_dataEngineConnection);
 			m_dataSourceStats->SetDataEngineConnection(m_dataEngineConnection);
+			m_dataEngineConnection->UserAccessControls()->SetAppVersionNumber(SynGlyphX::getAppVersionString());
+			m_dataEngineConnection->SetGlyphEdPath(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/"));
 
 		}
 	}
@@ -121,6 +125,30 @@ DataMapperWindow::DataMapperWindow(QWidget *parent)
 	}
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
+
+	loginDialog = new QDialog(this);
+	loginDialog->setWindowFlags(((loginDialog->windowFlags() | Qt::CustomizeWindowHint) & ~Qt::WindowContextHelpButtonHint));
+	QVBoxLayout* layout = new QVBoxLayout(loginDialog);
+	loginWidget = new DataEngine::UserLoginDialog(m_dataEngineConnection, this);
+	loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	loginWidget->setMinimumWidth(400);
+	loginWidget->setLineWidth(2);
+	loginWidget->setMidLineWidth(3);
+	loginWidget->setStyleSheet("background-color: white;");
+	QObject::connect(loginWidget, &DataEngine::UserLoginDialog::LoginActivated, this, &DataMapperWindow::Login);
+	loginWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+	layout->addWidget(loginWidget);
+	loginDialog->setLayout(layout);
+
+	QObject::connect(loginDialog, &QDialog::rejected, this, &QWidget::close);
+
+	if (IsUserLoggedIn()){
+		Login();
+	}
+	else{
+		QTimer::singleShot(0, loginDialog, SLOT(exec()));
+	}
+
 }
 
 DataMapperWindow::~DataMapperWindow()
@@ -280,6 +308,11 @@ void DataMapperWindow::CreateMenus() {
 	QObject::connect(mapDownloadSettingsAction, &QAction::triggered, this, &DataMapperWindow::ChangeMapDownloadSettings);
 
 	CreateHelpMenu();
+    
+#ifdef __APPLE__
+    menuBar()->addSeparator();
+#endif
+    SynGlyphX::MainWindow::CreateLoginMenu();
 
 	EnableProjectDependentActions(false);
 }
@@ -389,6 +422,7 @@ void DataMapperWindow::CreateDockWidgets() {
 	rightDockWidgetUndo->setWidget(m_undoView);
 	addDockWidget(Qt::RightDockWidgetArea, rightDockWidgetUndo);
 	m_viewMenu->addAction(rightDockWidgetUndo->toggleViewAction());
+
 }
 
 void DataMapperWindow::CreateNewProject() {
@@ -456,6 +490,84 @@ bool DataMapperWindow::LoadRecentFile(const QString& filename) {
 
 	return true;
 }
+
+//NEW LOGIN/LICENSE STUFF FOR DATAMAPPER
+
+bool DataMapperWindow::IsUserLoggedIn() {
+
+	QSettings settings;
+	settings.beginGroup("LoggedInUser");
+	QString user = settings.value("Username", "Guest").toString();
+	QString pass = settings.value("Password", "").toString();
+	QString name = settings.value("Name", "Guest").toString();
+	QString inst = settings.value("Institution", "").toString();
+	bool logged = settings.value("StayLogged", false).toBool();
+	settings.endGroup();
+
+	if (m_dataEngineConnection->UserAccessControls()->IsValidConnection()){
+		return true;
+	}
+	else{
+		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+		if (logged){
+			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
+			if (valid == 1 || valid == 2){
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+void DataMapperWindow::Login(){
+
+	if (loginWidget->Login()){
+		MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
+		UpdateUserMenu();
+		if (MainWindow::HasValidLicense()){
+			loginDialog->hide();
+		}
+		else{
+			QTimer::singleShot(0, this, SLOT(Logout()));
+		}
+	}
+	else{
+		QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Login"), tr("Invalid username or password, please try again"), QMessageBox::Ok, this);
+		critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+		critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+		critical_error.setStandardButtons(QMessageBox::Ok);
+		critical_error.setDefaultButton(QMessageBox::Ok);
+		critical_error.setEscapeButton(QMessageBox::Ok);
+		critical_error.exec();
+	}
+}
+
+void DataMapperWindow::UpdateUserMenu(){
+	QObject::connect(MainWindow::LogoutMenu(), &QAction::triggered, this, &DataMapperWindow::Logout);
+}
+
+void DataMapperWindow::Logout(){
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	MainWindow::UserLogOut();
+
+	QSettings settings;
+	settings.beginGroup("LoggedInUser");
+	settings.setValue("Username", "Guest");
+	settings.setValue("Password", "");
+	settings.setValue("Name", "Guest");
+	settings.setValue("Institution", "");
+	settings.setValue("StayLogged", false);
+	settings.endGroup();
+
+	m_dataEngineConnection->UserAccessControls()->ResetConnection();
+
+	SynGlyphX::Application::restoreOverrideCursor();
+	IsUserLoggedIn();
+	loginDialog->exec();
+}
+
+//NEW LOGIN/LICENSE STUFF FOR DATAMAPPER ENDS
 
 void DataMapperWindow::UpdateMissingFiles(const QString& mappingFilename) {
 

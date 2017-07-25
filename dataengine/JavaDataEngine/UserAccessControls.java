@@ -2,6 +2,8 @@
 import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import synglyphx.user.User;
 import synglyphx.user.Syncer;
@@ -9,33 +11,23 @@ import synglyphx.user.UserFile;
 import synglyphx.user.SecurityGroup;
 import synglyphx.user.PathBuilder;
 import synglyphx.user.FilterSetup;
+import synglyphx.user.ConnectionSpawner;
 import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
 
 public class UserAccessControls {
 
-	private static String HOST = "sgxinstance.cqu1pnqua5at.us-west-2.rds.amazonaws.com";
-	private static String USER = "sgxadmin";
-	private static String PASS = "#sgxpw13#";
-	private static String DBNAME = "sgxdb";
-	private static String PORT = "3306";
 	private static User loggedInUser = null;
-	private static Connection conn;
+	private static Connection conn = null;
 	private static Syncer syncer = null;
 
 	public static boolean initConnection(){
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-			String conn_str = "jdbc:mysql://"+HOST+":"+PORT+"/"+DBNAME;
-			conn = DriverManager.getConnection(conn_str, USER, PASS);
-			return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
+		
+		conn = ConnectionSpawner.spawnConnection();
+		return conn != null;
 	}
 	
-	public static int validateCredentials(String username, String password){
+	public static int validateCredentials(String username, String password, String appVersion){
 
 		if(username.contains(" ")){
 			return 0;
@@ -55,7 +47,8 @@ public class UserAccessControls {
 					loggedInUser.setInstitution(rs.getInt("UserAccounts.Institution"),rs.getString("Institutions.Name"));
 					String update = "UPDATE UserAccounts SET "+
 									"LoginCount = "+String.valueOf(rs.getInt("UserAccounts.LoginCount")+1)+", "+
-									"LastLogin = '"+(new Timestamp(System.currentTimeMillis())).toString()+"' "+
+									"LastLogin = '"+(new Timestamp(System.currentTimeMillis())).toString()+"', "+
+									"VersionNum = '"+appVersion+"' "+
 									"WHERE ID = "+String.valueOf(loggedInUser.getID());
 					conn.prepareStatement(update).executeUpdate();
 				}
@@ -79,6 +72,29 @@ public class UserAccessControls {
 			return 2;
 		}
 		return 1;
+	}
+
+	public static boolean generateLicenseKey(String location){
+		try{
+			ResultSet rs = conn.prepareStatement("SELECT * FROM UsageLicenses WHERE `UserID` = "+String.valueOf(loggedInUser.getID())).executeQuery();
+			if(rs.next()){
+				loggedInUser.setLicenseType(rs.getInt("Type"));
+				PrintWriter writer = new PrintWriter(new File(location,"SGXLicense"), "UTF-8");
+    			writer.println(rs.getString("Key"));
+    			writer.close();
+			}
+			if(loggedInUser.securityGroupCount() <= 1){
+				conn.close();
+			}
+			return true;
+		}
+		catch(Exception e){
+			try{
+	            e.printStackTrace(Logger.getInstance().addError());
+	        }catch(Exception ex){}
+	        e.printStackTrace();
+		}
+		return false;
 	}
 
 	public static int checkAvailableGroups(){
@@ -128,6 +144,9 @@ public class UserAccessControls {
 	private static void setChosenGroupById(int id){
 
 		try{
+			if(conn.isClosed()){
+				conn = ConnectionSpawner.spawnConnection();
+			}
 			String query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
 			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";
 			query += "WHERE VisualizationGroups.Group="+id+";";
@@ -141,7 +160,9 @@ public class UserAccessControls {
 	        rs.close();
 			pstmt.close();
 
-			conn.close();
+			if(loggedInUser.securityGroupCount() > 1){
+				conn.close();
+			}
 		}catch(Exception e){
 			try{
 	            e.printStackTrace(Logger.getInstance().addError());
@@ -152,6 +173,10 @@ public class UserAccessControls {
 
 	public static void logOutCurrentUser(){
 		loggedInUser = null;
+		FilterSetup.getInstance().closeDriverIfOpen();
+	}
+
+	public static void flushOutFilterSetup(){
 		FilterSetup.getInstance().closeDriverIfOpen();
 	}
 
@@ -179,6 +204,14 @@ public class UserAccessControls {
 
 	public static boolean isDoneSyncing(){
 		return syncer.isDone();
+	}
+
+	public static int getUserID(){
+		return loggedInUser.getID();
+	}
+
+	public static int getLicenseType(){
+		return loggedInUser.getLicenseType();
 	}
 
 	public static String nameOfUser(){
@@ -209,7 +242,7 @@ public class UserAccessControls {
 		PathBuilder pb = new PathBuilder(path);
 		ArrayList<UserFile> userFiles = new ArrayList<UserFile>();
 		for(int i = 0; i < names.length; i++){
-			userFiles.add( new UserFile("",names[i],1,1));
+			userFiles.add(new UserFile("",names[i],1,1));
 		}
 		pb.resetSharedVisualizationPaths(userFiles);
 	}
@@ -232,16 +265,19 @@ public class UserAccessControls {
 	public static void main(String [] args){
 
 		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("devtest","devtest"));
+		System.out.println(UserAccessControls.validateCredentials("bholster","bholster",""));
 		System.out.println(UserAccessControls.nameOfUser());
 		System.out.println(UserAccessControls.nameOfInstitution());
 
 		String os = System.getProperty("os.name").toLowerCase();
 		String default_path = "C:/ProgramData/SynGlyphX/Content";
 		if(os.contains("mac")){
-			default_path = "/Users/synglyphx/Library/Application Support/SynGlyphX/Content";
+			default_path = "/Users/bryan/Library/Application Support/SynGlyphX/Content";
 		}
-
+		//UserAccessControls.generateLicenseKey("C:/ProgramData/SynGlyphX");
+		//System.out.println(getListOfFormattedGroupNames());
+		setChosenGroup(getListOfFormattedGroupNames()[0]);
+		
 		if(UserAccessControls.fileSyncSetup(default_path)){
 			UserAccessControls.startSyncingFiles();
 			do{
@@ -251,6 +287,22 @@ public class UserAccessControls {
 			    System.out.println(UserAccessControls.getSyncProgress());
 			}while(UserAccessControls.isDoneSyncing() == false);
 		}
+
+		System.out.println("Done with the first one...");
+
+		setChosenGroup(getListOfFormattedGroupNames()[0]);
+		
+		if(UserAccessControls.fileSyncSetup(default_path)){
+			UserAccessControls.startSyncingFiles();
+			do{
+				try {
+			        Thread.sleep(500);
+			    } catch (InterruptedException e) {}
+			    System.out.println(UserAccessControls.getSyncProgress());
+			}while(UserAccessControls.isDoneSyncing() == false);
+		}
+
+		System.out.println("Done with the second one...");
 /*
 		System.out.println("");
 		String[] vizNames = UserAccessControls.visualizationNames();
