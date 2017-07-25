@@ -133,14 +133,12 @@ class TopNav extends Component {
         }
 		
 		if(fullHeight){
-			//gv.style.height = document.body.clientHeight + "px";
 			topNav.style.height = '0px';
 			topNav.style.overflow = 'hidden';
 		}
 		else if(fullHeight != null){
 			topNav.style.height = this.state.topNavHeight + "px";
 			topNav.style.overflow = '';
-			//gv.style.height = (document.body.clientHeight - topNav.clientHeight) + "px";
 		}
 		
     }
@@ -180,21 +178,23 @@ class TopNav extends Component {
 			
 			//Update the glyphviewer
 			this.updateGlyphViewer(true,true);
-			if(iconDiv){
-				debugger;
+			
+            if(iconDiv){
 				iconDiv.classList.remove('fa-arrows-alt');
 				iconDiv.classList.add('fa-compress');
-				
-				//evt.currentTarget.classList.remove fa-compress
 			}
+
 			this.setState({fullScreenMode: true});
 		}
 		else{
 			//Update the glyphviewer
 			this.updateGlyphViewer(true,false);
-			
-			iconDiv.classList.add('fa-arrows-alt');
-			iconDiv.classList.remove('fa-compress');
+
+			if(iconDiv){
+				iconDiv.classList.add('fa-arrows-alt');
+			    iconDiv.classList.remove('fa-compress');
+				
+			}
 			
 			this.setState({fullScreenMode: false});
 		}
@@ -233,7 +233,7 @@ class TopNav extends Component {
                     <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
 
                         <Flex >
-                            <div className = "TopNav" id="TopNav" style = {{ width:'100%', height:'100%',transition: '1s' }}>
+                            <div className = "TopNav" id="TopNav" style = {{ width:'100%', height:'56px',transition: '1s' }}>
 								
 								<Toolbar 
 									className = "navbar-color" 
@@ -363,7 +363,7 @@ class TopNav extends Component {
                                 id="GlyphViewer" 
                                 onLoad={this.onLoadGlyphView.bind(this)} 
                                 title = "3D rendering engine" 
-                                style = {{ transition:'1s' ,width:'100%', height:'100%' }} 
+                                style = {{ transition:'1s' ,width:'100%', height:'100%', border: 'none' }} 
                                 src = "https://s3.amazonaws.com/synglyphx/demo.html" 
                             /> 
                             <FloatingActionButton 

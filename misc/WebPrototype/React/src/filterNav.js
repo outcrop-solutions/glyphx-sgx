@@ -860,9 +860,6 @@ class FilterNav extends Component {
                                                 width: '24px',
                                                 height: '24px'
                                             }}
-                                            iconStyle = {{
-                                                fontSize: '20px'
-                                            }}
                                             onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
                                         />
                                     </Flex>
@@ -901,9 +898,6 @@ class FilterNav extends Component {
                                                 padding: '0px',
                                                 fontSize: "20px",
                                                 margin: "-2px 0px 0px 4px"
-                                            }}
-                                            iconStyle = {{
-                                                fontSize: '20px'
                                             }}
                                             onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
                                         />
