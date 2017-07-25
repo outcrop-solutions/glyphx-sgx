@@ -17,7 +17,7 @@ const themeSettingColors = [
             toggleTrack: shadeHexColors("#2d3091", 0.4),
             selectedBackground: "#2d3091",
             selectedText: "#ffffff",
-            text: "black",
+            text: "#000000",
             deleteHover: "#b81616",
             addHover: "#339cee"
         },
@@ -64,7 +64,7 @@ const themeSettingColors = [
         settingsModalColor: {
             saveButton: "#2d3091",
             cancelButton: "#575d5e",
-            text: "black",
+            text: "#000000",
             selectedBackground: "#2d3091",
             selectedText: "#ffffff"
         },
@@ -76,13 +76,13 @@ const themeSettingColors = [
         },
 
         viewSelectColor: {
-            text: "black",
+            text: "#000000",
             selectedBackground: "#2d3091",
             selectedText: "#ffffff"
         },
 
         tableSelectColor: {
-            text: "black",
+            text: "#000000",
             selectedBackground: "#2d3091",
             selectedText: "#ffffff"
         },
@@ -93,12 +93,12 @@ const themeSettingColors = [
 
         overviewButtonsColor: {
             background: "#2d3091",
-            text: "white"
+            text: "#ffffff"
         },
 
         filterOverviewColor: {
             badgeBackground: shadeHexColors("#2d3091", -0.4),
-            badgeText: "white",
+            badgeText: "#ffffff",
             deleteHover: "#b81616",
             elasticHover: "#339cee",
             rangeHover: "#339cee"
@@ -116,7 +116,7 @@ const themeSettingColors = [
             toggleTrack: shadeHexColors("#9d2235", 0.4),
             selectedBackground: "#9d2235",
             selectedText: "#ffffff",
-            text: "black",
+            text: "#000000",
             deleteHover: "#b81616",
             addHover: "#339cee"
         },
@@ -163,7 +163,7 @@ const themeSettingColors = [
         settingsModalColor: {
             saveButton: "#9d2235",
             cancelButton: "#f1b434",
-            text: "black",
+            text: "#000000",
             selectedBackground: "#9d2235",
             selectedText: "#ffffff"
         },
@@ -175,13 +175,13 @@ const themeSettingColors = [
         },
 
         viewSelectColor: {
-            text: "black",
+            text: "#000000",
             selectedBackground: "#9d2235",
             selectedText: "#ffffff"
         },
 
         tableSelectColor: {
-            text: "black",
+            text: "#000000",
             selectedBackground: "#9d2235",
             selectedText: "#ffffff"
         },
@@ -192,12 +192,12 @@ const themeSettingColors = [
 
         overviewButtonsColor: {
             background: "#9d2235",
-            text: "white"
+            text: "#ffffff"
         },
 
         filterOverviewColor: {
             badgeBackground: shadeHexColors("#9d2235", -0.4),
-            badgeText: "white",
+            badgeText: "#ffffff",
             deleteHover: "#b81616",
             elasticHover: "#339cee",
             rangeHover: "#339cee"

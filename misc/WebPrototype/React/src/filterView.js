@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
+import './General.css';
 
 
 /**
@@ -139,16 +140,21 @@ class FilterViewForm extends React.Component {
         return (
 
             <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}} containerStyle = {{ padding: "0px" }}>
-                <CardText>
+                <CardText
+                    style = {{
+                        padding: "5px"
+                    }}
+                >
                     <div>
                         <Flex divider />  
 
-                        <Flex layout="row"> 
-                            <span style = {{ color: "#b2b2b2", width: "11px" }} ></span>
-                            <span style = {{ color: "#b2b2b2", width: "123px" }} > Options </span>
-                            <span style = {{ color: "#b2b2b2", width: "106px"}} > Filter </span>
-                            <span style = {{ color: "#b2b2b2", width: "84px" }} > Min </span>
-                            <span style = {{ color: "#b2b2b2" }} > Max </span>
+                        <Flex layout = "row"> 
+                            
+                            <span style = {{ color: "#000000", width: "11px" }} ></span>
+                            <span style = {{ color: "#000000", width: "123px" }} > Options </span>
+                            <span style = {{ color: "#000000", width: "106px"}} > Filter </span>
+                            <span style = {{ color: "#000000", width: "84px" }} > Min </span>
+                            <span style = {{ color: "#000000" }} > Max </span>
                         </Flex>
 
                         <Flex divider /> 
@@ -198,23 +204,19 @@ class FilterViewRow extends React.Component {
 
         return (
             <div >
-                <Flex layout="row" style = {{  height: "50px" }}>
-                    <Flex divider />  
+                <Flex layout = "row" style = {{ minHeight: "32px", margin: "12px -5px 5px -2px" }}>
 
-                    <Flex flex="1">
+                    <Flex flex = "1" style = {{ margin: "0px 10px 0px 10px" }}>
                         <FontIcon
                             onClick = { this.onDelEvent.bind(this) }
-                            className = "fa fa-trash fa-2x"
+                            className = "fa fa-trash cursorHand"
                             hoverColor = { this.props.settings.filterOverviewColor.deleteHover }
                         />
                     </Flex>
 
-                    <Flex divider /> 
-                    <Flex divider /> 
-
-                    <Flex flex="14">
-                        <Flex layout="row"> 
-                            <Flex flex="50">
+                    <Flex flex = "14">
+                        <Flex layout = "row"> 
+                            <Flex flex = "50">
                                 <Badge
                                     badgeContent = { this.props.view[4] }
                                     primary = { true }
@@ -223,7 +225,7 @@ class FilterViewRow extends React.Component {
                                     >
                                     <FontIcon
                                         onClick = { (evt) => this.onClickIcon(evt,this,true) }
-                                        className = "fa fa-list-ul fa-2x"
+                                        className = "fa fa-list-ul cursorHand"
                                         hoverColor = { this.props.settings.filterOverviewColor.elasticHover }
                                     />
                                 </Badge>
@@ -241,7 +243,7 @@ class FilterViewRow extends React.Component {
                                     >
                                     <FontIcon
                                         onClick = { (evt) => this.onClickIcon(evt,this,false) }
-                                        className = "fa fa-sliders fa-2x"
+                                        className = "fa fa-sliders cursorHand"
                                         hoverColor = { this.props.settings.filterOverviewColor.rangeHover }
                                     />
                                 </Badge>
