@@ -12,6 +12,7 @@ import FilterTabs from './FilterTab.js';
 import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import TopView from './TopView.js';
+import SearchBox from './SearchBox.js';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.css';
@@ -638,8 +639,8 @@ class FilterNav extends Component {
     render = () => {
          var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label></div>;
          var columnsObj = this.makeColumns(this.state.tableData);
-		 var pinnedSearchBar = <Flex layout = "row" style = {{ paddingBottom: "15px" }}>
-                                    <Flex flex = "1">
+		 var pinnedSearchBar = <Flex layout = "row" style={{paddingBottom:'14px' }}>
+                                    <Flex flex = "6">
                                         <FontIcon
                                             className="fa fa-search cursorHand" 
                                             style = {{
@@ -649,19 +650,19 @@ class FilterNav extends Component {
                                                 fontSize: '21px',
                                                 margin: "5px -3px 0px 3px"
                                             }}
-                                            onClick = { function(evt) { document.getElementById('pinnedCollapisbleSearch').focus(); } }
+                                            onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
                                         />
                                     </Flex>
 
-                                    <Flex flex = "90" style = {{ minWidth: "317px", margin: "8px -49px 0px 0px" }} >
+                                    <Flex flex = "80" style = {{ margin: "8px -18px 0px 0px" }} >
                                         <TextField
                                             type = "text" 
-                                            id = 'pinnedCollapisbleSearch'
+                                            id = 'filterCollapisbleSearch'
                                             style = {{
                                                 borderColor: "#d9d9d9 #ccc #b3b3b3",
                                                 borderRadius: "4px",
                                                 border: "1px solid #ccc",
-                                                width: "93%",
+                                                width: "100%",
                                                 height: "30px",
                                                 margin: "-7px 0px -8px 3px"
                                             }}
@@ -674,36 +675,35 @@ class FilterNav extends Component {
                                             underlineStyle = {{
                                                 margin: "0px 0px -8px 0px"
                                             }}
-                                            onKeyUp = { (evt) => this.searchMultipleColumns(evt,true) } 
+                                            onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
                                             hintText = "Search for columns... "
                                             underlineFocusStyle = {{ borderColor: this.props.settings.pinFilterColor.searchBoxUnderline, margin: "0px 0px -8px 0px", /*width: "99%"*/ }}
                                         /> 
                                     </Flex>
 
-                                    <Flex flex = "1">
+                                    <Flex flex = "6">
                                         <FontIcon
-                                            className = "fa fa-times cursorHand" 
+                                            className="fa fa-times cursorHand" 
                                             style = {{
                                                 padding: '0px',
                                                 fontSize: "20px",
                                                 margin: "6px 0px 0px 4px"
                                             }}
                                             hoverColor = {this.props.settings.pinFilterColor.SearchBoxClearHover}
-                                            onClick = { (evt) => this.clearSearchBox(evt,'pinnedCollapisbleSearch') }
+                                            onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
                                         />
                                     </Flex>
-
-                                    <Flex flex = "1" style = {{ margin: "2px 0px -2px 15px" }}>
+                                    <Flex divider />
+                                    <Flex flex = "25" style = {{ margin: "2px 0px -2px 15px" }}>
                                         <RaisedButton 
-                                            label = "Collapse" 
-                                            primary = { true } 
-                                            style = {{ width: "96%" }}
-                                            buttonStyle = {{
+                                            label="Collapse" 
+                                            primary={true} 
+                                            buttonStyle={{
                                                 height: '30px',
                                                 lineHeight: '30px',
                                                 backgroundColor: this.props.settings.overviewButtonsColor.background,
                                             }} 
-                                            labelStyle = {{
+                                            labelStyle= {{
                                                 fontSize: '13px',
                                                 color: this.props.settings.overviewButtonsColor.text,
                                                 margin: "0px 0px 0px -5px"
@@ -712,11 +712,10 @@ class FilterNav extends Component {
                                                 height: '30px',
                                                 lineHeight: '30px',
                                             }}
-                                            onClick = { (evt) => this.collapseAll(evt,false) }
+                                            onClick={(evt) => this.collapseAll(evt,false)}
                                         />
                                     </Flex>
-									<br/>
-								</Flex>;
+                                </Flex>;
 
         return (
                 <Flex 
@@ -773,7 +772,8 @@ class FilterNav extends Component {
                     {/* BOTTOM SECTION */}
                     <Flex  
                         style={{
-                            'overflow':'auto'
+                            'overflow':'auto',
+                            'overflowX': 'hidden'
                             }} 
                         id='BottomView'
                         className="sidenavbar"
@@ -875,86 +875,21 @@ class FilterNav extends Component {
                                     </div>
                                 }
                             >
-                                <Flex layout = "row">
-                                    <Flex flex = "1">
-                                        <FontIcon
-                                            className="fa fa-search cursorHand" 
-                                            style = {{
-                                                padding: '0px',
-                                                width: '24px',
-                                                height: '24px',
-                                                fontSize: '21px',
-                                                margin: "5px -3px 0px 3px"
-                                            }}
-                                            onClick = { function(evt) { document.getElementById('filterCollapisbleSearch').focus(); } }
-                                        />
-                                    </Flex>
-
-                                    <Flex flex = "90" style = {{ minWidth: "317px", margin: "8px -49px 0px 0px" }} >
-                                        <TextField
-                                            type = "text" 
-                                            id = 'filterCollapisbleSearch'
-                                            style = {{
-                                                borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                                borderRadius: "4px",
-                                                border: "1px solid #ccc",
-                                                width: "93%",
-                                                height: "30px",
-                                                margin: "-7px 0px -8px 3px"
-                                            }}
-                                            inputStyle = {{
-                                                margin: "0px 0px 0px 8px"
-                                            }}
-                                            hintStyle = {{
-                                                margin: "0px 0px -10px 9px"
-                                            }}
-                                            underlineStyle = {{
-                                                margin: "0px 0px -8px 0px"
-                                            }}
-                                            onKeyUp = { (evt) => this.searchMultipleColumns(evt) } 
-                                            hintText = "Search for columns... "
-                                            underlineFocusStyle = {{ borderColor: this.props.settings.pinFilterColor.searchBoxUnderline, margin: "0px 0px -8px 0px", /*width: "99%"*/ }}
-                                        /> 
-                                    </Flex>
-
-                                    <Flex flex = "1">
-                                        <FontIcon
-                                            className="fa fa-times cursorHand" 
-                                            style = {{
-                                                padding: '0px',
-                                                fontSize: "20px",
-                                                margin: "6px 0px 0px 4px"
-                                            }}
-                                            hoverColor = {this.props.settings.pinFilterColor.SearchBoxClearHover}
-                                            onClick = { (evt) => this.clearSearchBox(evt,'filterCollapisbleSearch') }
-                                        />
-                                    </Flex>
-
-                                    <Flex flex = "1" style = {{ margin: "2px 0px -2px 15px" }}>
-                                        <RaisedButton 
-                                            label="Collapse" 
-                                            primary={true} 
-                                            style = {{ width: "96%" }}
-                                            buttonStyle={{
-                                                height: '30px',
-                                                lineHeight: '30px',
-                                                backgroundColor: this.props.settings.overviewButtonsColor.background,
-                                            }} 
-                                            labelStyle= {{
-                                                fontSize: '13px',
-                                                color: this.props.settings.overviewButtonsColor.text,
-                                                margin: "0px 0px 0px -5px"
-                                            }}
-                                            overlayStyle = {{
-                                                height: '30px',
-                                                lineHeight: '30px',
-                                            }}
-                                            onClick={(evt) => this.collapseAll(evt,false)}
-                                        />
-                                    </Flex>
-                                </Flex>
+								<SearchBox 
+                                    settings={{
+                                        SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
+                                        searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
+                                        overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
+                                        overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
+                                    }}
+                                    searchMultipleColumns= {(evt) => this.searchMultipleColumns(evt)}
+                                    clearSearchBox={(evt) => this.searchMultipleColumns(evt)}
+                                    collapseAll={(evt) => this.searchMultipleColumns(evt)}
+                                    id=""
+                                    pinned={false}
+                                />
 								
-								<br/>
+                                <br/>
                                 {columnsObj.columns}
                             </Collapsible>
                         </div>
