@@ -52,7 +52,8 @@ const themeSettingColors = [
             addPinBackground: shadeHexColors("#2d3091", -0.4),
             okButton: "#2d3091",
             cancelButton: "#575d5e",
-            searchBoxUnderline: "#2d3091"
+            searchBoxUnderline: "#2d3091",
+            SearchBoxClearHover: "#b81616"
         },
 
         hideTopViewButtonColor: {
@@ -150,7 +151,8 @@ const themeSettingColors = [
             addPinBackground: shadeHexColors("#9d2235", -0.4),
             okButton: "#9d2235",
             cancelButton: "#f1b434",
-            searchUnderline: "#2d3091"
+            searchUnderline: "#2d3091",
+            SearchBoxClearHover: "#b81616"
         },
 
         hideTopViewButtonColor: {
