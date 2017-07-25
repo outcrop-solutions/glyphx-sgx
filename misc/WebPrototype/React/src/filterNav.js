@@ -364,7 +364,7 @@ class FilterNav extends Component {
 
         if (this.refs[element + "_pinned"]) {
             element = element + "_pinned";
-			context.clearSearchBox(null,'pinnedCollapisbleSearch');
+			context.clearSearchBox(null,'pinnedCollapisbleSearchBox');
 
             if (pinnedCollapisble.state.isClosed) {
                 //filterCollapisble.prepareToOpen();
@@ -378,7 +378,8 @@ class FilterNav extends Component {
 
         }
         else {
-			context.clearSearchBox(null,'filterCollapisbleSearch');
+			context.clearSearchBox(null,'filterCollapisbleSearchBox');
+
             if (filterCollapisble.state.isClosed) {
                 //filterCollapisble.prepareToOpen();
                 filterCollapisble.openCollapsible();
@@ -441,12 +442,10 @@ class FilterNav extends Component {
 	 * 
 	 */
 	clearSearchBox = (evt,strSearchBoxId) => {
-		var sb = document.getElementById(strSearchBoxId);
-		var evtObj = {};
-		evtObj.currentTarget = sb;
+		var sb = this.refs[strSearchBoxId];
 		if(sb){
-			sb.value = '';
-			this.searchMultipleColumns(evtObj, (strSearchBoxId.indexOf('pin') > -1 ? true : false));
+			evt = sb.clearText(evt);
+            this.searchMultipleColumns(evt,sb.props.pinned,{filterViewClick:true});
 		}
 	}
 	
@@ -456,7 +455,7 @@ class FilterNav extends Component {
 	 * @param {Obj} evt: actual event object
 	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
 	 */
-	searchMultipleColumns = (evt,pinned) => {
+	searchMultipleColumns = (evt,pinned,extra) => {
 		var inputValue = evt.currentTarget.value ? evt.currentTarget.value.toUpperCase() : "";
 		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
 		var len = divList.length;
@@ -469,7 +468,7 @@ class FilterNav extends Component {
             name = divList[i].getAttribute('name');
             ref = this.refs[divList[i].getAttribute('id')] 
             
-            if(ref)
+            if(ref && (extra ? !extra.filterViewClick : true) )
                 ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
 			
             shouldBeVisible = false;
@@ -480,7 +479,7 @@ class FilterNav extends Component {
 				{
 					if (name.toUpperCase().indexOf(inputValues[j]) > -1) {
 						shouldBeVisible = true;
-					} 
+					}
 				}
 				
 				!shouldBeVisible ? divList[i].style.display = "none" : divList[i].style.display = "" ;
@@ -641,17 +640,19 @@ class FilterNav extends Component {
          var columnsObj = this.makeColumns(this.state.tableData);
 		 var pinnedSearchBar = <div>
                                     <SearchBox 
+                                        ref="pinnedCollapisbleSearchBox"
+                                        hintText="Search For Column"
                                         settings={{
                                             SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
                                             searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
                                             overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
                                             overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
                                         }}
-                                        searchMultipleColumns= {(evt,pinned) => this.searchMultipleColumns(evt,pinned)}
-                                        clearSearchBox={(evt,strId) => this.clearSearchBox(evt,strId)}
-                                        collapseAll={(evt,pinned) => this.collapseAll(evt,pinned)}
+                                        onTextFieldValueChange= {(evt,pinned) => this.searchMultipleColumns(evt,pinned)}
+                                        onCollapseAllClick={(evt,pinned) => this.collapseAll(evt,pinned)}
                                         id="pinnedCollapisbleSearchBox"
                                         pinned={true}
+                                        collapseButton={true}
                                     />
                                 <br />
                                 </div>;
@@ -821,11 +822,13 @@ class FilterNav extends Component {
                                         overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
                                         overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
                                     }}
-                                    searchMultipleColumns= {(evt) => this.searchMultipleColumns(evt)}
-                                    clearSearchBox={(evt,strId) => this.clearSearchBox(evt,strId)}
-                                    collapseAll={(evt,pinned) => this.collapseAll(evt,pinned)}
+                                    hintText="Search For Column"
+                                    ref="filterCollapisbleSearchBox"
+                                    onTextFieldValueChange= {(evt) => this.searchMultipleColumns(evt)}
+                                    onCollapseAllClick={(evt,pinned) => this.collapseAll(evt,pinned)}
                                     id="filterCollapisbleSearchBox"
                                     pinned={false}
+                                    collapseButton={true}
                                 />
 								
                                 <br/>
