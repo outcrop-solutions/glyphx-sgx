@@ -10,92 +10,117 @@ class SearchBox extends Component {
 
     constructor(props){
         super(props);
+        this.state ={ 
+            textFieldValue: ""
+        }
+    }
+
+    onChange = (evt) => {
+        var tf = this.refs['SearchTextField'];
+        var innerTF = tf.getInputNode();
+        evt = { currentTarget: innerTF };
+
+        this.setState({
+            textFieldValue: innerTF.value
+        });
+
+        if(typeof this.props.onTextFieldValueChange == "function")
+            this.props.onTextFieldValueChange(evt,this.props.pinned);
+    }
+
+    clearText = (evt) => {
+        var tf = this.refs['SearchTextField'];
+        var innerTF = tf.getInputNode();
+        evt = { currentTarget: innerTF };
+
+        innerTF.value = "";
+
+        this.setState({
+            textFieldValue: innerTF.value
+        });
+
+        return evt;
     }
 
     render() {
         return (
             <Flex layout = "row">
-                <Flex flex = "80" style = {{ margin: "8px -18px 0px 0px" }} >
+                <Flex 
+                    flex = {this.props.collapseButton ? "75": "100"} 
+                    align="space-between center" 
+                >
                     <TextField
                         type = "text" 
                         id = {this.props.id}
+                        type="search"
+                        ref = "SearchTextField"
+                        value = {this.state.textFieldValue}
                         style = {{
                             borderColor: "#d9d9d9 #ccc #b3b3b3",
                             borderRadius: "4px",
                             border: "1px solid #ccc",
                             width: "100%",
-                            height: "30px",
-                            margin: "-7px 0px -8px 3px"
+                            height: "30px"
                         }}
                         inputStyle = {{
-                            margin: "0px 0px 0px 8px"
+                            paddingLeft:"5px",
+                            paddingRight:"5px"
                         }}
                         hintStyle = {{
-                            margin: "0px 0px -12px 6px"
+                            bottom: "-3px",
+                            paddingLeft:"7px"
                         }}
                         underlineStyle = {{
                             margin: "0px 0px -8px 0px"
                         }}
-                        onKeyUp = { (evt) => this.props.searchMultipleColumns(evt,this.props.pinned) } 
+                        onChange = {this.onChange} 
                         hintText = {
                             <span 
                                 style = {{
                                         fontSize: 'inherit',
-                                        margin: "5px -3px 0px 3px",
                                         color: 'rgba(0, 0, 0, 0.3)'
                                     }}
                             >
                                 <FontIcon
-                                    className="fa fa-search cursorHand" 
+                                    className="fa fa-search" 
                                     style = {{
                                         padding: '0px',
                                         width: '24px',
                                         height: '24px',
                                         fontSize: 'inherit',
-                                        //margin: "5px -3px 0px 3px",
-                                        color: 'rgba(0, 0, 0, 0.3)'
+                                        color: 'inherit'
                                     }}
                                 />
-                                Search for columns...
+                                {this.props.hintText}
                             </span>
                         }
                         underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
                     /> 
                 </Flex>
-
-                <Flex flex = "6">
-                    <FontIcon
-                        className="fa fa-times cursorHand" 
-                        style = {{
-                            padding: '0px',
-                            fontSize: "16px",
-                            margin: "8px 0px 0px 4px"
-                        }}
-                        hoverColor = {this.props.settings.SearchBoxClearHover}
-                        onClick = { (evt) => this.props.clearSearchBox(evt,this.props.id) }
-                    />
-                </Flex>
-                <Flex flex = "25" style = {{ margin: "2px 0px -2px 15px" }}>
-                    <RaisedButton 
-                        label = "Collapse" 
-                        primary = { true } 
-                        buttonStyle = {{
-                            height: '30px',
-                            lineHeight: '30px',
-                            backgroundColor: this.props.settings.overviewButtonsColorBg,
-                        }} 
-                        labelStyle = {{
-                            fontSize: '13px',
-                            color: this.props.settings.overviewButtonsColorText,
-                            margin: "0px 0px 0px -5px"
-                        }}
-                        overlayStyle = {{
-                            height: '30px',
-                            lineHeight: '30px',
-                        }}
-                        onClick={(evt) => this.props.collapseAll(evt,this.props.pinned)}
-                    />
-                </Flex>
+                {this.props.collapseButton ? 
+                    <Flex flex = "25">
+                        <RaisedButton 
+                            label="Collapse" 
+                            primary={true} 
+                            buttonStyle={{
+                                height: '30px',
+                                lineHeight: '30px',
+                                backgroundColor: this.props.settings.overviewButtonsColorBg,
+                            }} 
+                            labelStyle= {{
+                                fontSize: '13px',
+                                color: this.props.settings.overviewButtonsColorText
+                            }}
+                            overlayStyle = {{
+                                height: '30px',
+                                lineHeight: '30px',
+                            }}
+                            onClick={(evt) => this.props.onCollapseAllClick(evt,this.props.pinned)}
+                        />
+                    </Flex>
+                : null
+                }
+            
             </Flex>
         );
     }

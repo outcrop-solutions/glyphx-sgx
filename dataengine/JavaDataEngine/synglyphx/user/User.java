@@ -12,6 +12,7 @@ public class User {
 	private Timestamp lastModified;
 	private Institution institution = null;
 	private int selectedGroup;
+	private int licenseType;
 	private ArrayList<SecurityGroup> securityGroups = null;
 	private HashMap<String, Integer> formattedGroupNames = null;
 	private ArrayList<UserFile> userFiles = null; 
@@ -48,6 +49,10 @@ public class User {
 		return selectedGroup;
 	}
 
+	public void setLicenseType(int type){
+		licenseType = type;
+	}
+
 	public int securityGroupCount(){
 		return securityGroups.size();
 	}
@@ -78,6 +83,10 @@ public class User {
 
 	public int getInstitutionID(){
 		return institution.getID();
+	}
+
+	public int getLicenseType(){
+		return licenseType;
 	}
 
 	public int getGroup(){

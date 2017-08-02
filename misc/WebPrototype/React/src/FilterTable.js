@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
+import SearchBox from './SearchBox.js';
 import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import './General.css'
@@ -301,45 +302,33 @@ class FilterTable extends Component {
         }
 		
         return (
+
             <div
                 onMouseEnter = { this.mouseIn }
                 onMouseLeave = { this.mouseOut }
-            >  
-				<IconButton 
-					iconClassName="fa fa-search" 
-					style={{
-						padding: '0px',
-						width: '24px',
-						height: '24px'
-					}}
-					iconStyle= {{
-						fontSize: '17px'
-					}}
-					onClick = { function(evt) { document.getElementById("tf-" + internalColName).focus(); } }
-				/>
-				<TextField
-                    type = "text" 
-                    id = { "tf-" + internalColName }
-					style = {{
-						width:'85%'
-					}}
-                    className = { "tf-" + internalColName }
-                    onKeyUp = { () => this.onKeyUpMultiSearch(this,internalColName,this.state.indexColumnToSearch) } 
-                    hintText = "Search for value.." 
-                    underlineFocusStyle = {{ borderColor: this.props.settings.elasticColor.searchBoxUnderline }}
-                /> 
-				<IconButton 
-					iconClassName="fa fa-times" 
-					style={{
-						padding: '0px',
-						width: '24px',
-						height: '24px'
-					}}
-					iconStyle= {{
-						fontSize: '17px'
-					}}
-					onClick = { (evt) => this.clearSearchBox(evt,internalColName) }
-				/>
+            >
+                <br/>
+                <div
+                    style={{
+                        marginLeft: '5%'
+                    }}
+                >
+                    <SearchBox 
+                        ref="pinnedCollapisbleSearchBox"
+                        hintText= "Search for value.." 
+                        settings={{
+                            SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
+                            searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
+                            overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
+                            overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
+                        }}
+                        onTextFieldValueChange= {(evt) => this.onKeyUpMultiSearch(this,internalColName,this.state.indexColumnToSearch)}
+                        id={ "tf-" + internalColName }
+                        pinned={false}
+                        collapseButton={false}
+                    />
+            </div>
+
 				<br/>
 				
                 <Table

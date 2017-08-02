@@ -115,14 +115,14 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
-
+	/*
 #ifdef USE_LICENSING
 	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
 		return 0;
 	}
 #endif
-
+	*/
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);

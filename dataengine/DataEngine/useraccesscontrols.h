@@ -37,9 +37,12 @@ namespace DataEngine
 		bool synced;
 		int valid;
 		QString presetLogoPath;
+		QString presetId;
 		QString presetName;
 		QString presetInstitution;
+		QStringList groupNames;
 		QStringList vizNames;
+		QString appVersion;
 
 	public:
 		UserAccessControls(JNIEnv *env);
@@ -47,15 +50,21 @@ namespace DataEngine
 
 		bool IsValidConnection();
 		void ResetConnection();
+		void FlushOutFilterSetup();
+		int GetUserID();
+		int GetLicenseType();
 		QString NameOfUser();
 		QString NameOfInstitution();
+		QString NameOfDirectory();
 		QString LastModified();
 		QStringList VizualizationNames();
 		QStringList GetFormattedGroupNames();
 		void SetChosenGroup(QString name);
+		void SetAppVersionNumber(QString version){ appVersion = version; }
 
 		void InitializeConnection();
 		int ValidateCredentials(QString username, QString password);
+		bool GenerateLicenseKey(QString path);
 		int CheckAvailableGroups();
 		bool FileSyncSetup(QString path);
 		int VisualizationsToSync();
@@ -65,8 +74,9 @@ namespace DataEngine
 
 		int FilesSynced();
 		void PresetLogoPath(QString path);
+		void SetVisualizationGroupNames(QStringList groups);
 		void SetVisualizationNames(QStringList vizs);
-		void SetUsersNameAndInstitution(QString name, QString inst);
+		void SetUsersInformation(QString id, QString name, QString inst);
 		QString GlyphEdPath();
 		bool HasSynced();
 

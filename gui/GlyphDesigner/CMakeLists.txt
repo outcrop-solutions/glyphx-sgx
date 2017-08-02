@@ -10,8 +10,12 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXDataMapping
 							../../Core/SGXImage
 							../../GUI/SGXGUI
-							../../GUI/SGXGlyphGUI)
-							
+							../../GUI/SGXGlyphGUI
+							../../DataEngine/DataEngine
+							${JAVA_INCLUDE_DIRS})
+
+LINK_DIRECTORIES(${JAVA_LINK_DIRS})
+
 #Enable breakpad if it is available						
 IF (${BREAKPAD_FOUND})
 	INCLUDE_DIRECTORIES(AFTER ${BREAKPAD_INCLUDE_DIR})
@@ -43,7 +47,8 @@ TARGET_LINK_LIBRARIES(GlyphDesigner ${Boost_LIBRARIES}
 									SGXDataMapping 
 									SGXImage 
 									SGXGUI 
-									SGXGlyphGUI)
+									SGXGlyphGUI
+									DataEngine)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphDesigner ${BREAKPAD_LIBRARIES})

@@ -58,7 +58,6 @@ namespace SynGlyphX {
 		}
 
 		for (boost::filesystem::directory_iterator iT(sourcePath); iT != boost::filesystem::directory_iterator(); ++iT) {
-
 			bool isDirectory = boost::filesystem::is_directory(iT->status());
 			if (isDirectory && recursive) {
 
