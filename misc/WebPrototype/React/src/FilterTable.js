@@ -5,6 +5,7 @@ import Checkbox from 'material-ui/Checkbox';
 import SearchBox from './SearchBox.js';
 import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
+import './General.css'
 
 
 /**
@@ -13,8 +14,7 @@ import { connect } from 'react-redux';
  * @param columnToSearch: the index of the column you want the search funcationality to work on.
  * @param internalColName: name of the column used for internal mapping purposes
  * @param displayName: the name of the column as showed on the UI.
- * @param  tableData: [array of strings]
- *          eg:  tableData: ['a','b','c','a']
+ * @param tableData: [array of strings]  eg: tableData: ['a','b','c','a']
  */
 
 class FilterTable extends Component {
@@ -238,6 +238,24 @@ class FilterTable extends Component {
         this.componentDidUpdate();
     }
 
+    mouseIn = () => {
+        var elements = document.getElementsByClassName(this.props.internalColName + "-E");
+        if (elements[0].scrollHeight > 300) {
+            var scrollDiv = document.getElementsByClassName("sidenavbar");
+            scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+        }
+        
+    }
+
+    mouseOut = () => {
+        var elements = document.getElementsByClassName(this.props.internalColName + "-E");
+        if (elements[0].scrollHeight > 300) {
+            var scrollDiv = document.getElementsByClassName("sidenavbar");
+            scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
+        }
+    }
+
+
     render() {
         var id = this.props.id;
         var internalColName = this.props.internalColName;
@@ -283,7 +301,11 @@ class FilterTable extends Component {
         }
 		
         return (
-            <div>
+
+            <div
+                onMouseEnter = { this.mouseIn }
+                onMouseLeave = { this.mouseOut }
+            >
                 <br/>
                 <div
                     style={{
@@ -304,7 +326,8 @@ class FilterTable extends Component {
                         pinned={false}
                         collapseButton={false}
                     />
-                </div>
+            </div>
+
 				<br/>
 				
                 <Table
@@ -341,6 +364,7 @@ class FilterTable extends Component {
                     deselectOnClickaway = { this.state.deselectOnClickaway }
                     showRowHover = { this.state.showRowHover }
                     stripedRows = { false }
+                    className = {internalColName + "-E"}
                 >
                     {rows}
                 </TableBody>

@@ -48,10 +48,10 @@ const filterReducer = function(state = initialFilterState, action) {
             stateVal = state.Filter[action.colName].rangeList.slice();
 
             if (action.rangeType === "Number") {
-                stateVal.push( ["", "", action.id, action.applied] );
+                stateVal.push( [action.min, action.max, action.id, action.applied] );
             }
             else if (action.rangeType === "Text") {
-                stateVal.push( ["", "", action.id, action.applied, action.selectType, ""] );
+                stateVal.push( [action.min, action.max, action.id, action.applied, action.selectType, ""] );
             }
             else {
                 // Date range

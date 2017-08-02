@@ -272,8 +272,8 @@ class TopNav extends Component {
 											<FontIcon className="fa fa-info fa-2x" color='white'/>
 										</IconButton>
                                         
-                                        <IconButton onClick={openUserProfileMenu}>
-											<FontIcon className="fa fa-user fa-2x" color='white'/>
+                                        <IconButton onClick = { openUserProfileMenu }>
+											<FontIcon className = "fa fa-user fa-2x" color = 'white'/>
 										</IconButton>
                                         
                                         
@@ -281,8 +281,8 @@ class TopNav extends Component {
 								</Toolbar>
 
                                 <div 
-                                    id  ="filterNav" 
-                                    className = "sidenav sidenavbar"
+                                    id  = "filterNav" 
+                                    className = "sidenav"
                                 >
                                     <FilterNav></FilterNav>
                                 </div>
