@@ -14,8 +14,7 @@ import './General.css'
  * @param columnToSearch: the index of the column you want the search funcationality to work on.
  * @param internalColName: name of the column used for internal mapping purposes
  * @param displayName: the name of the column as showed on the UI.
- * @param  tableData: [array of strings]
- *          eg:  tableData: ['a','b','c','a']
+ * @param tableData: [array of strings]  eg: tableData: ['a','b','c','a']
  */
 
 class FilterTable extends Component {

@@ -36,16 +36,15 @@ class FilterTabs extends React.Component {
 
     mouseIn = () => {
         var elements = document.getElementsByClassName(this.props.id + "-R");
-        if (elements[0].scrollHeight > 381) {
+        if (elements[0].scrollHeight > 393) {
             var scrollDiv = document.getElementsByClassName("sidenavbar");
             scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
         }
         
     }
 
-    mouseOut = () => {
-        var elements = document.getElementsByClassName(this.props.id + "-R");
-        if (elements[0].scrollHeight > 381) {
+    mouseOut = () => {        var elements = document.getElementsByClassName(this.props.id + "-R");
+        if (elements[0].scrollHeight > 393) {
             var scrollDiv = document.getElementsByClassName("sidenavbar");
             scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
         }
@@ -61,21 +60,19 @@ class FilterTabs extends React.Component {
 
         if (this.active === "ELASTIC") {
             this.active = "RANGE";
-        }
-        else {
+        }        else {
             this.active = "ELASTIC";
         }
         
         if (this.active === "ELASTIC") {
             if (document.getElementById(this.state.rangeID)) {
                 document.getElementById(this.state.tableID).style.maxHeight = "0px";
-                document.getElementById(this.state.rangeID).style.maxHeight = "381px";
+                document.getElementById(this.state.rangeID).style.maxHeight = "393px";
             }
         }
-        else {
-            if (document.getElementById(this.state.tableID)) {
+        else {            if (document.getElementById(this.state.tableID)) {
                 document.getElementById(this.state.rangeID).style.maxHeight = "0px";
-                document.getElementById(this.state.tableID).style.maxHeight = "381px";
+                document.getElementById(this.state.tableID).style.maxHeight = "393px";
             }
         }
 
@@ -115,7 +112,7 @@ class FilterTabs extends React.Component {
                     <div
                         id = { this.state.tableID }
                         style = {{
-                            maxHeight: "381px",
+                            maxHeight: "393px",
                             overflowX: "hidden"
                         }}
                     >
@@ -124,8 +121,8 @@ class FilterTabs extends React.Component {
                     <div
                         id = { this.state.rangeID }
                         style = {{
-                            maxHeight: "381px",
-                            overflowX: "hidden",
+                            maxHeight: "393px",
+                            overflowX: "hidden"
                         }}
                         onMouseEnter = { this.mouseIn }
                         onMouseLeave = { this.mouseOut }

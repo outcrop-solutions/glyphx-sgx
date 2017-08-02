@@ -11,8 +11,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
+import Login from './Login.js';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
@@ -32,7 +34,8 @@ class TopNav extends Component {
         overlapFilterNav: true,
         iframeWidthNonOverlap: 0,
 		fullScreenMode: false,
-		topNavHeight: 0
+        topNavHeight: 0,
+        authenticate:true
     };
 
     showLoadMask = () => {
@@ -54,6 +57,12 @@ class TopNav extends Component {
     };
 
     componentDidMount() {
+        
+        this.refs['LoginForm'].getWrappedInstance().showLoginForm();
+        this.init();
+    }
+
+    init(){
         var context = this;
         context.timeout = window.setInterval(function(){
             if(context.state.glyphViewLoaded){
@@ -80,7 +89,6 @@ class TopNav extends Component {
 
     handleSelectChange(event, index, value) {
         this.setState({ themeTempSelection: value });
-        
     }
 
     onSettingsSave() {
@@ -202,10 +210,12 @@ class TopNav extends Component {
 	}
 
     render() {
+
         return (
             <MuiThemeProvider> 
                 <div style = {{ width:'100%', height:'100%' }}>
-                    
+                 
+                    {this.state.authenticate ? <Login ref="LoginForm"/> : null}
                     <div 
                         id = "LoadMask1"  
                         style = {{ 
@@ -247,28 +257,6 @@ class TopNav extends Component {
 											</a>
 										</span>
 									</ToolbarGroup>
-									
-									{/*<ToolbarGroup>
-										<IconButton style={{color:'white'}}>
-											<FontIcon className="fa fa-arrows fa-2x" style={{color:'white'}}/>
-										</IconButton>
-										<IconButton style={{color:'white'}}>
-											<FontIcon className="fa fa-video-camera fa-2x" style={{color:'white'}}/>
-										</IconButton>
-										<IconButton  style={{color:'white'}}>
-											<FontIcon className="fa fa-user-o fa-2x" style={{color:'white'}}/>
-										</IconButton>
-										<IconButton  style={{color:'white'}}>
-											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
-										</IconButton>
-										<IconButton  style={{color:'white'}}>
-											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
-										</IconButton>
-										<IconButton style={{color:'white'}}>
-											<FontIcon className="fa fa-filter fa-2x" style={{color:'white'}}/>
-										</IconButton>
-									</ToolbarGroup>
-									*/}
 									
 									<ToolbarGroup>
 										<ToolbarSeparator />
@@ -413,17 +401,6 @@ class TopNav extends Component {
                             >
 
                                 <i className = "fa fa-video-camera" style = {{ fontSize: '1rem', color: this.props.settings.collapsibleColor.mainIcon }} />
-                            
-                            </FloatingActionButton>
-                            
-                            <FloatingActionButton 
-								backgroundColor= {this.props.settings.overviewButtonsColor.background}
-                                style={styles.floatingMiniStyles} 
-                                className="toggleOptionsMenuItems"
-                                mini={true}
-                            >
-
-                                <i className = "fa fa-pencil" style = {{ fontSize: '1rem', color: this.props.settings.collapsibleColor.mainIcon }} />
                             
                             </FloatingActionButton>
                             

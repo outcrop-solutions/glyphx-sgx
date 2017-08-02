@@ -15,12 +15,13 @@ import TopView from './TopView.js';
 import SearchBox from './SearchBox.js';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
+import ScrollIntoView from 'scroll-into-view-if-needed';
 import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './filterNav.css';
 
 
-require('smoothscroll-polyfill').polyfill();
+//require('smoothscroll-polyfill').polyfill();
 
 class FilterNav extends Component {
 
@@ -417,9 +418,12 @@ class FilterNav extends Component {
             element = document.getElementById(element);
 
         if(element)
-            element.scrollIntoView({ 
+            /*element.scrollIntoView({ 
                 behavior: 'smooth' 
-            });
+            });*/
+            ScrollIntoView(element, false, {
+                            duration: 150
+                            });
         else
             return false;
     }
