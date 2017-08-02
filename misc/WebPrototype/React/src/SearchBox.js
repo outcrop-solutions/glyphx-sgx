@@ -97,7 +97,6 @@ class SearchBox extends Component {
                         underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
                     /> 
                 </Flex>
-                <Flex divider />
                 {this.props.collapseButton ? 
                     <Flex flex = "25">
                         <RaisedButton 
@@ -121,7 +120,7 @@ class SearchBox extends Component {
                     </Flex>
                 : null
                 }
-                
+            
             </Flex>
         );
     }

@@ -1,0 +1,11 @@
+.cursorHand:Hover {
+    cursor: pointer
+}
+
+.disableScroll {
+    overflow-y: hidden !important
+}
+
+.enableScroll {
+    overflow-y: auto !important
+}
