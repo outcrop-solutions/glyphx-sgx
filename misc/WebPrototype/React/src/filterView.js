@@ -47,10 +47,7 @@ class FilterViewForm extends React.Component {
     render() {
         // Lose scope of 'this' in the map function
         var rowDel = this.handleRowDel.bind(this);
-
-
         var filterList = this.props.filterList;
-        
         var viewList = [];
 
         // Find the min and max values selected bsed on the type (Text, Number, Date)
@@ -139,22 +136,32 @@ class FilterViewForm extends React.Component {
 
         return (
 
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}} containerStyle = {{ padding: "0px" }}>
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}} containerStyle = {{ padding: "0px", }}>
                 <CardText
                     style = {{
                         padding: "5px"
                     }}
                 >
                     <div>
-                        <Flex divider />  
 
                         <Flex layout = "row"> 
                             
-                            <span style = {{ color: "#000000", width: "11px" }} ></span>
-                            <span style = {{ color: "#000000", width: "123px" }} > Options </span>
-                            <span style = {{ color: "#000000", width: "106px"}} > Filter </span>
-                            <span style = {{ color: "#000000", width: "84px" }} > Min </span>
-                            <span style = {{ color: "#000000" }} > Max </span>
+                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 10px" }}>
+                                <span style = {{ color: "#000000", width: "123px" }} > Options </span>
+                            </Flex>
+
+                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 71px" }}>
+                                <span style = {{ color: "#000000", width: "106px"}} > Filter </span>
+                            </Flex>
+
+                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 75px" }}>
+                                <span style = {{ color: "#000000", width: "84px" }} > Min </span>
+                            </Flex>
+
+                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 53px" }}>
+                                <span style = {{ color: "#000000" }} > Max </span>
+                            </Flex>
+
                         </Flex>
 
                         <Flex divider /> 
@@ -162,7 +169,7 @@ class FilterViewForm extends React.Component {
                         <Flex divider /> 
 
                         {/* Displays the mapped views*/}
-                        {view}
+                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3> No Filters Selected! </h3></div>}
                     </div>
 
                 </CardText>
@@ -206,7 +213,7 @@ class FilterViewRow extends React.Component {
             <div >
                 <Flex layout = "row" style = {{ minHeight: "32px", margin: "12px -5px 5px -2px" }}>
 
-                    <Flex flex = "1" style = {{ margin: "0px 10px 0px 10px" }}>
+                    <Flex flex = "1" style = {{ margin: "-4px 10px 0px 10px" }}>
                         <FontIcon
                             onClick = { this.onDelEvent.bind(this) }
                             className = "fa fa-trash cursorHand"
@@ -216,7 +223,7 @@ class FilterViewRow extends React.Component {
 
                     <Flex flex = "14">
                         <Flex layout = "row"> 
-                            <Flex flex = "50">
+                            <Flex flex = "50" style = {{ margin: "-4px -3px 0px 2px" }}>
                                 <Badge
                                     badgeContent = { this.props.view[4] }
                                     primary = { true }
@@ -234,7 +241,7 @@ class FilterViewRow extends React.Component {
                             <Flex divider /> 
                             <Flex divider /> 
 
-                            <Flex flex="50" >
+                            <Flex flex = "50" style = {{ margin: "-4px -5px 0px 0px" }}>
                                 <Badge
                                     badgeContent = { this.props.view[5] }
                                     primary = { true }
@@ -256,7 +263,7 @@ class FilterViewRow extends React.Component {
 
                     <Flex flex="85">
                         <Flex layout="row"> 
-                            <Flex flex="40">
+                            <Flex flex = "40" style = {{ margin: "0px -5px 0px 3px" }}>
                                 <Tooltip
                                     placement = 'bottom'
                                     mouseEnterDelay = { 0.5 }
@@ -273,7 +280,7 @@ class FilterViewRow extends React.Component {
 
                             <Flex divider /> 
 
-                            <Flex flex="30">
+                            <Flex flex = "30">
                                 <Tooltip
                                     placement = 'bottom'
                                     mouseEnterDelay = { 0.5 }
@@ -290,7 +297,7 @@ class FilterViewRow extends React.Component {
 
                             <Flex divider /> 
 
-                            <Flex flex="30">
+                            <Flex flex = "30">
                                 <Tooltip
                                     placement = 'bottom'
                                     mouseEnterDelay = { 0.5 }

@@ -370,6 +370,9 @@ class TopView extends Component {
                             placeholder = "Select a view" 
                             options = { this.state.viewSelectItems } 
                             onChange = { this.onSelectViewChange } 
+                            style = {{
+                                margin: "-11px 0px 0px 0px"
+                            }}
                         />
                     </Flex>
                     
@@ -379,18 +382,21 @@ class TopView extends Component {
                             <RaisedButton
                                 onClick = { (evt) => this.handleOpenClose('menu', true,evt) }
                                 label = "Menu"
-								buttonStyle={{
-									height: '28px',
-									lineHeight: '28px',
+                                style = {{
+                                    margin: "-1px 0px 11px -3px"
+                                }}
+								buttonStyle = {{
+									height: '35px',
+									lineHeight: '35px',
 									backgroundColor: this.props.settings.overviewButtonsColor.background
 								}} 
-								labelStyle= {{
+								labelStyle = {{
 									fontSize: '13px',
 									color: this.props.settings.overviewButtonsColor.text
 								}}
 								overlayStyle = {{
-									height: '28px',
-									lineHeight: '28px'
+									height: '35px',
+									lineHeight: '35px'
 								}}
                                 primary = { true }
                             />
@@ -449,51 +455,52 @@ class TopView extends Component {
                     {/* <FilterNavTabs scrollToElement = {this.props.initParams.scrollToElement} /> */}
                     <FilterViewForm ref = 'filterSummaryView' onScroll = { (element, elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
                 </Flex>
-
-                
-                
-                
                 
                 {/* Row 3 */}
                 <Flex layout = "row" style = {{ height:'10%',marginBottom: '5px' }}>
-                    <Flex flex = "25">
+                    <Flex flex = "30" style = {{ margin: "-5px 24px 10px 0px" }}>
                         <RaisedButton 
-                            label = "Clear All" 
+                            label = "Clear All"
+                            style = {{
+                                width: "130px"
+                            }}
                             buttonStyle={{
-								height: '28px',
-								lineHeight: '28px',
+								height: '25px',
+								lineHeight: '25px',
 								backgroundColor: this.props.settings.overviewButtonsColor.background
 							}} 
 							labelStyle= {{
-								fontSize: '13px',
+								fontSize: '12px',
 								color: this.props.settings.overviewButtonsColor.text
 							}}
 							overlayStyle = {{
-								height: '28px',
-								lineHeight: '28px'
+								height: '25px',
+								lineHeight: '25px'
 							}}
                             onClick = { this.onClearAllFilters }
                             primary = {true } />
                     </Flex>
 
-                    <Flex divider />
 
-                    <Flex flex = "25">
+                    <Flex flex = "25" style = {{ margin: "-5px 31px 0px -4px" }}>
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
-                            buttonStyle={{
-								height: '28px',
-								lineHeight: '28px',
+                            style = {{
+                                width: "130px"
+                            }}
+                            buttonStyle = {{
+								height: '25px',
+								lineHeight: '25px',
 								backgroundColor: this.props.settings.overviewButtonsColor.background
 							}} 
-							labelStyle= {{
-								fontSize: '13px',
+							labelStyle = {{
+								fontSize: '12px',
 								color: this.props.settings.overviewButtonsColor.text
 							}}
 							overlayStyle = {{
-								height: '28px',
-								lineHeight: '28px'
+								height: '25px',
+								lineHeight: '25px'
 							}}onClick = { this.onHideFilteredData.bind(this) }
                             primary = { true } />
 
@@ -505,25 +512,26 @@ class TopView extends Component {
                             */}
                     </Flex>
 
-                    <Flex divider />
-
-                    <Flex flex = "35">
+                    <Flex flex = "30" style = {{ margin: "-5px -6px 0px 8px" }}>
                         <RaisedButton 
                             primary = { true } 
                             label = "Apply Filters" 
-                            onClick = { this.applyFilter.bind(this) } 
-                            buttonStyle={{
-								height: '28px',
-								lineHeight: '28px',
+                            onClick = { this.applyFilter.bind(this) }
+                            style = {{
+                                width: "130px"
+                            }}
+                            buttonStyle = {{
+								height: '25px',
+								lineHeight: '25px',
 								backgroundColor: this.props.settings.overviewButtonsColor.background
 							}} 
-							labelStyle= {{
-								fontSize: '13px',
+							labelStyle = {{
+								fontSize: '12px',
 								color: this.props.settings.overviewButtonsColor.text
 							}}
 							overlayStyle = {{
-								height: '28px',
-								lineHeight: '28px'
+								height: '25px',
+								lineHeight: '25px'
 							}}
 					/>
                     </Flex>

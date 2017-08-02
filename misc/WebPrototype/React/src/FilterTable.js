@@ -4,6 +4,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import Checkbox from 'material-ui/Checkbox';
 import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
+import './General.css'
 
 
 /**
@@ -237,6 +238,24 @@ class FilterTable extends Component {
         this.componentDidUpdate();
     }
 
+    mouseIn = () => {
+        var elements = document.getElementsByClassName(this.props.internalColName + "-E");
+        if (elements[0].scrollHeight > 300) {
+            var scrollDiv = document.getElementsByClassName("sidenavbar");
+            scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+        }
+        
+    }
+
+    mouseOut = () => {
+        var elements = document.getElementsByClassName(this.props.internalColName + "-E");
+        if (elements[0].scrollHeight > 300) {
+            var scrollDiv = document.getElementsByClassName("sidenavbar");
+            scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
+        }
+    }
+
+
     render() {
         var id = this.props.id;
         var internalColName = this.props.internalColName;
@@ -282,7 +301,10 @@ class FilterTable extends Component {
         }
 		
         return (
-            <div>  
+            <div
+                onMouseEnter = { this.mouseIn }
+                onMouseLeave = { this.mouseOut }
+            >  
 				<IconButton 
 					iconClassName="fa fa-search" 
 					style={{
@@ -354,6 +376,7 @@ class FilterTable extends Component {
                     deselectOnClickaway = { this.state.deselectOnClickaway }
                     showRowHover = { this.state.showRowHover }
                     stripedRows = { false }
+                    className = {internalColName + "-E"}
                 >
                     {rows}
                 </TableBody>

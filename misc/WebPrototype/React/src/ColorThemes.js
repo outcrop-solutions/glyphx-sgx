@@ -83,8 +83,11 @@ const themeSettingColors = [
 
         tableSelectColor: {
             text: "#000000",
+            background: shadeHexColors("#2d3091", 0.8),
             selectedBackground: "#2d3091",
-            selectedText: "#ffffff"
+            selectedText: "#ffffff",
+            chipBackground: shadeHexColors("#2d3091", -0.4),
+            deleteHover: shadeHexColors("#2d3091", 0.4)
         },
 
         topNavbarColor: {
@@ -182,8 +185,11 @@ const themeSettingColors = [
 
         tableSelectColor: {
             text: "#000000",
+            background: shadeHexColors("#9d2235", 0.8),
             selectedBackground: "#9d2235",
-            selectedText: "#ffffff"
+            selectedText: "#ffffff",
+            chipBackground: shadeHexColors("#9d2235", -0.4),
+            deleteHover: shadeHexColors("#9d2235", 0.4)
         },
 
         topNavbarColor: {
