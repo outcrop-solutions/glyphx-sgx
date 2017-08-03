@@ -8,7 +8,7 @@ import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import 'font-awesome/css/font-awesome.css';
+import 'font-awesome/css/font-awesome.min.css';
 import './General.css';
 
 

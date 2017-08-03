@@ -16,7 +16,7 @@ import SearchBox from './SearchBox.js';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import ScrollIntoView from 'scroll-into-view-if-needed';
-import 'font-awesome/css/font-awesome.css';
+import 'font-awesome/css/font-awesome.min.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './filterNav.css';
 

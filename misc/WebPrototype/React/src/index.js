@@ -4,7 +4,7 @@ import TopNav from './topNav';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import themeSettingColors from './ColorThemes.js';
-import './index.css';
+import './General.css';
 
 
 /**
