@@ -20,9 +20,6 @@ import 'font-awesome/css/font-awesome.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './filterNav.css';
 
-
-//require('smoothscroll-polyfill').polyfill();
-
 class FilterNav extends Component {
 
     constructor(props) {

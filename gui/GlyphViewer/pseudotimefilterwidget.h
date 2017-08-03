@@ -22,10 +22,8 @@ public:
 	~PseudoTimeFilterWidget();
 
 	void SetupLinkedWidgets(LinkedWidgetsManager& linkedWidgetsManager);
-
 	void ResetForNewVisualization();
 	void Disable();
-
 	void SetPlayTimerInterval(unsigned int milliseconds);
 
 private slots:
@@ -36,6 +34,8 @@ private slots:
 	void OnSliderValueChanged(int index);
 	void IncrementTime();
 	void OnFilterSelectionButtonClicked();
+	void OnIncrementTimeFilter();
+	void OnDecrementTimeFilter();
 
 private:
 	enum FilterState {
@@ -59,15 +59,16 @@ private:
 	QPushButton* m_repeatButton;
 	QPushButton* m_stopButton;
 	QPushButton* m_goToStartButton;
+	QPushButton* m_goBackwardButton;
 	QPushButton* m_playPauseButton;
+	QPushButton* m_goForwardButton;
 	QPushButton* m_goToEndButton;
-
 	QPushButton* m_fieldSelectorButton;
+
 	SourceDataInfoModel* m_columnsModel;
 	QPersistentModelIndex m_selectedField;
 	unsigned long m_selectedTableStartingIndex;
 	QLabel* m_fieldLabel;
-
 	QTimer m_playTimer;
 
 	FilterState m_filterState;

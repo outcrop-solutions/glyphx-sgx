@@ -14,6 +14,19 @@
       padding: 0;
       width: 100%;
       }
+    .elem{
+    transition-property: transform;
+    transition-duration: 1s;
+    animation-name: rotate; 
+    animation-duration: 1s; 
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
       body {
       font-family: 'Roboto', sans-serif;
       font-size: 13px;
@@ -182,7 +195,9 @@
         <div class="second-indicator"></div>
       </div>
       <div class="insp-logo-frame">
-        <img class="insp-logo-frame-img" src="./Res/Img/SynGlyphX-inside.png" alt="SynGlyphX">
+        <!--<img class="insp-logo-frame-img" src="./Res/Img/SynGlyphX-inside.png" alt="SynGlyphX">
+        <br/> -->
+        <img class="insp-logo-frame-img elem" src="./Res/Img/x.png" alt="SynGlyphX">
       </div>
     </div>
         <div id="root"></div>

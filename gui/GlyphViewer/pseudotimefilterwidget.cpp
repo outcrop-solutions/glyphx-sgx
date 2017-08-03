@@ -70,6 +70,14 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 	m_goToStartButton->setToolTip(tr("Go To Start"));
 	QObject::connect(m_goToStartButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnGoToStart);
 	buttonsLayoutLeft->addWidget(m_goToStartButton);
+	
+	m_goBackwardButton = new QPushButton(this);
+	m_goBackwardButton->setIcon(QIcon(":SGXGUI/Resources/Video/start.png"));
+	m_goBackwardButton->setIconSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
+	m_goBackwardButton->setFixedSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
+	m_goBackwardButton->setToolTip(tr("Increment Backwards"));
+	QObject::connect(m_goBackwardButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnDecrementTimeFilter);
+	buttonsLayoutLeft->addWidget(m_goBackwardButton);
 
 	buttonsLayout->addLayout(buttonsLayoutLeft, 1);
 
@@ -87,6 +95,14 @@ PseudoTimeFilterWidget::PseudoTimeFilterWidget(SourceDataInfoModel* columnsModel
 
 	QHBoxLayout* buttonsLayoutRight = new QHBoxLayout();
 	buttonsLayoutRight->setContentsMargins(0, 0, 0, 0);
+
+	m_goForwardButton = new QPushButton(this);
+	m_goForwardButton->setIcon(QIcon(":SGXGUI/Resources/Video/end.png"));
+	m_goForwardButton->setIconSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
+	m_goForwardButton->setFixedSize(SynGlyphX::Application::DynamicQSize(1.5 * s_buttonSize, s_buttonSize));
+	m_goForwardButton->setToolTip(tr("Increment Forwards"));
+	QObject::connect(m_goForwardButton, &QPushButton::clicked, this, &PseudoTimeFilterWidget::OnIncrementTimeFilter);
+	buttonsLayoutRight->addWidget(m_goForwardButton);
 
 	m_goToEndButton = new QPushButton(this);
 	m_goToEndButton->setIcon(QIcon(":SGXGUI/Resources/Video/end.png"));
@@ -172,7 +188,9 @@ void PseudoTimeFilterWidget::EnableButtons(bool enable) {
 	m_currentPositionLabel->setEnabled(enable);
 	m_stopButton->setEnabled(enable);
 	m_goToStartButton->setEnabled(enable);
+	m_goBackwardButton->setEnabled(enable);
 	m_playPauseButton->setEnabled(enable);
+	m_goForwardButton->setEnabled(enable);
 	m_goToEndButton->setEnabled(enable);
 	m_fieldSelectorButton->setEnabled(enable);
 }
@@ -245,6 +263,26 @@ void PseudoTimeFilterWidget::UpdateTimeFilter() {
 	}
 }
 
+void PseudoTimeFilterWidget::OnIncrementTimeFilter() {
+
+	ChangeFilterState(FilterState::ActivePaused);
+	int sliderValue = m_slider->value() + 1;
+
+	if (sliderValue <= m_slider->maximum()) {
+		m_slider->setValue(sliderValue);
+	}
+}
+
+void PseudoTimeFilterWidget::OnDecrementTimeFilter() {
+
+	ChangeFilterState(FilterState::ActivePaused);
+	int sliderValue = m_slider->value() - 1;
+
+	if (sliderValue >= 0) {
+		m_slider->setValue(sliderValue);
+	}
+}
+
 void PseudoTimeFilterWidget::ChangeFilterState(FilterState newFilterState) {
 
 	FilterState oldFilterState = m_filterState;
@@ -296,13 +334,16 @@ void PseudoTimeFilterWidget::SetPlayTimerInterval(unsigned int milliseconds) {
 
 void PseudoTimeFilterWidget::IncrementTime() {
 
-	if (m_slider->value() == m_slider->maximum()) {
+	if (m_filterState == FilterState::ActiveRunning) {
 
-		m_slider->setValue(0);
-	}
-	else {
+		if (m_slider->value() == m_slider->maximum()) {
 
-		m_slider->setValue(m_slider->value() + 1);
+			m_slider->setValue(0);
+		}
+		else {
+
+			m_slider->setValue(m_slider->value() + 1);
+		}
 	}
 }
 
@@ -318,7 +359,7 @@ void PseudoTimeFilterWidget::OnFilterSelectionButtonClicked() {
 	dialog.setWindowTitle(tr("Select Field For Time Filter"));
 	
 	if (dialog.exec() == QDialog::Accepted) {
-
+		
 		if (!fieldSelectorWidget->selectionModel()->selectedIndexes().isEmpty()) {
 
 			UpdateSelectedField(fieldSelectorWidget->selectionModel()->selectedIndexes().front());

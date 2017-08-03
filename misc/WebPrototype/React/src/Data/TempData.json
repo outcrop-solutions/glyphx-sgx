@@ -89,6 +89,13 @@
          2.66666666666667,
          3.33333333333333
       ],
+	  "Year":[  
+         2017,
+         2013,
+         2014,
+         2015,
+         2016
+      ],
       "Last_Decision_Cluster":[  
          "Reject",
          "Confirm Admit",
@@ -100,13 +107,6 @@
          "Review Committee",
          "Defer",
          "Waitlist"
-      ],
-      "Year":[  
-         2017,
-         2013,
-         2014,
-         2015,
-         2016
       ]
    }
 }
