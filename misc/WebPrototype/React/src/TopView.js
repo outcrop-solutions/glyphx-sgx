@@ -512,7 +512,7 @@ class TopView extends Component {
                             */}
                     </Flex>
 
-                    <Flex flex = "30" style = {{ margin: "-5px -6px 0px 8px" }}>
+                    <Flex flex = "30" style = {{ margin: "-5px -6px 0px 13px" }}>
                         <RaisedButton 
                             primary = { true } 
                             label = "Apply Filters" 
@@ -556,12 +556,12 @@ class TopView extends Component {
 
                     <Select 
                         multi 
-                        className="selectTableName"
+                        className = "selectTableName"
                         simpleValue
-                        value={this.state.tableSelectValues} 
-                        placeholder="Select your table(s)" 
-                        options={tableSelectItems} 
-                        onChange={this.onSelectTableChange.bind(this)} 
+                        value = { this.state.tableSelectValues } 
+                        placeholder = "Select your table(s)" 
+                        options = { tableSelectItems } 
+                        onChange = { this.onSelectTableChange.bind(this) } 
                     />
 
                 </Flex>
@@ -572,7 +572,7 @@ class TopView extends Component {
 	}
 
     selectStyle ={
-        style:{
+        style : {
             width:"100%", fontSize:'13px', maxHeight:'30px', border:'1px solid #aaaaaa',borderRadius:'5px'
         },
         hintStyle : { 

@@ -4,21 +4,8 @@
   --collapsible-text-color-sub: white; /* the default */
 }
 
-.collapse-header {
-    background-color: rgb(0, 188, 212);
-}
-
-.collapse-header:hover {
-    background-color: #217a86;
-}
-
-.rc-slider-handle {
-    border: solid 2px rgb(0, 188, 212);
-    background-color: rgb(0, 188, 212);
-}
-
-.rc-slider-track {
-    background-color: rgba(0, 188, 212, 0.5);
+.Collapsible__contentInner {
+    padding: 8px !important;
 }
 
 .animate-close {

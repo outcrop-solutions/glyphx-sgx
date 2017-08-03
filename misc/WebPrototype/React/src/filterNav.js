@@ -648,7 +648,7 @@ class FilterNav extends Component {
     render = () => {
          var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label><br/><br/></div>;
          var columnsObj = this.makeColumns(this.state.tableData);
-		 var pinnedSearchBar = <div>
+		 var pinnedSearchBar = <div style = {{ margin: "1px -3px -6px 1px" }}>
                                     <SearchBox 
                                         ref="pinnedCollapisbleSearchBox"
                                         hintText="Search For Column"
@@ -669,14 +669,14 @@ class FilterNav extends Component {
 
         return (
                 <Flex 
-                    layout="column" 
+                    layout = "column" 
                     id = "FilterWindowOuterContiner"
                     style = {{ 
                         height: '100%',
                         overflow:'hidden',
                         transition: '1s',
-                        paddingLeft: '1%',
-                        paddingRight: '1%'
+                        //paddingLeft: '1%',
+                        //paddingRight: '1%'
                     }}
                 >
                      {/* TOP SECTION */}
@@ -686,13 +686,13 @@ class FilterNav extends Component {
 
                     <Collapsible
                         transitionTime = {200} 
-                        open = {true}
+                        open = { true }
                         contentInnerClassName  = "Flex__layout-column"
                         ref = 'topCollapisble'
 						triggerClassName = 'noHeaderTrigger cursorNormal'
 						triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
                         contentOuterClassName = "cursorNormal"
-                        overflowWhenOpen= "visible"
+                        overflowWhenOpen = "visible"
                         handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'topCollapisble') }
                     >
 
@@ -705,8 +705,8 @@ class FilterNav extends Component {
                         fullWidth = { true } 
                         primary = { true } 
                         onClick = { this.toggleTopView.bind(this) }
-                        buttonStyle = {{ backgroundColor: this.props.settings.hideTopViewButtonColor.background }}
-                        style = {{ height: '20px' }}
+                        buttonStyle = {{ backgroundColor: this.props.settings.hideTopViewButtonColor.background, width: "448px" }}
+                        style = {{ height: '20px', margin: "0px 0px 1px 1px" }}
                     >
                         <i 
                             id = "collapseTopViewButton" 
@@ -728,7 +728,7 @@ class FilterNav extends Component {
                         id = 'BottomView'
                         className = "sidenavbar"
                     >
-                        <div id='pinnedCollapisble'>
+                        <div id = 'pinnedCollapisble'>
                             <Collapsible 
                                 transitionTime = {200} 
                                 ref = 'pinnedCollapisble'
@@ -789,39 +789,41 @@ class FilterNav extends Component {
                                 </Dialog>
                                 
                                 {columnsObj.pinnnedColumns.length > 0 ? null : pinnedEmptyString}
-                                
-                                <RaisedButton
-                                    primary = { true } 
-                                    label = "Pin Filters"
-                                    style = {{
-                                        width: "415px",
-                                        margin: "0px 0px 6px 1px"
-                                    }}
-                                    buttonStyle={{
-                                        height: '28px',
-                                        lineHeight: '28px',
-                                        backgroundColor: this.props.settings.overviewButtonsColor.background
-                                    }} 
-                                    labelStyle= {{
-                                        fontSize: '13px',
-                                        color: this.props.settings.overviewButtonsColor.text
-                                    }}
-                                    overlayStyle = {{
-                                        height: '28px',
-                                        lineHeight: '28px'
-                                    }}
-                                    onClick = { () => this.handleOpenClose('pin', true) }
-                                    icon = {
-                                        <FontIcon
-                                            className = "fa fa-plus"
-                                            style = {{ 
-                                                color: this.props.settings.overviewButtonsColor.text,
-                                                fontSize: "20px",
-                                                margin: "0px 0px 1px 14px"
-                                            }}
-                                        />
-                                    }
-                                />
+
+                                <Flex layout = "row" >
+                                    <RaisedButton
+                                        primary = { true } 
+                                        label = "Pin Filters"
+                                        style = {{
+                                            width: "100%",
+                                            margin: "0px 0px 6px 0px"
+                                        }}
+                                        buttonStyle={{
+                                            height: '28px',
+                                            lineHeight: '28px',
+                                            backgroundColor: this.props.settings.overviewButtonsColor.background
+                                        }} 
+                                        labelStyle= {{
+                                            fontSize: '13px',
+                                            color: this.props.settings.overviewButtonsColor.text
+                                        }}
+                                        overlayStyle = {{
+                                            height: '28px',
+                                            lineHeight: '28px'
+                                        }}
+                                        onClick = { () => this.handleOpenClose('pin', true) }
+                                        icon = {
+                                            <FontIcon
+                                                className = "fa fa-plus"
+                                                style = {{ 
+                                                    color: this.props.settings.overviewButtonsColor.text,
+                                                    fontSize: "20px",
+                                                    margin: "0px 0px 1px 14px"
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </Flex>
 
                                 {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
                                 {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : null}
@@ -852,21 +854,24 @@ class FilterNav extends Component {
                                     </div>
                                 }
                             >
-								<SearchBox 
-                                    settings={{
-                                        SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
-                                        searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
-                                        overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
-                                        overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
-                                    }}
-                                    hintText="Search For Column"
-                                    ref="filterCollapisbleSearchBox"
-                                    onTextFieldValueChange= {(evt) => this.searchMultipleColumns(evt)}
-                                    onCollapseAllClick={(evt,pinned) => this.collapseAll(evt,pinned)}
-                                    id="filterCollapisbleSearchBox"
-                                    pinned={false}
-                                    collapseButton={true}
-                                />
+
+                                <div style = {{ margin: "1px -3px -6px 1px" }} >
+                                    <SearchBox 
+                                        settings = {{
+                                            SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
+                                            searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
+                                            overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
+                                            overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
+                                        }}
+                                        hintText = "Search For Column"
+                                        ref = "filterCollapisbleSearchBox"
+                                        onTextFieldValueChange = { (evt) => this.searchMultipleColumns(evt) }
+                                        onCollapseAllClick = { (evt, pinned) => this.collapseAll(evt, pinned) }
+                                        id = "filterCollapisbleSearchBox"
+                                        pinned = { false }
+                                        collapseButton = { true }
+                                    />
+                                </div>
 								
                                 <br/>
                                 {columnsObj.columns}

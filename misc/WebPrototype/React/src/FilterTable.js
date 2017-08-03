@@ -302,31 +302,26 @@ class FilterTable extends Component {
 		
         return (
 
-            <div
-                onMouseEnter = { this.mouseIn }
-                onMouseLeave = { this.mouseOut }
-            >
+            <div>
                 <br/>
-                <div
-                    style={{
-                        marginLeft: '5%'
-                    }}
-                >
+
+                <div style = {{ margin: "-2px 15px -5px 15px" }} >
                     <SearchBox 
-                        ref="pinnedCollapisbleSearchBox"
-                        hintText= "Search for value.." 
-                        settings={{
+                        ref = "pinnedCollapisbleSearchBox"
+                        hintText = "Search for value.." 
+                        settings = {{
                             SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
                             searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
                             overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
                             overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
                         }}
-                        onTextFieldValueChange= {(evt) => this.onKeyUpMultiSearch(this,internalColName,this.state.indexColumnToSearch)}
-                        id={ "tf-" + internalColName }
-                        pinned={false}
-                        collapseButton={false}
+
+                        onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, internalColName, this.state.indexColumnToSearch) }
+                        id = { "tf-" + internalColName }
+                        pinned = { false }
+                        collapseButton = { false }
                     />
-            </div>
+                </div>
 
 				<br/>
 				
@@ -340,7 +335,7 @@ class FilterTable extends Component {
                     onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
                 >
                 <TableHeader
-                    displaySelectAll = { false } // just need to implement our own select all.
+                    displaySelectAll = { false }
                     adjustForCheckbox = { this.state.showCheckboxes }
                     enableSelectAll = { this.state.enableSelectAll }
                 >
@@ -365,6 +360,8 @@ class FilterTable extends Component {
                     showRowHover = { this.state.showRowHover }
                     stripedRows = { false }
                     className = {internalColName + "-E"}
+                    onMouseEnter = { this.mouseIn }
+                    onMouseLeave = { this.mouseOut }
                 >
                     {rows}
                 </TableBody>

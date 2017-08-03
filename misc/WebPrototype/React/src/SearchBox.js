@@ -98,7 +98,7 @@ class SearchBox extends Component {
                     /> 
                 </Flex>
                 {this.props.collapseButton ? 
-                    <Flex flex = "25">
+                    <Flex flex = "25" style = {{ margin: "0px 0px 0px 9px" }}>
                         <RaisedButton 
                             label="Collapse" 
                             primary={true} 
