@@ -116,7 +116,7 @@ class FilterTabs extends React.Component {
                         id = { this.state.tableID }
                         style = {{
                             maxHeight: "393px",
-                            overflowX: "hidden"
+                            overflow: "hidden"
                         }}
                     >
                         <FilterTable internalColName = {this.props.internalColName} displayName = {this.props.displayName} tableData = {this.state.tableData} id = {this.props.id} selectedRows={this.state.FilterTableSelectedRows}></FilterTable>

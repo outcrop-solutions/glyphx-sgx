@@ -12,7 +12,8 @@ import './index.css';
  **/
 const initialFilterState = {
     Filter: {},
-    Settings: themeSettingColors[0]
+    Settings: themeSettingColors[0],
+    UserInfo: {}
 };
 
 
@@ -382,7 +383,11 @@ const filterReducer = function(state = initialFilterState, action) {
                 Settings: themeSettingColors[action.theme]
             };
 
-
+        case 'SAVE_USER_INFO':
+            return {
+                ...state,
+                UserInfo: action.info
+            }
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/

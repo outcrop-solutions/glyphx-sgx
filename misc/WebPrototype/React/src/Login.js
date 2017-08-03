@@ -11,7 +11,10 @@ class Login extends Component {
         super(props);
 
         this.state ={
-            openPassword: false
+            openPassword: false,
+            userName: null,
+            firstName: null,
+            lastName: null
         }
     }
 
@@ -31,12 +34,24 @@ class Login extends Component {
         if(pass == userVal){
             console.log('Success');
             this.setState({openPassword:false});
+            this.saveUserInfo();
         }
         else{
             console.log('Error');
             lblErr.hidden = false;
             lblErr.innerText="Incorrect Password";
         }
+    }
+
+    saveUserInfo = () => {
+        var info={
+            userName: this.state.userName,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            loggedInTime: new Date(),
+            idleTime: 0 // for future auto logout.
+        };
+        this.props.dispatch(saveUserInfo(info));
     }
 
     render() {
@@ -91,9 +106,21 @@ class Login extends Component {
     }
 }
 
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
+export const saveUserInfo = (info) => ({
+    type: 'SAVE_USER_INFO',
+    info
+});
+
+/**
+ * Maps portions of the store to props of your choosing
+ * @param state: passed down through react-redux's 'connect'
+ **/
 const mapStateToProps = function(state){
   return {
-    userInfo: state.userInfo,
+    //userInfo: state.UserInfo,
     settings: state.filterState.Settings
   }
 }

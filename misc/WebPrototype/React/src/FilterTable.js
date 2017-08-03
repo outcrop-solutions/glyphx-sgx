@@ -159,7 +159,13 @@ class FilterTable extends Component {
             } 
         }
     };
-	
+    
+     /**
+     * This method searches on the data of table. Allows Multisearch using "," as a separator. 
+     * @param context: the instance of this react element.
+     * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
+     * @param indexColumnToSearch: The search will work on the column whose number is passed here.(Rem the checkbox is column number 0)
+     */
 	onKeyUpMultiSearch = (context,id,indexColumnToSearch) => {
 		var input, filter, tr, td, i;
         input = document.getElementById("tf-"+id);
@@ -205,7 +211,7 @@ class FilterTable extends Component {
     }
 	
 	/**
-	 *
+	 * This method clears the value of the serachbox and calls onKeyUp for 
 	 */
 	clearSearchBox = (evt,strSearchBoxId) => {
 		var sb = document.getElementById("tf-" + strSearchBoxId);
@@ -302,10 +308,7 @@ class FilterTable extends Component {
 		
         return (
 
-            <div
-                onMouseEnter = { this.mouseIn }
-                onMouseLeave = { this.mouseOut }
-            >
+            <div>
                 <br/>
                 <div
                     style={{
@@ -332,10 +335,13 @@ class FilterTable extends Component {
 				
                 <Table
                     className = { "table-" + internalColName }
-                    height = '300px'
-                    fixedHeader = { this.state.fixedHeader }
-                    fixedFooter = { this.state.fixedFooter }
+                    fixedHeader = { true }
+                    fixedFooter = { true }
                     selectable = { this.state.selectable }
+                    wrapperStyle={{
+                        maxHeight: '300px',
+                        //overflow: 'auto'
+                    }}
                     multiSelectable = { this.state.multiSelectable }
                     onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
                 >
@@ -364,7 +370,12 @@ class FilterTable extends Component {
                     deselectOnClickaway = { this.state.deselectOnClickaway }
                     showRowHover = { this.state.showRowHover }
                     stripedRows = { false }
+                    style={{
+                        overflow: 'auto'
+                    }}
                     className = {internalColName + "-E"}
+                    onMouseEnter = { this.mouseIn }
+                    onMouseLeave = { this.mouseOut }
                 >
                     {rows}
                 </TableBody>
@@ -374,7 +385,17 @@ class FilterTable extends Component {
     }
 }
 
-
+/**
+ * This class represents each row inside the filter table.
+ * @param props: {
+ *      onRowSelect = { function() }
+ *      index = { int: row index } 
+ *      checked = { boolean value } 
+ *      value = { the value to be displayed in the 1st column. } 
+ *      percentStr = { the value to be displayed in the 2nd column. percent }
+ *      settings = { global theme settings object }
+ * }
+ */
 class FilterRow extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
