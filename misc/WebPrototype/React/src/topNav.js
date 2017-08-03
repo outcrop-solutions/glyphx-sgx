@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import 'font-awesome/css/font-awesome.css';
 import FilterNav from './filterNav';
 import {Flex} from 'react-flex-material';
 import AppBar from 'material-ui/AppBar';
@@ -19,6 +18,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
 import './topNav.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 injectTapEventPlugin();
 

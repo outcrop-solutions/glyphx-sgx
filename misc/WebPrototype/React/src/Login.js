@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Dialog from 'material-ui/Dialog';
 import { connect } from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
-import 'font-awesome/css/font-awesome.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 class Login extends Component {
 

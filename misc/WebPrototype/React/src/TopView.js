@@ -15,7 +15,7 @@ import FilterNavTabs from './FilterNavTabs.js';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import './filterNav.css';
-import 'react-select/dist/react-select.css';
+import 'react-select/dist/react-select.min.css';
 
 /**
  * 

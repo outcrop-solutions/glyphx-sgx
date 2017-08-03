@@ -9,3 +9,9 @@
 .enableScroll {
     overflow-y: auto !important
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}

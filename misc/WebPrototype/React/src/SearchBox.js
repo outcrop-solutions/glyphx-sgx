@@ -3,7 +3,7 @@ import {Flex} from 'react-flex-material';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
-import 'font-awesome/css/font-awesome.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 
 class SearchBox extends Component {
