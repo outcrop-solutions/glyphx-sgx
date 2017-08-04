@@ -20,20 +20,6 @@ class FilterTabs extends React.Component {
         };
     };
 
-    componentDidMount() {
-        /*Events.scrollEvent.register('begin', function(to, element) {
-        console.log("begin", arguments);
-        });
-    
-        Events.scrollEvent.register('end', function(to, element) {
-        console.log("end", arguments);
-        });
-        
-        scrollSpy.update();
-        */
-
-    };
-
     mouseIn = () => {
         var elements = document.getElementsByClassName(this.props.id + "-R");
         if (elements[0].scrollHeight > 393) {

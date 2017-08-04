@@ -58,7 +58,7 @@ class TopNav extends Component {
 
     componentDidMount() {
         
-        this.refs['LoginForm'].getWrappedInstance().showLoginForm();
+        this.refs['LoginForm'] ? this.refs['LoginForm'].getWrappedInstance().showLoginForm() : null;
         this.init();
     }
 
