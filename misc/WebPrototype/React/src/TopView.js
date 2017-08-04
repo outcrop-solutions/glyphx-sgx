@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {Flex} from 'react-flex-material';
-import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import ListItem from 'material-ui/List';
 import FilterViewForm from './filterView.js';
 import FilterNavTabs from './FilterNavTabs.js';
 import Select from 'react-select';
@@ -348,7 +345,6 @@ class TopView extends Component {
 	render = () => {
 		 //Load values into the table select dropdown.
         var tableSelectItems = [];
-        var context = this;
 		
 		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value){
 			return(

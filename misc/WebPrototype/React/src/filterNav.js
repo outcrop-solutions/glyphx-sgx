@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Flex} from 'react-flex-material';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
 import AlertContainer from 'react-alert';
 import FilterTabs from './FilterTab.js';
 import DualListBox from 'react-dual-listbox';
 import Collapsible from 'react-collapsible';
 import TopView from './TopView.js';
 import SearchBox from './SearchBox.js';
-import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import ScrollIntoView from 'scroll-into-view-if-needed';
 import 'font-awesome/css/font-awesome.min.css';
@@ -126,7 +123,6 @@ class FilterNav extends Component {
      * }
      */
      makeColumns = (data,extra) => {
-        var temp = null;
         var columnsFilterStructure = this.props.GLOBAL;
         var arrColumnsReturn = [];
         var arrPinnedColumnsReturn = [];

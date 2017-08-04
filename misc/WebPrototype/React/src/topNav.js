@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import FilterNav from './filterNav';
 import {Flex} from 'react-flex-material';
-import AppBar from 'material-ui/AppBar';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import {Toolbar, ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
+import Badge from 'material-ui/Badge';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import Popover from 'material-ui/Popover';
+import Avatar from 'material-ui/Avatar';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
 import Login from './Login.js';
@@ -35,7 +38,10 @@ class TopNav extends Component {
         iframeWidthNonOverlap: 0,
 		fullScreenMode: false,
         topNavHeight: 0,
-        authenticate:true
+        userProfileMenuOpen:false,
+        userInfoAnchorEl: {},
+        authenticate:true,
+        imgLogoSrc: "./Res/Img/synglyphx-wht-3.png"
     };
 
     showLoadMask = () => {
@@ -108,7 +114,7 @@ class TopNav extends Component {
 
     }
 
-    openCloseMenu() {
+    openCloseFloatingMenu() {
         var menuItems = document.getElementsByClassName('toggleOptionsMenuItems');
         var len = menuItems.length;
         var translate = 70;
@@ -121,8 +127,8 @@ class TopNav extends Component {
             this.setState({menuOpen:false});
         }
         else{
-            for(var i=0;i<len;i++){
-                menuItems[i].style.transform = 'translate(0px,-'+translate+'px)';
+            for(var j=0;j<len;j++){
+                menuItems[j].style.transform = 'translate(0px,-'+translate+'px)';
                 translate = translate + 50;
             }
             this.setState({menuOpen:true});
@@ -154,7 +160,6 @@ class TopNav extends Component {
     // Hides the filter side nav by translating it off the screen so it doesnt resize and 
     // wont have to be reloaded after it is "closed"
     toggleNav() {
-        var gv = document.getElementById('GlyphViewer');
         var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
         var overlap = this.state.overlapFilterNav;
@@ -172,8 +177,6 @@ class TopNav extends Component {
     }
 	
 	toggleFullScreenMode(evt){
-		var topNavBar = document.getElementById('TopNav');
-		var topNavBarRef = this.refs['topNavToolbar'];
 		var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
 		var iconDiv = evt && evt.currentTarget ? evt.currentTarget.querySelector('.fa') : null;
@@ -207,15 +210,72 @@ class TopNav extends Component {
 			this.setState({fullScreenMode: false});
 		}
 		
-	}
+    }
+    
+    updateUserInfoMenu = (userInfo) => {
+        //update user info.
+        if(userInfo)
+        {
+            //type of product 
+            if(userInfo.product == "GlyphEd"){
+                this.setState({
+                    imgLogoSrc : 
+                    <a href = "http://www.glyphed.co/" target = "_blank" rel = "noopener noreferrer">
+						<img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd"/>
+					</a>
+                });
+            }
+            else{
+                 this.setState({
+                    imgLogoSrc : 
+                    <a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
+						<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
+					</a>
+                });
+            }
+
+            this.setState({
+                userFullName : userInfo.firstName + " " + userInfo.lastName,
+                userInitials : (userInfo.firstName ? userInfo.firstName[0] : "") + (userInfo.lastName ? userInfo.lastName[0] : "")
+            });
+        }
+        
+    }
+
+    displayAnnouncements = () => {
+
+    }
+    openCloseUserInfoMenu = (event) => {
+        // This prevents ghost click.
+        if(event && event.preventDefault){
+            event.preventDefault();
+            this.setState({
+            userProfileMenuOpen : !this.state.userProfileMenuOpen,
+            userInfoAnchorEl: event.currentTarget
+        });
+        }
+        else{
+            this.setState({
+            userProfileMenuOpen : !this.state.userProfileMenuOpen
+        });
+        }
+            
+
+        
+        
+    }
 
     render() {
+        
 
         return (
             <MuiThemeProvider> 
                 <div style = {{ width:'100%', height:'100%' }}>
                  
-                    {this.state.authenticate ? <Login ref="LoginForm"/> : null}
+                    {this.state.authenticate ? 
+                        <Login ref="LoginForm"
+                            doAfterLogin={(prop) => this.updateUserInfoMenu(prop)}
+                        /> : null}
                     <div 
                         id = "LoadMask1"  
                         style = {{ 
@@ -252,9 +312,7 @@ class TopNav extends Component {
 								>
 									<ToolbarGroup>
 										<span style = { styles.navLogo }>
-											<a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
-												<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
-											</a>
+												{this.state.imgLogoSrc}
 										</span>
 									</ToolbarGroup>
 									
@@ -268,14 +326,58 @@ class TopNav extends Component {
 											<FontIcon className="fa fa-cogs fa-2x" color='white'/>
 										</IconButton>
                                         
-                                        <IconButton onClick={this.toggleNav.bind(this)}>
-											<FontIcon className="fa fa-info fa-2x" color='white'/>
-										</IconButton>
+                                        <IconButton onClick={this.displayAnnouncements.bind(this)}>
+                                            {/*<Badge
+                                                badgeContent={4}
+                                                primary = { true }
+                                                style = {{ padding: "0px 0px 0px 0px" }}
+                                                badgeStyle = {{ 
+                                                        fontSize: '10px',
+                                                        width: '17px',
+                                                        height: '17px',
+                                                        top: "-10px", 
+                                                        right: "-13px", 
+                                                        backgroundColor: this.props.settings.filterOverviewColor.badgeBackground, 
+                                                        color: this.props.settings.filterOverviewColor.badgeText 
+                                                }}
+                                            >
+                                                <FontIcon className="fa fa-bell fa-2x" color='white'/>                                                    
+                                            </Badge>*/}
+                                            <FontIcon className="fa fa-bell fa-2x" color='white'/>   
+                                        </IconButton>
                                         
-                                        <IconButton onClick = { openUserProfileMenu }>
+                                        
+                                        <IconButton onClick = {(event) => this.openCloseUserInfoMenu(event) }>
 											<FontIcon className = "fa fa-user fa-2x" color = 'white'/>
 										</IconButton>
                                         
+                                        <Popover
+                                            open={this.state.userProfileMenuOpen}
+                                            anchorEl={this.state.userInfoAnchorEl}
+                                            onRequestClose={this.openCloseUserInfoMenu}
+                                            anchorOrigin= {{"horizontal":"right","vertical":"bottom"}}
+                                            targetOrigin= {{"horizontal":"right","vertical":"top"}}
+                                        >
+                                            <List>
+                                                <ListItem
+                                                    disabled={false}
+                                                    leftAvatar={
+                                                        <Avatar
+                                                            //src="./Res/Img/x.png"
+                                                        >
+                                                            {this.state.userInitials}
+                                                        </Avatar>
+                                                    }
+                                                    primaryText= {this.state.userFullName}
+                                                    secondaryText= {this.props.userInfo ? this.props.userInfo.type : null}
+                                                >
+                                                    
+                                                </ListItem>
+                                                <MenuItem className="menuItemStyling" primaryText="Help &amp; feedback" />
+                                                <MenuItem className="menuItemStyling" primaryText="Settings" />
+                                                <MenuItem className="menuItemStyling" primaryText="Sign out" />
+                                            </List>
+                                        </Popover>
                                         
 									</ToolbarGroup>
 								</Toolbar>
@@ -363,7 +465,7 @@ class TopNav extends Component {
                                     zIndex: '10',
                                     transition: '0.5s'
                                 }} 
-                                onClick={this.openCloseMenu.bind(this)}
+                                onClick={this.openCloseFloatingMenu.bind(this)}
                             >
 
                                 <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
@@ -422,14 +524,6 @@ class TopNav extends Component {
     }
 }
 
-const floatingMiniStyles = {
-	
-};
-
-function openUserProfileMenu(){
-	//Open a userProfileMenu.
-}
-
 const styles = {
     navLogo: {
         cursor: 'pointer',
@@ -459,6 +553,7 @@ export const editThemeSettings = (theme) => ({
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
+    userInfo: state.filterState.UserInfo
   }
 }
 
