@@ -156,3 +156,10 @@
   .cursorHand:Hover {
     cursor: pointer
     }
+	
+ .notificationBadge {
+	color: red !important;
+    font-size: 18px !important;
+    top: -33px;
+    left: 10px;
+ }

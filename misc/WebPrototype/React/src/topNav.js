@@ -20,6 +20,7 @@ import Login from './Login.js';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
+import AnnouncementDialog from './AnnouncementDialog.js'
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -27,8 +28,9 @@ injectTapEventPlugin();
 
 
 class TopNav extends Component {
-    state = {
-        LoadMask : false,
+    
+	//initial state of the component.
+	state = {
         openSettings: false,
         themeSelection: 0,
         themeTempSelection: 0,
@@ -41,13 +43,21 @@ class TopNav extends Component {
         userProfileMenuOpen:false,
         userInfoAnchorEl: {},
         authenticate:true,
-        imgLogoSrc: "./Res/Img/synglyphx-wht-3.png"
+        imgLogoSrc: <a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
+						<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
+					</a>
     };
-
+	
+	/**
+	 * This function shows the in app loadmask(cicular waiting).
+	 */
     showLoadMask = () => {
         document.getElementById("LoadMask").style.visibility = "visible";
     };
-
+	
+	/**
+	 * This function hides the initial loadmask/splash screen.
+	 */
     hideLoadMask = () => {
 
         var lm = document.getElementById("ipl-progress-indicator");
@@ -61,13 +71,19 @@ class TopNav extends Component {
         }
 
     };
-
+	
+	/**
+	 * This function is called right after the react component is mounted.
+	 * It decides whether to show the login form and calls the init().
+	 */
     componentDidMount() {
-        
         this.refs['LoginForm'] ? this.refs['LoginForm'].getWrappedInstance().showLoginForm() : null;
         this.init();
     }
-
+	
+	/**
+	 * This function does all the initialization that is needed.
+	 */
     init(){
         var context = this;
         context.timeout = window.setInterval(function(){
@@ -84,7 +100,10 @@ class TopNav extends Component {
 
         this.setState({iframeWidthNonOverlap: width, topNavHeight: topNav.clientHeight});
     }
-
+	
+	/**
+	 * OnLoad of the glyphviewer(iframe) we set this to true so that the loadmask can hide.
+	 */
     onLoadGlyphView(){
         this.setState({
             glyphViewLoaded: true
@@ -113,11 +132,14 @@ class TopNav extends Component {
         }
 
     }
-
+	
+	/**
+	 * This function opens/closes the floating menu on the bottom left corner.
+	 */
     openCloseFloatingMenu() {
         var menuItems = document.getElementsByClassName('toggleOptionsMenuItems');
         var len = menuItems.length;
-        var translate = 70;
+        var translate = 70; // as the 1st menu button should be little more higher than the spacing between the buttons.
 
         if(this.state.menuOpen)
         {
@@ -134,7 +156,12 @@ class TopNav extends Component {
             this.setState({menuOpen:true});
         }
     }
-
+	
+	/**
+	 * This function updates the height and width of the glyphviewer(iframe).
+	 * @param {bool} fullWidth- true if wanted full screen & false/null otherwise.
+	 * @param {bool} fullHeight- true if wanted full screen & false/null otherwise.
+	 */
     updateGlyphViewer(fullWidth,fullHeight){
         var gv = document.getElementById('GlyphViewer');
 		var topNav = document.getElementById('TopNav');
@@ -157,8 +184,10 @@ class TopNav extends Component {
 		
     }
 
-    // Hides the filter side nav by translating it off the screen so it doesnt resize and 
-    // wont have to be reloaded after it is "closed"
+    /**
+	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
+     * wont have to be reloaded after it is "closed"
+	 */ 
     toggleNav() {
         var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
@@ -176,6 +205,10 @@ class TopNav extends Component {
             this.updateGlyphViewer(filterNavOpen);
     }
 	
+	/**
+	 * This function toggles the full screen mode of the glyphviewer(iframe).
+	 * @param {object} event- event object.
+	 */
 	toggleFullScreenMode(evt){
 		var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
@@ -211,7 +244,13 @@ class TopNav extends Component {
 		}
 		
     }
-    
+	
+	/**
+	 * This function is a callback from the login.
+	 * This updates the userinfo menu with the user data returned from login call.
+	 * Also depending on the user product the logo will be displayed.(GlyphEd or SynGlyphX)
+	 * @param {object} userInfo - this is the user info object returned from the login call.
+	 */
     updateUserInfoMenu = (userInfo) => {
         //update user info.
         if(userInfo)
@@ -241,10 +280,27 @@ class TopNav extends Component {
         }
         
     }
-
+	
+	/**
+	 * This function displays the announcements dialog.
+	 */
     displayAnnouncements = () => {
-
+		//user specific Announcements.
+		var dialogBox;
+		if(this.refs['announcements'])
+		{
+			dialogBox = this.refs['announcements'].getWrappedInstance();
+			dialogBox.setState({
+				shouldBeDisplayed: true,
+				displayCheckBox: false
+			});
+		}
     }
+	
+	/**
+	 * Open/Close the userinfo menu.
+	 * @param {object} event- event object.
+	 */
     openCloseUserInfoMenu = (event) => {
         // This prevents ghost click.
         if(event && event.preventDefault){
@@ -271,11 +327,14 @@ class TopNav extends Component {
         return (
             <MuiThemeProvider> 
                 <div style = {{ width:'100%', height:'100%' }}>
-                 
+					
+					{/* Login Screen */}
                     {this.state.authenticate ? 
                         <Login ref="LoginForm"
                             doAfterLogin={(prop) => this.updateUserInfoMenu(prop)}
                         /> : null}
+						
+					{/* Circular Load Mask to show when server calls made. */}
                     <div 
                         id = "LoadMask1"  
                         style = {{ 
@@ -299,23 +358,28 @@ class TopNav extends Component {
                             thickness = { 7 } 
                         />
                     </div>
-
+					
+					{/* Actual Application body that you see */}
                     <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
 
                         <Flex >
                             <div className = "TopNav" id="TopNav" style = {{ width:'100%', height:'56px',transition: '1s' }}>
 								
+								
+								{/* Top Toolbar */}
 								<Toolbar 
 									className = "navbar-color" 
 									style = {{ padding: '0px', backgroundColor: this.props.settings.topNavbarColor.barBackground }}
 									ref= "topNavToolbar"
 								>
+									{/* Logo */}
 									<ToolbarGroup>
 										<span style = { styles.navLogo }>
 												{this.state.imgLogoSrc}
 										</span>
 									</ToolbarGroup>
 									
+									{/* Top Right icons */}
 									<ToolbarGroup>
 										<ToolbarSeparator />
 										<IconButton onClick={this.toggleNav.bind(this)}>
@@ -327,25 +391,9 @@ class TopNav extends Component {
 										</IconButton>
                                         
                                         <IconButton onClick={this.displayAnnouncements.bind(this)}>
-                                            {/*<Badge
-                                                badgeContent={4}
-                                                primary = { true }
-                                                style = {{ padding: "0px 0px 0px 0px" }}
-                                                badgeStyle = {{ 
-                                                        fontSize: '10px',
-                                                        width: '17px',
-                                                        height: '17px',
-                                                        top: "-10px", 
-                                                        right: "-13px", 
-                                                        backgroundColor: this.props.settings.filterOverviewColor.badgeBackground, 
-                                                        color: this.props.settings.filterOverviewColor.badgeText 
-                                                }}
-                                            >
-                                                <FontIcon className="fa fa-bell fa-2x" color='white'/>                                                    
-                                            </Badge>*/}
-                                            <FontIcon className="fa fa-bell fa-2x" color='white'/>   
+                                            <FontIcon className="fa fa-bell fa-2x" color='white'/> 
+                                            <FontIcon id="notificationBadge" className="fa fa-exclamation-circle fa-1x notificationBadge" />
                                         </IconButton>
-                                        
                                         
                                         <IconButton onClick = {(event) => this.openCloseUserInfoMenu(event) }>
 											<FontIcon className = "fa fa-user fa-2x" color = 'white'/>
@@ -381,14 +429,19 @@ class TopNav extends Component {
                                         
 									</ToolbarGroup>
 								</Toolbar>
-
+								
+								{/* Filter Side Bar */}
                                 <div 
                                     id  = "filterNav" 
                                     className = "sidenav"
                                 >
                                     <FilterNav></FilterNav>
                                 </div>
-
+								
+								{/* Announcements Dialog */}
+								<AnnouncementDialog ref='announcements'/>
+								
+								{/* Settings Dialog */}
                                 <Dialog
                                     title = "Settings"
                                     ref = "Settings"
@@ -445,7 +498,8 @@ class TopNav extends Component {
                                 
                             </div>
                         </Flex>
-
+						
+						{/* The 3D rendering engine */}
                         <Flex id="iframeDiv" flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
@@ -456,6 +510,8 @@ class TopNav extends Component {
                                 style = {{ transition:'1s' ,width:'100%', height:'100%', border: 'none' }} 
                                 src = "https://s3.amazonaws.com/synglyphx/demo.html" 
                             /> 
+							
+							{/* Floating buttons bottom left */}
                             <FloatingActionButton 
                                 backgroundColor= {this.props.settings.overviewButtonsColor.background}
                                 style={{
