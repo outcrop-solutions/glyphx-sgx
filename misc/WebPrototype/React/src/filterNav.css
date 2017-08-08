@@ -156,6 +156,14 @@
   .cursorHand:Hover {
     cursor: pointer
     }
+
 .Select-menu-outer {
     z-index: 2;
 }
+
+ .notificationBadge {
+	color: red !important;
+    font-size: 18px !important;
+    top: -33px;
+    left: 10px;
+ }

@@ -30,11 +30,20 @@ class Login extends Component {
         var lblErr = document.getElementById('errPass');
         lblErr.innerText="";
         lblErr.hidden = true;
+        var info={
+            userName: "msloan",
+            firstName: "Mark",
+            lastName: "Sloan",
+            type: "Administrator",
+            product: "GlyphEd",
+            loggedInTime: new Date(),
+            idleTime: 0 // for future auto logout.
+        };
 
+        //server call to check user/pass and update state.
         if(pass == userVal){
-            console.log('Success');
-            this.setState({openPassword:false});
-            this.saveUserInfo();
+            //save the details to store
+            this.saveUserInfo(info);
         }
         else{
             console.log('Error');
@@ -43,15 +52,16 @@ class Login extends Component {
         }
     }
 
-    saveUserInfo = () => {
-        var info={
-            userName: this.state.userName,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            loggedInTime: new Date(),
-            idleTime: 0 // for future auto logout.
-        };
+    saveUserInfo = (info) => {
+        console.log('Success');
+        this.setState({openPassword:false});
         this.props.dispatch(saveUserInfo(info));
+
+        //call function post login if provided.
+        if(typeof this.props.doAfterLogin == 'function')
+            {
+                this.props.doAfterLogin(info);
+            }
     }
 
     render() {
@@ -83,7 +93,6 @@ class Login extends Component {
                 > Password:
                 </label> 
                 <input 
-                    type="text" 
                     id = "PassText"
                     type="password"
                     //placeholder="Enter Password"
@@ -120,7 +129,6 @@ export const saveUserInfo = (info) => ({
  **/
 const mapStateToProps = function(state){
   return {
-    //userInfo: state.UserInfo,
     settings: state.filterState.Settings
   }
 }

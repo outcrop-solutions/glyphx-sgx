@@ -33,6 +33,7 @@ class FilterTable extends Component {
         stripedRows: false,
         showRowHover: true,
         selectable: true,
+        tableHeight: 300,
         multiSelectable: true,
         enableSelectAll: false,
         deselectOnClickaway: false,
@@ -261,7 +262,6 @@ class FilterTable extends Component {
         }
     }
 
-
     render() {
         var id = this.props.id;
         var internalColName = this.props.internalColName;
@@ -270,6 +270,7 @@ class FilterTable extends Component {
         var selectedValues = this.props.tableState[id].selectedValues;
         var rows = []; var index = 0;
         this.flatData = [];
+        var tableBodyHeight = (this.state.tableHeight - 32) + "px";
 
         /**
          * structure of data is:
@@ -308,7 +309,11 @@ class FilterTable extends Component {
 		
         return (
 
-            <div>
+            <div
+                style={{
+                    height:"inherit"
+                }}
+            >
                 <br/>
 
                 <div style = {{ margin: "-2px 15px -5px 15px" }} >
@@ -330,7 +335,7 @@ class FilterTable extends Component {
                 </div>
 
 				<br/>
-				
+
                 <div
                     onMouseEnter = { this.mouseIn }
                     onMouseLeave = { this.mouseOut }
@@ -341,44 +346,45 @@ class FilterTable extends Component {
                         fixedFooter = { true }
                         selectable = { this.state.selectable }
                         wrapperStyle = {{
-                            maxHeight: '300px',
-                            //overflow: 'auto'
+                            maxHeight: this.state.tableHeight + "px",
+                            overflow: 'hidden'
+                        }}
+                        bodyStyle={{
+                            maxHeight: tableBodyHeight,
+                            overflow: 'auto'
                         }}
                         multiSelectable = { this.state.multiSelectable }
                         onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
                     >
-                    <TableHeader
-                        displaySelectAll = { false }
-                        adjustForCheckbox = { this.state.showCheckboxes }
-                        enableSelectAll = { this.state.enableSelectAll }
-                    >
-                        <TableRow style = {{ height:'30px' }}>
-                            <TableHeaderColumn style = {{ height:'inherit', width:'25px' }}>
-                                <Checkbox 
-                                    id = { "cb-" + internalColName } 
-                                    checked = { this.props.tableState[id].selectedValues.length == this.flatData.length } 
-                                    onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
-                                    iconStyle = {{ fill: this.props.settings.elasticColor.checkAllBox }}
-                                />
-                            </TableHeaderColumn>
-                            <TableHeaderColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }} >Value</TableHeaderColumn>
-                            <TableHeaderColumn style = {{ height:'inherit' }}>Count(Percent)</TableHeaderColumn>
-                        </TableRow>
+                        <TableHeader
+                            displaySelectAll = { false }
+                            adjustForCheckbox = { this.state.showCheckboxes }
+                            enableSelectAll = { this.state.enableSelectAll }
+                        >
+                            <TableRow style = {{ height:'30px' }}>
+                                <TableHeaderColumn style = {{ height:'inherit', width:'25px' }}>
+                                    <Checkbox 
+                                        id = { "cb-" + internalColName } 
+                                        checked = { this.props.tableState[id].selectedValues.length == this.flatData.length } 
+                                        onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
+                                        iconStyle = {{ fill: this.props.settings.elasticColor.checkAllBox }}
+                                    />
+                                </TableHeaderColumn>
+                                <TableHeaderColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }} >Value</TableHeaderColumn>
+                                <TableHeaderColumn style = {{ height:'inherit' }}>Count(Percent)</TableHeaderColumn>
+                            </TableRow>
 
-                    </TableHeader>
+                        </TableHeader>
 
-                    <TableBody
-                        displayRowCheckbox = { this.state.showCheckboxes }
-                        deselectOnClickaway = { this.state.deselectOnClickaway }
-                        showRowHover = { this.state.showRowHover }
-                        stripedRows = { false }
-                        style={{
-                            overflow: 'auto'
-                        }}
-                        className = {internalColName + "-E"}
-                    >
-                        {rows}
-                    </TableBody>
+                        <TableBody
+                            displayRowCheckbox = { this.state.showCheckboxes }
+                            deselectOnClickaway = { this.state.deselectOnClickaway }
+                            showRowHover = { this.state.showRowHover }
+                            stripedRows = { false }
+                            className = {internalColName + "-E"}
+                        >                    
+                            {rows}
+                        </TableBody>
                     </Table>
                 </div>
             </div>

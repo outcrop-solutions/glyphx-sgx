@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import FilterNav from './filterNav';
 import {Flex} from 'react-flex-material';
-import AppBar from 'material-ui/AppBar';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import {Toolbar, ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
+import Badge from 'material-ui/Badge';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import Popover from 'material-ui/Popover';
+import Avatar from 'material-ui/Avatar';
 import FontIcon from 'material-ui/FontIcon';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
 import Login from './Login.js';
@@ -18,6 +21,7 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
 import StatisticModal from './StatisticModal.js'
+import AnnouncementDialog from './AnnouncementDialog.js'
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -25,8 +29,9 @@ injectTapEventPlugin();
 
 
 class TopNav extends Component {
-    state = {
-        LoadMask : false,
+    
+	//initial state of the component.
+	state = {
         openSettings: false,
         themeSelection: 0,
         themeTempSelection: 0,
@@ -36,13 +41,24 @@ class TopNav extends Component {
         iframeWidthNonOverlap: 0,
 		fullScreenMode: false,
         topNavHeight: 0,
-        authenticate:true
+        userProfileMenuOpen:false,
+        userInfoAnchorEl: {},
+        authenticate:true,
+        imgLogoSrc: <a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
+						<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
+					</a>
     };
-
+	
+	/**
+	 * This function shows the in app loadmask(cicular waiting).
+	 */
     showLoadMask = () => {
         document.getElementById("LoadMask").style.visibility = "visible";
     };
-
+	
+	/**
+	 * This function hides the initial loadmask/splash screen.
+	 */
     hideLoadMask = () => {
 
         var lm = document.getElementById("ipl-progress-indicator");
@@ -56,13 +72,19 @@ class TopNav extends Component {
         }
 
     };
-
+	
+	/**
+	 * This function is called right after the react component is mounted.
+	 * It decides whether to show the login form and calls the init().
+	 */
     componentDidMount() {
-        
-        this.refs['LoginForm'].getWrappedInstance().showLoginForm();
+        this.refs['LoginForm'] ? this.refs['LoginForm'].getWrappedInstance().showLoginForm() : null;
         this.init();
     }
-
+	
+	/**
+	 * This function does all the initialization that is needed.
+	 */
     init(){
         var context = this;
         context.timeout = window.setInterval(function(){
@@ -79,7 +101,10 @@ class TopNav extends Component {
 
         this.setState({iframeWidthNonOverlap: width, topNavHeight: topNav.clientHeight});
     }
-
+	
+	/**
+	 * OnLoad of the glyphviewer(iframe) we set this to true so that the loadmask can hide.
+	 */
     onLoadGlyphView(){
         this.setState({
             glyphViewLoaded: true
@@ -108,11 +133,14 @@ class TopNav extends Component {
         }
 
     }
-
-    openCloseMenu() {
+	
+	/**
+	 * This function opens/closes the floating menu on the bottom left corner.
+	 */
+    openCloseFloatingMenu() {
         var menuItems = document.getElementsByClassName('toggleOptionsMenuItems');
         var len = menuItems.length;
-        var translate = 70;
+        var translate = 70; // as the 1st menu button should be little more higher than the spacing between the buttons.
 
         if(this.state.menuOpen)
         {
@@ -122,14 +150,19 @@ class TopNav extends Component {
             this.setState({menuOpen:false});
         }
         else{
-            for(var i=0;i<len;i++){
-                menuItems[i].style.transform = 'translate(0px,-'+translate+'px)';
+            for(var j=0;j<len;j++){
+                menuItems[j].style.transform = 'translate(0px,-'+translate+'px)';
                 translate = translate + 50;
             }
             this.setState({menuOpen:true});
         }
     }
-
+	
+	/**
+	 * This function updates the height and width of the glyphviewer(iframe).
+	 * @param {bool} fullWidth- true if wanted full screen & false/null otherwise.
+	 * @param {bool} fullHeight- true if wanted full screen & false/null otherwise.
+	 */
     updateGlyphViewer(fullWidth,fullHeight){
         var gv = document.getElementById('GlyphViewer');
 		var topNav = document.getElementById('TopNav');
@@ -152,10 +185,11 @@ class TopNav extends Component {
 		
     }
 
-    // Hides the filter side nav by translating it off the screen so it doesnt resize and 
-    // wont have to be reloaded after it is "closed"
+    /**
+	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
+     * wont have to be reloaded after it is "closed"
+	 */ 
     toggleNav() {
-        var gv = document.getElementById('GlyphViewer');
         var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
         var overlap = this.state.overlapFilterNav;
@@ -172,9 +206,11 @@ class TopNav extends Component {
             this.updateGlyphViewer(filterNavOpen);
     }
 	
+	/**
+	 * This function toggles the full screen mode of the glyphviewer(iframe).
+	 * @param {object} event- event object.
+	 */
 	toggleFullScreenMode(evt){
-		var topNavBar = document.getElementById('TopNav');
-		var topNavBarRef = this.refs['topNavToolbar'];
 		var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
 		var iconDiv = evt && evt.currentTarget ? evt.currentTarget.querySelector('.fa') : null;
@@ -208,15 +244,118 @@ class TopNav extends Component {
 			this.setState({fullScreenMode: false});
 		}
 		
-	}
+    }
+    
+    /**
+	 * This function is a callback from the login.
+	 * It calls the necessary function that need to be called after login.
+	 * @param {object} props - this is the user info object returned from the login call.
+	 */
+    doAfterLogin = (props) => {
+        var ann = this.refs['announcements'] ? this.refs['announcements'].getWrappedInstance() : null;
+        
+        
+        //Update user information in the top right user info menu.
+        this.updateUserInfoMenu(props);
+
+        //Check if announcements and force display at login true.
+        if(ann && ann.state.forceDisplayAfterLogin)
+        {
+            ann.setState({
+				currentVisibility: true,
+			});
+        }
+    }
+
+	/**
+	 * This updates the userinfo menu with the user data returned from login call.
+	 * Also depending on the user product the logo will be displayed.(GlyphEd or SynGlyphX)
+	 * @param {object} userInfo - this is the user info object returned from the login call.
+	 */
+    updateUserInfoMenu = (userInfo) => {
+        //update user info.
+        if(userInfo)
+        {
+            //type of product 
+            if(userInfo.product == "GlyphEd"){
+                this.setState({
+                    imgLogoSrc : 
+                    <a href = "http://www.glyphed.co/" target = "_blank" rel = "noopener noreferrer">
+						<img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd"/>
+					</a>
+                });
+            }
+            else{
+                 this.setState({
+                    imgLogoSrc : 
+                    <a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
+						<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
+					</a>
+                });
+            }
+
+            this.setState({
+                userFullName : userInfo.firstName + " " + userInfo.lastName,
+                userInitials : (userInfo.firstName ? userInfo.firstName[0] : "") + (userInfo.lastName ? userInfo.lastName[0] : "")
+            });
+        }
+        
+    }
+	
+	/**
+	 * This function displays the announcements dialog.
+	 */
+    displayAnnouncements = () => {
+		//user specific Announcements.
+		var dialogBox;
+		if(this.refs['announcements'])
+		{
+			dialogBox = this.refs['announcements'].getWrappedInstance();
+			dialogBox.setState({
+				currentVisibility: true,
+				displayCheckBox: false
+			});
+		}
+    }
+	
+	/**
+	 * Open/Close the userinfo menu.
+	 * @param {object} event- event object.
+	 */
+    openCloseUserInfoMenu = (event) => {
+        // This prevents ghost click.
+        if(event && event.preventDefault){
+            event.preventDefault();
+            this.setState({
+            userProfileMenuOpen : !this.state.userProfileMenuOpen,
+            userInfoAnchorEl: event.currentTarget
+        });
+        }
+        else{
+            this.setState({
+            userProfileMenuOpen : !this.state.userProfileMenuOpen
+        });
+        }
+            
+
+        
+        
+    }
 
     render() {
+        
 
         return (
             <MuiThemeProvider> 
                 <div style = {{ width:'100%', height:'100%' }}>
-                 
-                    {this.state.authenticate ? <Login ref="LoginForm"/> : null}
+					
+					{/* Login Screen */}
+                    {this.state.authenticate ? 
+                        <Login ref="LoginForm"
+                            doAfterLogin={(prop) => this.doAfterLogin(prop)}
+                        /> : null}
+						
+					{/* Circular Load Mask to show when server calls made. */}
                     <div 
                         id = "LoadMask1"  
                         style = {{ 
@@ -240,25 +379,28 @@ class TopNav extends Component {
                             thickness = { 7 } 
                         />
                     </div>
-
+					
+					{/* Actual Application body that you see */}
                     <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
 
                         <Flex >
                             <div className = "TopNav" id="TopNav" style = {{ width:'100%', height:'56px',transition: '1s' }}>
 								
+								
+								{/* Top Toolbar */}
 								<Toolbar 
 									className = "navbar-color" 
 									style = {{ padding: '0px', backgroundColor: this.props.settings.topNavbarColor.barBackground }}
 									ref= "topNavToolbar"
 								>
+									{/* Logo */}
 									<ToolbarGroup>
 										<span style = { styles.navLogo }>
-											<a href = "http://www.synglyphx.com/" target = "_blank" rel = "noopener noreferrer">
-												<img src = "./Res/Img/synglyphx-wht-3.png" style = {{ width: '300px' }} alt = "SynGlyphX"/>
-											</a>
+												{this.state.imgLogoSrc}
 										</span>
 									</ToolbarGroup>
 									
+									{/* Top Right icons */}
 									<ToolbarGroup>
 										<ToolbarSeparator />
 										<IconButton onClick={this.toggleNav.bind(this)}>
@@ -269,25 +411,58 @@ class TopNav extends Component {
 											<FontIcon className="fa fa-cogs fa-2x" color='white'/>
 										</IconButton>
                                         
-                                        <IconButton onClick={this.toggleNav.bind(this)}>
-											<FontIcon className="fa fa-info fa-2x" color='white'/>
-										</IconButton>
+                                        <IconButton onClick={this.displayAnnouncements.bind(this)}>
+                                            <FontIcon className="fa fa-bell fa-2x" color='white'/> 
+                                            <FontIcon id="notificationBadge" className="fa fa-exclamation-circle fa-1x notificationBadge" />
+                                        </IconButton>
                                         
-                                        <IconButton onClick = { openUserProfileMenu }>
+                                        <IconButton onClick = {(event) => this.openCloseUserInfoMenu(event) }>
 											<FontIcon className = "fa fa-user fa-2x" color = 'white'/>
 										</IconButton>
                                         
+                                        <Popover
+                                            open={this.state.userProfileMenuOpen}
+                                            anchorEl={this.state.userInfoAnchorEl}
+                                            onRequestClose={this.openCloseUserInfoMenu}
+                                            anchorOrigin= {{"horizontal":"right","vertical":"bottom"}}
+                                            targetOrigin= {{"horizontal":"right","vertical":"top"}}
+                                        >
+                                            <List>
+                                                <ListItem
+                                                    disabled={false}
+                                                    leftAvatar={
+                                                        <Avatar
+                                                            //src="./Res/Img/x.png"
+                                                        >
+                                                            {this.state.userInitials}
+                                                        </Avatar>
+                                                    }
+                                                    primaryText= {this.state.userFullName}
+                                                    secondaryText= {this.props.userInfo ? this.props.userInfo.type : null}
+                                                >
+                                                    
+                                                </ListItem>
+                                                <MenuItem className="menuItemStyling" primaryText="Help &amp; feedback" />
+                                                <MenuItem className="menuItemStyling" primaryText="Settings" />
+                                                <MenuItem className="menuItemStyling" primaryText="Sign out" />
+                                            </List>
+                                        </Popover>
                                         
 									</ToolbarGroup>
 								</Toolbar>
-
+								
+								{/* Filter Side Bar */}
                                 <div 
                                     id  = "filterNav" 
                                     className = "sidenav"
                                 >
                                     <FilterNav></FilterNav>
                                 </div>
-
+								
+								{/* Announcements Dialog */}
+								<AnnouncementDialog ref='announcements'/>
+								
+								{/* Settings Dialog */}
                                 <Dialog
                                     title = "Settings"
                                     ref = "Settings"
@@ -345,7 +520,6 @@ class TopNav extends Component {
                             </div>
                         </Flex>
 
-
                         <Flex id="iframeDiv" flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
@@ -358,6 +532,8 @@ class TopNav extends Component {
                                 style = {{ transition:'1s' ,width:'100%', height:'100%', border: 'none' }} 
                                 src = "https://s3.amazonaws.com/synglyphx/demo.html" 
                             /> 
+							
+							{/* Floating buttons bottom left */}
                             <FloatingActionButton 
                                 backgroundColor= {this.props.settings.overviewButtonsColor.background}
                                 style={{
@@ -367,7 +543,7 @@ class TopNav extends Component {
                                     zIndex: '10',
                                     transition: '0.5s'
                                 }} 
-                                onClick={this.openCloseMenu.bind(this)}
+                                onClick={this.openCloseFloatingMenu.bind(this)}
                             >
 
                                 <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
@@ -426,14 +602,6 @@ class TopNav extends Component {
     }
 }
 
-const floatingMiniStyles = {
-	
-};
-
-function openUserProfileMenu(){
-	//Open a userProfileMenu.
-}
-
 const styles = {
     navLogo: {
         cursor: 'pointer',
@@ -463,6 +631,7 @@ export const editThemeSettings = (theme) => ({
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
+    userInfo: state.filterState.UserInfo
   }
 }
 
