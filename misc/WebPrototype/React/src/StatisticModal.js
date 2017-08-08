@@ -40,17 +40,17 @@ class StatisticModal extends React.Component {
             >
                 <TableRow >
                     <TableHeaderColumn style = {{ height: "inherit", width: "120px", paddingLeft: "10px", paddingRight: "10px" }} >Column</TableHeaderColumn>
-                    {stats.indexOf("Count") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Count</TableHeaderColumn> : null}
-                    {stats.indexOf("Min") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Min</TableHeaderColumn> : null}
-                    {stats.indexOf("Max") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Max</TableHeaderColumn> : null}
-                    {stats.indexOf("Average") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Average</TableHeaderColumn> : null}
-                    {stats.indexOf("Median") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Median</TableHeaderColumn> : null}
-                    {stats.indexOf("Sum") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Sum</TableHeaderColumn> : null}
-                    {stats.indexOf("Range") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Range</TableHeaderColumn> : null}
-                    {stats.indexOf("St. Dev.") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >St. Dev.</TableHeaderColumn> : null}
-                    {stats.indexOf("Varience") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Varience</TableHeaderColumn> : null}
-                    {stats.indexOf("Skewness") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Skewness</TableHeaderColumn> : null}
-                    {stats.indexOf("Kurtosis") != -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Kurtosis</TableHeaderColumn> : null}
+                    {stats.indexOf("Count") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Count</TableHeaderColumn> : null}
+                    {stats.indexOf("Min") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Min</TableHeaderColumn> : null}
+                    {stats.indexOf("Max") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Max</TableHeaderColumn> : null}
+                    {stats.indexOf("Average") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Average</TableHeaderColumn> : null}
+                    {stats.indexOf("Median") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Median</TableHeaderColumn> : null}
+                    {stats.indexOf("Sum") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Sum</TableHeaderColumn> : null}
+                    {stats.indexOf("Range") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Range</TableHeaderColumn> : null}
+                    {stats.indexOf("St. Dev.") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >St. Dev.</TableHeaderColumn> : null}
+                    {stats.indexOf("Varience") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Varience</TableHeaderColumn> : null}
+                    {stats.indexOf("Skewness") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Skewness</TableHeaderColumn> : null}
+                    {stats.indexOf("Kurtosis") !== -1 ? <TableHeaderColumn style = {{ height: "inherit", paddingLeft: "0px", paddingRight: "10px" }} >Kurtosis</TableHeaderColumn> : null}
                 </TableRow>
             </TableHeader>
         );
@@ -60,17 +60,17 @@ class StatisticModal extends React.Component {
             return (
                 <TableRow key = {colName}>
                     <TableRowColumn style = {{ width: "120px", paddingLeft: "10px", paddingRight: "10px" }} >{colName}</TableRowColumn>
-                    {stats.indexOf("Count") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >10101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Min") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Max") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Average") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Median") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Sum") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Range") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("St. Dev.") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Varience") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Skewness") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
-                    {stats.indexOf("Kurtosis") != -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Count") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >10101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Min") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Max") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Average") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Median") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Sum") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Range") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("St. Dev.") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Varience") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Skewness") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
+                    {stats.indexOf("Kurtosis") !== -1 ? <TableRowColumn style = {{ paddingLeft: "0px", paddingRight: "10px" }} >1.0101010101010101010101</TableRowColumn> : null}
                 </TableRow>
             )
         });
@@ -94,7 +94,7 @@ class StatisticModal extends React.Component {
                         <label style = {{ margin: "6px 0px 0px 5px", float: "left" }} > STATISTICS </label>
                         <FontIcon 
                             className = "fa fa-window-close cursorHand" 
-                            style = {{ color: "#ffffff",  fontSize: "21px", margin: "2px 0px 0px 0px", float: "right", paddingRight: "3px" }} 
+                            style = {{ color: "#ffffff",  fontSize: "21px", margin: "2px 0px 0px 0px", float: "right", paddingRight: "2px" }} 
                             onClick = { () => this.handleStatisticUpdate(null, null, false) } 
                         />
                     </div>

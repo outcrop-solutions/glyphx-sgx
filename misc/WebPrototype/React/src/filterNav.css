@@ -1,7 +1,7 @@
 
 :root {
-  --collapsible-text-color-main: white; /* the default */
-  --collapsible-text-color-sub: white; /* the default */
+    --collapsible-text-color-main: white; /* the default */
+    --collapsible-text-color-sub: white; /* the default */
 }
 
 .Collapsible__contentInner {
@@ -9,12 +9,12 @@
 }
 
 .animate-close {
-  overflow: hidden;
-  -webkit-transition: height 0.3s ease-in;
-  -moz-transition: height 0.3s ease-in;
-  -o-transition: height 0.3s ease-in;
-  -ms-transition: height 0.3s ease-in;
-  transition: height 0.3s ease-in;
+    overflow: hidden;
+    -webkit-transition: height 0.3s ease-in;
+    -moz-transition: height 0.3s ease-in;
+    -o-transition: height 0.3s ease-in;
+    -ms-transition: height 0.3s ease-in;
+    transition: height 0.3s ease-in;
 }
 
 .menuItemStyling {
@@ -37,11 +37,10 @@
     transform: translate(0px, -300px);
     -webkit-transition:1s;
     transition:1s;
-
 }
 
 .collapsibleHeader {
-        padding: 16px;
+    padding: 16px;
     font-weight: 500;
     box-sizing: border-box;
     position: relative;
@@ -62,35 +61,38 @@
 }
 
 .Collapsible {
-  background-color: white; 
-      cursor: pointer;
-  }
+    background-color: white; 
+    cursor: pointer;
+}
 
 .Collapsible__contentInner {
-  padding: 10px;
-  border: 1px solid #ebebeb;
-  border-top: 0; }
+    padding: 10px;
+    border: 1px solid #ebebeb;
+    border-top: 0; 
+}
   
 .Collapsible__contentInner p {
     margin-bottom: 10px;
     font-size: 14px;
-    line-height: 20px; }
+    line-height: 20px; 
+}
     
 .Collapsible__contentInner p:last-child {
-      margin-bottom: 0; }
+    margin-bottom: 0; 
+}
 
 .Collapsible__trigger {
-  display: block;
-  font-weight: 400;
-  text-decoration: none;
-  position: relative;
-  border: 1px solid white;
-  padding: 15px;
-  color: white; 
-  font-size: 1rem;
-  }
+    display: block;
+    font-weight: 400;
+    text-decoration: none;
+    position: relative;
+    border: 1px solid white;
+    padding: 15px;
+    color: white; 
+    font-size: 1rem;
+}
 
-  .Collapsible__trigger:after {
+.Collapsible__trigger:after {
     font-family: "FontAwesome";
     content: "\f107";
     position: absolute;
@@ -104,20 +106,23 @@
 
 
   
-  .Collapsible__trigger.is-open:after {
+.Collapsible__trigger.is-open:after {
     transform: rotateZ(180deg); 
-    }
+}
   
-  .Collapsible__trigger.is-disabled {
+.Collapsible__trigger.is-disabled {
     opacity: 0.5;
-    background-color: grey; }
+    background-color: grey; 
+}
 
 .CustomTriggerCSS {
-  background-color: lightcoral;
-  transition: background-color 200ms ease; }
+    background-color: lightcoral;
+    transition: background-color 200ms ease; 
+}
 
 .CustomTriggerCSS--open {
-  background-color: darkslateblue; }
+    background-color: darkslateblue; 
+}
 
 
 .columnNameHeader.Collapsible__trigger:after {
@@ -131,39 +136,43 @@
 	font-size: 0rem !important;
     padding: 0px !important;
 }
-  .centerText {
+.centerText {
     display: block;
     text-align: center;
     cursor: normal;
-  }
+}
 
-  .cursorNormal {
-      cursor: default;
-  }
+.cursorNormal {
+    cursor: default;
+}
 
-  .selectViewName {
-      width:100%;
-      z-index: 3;
-      font-size: 13px;
-  }
+.selectViewName {
+    width:100%;
+    z-index: 3;
+    font-size: 13px;
+}
 
-  .selectTableName {
-      width:100%;
-      z-index: 2;
-      font-size: 13px;
-  }
+.selectTableName {
+    width:100%;
+    z-index: 2;
+    font-size: 13px;
+}
 
-  .cursorHand:Hover {
+.cursorHand:Hover {
     cursor: pointer
-    }
+}
 
 .Select-menu-outer {
     z-index: 2;
 }
 
- .notificationBadge {
+.notificationBadge {
 	color: red !important;
     font-size: 18px !important;
     top: -33px;
     left: 10px;
- }
+}
+
+.Select-menu-outer {
+    z-index: 2 !important;
+}
