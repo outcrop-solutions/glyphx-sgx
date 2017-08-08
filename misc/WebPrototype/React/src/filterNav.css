@@ -156,3 +156,6 @@
   .cursorHand:Hover {
     cursor: pointer
     }
+.Select-menu-outer {
+    z-index: 2;
+}

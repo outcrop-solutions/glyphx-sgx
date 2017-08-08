@@ -169,7 +169,7 @@ class FilterViewForm extends React.Component {
                         <Flex divider /> 
 
                         {/* Displays the mapped views*/}
-                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3> No Filters Selected! </h3></div>}
+                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3> No Filters Selected </h3></div>}
                     </div>
 
                 </CardText>

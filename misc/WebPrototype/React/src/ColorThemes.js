@@ -96,7 +96,12 @@ const themeSettingColors = [
 
         overviewButtonsColor: {
             background: "#2d3091",
+            altBackground: "#575d5e",
             text: "#ffffff"
+        },
+
+        statisticsDragColor: {
+            topBar: shadeHexColors("#2d3091", -0.2),
         },
 
         filterOverviewColor: {
@@ -198,7 +203,12 @@ const themeSettingColors = [
 
         overviewButtonsColor: {
             background: "#9d2235",
+            altBackground: "#f1b434",
             text: "#ffffff"
+        },
+
+        statisticsDragColor: {
+            topBar: shadeHexColors("#9d2235", -0.2),
         },
 
         filterOverviewColor: {

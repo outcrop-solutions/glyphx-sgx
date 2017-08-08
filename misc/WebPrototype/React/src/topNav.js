@@ -17,6 +17,7 @@ import Login from './Login.js';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
+import StatisticModal from './StatisticModal.js'
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -344,8 +345,11 @@ class TopNav extends Component {
                             </div>
                         </Flex>
 
+
                         <Flex id="iframeDiv" flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
+
+                            <StatisticModal />
 
                             <iframe 
                                 id="GlyphViewer" 

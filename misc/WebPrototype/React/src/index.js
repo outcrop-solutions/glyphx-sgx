@@ -13,7 +13,12 @@ import './General.css';
 const initialFilterState = {
     Filter: {},
     Settings: themeSettingColors[0],
-    UserInfo: {}
+    UserInfo: {},
+    Statistics: { 
+        display: false,
+        colList: "",
+        statList: ""
+    }
 };
 
 
@@ -388,6 +393,34 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 UserInfo: action.info
             }
+
+        case 'UPDATE_STATISTICS':
+
+            var display = state.Statistics.display;
+            var colList = state.Statistics.colList.slice();
+            var statList = state.Statistics.statList.slice();
+
+            if (action.visibility != null) {
+                display = action.visibility
+            }
+            if (action.colList != null) {
+                colList = action.colList
+            }
+            if (action.statList != null) {
+                statList = action.statList
+            }
+            
+            return { 
+                ...state,
+                Statistics: {
+                    ...state.Filter,
+                    display: display,
+                    colList: colList,
+                    statList: statList,
+                }
+            };
+
+
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/

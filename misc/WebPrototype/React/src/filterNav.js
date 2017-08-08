@@ -643,7 +643,7 @@ class FilterNav extends Component {
     };
 
     render = () => {
-         var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned! </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label><br/><br/></div>;
+         var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label><br/><br/></div>;
          var columnsObj = this.makeColumns(this.state.tableData);
 		 var pinnedSearchBar = <div style = {{ margin: "1px -3px -6px 1px" }}>
                                     <SearchBox 
@@ -663,6 +663,12 @@ class FilterNav extends Component {
                                     />
                                 <br />
                                 </div>;
+
+        var colList = [];
+
+        for (var prop in this.state.tableData) {
+            colList.push(prop);
+        }
 
         return (
                 <Flex 
@@ -693,7 +699,7 @@ class FilterNav extends Component {
                         handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'topCollapisble') }
                     >
 
-                        <TopView initParams = { this.state.topViewInitParams } showAlert = { (strMsg) => this.showAlert(strMsg) }/>
+                        <TopView initParams = { this.state.topViewInitParams } colList = { colList } showAlert = { (strMsg) => this.showAlert(strMsg) }/>
 
                     </Collapsible>
                 
