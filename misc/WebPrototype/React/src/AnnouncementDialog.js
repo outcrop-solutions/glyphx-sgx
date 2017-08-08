@@ -14,16 +14,35 @@ class AnnouncementDialog extends Component {
 	
 	constructor(props){
 		super(props);
-		//make server call to check for announcements
-		//var displayText = "Notifications will disappear after 1 week.";
-		var displayText = "";
 		
+		var displayText = "Notifications will disappear after 1 week.";
+		//var displayText = "";
+		var serverResponse = this.checkForAnnouncements();
+
 		this.state = {
-			displayText: displayText,
-			shouldBeDisplayed: (displayText == "" || displayText == null) ? false : true,
-			displayCheckBox: true
+			displayText: serverResponse.textToDisplay,
+			shouldBeDisplayed: (serverResponse.textToDisplay == "" || serverResponse.textToDisplay == null) ? false : true,
+			displayCheckBox: true,
+			currentVisibility: false,
+			forceDisplayAfterLogin: serverResponse.forceDisplayAfterLogin
 		}
 		
+	}
+
+	/**
+	 * Make server call to check for announcements
+	 * Check whether the new dialog box needs to be displayed at user login or not.
+	 */
+	checkForAnnouncements() {
+		var returnObj ={
+			textToDisplay: "Notifications will disappear after 1 week.",
+			forceDisplayAfterLogin: false
+		};
+
+		//Server call.
+
+
+		return returnObj;
 	}
 	
 	/**
@@ -58,7 +77,7 @@ class AnnouncementDialog extends Component {
 			notificationBadge.style.display = 'none';
 		}
 		
-		this.setState({shouldBeDisplayed: false });
+		this.setState({currentVisibility: false });
 	}
 	
 	
@@ -78,7 +97,7 @@ class AnnouncementDialog extends Component {
 					]
 				}
 				modal = { true }
-				open = { this.state.shouldBeDisplayed }
+				open = { this.state.currentVisibility }
 			>
 				<label><h4> {this.state.displayText == "" ? "No Announcements." : this.state.displayText} </h4></label>
 					

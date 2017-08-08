@@ -244,9 +244,29 @@ class TopNav extends Component {
 		}
 		
     }
-	
-	/**
+    
+    /**
 	 * This function is a callback from the login.
+	 * It calls the necessary function that need to be called after login.
+	 * @param {object} props - this is the user info object returned from the login call.
+	 */
+    doAfterLogin = (props) => {
+        var ann = this.refs['announcements'] ? this.refs['announcements'].getWrappedInstance() : null;
+        
+        
+        //Update user information in the top right user info menu.
+        this.updateUserInfoMenu(props);
+
+        //Check if announcements and force display at login true.
+        if(ann && ann.state.forceDisplayAfterLogin)
+        {
+            ann.setState({
+				currentVisibility: true,
+			});
+        }
+    }
+
+	/**
 	 * This updates the userinfo menu with the user data returned from login call.
 	 * Also depending on the user product the logo will be displayed.(GlyphEd or SynGlyphX)
 	 * @param {object} userInfo - this is the user info object returned from the login call.
@@ -291,7 +311,7 @@ class TopNav extends Component {
 		{
 			dialogBox = this.refs['announcements'].getWrappedInstance();
 			dialogBox.setState({
-				shouldBeDisplayed: true,
+				currentVisibility: true,
 				displayCheckBox: false
 			});
 		}
@@ -331,7 +351,7 @@ class TopNav extends Component {
 					{/* Login Screen */}
                     {this.state.authenticate ? 
                         <Login ref="LoginForm"
-                            doAfterLogin={(prop) => this.updateUserInfoMenu(prop)}
+                            doAfterLogin={(prop) => this.doAfterLogin(prop)}
                         /> : null}
 						
 					{/* Circular Load Mask to show when server calls made. */}
