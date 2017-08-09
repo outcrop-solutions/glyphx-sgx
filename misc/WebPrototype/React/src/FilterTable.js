@@ -530,7 +530,8 @@ class FilterTable extends Component {
                                     style = {{ 
                                         paddingLeft:'0px', 
                                         paddingRight: '0px', 
-                                        height:'inherit' 
+                                        height:'inherit',
+                                        userSelect: 'none'
                                     }}
                                 >
                                     <div 
@@ -544,7 +545,8 @@ class FilterTable extends Component {
                                 {/*Count Column Header*/}
                                 <TableHeaderColumn 
                                     style = {{
-                                        height:'inherit' 
+                                        height:'inherit',
+                                        userSelect: 'none' 
                                     }}
                                 >
                                     <div 
