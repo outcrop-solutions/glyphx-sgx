@@ -445,6 +445,7 @@ class TopNav extends Component {
                                                     leftAvatar={
                                                         <Avatar
                                                             //src="./Res/Img/x.png"
+                                                            backgroundColor={this.props.settings.overviewButtonsColor.background}
                                                         >
                                                             {this.state.userInitials}
                                                         </Avatar>

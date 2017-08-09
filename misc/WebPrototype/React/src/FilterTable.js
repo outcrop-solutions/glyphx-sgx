@@ -19,7 +19,7 @@ import './General.css'
 
 class FilterTable extends Component {
 
-    flatData = [];
+    
     
     constructor(props) {
         super(props);
@@ -42,7 +42,8 @@ class FilterTable extends Component {
         prevSelectedIndex: null,
         checkboxClicked:false,
         tableData: tableData,
-        indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
+        flatData: [],
+        indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1)
         };
     }
 
@@ -75,7 +76,7 @@ class FilterTable extends Component {
      * @param all: boolean value stating whether or not select all is clicked.
      */
     onRowSelect = (context,rowSelection,all,evt,checked) => {
-            var index,len = context.flatData.length;
+            var index,len = context.state.flatData.length;
             var selectedValues;
 
             if (this.state.prevSelectedIndex == null) {
@@ -92,7 +93,7 @@ class FilterTable extends Component {
                 selectedValues = [];
 
                 for (index = 0; index < len; index++) {
-                        selectedValues.push(context.flatData[index].value);
+                        selectedValues.push(context.state.flatData[index].value);
                 }
                 checked = true;
             }
@@ -105,7 +106,7 @@ class FilterTable extends Component {
                 selectedValues = context.props.tableState[context.props.id].selectedValues.slice();
 
                 if (checked) {
-                    selectedValues.push(context.flatData[rowSelection].value);
+                    selectedValues.push(context.state.flatData[rowSelection].value);
                     
                     if (selectedValues.length === len) {
                         this.setState({selectAll:true});
@@ -116,14 +117,14 @@ class FilterTable extends Component {
                         this.setState({selectAll:false});
                     }
                     
-                        selectedValues.splice(selectedValues.indexOf(context.flatData[rowSelection].value),1);
+                        selectedValues.splice(selectedValues.indexOf(context.state.flatData[rowSelection].value),1);
                 }
             }
 
             var filterStructure = {
                     colName : context.props.id,
                     selectedValues: selectedValues,
-                    value: (context.flatData[rowSelection] ? context.flatData[rowSelection].value : null),
+                    value: (context.state.flatData[rowSelection] ? context.state.flatData[rowSelection].value : null),
                     checked: checked,
                     type: context.props.tableState[context.props.id].type,
                     data: context.props.tableData
@@ -205,7 +206,7 @@ class FilterTable extends Component {
 
     /**
      * This method returns the internalTableName.
-     * @return string - internal table name.
+     * @return string: internal table name.
      */
     getInternalTableName = () => {
         return "table-" + this.props.internalColName;
@@ -213,6 +214,8 @@ class FilterTable extends Component {
 	
 	/**
 	 * This method clears the value of the serachbox and calls onKeyUp for 
+     * @param {obj} evt: the event object.
+     * @param {string} strSearchBoxId: the id of the searchbox.
 	 */
 	clearSearchBox = (evt,strSearchBoxId) => {
 		var sb = document.getElementById("tf-" + strSearchBoxId);
@@ -226,7 +229,10 @@ class FilterTable extends Component {
         if (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues) {
             return true;
         }
-        if (this.props.settings != nextProps.settings) {
+        else if (this.props.settings != nextProps.settings) {
+            return true;
+        }
+        else if (this.state.flatData != nextState.flatData){
             return true;
         }
         else {
@@ -235,7 +241,7 @@ class FilterTable extends Component {
     }
 
     componentDidUpdate() {
-        if(this.props.tableState[this.props.id].selectedValues.length == this.flatData.length)
+        if(this.props.tableState[this.props.id].selectedValues.length == this.state.flatData.length)
             this.setState({ selectAll: true });
         else
             this.setState({ selectAll: false });
@@ -262,15 +268,122 @@ class FilterTable extends Component {
         }
     }
 
-    render() {
+    /**
+     * This is called when the header is clicked for sorting.
+     * @param {Obj} evt: The actual event object.
+     * @return {string} columnName: id of the columnHeader.
+     */
+    onSortClick = (evt,columnName) => {
+        var columnObj = document.getElementById(columnName);
+        var columnType = this.props.tableState[this.props.id].type;
+        var columnClicked = columnName.indexOf('value') > -1 ? 'value' : 'count';
+        var data = this.state.tableData.data;
+        var keys = Object.keys(data);
+        var otherColumn;
+        var context = this;
+        var flatData = context.state.flatData.slice();
+
+        //find the other column & remove the sort applied icon.
+        if(columnClicked == 'value'){
+            otherColumn = document.getElementById(columnName.replace('value','count'));
+        }
+        else{
+            otherColumn = document.getElementById(columnName.replace('count','value'));
+        }
+
+        if(otherColumn){
+            otherColumn.classList.remove('fa-sort-amount-desc');
+            otherColumn.classList.remove('fa-sort-amount-asc');
+            otherColumn.classList.add('fa-sort');
+        }
+        
+        //update the sorting icon
+        var sortDirection = this.updateSortIcon(columnObj);
+
+        switch(columnType){
+            case "Text":
+                if(sortDirection == "asc"){
+                    flatData.sort(function(a,b) {
+                        if (a[columnClicked] < b[columnClicked])
+                            return -1;
+                        if (a[columnClicked] > b[columnClicked])
+                            return 1;
+                        return 0;
+                    });
+                }
+                else{
+                    flatData.sort(function(a,b) {
+                        if (a[columnClicked] < b[columnClicked])
+                            return -1;
+                        if (a[columnClicked] > b[columnClicked])
+                            return 1;
+                        return 0;
+                        }
+                    ).reverse();
+                }
+                    
+                break;
+            case "Number":
+                if(sortDirection == "asc"){
+                    flatData.sort(function(a, b){return a[columnClicked] - b[columnClicked]});
+                }
+                else{
+                    flatData.sort(function(a, b){return a[columnClicked] - b[columnClicked]}).reverse();
+                }
+                break;
+        }
+        
+        this.setState({flatData: flatData});
+    }
+    
+    /**
+     * This updates the sortIcon for the correspoding column header clicked.
+     * @param {Obj} columnObj: The column header object whose sort icon has be updated.
+     */
+    updateSortIcon = (columnObj) => {
+        var removeIconName="";
+        var addIconName="";
+        var sortDirection="";
+        var currentState = columnObj.classList.contains('fa-sort') ? 'init' : (columnObj.classList.contains('fa-sort-amount-asc') ? 'asc' : 'desc');
+        
+        switch(currentState){
+            case "init":
+            removeIconName="fa-sort";
+            addIconName="fa-sort-amount-asc";
+            sortDirection="asc";
+            break;
+            case "asc":
+            removeIconName="fa-sort-amount-asc";
+            addIconName="fa-sort-amount-desc";
+            sortDirection="desc";
+            break;
+            case "desc":
+            removeIconName="fa-sort-amount-desc";
+            addIconName="fa-sort-amount-asc";
+            sortDirection="asc";
+            break;
+        }
+        
+        columnObj.classList.remove(removeIconName);
+        columnObj.classList.add(addIconName);
+        return sortDirection;
+    }
+
+    /**
+     * This creates the rows based on the sort property.
+     * Initially the sortedvalues property is [] so fetches from data.
+     */
+    createRows = () => {
+        
         var id = this.props.id;
-        var internalColName = this.props.internalColName;
         var data = this.state.tableData.data;
         var totalCount = this.state.tableData.totalCount;
         var selectedValues = this.props.tableState[id].selectedValues;
-        var rows = []; var index = 0;
-        this.flatData = [];
-        var tableBodyHeight = (this.state.tableHeight - 32) + "px";
+        var rows = [];
+        var count; 
+        var index = 0;
+        var percentStr;
+        var sortedValues = this.state.flatData;
 
         /**
          * structure of data is:
@@ -281,32 +394,66 @@ class FilterTable extends Component {
          *          }
          * }
          */
-        for(var property in data) {
-
-            var prop = data[property].value;
-            var percentStr =  data[property].count + " (" + ((data[property].count/totalCount)*100).toFixed(2) + "%" + ")";
-            var context = this;
-
-            rows.push(<FilterRow 
-                            onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked) } 
-                            key = { prop } 
-                            index = { index } 
-                            checked = { selectedValues.indexOf(prop) !== -1 } 
-                            value = { prop } 
-                            percentStr = { percentStr }
-                            settings = { context.props.settings }
-                        /> );
-
-            this.flatData.push({
-                    value: prop,
-                    count: data[property].count,
-                    index: index
-            });
-        
-
-            index ++;
+        if(sortedValues.length > 0)
+        {
+            for(var i=0;i<sortedValues.length; i++) {
+                count = sortedValues[i].count;
+                percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%" + ")";
+                rows.push(this.generateRowHTML(sortedValues[i].value,sortedValues[i].value,count,percentStr,(selectedValues.indexOf(sortedValues[i].value) !== -1),index));
+                index++;
+            }
         }
-		
+        else{
+            for(var property in data) {
+                count = data[property].count;
+                percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%" + ")";
+                rows.push(this.generateRowHTML(property,data[property].value,count,percentStr,(selectedValues.indexOf(data[property]) !== -1),index,true));
+                index++;
+            }   
+        }
+        return rows;
+    }
+
+    /**
+     * This generates the HTML markup.
+     * @param {string} property: this is the "key" of the object
+     * @param {string} value: this is the value of the object.
+     * @param {int} count: this is the count of that value.
+     * @param {string} percentStr: this is the percentage of the count.
+     * @param {bool} checked: selected or not.
+     * @param {int} index: reference index for the flatdata that is updated.
+     * @param {bool} initialRowCreate: true if the table is loaded the 1st time.
+     */
+    generateRowHTML = (property,value,count,percentStr,checked,index,initialRowCreate) =>{
+        var row;
+        var context = this;
+        
+        row = (<FilterRow 
+                    onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked) } 
+                    key = { property } 
+                    index = { index } 
+                    checked = { checked } 
+                    value = { value } 
+                    percentStr = { percentStr }
+                    settings = { context.props.settings }
+                />);
+
+        if(initialRowCreate)
+            this.state.flatData.push({
+                value: value,
+                count: count,
+                index: index
+            });
+            
+        return row;
+    }
+
+    render() {
+        var id = this.props.id;
+        var internalColName = this.props.internalColName;
+        var tableBodyHeight = (this.state.tableHeight - 32) + "px";
+        var rows = this.createRows();
+
         return (
 
             <div
@@ -335,7 +482,7 @@ class FilterTable extends Component {
                 </div>
 
 				<br/>
-
+				
                 <div
                     onMouseEnter = { this.mouseIn }
                     onMouseLeave = { this.mouseOut }
@@ -345,7 +492,7 @@ class FilterTable extends Component {
                         fixedHeader = { true }
                         fixedFooter = { true }
                         selectable = { this.state.selectable }
-                        wrapperStyle = {{
+                        wrapperStyle={{
                             maxHeight: this.state.tableHeight + "px",
                             overflow: 'hidden'
                         }}
@@ -362,16 +509,52 @@ class FilterTable extends Component {
                             enableSelectAll = { this.state.enableSelectAll }
                         >
                             <TableRow style = {{ height:'30px' }}>
-                                <TableHeaderColumn style = {{ height:'inherit', width:'25px' }}>
+                                
+                                {/*Header Checkbox*/}
+                                <TableHeaderColumn 
+                                    style = {{ 
+                                        height:'inherit', 
+                                        width:'25px' 
+                                    }}
+                                >
                                     <Checkbox 
                                         id = { "cb-" + internalColName } 
-                                        checked = { this.props.tableState[id].selectedValues.length == this.flatData.length } 
+                                        checked = { this.props.tableState[id].selectedValues.length == this.state.flatData.length } 
                                         onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
                                         iconStyle = {{ fill: this.props.settings.elasticColor.checkAllBox }}
                                     />
                                 </TableHeaderColumn>
-                                <TableHeaderColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }} >Value</TableHeaderColumn>
-                                <TableHeaderColumn style = {{ height:'inherit' }}>Count(Percent)</TableHeaderColumn>
+                                
+                                {/*Value Column header*/}
+                                <TableHeaderColumn 
+                                    style = {{ 
+                                        paddingLeft:'0px', 
+                                        paddingRight: '0px', 
+                                        height:'inherit' 
+                                    }}
+                                >
+                                    <div 
+                                        onClick={(evt) => this.onSortClick(evt,"valueColumnHeader" + internalColName)}
+                                    >
+                                        Value &nbsp;
+                                        <i id={"valueColumnHeader" + internalColName} className="fa fa-sort"></i> 
+                                    </div> 
+                                </TableHeaderColumn>
+                                
+                                {/*Count Column Header*/}
+                                <TableHeaderColumn 
+                                    style = {{
+                                        height:'inherit' 
+                                    }}
+                                >
+                                    <div 
+                                        onClick={(evt) => this.onSortClick(evt,"countColumnHeader" + internalColName)}
+                                    >
+                                        Count(%) &nbsp;
+                                        <i id={"countColumnHeader" + internalColName} className="fa fa-sort"></i> 
+                                    </div>
+                                </TableHeaderColumn>
+
                             </TableRow>
 
                         </TableHeader>
@@ -382,7 +565,7 @@ class FilterTable extends Component {
                             showRowHover = { this.state.showRowHover }
                             stripedRows = { false }
                             className = {internalColName + "-E"}
-                        >                    
+                        >
                             {rows}
                         </TableBody>
                     </Table>
