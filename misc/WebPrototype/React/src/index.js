@@ -13,7 +13,12 @@ import './General.css';
 const initialFilterState = {
     Filter: {},
     Settings: themeSettingColors[0],
-    UserInfo: {}
+    UserInfo: {},
+    Statistics: { 
+        display: false,
+        colList: "",
+        statList: ""
+    }
 };
 
 
@@ -90,15 +95,8 @@ const filterReducer = function(state = initialFilterState, action) {
 
             // If what was removed was applied, then recaculate what should be selected in the elastic list now
             if (previousRange[3]) {
-                if (action.rangeType === "Number") {
-                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
-                }
-                else if (action.rangeType === "Text") {
-                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
-                }
-                else {
-                    // TODO: Add Date range here
-                }
+                
+                selected = calcSelectedRemoved(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
 
                 return {
                     ...state,
@@ -206,19 +204,11 @@ const filterReducer = function(state = initialFilterState, action) {
 
             // Determines if selected values should be recalculated
             if (previousRange[3] || action.applied) {
-                if (action.selectType != null) {
-                    selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
+                if (action.selectType != undefined) {
+                    selected = calcSelectedRemoved(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
                 }
                 else if (action.applied === false) {
-                    if (action.rangeType === "Number") {
-                        selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
-                    }
-                    else if (action.rangeType === "Text") {
-                        selected = calcSelectedNoPrevious(stateVal, action.rangeType, action.data);
-                    }
-                    else {
-                        // TODO: Add Date range here
-                    }
+                    selected = calcSelectedRemoved(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
                 }
                 else {
                     selected = calcSelected(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
@@ -388,6 +378,34 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 UserInfo: action.info
             }
+
+        case 'UPDATE_STATISTICS':
+
+            var display = state.Statistics.display;
+            var colList = state.Statistics.colList.slice();
+            var statList = state.Statistics.statList.slice();
+
+            if (action.visibility != null) {
+                display = action.visibility
+            }
+            if (action.colList != null) {
+                colList = action.colList
+            }
+            if (action.statList != null) {
+                statList = action.statList
+            }
+            
+            return { 
+                ...state,
+                Statistics: {
+                    ...state.Filter,
+                    display: display,
+                    colList: colList,
+                    statList: statList,
+                }
+            };
+
+
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/
@@ -412,7 +430,7 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
     if (rangeType === "Number") {
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
-                if (previousRange && rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1]) ) {
+                if (rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1]) ) {
                     previousList = [];
                     newList = [];
 
@@ -458,6 +476,7 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
     }
 
     else if (rangeType === "Text") {
+        var foundRange = false;
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 if (previousRange && rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1] || rList[i][5] !== previousRange[5]) ) {
@@ -489,6 +508,7 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
                     }
                 }
             }
+
         }
     }
 
@@ -631,6 +651,56 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
     return selectedValues;
 }
 
+/**
+ * 
+ * @param rList: List of all ranges for one column
+ * @param rangeType: Type of the column (Number, Text, Date)
+ * @param data: Data corresponding to the column
+ * @param previousRange: range that was edited prior to edit
+ * @param selectedValues: list of currently selected values
+ **/
+function calcSelectedRemoved(rList, rangeType, data, previousRange, selectedValues) {
+    var i, j, curNum, previousList, newList, index;
+    if (rangeType === "Number") {
+
+        newList = calcSelectedNoPrevious(rList, rangeType, data);
+        previousList = [];
+
+        for (i = 0; i < data.length; i++) {
+            curNum = parseFloat(data[i], 10)
+            if (curNum >= previousRange[0] && curNum  <= previousRange[1]) {
+                previousList.push(data[i]);
+            }
+        }
+
+        for (i = 0; i < previousList.length; i++) {
+            index = selectedValues.indexOf(previousList[i]);
+            if (newList.indexOf(previousList[i]) === -1 && index !== -1) {
+                selectedValues.splice(index, 1);
+            }
+        }
+    }
+
+    else if (rangeType === "Text") {
+        newList = calcSelectedNoPrevious(rList, rangeType, data);
+        previousList = calcTextSelected(previousRange, data);
+
+        for (i = 0; i < previousList.length; i++) {
+            index = selectedValues.indexOf(previousList[i]);
+            if (newList.indexOf(previousList[i]) === -1 && index !== -1) {
+                selectedValues.splice(index, 1);
+            }
+        }
+    }
+
+    else {
+        // TODO: Add Date Range here
+    }
+
+    console.log("selectedValues: ");
+    console.log(selectedValues);
+    return selectedValues;
+}
 /**
  * Used to translate slider values to letters
  **/

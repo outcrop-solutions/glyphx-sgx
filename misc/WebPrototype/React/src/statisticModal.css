@@ -1,0 +1,7 @@
+.statisticsBox {
+    background-color: #fff !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+    display: block !important;
+    padding: 0.01rem !important;
+}

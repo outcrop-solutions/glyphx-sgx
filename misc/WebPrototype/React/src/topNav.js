@@ -20,6 +20,7 @@ import Login from './Login.js';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
+import StatisticModal from './StatisticModal.js'
 import AnnouncementDialog from './AnnouncementDialog.js'
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -163,7 +164,7 @@ class TopNav extends Component {
 	 * @param {bool} fullHeight- true if wanted full screen & false/null otherwise.
 	 */
     updateGlyphViewer(fullWidth,fullHeight){
-        var gv = document.getElementById('GlyphViewer');
+        var gv = document.getElementById('GlyphViewerContainer');
 		var topNav = document.getElementById('TopNav');
 
         if(fullWidth){
@@ -519,18 +520,22 @@ class TopNav extends Component {
                                 
                             </div>
                         </Flex>
-						
-						{/* The 3D rendering engine */}
+
                         <Flex id="iframeDiv" flex = "100" style = {{ overflow: 'hidden' }}>
                             {/* The 3D rendering engine */}
 
-                            <iframe 
-                                id="GlyphViewer" 
-                                onLoad={this.onLoadGlyphView.bind(this)} 
-                                title = "3D rendering engine" 
-                                style = {{ transition:'1s' ,width:'100%', height:'100%', border: 'none' }} 
-                                src = "https://s3.amazonaws.com/synglyphx/demo.html" 
-                            /> 
+                            <div id = "GlyphViewerContainer" style = {{ transition:'0.37s', width:'100%', height:'100%' }} >
+
+                                <StatisticModal />
+
+                                <iframe 
+                                    id="GlyphViewer" 
+                                    onLoad={this.onLoadGlyphView.bind(this)} 
+                                    title = "3D rendering engine" 
+                                    style = {{ width:'100%', height:'100%', border: 'none' }} 
+                                    src = "https://s3.amazonaws.com/synglyphx/demo.html" 
+                                /> 
+                            </div>
 							
 							{/* Floating buttons bottom left */}
                             <FloatingActionButton 

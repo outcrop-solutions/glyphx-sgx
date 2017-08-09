@@ -34,7 +34,10 @@ class TopView extends Component {
             tableSelectValues: [],
             saveDailogOpen: false,
             viewSelectItems: viewSelectItems,
-            viewNameTextFieldError: ""
+            viewNameTextFieldError: "",
+            statisticsModalOpen: false,
+            statisticStatSelectValues: "",
+            statisticColSelectValues: ""
         };
 	}
 	
@@ -128,6 +131,20 @@ class TopView extends Component {
                 }
 
                 break;
+
+            case 'statistics':
+
+                if (open) {
+                    this.setState({ statisticsModalOpen: true });
+                    console.log("linked");
+                }
+
+                else {
+                    this.setState({ statisticsModalOpen: false });
+                }
+
+
+                break;
             
             default:
                 return null;
@@ -139,7 +156,7 @@ class TopView extends Component {
 	* This method is called when the save button is pressed in the save dailog.
     * @param context: This is the instance of the current class.
 	*/
-    onSaveDailog = (context) => {
+    onSaveDialog = (context) => {
         var viewName = document.getElementById("tf_viewName").value;
         var nameAlreadyExists = false;
         var lbl_error = document.getElementById('lbl_saveError');
@@ -189,6 +206,12 @@ class TopView extends Component {
     };
 
 
+    onApplyStatistics() {
+        this.props.dispatch(updateStatistics(this.state.statisticColSelectValues, this.state.statisticStatSelectValues, true));
+        this.handleOpenClose('statistics', false);
+    }
+
+
     /**
      * 
      */
@@ -235,6 +258,24 @@ class TopView extends Component {
     onSelectTableChange = (value) => {
         this.setState({
             tableSelectValues: value
+        });
+        console.log(value);
+
+        //Load Table Columns
+    };
+
+    onSelectStatisticStatChange = (value) => {
+        this.setState({
+            statisticStatSelectValues: value
+        });
+        console.log(value);
+
+        //Load Table Columns
+    };
+
+    onSelectStatisticColChange = (value) => {
+        this.setState({
+            statisticColSelectValues: value
         });
         console.log(value);
 
@@ -291,10 +332,10 @@ class TopView extends Component {
         this.onClearAllFilters();
 
         //Clear the value of viewName
-        this.setState({ viewSelectValue:null });
+        this.setState({ viewSelectValue: null });
 
         //close the menu
-        this.handleOpenClose('menu',false,event);
+        this.handleOpenClose('menu', false,event);
     };
 
      /**
@@ -338,6 +379,9 @@ class TopView extends Component {
         else if (this.props.settings != newProps.settings) {
             return true;
         }
+        else if (this.props.statisticDisplay != newProps.statisticDisplay) {
+            return true;
+        }
 
         return false;
     };
@@ -347,6 +391,26 @@ class TopView extends Component {
         var tableSelectItems = [];
 		
 		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value){
+			return(
+                {
+                    label: value, value: value
+                }
+            );
+		});
+
+
+        var statisticStatSelectItems = ["Count", "Min", "Max", "Average", "Median", "Sum", "Range", "St. Dev.", "Varience", "Skewness", "Kurtosis"];
+
+        statisticStatSelectItems = statisticStatSelectItems.map(function(value){
+			return(
+                {
+                    label: value, value: value
+                }
+            );
+		});
+
+
+        var statisticColSelectItems = this.props.colList.map(function(value){
 			return(
                 {
                     label: value, value: value
@@ -417,7 +481,7 @@ class TopView extends Component {
                                         <FlatButton
                                             label = "Save"
                                             primary = { true }
-                                            onClick = { () => this.onSaveDailog(this) }
+                                            onClick = { () => this.onSaveDialog(this) }
                                             style = {{ color: this.props.settings.saveModalColor.saveButton }}
                                         />,
                                         <FlatButton
@@ -454,20 +518,23 @@ class TopView extends Component {
                 
                 {/* Row 3 */}
                 <Flex layout = "row" style = {{ height:'10%',marginBottom: '5px' }}>
-                    <Flex flex = "30" style = {{ margin: "-5px 24px 10px 0px" }}>
+                    <Flex flex = "20" style = {{ margin: "-5px 24px 10px 0px" }}>
                         <RaisedButton 
                             label = "Clear All"
                             style = {{
-                                width: "130px"
+                                width: "85px"
                             }}
-                            buttonStyle={{
+                            buttonStyle = {{
 								height: '25px',
 								lineHeight: '25px',
 								backgroundColor: this.props.settings.overviewButtonsColor.background
 							}} 
-							labelStyle= {{
+							labelStyle = {{
 								fontSize: '12px',
-								color: this.props.settings.overviewButtonsColor.text
+								color: this.props.settings.overviewButtonsColor.text,
+                                margin: "0px 0px 0px -3px",
+                                paddingLeft: "0px",
+                                paddingRight: "0px"
 							}}
 							overlayStyle = {{
 								height: '25px',
@@ -478,12 +545,12 @@ class TopView extends Component {
                     </Flex>
 
 
-                    <Flex flex = "25" style = {{ margin: "-5px 31px 0px -4px" }}>
+                    <Flex flex = "15" style = {{ margin: "-5px 31px 0px -10px" }}>
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
                             style = {{
-                                width: "130px"
+                                width: "85px"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -508,13 +575,39 @@ class TopView extends Component {
                             */}
                     </Flex>
 
-                    <Flex flex = "30" style = {{ margin: "-5px -6px 0px 13px" }}>
+                    <Flex flex = "20" style = {{ margin: "-5px -6px 0px 4px" }}>
                         <RaisedButton 
                             primary = { true } 
                             label = "Apply Filters" 
                             onClick = { this.applyFilter.bind(this) }
                             style = {{
-                                width: "130px"
+                                width: "110px"
+                            }}
+                            buttonStyle = {{
+								height: '25px',
+								lineHeight: '25px',
+								backgroundColor: this.props.settings.overviewButtonsColor.background
+							}} 
+							labelStyle = {{
+								fontSize: '12px',
+								color: this.props.settings.overviewButtonsColor.text,
+                                paddingLeft: "0px",
+                                paddingRight: "0px"
+							}}
+							overlayStyle = {{
+								height: '25px',
+								lineHeight: '25px'
+							}}
+					/>
+                    </Flex>
+
+                    <Flex flex = "20" style = {{ margin: "-5px -6px 0px 41px" }}>
+                        <RaisedButton 
+                            primary = { true } 
+                            label = "Statistics" 
+                            onClick = { () => this.handleOpenClose('statistics', true) }
+                            style = {{
+                                width: "110px"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -533,6 +626,55 @@ class TopView extends Component {
                     </Flex>
                     
                 </Flex>
+
+                <Dialog
+                    title = "Statistics"
+                    actions = {
+                        [
+                            <FlatButton
+                                label = "Apply"
+                                primary = { true }
+                                onClick = { () => this.onApplyStatistics(this) }
+                                style = {{ color: this.props.settings.saveModalColor.saveButton }}
+                            />,
+                            <FlatButton
+                                label = "Cancel"
+                                primary = { true }
+                                onClick = { () => this.handleOpenClose('statistics', false) }
+                                style = {{ color: this.props.settings.saveModalColor.cancelButton }}
+                            />
+                        ]
+                    } 
+                    modal = { true }
+                    open = { this.state.statisticsModalOpen }
+                    bodyStyle = {{
+                        overflowY: "visible"
+                    }}
+                >
+
+                    <b>Select which columns to monitor:</b> <br />
+                    <Select 
+                        multi 
+                        simpleValue
+                        value = { this.state.statisticColSelectValues } 
+                        placeholder = "Select your column(s)" 
+                        options = { statisticColSelectItems } 
+                        onChange = { this.onSelectStatisticColChange.bind(this) } 
+                    />
+
+                    <br />
+                    <br />
+
+                    <b>Select which statistics to apply:</b> <br />
+                    <Select 
+                        multi 
+                        simpleValue
+                        value = { this.state.statisticStatSelectValues } 
+                        placeholder = "Select your statistic(s)" 
+                        options = { statisticStatSelectItems } 
+                        onChange = { this.onSelectStatisticStatChange.bind(this) } 
+                    />
+                </Dialog>
                 
                 {/* Row 4 */}
                 <Flex layout = "row" style = {{ height:'10%' }}>
@@ -561,8 +703,6 @@ class TopView extends Component {
                     />
 
                 </Flex>
-                
-                
             </Flex>
 		);
 	}
@@ -587,10 +727,19 @@ class TopView extends Component {
     };
 }
 
+
+export const updateStatistics = (colList, statList, visibility) => ({
+    type: 'UPDATE_STATISTICS',
+    colList,
+    statList,
+    visibility
+});
+
 const mapStateToProps = function(state){
   return {
     GLOBALSTORE: state.filterState,
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    statisticDisplay: state.filterState.Statistics.display
   }
 };
 
