@@ -22,8 +22,10 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import MenuItem from 'material-ui/MenuItem';
 import StatisticModal from './StatisticModal.js'
 import AnnouncementDialog from './AnnouncementDialog.js'
+import Rnd from 'react-rnd';
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
+import './statisticModal.css';
 
 injectTapEventPlugin();
 
@@ -40,6 +42,7 @@ class TopNav extends Component {
         overlapFilterNav: true,
         iframeWidthNonOverlap: 0,
 		fullScreenMode: false,
+        legendDisplay: true,
         topNavHeight: 0,
         userProfileMenuOpen:false,
         userInfoAnchorEl: {},
@@ -244,6 +247,15 @@ class TopNav extends Component {
 			this.setState({fullScreenMode: false});
 		}
 		
+    }
+
+    toggleLegend(evt){
+		if (this.state.legendDisplay) {
+            this.setState({legendDisplay: false});
+        }
+        else {
+            this.setState({legendDisplay: true});
+        }
     }
     
     /**
@@ -527,6 +539,39 @@ class TopNav extends Component {
 
                                 <StatisticModal />
 
+                                 <Rnd
+                                    default = {{
+                                        x: 10,
+                                        y: 10,
+                                        width: 324,
+                                        height: 236,
+                                    }}
+                                    enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+                                    style = {{
+                                        display: ( this.state.legendDisplay ? "block" : "none" )
+                                    }}
+                                    bounds = "parent"
+                                >
+                                    <div className = "statisticsBox" style = {{ height: "inherit" }}>
+
+                                        <div style = {{ backgroundColor: this.props.settings.statisticsDragColor.topBar, height: "26px", color: "#ffffff", borderTopRightRadius: "5px", borderTopLeftRadius: "5px" }} >
+                                            <label style = {{ margin: "6px 0px 0px 5px", float: "left" }} > LEGEND </label>
+                                            <FontIcon 
+                                                className = "fa fa-window-close cursorHand" 
+                                                style = {{ color: "#ffffff",  fontSize: "21px", margin: "2px 0px 0px 0px", float: "right", paddingRight: "2px" }} 
+                                                onClick = { () => this.setState({legendDisplay: false}) } 
+                                            />
+                                        </div>
+                                        <table style = {{ verticalAlign: "middle", textAlign: "center" }} >
+                                            <tr>
+                                                <img src = "./Res/Img/SampleLegend.png" style = {{ width: '320px' }} alt = "Legend" className = "legendImage" />
+                                            </tr>
+                                        </table>
+
+                                        
+                                    </div>
+                                </Rnd>
+
                                 <iframe 
                                     id="GlyphViewer" 
                                     onLoad={this.onLoadGlyphView.bind(this)} 
@@ -567,9 +612,10 @@ class TopNav extends Component {
                             
                             <FloatingActionButton 
                                 backgroundColor= {this.props.settings.overviewButtonsColor.background}
-                               style={styles.floatingMiniStyles} 
+                                style={styles.floatingMiniStyles} 
                                 className="toggleOptionsMenuItems"
                                 mini={true}
+                                onClick={this.toggleLegend.bind(this)}
                             >
 							{/*//fa-eye-slash(for the alternate toggle icon) */}
                                 <i className = "fa fa-eye" style = {{ fontSize: '1rem', color: this.props.settings.collapsibleColor.mainIcon }} />

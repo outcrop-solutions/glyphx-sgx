@@ -2,6 +2,14 @@ nav ul a {
     height: 64px;
 }
 
+.legendImage {
+
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
 
 
 .sidenavbar::-webkit-scrollbar-track
