@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import TextField from 'material-ui/TextField';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
 import SearchBox from './SearchBox.js';
-import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import './General.css'
 

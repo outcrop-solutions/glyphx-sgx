@@ -7,17 +7,16 @@ import {Flex} from 'react-flex-material';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import FilterViewForm from './filterView.js';
-import FilterNavTabs from './FilterNavTabs.js';
+import FilterViewForm from './FilterSummaryView.js';
 import Select from 'react-select';
 import { connect } from 'react-redux';
-import './filterNav.css';
+import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
 
 /**
- * 
+ * This is the top view of the filter side bar that you see on the right side.
  */
-class TopView extends Component {
+class FilterSideBarTopView extends Component {
 	
 	constructor(props) {
         super(props);
@@ -94,7 +93,10 @@ class TopView extends Component {
 
 	
 	/**
-     * 
+     * This function can be used to open close the dialog boxes.
+     * @param {string} strName: This is the value for the switch statement.
+     * @param {bool} open: whether the menu/dialog should be opened or closed.
+     * @param {obj} evt: the event object.
      */
     handleOpenClose = (strName,open,evt) =>{
         switch (strName){
@@ -512,7 +514,6 @@ class TopView extends Component {
                                 
                 {/* Row 2 */}
                 <Flex layout = "row" style = {{ height:'65%',marginBottom: '5px' }}>
-                    {/* <FilterNavTabs scrollToElement = {this.props.initParams.scrollToElement} /> */}
                     <FilterViewForm ref = 'filterSummaryView' onScroll = { (element, elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
                 </Flex>
                 
@@ -678,20 +679,6 @@ class TopView extends Component {
                 
                 {/* Row 4 */}
                 <Flex layout = "row" style = {{ height:'10%' }}>
-                    {/*<SelectField
-                        value = { this.state.tableSelectValues }
-                        onChange = { this.onSelectTableChange }
-                        style = {this.selectStyle.style}
-                        hintText = "Select Table"
-                        multiple = { true }
-                        hintStyle = {this.selectStyle.hintStyle}
-                        iconStyle = {this.selectStyle.iconStyle}
-                        underlineStyle = {this.selectStyle.underlineStyle}
-                        selectedMenuItemStyle = {this.selectStyle.selectedMenuItemStyle}
-                    >
-                        {tableSelectItems}
-                    </SelectField>*/}
-
                     <Select 
                         multi 
                         className = "selectTableName"
@@ -706,25 +693,6 @@ class TopView extends Component {
             </Flex>
 		);
 	}
-
-    selectStyle ={
-        style : {
-            width:"100%", fontSize:'13px', maxHeight:'30px', border:'1px solid #aaaaaa',borderRadius:'5px'
-        },
-        hintStyle : { 
-            color: this.props.settings.tableSelectColor.text ,
-            bottom: '3px'
-        },
-        iconStyle : { 
-            fill: this.props.settings.tableSelectColor.text, height: '30px',padding: '0px'
-        },
-        underlineStyle : { 
-            borderColor: this.props.settings.tableSelectColor.text, display:'none', 
-        },
-        selectedMenuItemStyle : { 
-            backgroundColor: this.props.settings.tableSelectColor.selectedBackground, color: this.props.settings.tableSelectColor.selectedText
-        }
-    };
 }
 
 
@@ -743,4 +711,4 @@ const mapStateToProps = function(state){
   }
 };
 
-export default connect(mapStateToProps)(TopView);
+export default connect(mapStateToProps)(FilterSideBarTopView);

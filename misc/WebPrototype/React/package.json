@@ -25,7 +25,8 @@
     "rc-tooltip": "3.4.6",
     "react-select": "1.0.0-rc.5",
     "scroll-into-view-if-needed": "1.1.0",
-    "react-rnd": "5.0.9"
+    "react-rnd": "5.0.9",
+    "react-router-dom":"4.1.2"
   },
   "scripts": {
     "start": "react-scripts start",

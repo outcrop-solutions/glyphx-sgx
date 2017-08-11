@@ -15,8 +15,6 @@ class AnnouncementDialog extends Component {
 	constructor(props){
 		super(props);
 		
-		var displayText = "Notifications will disappear after 1 week.";
-		//var displayText = "";
 		var serverResponse = this.checkForAnnouncements();
 
 		this.state = {
@@ -131,6 +129,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the Announcements Dialog component to the redux store
  **/
 export default connect(mapStateToProps,null,null,{withRef:true})(AnnouncementDialog);
