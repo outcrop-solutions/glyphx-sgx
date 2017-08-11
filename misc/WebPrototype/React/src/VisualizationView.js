@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Flex } from 'react-flex-material';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import FilterNav from './filterNav';
+import FilterSideBar from './FilterSideBar.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
 import StatisticModal from './StatisticModal.js'
@@ -136,7 +136,7 @@ class VisualizationView extends React.Component {
                                 <TopNavBar glyphWindowWidth = { this.state.glyphWindowWidth } />
 								
                                 <div id  = "filterNav" className = "sidenav" >
-                                    <FilterNav/>
+                                    <FilterSideBar/>
                                 </div>
 					
                             </div>

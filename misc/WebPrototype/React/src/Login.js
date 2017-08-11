@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import Dialog from 'material-ui/Dialog';
 import { connect } from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -135,6 +134,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the Login component to the redux store
  **/
 export default connect(mapStateToProps,null,null,{withRef:true})(Login);

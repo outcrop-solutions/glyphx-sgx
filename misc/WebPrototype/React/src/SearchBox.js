@@ -24,7 +24,7 @@ class SearchBox extends Component {
             textFieldValue: innerTF.value
         });
 
-        if(typeof this.props.onTextFieldValueChange == "function")
+        if(typeof this.props.onTextFieldValueChange === "function")
             this.props.onTextFieldValueChange(evt,this.props.pinned);
     }
 
@@ -50,7 +50,6 @@ class SearchBox extends Component {
                     align="space-between center" 
                 >
                     <TextField
-                        type = "text" 
                         id = {this.props.id}
                         type="search"
                         ref = "SearchTextField"

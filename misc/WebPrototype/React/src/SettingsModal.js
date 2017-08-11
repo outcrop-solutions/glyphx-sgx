@@ -47,8 +47,16 @@ class SettingsModal extends React.Component {
         this.props.dispatch(editSettings(this.state.themeTempSelection, (this.state.overlapTempSelection === 0 ? false : true), false));
 
         var gv = document.getElementById('GlyphViewerContainer');
+        var filterNav = document.getElementById("filterNav");
+        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
+
         if (this.state.overlapTempSelection === 0) {
-            gv.style.width = this.props.glyphWindowWidth + "px";
+            if (filterNavOpen) {
+                gv.style.width = this.props.glyphWindowWidth + "px";
+            }
+            else {
+                gv.style.width = "100%";
+            }   
         }
         else {
             gv.style.width = "100%";
