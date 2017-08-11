@@ -217,7 +217,7 @@ class FilterViewRow extends React.Component {
                         <FontIcon
                             onClick = { this.onDelEvent.bind(this) }
                             className = "fa fa-trash cursorHand"
-                            hoverColor = { this.props.settings.filterOverviewColor.deleteHover }
+                            hoverColor = { this.props.settings.colors.filterOverviewColor.deleteHover }
                         />
                     </Flex>
 
@@ -228,12 +228,12 @@ class FilterViewRow extends React.Component {
                                     badgeContent = { this.props.view[4] }
                                     primary = { true }
                                     style = {{ padding: "0px 0px 0px 0px" }}
-                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.filterOverviewColor.badgeBackground, color: this.props.settings.filterOverviewColor.badgeText }}
+                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, color: this.props.settings.colors.filterOverviewColor.badgeText }}
                                     >
                                     <FontIcon
                                         onClick = { (evt) => this.onClickIcon(evt,this,true) }
                                         className = "fa fa-list-ul cursorHand"
-                                        hoverColor = { this.props.settings.filterOverviewColor.elasticHover }
+                                        hoverColor = { this.props.settings.colors.filterOverviewColor.elasticHover }
                                     />
                                 </Badge>
                             </Flex>
@@ -246,12 +246,12 @@ class FilterViewRow extends React.Component {
                                     badgeContent = { this.props.view[5] }
                                     primary = { true }
                                     style = {{ padding: "0px 0px 0px 0px" }}
-                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.filterOverviewColor.badgeBackground, color: this.props.settings.filterOverviewColor.badgeText }}
+                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, color: this.props.settings.colors.filterOverviewColor.badgeText }}
                                     >
                                     <FontIcon
                                         onClick = { (evt) => this.onClickIcon(evt,this,false) }
                                         className = "fa fa-sliders cursorHand"
-                                        hoverColor = { this.props.settings.filterOverviewColor.rangeHover }
+                                        hoverColor = { this.props.settings.colors.filterOverviewColor.rangeHover }
                                     />
                                 </Badge>
                             </Flex>

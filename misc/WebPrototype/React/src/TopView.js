@@ -448,11 +448,11 @@ class TopView extends Component {
 								buttonStyle = {{
 									height: '35px',
 									lineHeight: '35px',
-									backgroundColor: this.props.settings.overviewButtonsColor.background
+									backgroundColor: this.props.settings.colors.overviewButtonsColor.background
 								}} 
 								labelStyle = {{
 									fontSize: '13px',
-									color: this.props.settings.overviewButtonsColor.text
+									color: this.props.settings.colors.overviewButtonsColor.text
 								}}
 								overlayStyle = {{
 									height: '35px',
@@ -482,13 +482,13 @@ class TopView extends Component {
                                             label = "Save"
                                             primary = { true }
                                             onClick = { () => this.onSaveDialog(this) }
-                                            style = {{ color: this.props.settings.saveModalColor.saveButton }}
+                                            style = {{ color: this.props.settings.colors.saveModalColor.saveButton }}
                                         />,
                                         <FlatButton
                                             label = "Cancel"
                                             primary = { true }
                                             onClick = { () => this.handleOpenClose('save', false) }
-                                            style = {{ color: this.props.settings.saveModalColor.cancelButton }}
+                                            style = {{ color: this.props.settings.colors.saveModalColor.cancelButton }}
                                         />
                                     ]
                                 } 
@@ -500,8 +500,8 @@ class TopView extends Component {
                                     id = "tf_viewName" 
                                     errorText = { this.state.viewNameTextFieldError } 
                                     floatingLabelText = "View Name" 
-                                    underlineFocusStyle = {{ borderColor: this.props.settings.saveModalColor.textFieldUnderline }}
-                                    floatingLabelStyle = {{ color: this.props.settings.saveModalColor.textFieldUnderline }}
+                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.saveModalColor.textFieldUnderline }}
+                                    floatingLabelStyle = {{ color: this.props.settings.colors.saveModalColor.textFieldUnderline }}
                                 /> <br />
                                 <label id = "lbl_saveError" hidden style = {{ color:'red' }}> Error! A view with the same name already exists! Please provide a different name! </label>
                             </Dialog>
@@ -527,11 +527,11 @@ class TopView extends Component {
                             buttonStyle = {{
 								height: '25px',
 								lineHeight: '25px',
-								backgroundColor: this.props.settings.overviewButtonsColor.background
+								backgroundColor: this.props.settings.colors.overviewButtonsColor.background
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
-								color: this.props.settings.overviewButtonsColor.text,
+								color: this.props.settings.colors.overviewButtonsColor.text,
                                 margin: "0px 0px 0px -3px",
                                 paddingLeft: "0px",
                                 paddingRight: "0px"
@@ -555,11 +555,11 @@ class TopView extends Component {
                             buttonStyle = {{
 								height: '25px',
 								lineHeight: '25px',
-								backgroundColor: this.props.settings.overviewButtonsColor.background
+								backgroundColor: this.props.settings.colors.overviewButtonsColor.background
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
-								color: this.props.settings.overviewButtonsColor.text
+								color: this.props.settings.colors.overviewButtonsColor.text
 							}}
 							overlayStyle = {{
 								height: '25px',
@@ -586,11 +586,11 @@ class TopView extends Component {
                             buttonStyle = {{
 								height: '25px',
 								lineHeight: '25px',
-								backgroundColor: this.props.settings.overviewButtonsColor.background
+								backgroundColor: this.props.settings.colors.overviewButtonsColor.background
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
-								color: this.props.settings.overviewButtonsColor.text,
+								color: this.props.settings.colors.overviewButtonsColor.text,
                                 paddingLeft: "0px",
                                 paddingRight: "0px"
 							}}
@@ -612,11 +612,11 @@ class TopView extends Component {
                             buttonStyle = {{
 								height: '25px',
 								lineHeight: '25px',
-								backgroundColor: this.props.settings.overviewButtonsColor.background
+								backgroundColor: this.props.settings.colors.overviewButtonsColor.background
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
-								color: this.props.settings.overviewButtonsColor.text
+								color: this.props.settings.colors.overviewButtonsColor.text
 							}}
 							overlayStyle = {{
 								height: '25px',
@@ -635,13 +635,13 @@ class TopView extends Component {
                                 label = "Apply"
                                 primary = { true }
                                 onClick = { () => this.onApplyStatistics(this) }
-                                style = {{ color: this.props.settings.saveModalColor.saveButton }}
+                                style = {{ color: this.props.settings.colors.saveModalColor.saveButton }}
                             />,
                             <FlatButton
                                 label = "Cancel"
                                 primary = { true }
                                 onClick = { () => this.handleOpenClose('statistics', false) }
-                                style = {{ color: this.props.settings.saveModalColor.cancelButton }}
+                                style = {{ color: this.props.settings.colors.saveModalColor.cancelButton }}
                             />
                         ]
                     } 
@@ -712,34 +712,33 @@ class TopView extends Component {
             width:"100%", fontSize:'13px', maxHeight:'30px', border:'1px solid #aaaaaa',borderRadius:'5px'
         },
         hintStyle : { 
-            color: this.props.settings.tableSelectColor.text ,
+            color: this.props.settings.colors.tableSelectColor.text ,
             bottom: '3px'
         },
         iconStyle : { 
-            fill: this.props.settings.tableSelectColor.text, height: '30px',padding: '0px'
+            fill: this.props.settings.colors.tableSelectColor.text, height: '30px',padding: '0px'
         },
         underlineStyle : { 
-            borderColor: this.props.settings.tableSelectColor.text, display:'none', 
+            borderColor: this.props.settings.colors.tableSelectColor.text, display:'none', 
         },
         selectedMenuItemStyle : { 
-            backgroundColor: this.props.settings.tableSelectColor.selectedBackground, color: this.props.settings.tableSelectColor.selectedText
+            backgroundColor: this.props.settings.colors.tableSelectColor.selectedBackground, color: this.props.settings.colors.tableSelectColor.selectedText
         }
     };
 }
 
 
-export const updateStatistics = (colList, statList, visibility) => ({
+export const updateStatistics = (colList, statList, display) => ({
     type: 'UPDATE_STATISTICS',
     colList,
     statList,
-    visibility
+    display
 });
 
 const mapStateToProps = function(state){
   return {
-    GLOBALSTORE: state.filterState,
     settings: state.filterState.Settings,
-    statisticDisplay: state.filterState.Statistics.display
+    statisticDisplay: state.filterState.ModalDisplay.statisticsModal
   }
 };
 

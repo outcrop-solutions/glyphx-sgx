@@ -51,8 +51,8 @@ class FilterNav extends Component {
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
         for (var i = 0; i < collapsibles.length; i++) {
-            collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.collapsibleColor.mainText);
-            collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.collapsibleColor.subText);
+            collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
+            collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
         }
     };
 
@@ -164,7 +164,7 @@ class FilterNav extends Component {
                                     style={{
                                         paddingLeft: '10px',
                                         fontSize: '1rem',
-                                        color: this.props.settings.collapsibleColor.subText
+                                        color: this.props.settings.colors.collapsibleColor.subText
                                     }}
                                 >
                                     {displayName}
@@ -213,7 +213,7 @@ class FilterNav extends Component {
                                         style = {{
                                             paddingLeft: '10px',
                                             fontSize: '1rem',
-                                            color: this.props.settings.collapsibleColor.subText
+                                            color: this.props.settings.colors.collapsibleColor.subText
                                         }}
                                     >
                                         {displayName}
@@ -257,25 +257,25 @@ class FilterNav extends Component {
 		// Add the <style> element to the page
 		document.head.appendChild(style);
 		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
-		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.collapsibleColor.mainCollapsed + '; }', 1);
-		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.collapsibleColor.mainHover + '; }', 2);
-		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.collapsibleColor.unpinned + '!important; }', 3);
-		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.collapsibleColor.pinned + '!important; }', 4);
-		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.collapsibleColor.subBackground + '!important; }', 5);
-		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.collapsibleColor.subCollapsed + '!important; }', 6);
-		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.collapsibleColor.subHover + '!important; }', 7);
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
+		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
+		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
+		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
+		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
+		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; }', 6);
+		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
 		
 		// For the selectboxes  
-		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.tableSelectColor.text + ' !important; }', 8);
-		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.tableSelectColor.text + ' transparent transparent !important; }', 9);
-        style.sheet.insertRule('.Select-control { background-color: ' + this.props.settings.tableSelectColor.background + '!important; }', 10);
-		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
-		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.tableSelectColor.selectedText +'}', 12);
-		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.tableSelectColor.background + '!important; color: ' +  this.props.settings.tableSelectColor.text + '}', 13);
-        style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px;}', 14);
-		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.tableSelectColor.deleteHover + ' !important; padding: 0px 3px 0px 3px; margin: 1px 0px 0px 0px; font-size: 18px;}', 15);
-        style.sheet.insertRule('.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus { color: ' + this.props.settings.tableSelectColor.deleteHover + '!important; }', 16); 
+		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
+		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 9);
+        style.sheet.insertRule('.Select-control { background-color: ' + this.props.settings.colors.tableSelectColor.background + '!important; }', 10);
+		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
+		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
+		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 13);
+        style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.colors.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px;}', 14);
+		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.colors.tableSelectColor.deleteHover + ' !important; padding: 0px 3px 0px 3px; margin: 1px 0px 0px 0px; font-size: 18px;}', 15);
+        style.sheet.insertRule('.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus { color: ' + this.props.settings.colors.tableSelectColor.deleteHover + '!important; }', 16); 
 
             
 	}
@@ -646,10 +646,10 @@ class FilterNav extends Component {
                                         ref="pinnedCollapisbleSearchBox"
                                         hintText="Search For Column"
                                         settings={{
-                                            SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
-                                            searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
-                                            overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
-                                            overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
+                                            SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+                                            searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
+                                            overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
+                                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text
                                         }}
                                         onTextFieldValueChange= {(evt,pinned) => this.searchMultipleColumns(evt,pinned)}
                                         onCollapseAllClick={(evt,pinned) => this.collapseAll(evt,pinned)}
@@ -704,7 +704,7 @@ class FilterNav extends Component {
                         fullWidth = { true } 
                         primary = { true } 
                         onClick = { this.toggleTopView.bind(this) }
-                        buttonStyle = {{ backgroundColor: this.props.settings.hideTopViewButtonColor.background, width: "448px" }}
+                        buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
                         style = {{ height: '20px', margin: "0px 0px 1px 1px" }}
                     >
                         <i 
@@ -712,7 +712,7 @@ class FilterNav extends Component {
                             className = "fa fa-caret-up" 
                             style = {{
                                 fontSize: '1.6em',
-                                color: this.props.settings.hideTopViewButtonColor.icon,
+                                color: this.props.settings.colors.hideTopViewButtonColor.icon,
                                 transition: 'transform 500ms'
                             }}
                         /> 
@@ -736,12 +736,12 @@ class FilterNav extends Component {
                                 handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'pinnedCollapisble') }
                                 trigger = {
                                     <div>
-                                        <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                                        <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                                         <span 
                                             style={{
                                                 paddingLeft: '10px',
                                                 fontSize: '1rem',
-                                                color: this.props.settings.collapsibleColor.mainText
+                                                color: this.props.settings.colors.collapsibleColor.mainText
                                             }}
                                         >
                                             Pinned
@@ -758,13 +758,13 @@ class FilterNav extends Component {
                                                 label = "Ok"
                                                 primary = { true }
                                                 onClick = { () => this.onPinnedOkDailog(this) }
-                                                style = {{ color: this.props.settings.pinFilterColor.okButton }}
+                                                style = {{ color: this.props.settings.colors.pinFilterColor.okButton }}
                                             />,
                                             <FlatButton
                                                 label = "Cancel"
                                                 primary = { true }
                                                 onClick = { () => this.handleOpenClose('pin',false,{'cancel':true}) }
-                                                style = {{ color: this.props.settings.pinFilterColor.cancelButton }}
+                                                style = {{ color: this.props.settings.colors.pinFilterColor.cancelButton }}
                                             />
                                         ]
                                     }
@@ -800,11 +800,11 @@ class FilterNav extends Component {
                                         buttonStyle={{
                                             height: '28px',
                                             lineHeight: '28px',
-                                            backgroundColor: this.props.settings.overviewButtonsColor.background
+                                            backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                         }} 
                                         labelStyle= {{
                                             fontSize: '13px',
-                                            color: this.props.settings.overviewButtonsColor.text
+                                            color: this.props.settings.colors.overviewButtonsColor.text
                                         }}
                                         overlayStyle = {{
                                             height: '28px',
@@ -815,7 +815,7 @@ class FilterNav extends Component {
                                             <FontIcon
                                                 className = "fa fa-plus"
                                                 style = {{ 
-                                                    color: this.props.settings.overviewButtonsColor.text,
+                                                    color: this.props.settings.colors.overviewButtonsColor.text,
                                                     fontSize: "20px",
                                                     margin: "0px 0px 1px 14px"
                                                 }}
@@ -840,12 +840,12 @@ class FilterNav extends Component {
                                 handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'filterCollapisble') }
                                 trigger = {
                                     <div>
-                                        <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.collapsibleColor.mainIcon }} />
+                                        <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                                         <span 
                                             style = {{
                                                 paddingLeft: '10px',
                                                 fontSize: '1rem',
-                                                color: this.props.settings.collapsibleColor.mainText
+                                                color: this.props.settings.colors.collapsibleColor.mainText
                                             }}
                                         >
                                             Filters
@@ -857,10 +857,10 @@ class FilterNav extends Component {
                                 <div style = {{ margin: "1px -3px -6px 1px" }} >
                                     <SearchBox 
                                         settings = {{
-                                            SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
-                                            searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
-                                            overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
-                                            overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
+                                            SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+                                            searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
+                                            overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
+                                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text
                                         }}
                                         hintText = "Search For Column"
                                         ref = "filterCollapisbleSearchBox"

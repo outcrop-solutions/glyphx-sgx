@@ -76,13 +76,13 @@ class FilterTabs extends React.Component {
                         label = "Elastic" 
                         value = { 0 }
                         icon = { <FontIcon className="fa fa-list-ul" ></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.filterTabColor.tabBackground, color: this.props.settings.filterTabColor.titleText} }
+                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
                     />
                     <Tab 
                         label = "Range" 
                         value = { 1 }
                         icon = { <FontIcon className="fa fa-sliders"></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.filterTabColor.tabBackground, color: this.props.settings.filterTabColor.titleText} }
+                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
                     />
                 </Tabs>
 

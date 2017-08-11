@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TopNav from './topNav';
+import VisualizationView from './VisualizationView';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import themeSettingColors from './ColorThemes.js';
@@ -12,13 +12,24 @@ import './General.css';
  **/
 const initialFilterState = {
     Filter: {},
-    Settings: themeSettingColors[0],
-    UserInfo: {},
+    Settings: { 
+        colors: themeSettingColors[0],
+        sideBarOverlap: false,
+    },
+    ModalDisplay: {
+        settingsModal: false,
+        statisticsModal: false,
+        AnnouncementsModal: false,
+        legendModal: true,
+    },
+    UserInfo: {
+        firstName: "Mark",
+        lastName: "Sloan"
+    },
     Statistics: { 
-        display: false,
         colList: "",
         statList: ""
-    }
+    },
 };
 
 
@@ -28,7 +39,7 @@ const initialFilterState = {
  * @param action: The action that called for a change on the store
  **/
 const filterReducer = function(state = initialFilterState, action) {
-    var stateVal, previousRange, selected, i;
+    var stateVal, previousRange, selected, display, i;
     
     switch (action.type) {
         /**
@@ -204,7 +215,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             // Determines if selected values should be recalculated
             if (previousRange[3] || action.applied) {
-                if (action.selectType != undefined) {
+                if (action.selectType !== undefined) {
                     selected = calcSelectedRemoved(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
                 }
                 else if (action.applied === false) {
@@ -367,10 +378,33 @@ const filterReducer = function(state = initialFilterState, action) {
          * Changes the color theme
          * @param action.theme: theme to change to
          **/
-        case 'EDIT_THEME':
+        case 'EDIT_SETTINGS':
+
+            display = state.ModalDisplay.settingsModal;
+            var overlap = state.Settings.sideBarOverlap;
+            var colors = state.Settings.colors;
+
+            if (action.display != null) {
+                display = action.display
+            }
+            if (action.overlap != null) {
+                overlap = action.overlap
+            }
+            if (action.theme != null) {
+                colors = themeSettingColors[action.theme]
+            }
+
             return { 
                 ...state,
-                Settings: themeSettingColors[action.theme]
+                Settings: {
+                    ...state.Settings,
+                    colors: colors,
+                    sideBarOverlap: overlap
+                },
+                ModalDisplay: {
+                    ...state.Settings,
+                    settingsModal: display
+                }
             };
 
         case 'SAVE_USER_INFO':
@@ -381,12 +415,12 @@ const filterReducer = function(state = initialFilterState, action) {
 
         case 'UPDATE_STATISTICS':
 
-            var display = state.Statistics.display;
+            display = state.ModalDisplay.statisticsModal;
             var colList = state.Statistics.colList.slice();
             var statList = state.Statistics.statList.slice();
 
-            if (action.visibility != null) {
-                display = action.visibility
+            if (action.display != null) {
+                display = action.display
             }
             if (action.colList != null) {
                 colList = action.colList
@@ -398,12 +432,50 @@ const filterReducer = function(state = initialFilterState, action) {
             return { 
                 ...state,
                 Statistics: {
-                    ...state.Filter,
-                    display: display,
+                    ...state.Statistics,
                     colList: colList,
                     statList: statList,
+                },
+                ModalDisplay: {
+                    ...state.ModalDisplay,
+                    statisticsModal: display
                 }
             };
+
+        case 'EDIT_MODAL_DISPLAY':
+
+            var settingsDisplay = state.ModalDisplay.settingsModal;
+            var statisticsDisplay = state.ModalDisplay.statisticsModal;
+            var announcementsDisplay = state.ModalDisplay.announcementsModal;
+            var legendDisplay = state.ModalDisplay.legendModal;
+            
+            if (action.settingsModal === true || action.settingsModal === false) {
+                settingsDisplay = action.settingsModal;
+            }
+
+            if (action.statisticsModal === true || action.statisticsModal === false) {
+                statisticsDisplay = action.statisticsModal;
+            }
+
+            if (action.announcementsModal === true || action.announcementsModal === false) {
+                announcementsDisplay = action.announcementsModal;
+            }
+
+            if (action.legendModal === true || action.legendModal === false) {
+                legendDisplay = action.legendModal;
+            }
+
+
+            return { 
+                    ...state,
+                    ModalDisplay: {
+                        ...state.ModalDisplay,
+                        settingsModal: settingsDisplay,
+                        statisticsModal: statisticsDisplay,
+                        announcementsModal: announcementsDisplay,
+                        legendModal: legendDisplay
+                    }
+                };
 
 
         /**
@@ -476,7 +548,6 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
     }
 
     else if (rangeType === "Text") {
-        var foundRange = false;
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 if (previousRange && rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1] || rList[i][5] !== previousRange[5]) ) {
@@ -660,7 +731,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
  * @param selectedValues: list of currently selected values
  **/
 function calcSelectedRemoved(rList, rangeType, data, previousRange, selectedValues) {
-    var i, j, curNum, previousList, newList, index;
+    var i, curNum, previousList, newList, index;
     if (rangeType === "Number") {
 
         newList = calcSelectedNoPrevious(rList, rangeType, data);
@@ -720,4 +791,4 @@ let store = createStore(reducers);
 
 
 
-ReactDOM.render(<Provider store={store}><TopNav /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><VisualizationView /></Provider>, document.getElementById('root'));

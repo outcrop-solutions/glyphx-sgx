@@ -98,7 +98,7 @@ class TextRangeTable extends React.Component {
                             <FontIcon
                                 onClick = { this.handleAddEvent.bind(this) }
                                 className = "fa fa-plus cursorHand"
-                                hoverColor = { this.props.settings.rangeColor.addHover }
+                                hoverColor = { this.props.settings.colors.rangeColor.addHover }
                                 style = {{
                                     fontSize: "1.7rem",
                                     margin: "13px 0px 0px -9px"
@@ -377,7 +377,7 @@ class TextRangeRow extends React.Component {
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash cursorHand"
-                                hoverColor = { this.props.settings.rangeColor.deleteHover }
+                                hoverColor = { this.props.settings.colors.rangeColor.deleteHover }
                                 style = {{
                                     fontSize: "1.5rem",
                                     margin: "12px 0px 0px -6px"
@@ -389,8 +389,8 @@ class TextRangeRow extends React.Component {
                             <DropDownMenu 
                                 value = { this.state.value } 
                                 onChange = { this.promptSelectChange } 
-                                iconStyle = {{ fill: this.props.settings.rangeColor.text}}
-                                selectedMenuItemStyle = {{ backgroundColor: this.props.settings.rangeColor.selectedBackground, color: this.props.settings.rangeColor.selectedText}}
+                                iconStyle = {{ fill: this.props.settings.colors.rangeColor.text}}
+                                selectedMenuItemStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.selectedBackground, color: this.props.settings.colors.rangeColor.selectedText}}
                                 labelStyle = {{ margin: "2px -6px -3px -10px", paddingLeft: "0px" }}
                                 underlineStyle = {{ margin: "0px 34px 0px -11px", borderColor: "#d2d2d2" }} 
                                 menuStyle = {{ width: "185px" }}
@@ -420,7 +420,7 @@ class TextRangeRow extends React.Component {
                                                     value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
                                                     hintText = 'A'
                                                     style = { styleSet.textfieldStyles }
-                                                    underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline, margin: "0px 0px 0px -6px" }}
+                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline, margin: "0px 0px 0px -6px" }}
                                                     underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 0px -5px" }}
                                                     onChange = {
                                                         (e) => this.onSliderTextChange(e)
@@ -456,9 +456,9 @@ class TextRangeRow extends React.Component {
                                                     onAfterChange = {
                                                         (e) => this.onAfterSlide(e)
                                                     }
-                                                    trackStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderTrack }] }
+                                                    trackStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderTrack }] }
                                                     railStyle = {{ backgroundColor: "#d2d2d2" }}
-                                                    handleStyle = { [{ backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.rangeColor.sliderCircle, borderColor: this.props.settings.rangeColor.sliderCircle }] }
+                                                    handleStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }] }
                                                 />
                                             </Flex>
 
@@ -473,7 +473,7 @@ class TextRangeRow extends React.Component {
                                                     value = { this.state.max === "" ? "" : alphabet[this.state.max] }
                                                     hintText = 'Z'
                                                     style = { styleSet.textfieldStyles }
-                                                    underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
+                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
                                                     underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 0px -5px" }}
                                                     onChange = {
                                                         (e) => this.onSliderTextChange(e)
@@ -499,7 +499,7 @@ class TextRangeRow extends React.Component {
                                             style = {{
                                                 width: "150px"
                                             }}
-                                            underlineFocusStyle = {{ borderColor: this.props.settings.rangeColor.textFieldUnderline }}
+                                            underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
                                             underlineStyle = {{ borderColor: "#d2d2d2" }}
                                             hintText = "Letter or Phrase"
                                             hintStyle = {{ color: "#949494" }}
@@ -535,13 +535,13 @@ class TextRangeRow extends React.Component {
                                     margin: "0px",
                                     width: "84%"
                                 }}
-                                trackSwitchedStyle = {{ backgroundColor: this.props.settings.rangeColor.toggleTrack }}
+                                trackSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleTrack }}
                                 thumbStyle = {{
                                     height: "17px",
                                     width: "17px",
                                     top: "1px"
                                 }}
-                                thumbSwitchedStyle = {{ backgroundColor: this.props.settings.rangeColor.toggleCircle, left: "40%" }}
+                                thumbSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleCircle, left: "40%" }}
                             />
                         </Flex>
                     </Flex>

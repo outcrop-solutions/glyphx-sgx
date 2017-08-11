@@ -76,7 +76,7 @@ class Login extends Component {
                             label = "Login"
                             primary = { true }
                             onClick = { (evt) => this.authenticate(evt,this) }
-                            style = {{ color: this.props.settings.settingsModalColor.saveButton }}
+                            style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
                         />
                     ]
                 }

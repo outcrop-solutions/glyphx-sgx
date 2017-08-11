@@ -468,10 +468,10 @@ class FilterTable extends Component {
                         ref = "pinnedCollapisbleSearchBox"
                         hintText = "Search for value.." 
                         settings = {{
-                            SearchBoxClearHover: this.props.settings.pinFilterColor.SearchBoxClearHover, 
-                            searchBoxUnderline: this.props.settings.pinFilterColor.searchBoxUnderline,
-                            overviewButtonsColorBg: this.props.settings.overviewButtonsColor.background,
-                            overviewButtonsColorText: this.props.settings.overviewButtonsColor.text
+                            SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+                            searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
+                            overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
+                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text
                         }}
 
                         onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, internalColName, this.state.indexColumnToSearch) }
@@ -521,7 +521,7 @@ class FilterTable extends Component {
                                         id = { "cb-" + internalColName } 
                                         checked = { this.props.tableState[id].selectedValues.length == this.state.flatData.length } 
                                         onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
-                                        iconStyle = {{ fill: this.props.settings.elasticColor.checkAllBox }}
+                                        iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkAllBox }}
                                     />
                                 </TableHeaderColumn>
                                 
@@ -613,7 +613,7 @@ class FilterRow extends Component {
                 selected = { this.props.checked }
                 onClick = { this.onClickRow }
             >
-            <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.elasticColor.checkBox }}/></TableRowColumn>
+            <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}/></TableRowColumn>
             <TableRowColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
             <TableRowColumn style = {{ height:'inherit' }}>{this.props.percentStr}</TableRowColumn>
             </TableRow>
