@@ -9,19 +9,46 @@ class Login extends Component {
     constructor(props) {
         super(props);
 
-        this.state ={
-            openPassword: false,
+        this.state = {
+            openPassword: true,
             userName: null,
             firstName: null,
             lastName: null
         }
     }
+	
+	/**
+	 * This function shows the in app loadmask(cicular waiting).
+	 */
+    showLoadMask = () => {
+        document.getElementById("LoadMask").style.visibility = "visible";
+    };
 
-    showLoginForm = () => {
-         this.setState({
-            openPassword: true
-        });
+	
+	/**
+	 * This function hides the initial loadmask/splash screen.
+	 */
+    hideLoadMask = () => {
+        var lm = document.getElementById("ipl-progress-indicator");
+        if (lm) {
+            setTimeout(() => {
+                document.getElementById("ipl-progress-indicator").classList.add('available');
+                setTimeout(() => {
+                document.getElementById("ipl-progress-indicator").outerHTML = '';
+                }, 2000)
+            }, 1000)
+        }
+    };
+	
+
+	/**
+	 * This function is called right after the react component is mounted.
+	 * It decides whether to show the login form and calls the init().
+	 */
+    componentDidMount() {
+        this.hideLoadMask();
     }
+
 
     authenticate = (evt,context) => {
         var pass = "SynGlyphX2017!";
@@ -66,7 +93,7 @@ class Login extends Component {
     render() {
         return (
             <Dialog
-                id="pass"
+                id = "pass"
                 title = "Authentication"
                 ref = "PasswordDailog"
                 actions = {
@@ -79,8 +106,8 @@ class Login extends Component {
                         />
                     ]
                 }
-                overlayStyle={{backgroundColor: 'white'}}
-                contentStyle={{width:'25%', maxWidth: "none"}}
+                overlayStyle = {{ backgroundColor: 'white' }}
+                contentStyle = {{ width:'25%', maxWidth: "none" }}
                 modal = { true }
                 open = { this.state.openPassword }
             >
@@ -93,15 +120,15 @@ class Login extends Component {
                 </label> 
                 <input 
                     id = "PassText"
-                    type="password"
+                    type = "password"
                     //placeholder="Enter Password"
-                    style={{
+                    style = {{
                         height: '20px',
                         fontSize: '18px'
                     }}
                 />
                 <br/>
-                <label id="errPass" 
+                <label id = "errPass" 
                     hidden 
                     style = {{ 
                         color:'red',

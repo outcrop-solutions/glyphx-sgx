@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 import themeSettingColors from './ColorThemes.js';
 import {calcTextSelected,calcSelectedRemoved,calcSelected} from './CalculateSelectedHelper.js';
+import RedirectRouter from './Router.js';
 import './General.css';
 
 
@@ -502,5 +503,4 @@ const reducers = combineReducers({
 let store = createStore(reducers);
 
 
-
-ReactDOM.render(<Provider store={store}><VisualizationView /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><RedirectRouter /></Provider>, document.getElementById('root'));

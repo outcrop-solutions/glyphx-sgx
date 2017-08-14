@@ -14,6 +14,7 @@ import 'font-awesome/css/font-awesome.min.css';
 
 injectTapEventPlugin();
 
+
 class VisualizationView extends React.Component {
     
 
