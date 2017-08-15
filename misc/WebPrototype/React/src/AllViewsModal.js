@@ -63,10 +63,11 @@ class AllViewsModal extends React.Component {
 
                 <Collapsible 
                     transitionTime = {200} 
-                    contentOuterClassName = "cursorNormal"
+                    contentOuterClassName = "C-Size-1-body"
+                    triggerClassName = "C-Size-1"
+                    triggerOpenedClassName = "C-Size-1"
                     trigger = {
-                        <div>
-                            <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                        <div style = {{ margin: "-70px 0px 0px 114px" }} >
                             <span 
                                 style = {{
                                     paddingLeft: '10px',
@@ -74,13 +75,86 @@ class AllViewsModal extends React.Component {
                                     color: this.props.settings.colors.collapsibleColor.mainText
                                 }}
                             >
-                                Filters
+                                Marketing &amp; Recruiting
                             </span>
                         </div>
                     }
                 >
 
-                    HI
+                    <br /> <br /> HI
+                    
+                </Collapsible>
+
+
+                <Collapsible 
+                    transitionTime = {200} 
+                    contentOuterClassName = "C-Size-2-body"
+                    triggerClassName = "C-Size-2"
+                    triggerOpenedClassName = "C-Size-2"
+                    trigger = {
+                        <div style = {{ margin: "-70px 0px 0px 114px" }} >
+                            <span 
+                                style = {{
+                                    paddingLeft: '10px',
+                                    fontSize: '1rem',
+                                    color: this.props.settings.colors.collapsibleColor.mainText
+                                }}
+                            >
+                                Admissions
+                            </span>
+                        </div>
+                    }
+                >
+
+                    <br /> <br /> HI
+                    
+                </Collapsible>
+
+                <Collapsible 
+                    transitionTime = {200} 
+                    contentOuterClassName = "C-Size-3-body"
+                    triggerClassName = "C-Size-3"
+                    triggerOpenedClassName = "C-Size-3"
+                    trigger = {
+                        <div style = {{ margin: "-70px 0px 0px 114px" }} >
+                            <span 
+                                style = {{
+                                    paddingLeft: '10px',
+                                    fontSize: '1rem',
+                                    color: this.props.settings.colors.collapsibleColor.mainText
+                                }}
+                            >
+                                Financial Aid
+                            </span>
+                        </div>
+                    }
+                >
+
+                    <br /> <br /> HI
+                    
+                </Collapsible>
+
+                <Collapsible 
+                    transitionTime = {200} 
+                    contentOuterClassName = "C-Size-4-body"
+                    triggerClassName = "C-Size-4"
+                    triggerOpenedClassName = "C-Size-4"
+                    trigger = {
+                        <div style = {{ margin: "-70px 0px 0px 114px" }} >
+                            <span 
+                                style = {{
+                                    paddingLeft: '10px',
+                                    fontSize: '1rem',
+                                    color: this.props.settings.colors.collapsibleColor.mainText
+                                }}
+                            >
+                                Custom
+                            </span>
+                        </div>
+                    }
+                >
+
+                    <br /> <br /> HI
                     
                 </Collapsible>
                 
