@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Flex } from 'react-flex-material';
+import { Card, CardText } from 'material-ui/Card';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import FilterSideBar from './FilterSideBar.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -59,9 +60,97 @@ class HomePage extends React.Component {
     render() {
         return (
             <MuiThemeProvider>
-                <div style = {{ width:'100%', height:'100%' }}>
-					HI I AM THE HOME PAGE
-                </div>
+                    <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
+
+                        <Flex>
+                            <div style = {{ width:'100%', height:'56px' }}>
+                                <TopNavBar />
+                            </div>
+                        </Flex>
+
+                        <Flex style = {{ overflow: 'hidden', height: '15%', padding: "6px 6px 0px 6px" }}>
+                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
+                                <CardText
+                                    style = {{
+                                        padding: "0px"
+                                    }}
+                                >
+                                    <div style = {{ width: '100%', height: '100%' }} >
+                                        <div style = {{  width: "350px", margin: "0 auto" }}>
+                                            <h1 style = {{ margin: "0px 0px -10px 84px", paddingTop: "18px" }} > Welcome to </h1>
+                                            <img src = "./Res/Img/GlyphED.png" style = {{ width: '350px' }} alt = "GlyphEd"/>
+                                        </div>
+                                    </div>
+                                </CardText>
+                            </Card>
+                        </Flex>
+                        
+                        <Flex layout = "row" style = {{ width: '100%', height: '100%', padding: "6px" }}>
+                            <Flex flex = "33" style = {{ backgroundColor: "purple", height: "100%" }} >
+                                <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "2px",
+                                        }}
+                                    >
+                                        <div style = {{ width: '100%', height: '100%' }} >
+                                            User Feed goes here
+                                        </div>
+                                    </CardText>
+                                </Card>
+                            </Flex>
+
+                            <Flex flex = "66">
+                                <Flex style = {{  height: "15%", padding: "0px 0px 0px 6px" }} >
+                                    <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
+                                        <CardText
+                                            style = {{
+                                                padding: "0px",
+                                                height: "100%"
+                                            }}
+                                        >
+                                            <div style = {{ width: '100%', height: '100%' }} >
+                                                <div style = {{ width: "450px", margin: "0 auto" }}>
+                                                    <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "9px 0px 0px 0px" }} alt = "University Logo"/>
+                                                </div>
+                                            </div>
+                                        </CardText>
+                                    </Card>
+                                </Flex>
+
+                                <Flex layout = "row" style = {{ height: "85%", padding: "6px 0px 0px 6px" }} >
+                                    <Flex flex = "50" style = {{ padding: "0px 6px 0px 0px" }}>
+                                        <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
+                                            <CardText
+                                                style = {{
+                                                    padding: "2px",
+                                                }}
+                                            >
+                                                <div>
+                                                    Views go here
+                                                </div>
+                                            </CardText>
+                                        </Card>
+                                    </Flex>
+
+                                    <Flex flex = "50">
+                                        <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
+                                            <CardText
+                                                style = {{
+                                                    padding: "2px",
+                                                }}
+                                            >
+                                                <div>
+                                                    Contact Info and other stuff here
+                                                </div>
+                                            </CardText>
+                                        </Card>
+                                    </Flex>
+                                </Flex>
+                            </Flex>
+                        </Flex>
+
+                    </Flex>
           </MuiThemeProvider>
         );
     }
