@@ -1,7 +1,8 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './Login.js';
 import HomePage from './HomePage.js';
+import NotFoundPage from './NotFoundPage.js';
 import VisualizationView from './VisualizationView.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -9,42 +10,36 @@ const ApplicationRouter = () => (
   <Router>
     <MuiThemeProvider>
         <Switch>
-            <Route exact path = "/" component = { LoginForm } />          
+            <Route exact path = "/" component = { RedirectToLogin } />          
             <Route exact path = "/login" component = { LoginForm } />
             <Route exact path = "/home" component = { HomeView } />
-            <Route exact path = "/glyph-viewer" component = { VisualizationView } />
-            <Route path = "*" component = { NotFound } />
+            <Route exact path = "/glyph-viewer" component = { VisualizationWindow } />
+            <Route path = "*" component = { NotFoundPage } />
         </Switch>
     </MuiThemeProvider>
   </Router>
 );
 
+const RedirectToLogin = () => (
+  <Redirect to = "/login" />
+);
+
 const LoginForm = () => (
-  <div>
-    <Login
-        //doAfterLogin = { (prop) => this.doAfterLogin(prop) }
-    />
-  </div>
+  ( getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> )
 );
 
 const HomeView = () => (
-  <div>
-    <HomePage />
-  </div>
+  ( getLoggedInStatus() ? <HomePage /> : <Redirect to = "/login" /> )
 );
 
 const VisualizationWindow = () => (
-  <div>
-    <VisualizationView />
-  </div>
+  ( getLoggedInStatus() ? <VisualizationView /> : <Redirect to = "/login" /> )
 );
 
-const NotFound = () => (
-  <div>
-    4040404040404040404040404040404040404040404040404
-    <HomePage />
-    4040404040404040404040404040404040404040404040404
-  </div>
-);
+
+
+function getLoggedInStatus() {
+  return true;
+}
 
 export default ApplicationRouter;
