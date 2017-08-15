@@ -13,7 +13,7 @@ const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M
  * @param previousRange: range that was edited prior to edit
  * @param selectedValues: list of currently selected values
  **/
-function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
+export function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
     var i, j, curNum, previousList, newList, index;
     if (rangeType === "Number") {
         for (i = 0; i < rList.length; i++) {
@@ -115,7 +115,7 @@ function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
  * @param range: Single range [min, max, id, applied, selectType, text]
  * @param data: Data corresponding to the column
  **/
-function calcTextSelected(range, data) {
+export function calcTextSelected(range, data) {
     var selectedValues = [];
     var i, j, regx;
 
@@ -247,7 +247,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
  * @param previousRange: range that was edited prior to edit
  * @param selectedValues: list of currently selected values
  **/
-function calcSelectedRemoved(rList, rangeType, data, previousRange, selectedValues) {
+export function calcSelectedRemoved(rList, rangeType, data, previousRange, selectedValues) {
     var i, j, curNum, previousList, newList, index;
     if (rangeType === "Number") {
 

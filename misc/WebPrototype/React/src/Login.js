@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import { connect } from 'react-redux';
+import {makeServerCall} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -11,9 +12,6 @@ class Login extends Component {
 
         this.state = {
             openPassword: true,
-            userName: null,
-            firstName: null,
-            lastName: null
         }
     }
 	
@@ -51,30 +49,60 @@ class Login extends Component {
 
 
     authenticate = (evt,context) => {
-        var pass = "SynGlyphX2017!";
-        var userVal = document.getElementById('PassText').value;
-        var lblErr = document.getElementById('errPass');
-        lblErr.innerText="";
-        lblErr.hidden = true;
-        var info={
-            userName: "msloan",
-            firstName: "Mark",
-            lastName: "Sloan",
-            type: "Administrator",
-            product: "GlyphEd",
-            loggedInTime: new Date(),
-            idleTime: 0 // for future auto logout.
-        };
-
+        var username = document.getElementById('UserText').value;
+        var password = document.getElementById('PassText').value;
+        var url = 'login?username=' + username + "&password=" + password;
+        
+        var lblErrPass = document.getElementById('errPass');
+        lblErrPass.innerText="";
+        lblErrPass.hidden = true;
+        
+        var lblErrUser = document.getElementById('errUser');
+        lblErrUser.innerText="";
+        lblErrUser.hidden = true;
+        
         //server call to check user/pass and update state.
-        if(pass == userVal){
+        makeServerCall(url,context.onServerResponse,null);
+    }
+
+    onServerResponse = (Response,options) => {
+        var result; 
+        
+        try{
+            result = JSON.parse(Response);
+            result = result.result;
+        }
+        catch(e){
+            result = null;
+        }
+        
+        var lblErrPass = document.getElementById('errPass');
+        var lblErrUser = document.getElementById('errUser');
+
+        debugger;        
+        
+        if(result && result.status == 'success'){ 
             //save the details to store
-            this.saveUserInfo(info);
+            if(result.userInfo)
+                {
+                    /*info={
+                        userName: result.userInfo.UserName,
+                        firstName: result.userInfo.Fname,
+                        lastName: result.userInfo.Lname,
+                        type: result.userInfo.Type,
+                        product: result.userInfo.Product,
+                        loggedInTime: new Date(),
+                        idleTime: 0 // for future auto logout.
+                    };*/
+                    result.userInfo.loggedInTime = new Date();
+                    result.userInfo.idleTime = 0;
+                }
+            this.saveUserInfo(result.userInfo);
         }
         else{
             console.log('Error');
-            lblErr.hidden = false;
-            lblErr.innerText="Incorrect Password";
+            lblErrPass.hidden = false;
+            lblErrPass.innerText="Incorrect Password";
         }
     }
 
@@ -110,7 +138,34 @@ class Login extends Component {
                 contentStyle = {{ width:'25%', maxWidth: "none" }}
                 modal = { true }
                 open = { this.state.openPassword }
-            >
+            >   
+                {/*Username textfield*/}
+                <label  
+                    style = {{ 
+                        height: '20px',
+                        fontSize: '18px'
+                    }}
+                > Username:
+                </label> 
+                <input 
+                    id = "UserText"
+                    type = "text"
+                    style = {{
+                        height: '20px',
+                        fontSize: '18px'
+                    }}
+                />
+                <br/>
+                <label id = "errUser" 
+                    hidden 
+                    style = {{ 
+                        color:'red',
+                        height: '20px',
+                        fontSize: '18px'
+                    }}
+                />
+
+                {/*Password textfield*/}
                 <label  
                     style = {{ 
                         height: '20px',
