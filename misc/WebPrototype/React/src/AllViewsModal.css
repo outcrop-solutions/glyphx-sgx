@@ -1,0 +1,23 @@
+.Collapsible__trigger { 
+    -moz-transition: all .1s ease-in; 
+    -o-transition: all .1s ease-in; 
+    -webkit-transition: all .1s ease-in; 
+    display: block; 
+    font-weight: 400; 
+    text-decoration: none; 
+    color: #333333; 
+    position: relative; 
+    padding: 15px; 
+    background: yellow; 
+    color: white; 
+    font-size: 1rem; 
+    border-color: lightgray transparent; 
+    border-style: solid; 
+    border-width: 50px 25px 0 25px; 
+}
+.Collapsible__trigger.is-open { 
+    background: blue; 
+}
+.Collapsible__trigger:hover { 
+    background: green; 
+}

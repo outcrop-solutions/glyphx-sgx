@@ -23,6 +23,7 @@ const initialFilterState = {
         statisticsModal: false,
         AnnouncementsModal: false,
         legendModal: true,
+        allViewsModal: false
     },
     UserInfo: {
         firstName: "Mark",
@@ -450,6 +451,7 @@ const filterReducer = function(state = initialFilterState, action) {
             var statisticsDisplay = state.ModalDisplay.statisticsModal;
             var announcementsDisplay = state.ModalDisplay.announcementsModal;
             var legendDisplay = state.ModalDisplay.legendModal;
+            var allViewsDisplay = state.ModalDisplay.allViewsModal;
             
             if (action.settingsModal === true || action.settingsModal === false) {
                 settingsDisplay = action.settingsModal;
@@ -467,6 +469,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 legendDisplay = action.legendModal;
             }
 
+            if (action.allViewsModal === true || action.allViewsModal === false) {
+                allViewsDisplay = action.allViewsModal;
+            }
+
 
             return { 
                     ...state,
@@ -475,7 +481,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         settingsModal: settingsDisplay,
                         statisticsModal: statisticsDisplay,
                         announcementsModal: announcementsDisplay,
-                        legendModal: legendDisplay
+                        legendModal: legendDisplay,
+                        allViewsModal: allViewsDisplay
                     }
                 };
 

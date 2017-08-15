@@ -10,6 +10,7 @@ import StatisticModal from './StatisticModal.js'
 import TopNavBar from './TopNavBar.js';
 import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
+import ViewsManager from './ViewsManager.js';
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -63,12 +64,12 @@ class HomePage extends React.Component {
                     <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
 
                         <Flex>
-                            <div style = {{ width:'100%', height:'56px' }}>
+                            <div style = {{ height:'56px' }}>
                                 <TopNavBar />
                             </div>
                         </Flex>
 
-                        <Flex style = {{ overflow: 'hidden', height: '15%', padding: "6px 6px 0px 6px" }}>
+                        <Flex style = {{ overflow: 'hidden', height: '15%', padding: "10px 10px 0px 10px" }}>
                             <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
                                 <CardText
                                     style = {{
@@ -85,7 +86,7 @@ class HomePage extends React.Component {
                             </Card>
                         </Flex>
                         
-                        <Flex layout = "row" style = {{ width: '100%', height: '100%', padding: "6px" }}>
+                        <Flex layout = "row" style = {{ width: '100%', height: '100%', padding: "10px" }}>
                             <Flex flex = "33" style = {{ backgroundColor: "purple", height: "100%" }} >
                                 <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
                                     <CardText
@@ -101,7 +102,7 @@ class HomePage extends React.Component {
                             </Flex>
 
                             <Flex flex = "66">
-                                <Flex style = {{  height: "15%", padding: "0px 0px 0px 6px" }} >
+                                <Flex style = {{  height: "15%", padding: "0px 0px 0px 10px" }} >
                                     <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
                                         <CardText
                                             style = {{
@@ -118,31 +119,38 @@ class HomePage extends React.Component {
                                     </Card>
                                 </Flex>
 
-                                <Flex layout = "row" style = {{ height: "85%", padding: "6px 0px 0px 6px" }} >
-                                    <Flex flex = "50" style = {{ padding: "0px 6px 0px 0px" }}>
-                                        <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
+                                <Flex layout = "row" style = {{ height: "85%", padding: "10px 0px 0px 10px" }} >
+                                    <Flex flex = "50" style = {{ padding: "0px 10px 0px 0px" }}>
+                                        <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%" }} >
                                             <CardText
                                                 style = {{
-                                                    padding: "2px",
+                                                    padding: "8px",
                                                 }}
                                             >
                                                 <div>
-                                                    Views go here
+                                                    <ViewsManager />
                                                 </div>
                                             </CardText>
                                         </Card>
                                     </Flex>
 
                                     <Flex flex = "50">
-                                        <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
+                                        <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%" }} >
                                             <CardText
                                                 style = {{
-                                                    padding: "2px",
+                                                    padding: "8px",
                                                 }}
                                             >
-                                                <div>
-                                                    Contact Info and other stuff here
+                                                <div style = {{  textAlign: "justify", textJustify: "inter-word" }} >
+                                                    GlyphEd is a data visualization software designed to help the Enrollment Management Office benefit from the breadth 
+                                                    and depth of available Enrollment Management data. We welcome your interest and input on product direction.
                                                 </div>
+                                                    <br/>For <i style = {{ textDecoration: "underline" }} >Help &amp; Support</i>, please contact us at: <a href="mailto:Support@GlyphEd.co">Support@GlyphEd.co</a>
+
+                                                    <br/><br/>For <i style = {{ textDecoration: "underline" }} > Sales and Product Direction </i>, please contact us at: <a href="mailto:Mark@GlyphEd.co">Mark@GlyphEd.co</a>
+
+                                                    <br/><br/>If you prefer to call, we can be reached at: <i style = {{ textDecoration: "underline" }} > 571-733-9469</i>  (During normal business hours, Eastern Time).
+
                                             </CardText>
                                         </Card>
                                     </Flex>
