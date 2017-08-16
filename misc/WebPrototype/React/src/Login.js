@@ -1,50 +1,18 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import { connect } from 'react-redux';
-import {makeServerCall} from './ServerCallHelper.js';
+import {hideSplashScreen} from './LoadMaskHelper.js';
+import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import 'font-awesome/css/font-awesome.min.css';
 
 class Login extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            openPassword: true,
-        }
-    }
-	
-	/**
-	 * This function shows the in app loadmask(cicular waiting).
-	 */
-    showLoadMask = () => {
-        document.getElementById("LoadMask").style.visibility = "visible";
-    };
-
-	
-	/**
-	 * This function hides the initial loadmask/splash screen.
-	 */
-    hideLoadMask = () => {
-        var lm = document.getElementById("ipl-progress-indicator");
-        if (lm) {
-            setTimeout(() => {
-                document.getElementById("ipl-progress-indicator").classList.add('available');
-                setTimeout(() => {
-                document.getElementById("ipl-progress-indicator").outerHTML = '';
-                }, 2000)
-            }, 1000)
-        }
-    };
-	
-
 	/**
 	 * This function is called right after the react component is mounted.
 	 * It decides whether to show the login form and calls the init().
 	 */
     componentDidMount() {
-        this.hideLoadMask();
+        hideSplashScreen();
     }
 
 
@@ -79,21 +47,10 @@ class Login extends Component {
         var lblErrPass = document.getElementById('errPass');
         var lblErrUser = document.getElementById('errUser');
 
-        debugger;        
-        
         if(result && result.status == 'success'){ 
             //save the details to store
             if(result.userInfo)
                 {
-                    /*info={
-                        userName: result.userInfo.UserName,
-                        firstName: result.userInfo.Fname,
-                        lastName: result.userInfo.Lname,
-                        type: result.userInfo.Type,
-                        product: result.userInfo.Product,
-                        loggedInTime: new Date(),
-                        idleTime: 0 // for future auto logout.
-                    };*/
                     result.userInfo.loggedInTime = new Date();
                     result.userInfo.idleTime = 0;
                 }
@@ -116,6 +73,12 @@ class Login extends Component {
             {
                 this.props.doAfterLogin(info);
             }
+        
+        //setcookie
+        setCookie(getLoginCookieName(),1,0.5);
+
+        //redirect to home page.
+        window.location.pathname = "/home";
     }
 
     render() {
@@ -137,7 +100,7 @@ class Login extends Component {
                 overlayStyle = {{ backgroundColor: 'white' }}
                 contentStyle = {{ width:'25%', maxWidth: "none" }}
                 modal = { true }
-                open = { this.state.openPassword }
+                open = { true }
             >   
                 {/*Username textfield*/}
                 <label  

@@ -25,8 +25,6 @@ const initialFilterState = {
         legendModal: true,
     },
     UserInfo: {
-        firstName: "Mark",
-        lastName: "Sloan"
     },
     Statistics: { 
         colList: "",
