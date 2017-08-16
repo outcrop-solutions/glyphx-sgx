@@ -112,6 +112,10 @@ class TopNavBar extends React.Component {
                         <FontIcon className = "fa fa-filter fa-2x" color = '#ffffff' />
                     </IconButton>
 
+                    <IconButton /*onClick = {  }*/ >
+                        <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
+                    </IconButton>
+
                     <IconButton onClick = { () => this.props.dispatch(editModalDisplay(true, null)) } >
                         <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' />
                     </IconButton>

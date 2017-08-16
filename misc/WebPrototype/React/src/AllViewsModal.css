@@ -1,0 +1,74 @@
+.Collapsible__trigger { 
+    -moz-transition: all .1s ease-in; 
+    -o-transition: all .1s ease-in; 
+    -webkit-transition: all .1s ease-in; 
+
+    
+    border-top: 100px solid red !important;
+	border-left: 50px solid transparent !important;
+	border-right: 50px solid transparent !important;
+	height: 0;
+}
+.Collapsible__trigger.is-open { 
+    
+}
+.Collapsible__trigger:hover { 
+    
+}
+
+.Collapsible__trigger:after {
+    content: "";
+}
+
+
+.C-Size-1 {
+    width: 600px;
+    margin: 1px 0px -31px 0px;
+}
+.C-Size-1.is-open {
+    width: 600px;
+}
+
+.C-Size-1-body {
+    width: 500px;
+    margin: 0px 0px 0px 50px;
+}
+
+.C-Size-2 {
+    width: 500px;
+    margin: 1px 0px -31px 50px;
+}
+.C-Size-2.is-open {
+    width: 500px;
+}
+
+.C-Size-2-body {
+    width: 400px;
+    margin: 0px 0px 0px 100px;
+}
+
+.C-Size-3 {
+    width: 400px;
+    margin: 1px 0px -31px 100px;
+}
+.C-Size-3.is-open {
+    width: 400px;
+}
+
+.C-Size-3-body {
+    width: 300px;
+    margin: 0px 0px 0px 150px;
+}
+
+.C-Size-4 {
+    width: 300px;
+    margin: 1px 0px -31px 150px;
+}
+.C-Size-4.is-open {
+    width: 300px;
+}
+
+.C-Size-4-body {
+    width: 200px;
+    margin: 0px 0px 0px 200px;
+}
