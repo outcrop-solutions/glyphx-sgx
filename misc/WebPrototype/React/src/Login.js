@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {hideSplashScreen} from './LoadMaskHelper.js';
 import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
+import {withRouter} from 'react-router';
 import 'font-awesome/css/font-awesome.min.css';
 
 class Login extends Component {
@@ -15,6 +16,9 @@ class Login extends Component {
         hideSplashScreen();
     }
 
+    navigate = () => {
+        this.props.history.push("/home");
+    }
 
     authenticate = (evt,context) => {
         var username = document.getElementById('UserText').value;
@@ -78,7 +82,7 @@ class Login extends Component {
         setCookie(getLoginCookieName(),1,0.5);
 
         //redirect to home page.
-        window.location.pathname = "/home";
+        this.navigate();
     }
 
     render() {
@@ -181,4 +185,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the Login component to the redux store
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(Login);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(Login));

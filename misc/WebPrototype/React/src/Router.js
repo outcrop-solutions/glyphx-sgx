@@ -1,26 +1,29 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './Login.js';
 import HomePage from './HomePage.js';
-import NotFoundPage from './NotFoundPage.js';
+import NotFoundPage from './NotFoundPage.js'; 
 import {makeServerCall,getCookie,getLoginCookieName} from './ServerCallHelper.js';
+import createHistory from 'history/createBrowserHistory';
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+const browserHistory = createHistory();
+
 const ApplicationRouter = () => (
-  <Router>
     <MuiThemeProvider>
+      <Router history={browserHistory}>
         <Switch>
-            <Route exact path = "/" component = { RedirectToLogin } />          
             <Route exact path = "/login" component = { LoginForm } />
+            <Route exact path = "/" component = { RedirectToLogin } />
             <Route exact path = "/home" component = { HomeView } />
             <Route exact path = "/glyph-viewer" component = { VisualizationWindow } />
             <Route exact path = "/logout" component = { logoutView } />
             <Route path = "*" component = { NotFoundPage } />
         </Switch>
+      </Router>
     </MuiThemeProvider>
-  </Router>
 );
 
 const RedirectToLogin = () => (

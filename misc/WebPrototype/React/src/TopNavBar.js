@@ -4,6 +4,7 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import List from 'material-ui/List/List';
+import {withRouter} from 'react-router';
 import ListItem from 'material-ui/List/ListItem';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
@@ -32,7 +33,7 @@ class TopNavBar extends React.Component {
     
     logout = () => {
         //show logout page
-        window.location.pathname = "/logout";
+        this.props.history.push("/logout");
     };
 
     /**
@@ -193,4 +194,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the TopNav component to the redux store
  **/
-export default connect(mapStateToProps)(TopNavBar);
+export default withRouter(connect(mapStateToProps)(TopNavBar));
