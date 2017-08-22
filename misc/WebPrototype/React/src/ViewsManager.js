@@ -63,7 +63,7 @@ class ViewsManager extends React.Component {
         style.sheet.insertRule('.funnel-middle-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelMiddleBody + ' !important; }', 15);
         style.sheet.insertRule('.funnel-bottom-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelBottomBody + ' !important; }', 16);
 
-
+        style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 17);
     }
 
     dummyAsync = (cb) => {
@@ -256,7 +256,7 @@ class ViewsManager extends React.Component {
                         </Step>
                     </Stepper>
 
-                    <ExpandTransition loading = { this.state.loading } open = { true } style = {{ backgroundColor: "#f1f1f1" }} >
+                    <ExpandTransition loading = { this.state.loading } open = { true } style = {{ backgroundColor: "#f7f7f7" }} >
                         <div style = {{ width: "100%" }} >
                                 <div style = {{ width: "100%" }} >
                                         {this.state.stepIndex === 0 ? 

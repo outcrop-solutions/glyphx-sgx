@@ -18,8 +18,43 @@ import 'font-awesome/css/font-awesome.min.css';
 
 
 class RecentViews extends React.Component {
+    
 
     render() {
+
+        var context = this;
+
+        var recentList = [["Unsaved Session", "2:19pm", "8/15/2017"], ["Some View", "1:15pm", "8/15/2017"], ["Glyph 123", "1:01pm", "8/15/2017"], 
+                            ["Test Glyph", "11:59am", "8/15/2017"], ["Look At Me", "11:19am", "8/15/2017"], ["Who Am I", "10:30am", "8/15/2017"]];
+
+        var recentViews = recentList.map( function(view) {
+            return (
+                <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
+                            <CardText
+                                style = {{
+                                    padding: "7px",
+                                }}
+                                className = "inherit-hover"
+                                onClick = { () => context.props.history.push("/glyph-viewer") }
+                            >
+                                <Flex layout = "row" style = {{ width: '100%', height: '100%' }} >
+                                    <Flex flex = "40" >
+                                        { view[0] }
+                                    </Flex>
+
+                                    <Flex flex = "35">
+                                        { view[1] }
+                                    </Flex>
+
+                                    <Flex flex = "25">
+                                        { view[2] }
+                                    </Flex>  
+                                </Flex>
+                            </CardText>
+                        </Card>
+            )
+        });
+
         return (
             <Flex layout = "column">
                 <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
@@ -28,236 +63,7 @@ class RecentViews extends React.Component {
                             padding: "7px",
                         }}
                     >
-                        <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Unsaved Session
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        2:19pm
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Some View
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        1:15pm
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Glyph 123
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        1:01pm
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Test Glyph
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        11:59am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Look At Me
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        11:19am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Who Am I
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        10:30am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Guy Above is Lame
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        10:10am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        How Many
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        9:45am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        Do I Need
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        9:19am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px" }} >
-                            <CardText
-                                style = {{
-                                    padding: "7px",
-                                }}
-                                className = "grey-hover"
-                            >
-                                <Flex layout = "row" style = {{ width: '100%', height: '100%', margin: "1px 2px 3px 4px" }} >
-                                    <Flex flex = "40" >
-                                        To Make
-                                    </Flex>
-
-                                    <Flex flex = "35">
-                                        8:00am
-                                    </Flex>
-
-                                    <Flex flex = "25">
-                                        8/15/2017
-                                    </Flex>  
-                                </Flex>
-                            </CardText>
-                        </Card>
-
+                        {recentViews}
                     </CardText>
                 </Card>
                 
@@ -290,4 +96,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the TopNav component to the redux store
  **/
-export default connect(mapStateToProps)(RecentViews);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(RecentViews));

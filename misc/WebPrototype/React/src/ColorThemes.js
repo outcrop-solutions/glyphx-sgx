@@ -114,6 +114,7 @@ const themeSettingColors = [
         homePageColors: {
             headerBackground: shadeHexColors("#2d3091", 0.1),
             subBackground: shadeHexColors("#2d3091", 0.4),
+            hoverBackground: shadeHexColors("#2d3091", 0.8),
             funnelTop: "#F7B267",
             funnelTopHover: shadeHexColors("#F7B267", 0.3),
             funnelTopBody: "#ffd6a7",
