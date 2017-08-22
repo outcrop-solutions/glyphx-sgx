@@ -111,6 +111,23 @@ const themeSettingColors = [
             elasticHover: "#339cee",
             rangeHover: "#339cee"
         },
+        homePageColors: {
+            headerBackground: shadeHexColors("#2d3091", 0.1),
+            subBackground: shadeHexColors("#2d3091", 0.4),
+            funnelTop: "#F7B267",
+            funnelTopHover: shadeHexColors("#F7B267", 0.3),
+            funnelTopBody: "#ffd6a7",
+            funnelTopLine: "#fff0df",
+            funnelMiddle: "#FFC857",
+            funnelMiddleBody: "#ffe2a4",
+            funnelMiddleLine: "#feefcf",
+            funnelMiddleHover: shadeHexColors("#FFC857", 0.3),
+            funnelBottom: "#FFD275",
+            funnelBottomBody: "#ffe8b5",
+            funnelBottomLine: "#fff5df",
+            funnelBottomHover: shadeHexColors("#FFD275", 0.3),
+            myViewsButton: shadeHexColors("#2d3091", 0.1)
+        }
     },
 
     //----------------------------------------------------------------------------------------------
@@ -218,6 +235,14 @@ const themeSettingColors = [
             elasticHover: "#339cee",
             rangeHover: "#339cee"
         },
+        homePageColors: {
+            headerBackground: shadeHexColors("#9d2235", 0.1),
+            subBackground: shadeHexColors("#9d2235", 0.4),
+            funnelTop: "red",
+            funnelMiddle: "blue",
+            funnelBottom: "yellow",
+            myViewsButton: "#9d2235"
+        }
     },
 ]
 

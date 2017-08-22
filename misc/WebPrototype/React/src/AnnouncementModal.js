@@ -91,7 +91,7 @@ class AnnouncementModal extends React.Component {
 					]
 				}
 				modal = { true }
-				open = { (this.props.announcementsDisplay ? true : false) }
+				open = { this.props.announcementsDisplay }
 			>
 				<label><h4> {this.state.displayText === "" ? "No Announcements." : this.state.displayText} </h4></label>
 					

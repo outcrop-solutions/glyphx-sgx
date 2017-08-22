@@ -10,6 +10,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
 import SettingsModal from './SettingsModal.js';
 import AnnouncementModal from './AnnouncementModal.js'
+import HelpModal from './HelpModal.js';
 
 
 /**
@@ -82,7 +83,7 @@ class TopNavBar extends React.Component {
 	 * Displays the announcements modal
 	 */
     displayAnnouncements() {
-        this.props.dispatch(editModalDisplay(null, true)); 
+        this.props.dispatch(editModalDisplay(null, true, null)); 
         this.setState({ displayAnnouncementsCheckbox: false });
     }
 
@@ -109,11 +110,11 @@ class TopNavBar extends React.Component {
                         <FontIcon className = "fa fa-filter fa-2x" color = '#ffffff' />
                     </IconButton>
 
-                    <IconButton /*onClick = {  }*/ >
+                    <IconButton onClick = { () => this.props.dispatch(editModalDisplay(null, null, true)) } >
                         <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
                     </IconButton>
 
-                    <IconButton onClick = { () => this.props.dispatch(editModalDisplay(true, null)) } >
+                    <IconButton onClick = { () => this.props.dispatch(editModalDisplay(true, null, null)) } >
                         <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' />
                     </IconButton>
                     
@@ -159,6 +160,7 @@ class TopNavBar extends React.Component {
                 {/* Modals */}
                 <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } />
 				<AnnouncementModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
+                <HelpModal />
             </Toolbar>          
         );
     }
@@ -168,10 +170,11 @@ class TopNavBar extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (settingsModal, announcementsModal) => ({
+export const editModalDisplay = (settingsModal, announcementsModal, helpModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     settingsModal,
     announcementsModal,
+    helpModal
 });
 
 
