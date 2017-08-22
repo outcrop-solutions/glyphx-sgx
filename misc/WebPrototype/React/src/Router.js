@@ -2,59 +2,106 @@ import React from 'react'
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './Login.js';
 import HomePage from './HomePage.js';
+import { connect } from 'react-redux';
+import {hideSplashScreen} from './LoadMaskHelper.js';
 import NotFoundPage from './NotFoundPage.js'; 
-import {makeServerCall,getCookie,getLoginCookieName} from './ServerCallHelper.js';
+import {makeServerCall,getCookie,getLoginCookieName,setCookie,checkUserLoggedIn} from './ServerCallHelper.js';
 import createHistory from 'history/createBrowserHistory';
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { CSSTransitionGroup } from 'react-transition-group'
 
 const browserHistory = createHistory();
+var interval={};
+var isUserLoggedIn = false;
 
-const ApplicationRouter = () => (
-    <MuiThemeProvider>
-      <Router history={browserHistory}>
-        <Switch>
-            <Route exact path = "/login" component = { LoginForm } />
-            <Route exact path = "/" component = { RedirectToLogin } />
-            <Route exact path = "/home" component = { HomeView } />
-            <Route exact path = "/glyph-viewer" component = { VisualizationWindow } />
-            <Route exact path = "/logout" component = { logoutView } />
-            <Route path = "*" component = { NotFoundPage } />
-        </Switch>
-      </Router>
-    </MuiThemeProvider>
-);
+class ApplicationRouter extends React.Component{
 
-const RedirectToLogin = () => (
-  <Redirect to = "/login" />
-);
-
-const LoginForm = () => (
-  ( getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> )
-);
-
-const HomeView = () => (
-  ( getLoggedInStatus() ? <HomePage /> : <Redirect to = "/login" /> )
-);
-
-const VisualizationWindow = () => (
-  ( getLoggedInStatus() ? <VisualizationView /> : <Redirect to = "/login" /> )
-);
-
-const logoutView = () => (
-  //( getLoggedInStatus() ? <Logout /> : <Redirect to = "/login" /> )
-  <Logout />
-);
-
-function getLoggedInStatus() {
-  
-  if(getCookie(getLoginCookieName()) != "")
-  {
-      return true;
+  constructor(props){
+    super(props);
+    var context = this;
+    var res = checkUserLoggedIn();
+    var loggedIn = JSON.parse(res) ? JSON.parse(res).isLoggedIn : false;
+    if(loggedIn)
+      {
+        setCookie(getLoginCookieName(),1,0.5);
+        context.props.dispatch(saveUserInfo(JSON.parse(res)));
+        isUserLoggedIn=true;
+        //hideSplashScreen();
+      }
   }
 
-  return false;
+  RedirectToLogin = () => (
+    <Redirect to = "/login" />
+  );
+
+  LoginForm = () => (
+    ( this.getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> )
+  );
+
+  HomeView = () => (
+    ( this.getLoggedInStatus() ? <HomePage /> : <Redirect to = "/login" /> )
+  );
+
+  VisualizationWindow = () => (
+    ( this.getLoggedInStatus() ? <VisualizationView /> : <Redirect to = "/login" /> )
+  );
+
+  logoutView = () => (
+    <Logout />
+  );
+
+  /**
+   * We are checking both as the dispatch doesn't updates the store asynchronously and thus we have to set a flag in this class to true and check that.
+   */
+  getLoggedInStatus() {
+    return this.props.isUserLoggedIn || isUserLoggedIn;
+  }
+
+  render() {
+    return (
+      <MuiThemeProvider>
+        <Router history={browserHistory}>
+          <Switch>
+              <Route exact path = "/login" component = { this.LoginForm } />
+              <Route exact path = "/" component = { this.RedirectToLogin } />
+              <Route exact path = "/home" component = { this.HomeView } />
+              <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
+              <Route exact path = "/logout" component = { this.logoutView } />
+              <Route path = "*" component = { NotFoundPage } />
+          </Switch>
+        </Router>
+      </MuiThemeProvider>
+  );
+  };
+
+  
 }
 
-export default ApplicationRouter;
+
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
+export const saveUserInfo = (info) => ({
+  type: 'SAVE_USER_INFO',
+  info
+});
+
+/**
+* Maps portions of the store to props of your choosing
+* @param state: passed down through react-redux's 'connect'
+**/
+const mapStateToProps = function(state){
+return {
+  settings: state.filterState.Settings,
+  userInfo: state.filterState.UserInfo,
+  isUserLoggedIn: state.filterState.isUserLoggedIn
+}
+}
+
+
+/**
+* Connects the TopNav component to the redux store
+**/
+export default connect(mapStateToProps)(ApplicationRouter);

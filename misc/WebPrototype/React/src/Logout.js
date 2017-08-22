@@ -1,6 +1,6 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
-import {deleteCookie,getLoginCookieName} from './ServerCallHelper.js';
+import {deleteCookie,getLoginCookieName,makeServerCall} from './ServerCallHelper.js';
 import {hideSplashScreen} from './LoadMaskHelper.js';
 
 /**
@@ -16,7 +16,7 @@ class Logout extends React.Component {
     render() {
         this.deleteLoginCookie();
         hideSplashScreen();
-
+        makeServerCall("doLogout");
         return(
             <Dialog
                 actions = {

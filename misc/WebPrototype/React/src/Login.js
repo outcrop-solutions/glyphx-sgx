@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import { connect } from 'react-redux';
-import {hideSplashScreen} from './LoadMaskHelper.js';
+import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
 import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import {withRouter} from 'react-router';
@@ -23,7 +23,8 @@ class Login extends Component {
     authenticate = (evt,context) => {
         var username = document.getElementById('UserText').value;
         var password = document.getElementById('PassText').value;
-        var url = 'login?username=' + username + "&password=" + password;
+        var url = 'doLogin?username=' + username + "&password=" + password;
+        showLoadMask();
         
         var lblErrPass = document.getElementById('errPass');
         lblErrPass.innerText="";
@@ -65,6 +66,7 @@ class Login extends Component {
             lblErrPass.hidden = false;
             lblErrPass.innerText="Incorrect Password";
         }
+        hideLoadMask();
     }
 
     saveUserInfo = (info) => {

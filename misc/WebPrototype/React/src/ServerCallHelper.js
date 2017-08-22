@@ -1,7 +1,8 @@
 
 //const serverAddress = "ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5001";
-const serverPort = 5001;
-const serverAddress = "http://" + window.location.hostname +":"+ serverPort + "/";
+const serverPort = 80;
+const serverLoginAddress = "/WebViewServerSideRest/server/";
+const serverApiAddress = "/WebViewServerSideRest/server/api/";
 
 /**
  * This function makes a server call and returns the data returned from the server
@@ -10,8 +11,14 @@ const serverAddress = "http://" + window.location.hostname +":"+ serverPort + "/
  */
 export function makeServerCall(url,callback,options){
     var returnObj=null;
+    var saddress = serverLoginAddress;
 
-    if(url == null || typeof callback != 'function')
+    if(options && options.api)
+        {
+            saddress = serverApiAddress;
+        }
+
+    if(url == null || (callback && typeof callback != 'function'))
     {
         console.error('Please provide complete parameters!');
         return false;
@@ -22,16 +29,27 @@ export function makeServerCall(url,callback,options){
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
         {
-            callback(xmlHttp.responseText,options);
+            if(typeof callback == 'function')
+                callback(xmlHttp.responseText,options);
         }
             
     }
-    xmlHttp.open("GET", serverAddress+url, true); // true for asynchronous 
+    xmlHttp.open("GET", saddress+url, true); // true for asynchronous 
     xmlHttp.send(null);
 
     return true;
 };
 
+export function checkUserLoggedIn(){
+    var xmlHttp = new XMLHttpRequest();
+    var url = serverLoginAddress + "isUserLoggedIn";
+    xmlHttp.open("GET", url, false); // true for asynchronous 
+    xmlHttp.send(null);
+    if (xmlHttp.status === 200) {
+        console.log(xmlHttp.responseText);
+        return xmlHttp.responseText;
+    }
+}
 export function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
