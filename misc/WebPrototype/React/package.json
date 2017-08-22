@@ -2,6 +2,7 @@
   "name": "prototype",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:80",
   "dependencies": {
     "react": "15.5.4",
     "react-dom": "15.5.4",

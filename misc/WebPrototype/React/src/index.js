@@ -27,9 +27,8 @@ const initialFilterState = {
         helpModal: false,
     },
     UserInfo: {
-        firstName: "Mark",
-        lastName: "Sloan"
     },
+    isUserLoggedIn: false,
     Statistics: { 
         colList: "",
         statList: ""
@@ -414,7 +413,8 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'SAVE_USER_INFO':
             return {
                 ...state,
-                UserInfo: action.info
+                UserInfo: action.info,
+                isUserLoggedIn: true
             }
 
         case 'UPDATE_STATISTICS':

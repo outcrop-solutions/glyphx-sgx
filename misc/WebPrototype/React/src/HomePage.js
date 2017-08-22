@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Flex } from 'react-flex-material';
+import {hideSplashScreen} from './LoadMaskHelper.js';
 import { Card, CardText } from 'material-ui/Card';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import FilterSideBar from './FilterSideBar.js';
@@ -26,37 +27,12 @@ class HomePage extends React.Component {
         topNavBarHeight: 0,
     };
 
-	
-	/**
-	 * This function shows the in app loadmask(cicular waiting).
-	 */
-    showLoadMask = () => {
-        document.getElementById("LoadMask").style.visibility = "visible";
-    };
-
-	
-	/**
-	 * This function hides the initial loadmask/splash screen.
-	 */
-    hideLoadMask = () => {
-        var lm = document.getElementById("ipl-progress-indicator");
-        if (lm) {
-            setTimeout(() => {
-                document.getElementById("ipl-progress-indicator").classList.add('available');
-                setTimeout(() => {
-                document.getElementById("ipl-progress-indicator").outerHTML = '';
-                }, 2000)
-            }, 1000)
-        }
-    };
-	
-
 	/**
 	 * This function is called right after the react component is mounted.
 	 * It decides whether to show the login form and calls the init().
 	 */
     componentDidMount() {
-        this.hideLoadMask();
+        hideSplashScreen();
     }
 
 

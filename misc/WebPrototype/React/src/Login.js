@@ -1,81 +1,72 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import { connect } from 'react-redux';
+import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
+import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
+import {withRouter} from 'react-router';
 import 'font-awesome/css/font-awesome.min.css';
 
 class Login extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            openPassword: true,
-            userName: null,
-            firstName: null,
-            lastName: null
-        }
-    }
-	
-	/**
-	 * This function shows the in app loadmask(cicular waiting).
-	 */
-    showLoadMask = () => {
-        document.getElementById("LoadMask").style.visibility = "visible";
-    };
-
-	
-	/**
-	 * This function hides the initial loadmask/splash screen.
-	 */
-    hideLoadMask = () => {
-        var lm = document.getElementById("ipl-progress-indicator");
-        if (lm) {
-            setTimeout(() => {
-                document.getElementById("ipl-progress-indicator").classList.add('available');
-                setTimeout(() => {
-                document.getElementById("ipl-progress-indicator").outerHTML = '';
-                }, 2000)
-            }, 1000)
-        }
-    };
-	
-
 	/**
 	 * This function is called right after the react component is mounted.
 	 * It decides whether to show the login form and calls the init().
 	 */
     componentDidMount() {
-        this.hideLoadMask();
+        hideSplashScreen();
     }
 
+    navigate = () => {
+        this.props.history.push("/home");
+    }
 
     authenticate = (evt,context) => {
-        var pass = "SynGlyphX2017!";
-        var userVal = document.getElementById('PassText').value;
-        var lblErr = document.getElementById('errPass');
-        lblErr.innerText="";
-        lblErr.hidden = true;
-        var info={
-            userName: "msloan",
-            firstName: "Mark",
-            lastName: "Sloan",
-            type: "Administrator",
-            product: "GlyphEd",
-            loggedInTime: new Date(),
-            idleTime: 0 // for future auto logout.
-        };
-
+        var username = document.getElementById('UserText').value;
+        var password = document.getElementById('PassText').value;
+        var url = 'doLogin?username=' + username + "&password=" + password;
+        showLoadMask();
+        
+        var lblErrPass = document.getElementById('errPass');
+        lblErrPass.innerText="";
+        lblErrPass.hidden = true;
+        
+        var lblErrUser = document.getElementById('errUser');
+        lblErrUser.innerText="";
+        lblErrUser.hidden = true;
+        
         //server call to check user/pass and update state.
-        if(pass == userVal){
+        makeServerCall(url,context.onServerResponse,null);
+    }
+
+    onServerResponse = (Response,options) => {
+        var result; 
+        
+        try{
+            result = JSON.parse(Response);
+            result = result.result;
+        }
+        catch(e){
+            result = null;
+        }
+        
+        var lblErrPass = document.getElementById('errPass');
+        var lblErrUser = document.getElementById('errUser');
+
+        if(result && result.status == 'success'){ 
             //save the details to store
-            this.saveUserInfo(info);
+            if(result.userInfo)
+                {
+                    result.userInfo.loggedInTime = new Date();
+                    result.userInfo.idleTime = 0;
+                }
+            this.saveUserInfo(result.userInfo);
         }
         else{
             console.log('Error');
-            lblErr.hidden = false;
-            lblErr.innerText="Incorrect Password";
+            lblErrPass.hidden = false;
+            lblErrPass.innerText="Incorrect Password";
         }
+        hideLoadMask();
     }
 
     saveUserInfo = (info) => {
@@ -88,6 +79,12 @@ class Login extends Component {
             {
                 this.props.doAfterLogin(info);
             }
+        
+        //setcookie
+        setCookie(getLoginCookieName(),1,0.5);
+
+        //redirect to home page.
+        this.navigate();
     }
 
     render() {
@@ -109,8 +106,35 @@ class Login extends Component {
                 overlayStyle = {{ backgroundColor: 'white' }}
                 contentStyle = {{ width:'25%', maxWidth: "none" }}
                 modal = { true }
-                open = { this.state.openPassword }
-            >
+                open = { true }
+            >   
+                {/*Username textfield*/}
+                <label  
+                    style = {{ 
+                        height: '20px',
+                        fontSize: '18px'
+                    }}
+                > Username:
+                </label> 
+                <input 
+                    id = "UserText"
+                    type = "text"
+                    style = {{
+                        height: '20px',
+                        fontSize: '18px'
+                    }}
+                />
+                <br/>
+                <label id = "errUser" 
+                    hidden 
+                    style = {{ 
+                        color:'red',
+                        height: '20px',
+                        fontSize: '18px'
+                    }}
+                />
+
+                {/*Password textfield*/}
                 <label  
                     style = {{ 
                         height: '20px',
@@ -163,4 +187,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the Login component to the redux store
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(Login);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(Login));

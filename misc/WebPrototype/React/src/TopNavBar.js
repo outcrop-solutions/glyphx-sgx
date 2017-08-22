@@ -4,6 +4,7 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import List from 'material-ui/List/List';
+import {withRouter} from 'react-router';
 import ListItem from 'material-ui/List/ListItem';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
@@ -30,7 +31,11 @@ class TopNavBar extends React.Component {
 						<img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd"/>
 					</a>
     };
-
+    
+    logout = () => {
+        //show logout page
+        this.props.history.push("/logout");
+    };
 
     /**
 	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
@@ -87,9 +92,8 @@ class TopNavBar extends React.Component {
         this.setState({ displayAnnouncementsCheckbox: false });
     }
 
-
-
     render(){
+
         return(
             <Toolbar 
                 style = {{ padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
@@ -144,16 +148,16 @@ class TopNavBar extends React.Component {
                                     //src="./Res/Img/x.png"
                                     backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                                 >
-                                    {(this.props.userInfo.firstName ? this.props.userInfo.firstName[0] : "") + (this.props.userInfo.lastName ? this.props.userInfo.lastName[0] : "")}
+                                    {(this.props.userInfo.FName ? this.props.userInfo.FName[0] : "") + (this.props.userInfo.LName ? this.props.userInfo.LName[0] : "")}
                                 </Avatar>
                             }
-                            primaryText = { this.props.userInfo.firstName + " " + this.props.userInfo.lastName }
-                            secondaryText = { this.props.userInfo ? this.props.userInfo.type : null }
+                            primaryText = { this.props.userInfo.FName + " " + this.props.userInfo.LName }
+                            secondaryText = { this.props.userInfo ? this.props.userInfo.Type : null }
                         />
 
                         <MenuItem className = "menuItemStyling" primaryText = "Help &amp; feedback" />
                         <MenuItem className = "menuItemStyling" primaryText = "Settings" />
-                        <MenuItem className = "menuItemStyling" primaryText = "Sign out" />
+                        <MenuItem onClick={this.logout} className = "menuItemStyling" primaryText = "Sign out" />
                     </List>
                 </Popover>
 
@@ -193,4 +197,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the TopNav component to the redux store
  **/
-export default connect(mapStateToProps)(TopNavBar);
+export default withRouter(connect(mapStateToProps)(TopNavBar));
