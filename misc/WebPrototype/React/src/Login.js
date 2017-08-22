@@ -64,7 +64,7 @@ class Login extends Component {
         else{
             console.log('Error');
             lblErrPass.hidden = false;
-            lblErrPass.innerText="Incorrect Password";
+            lblErrPass.innerText="Incorrect Username/Password";
         }
         hideLoadMask();
     }

@@ -9,6 +9,7 @@ import {makeServerCall,getCookie,getLoginCookieName,setCookie,checkUserLoggedIn}
 import createHistory from 'history/createBrowserHistory';
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
+import Maintenance from './Maintenance.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { CSSTransitionGroup } from 'react-transition-group'
 
@@ -21,15 +22,20 @@ class ApplicationRouter extends React.Component{
   constructor(props){
     super(props);
     var context = this;
-    var res = checkUserLoggedIn();
-    var loggedIn = JSON.parse(res) ? JSON.parse(res).isLoggedIn : false;
-    if(loggedIn)
-      {
-        setCookie(getLoginCookieName(),1,0.5);
-        context.props.dispatch(saveUserInfo(JSON.parse(res)));
-        isUserLoggedIn=true;
-        //hideSplashScreen();
-      }
+    try{
+      var res = checkUserLoggedIn();
+      var loggedIn = JSON.parse(res) ? JSON.parse(res).isLoggedIn : false;
+      if(loggedIn)
+        {
+          setCookie(getLoginCookieName(),1,0.5);
+          context.props.dispatch(saveUserInfo(JSON.parse(res)));
+          isUserLoggedIn=true;
+          //hideSplashScreen();
+        }
+    }
+    catch(err){
+      
+    }
   }
 
   RedirectToLogin = () => (
@@ -52,6 +58,10 @@ class ApplicationRouter extends React.Component{
     <Logout />
   );
 
+  maintenance = () => (
+    <Maintenance />
+  );
+
   /**
    * We are checking both as the dispatch doesn't updates the store asynchronously and thus we have to set a flag in this class to true and check that.
    */
@@ -69,6 +79,7 @@ class ApplicationRouter extends React.Component{
               <Route exact path = "/home" component = { this.HomeView } />
               <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
               <Route exact path = "/logout" component = { this.logoutView } />
+              <Route exact path = "/maintenance" component = { this.maintenance } />
               <Route path = "*" component = { NotFoundPage } />
           </Switch>
         </Router>
