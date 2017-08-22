@@ -21,9 +21,10 @@ const initialFilterState = {
     ModalDisplay: {
         settingsModal: false,
         statisticsModal: false,
-        AnnouncementsModal: false,
+        announcementsModal: false,
         legendModal: true,
-        allViewsModal: false
+        allViewsModal: false,
+        helpModal: false,
     },
     UserInfo: {
     },
@@ -452,6 +453,7 @@ const filterReducer = function(state = initialFilterState, action) {
             var announcementsDisplay = state.ModalDisplay.announcementsModal;
             var legendDisplay = state.ModalDisplay.legendModal;
             var allViewsDisplay = state.ModalDisplay.allViewsModal;
+            var helpDisplay = state.ModalDisplay.helpModal;
             
             if (action.settingsModal === true || action.settingsModal === false) {
                 settingsDisplay = action.settingsModal;
@@ -473,6 +475,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 allViewsDisplay = action.allViewsModal;
             }
 
+            if (action.helpModal === true || action.helpModal === false) {
+                helpDisplay = action.helpModal;
+            }
+
 
             return { 
                     ...state,
@@ -482,7 +488,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         statisticsModal: statisticsDisplay,
                         announcementsModal: announcementsDisplay,
                         legendModal: legendDisplay,
-                        allViewsModal: allViewsDisplay
+                        allViewsModal: allViewsDisplay,
+                        helpModal: helpDisplay
                     }
                 };
 

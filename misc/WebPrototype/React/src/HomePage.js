@@ -11,7 +11,9 @@ import StatisticModal from './StatisticModal.js'
 import TopNavBar from './TopNavBar.js';
 import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
+import RecentViews from './RecentViews.js';
 import ViewsManager from './ViewsManager.js';
+import HelpChat from './HelpChat.js';
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -45,17 +47,17 @@ class HomePage extends React.Component {
                             </div>
                         </Flex>
 
-                        <Flex style = {{ overflow: 'hidden', height: '15%', padding: "10px 10px 0px 10px" }}>
+                        <Flex style = {{ overflow: 'hidden', height: '150px', padding: "10px 10px 0px 10px" }}>
                             <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
                                 <CardText
                                     style = {{
-                                        padding: "0px"
+                                        padding: "0px",
+                                        height: "100%"
                                     }}
                                 >
                                     <div style = {{ width: '100%', height: '100%' }} >
-                                        <div style = {{  width: "350px", margin: "0 auto" }}>
-                                            <h1 style = {{ margin: "0px 0px -10px 84px", paddingTop: "18px" }} > Welcome to </h1>
-                                            <img src = "./Res/Img/GlyphED.png" style = {{ width: '350px' }} alt = "GlyphEd"/>
+                                        <div style = {{ width: "450px", margin: "0 auto" }}>
+                                            <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "9px 0px 0px 0px" }} alt = "University Logo"/>
                                         </div>
                                     </div>
                                 </CardText>
@@ -63,7 +65,7 @@ class HomePage extends React.Component {
                         </Flex>
                         
                         <Flex layout = "row" style = {{ width: '100%', height: '100%', padding: "10px" }}>
-                            <Flex flex = "33" style = {{ backgroundColor: "purple", height: "100%" }} >
+                            <Flex flex = "33" style = {{ height: "100%", paddingRight: "10px" }} >
                                 <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
                                     <CardText
                                         style = {{
@@ -77,63 +79,64 @@ class HomePage extends React.Component {
                                 </Card>
                             </Flex>
 
-                            <Flex flex = "66">
-                                <Flex style = {{  height: "15%", padding: "0px 0px 0px 10px" }} >
-                                    <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
-                                        <CardText
-                                            style = {{
-                                                padding: "0px",
-                                                height: "100%"
-                                            }}
-                                        >
-                                            <div style = {{ width: '100%', height: '100%' }} >
-                                                <div style = {{ width: "450px", margin: "0 auto" }}>
-                                                    <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "9px 0px 0px 0px" }} alt = "University Logo"/>
+                            <Flex flex = "33" style = {{ height: "100%" }} >
+                                <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%", overflow: "auto" }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "8px",
+                                        }}
+                                    >
+                                        <div>
+                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
+                                                <div 
+                                                    style = {{ 
+                                                        color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                        margin: "0 auto",
+                                                        width: "115px", 
+                                                        paddingTop: "4px",
+                                                        fontSize: "18px",
+                                                        fontWeight: "normal"
+                                                    }} 
+                                                > 
+                                                    View Manager 
                                                 </div>
                                             </div>
-                                        </CardText>
-                                    </Card>
-                                </Flex>
+                                            <ViewsManager />
+                                        </div>
+                                    </CardText>
+                                </Card>
+                            </Flex>
 
-                                <Flex layout = "row" style = {{ height: "85%", padding: "10px 0px 0px 10px" }} >
-                                    <Flex flex = "50" style = {{ padding: "0px 10px 0px 0px" }}>
-                                        <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%" }} >
-                                            <CardText
-                                                style = {{
-                                                    padding: "8px",
-                                                }}
-                                            >
-                                                <div>
-                                                    <ViewsManager />
-                                                </div>
-                                            </CardText>
-                                        </Card>
-                                    </Flex>
+                            <Flex flex = "33" style = {{ height: "100%", paddingLeft: "10px" }} >
+                                <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%" }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "8px",
+                                        }}
+                                    >
+                                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
+                                            <div 
+                                                style = {{ 
+                                                    color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                    margin: "0 auto", 
+                                                    width: "110px", 
+                                                    paddingTop: "4px",
+                                                    fontSize: "18px",
+                                                    fontWeight: "normal"
+                                                }} 
+                                            > 
+                                                Recent Views 
+                                            </div>
+                                        </div>
 
-                                    <Flex flex = "50">
-                                        <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%" }} >
-                                            <CardText
-                                                style = {{
-                                                    padding: "8px",
-                                                }}
-                                            >
-                                                <div style = {{  textAlign: "justify", textJustify: "inter-word" }} >
-                                                    GlyphEd is a data visualization software designed to help the Enrollment Management Office benefit from the breadth 
-                                                    and depth of available Enrollment Management data. We welcome your interest and input on product direction.
-                                                </div>
-                                                    <br/>For <i style = {{ textDecoration: "underline" }} >Help &amp; Support</i>, please contact us at: <a href="mailto:Support@GlyphEd.co">Support@GlyphEd.co</a>
+                                        <RecentViews />
 
-                                                    <br/><br/>For <i style = {{ textDecoration: "underline" }} > Sales and Product Direction </i>, please contact us at: <a href="mailto:Mark@GlyphEd.co">Mark@GlyphEd.co</a>
+                                        {/* <HelpChat /> */}
 
-                                                    <br/><br/>If you prefer to call, we can be reached at: <i style = {{ textDecoration: "underline" }} > 571-733-9469</i>  (During normal business hours, Eastern Time).
-
-                                            </CardText>
-                                        </Card>
-                                    </Flex>
-                                </Flex>
+                                    </CardText>
+                                </Card>
                             </Flex>
                         </Flex>
-
                     </Flex>
           </MuiThemeProvider>
         );
