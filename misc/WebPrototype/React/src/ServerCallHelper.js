@@ -14,9 +14,9 @@ export function makeServerCall(url,callback,options){
     var saddress = serverLoginAddress;
 
     if(options && options.api)
-        {
-            saddress = serverApiAddress;
-        }
+    {
+        saddress = serverApiAddress;
+    }
 
     if(url == null || (callback && typeof callback != 'function'))
     {
@@ -32,7 +32,9 @@ export function makeServerCall(url,callback,options){
             if(typeof callback == 'function')
                 callback(xmlHttp.responseText,options);
         }
-            
+        else if(xmlHttp.status == 500 && options && options.onServerCallError && typeof options.onServerCallError == 'function'){
+            options.onServerCallError();
+        }
     }
     xmlHttp.open("GET", saddress+url, true); // true for asynchronous 
     xmlHttp.send(null);
@@ -40,7 +42,7 @@ export function makeServerCall(url,callback,options){
     return true;
 };
 
-export function checkUserLoggedIn(){
+export function checkUserLoggedIn(onServerError){
     var xmlHttp = new XMLHttpRequest();
     var url = serverLoginAddress + "isUserLoggedIn";
     xmlHttp.open("GET", url, false); // true for asynchronous 
@@ -49,6 +51,9 @@ export function checkUserLoggedIn(){
         console.log(xmlHttp.responseText);
         return xmlHttp.responseText;
     }
+
+    if(typeof onServerError == 'function')
+        onServerError();
 }
 export function setCookie(cname, cvalue, exdays) {
     var d = new Date();
