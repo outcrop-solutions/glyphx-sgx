@@ -10,7 +10,7 @@ import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
 import SettingsModal from './SettingsModal.js';
-import AnnouncementModal from './AnnouncementModal.js'
+import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
 
 
@@ -163,7 +163,7 @@ class TopNavBar extends React.Component {
 
                 {/* Modals */}
                 <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } />
-				<AnnouncementModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
+				<AlertsModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
                 <HelpModal />
             </Toolbar>          
         );
@@ -174,10 +174,10 @@ class TopNavBar extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (settingsModal, announcementsModal, helpModal) => ({
+export const editModalDisplay = (settingsModal, alertsModal, helpModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     settingsModal,
-    announcementsModal,
+    alertsModal,
     helpModal
 });
 

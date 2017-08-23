@@ -112,6 +112,7 @@ const themeSettingColors = [
             rangeHover: "#339cee"
         },
         homePageColors: {
+            bodyBackground: "#caccff",
             headerBackground: shadeHexColors("#2d3091", 0.1),
             subBackground: shadeHexColors("#2d3091", 0.4),
             hoverBackground: shadeHexColors("#2d3091", 0.8),
@@ -128,6 +129,12 @@ const themeSettingColors = [
             funnelBottomLine: "#fff5df",
             funnelBottomHover: shadeHexColors("#FFD275", 0.3),
             myViewsButton: shadeHexColors("#2d3091", 0.1)
+        },
+        announcementColors: {
+            maintenance: "#e9dc9a",
+            release: "#a9b9e0",
+            poll: "#e4c9b3",
+            shout: "#eec0c0"
         }
     },
 

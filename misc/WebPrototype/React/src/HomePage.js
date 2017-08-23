@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Flex } from 'react-flex-material';
 import {hideSplashScreen} from './LoadMaskHelper.js';
@@ -13,6 +14,8 @@ import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
 import RecentViews from './RecentViews.js';
 import ViewsManager from './ViewsManager.js';
+import UserFeed from './UserFeed.js';
+import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import HelpChat from './HelpChat.js';
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -25,6 +28,7 @@ class HomePage extends React.Component {
         glyphViewLoaded: false,
         glyphWindowWidth: 0,
         topNavBarHeight: 0,
+        height: 0
     };
 
 	/**
@@ -33,8 +37,8 @@ class HomePage extends React.Component {
 	 */
     componentDidMount() {
         hideSplashScreen();
+        this.setState({ height: window.innerHeight });
     }
-
 
     render() {
         return (
@@ -66,24 +70,38 @@ class HomePage extends React.Component {
                         
                         <Flex layout = "row" style = {{ width: '100%', height: '100%', padding: "10px" }}>
                             <Flex flex = "33" style = {{ height: "100%", paddingRight: "10px" }} >
-                                <Card containerStyle = {{ padding: "2px" }} style = {{ height: "100%" }} >
+                                <Card containerStyle = {{ padding: "7px" }} style = {{ height: "100%", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                     <CardText
                                         style = {{
-                                            padding: "2px",
+                                            padding: "7px",
                                         }}
                                     >
                                         <div style = {{ width: '100%', height: '100%' }} >
-                                            User Feed goes here
+                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
+                                                <div 
+                                                    style = {{ 
+                                                        color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                        margin: "0 auto",
+                                                        width: "85px", 
+                                                        paddingTop: "4px",
+                                                        fontSize: "18px",
+                                                        fontWeight: "normal"
+                                                    }} 
+                                                > 
+                                                    User Feed 
+                                                </div>
+                                            </div>
+                                            <UserFeed />
                                         </div>
                                     </CardText>
                                 </Card>
                             </Flex>
 
                             <Flex flex = "33" style = {{ height: "100%" }} >
-                                <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%", overflow: "auto" }} >
+                                <Card containerStyle = {{ padding: "7px" }} style = {{ height: "100%", overflow: "auto" }} >
                                     <CardText
                                         style = {{
-                                            padding: "8px",
+                                            padding: "7px",
                                         }}
                                     >
                                         <div>
@@ -108,28 +126,51 @@ class HomePage extends React.Component {
                             </Flex>
 
                             <Flex flex = "33" style = {{ height: "100%", paddingLeft: "10px" }} >
-                                <Card containerStyle = {{ padding: "8px" }} style = {{ height: "100%" }} >
+                                <Card containerStyle = {{ padding: "7px" }} style = {{ height: "100%", overflowY: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                     <CardText
                                         style = {{
-                                            padding: "8px",
+                                            padding: "7px",
                                         }}
+                                        id = "rightCard"
                                     >
-                                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
-                                            <div 
-                                                style = {{ 
-                                                    color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                    margin: "0 auto", 
-                                                    width: "110px", 
-                                                    paddingTop: "4px",
-                                                    fontSize: "18px",
-                                                    fontWeight: "normal"
-                                                }} 
-                                            > 
-                                                Recent Views 
-                                            </div>
-                                        </div>
+                                        <Flex layout = "column" >
+                                            <Flex style = {{ height: "280px" }} >
+                                                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
+                                                    <div 
+                                                        style = {{ 
+                                                            color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                            margin: "0 auto", 
+                                                            width: "110px", 
+                                                            paddingTop: "4px",
+                                                            fontSize: "18px",
+                                                            fontWeight: "normal"
+                                                        }} 
+                                                    > 
+                                                        Recent Views 
+                                                    </div>
+                                                </div>
 
-                                        <RecentViews />
+                                                <RecentViews />
+                                            </Flex>
+
+                                            <Flex>
+                                                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
+                                                    <div 
+                                                        style = {{ 
+                                                            color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                            margin: "0 auto", 
+                                                            width: "130px", 
+                                                            paddingTop: "4px",
+                                                            fontSize: "18px",
+                                                            fontWeight: "normal"
+                                                        }} 
+                                                    > 
+                                                        Announcements
+                                                    </div>
+                                                </div>
+                                                <AnnouncementsDisplay cardHeight = { this.state.height }/>
+                                            </Flex>
+                                        </Flex>
 
                                         {/* <HelpChat /> */}
 

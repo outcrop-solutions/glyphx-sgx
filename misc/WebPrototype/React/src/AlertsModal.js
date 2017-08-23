@@ -11,7 +11,7 @@ import Checkbox from 'material-ui/Checkbox';
  * Initially when the application is 1st loaded, this will make a server call to check for important updates and show it to the user upon login.
  * However, this can be used even after that. On click of the notification(bell) icon on the toolbar this will get displayed.
  */
-class AnnouncementModal extends React.Component {
+class AlertsModal extends React.Component {
 	
 	constructor(props) {
 		super(props);
@@ -91,7 +91,7 @@ class AnnouncementModal extends React.Component {
 					]
 				}
 				modal = { true }
-				open = { this.props.announcementsDisplay }
+				open = { this.props.alertsDisplay }
 			>
 				<label><h4> {this.state.displayText === "" ? "No Announcements." : this.state.displayText} </h4></label>
 					
@@ -111,9 +111,9 @@ class AnnouncementModal extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (announcementsModal) => ({
+export const editModalDisplay = (alertsModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
-    announcementsModal,
+    alertsModal,
 });
 
 
@@ -124,7 +124,7 @@ export const editModalDisplay = (announcementsModal) => ({
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
-	announcementsDisplay: state.filterState.ModalDisplay.announcementsModal,
+	alertsDisplay: state.filterState.ModalDisplay.alertsModal,
   }
 }
 
@@ -132,4 +132,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the Announcements Dialog component to the redux store
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(AnnouncementModal);
+export default connect(mapStateToProps,null,null,{withRef:true})(AlertsModal);

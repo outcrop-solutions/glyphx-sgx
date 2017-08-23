@@ -21,7 +21,7 @@ const initialFilterState = {
     ModalDisplay: {
         settingsModal: false,
         statisticsModal: false,
-        announcementsModal: false,
+        alertsModal: false,
         legendModal: true,
         allViewsModal: false,
         helpModal: false,
@@ -450,7 +450,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             var settingsDisplay = state.ModalDisplay.settingsModal;
             var statisticsDisplay = state.ModalDisplay.statisticsModal;
-            var announcementsDisplay = state.ModalDisplay.announcementsModal;
+            var alertsDisplay = state.ModalDisplay.alertsModal;
             var legendDisplay = state.ModalDisplay.legendModal;
             var allViewsDisplay = state.ModalDisplay.allViewsModal;
             var helpDisplay = state.ModalDisplay.helpModal;
@@ -463,8 +463,8 @@ const filterReducer = function(state = initialFilterState, action) {
                 statisticsDisplay = action.statisticsModal;
             }
 
-            if (action.announcementsModal === true || action.announcementsModal === false) {
-                announcementsDisplay = action.announcementsModal;
+            if (action.alertsModal === true || action.alertsModal === false) {
+                alertsDisplay = action.alertsModal;
             }
 
             if (action.legendModal === true || action.legendModal === false) {
@@ -486,7 +486,7 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.ModalDisplay,
                         settingsModal: settingsDisplay,
                         statisticsModal: statisticsDisplay,
-                        announcementsModal: announcementsDisplay,
+                        alertsModal: alertsDisplay,
                         legendModal: legendDisplay,
                         allViewsModal: allViewsDisplay,
                         helpModal: helpDisplay
