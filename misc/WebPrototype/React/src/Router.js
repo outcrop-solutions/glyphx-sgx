@@ -9,27 +9,37 @@ import {makeServerCall,getCookie,getLoginCookieName,setCookie,checkUserLoggedIn}
 import createHistory from 'history/createBrowserHistory';
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
+import Maintenance from './Maintenance.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { CSSTransitionGroup } from 'react-transition-group'
 
 const browserHistory = createHistory();
 var interval={};
 var isUserLoggedIn = false;
+var maintenance=false;
 
 class ApplicationRouter extends React.Component{
 
   constructor(props){
     super(props);
     var context = this;
-    var res = checkUserLoggedIn();
-    var loggedIn = JSON.parse(res) ? JSON.parse(res).isLoggedIn : false;
-    if(loggedIn)
-      {
-        setCookie(getLoginCookieName(),1,0.5);
-        context.props.dispatch(saveUserInfo(JSON.parse(res)));
-        isUserLoggedIn=true;
-        //hideSplashScreen();
-      }
+    try{
+      var res = checkUserLoggedIn(this.onServerError);
+      var loggedIn = JSON.parse(res) ? JSON.parse(res).isLoggedIn : false;
+      if(loggedIn)
+        {
+          setCookie(getLoginCookieName(),1,0.5);
+          context.props.dispatch(saveUserInfo(JSON.parse(res)));
+          isUserLoggedIn=true;
+        }
+    }
+    catch(err){
+
+    }
+  }
+
+  onServerError() {
+    maintenance = true;
   }
 
   RedirectToLogin = () => (
@@ -37,19 +47,23 @@ class ApplicationRouter extends React.Component{
   );
 
   LoginForm = () => (
-    ( this.getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> )
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> ) )
   );
 
   HomeView = () => (
-    ( this.getLoggedInStatus() ? <HomePage /> : <Redirect to = "/login" /> )
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <HomePage /> : <Redirect to = "/login" /> ) )
   );
 
   VisualizationWindow = () => (
-    ( this.getLoggedInStatus() ? <VisualizationView /> : <Redirect to = "/login" /> )
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <VisualizationView /> : <Redirect to = "/login" /> ) )
   );
 
-  logoutView = () => (
+  LogoutView = () => (
     <Logout />
+  );
+
+  Maintenance = () => (
+    <Maintenance />
   );
 
   /**
@@ -68,7 +82,8 @@ class ApplicationRouter extends React.Component{
               <Route exact path = "/" component = { this.RedirectToLogin } />
               <Route exact path = "/home" component = { this.HomeView } />
               <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
-              <Route exact path = "/logout" component = { this.logoutView } />
+              <Route exact path = "/logout" component = { this.LogoutView } />
+              <Route exact path = "/maintenance" component = { this.Maintenance } />
               <Route path = "*" component = { NotFoundPage } />
           </Switch>
         </Router>

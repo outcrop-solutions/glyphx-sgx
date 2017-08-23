@@ -16,8 +16,8 @@ class Login extends Component {
         hideSplashScreen();
     }
 
-    navigate = () => {
-        this.props.history.push("/home");
+    navigate = (str) => {
+        this.props.history.push(str);
     }
 
     authenticate = (evt,context) => {
@@ -35,8 +35,12 @@ class Login extends Component {
         lblErrUser.hidden = true;
         
         //server call to check user/pass and update state.
-        makeServerCall(url,context.onServerResponse,null);
+        makeServerCall(url,context.onServerResponse,{onServerCallError: context.showMaintanencePage});
     }
+
+    showMaintanencePage = () => {
+        this.navigate('/maintenance');
+    };
 
     onServerResponse = (Response,options) => {
         var result; 
@@ -61,10 +65,13 @@ class Login extends Component {
                 }
             this.saveUserInfo(result.userInfo);
         }
-        else{
+        else if(result && result.status == "failure"){
             console.log('Error');
             lblErrPass.hidden = false;
-            lblErrPass.innerText="Incorrect Password";
+            lblErrPass.innerText="Incorrect Username/Password";
+        }
+        else{
+            this.navigate("/Maintenance");
         }
         hideLoadMask();
     }
@@ -84,7 +91,7 @@ class Login extends Component {
         setCookie(getLoginCookieName(),1,0.5);
 
         //redirect to home page.
-        this.navigate();
+        this.navigate("/home");
     }
 
     render() {

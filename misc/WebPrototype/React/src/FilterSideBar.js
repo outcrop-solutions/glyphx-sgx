@@ -25,6 +25,9 @@ class FilterSideBar extends Component {
 
         //Make columns and global store structure
         this.makeFilterStructure(tableData);
+
+        //fetch the table names and view names.
+        
         
         //Store the states of all the elements inside this data structure.
         this.state  = {
