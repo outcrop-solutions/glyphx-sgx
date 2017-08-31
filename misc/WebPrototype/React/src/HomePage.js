@@ -18,6 +18,7 @@ import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import HelpChat from './HelpChat.js';
 import './topNav.css';
+import './General.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 class HomePage extends React.Component {
@@ -38,20 +39,60 @@ class HomePage extends React.Component {
     componentDidMount() {
         hideSplashScreen();
         this.setState({ height: window.innerHeight });
+
+        var style = document.getElementById('themeStyles');
+		if(style != null)
+		{
+			style.parentElement.removeChild(style);
+			console.log('deleting old rules');
+		}
+		style = document.createElement("style");
+
+		// WebKit hack
+		style.appendChild(document.createTextNode(""));
+		style.setAttribute('id','themeStyles');
+
+		// Add the <style> element to the page
+		document.head.appendChild(style);
+		
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
+		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
+		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 3);
+		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; }', 4);
+		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 5);
+
+        style.sheet.insertRule('.C-Size-1 { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelTop + ' !important; }', 6);
+        style.sheet.insertRule('.C-Size-1:Hover { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelTopHover + ' !important; }', 7);
+        style.sheet.insertRule('.C-Size-2 { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelMiddle + ' !important; }', 8);
+        style.sheet.insertRule('.C-Size-2:Hover { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelMiddleHover + ' !important; }', 9);
+        style.sheet.insertRule('.C-Size-3 { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelBottom + ' !important; }', 10);
+        style.sheet.insertRule('.C-Size-3:Hover { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelBottomHover + ' !important; }', 11);
+
+        style.sheet.insertRule('.funnel-top-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelTopLine + ' !important; }', 12);
+        style.sheet.insertRule('.funnel-middle-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelMiddleLine + ' !important; }', 13);
+        style.sheet.insertRule('.funnel-bottom-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelBottomLine + ' !important; }', 14);
+
+        style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 15);
+
+        style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 16);
+		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 17);
+		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 14px !important;}', 18);
+		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 19);
+		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 20);
+        style.sheet.insertRule('.Select-control { background-color: ' + "#f5f5ff" + ' !important; }', 10);
     }
 
     render() {
         return (
             <MuiThemeProvider>
-                    <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
+                    <Flex layout = "column" style = {{ position: "absolute", width:'100%', height:'100%' }} >
 
                         <Flex>
-                            <div style = {{ height:'56px' }}>
-                                <TopNavBar />
-                            </div>
+                            <TopNavBar homePage = { true }/>
                         </Flex>
 
-                        <Flex style = {{ overflow: 'hidden', height: '150px', padding: "10px 10px 0px 10px" }}>
+                        <Flex style = {{ padding: "8px 8px 0px" }} >
                             <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
                                 <CardText
                                     style = {{
@@ -61,122 +102,76 @@ class HomePage extends React.Component {
                                 >
                                     <div style = {{ width: '100%', height: '100%' }} >
                                         <div style = {{ width: "450px", margin: "0 auto" }}>
-                                            <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "9px 0px 0px 0px" }} alt = "University Logo"/>
+                                            <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "10px 0px 0px 0px" }} alt = "University Logo"/>
                                         </div>
                                     </div>
                                 </CardText>
                             </Card>
                         </Flex>
                         
-                        <Flex layout = "row" style = {{ width: '100%', height: '100%', padding: "10px" }}>
-                            <Flex flex = "33" style = {{ height: "100%", paddingRight: "10px" }} >
-                                <Card containerStyle = {{ padding: "7px" }} style = {{ height: "100%", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
+                        <Flex layout = "row" style = {{ padding: "10px 8px 8px", height: "100%" }}>
+                            <Flex flex = "30" style = {{ height: "100%" }} >
+                                <Card containerStyle = {{ padding: "5px", height: "100%" }} style = {{ height: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                     <CardText
                                         style = {{
-                                            padding: "7px",
+                                            padding: "5px",
+                                            height: "100%"
                                         }}
                                     >
-                                        <div style = {{ width: '100%', height: '100%' }} >
-                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
+                                       <UserFeed />
+                                    </CardText>
+                                </Card>
+                            </Flex>
+
+                            <Flex flex = "40" style = {{ height: "100%", padding: "0px 10px" }} >
+                                <Card containerStyle = {{ padding: "5px", height: "100%" }} style = {{ height: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "5px",
+                                            height: "100%"
+                                        }}
+                                    >
+                                       <ViewsManager />
+                                    </CardText>
+                                </Card>
+                            </Flex>
+
+                            <Flex flex = "30" style = {{ height: "100%" }} >
+                                <Card containerStyle = {{ padding: "5px", height: "100%" }} style = {{ height: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "5px",
+                                            height: "100%"
+                                        }}
+                                    >
+                                        <Flex layout = "column" style = {{ width:'100%', height:'100%' }} >
+
+                                            <RecentViews />
+
+                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
                                                 <div 
                                                     style = {{ 
                                                         color: this.props.settings.colors.overviewButtonsColor.text, 
                                                         margin: "0 auto",
-                                                        width: "85px", 
+                                                        width: "130px", 
                                                         paddingTop: "4px",
                                                         fontSize: "18px",
                                                         fontWeight: "normal"
                                                     }} 
                                                 > 
-                                                    User Feed 
+                                                    Announcements
                                                 </div>
                                             </div>
-                                            <UserFeed />
-                                        </div>
-                                    </CardText>
-                                </Card>
-                            </Flex>
-
-                            <Flex flex = "33" style = {{ height: "100%" }} >
-                                <Card containerStyle = {{ padding: "7px" }} style = {{ height: "100%", overflow: "auto" }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "7px",
-                                        }}
-                                    >
-                                        <div>
-                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
-                                                <div 
-                                                    style = {{ 
-                                                        color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                        margin: "0 auto",
-                                                        width: "115px", 
-                                                        paddingTop: "4px",
-                                                        fontSize: "18px",
-                                                        fontWeight: "normal"
-                                                    }} 
-                                                > 
-                                                    View Manager 
-                                                </div>
-                                            </div>
-                                            <ViewsManager />
-                                        </div>
-                                    </CardText>
-                                </Card>
-                            </Flex>
-
-                            <Flex flex = "33" style = {{ height: "100%", paddingLeft: "10px" }} >
-                                <Card containerStyle = {{ padding: "7px" }} style = {{ height: "100%", overflowY: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "7px",
-                                        }}
-                                        id = "rightCard"
-                                    >
-                                        <Flex layout = "column" >
-                                            <Flex style = {{ height: "280px" }} >
-                                                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
-                                                    <div 
-                                                        style = {{ 
-                                                            color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                            margin: "0 auto", 
-                                                            width: "110px", 
-                                                            paddingTop: "4px",
-                                                            fontSize: "18px",
-                                                            fontWeight: "normal"
-                                                        }} 
-                                                    > 
-                                                        Recent Views 
-                                                    </div>
-                                                </div>
-
-                                                <RecentViews />
-                                            </Flex>
-
-                                            <Flex>
-                                                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, height: "30px", marginBottom: "3px" }} >
-                                                    <div 
-                                                        style = {{ 
-                                                            color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                            margin: "0 auto", 
-                                                            width: "130px", 
-                                                            paddingTop: "4px",
-                                                            fontSize: "18px",
-                                                            fontWeight: "normal"
-                                                        }} 
-                                                    > 
-                                                        Announcements
-                                                    </div>
-                                                </div>
-                                                <AnnouncementsDisplay cardHeight = { this.state.height }/>
+                                            <Flex flex>
+                                                <AnnouncementsDisplay />
                                             </Flex>
                                         </Flex>
 
-                                        {/* <HelpChat /> */}
-
                                     </CardText>
                                 </Card>
                             </Flex>
+
+
                         </Flex>
                     </Flex>
           </MuiThemeProvider>

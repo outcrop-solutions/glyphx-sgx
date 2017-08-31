@@ -13,7 +13,9 @@ import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
+import VotingModal from './VotingModal.js';
 import './General.css';
+import './AnnouncementsDisplay.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 
@@ -23,39 +25,44 @@ class AnnouncementsDisplay extends React.Component {
         var context = this;
         var announcementList = [["Maintenance", "We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
                                 ["Release", "Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "Click to vote on which features you would like to see in the next release."], 
-                                ["Shout", "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to read article."],
+                                ["Poll", "Click to vote on which features you would like to see first in the next release."], 
+                                ["Shout", "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."],
                                 ["Maintenance", "filler text"], 
                                 ["Release", "filler text"],
                                 ["Poll", "filler text"], 
-                                ["Shout", "filler text"]];
+                                ["Shout", "filler text"],
+                                ["Maintenance", "filler text 2"], 
+                                ["Release", "filler text 2"],
+                                ["Poll", "filler text 2"], 
+                                ["Shout", "filler text 2"]];
 
         var announcements = announcementList.map( function(announcement) {
             return (
 
-                (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } /> : 
-                    (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } /> :
-                        (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } /> :
-                            (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } /> :
+                (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> : 
+                    (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                        (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                            (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
                                 "Error! Announcement Type Not Recognized!!"
                 ))))
             )
         });
 
         return (
-            <Flex layout = "column">
-                <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
-                    <CardText
-                        style = {{
-                            padding: "7px 7px 5px 7px",
-                        }}
-                    >
-                        <div style = {{ maxHeight: (this.props.cardHeight - 555 + "px"), overflow: "auto" }} >
-                            {announcements}
-                        </div>
-                    </CardText>
-                </Card>
-                
+            <Flex layout = "column" style = {{ height: "100%" }} >
+
+                    <Card containerStyle = {{ height: "100%", padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} style = {{ height: "100%" }} >
+                        <CardText
+                            style = {{
+                                padding: "7px",
+                                height: "100%"
+                            }}
+                        >
+                            <div className = "announcementsScroll" style = {{ height: "100%", overflowY: "auto", overflowX: "hidden" }} >
+                                {announcements}
+                            </div>
+                        </CardText>
+                    </Card>
             </Flex>
         );
     }
@@ -65,12 +72,13 @@ class MaintenanceAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px" }}  >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
-                        marginBottom: "2px",
-                        backgroundColor: this.props.settings.colors.announcementColors.maintenance
+                        marginTop: (this.props.first ? "0px" : "3px"),
+                        backgroundColor: this.props.settings.colors.announcementColors.maintenance,
+                        borderRadius: "5px"
                     }}
                     className = "cursorHand"
                     //onClick = {  }
@@ -101,12 +109,13 @@ class ReleaseAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px" }}  >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
-                        marginBottom: "2px",
-                        backgroundColor: this.props.settings.colors.announcementColors.release
+                        marginTop: (this.props.first ? "0px" : "3px"),
+                        backgroundColor: this.props.settings.colors.announcementColors.release,
+                        borderRadius: "5px"
                     }}
                     className = "cursorHand"
                     //onClick = {  }
@@ -135,18 +144,34 @@ class ReleaseAnnouncement extends React.Component {
 
 class PollAnnouncement extends React.Component {
 
+    state = {
+        display: false
+    }
+
+    toggleDisplay = () => {
+        if (this.state.display) {
+            this.setState({ display: false });
+        }
+        else {
+            this.setState({ display: true });
+        }
+        
+    }
+
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px" }}  >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
-                        marginBottom: "2px",
-                        backgroundColor: this.props.settings.colors.announcementColors.poll
+                        marginTop: (this.props.first ? "0px" : "3px"),
+                        backgroundColor: this.props.settings.colors.announcementColors.poll,
+                        borderRadius: "5px"
                     }}
                     className = "cursorHand"
-                    //onClick = {  }
+                    onClick = { this.toggleDisplay }
                 >
+                    <VotingModal display = { this.state.display } toggleDisplay = { this.toggleDisplay.bind(this)} />
                     <Flex layout = "row" style = {{ width: '100%', height: '100%' }} >
                         <Flex flex = "10" >
                             <div style = {{ display: "table", height: "100%", width: "100%" }} >
@@ -173,12 +198,13 @@ class ShoutAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px" }}  >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
-                        marginBottom: "2px",
-                        backgroundColor: this.props.settings.colors.announcementColors.shout
+                        marginTop: (this.props.first ? "0px" : "3px"),
+                        backgroundColor: this.props.settings.colors.announcementColors.shout,
+                        borderRadius: "5px"
                     }}
                     className = "cursorHand"
                     //onClick = {  }

@@ -124,10 +124,10 @@ const themeSettingColors = [
             funnelMiddleBody: "#ffe2a4",
             funnelMiddleLine: "#feefcf",
             funnelMiddleHover: shadeHexColors("#FFC857", 0.3),
-            funnelBottom: "#FFD275",
-            funnelBottomBody: "#ffe8b5",
-            funnelBottomLine: "#fff5df",
-            funnelBottomHover: shadeHexColors("#FFD275", 0.3),
+            funnelBottom: "#edce8e",
+            funnelBottomBody: "#edce8e",
+            funnelBottomLine: shadeHexColors("#edce8e", 0.4),
+            funnelBottomHover: shadeHexColors("#edce8e", 0.3),
             myViewsButton: shadeHexColors("#2d3091", 0.1)
         },
         announcementColors: {
@@ -250,6 +250,12 @@ const themeSettingColors = [
             funnelMiddle: "blue",
             funnelBottom: "yellow",
             myViewsButton: "#9d2235"
+        },
+        announcementColors: {
+            maintenance: "#e9dc9a",
+            release: "#a9b9e0",
+            poll: "#e4c9b3",
+            shout: "#eec0c0"
         }
     },
 ]

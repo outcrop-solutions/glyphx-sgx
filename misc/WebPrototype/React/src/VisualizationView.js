@@ -108,11 +108,11 @@ class VisualizationView extends React.Component {
                     <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
 
                         <Flex >
-                            <div className = "TopNav" id="TopNav" style = {{ width:'100%', height:'56px',transition: '1s' }}>
+                            <div className = "TopNav" id = "TopNav" style = {{ width:'100%', height:'56px', transition: '1s' }}>
 
                                 <TopNavBar glyphWindowWidth = { this.state.glyphWindowWidth } />
 								
-                                <div id  = "filterNav" className = "sidenav" >
+                                <div id  = "filterNav" className = "sidenav" style = {{ fontWeight: "normal" }} >
                                     <FilterSideBar/>
                                 </div>
 					

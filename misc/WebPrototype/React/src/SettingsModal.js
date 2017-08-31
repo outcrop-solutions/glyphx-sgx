@@ -44,22 +44,24 @@ class SettingsModal extends React.Component {
     onSettingsSave() {
         this.setState({ themeSelection: this.state.themeTempSelection });
         this.setState({ overlapSelection: this.state.overlapTempSelection });
-        this.props.dispatch(editSettings(this.state.themeTempSelection, (this.state.overlapTempSelection === 0 ? false : true), false));
+        this.props.dispatch(editSettings(this.state.themeTempSelection, (this.props.homePage ? null : (this.state.overlapTempSelection === 0 ? false : true)), false));
 
-        var gv = document.getElementById('GlyphViewerContainer');
-        var filterNav = document.getElementById("filterNav");
-        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
+        if (!this.props.homePage) {
+            var gv = document.getElementById('GlyphViewerContainer');
+            var filterNav = document.getElementById("filterNav");
+            var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
 
-        if (this.state.overlapTempSelection === 0) {
-            if (filterNavOpen) {
-                gv.style.width = this.props.glyphWindowWidth + "px";
+            if (this.state.overlapTempSelection === 0) {
+                if (filterNavOpen) {
+                    gv.style.width = this.props.glyphWindowWidth + "px";
+                }
+                else {
+                    gv.style.width = "100%";
+                }   
             }
             else {
                 gv.style.width = "100%";
-            }   
-        }
-        else {
-            gv.style.width = "100%";
+            }
         }
     }
 
@@ -111,21 +113,24 @@ class SettingsModal extends React.Component {
                 </DropDownMenu>
 
                 <br />
-
-                <label><h4> Overlap Settings </h4></label>
-                <DropDownMenu
-                    value = { this.state.overlapTempSelection }
-                    onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Overlap") }
-                    iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
-                    underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
-                    selectedMenuItemStyle = {{ 
-                        backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
-                        color: this.props.settings.colors.settingsModalColor.selectedText
-                    }}
-                >
-                    <MenuItem value = { 0 } primaryText = "Sidebar pushes view" />
-                    <MenuItem value = { 1 } primaryText = "Sidebar overlaps view" />
-                </DropDownMenu>
+                {this.props.homePage ? null :
+                    <div>
+                        <label><h4> Overlap Settings </h4></label>
+                        <DropDownMenu
+                            value = { this.state.overlapTempSelection }
+                            onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Overlap") }
+                            iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
+                            underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
+                            selectedMenuItemStyle = {{ 
+                                backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
+                                color: this.props.settings.colors.settingsModalColor.selectedText
+                            }}
+                        >
+                            <MenuItem value = { 0 } primaryText = "Sidebar pushes view" />
+                            <MenuItem value = { 1 } primaryText = "Sidebar overlaps view" />
+                        </DropDownMenu>
+                    </div>
+                }
             </Dialog>             
         );
     }

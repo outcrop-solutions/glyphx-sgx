@@ -7,7 +7,7 @@ import Checkbox from 'material-ui/Checkbox';
 
 
 /**
- * This class represents the announcements dialog that can be used to send the user information about updates and latest news.
+ * This class represents the alerts dialog that can be used to send the user information about updates and latest news.
  * Initially when the application is 1st loaded, this will make a server call to check for important updates and show it to the user upon login.
  * However, this can be used even after that. On click of the notification(bell) icon on the toolbar this will get displayed.
  */
@@ -16,7 +16,7 @@ class AlertsModal extends React.Component {
 	constructor(props) {
 		super(props);
 
-		var serverResponse = this.checkForAnnouncements();
+		var serverResponse = this.checkForAlerts();
 
 		this.state = {
 			displayText: serverResponse.textToDisplay,
@@ -27,10 +27,10 @@ class AlertsModal extends React.Component {
 
 
 	/**
-	 * Make server call to check for announcements
+	 * Make server call to check for alerts
 	 * Check whether the new dialog box needs to be displayed at user login or not.
 	 */
-	checkForAnnouncements() {
+	checkForAlerts() {
 		var returnObj = {
 			textToDisplay: "Notifications will disappear after 1 week.",
 			forceDisplayAfterLogin: false
@@ -59,13 +59,13 @@ class AlertsModal extends React.Component {
 	 * It checks whether the checkbox for "do not show me this message again" is checked.
 	 * If yes then sends a server call to update the information on the server.
 	 */
-	onOkAnnouncements = (evt) => {
+	onOkAlerts = (evt) => {
 		var notificationBadge = document.getElementById('notificationBadge');
-		console.log('Announcements seen');
+		console.log('Alerts seen');
 		
 		if (this.refs['dontDisplayAgain'] && this.refs.dontDisplayAgain.isChecked()) {
 			//send server call to notify that this message is seen by the user.
-			console.log('Announcements not to show again');
+			console.log('Alerts not to show again');
 		}
 		
 		if (notificationBadge) {
@@ -79,13 +79,13 @@ class AlertsModal extends React.Component {
 	render(){
 		return(
 			<Dialog
-				title = "Announcements"
+				title = "Alerts"
 				actions = {
 					[
 						<FlatButton
 							label = "OK"
 							primary = { true }
-							onClick = { (evt) => this.onOkAnnouncements(evt) }
+							onClick = { (evt) => this.onOkAlerts(evt) }
 							style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
 						/>
 					]
@@ -93,7 +93,7 @@ class AlertsModal extends React.Component {
 				modal = { true }
 				open = { this.props.alertsDisplay }
 			>
-				<label><h4> {this.state.displayText === "" ? "No Announcements." : this.state.displayText} </h4></label>
+				<label><h4> {this.state.displayText === "" ? "No Alerts." : this.state.displayText} </h4></label>
 					
 					{this.props.checkBoxDisplay ? 
 						<Checkbox
@@ -130,6 +130,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Announcements Dialog component to the redux store
+ * Connects the Alerts Dialog component to the redux store
  **/
 export default connect(mapStateToProps,null,null,{withRef:true})(AlertsModal);

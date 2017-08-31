@@ -110,7 +110,7 @@ class TopNavBar extends React.Component {
                 <ToolbarGroup>
                     <ToolbarSeparator />
 
-                    <IconButton onClick = { this.toggleNav.bind(this) } >
+                    <IconButton onClick = { this.toggleNav.bind(this) } style = {{ display: (this.props.homePage ? "none" : "") }} >
                         <FontIcon className = "fa fa-filter fa-2x" color = '#ffffff' />
                     </IconButton>
 
@@ -162,7 +162,7 @@ class TopNavBar extends React.Component {
                 </Popover>
 
                 {/* Modals */}
-                <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } />
+                <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } homePage = { this.props.homePage } />
 				<AlertsModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
                 <HelpModal />
             </Toolbar>          
