@@ -511,16 +511,16 @@ void HomePageWidget::SetCustomerLogo() {
 		reqOnStartupChecked = settings.value("ReqOnStartupChecked", false).toBool();
 		settings.endGroup();
 		if (!onStartupChecked && !reqOnStartupChecked){
-			st1.setValue("LastLogo", SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico" : ":SGXGUI/Resources/sgx_x.png");
+			st1.setValue("LastLogo", /*SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/ucollege.png" :*/ ":SGXGUI/Resources/fathead-syn-inside.jpg");
 		}
 	}
 
 	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 	if (!QFileInfo::exists(upperRightLogo)) {
-		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/sgx_x.png").toString();
-		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/fathead-syn-inside.jpg").toString();
+		/*if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
 			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/ucollege.png").toString();
-		}
+		}*/
 	}
 	else{
 		st1.setValue("LastLogo", upperRightLogo);

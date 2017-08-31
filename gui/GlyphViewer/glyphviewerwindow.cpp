@@ -667,8 +667,8 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
 			if (valid == 1 || valid == 2){
 				//m_dataEngineConnection->UserAccessControls()->PresetLogoPath(m_dataEngineConnection->GetGlyphEdPath() + inst);
-				MainWindow::UpdateUserMenu(name);
-				UpdateUserMenu();
+				//MainWindow::UpdateUserMenu(name);
+				//UpdateUserMenu();
 				return true;
 			}
 		}
@@ -1917,7 +1917,7 @@ QString GlyphViewerWindow::GetApplicationDisplayName() const {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		return SynGlyphX::Application::applicationName() + " (Powered by " + SynGlyphX::Application::organizationName() + ")";
+		return SynGlyphX::Application::applicationName() + " (" + SynGlyphX::Application::organizationName() + " Inside)";
 	}
 	else {
 

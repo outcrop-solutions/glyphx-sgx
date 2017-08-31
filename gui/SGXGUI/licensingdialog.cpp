@@ -108,19 +108,6 @@ namespace SynGlyphX {
 
 			QMessageBox::information(nullptr, tr("Licensing"), tr("License Status: ") + LicenseStatusToString(licenseStatus, numberOfDaysLeft) + 
 				"\n\n" + tr("A valid license is needed to use SynGlyphX software.  Please contact SynGlyphX (http://www.synglyphx.com) for a license."));
-			/*
-			LicensingDialog dialog(nullptr);
-			if (dialog.exec() == QDialog::Accepted) {
-				if (rlmez_checkout(const_cast<char*>("synglyphx"), version, &numberOfDaysLeft) == 0) {
-					result = true;
-				}
-				else {
-
-					QMessageBox::information(nullptr, tr("Licensing"), tr("License is invalid or expired.  Please obtain a valid license."));
-				}
-				result = false;
-			}
-			*/
 		}
 
 		QDir::setCurrent(previousCurrentDir);
@@ -231,8 +218,6 @@ namespace SynGlyphX {
 		int id = settings.value("UserID", 0).toInt();
 		int type = settings.value("LicenseType", 0).toInt();
 		settings.endGroup();
-		//int id = 4;
-		//int type = 1;
 
 		QStringList allowed;
 		switch (type){
@@ -298,11 +283,8 @@ namespace SynGlyphX {
 
 	std::string LicensingDialog::DecimalToHex(long long to_convert) {
 
-		//char buffer[33];
-		//itoa(to_convert, buffer, 16);
 		std::stringstream ss;
 		ss << std::hex << to_convert;
-		//return std::string(buffer);
 		return ss.str();
 	}
 
