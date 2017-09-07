@@ -10,7 +10,7 @@ import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
 import SettingsModal from './SettingsModal.js';
-import AnnouncementModal from './AnnouncementModal.js'
+import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
 
 
@@ -96,7 +96,7 @@ class TopNavBar extends React.Component {
 
         return(
             <Toolbar 
-                style = {{ padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
+                style = {{ width: "100%", padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
                 ref = "topNavToolbar"
             >
                 {/* Logo */}
@@ -110,7 +110,7 @@ class TopNavBar extends React.Component {
                 <ToolbarGroup>
                     <ToolbarSeparator />
 
-                    <IconButton onClick = { this.toggleNav.bind(this) } >
+                    <IconButton onClick = { this.toggleNav.bind(this) } style = {{ display: (this.props.homePage ? "none" : "") }} >
                         <FontIcon className = "fa fa-filter fa-2x" color = '#ffffff' />
                     </IconButton>
 
@@ -162,8 +162,8 @@ class TopNavBar extends React.Component {
                 </Popover>
 
                 {/* Modals */}
-                <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } />
-				<AnnouncementModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
+                <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } homePage = { this.props.homePage } />
+				<AlertsModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
                 <HelpModal />
             </Toolbar>          
         );
@@ -174,10 +174,10 @@ class TopNavBar extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (settingsModal, announcementsModal, helpModal) => ({
+export const editModalDisplay = (settingsModal, alertsModal, helpModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     settingsModal,
-    announcementsModal,
+    alertsModal,
     helpModal
 });
 

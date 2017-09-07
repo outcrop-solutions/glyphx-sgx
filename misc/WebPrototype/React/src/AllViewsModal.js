@@ -9,7 +9,6 @@ class allViewsModal extends React.Component {
 
 	handleBackClick = () => {
 		this.props.dispatch(editModalDisplay(false));
-		this.props.goBack();
 	}
 	
 	render() {

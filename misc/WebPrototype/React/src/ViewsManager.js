@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import { Card, CardText } from 'material-ui/Card';
+import { Flex } from 'react-flex-material';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
@@ -22,49 +23,11 @@ class ViewsManager extends React.Component {
         loading: false,
         launchReady: false,
         stepIndex: 0,
-        type: ""
+        type: "Funnel",
+        selectionType: "",
+        flipped: false,
+        clicked: false
     };
-
-    componentDidMount() {
-		var style = document.getElementById('themeStyles');
-		
-		if(style != null)
-		{
-			style.parentElement.removeChild(style);
-			console.log('deleting old rules');
-		}
-		
-		style = document.createElement("style");
-
-		// WebKit hack
-		style.appendChild(document.createTextNode(""));
-		style.setAttribute('id','themeStyles');
-
-		// Add the <style> element to the page
-		document.head.appendChild(style);
-		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
-		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
-		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
-		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
-		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
-		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
-		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; }', 6);
-		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
-
-        style.sheet.insertRule('.C-Size-1 { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelTop + ' !important; }', 8);
-        style.sheet.insertRule('.C-Size-1:Hover { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelTopHover + ' !important; }', 9);
-        style.sheet.insertRule('.C-Size-2 { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelMiddle + ' !important; }', 10);
-        style.sheet.insertRule('.C-Size-2:Hover { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelMiddleHover + ' !important; }', 11);
-        style.sheet.insertRule('.C-Size-3 { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelBottom + ' !important; }', 12);
-        style.sheet.insertRule('.C-Size-3:Hover { border-top: 70px solid ' + this.props.settings.colors.homePageColors.funnelBottomHover + ' !important; }', 13);
-
-        style.sheet.insertRule('.funnel-top-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelTopBody + ' !important; }', 14);
-        style.sheet.insertRule('.funnel-middle-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelMiddleBody + ' !important; }', 15);
-        style.sheet.insertRule('.funnel-bottom-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelBottomBody + ' !important; }', 16);
-
-        style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 17);
-    }
 
     dummyAsync = (cb) => {
         this.setState({loading: true}, () => {
@@ -89,48 +52,49 @@ class ViewsManager extends React.Component {
                     loading: false,
                     type: type
                     });
-                    this.props.dispatch(editModalDisplay(true));
                 });
             }
         }
     };
 
     handlePrev = () => {
-    const {stepIndex} = this.state;
-    if (!this.state.loading) {
-      this.dummyAsync(() => this.setState({
-        loading: false,
-        stepIndex: stepIndex - 1,
-      }));
-    }
-  };
-
-    /**
-     * This is called when the collapsibles are clicked.
-     * @param {string} element- this is the name of the element that surrounds the collapsible. Used to scrollTo.
-     */
-    onCollapsibleTriggerClick = (element) => {
-        var elem = this.refs[element];
-
-        if ( !elem.state.isClosed ) {
-            elem.closeCollapsible();
+        if (this.state.flipped) {
+            this.flip();
         }
-        else {
-            if (!this.refs.MarketingAndRecruiting.state.isClosed) {
-                this.refs.MarketingAndRecruiting.closeCollapsible();
-            }
-            if (!this.refs.FinancialAid.state.isClosed) {
-                this.refs.FinancialAid.closeCollapsible();
-            }
-            if (!this.refs.Admissions.state.isClosed) {
-                this.refs.Admissions.closeCollapsible();
-            }
-
-            setTimeout(function () { elem.openCollapsible(); }, 100);
+        const {stepIndex} = this.state;
+        this.setState({ type: "Funnel"});
+        if (!this.state.loading) {
+            this.dummyAsync(() => this.setState({
+                loading: false,
+                stepIndex: stepIndex - 1,
+            }));
         }
+    };
+
+
+    flip(type) {
+        this.setState({
+            flipped: !this.state.flipped,
+            clicked: true,
+        });
+        var context = this;
+        setTimeout(function () {
+            context.setState({
+                type: type
+            });
+        }, 200);
+      
     }
 
-    render(){
+    handleViewSelect = (type) => {
+        this.props.dispatch(editModalDisplay(true));
+        this.setState({
+            selectionType: type
+        });
+    }
+
+
+    render() {
         const contentStyle = {margin: '0 16px'};
         var context = this;
 
@@ -138,13 +102,13 @@ class ViewsManager extends React.Component {
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelTopLine }} key = { title } >
+                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelTopBody }} key = { title } >
                     <CardText
                         style = {{
                             padding: "7px",
                         }}
                         className = "funnel-top-body"
-                        onClick = { context.handleNext.bind(context, title) }
+                        onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title}
                     </CardText>
@@ -156,13 +120,13 @@ class ViewsManager extends React.Component {
 
         var admissions = admList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ height: (title.length > 36 ? "50px" : "35px"), backgroundColor: context.props.settings.colors.homePageColors.funnelMiddleLine }} key = { title } >
+                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelMiddleBody }} key = { title } >
                     <CardText
                         style = {{
                             padding: "7px",
                         }}
                         className = "funnel-middle-body"
-                        onClick = { context.handleNext.bind(context, title) }
+                        onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title}
                     </CardText>
@@ -174,13 +138,13 @@ class ViewsManager extends React.Component {
 
         var financialAid = faList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ height: (title.length > 22 ? "50px" : "35px"), backgroundColor: context.props.settings.colors.homePageColors.funnelBottomLine }} key = { title } >
+                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody }} key = { title } >
                     <CardText
                         style = {{
                             padding: "7px",
                         }}
                         className = "funnel-bottom-body"
-                        onClick = { context.handleNext.bind(context, title) }
+                        onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title}
                     </CardText>
@@ -188,222 +152,206 @@ class ViewsManager extends React.Component {
             )
         });
 
+        var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
+        if (!this.state.clicked) flippedCSS =  "";
+
+        var backButton = <RaisedButton
+                                label = "Back"
+                                onClick = { () => this.flip("Funnel") }
+                                style = {{ 
+                                    width: "100%", 
+                                    display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" ? "" : "none")
+                                }}
+                                buttonStyle = {{
+                                    height: '30px',
+                                    lineHeight: '30px',
+                                    backgroundColor: "#818181"
+                                }} 
+                                labelStyle = {{
+                                    fontSize: '13px',
+                                    color: "#ffffff"
+                                }}
+                                overlayStyle = {{
+                                    height: '30px',
+                                    lineHeight: '30px'
+                                }}
+                            />;
+
         return(
             <div>
+                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", borderRadius: "2px", paddingBottom: "4px" }} >
+                    <div 
+                        style = {{ 
+                            color: this.props.settings.colors.overviewButtonsColor.text, 
+                            margin: "0 auto",
+                            width: "125px", 
+                            paddingTop: "4px",
+                            fontSize: "18px",
+                            fontWeight: "normal"
+                        }} 
+                    > 
+                        Views Manager
+                    </div>
+                </div>
 
-                    
-                    <Stepper activeStep = { this.state.stepIndex } style = {{ marginBottom: "10px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
-                        <Step>
-                            <StepLabel
-                                icon = { 
-                                    (this.state.stepIndex === 0 ?
-                                        <span className = "fa-stack fa-lg">
-                                            <i 
-                                                className = "fa fa-circle fa-stack-2x" 
-                                                style = {{     
-                                                    fontSize: "26px",
-                                                    color: this.props.settings.colors.overviewButtonsColor.background,
-                                                    margin: "5px 0px 0px 0px"
-                                                }} 
-                                            />
-                                            <strong className = "fa-stack-1x" style = {{ fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text }} >1</strong>
-                                        </span> 
-                                    :
-                                        <span className = "fa-stack fa-lg">
-                                            <i 
-                                                className = "fa fa-circle fa-stack-2x" 
-                                                style = {{     
-                                                    fontSize: "25px",
-                                                    color: "#ffffff",
-                                                    margin: "5px 0px 0px 0px",
-                                                }} 
-                                            />
-                                            <i 
-                                                className = "fa fa-check-circle fa-stack-1x" 
-                                                style = {{     
-                                                    fontSize: "27px",
-                                                    color: this.props.settings.colors.overviewButtonsColor.background,
-                                                    margin: "-1px 7px 0px 0px"
-                                                }} 
-                                            />
-                                        </span>
-                                    )
-                                } 
-                        >
-                            <label style = {{ color: "#ffffff", fontWeight: "normal" }} > Select a Category </label>
-                        </StepLabel>
-                        </Step>
-                        <Step>
-                            <StepLabel
-                                icon = {
+                <Stepper activeStep = { this.state.stepIndex } style = {{ borderRadius: "2px", height: "60px", marginBottom: "10px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
+                    <Step>
+                        <StepLabel
+                            icon = { 
+                                (this.state.stepIndex === 0 ?
                                     <span className = "fa-stack fa-lg">
                                         <i 
                                             className = "fa fa-circle fa-stack-2x" 
                                             style = {{     
                                                 fontSize: "26px",
-                                                color: (this.state.stepIndex === 1 ? this.props.settings.colors.overviewButtonsColor.background : "grey" ),
-                                                margin: "5px 0px 0px 0px",
+                                                color: this.props.settings.colors.overviewButtonsColor.background,
+                                                margin: "5px 0px 0px 0px"
                                             }} 
                                         />
-                                        <strong className = "fa-stack-1x" style = {{ fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text }} >
-                                            <label style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ) }} > 2 </label>
-                                        </strong>
+                                        <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
                                     </span> 
-                                }
-                            >
-                                <label style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), fontWeight: "normal" }} > Select a View </label>
-                            </StepLabel>
-                        </Step>
-                    </Stepper>
-
-                    <ExpandTransition loading = { this.state.loading } open = { true } style = {{ backgroundColor: "#f7f7f7" }} >
-                        <div style = {{ width: "100%" }} >
-                                <div style = {{ width: "100%" }} >
-                                        {this.state.stepIndex === 0 ? 
-                                            <div style = {{ width: "100%" }} >
-                                                <div style = {{ margin: "0 auto", width: "370px" }}>
-                                                    <Collapsible 
-                                                        ref = "MarketingAndRecruiting"
-                                                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this, 'MarketingAndRecruiting') }
-                                                        transitionTime = {200} 
-                                                        contentOuterClassName = "C-Size-1-body"
-                                                        contentInnerClassName = "C-Size-inner"
-                                                        triggerClassName = "C-Size-1"
-                                                        triggerOpenedClassName = "C-Size-1"
-                                                        trigger = {
-                                                            <div style = {{ margin: "-60px auto 0px", width: "78%" }} >
-                                                                <span style = { styles.textSpan } >
-                                                                    MARKETING &amp; RECRUITING
-                                                                </span>
-                                                            </div>
-                                                        }
-                                                    >
-                                                        <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.funnelTopBody }} >
-                                                            <CardText
-                                                                style = {{
-                                                                    padding: "7px",
-                                                                }}
-                                                            >
-                                                                {marketingAndRecruiting}
-                                                            </CardText>
-                                                        </Card>
-                                                        
-                                                    </Collapsible>
-
-                                                    <Collapsible 
-                                                        ref = "Admissions"
-                                                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this, 'Admissions') }
-                                                        transitionTime = {200} 
-                                                        contentOuterClassName = "C-Size-2-body"
-                                                        contentInnerClassName = "C-Size-inner"
-                                                        triggerClassName = "C-Size-2"
-                                                        triggerOpenedClassName = "C-Size-2"
-                                                        trigger = {
-                                                            <div style = {{ margin: "-60px auto 0px", width: "48%" }} >
-                                                                <span style = { styles.textSpan } >
-                                                                    ADMISSIONS
-                                                                </span>
-                                                            </div>
-                                                        }
-                                                    >
-                                                        <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.funnelMiddleBody }} >
-                                                            <CardText
-                                                                style = {{
-                                                                    padding: "7px",
-                                                                }}
-                                                            >
-                                                                {admissions}
-                                                            </CardText>
-                                                        </Card>
-                                                    </Collapsible>
-
-                                                    <Collapsible
-                                                        ref = "FinancialAid"
-                                                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this, 'FinancialAid') }
-                                                        transitionTime = {200} 
-                                                        contentOuterClassName = "C-Size-3-body"
-                                                        contentInnerClassName = "C-Size-inner"
-                                                        triggerClassName = "C-Size-3"
-                                                        triggerOpenedClassName = "C-Size-3"
-                                                        trigger = {
-                                                            <div style = {{ margin: "-60px auto 0px", width: "71%" }} >
-                                                                <span style = { styles.textSpan } >
-                                                                    FINANCIAL AID
-                                                                </span>
-                                                            </div>
-                                                        }
-                                                    >
-                                                        <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.funnelBottomBody }} >
-                                                            <CardText
-                                                                style = {{
-                                                                    padding: "7px",
-                                                                }}
-                                                            >
-                                                               {financialAid}
-                                                            </CardText>
-                                                        </Card>
-                                                    </Collapsible>
-
-                                                </div>
-                                                <div style = {{ margin: "0 auto", width: "370px" }}>
-                                                    <RaisedButton 
-                                                        label = "My Views"
-                                                        style = {{
-                                                            width: "220px",
-                                                            margin: "10px 0px 0px 75px"
-                                                        }}
-                                                        buttonStyle = {{
-                                                            height: '50px',
-                                                            lineHeight: '50px',
-                                                            backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
-                                                        }} 
-                                                        labelStyle = {{
-                                                            fontSize: '12px',
-                                                            color: this.props.settings.colors.overviewButtonsColor.text,
-                                                            fontFamily: "Arial Black, Gadget, sans-serif",
-                                                            margin: "0px 0px 0px -3px",
-                                                            paddingLeft: "0px",
-                                                            paddingRight: "0px"
-                                                        }}
-                                                        overlayStyle = {{
-                                                            height: '50px',
-                                                            lineHeight: '50px'
-                                                        }}
-                                                        onClick = { this.handleNext.bind(this, "My Views") }
-                                                        primary = {true } 
-                                                    />
-                                                </div>
-                                            </div>
-                                            : 
-                                            (this.state.type === "My Views" ? <MyViews /> : <AllViewsModal type = { this.state.type } goBack = { this.handlePrev.bind(this) } /> )
-                                        }
-                                    <div style = {{ marginTop: 12 }} >
-                                        <FlatButton
-                                            label = "Back"
-                                            backgroundColor = "#dcdcdc"
-                                            onClick = { this.handlePrev }
-                                            style = {{ marginRight: 12 }}
-                                            style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "0px 0px 0px 11px", bottom: "10px" }}
+                                :
+                                    <span className = "fa-stack fa-lg">
+                                        <i 
+                                            className = "fa fa-circle fa-stack-2x" 
+                                            style = {{     
+                                                fontSize: "23px",
+                                                color: "#ffffff",
+                                                margin: "6px 0px 0px 0px",
+                                            }} 
                                         />
+                                        <i 
+                                            className = "fa fa-check-circle fa-stack-1x" 
+                                            style = {{     
+                                                fontSize: "27px",
+                                                color: this.props.settings.colors.overviewButtonsColor.background,
+                                                margin: "-1px 7px 0px 0px"
+                                            }} 
+                                        />
+                                    </span>
+                                )
+                            } 
+                    >
+                        <label style = {{ color: "#ffffff", fontWeight: "normal" }} > Select a Category </label>
+                    </StepLabel>
+                    </Step>
+                    <Step>
+                        <StepLabel
+                            icon = {
+                                <span className = "fa-stack fa-lg">
+                                    <i 
+                                        className = "fa fa-circle fa-stack-2x" 
+                                        style = {{     
+                                            fontSize: "26px",
+                                            color: (this.state.stepIndex === 1 ? this.props.settings.colors.overviewButtonsColor.background : "grey" ),
+                                            margin: "5px 0px 0px 0px",
+                                        }} 
+                                    />
+                                    <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-1px 0px 0px" }} > 2 </div>
+                                </span> 
+                            }
+                            style = {{ marginRight: "8px" }}
+                        >
+                            <label style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), fontWeight: "normal" }} > Select a View </label>
+                        </StepLabel>
+                    </Step>
+                </Stepper>
+
+                    <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
+                        <div>
+                            <div style = {{ height: "100%", backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "2px", }} >
+                                <div 
+                                    className = "Card" 
+                                    style = {{ 
+                                        marginBottom: "0px", 
+                                        width: "100%", 
+                                        display: (this.state.stepIndex === 0 ? "" : "none"),
+                                        marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" ? "-250px" : "0px")
+                                    }} 
+                                >
+                                    <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} >
+
+
+                                        <div onClick = { () => this.flip("MarketingAndRecruiting") } className = "C-Size-1" >
+                                            <div style = {{ margin: "-45px auto 0px", width: "216px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                                MARKETING &amp; RECRUITING
+                                            </div>
+                                        </div>
+
+                                        <div onClick = { () => this.flip("Admissions") } className = "C-Size-2" >
+                                            <div style = {{ margin: "-45px auto 0px", width: "100px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                                ADMISSIONS
+                                            </div>
+                                        </div>
+
+                                        <div onClick = { () => this.flip("FinancialAid") } className = "C-Size-3" >
+                                            <div style = {{ margin: "-45px auto 0px", width: "118px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                                FINANCIAL AID
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px" }} >
+                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "52px 0px 68px" }} > {marketingAndRecruiting} {backButton} </div> 
+                                                : (this.state.type === "Admissions" ? <div style = {{ margin: "18px 0px 32px" }} > {admissions} {backButton} </div> 
+                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: "69px 0px 86px" }} > {financialAid} {backButton} </div> : null)) 
+                                            }
+                                            
                                     </div>
                                 </div>
+                                    
+                                    
+                                
+                                {this.state.type === "My Views" ? <MyViews /> : null}
+
+                                <FlatButton
+                                    label = "Back"
+                                    backgroundColor = "#dcdcdc"
+                                    onClick = { this.handlePrev }
+                                    style = {{ marginRight: 12 }}
+                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "0px 0px 0px 11px", bottom: "10px" }}
+                                />
+                                <AllViewsModal type = { this.state.selectionType } />
+                            </div>
+                        
+
+                            {this.state.stepIndex === 0 ? 
+                                <RaisedButton 
+                                    label = "My Views"
+                                    style = {{
+                                        width: "100%",
+                                        margin: "10px auto",
+                                    }}
+                                    buttonStyle = {{
+                                        height: '50px',
+                                        lineHeight: '50px',
+                                        backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+                                    }} 
+                                    labelStyle = {{
+                                        fontSize: '14px',
+                                        color: this.props.settings.colors.overviewButtonsColor.text,
+                                        fontFamily: "Arial Black, Gadget, sans-serif",
+                                        margin: "0px 0px 0px -3px",
+                                        paddingLeft: "0px",
+                                        paddingRight: "0px"
+                                    }}
+                                    overlayStyle = {{
+                                        height: '50px',
+                                        lineHeight: '50px',
+                                    }}
+                                    onClick = { this.handleNext.bind(this, "My Views") }
+                                    primary = {true } 
+                                />
+                                : 
+                                null
+                            }
                         </div>
                     </ExpandTransition>
-                </div>
-                
-                     
+            </div>
         );
     }
 };
 
-const styles = {
-    textSpan: {
-        paddingLeft: '10px',
-        fontSize: '1rem',
-        fontFamily: "Arial Black, Gadget, sans-serif",
-        color: "#000000"
-    }
-}
 
 export const editModalDisplay = (allViewsModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
