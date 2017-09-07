@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import { Card, CardText } from 'material-ui/Card';
 import { withRouter } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -16,6 +16,7 @@ import FontIcon from 'material-ui/FontIcon';
 import Select from 'react-select';
 import ReactQuill from 'react-quill';
 import theme from 'react-quill/dist/quill.snow.css';
+import Divider from 'material-ui/Divider';
 import './General.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -47,161 +48,155 @@ class UserFeed extends React.Component {
             );
 		});
 
-        var postList = [["Mark Sloan", "./Res/Img/mark.png", "Lunch is on me everyone!"], 
-                        ["Bradley Lewis", "./Res/Img/brad.png", "Marwane & Aditya are the best! Sorry for messing with your desks!"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "I think the office is haunted, the 'Ed' keeping moving by itself..."],
-                        ["Mark Sloan", "./Res/Img/mark.png", "I need to make a care package for my son, daily pictures of my dog to make sure he doesnt forget."],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "Day 56, still waiting for a day to pass without someone making awkward eye contact through the window."]];
+        var postList = [["Mark Sloan", "./Res/Img/mark.png", "CEO", "Lunch is on me everyone!"], 
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "Marwane & Aditya are the best! Sorry for messing with your desks!"],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "I think the office is haunted, the 'Ed' keeping moving by itself..."],
+                        ["Mark Sloan", "./Res/Img/mark.png", "CEO", "I need to make a care package for my son, daily pictures of my dog to make sure he doesnt forget."],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "Day 56, still waiting for a day to pass without someone making awkward eye contact through the window."],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "1"],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "2"],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "3"],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "4"],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "5"],
+                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "6"],
+                        ];
 
         var posts = postList.map( function(post) {
             return (
-                <Card containerStyle = {{ padding: "0px", borderRadius: "10px" }} style = {{ borderRadius: "10px" }} key = { post } >
+                <Card containerStyle = {{ padding: "0px", borderRadius: "10px" }} style = {{ borderRadius: "10px", paddingBottom: "2px", marginTop: (post === postList[0] ? "0px" : "7px") }} key = { post } >
                     <CardText
                         style = {{
                             padding: "5px",
-                            marginTop: (post === postList[0] ? "0px" : "7px"),
                             backgroundColor: "#f5f5ff",
                             borderRadius: "10px"
                         }}
                     >
-                        <Flex layout = "column">
-                            <Flex layout = "row" >
-                                <Flex flex = "20" >
-                                    <div style = {{ width: "50px", margin: "0 auto" }} >
-                                        <img src = { post[1] } className = "img-circle" style = {{ margin: "0 auto" }} alt = { post[0] }/>
-                                    </div>
-                                </Flex>
+                        <Flexbox flexDirection="row" minWidth="100%" >
 
-                                <Flex flex = "80" style = {{ padding: "7px 0px 0px 7px" }}>
-                                    <div style = {{ marginBottom: "3px" }} > {post[2]} </div>
-                                    <Flex layout = "row" >
-                                        <Flex flex = "15" >
-                                            <div style = {{ margin: "0 auto", marginTop: "2px", width: "22px" }} >
-                                                <i className = "fa fa-comments" style = {{ fontSize: "17px" }} />
-                                            </div>
-                                        </Flex>
+                                <img src = { post[1] } className = "img-circle" style = {{ marginRight: "10px" }} alt = { post[0] }/>
+ 
+                            <Flexbox flexDirection="column" style = {{ width: "100%" }} >
+                                <Flexbox style = {{ height: "100%" }} > 
+                                    {post[3]}
+                                </Flexbox>
 
-                                        <Flex flex = "15"  style = {{ paddingLeft: "5px", marginTop: "2px" }} >
-                                            <i className = "fa fa-thumbs-up" style = {{ fontSize: "17px" }} />
-                                        </Flex>
-                                        <Flex flex = "70" >
-                                            <div style = {{ width: "100%", textAlign: "right", paddingRight: "5px" }} >
-                                                - { post[0] }
-                                            </div>
-                                        </Flex>
-                                    </Flex>
-                                </Flex>
-                            </Flex>
+                                <Divider style = {{ marginBottom: "5px" }} />
 
-                            
-                        </Flex>
+                                <Flexbox flexDirection="row" minWidth="100%" >
+
+                                        <i className = "fa fa-comments" style = {{ fontSize: "17px", marginRight: "15px" }} />
+                                        <i className = "fa fa-thumbs-up" style = {{ fontSize: "17px",marginRight: "25px" }} />
+                                        <div> 9/5/2017 </div>
+
+                                    <Flexbox style = {{ width: "100%" }} > 
+                                        <div style = {{ width: "100%", textAlign: "right" }} > 
+                                            - { post[0] }
+                                        </div>
+                                    </Flexbox>
+                                </Flexbox>
+                            </Flexbox>
+                        </Flexbox>
+                        
+                        
                     </CardText>
                 </Card>
             )
         });
 
-
         return (
-            <Flex layout = "column" style = {{ height: "100%" }} >
-                
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", paddingBottom: "4px" }} >
+            <Flexbox flexDirection="column" style = {{ height: "100%", minHeight: "0" }}  > 
+                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginBottom: "3px", paddingBottom: "4px" }} >
                     <div 
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "85px", 
+                            width: "85px",
                             paddingTop: "4px",
                             fontSize: "18px",
                             fontWeight: "normal"
                         }} 
                     > 
-                        User Feed 
+                        User Feed
                     </div>
                 </div>
-
-                <Flex flex>
-                    
-                    <Flex 
-                        layout = "column" 
-                        style = {{ 
-                            height: "100%", 
-                            backgroundColor: this.props.settings.colors.homePageColors.subBackground, 
-                            padding: "7px",
-                            borderRadius: "3px"
-                        }} 
-                    >
-
-                        <Select 
-                                simpleValue
-                                clearable = { false }
-                                value = { this.state.teamSelectValue } 
-                                options = { teamList } 
-                                onChange = { this.onTeamSelectChange } 
-                                style = {{
-                                    margin: "0px 0px 7px 0px",
-                                }}
-                            />
-
-                        <Flex flex style = {{ overflow: "auto", padding: "0px 10px" }} >
-                            {posts}
-                        </Flex>
-
-                        <div id = "toolbar" style = {{ marginTop: "7px", backgroundColor: "#ddddf8" }} >
-                            <Flex layout = "row">
-                                <button className = "ql-italic"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "ql-underline"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "ql-strike"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-                                
-                                <button className = "ql-list" value = "bullet"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "ql-align"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "ql-align" value = "center"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "ql-align" value = "right"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "ql-link"></button>
-                                <Flex divider />
-                                <Flex divider />
-                                <Flex divider />
-
-                                <button className = "fa fa-cube" onClick = { () => console.log("custom clicked") } ></button>
-                            </Flex>
-                        </div>
-
-                        <ReactQuill 
-                            theme = "snow"
-                            modules = {{ toolbar: '#toolbar' }}
+                <Flexbox flexDirection="column" style = {{ height: "100%", minHeight: "0", padding: "7px", borderRadius: "2px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }}  > 
+                    <Select 
+                        simpleValue
+                        clearable = { false }
+                        value = { this.state.teamSelectValue } 
+                        options = { teamList } 
+                        onChange = { this.onTeamSelectChange } 
+                        style = {{
+                            margin: "0px 0px 7px 0px",
+                        }}
+                    />
+                
+                    <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
+                        <div
+                            style = {{
+                                padding: "7px 7px 0px 7px",
+                                height: "100%",
+                                width: "100%",
+                                borderRadius: "2px",
+                                overflowY: "auto"
+                            }}
+                            className = "announcementsScroll"
                         >
-                            <div className = "my-editing-area" style = {{ height: "120px", overflow: "auto", backgroundColor: "#f5f5ff" }} />
-                        </ReactQuill>
-                    </Flex>
-                </Flex>
+                            {posts}
 
-            </Flex>
+                        </div>
+                    </Flexbox>
+
+                    <div id = "toolbar" style = {{ marginTop: "7px", backgroundColor: "#ddddf8" }} >
+                        <Flexbox flexDirection="row" >
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-italic"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-underline"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-strike"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-list" value = "bullet"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-align"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-align" value = "center"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-align" value = "right"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "ql-link"></button>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <button className = "fa fa-cube" onClick = { () => console.log("custom clicked") } ></button>
+                            </Flexbox>
+
+                        </Flexbox>
+                    </div>
+
+                    <ReactQuill 
+                        theme = "snow"
+                        modules = {{ toolbar: '#toolbar' }}
+                    >
+                        <div className = "my-editing-area" style = {{ height: "150px", overflow: "auto", backgroundColor: "#f5f5ff" }} />
+                    </ReactQuill>
+                </Flexbox>
+
+            </Flexbox>
         );
     }
 }

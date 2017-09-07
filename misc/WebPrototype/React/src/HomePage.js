@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import {hideSplashScreen} from './LoadMaskHelper.js';
 import { Card, CardText } from 'material-ui/Card';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -22,15 +22,6 @@ import './General.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 class HomePage extends React.Component {
-    
-
-	// Initial state of the component.
-	state = {
-        glyphViewLoaded: false,
-        glyphWindowWidth: 0,
-        topNavBarHeight: 0,
-        height: 0
-    };
 
 	/**
 	 * This function is called right after the react component is mounted.
@@ -84,71 +75,75 @@ class HomePage extends React.Component {
     }
 
     render() {
+
         return (
-            <MuiThemeProvider>
-                    <Flex layout = "column" style = {{ position: "absolute", width:'100%', height:'100%' }} >
+            <MuiThemeProvider style = {{ height: "100%" }} >
 
-                        <Flex>
-                            <TopNavBar homePage = { true }/>
-                        </Flex>
+                <Flexbox flexDirection="column" minHeight="100vh" style = {{ height: "100vh" }}>
+                    <TopNavBar homePage = { true }/>
+                    
+                    <Flexbox flexGrow = {1} style = {{ height: "100%", margin: "10px 8px 8px", minHeight: "0" }} >
+                        <Flexbox flexDirection="row" minWidth="100%" justifyContent = "space-between" >
+                            <Flexbox style = {{ width: "30%", minHeight: "0" }}>
+                                <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "5px",
+                                            height: "100%",
+                                            width: "100%"
+                                        }}
+                                    >
 
-                        <Flex style = {{ padding: "8px 8px 0px" }} >
-                            <Card containerStyle = {{ padding: "0px" }} style = {{ height: "100%" }} >
-                                <CardText
-                                    style = {{
-                                        padding: "0px",
-                                        height: "100%"
-                                    }}
-                                >
-                                    <div style = {{ width: '100%', height: '100%' }} >
-                                        <div style = {{ width: "450px", margin: "0 auto" }}>
-                                            <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "10px 0px 0px 0px" }} alt = "University Logo"/>
+                                        <UserFeed />
+
+                                    </CardText>
+                                </Card>
+                             </Flexbox>
+                             <Flexbox flexDirection="column" style = {{ width: "40%", margin: "0px 10px" }}>
+                                <Card containerStyle = {{ padding: "0px" }} >
+                                    <CardText
+                                        style = {{
+                                            padding: "0px",
+                                        }}
+                                    >
+                                        <div style = {{ width: '100%' }} >
+                                            <div style = {{ width: "350px", margin: "0 auto" }}>
+                                                <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "10px 0px 0px 0px" }} alt = "University Logo"/>
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardText>
-                            </Card>
-                        </Flex>
-                        
-                        <Flex layout = "row" style = {{ padding: "10px 8px 8px", height: "100%" }}>
-                            <Flex flex = "30" style = {{ height: "100%" }} >
-                                <Card containerStyle = {{ padding: "5px", height: "100%" }} style = {{ height: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "5px",
-                                            height: "100%"
-                                        }}
-                                    >
-                                       <UserFeed />
                                     </CardText>
                                 </Card>
-                            </Flex>
 
-                            <Flex flex = "40" style = {{ height: "100%", padding: "0px 10px" }} >
-                                <Card containerStyle = {{ padding: "5px", height: "100%" }} style = {{ height: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
+
+                                <Flexbox flexGrow = {1} style = {{ height: "100%", marginTop: "10px" }} >
+                                   <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
+                                        <CardText
+                                            style = {{
+                                                padding: "5px",
+                                                height: "100%",
+                                                width: "100%"
+                                            }}
+                                        >
+                                            <ViewsManager />
+                                        </CardText>
+                                    </Card>
+                                </Flexbox>
+
+                             </Flexbox>   
+                             <Flexbox style = {{ width: "30%", minHeight: "0" }} >
+                                <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                     <CardText
                                         style = {{
                                             padding: "5px",
-                                            height: "100%"
+                                            height: "100%",
+                                            width: "100%"
                                         }}
                                     >
-                                       <ViewsManager />
-                                    </CardText>
-                                </Card>
-                            </Flex>
-
-                            <Flex flex = "30" style = {{ height: "100%" }} >
-                                <Card containerStyle = {{ padding: "5px", height: "100%" }} style = {{ height: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "5px",
-                                            height: "100%"
-                                        }}
-                                    >
-                                        <Flex layout = "column" style = {{ width:'100%', height:'100%' }} >
+                                        <Flexbox flexDirection="column" style = {{ height: "100%", minHeight: "0" }}  >
 
                                             <RecentViews />
 
-                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
+                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
                                                 <div 
                                                     style = {{ 
                                                         color: this.props.settings.colors.overviewButtonsColor.text, 
@@ -162,18 +157,18 @@ class HomePage extends React.Component {
                                                     Announcements
                                                 </div>
                                             </div>
-                                            <Flex flex>
-                                                <AnnouncementsDisplay />
-                                            </Flex>
-                                        </Flex>
 
+                                            <AnnouncementsDisplay />
+
+                                        </Flexbox>
                                     </CardText>
                                 </Card>
-                            </Flex>
+                             </Flexbox>   
+                        </Flexbox>
+                    </Flexbox>
 
-
-                        </Flex>
-                    </Flex>
+                </Flexbox>
+                
           </MuiThemeProvider>
         );
     }

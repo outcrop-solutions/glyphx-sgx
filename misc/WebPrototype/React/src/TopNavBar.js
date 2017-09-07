@@ -96,7 +96,7 @@ class TopNavBar extends React.Component {
 
         return(
             <Toolbar 
-                style = {{ padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
+                style = {{ width: "100%", padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
                 ref = "topNavToolbar"
             >
                 {/* Logo */}

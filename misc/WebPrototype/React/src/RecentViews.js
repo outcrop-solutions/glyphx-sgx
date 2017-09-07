@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import { Card, CardText } from 'material-ui/Card';
 import { withRouter } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -29,37 +29,38 @@ class RecentViews extends React.Component {
 
         var recentViews = recentList.map( function(view) {
             return (
-                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ height: "35px", borderRadius: "5px", marginTop: (view === recentList[0] ? "0px" : (view === recentList[3] ? "2px" : "3px")) }} key = { view } >
+                <Card containerStyle = {{ padding: "0px", borderRadius: "5px", width: "100%" }} style = {{ height: "35px", width: "100%", borderRadius: "5px", marginTop: (view === recentList[0] ? "0px" : "3px") }} key = { view } >
                     <CardText
                         style = {{
                             padding: "7px",
                             backgroundColor: "#f5f5ff",
-                            borderRadius: "5px"
+                            borderRadius: "5px",
+                            width: "100%"
                         }}
                         className = "inherit-hover"
                         onClick = { () => context.props.history.push("/glyph-viewer") }
                     >
-                        <Flex layout = "row" style = {{ width: '100%', height: '100%' }} >
-                            <Flex flex = "40" >
+                        <Flexbox flexDirection="row" minWidth="100%" >
+                            <Flexbox style = {{ width: "100%" }} > 
                                 { view[0] }
-                            </Flex>
+                            </Flexbox>
 
-                            <Flex flex = "35">
+                            <Flexbox style = {{ width: "60%" }} > 
                                 { view[1] }
-                            </Flex>
+                            </Flexbox>
 
-                            <Flex flex = "25">
+                            <Flexbox style = {{ width: "60%" }} > 
                                 { view[2] }
-                            </Flex>  
-                        </Flex>
+                            </Flexbox>  
+                        </Flexbox>
                     </CardText>
                 </Card>
             )
         });
 
         return (
-            <Flex layout = "column">
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", paddingBottom: "4px" }} >
+            <div>
+                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px" }} >
                     <div 
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
@@ -73,17 +74,17 @@ class RecentViews extends React.Component {
                         Recent Views
                     </div>
                 </div>
-                <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
+                <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "2px" }} style = {{ borderRadius: "2px" }} >
                     <CardText
                         style = {{
                             padding: "7px",
+                            borderRadius: "2px"
                         }}
                     >
                         {recentViews}
                     </CardText>
                 </Card>
-                
-            </Flex>
+            </div>
         );
     }
 }

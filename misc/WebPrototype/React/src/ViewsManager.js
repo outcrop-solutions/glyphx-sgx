@@ -178,9 +178,8 @@ class ViewsManager extends React.Component {
                             />;
 
         return(
-            <Flex layout = "column" style = {{ height: "100%" }} >
-
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", paddingBottom: "4px" }} >
+            <div>
+                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", borderRadius: "2px", paddingBottom: "4px" }} >
                     <div 
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
@@ -195,7 +194,7 @@ class ViewsManager extends React.Component {
                     </div>
                 </div>
 
-                <Stepper activeStep = { this.state.stepIndex } style = {{ height: "60px", marginBottom: "5px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
+                <Stepper activeStep = { this.state.stepIndex } style = {{ borderRadius: "2px", height: "60px", marginBottom: "10px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
                     <Step>
                         <StepLabel
                             icon = { 
@@ -209,7 +208,7 @@ class ViewsManager extends React.Component {
                                                 margin: "5px 0px 0px 0px"
                                             }} 
                                         />
-                                        <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-2px 0px 0px" }} > 1 </div>
+                                        <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
                                     </span> 
                                 :
                                     <span className = "fa-stack fa-lg">
@@ -248,7 +247,7 @@ class ViewsManager extends React.Component {
                                             margin: "5px 0px 0px 0px",
                                         }} 
                                     />
-                                    <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-2px 0px 0px" }} > 2 </div>
+                                    <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-1px 0px 0px" }} > 2 </div>
                                 </span> 
                             }
                             style = {{ marginRight: "8px" }}
@@ -258,10 +257,9 @@ class ViewsManager extends React.Component {
                     </Step>
                 </Stepper>
 
-                <Flex flex>
                     <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
                         <div>
-                            <div style = {{ height: "100%", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
+                            <div style = {{ height: "100%", backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "2px", }} >
                                 <div 
                                     className = "Card" 
                                     style = {{ 
@@ -294,13 +292,11 @@ class ViewsManager extends React.Component {
 
                                     </div>
                                     <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px" }} >
-                                        <Flex layout = "column">
                                             {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "52px 0px 68px" }} > {marketingAndRecruiting} {backButton} </div> 
                                                 : (this.state.type === "Admissions" ? <div style = {{ margin: "18px 0px 32px" }} > {admissions} {backButton} </div> 
                                                     : (this.state.type === "FinancialAid" ? <div style = {{ margin: "69px 0px 86px" }} > {financialAid} {backButton} </div> : null)) 
                                             }
                                             
-                                        </Flex>
                                     </div>
                                 </div>
                                     
@@ -351,11 +347,7 @@ class ViewsManager extends React.Component {
                             }
                         </div>
                     </ExpandTransition>
-                </Flex>
-
-                
-
-            </Flex>      
+            </div>
         );
     }
 };

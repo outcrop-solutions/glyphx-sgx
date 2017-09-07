@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -47,7 +47,11 @@ class VotingModal extends React.Component {
                             value = {0}
                             label = "Have Aditya stop playing loud music"
                             style = {{
-                                marginBottom: "10px"
+                                marginBottom: "10px",
+                                marginTop: "14px"
+                            }}
+                            iconStyle = {{
+                                fill: this.props.settings.colors.elasticColor.checkBox
                             }}
                         />
                         <RadioButton
@@ -56,6 +60,9 @@ class VotingModal extends React.Component {
                             style = {{
                                 marginBottom: "10px"
                             }}
+                            iconStyle = {{
+                                fill: this.props.settings.colors.elasticColor.checkBox
+                            }}
                         />
                         <RadioButton
                             value = {2}
@@ -63,12 +70,18 @@ class VotingModal extends React.Component {
                             style = {{
                                 marginBottom: "10px"
                             }}
+                            iconStyle = {{
+                                fill: this.props.settings.colors.elasticColor.checkBox
+                            }}
                         />
                         <RadioButton
                             value = {3}
                             label = "Have the day off"
                             style = {{
                                 marginBottom: "10px"
+                            }}
+                            iconStyle = {{
+                                fill: this.props.settings.colors.elasticColor.checkBox
                             }}
                         />
                     </RadioButtonGroup>
@@ -82,7 +95,7 @@ class VotingModal extends React.Component {
                         buttonStyle = {{
                             height: '35px',
                             lineHeight: '35px',
-                            backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+                            backgroundColor: this.props.settings.colors.homePageColors.myViewsButton  
                         }} 
                         labelStyle = {{
                             fontSize: '14px',
@@ -103,55 +116,46 @@ class VotingModal extends React.Component {
                 </div>
 
 
-                <Flex layout = "row" style = {{ marginLeft: "105px", display: (this.state.voted ? "" : "none") }} >
+                <Flexbox flexDirection="row" style = {{ marginLeft: "105px", display: (this.state.voted ? "" : "none") }} >
+                    <PieChart
+                        data={ [21, 45, 10, 15] }
+                        radius={ 150 }
+                        hole={ 50 }
+                        colors={ ['#43A19E', '#7B43A1', '#F2317A', '#FF9824'] }
+                        labels={ true }
+                        percent={ true }
+                        strokeWidth={ 3 }
+                        stroke={ '#fff' }
+                    />
+    
+                    <dl
+                        style = {{ 
+                            width: "200px",
+                            background: "#fff",
+                            padding: "5px 15px",
+                            marginLeft: "10px"
+                        }}
+                    >
+                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#7B43A1" }} > &nbsp; &nbsp;  </dt>
+                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Aditya Music </dd>
 
-                    <Flex divider />
+                        <br />
 
-                    <Flex flex>
-                        <PieChart
-                            data={ [21, 45, 10, 15] }
-                            radius={ 150 }
-                            hole={ 50 }
-                            colors={ ['#43A19E', '#7B43A1', '#F2317A', '#FF9824'] }
-                            labels={ true }
-                            percent={ true }
-                            strokeWidth={ 3 }
-                            stroke={ '#fff' }
-                        />
-                    </Flex>
+                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#43A19E" }} > &nbsp; &nbsp;  </dt>
+                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Brad Desk </dd>
 
-                    <Flex divider />
+                        <br />
 
-                    <Flex flex>
-                        <dl
-                            style = {{ 
-                                width: "200px",
-                                background: "#fff",
-                                padding: "5px 15px"
-                            }}
-                        >
+                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#FF9824" }} > &nbsp; &nbsp;  </dt>
+                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Lunch Mark </dd>
 
-                            <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#7B43A1" }} > &nbsp; &nbsp;  </dt>
-                            <dd style = {{ marginLeft: "15px", display: "inline" }} > Aditya Music </dd>
+                        <br />
 
-                            <br />
-
-                            <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#43A19E" }} > &nbsp; &nbsp;  </dt>
-                            <dd style = {{ marginLeft: "15px", display: "inline" }} > Brad Desk </dd>
-
-                            <br />
-
-                            <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#FF9824" }} > &nbsp; &nbsp;  </dt>
-                            <dd style = {{ marginLeft: "15px", display: "inline" }} > Lunch Mark </dd>
-
-                            <br />
-
-                            <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#F2317A" }} > &nbsp; &nbsp;  </dt>
-                            <dd style = {{ marginLeft: "15px", display: "inline" }} > Day Off </dd>
-                            
-                        </dl>
-                    </Flex>
-                </Flex>
+                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#F2317A" }} > &nbsp; &nbsp;  </dt>
+                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Day Off </dd>
+                    </dl>
+              
+                </Flexbox>
 			</Dialog>
 		);
 	}
