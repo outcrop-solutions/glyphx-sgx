@@ -24,7 +24,20 @@ export function makeServerCall(url,callback,options){
         return false;
     }
         
+    if(options && options.post)
+    {
+        httpPostRequest(saddress,url,callback,options);
+    }
+    else{
+        saddress = saddress+url;
+        httpGetRequest(saddress,callback,options);
+    }
+    
 
+    return true;
+};
+
+function httpGetRequest(saddress,callback,options){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
@@ -36,11 +49,26 @@ export function makeServerCall(url,callback,options){
             options.onServerCallError();
         }
     }
-    xmlHttp.open("GET", saddress+url, true); // true for asynchronous 
+    xmlHttp.open("GET", saddress, true); // true for asynchronous 
     xmlHttp.send(null);
+}
 
-    return true;
-};
+function httpPostRequest(saddress,url,callback,options){
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        {
+            if(typeof callback == 'function')
+                callback(xmlHttp.responseText,options);
+        }
+        else if(xmlHttp.status == 500 && options && options.onServerCallError && typeof options.onServerCallError == 'function'){
+            options.onServerCallError();
+        }
+    }
+    xmlHttp.open("POST", saddress, true); // true for asynchronous 
+    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlHttp.send(url);
+}
 
 export function checkUserLoggedIn(onServerError){
     var xmlHttp = new XMLHttpRequest();

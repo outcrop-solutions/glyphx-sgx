@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
+import { Flex } from 'react-flex-material';
 import { connect } from 'react-redux';
 import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
 import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
+import Paper from 'material-ui/FontIcon';
 import {withRouter} from 'react-router';
 import 'font-awesome/css/font-awesome.min.css';
+import './General.css';
 
 class Login extends Component {
 	/**
@@ -14,6 +20,30 @@ class Login extends Component {
 	 */
     componentDidMount() {
         hideSplashScreen();
+        this.calcLoginButtonPosition();
+    }
+
+    calcLoginButtonPosition() {
+        //Caculates the position of the login button to be initially.
+        var ycalc = 0;
+        var docHeight = document.body.offsetHeight;
+        var forgotPass = document.getElementById("forgotPass");
+        var loginForm = document.getElementById("loginForm");
+
+        var loginButton = document.getElementById('loginButton');
+        var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
+        
+        var translate = 'translate(0px,'+ ycalc +'px)';
+        ycalc = docHeight - loginButtonBottom - 25;
+
+        this.setState({loginButtonBottomTranslateCalc: ycalc});
+
+        this.toggleLoginForm(ycalc);
+    }
+
+    state = {
+        loginVisible: true,
+        loginButtonBottomTranslateCalc:0
     }
 
     navigate = (str) => {
@@ -29,10 +59,6 @@ class Login extends Component {
         var lblErrPass = document.getElementById('errPass');
         lblErrPass.innerText="";
         lblErrPass.hidden = true;
-        
-        var lblErrUser = document.getElementById('errUser');
-        lblErrUser.innerText="";
-        lblErrUser.hidden = true;
         
         //server call to check user/pass and update state.
         makeServerCall(url,context.onServerResponse,{onServerCallError: context.showMaintanencePage});
@@ -54,7 +80,6 @@ class Login extends Component {
         }
         
         var lblErrPass = document.getElementById('errPass');
-        var lblErrUser = document.getElementById('errUser');
 
         if(result && result.status == 'success'){ 
             //save the details to store
@@ -94,80 +119,213 @@ class Login extends Component {
         this.navigate("/home");
     }
 
+    toggleLoginForm = (ycalc) => {
+        var loginForm = document.getElementById('loginForm');
+        var loginOverlay = document.getElementById('loginOverlay');
+        var elements = document.getElementsByClassName('loginFormOtherElements');
+        var userText = document.getElementById('UserText');
+        var visibility='';
+
+        if(this.state.loginVisible){
+            loginForm.style.transform = "translate(0px, "+ycalc+"px)";
+           
+            //hide other elements
+            visibility='hidden';
+            loginOverlay.classList.remove('loginOverlayCSS');
+            loginForm.style.backgroundColor = "transparent";
+        }
+        else{
+            loginForm.style.transform = "translate(0px, 0px)";
+            loginOverlay.classList.add('loginOverlayCSS');
+            
+            //show other elements
+            visibility='';
+            loginForm.style.backgroundColor = 'rgba(75, 38, 38, 0.35)';
+        }
+
+        for( var index=0; index < elements.length; index++){
+            elements[index].style.visibility=visibility;
+        }
+        userText.focus();
+        
+        this.setState({loginVisible: !this.state.loginVisible});
+    }
+
+    buttonClick = (evt) => {
+        if(this.state.loginVisible){
+            this.authenticate(evt,this);
+        }
+        else{
+            this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc);
+        }
+    }
+
     render() {
         return (
-            <Dialog
-                id = "pass"
-                title = "Authentication"
-                ref = "PasswordDailog"
-                actions = {
-                    [
-                        <RaisedButton
-                            label = "Login"
-                            primary = { true }
-                            onClick = { (evt) => this.authenticate(evt,this) }
-                            style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                        />
-                    ]
-                }
-                overlayStyle = {{ backgroundColor: 'white' }}
-                contentStyle = {{ width:'25%', maxWidth: "none" }}
-                modal = { true }
-                open = { true }
-            >   
-                {/*Username textfield*/}
-                <label  
-                    style = {{ 
-                        height: '20px',
-                        fontSize: '18px'
-                    }}
-                > Username:
-                </label> 
-                <input 
-                    id = "UserText"
-                    type = "text"
-                    style = {{
-                        height: '20px',
-                        fontSize: '18px'
-                    }}
-                />
-                <br/>
-                <label id = "errUser" 
-                    hidden 
-                    style = {{ 
-                        color:'red',
-                        height: '20px',
-                        fontSize: '18px'
-                    }}
-                />
+            <Flex style={{
+                width: '100%',
+                height: '100%',
+            }} >
+            <video playsInline  autoPlay loop muted 
+                poster="./Res/Img/synglyphx_bio.png" 
+                id="bgvid"
+                onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
+                >
+                        {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
+                        <source src="./Res/Vid/GlyphEd1.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+            </video>
+            
+            <div 
+                id = "loginOverlay"
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'table',
+                    overflow: 'hidden'
+                }}>
+                <center
+                    style={{
+                        display: 'table-cell',
+                        verticalAlign: 'middle'
+                    }}>
+                    <Paper 
+                        id="loginForm"
+                        zDepth={3} 
+                        style={{
+                            backgroundColor:'rgba(75, 38, 38, 0.35)',
+                            width: '23%',
+                            height: '45%',
+                            }}>
+                        <div className="loginFormOtherElements" style={{ 'textAlign': 'center', paddingBottom: '0px'}}>
+                            <a href="http://www.synglyphx.com/" target="_blank"><img src="./Res/Img/synglyphx-wht-3.png" style={{width:"325px", height:"70px"}}/> </a>
+                        </div>
+                        <br/>
+                        <label className="loginFormOtherElements"
+                            style={{
+                                color: 'white',
+                                fontSize:'30px',
+                                fontWeight:'200'
+                            }}> 
+                        USER LOGIN 
+                        </label>
+                        <br/>
+                        <br/>
+                        
+                        <div className="loginFormOtherElements"
+                            style={{
+                                width:"80%",
+                                borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                borderRadius: '5px 5px 5px 5px',
+                                border: "1px solid #ccc",
+                                height:"40px",
+                                overflow:'hidden',
+                                backgroundColor:"white"
+                            }}>
+                            
+                                <i 
+                                className="fa fa-user" 
+                                style={{
+                                    fontSize: '2.25rem',
+                                    backgroundColor: 'white',
+                                    height:'inherit',
+                                    width:'5%',
+                                    float:'left',
+                                    paddingLeft:'7px',
+                                    paddingTop:'3px'
+                                }}/>
 
-                {/*Password textfield*/}
-                <label  
-                    style = {{ 
-                        height: '20px',
-                        fontSize: '18px'
-                    }}
-                > Password:
-                </label> 
-                <input 
-                    id = "PassText"
-                    type = "password"
-                    //placeholder="Enter Password"
-                    style = {{
-                        height: '20px',
-                        fontSize: '18px'
-                    }}
-                />
+                                <input 
+                                    type="text"
+                                    id="UserText"
+                                    style={{
+                                        border:"none",
+                                        height:'inherit',
+                                        width:'90%',
+                                        borderLeft: '1px #b3b3b3 solid',
+                                        float:'right',
+                                        outlineWidth: '0',
+                                        fontSize:'23px'
+                                    }}
+                                />
+                        </div>
+                        <br/> <br/>
+                        <div className="loginFormOtherElements"
+                            style={{
+                                width:"80%",
+                                borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                borderRadius: '5px 5px 5px 5px',
+                                border: "1px solid #ccc",
+                                height:"40px",
+                                overflow:'hidden',
+                                backgroundColor:"white"
+                            }}>
+                            
+                                <i 
+                                className="fa fa-lock" 
+                                style={{
+                                    fontSize: '2.25rem',
+                                    backgroundColor: 'white',
+                                    height:'inherit',
+                                    width:'5%',
+                                    float:'left',
+                                    paddingLeft:'7px',
+                                    paddingTop:'3px'
+                                }}/>
+
+                                <input 
+                                    type="password"
+                                    id="PassText"
+                                    style={{
+                                        border:"none",
+                                        height:'inherit',
+                                        borderLeft: '1px #b3b3b3 solid',
+                                        width:'90%',
+                                        float:'right',
+                                        outlineWidth: '0',
+                                        fontSize:'23px'
+                                    }}
+                                />
+                        </div>
+                        <label className="loginFormOtherElements" id="errPass" style={{color: 'red'}}  />
+                        <br/> <br/>
+                        <RaisedButton
+                                    label = "Login"
+                                    id="loginButton"
+                                    labelStyle={{
+                                        fontWeight: 'bold',
+                                        fontSize: '20px'
+                                    }}
+                                    secondary = { true }
+                                    onClick = { (evt) => this.buttonClick(evt,this) }
+                                    buttonStyle={{
+                                        backgroundColor : '#009688',
+                                        borderRadius: '5px',
+                                    }}
+                                    style = {{ 
+                                        position:'relative', 
+                                        width: "65%",
+                                        display:'block',
+                                        borderRadius: '5px',
+                                        color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                />
+                        <br />
+                        <label className="loginFormOtherElements" id="forgotPass" style={{fontSize: '16px'}}>
+                            <a href="#" style={{color:'#b3b3b3'}}> forgot password? </a>
+                        </label>
+                        <br />
+                        <IconButton 
+                            iconClassName="fa fa-arrow-circle-down" 
+                            iconStyle={{color:'white'}}
+                            onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
+                        />
+                    </ Paper>
+                </ center>
                 <br/>
-                <label id = "errPass" 
-                    hidden 
-                    style = {{ 
-                        color:'red',
-                        height: '20px',
-                        fontSize: '18px'
-                    }}
-                />
-            </Dialog>
+
+            </div>
+            
+            </Flex>
         );
     }
 }

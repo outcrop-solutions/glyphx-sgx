@@ -9,6 +9,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FilterViewForm from './FilterSummaryView.js';
 import Select from 'react-select';
+import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import { connect } from 'react-redux';
 import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
@@ -262,8 +263,12 @@ class FilterSideBarTopView extends Component {
             tableSelectValues: value
         });
         console.log(value);
+        var url = "getdata?tablename=" + value;
 
         //Load Table Columns
+        /*makeServerCall(url,function(res){
+            debugger;
+        })*/
     };
 
     onSelectStatisticStatChange = (value) => {

@@ -11,7 +11,7 @@ import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
 import Maintenance from './Maintenance.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { CSSTransitionGroup } from 'react-transition-group'
+import { CSSTransitionGroup } from 'react-transition-group';
 
 const browserHistory = createHistory();
 var interval={};
