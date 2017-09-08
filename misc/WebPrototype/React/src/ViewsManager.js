@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import { Card, CardText } from 'material-ui/Card';
-import { Flex } from 'react-flex-material';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
@@ -309,7 +308,7 @@ class ViewsManager extends React.Component {
                                     backgroundColor = "#dcdcdc"
                                     onClick = { this.handlePrev }
                                     style = {{ marginRight: 12 }}
-                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "0px 0px 0px 11px", bottom: "10px" }}
+                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 0px 0px 11px", bottom: "10px" }}
                                 />
                                 <AllViewsModal type = { this.state.selectionType } />
                             </div>

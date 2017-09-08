@@ -12,6 +12,7 @@ import Avatar from 'material-ui/Avatar';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
+import './General.css';
 
 
 /**
@@ -96,11 +97,11 @@ class TopNavBar extends React.Component {
 
         return(
             <Toolbar 
-                style = {{ width: "100%", padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
+                style = {{ padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
                 ref = "topNavToolbar"
             >
                 {/* Logo */}
-                <ToolbarGroup>
+                <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
                     <span style = {{ cursor: 'pointer' }} >
                         {this.state.imgLogoSrc}
                     </span>
@@ -114,20 +115,36 @@ class TopNavBar extends React.Component {
                         <FontIcon className = "fa fa-filter fa-2x" color = '#ffffff' />
                     </IconButton>
 
-                    <IconButton onClick = { () => this.props.dispatch(editModalDisplay(null, null, true)) } >
+                    <IconButton 
+                        onClick = { () => this.props.dispatch(editModalDisplay(null, null, true)) } 
+                        style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5") }}
+                        className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
+                    >
                         <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
                     </IconButton>
 
-                    <IconButton onClick = { () => this.props.dispatch(editModalDisplay(true, null, null)) } >
+                    <IconButton 
+                        onClick = { () => this.props.dispatch(editModalDisplay(true, null, null)) } 
+                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5") }}
+                        className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
+                    >
                         <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' />
                     </IconButton>
                     
-                    <IconButton  onClick = { this.displayAnnouncements.bind(this) } >
+                    <IconButton  
+                        onClick = { this.displayAnnouncements.bind(this) } 
+                        style = {{ zIndex: (this.props.tutorialStage === 6 ? "300" : "5") }}
+                        className = { (this.props.tutorialStage === 6 ? "pulse" : "") }
+                    >
                         <FontIcon className = "fa fa-bell fa-2x" color = '#ffffff' /> 
                         <FontIcon id = "notificationBadge" className = "fa fa-exclamation-circle fa-1x notificationBadge" />
                     </IconButton>
                     
-                    <IconButton onClick = { (event) => this.ToggleUserInfoMenu(event) } >
+                    <IconButton 
+                        onClick = { (event) => this.ToggleUserInfoMenu(event) } 
+                        style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5") }}
+                        className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
+                    >
                         <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' />
                     </IconButton>
                 </ToolbarGroup>

@@ -17,11 +17,17 @@ import ViewsManager from './ViewsManager.js';
 import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import HelpChat from './HelpChat.js';
+import TutorialWindow from './TutorialWindow.js';
 import './topNav.css';
 import './General.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 class HomePage extends React.Component {
+
+    // 0 for start, "done" for end
+    state = {
+        tutorialStage: 0
+    }
 
 	/**
 	 * This function is called right after the react component is mounted.
@@ -46,7 +52,7 @@ class HomePage extends React.Component {
 		// Add the <style> element to the page
 		document.head.appendChild(style);
 		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: none; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
 		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
 		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
 		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 3);
@@ -71,7 +77,24 @@ class HomePage extends React.Component {
 		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 14px !important;}', 18);
 		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 19);
 		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 20);
-        style.sheet.insertRule('.Select-control { background-color: ' + "#f5f5ff" + ' !important; }', 10);
+        style.sheet.insertRule('.Select-control { background-color: ' + "#f5f5ff" + ' !important; }', 21);
+
+        style.sheet.insertRule('.faqCollapse { background: #caccff !important; }', 22);
+        style.sheet.insertRule('.faqCollapse:after { color: #000000 !important }', 23);
+        style.sheet.insertRule('.faqCollapse:hover { background: #dcdeff !important; }', 24);
+        style.sheet.insertRule('.faqCollapse.is-open { background: #9397d1 !important; }', 25);
+
+        
+    }
+
+    updateStage(stage) {
+        if (stage === 10) {
+            this.setState({ tutorialStage: "done" });
+        }
+        else {
+            this.setState({ tutorialStage: stage });
+        }
+        
     }
 
     render() {
@@ -80,11 +103,28 @@ class HomePage extends React.Component {
             <MuiThemeProvider style = {{ height: "100%" }} >
 
                 <Flexbox flexDirection="column" minHeight="100vh" style = {{ height: "100vh" }}>
-                    <TopNavBar homePage = { true }/>
+                    <TopNavBar homePage = { true } tutorialStage = { this.state.tutorialStage } />
+
+                    { this.state.tutorialStage !== "done" ?
+                            <div style = {{ height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.6)", zIndex: "100", position: "fixed" }} />
+                            :
+                            null
+                    }
+
+                    { this.state.tutorialStage !== "done" ?
+                            <TutorialWindow tutorialStage = { this.state.tutorialStage } updateStage = { this.updateStage.bind(this) } />
+                            :
+                            null
+                    }
+
+
+
+                    
+
                     
                     <Flexbox flexGrow = {1} style = {{ height: "100%", margin: "10px 8px 8px", minHeight: "0" }} >
-                        <Flexbox flexDirection="row" minWidth="100%" justifyContent = "space-between" >
-                            <Flexbox style = {{ width: "30%", minHeight: "0" }}>
+                        <Flexbox flexDirection="row" minWidth="100%" >
+                            <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }}>
                                 <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                     <CardText
                                         style = {{
@@ -115,7 +155,7 @@ class HomePage extends React.Component {
                                 </Card>
 
 
-                                <Flexbox flexGrow = {1} style = {{ height: "100%", marginTop: "10px" }} >
+                                <Flexbox flexGrow = {1} style = {{ height: "100%", marginTop: "10px", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
                                    <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                         <CardText
                                             style = {{
@@ -130,7 +170,7 @@ class HomePage extends React.Component {
                                 </Flexbox>
 
                              </Flexbox>   
-                             <Flexbox style = {{ width: "30%", minHeight: "0" }} >
+                             <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
                                 <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
                                     <CardText
                                         style = {{
