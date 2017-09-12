@@ -4,10 +4,12 @@ import { Flex } from 'react-flex-material';
 import { connect } from 'react-redux';
 import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
 import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
+import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/FontIcon';
 import {withRouter} from 'react-router';
 import 'font-awesome/css/font-awesome.min.css';
@@ -27,14 +29,12 @@ class Login extends Component {
         //Caculates the position of the login button to be initially.
         var ycalc = 0;
         var docHeight = document.body.offsetHeight;
-        var forgotPass = document.getElementById("forgotPass");
-        var loginForm = document.getElementById("loginForm");
 
         var loginButton = document.getElementById('loginButton');
         var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
         
         var translate = 'translate(0px,'+ ycalc +'px)';
-        ycalc = docHeight - loginButtonBottom - 25;
+        ycalc = docHeight - loginButtonBottom - 65;
 
         this.setState({loginButtonBottomTranslateCalc: ycalc});
 
@@ -43,7 +43,9 @@ class Login extends Component {
 
     state = {
         loginVisible: true,
-        loginButtonBottomTranslateCalc:0
+        loginButtonBottomTranslateCalc:0,
+        openForgotPasswordDialog: false,
+        snackbar:false
     }
 
     navigate = (str) => {
@@ -160,6 +162,22 @@ class Login extends Component {
         }
     }
 
+    handleOpenForgotPassDailog = () => {
+        this.setState({openForgotPasswordDialog: true});
+    };
+    
+    handleCloseForgotPassDailog = () => {
+    this.setState({openForgotPasswordDialog: false,snackbar:false});
+    };
+
+    handleForgotPassSubmit = () => {
+        var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
+        console.log(email);
+        this.handleCloseForgotPassDailog();
+        //send server call to email password recovery link.
+        this.setState({snackbar:true});
+    }
+
     render() {
         return (
             <Flex style={{
@@ -172,7 +190,7 @@ class Login extends Component {
                 onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
                 >
                         {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
-                        <source src="./Res/Vid/GlyphEd1.mp4" type="video/mp4" />
+                        <source src="./Res/Vid/GlyphEd.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
             </video>
             
@@ -191,14 +209,13 @@ class Login extends Component {
                     }}>
                     <Paper 
                         id="loginForm"
-                        zDepth={3} 
                         style={{
-                            backgroundColor:'rgba(75, 38, 38, 0.35)',
+                            backgroundColor:'rgba(75, 38, 38, 0.50)',
                             width: '23%',
                             height: '45%',
                             }}>
                         <div className="loginFormOtherElements" style={{ 'textAlign': 'center', paddingBottom: '0px'}}>
-                            <a href="http://www.synglyphx.com/" target="_blank"><img src="./Res/Img/synglyphx-wht-3.png" style={{width:"325px", height:"70px"}}/> </a>
+                            <a href="http://www.synglyphx.com/" target="_blank"><img src="./Res/Img/synglyphx-wht-3.png"/> </a>
                         </div>
                         <br/>
                         <label className="loginFormOtherElements"
@@ -311,7 +328,7 @@ class Login extends Component {
                                 />
                         <br />
                         <label className="loginFormOtherElements" id="forgotPass" style={{fontSize: '16px'}}>
-                            <a href="#" style={{color:'#b3b3b3'}}> forgot password? </a>
+                            <a onClick={this.handleOpenForgotPassDailog} style={{color:'#b3b3b3',cursor:'pointer'}}><u> forgot password? </u></a>
                         </label>
                         <br />
                         <IconButton 
@@ -322,7 +339,44 @@ class Login extends Component {
                     </ Paper>
                 </ center>
                 <br/>
-
+                
+                <Dialog
+                    title="Forgot Password?"
+                    actions={[
+                        <RaisedButton
+                            label="Submit"
+                            primary={true}
+                            onClick={this.handleForgotPassSubmit}
+                        />,
+                        <span> &nbsp; </span>,
+                        <RaisedButton
+                            label="Cancel"
+                            primary={true}
+                            onClick={this.handleCloseForgotPassDailog}
+                        />
+                    ]}
+                    modal={true}
+                    open={this.state.openForgotPasswordDialog}
+                    onRequestClose={this.handleCloseForgotPassDailog}
+                    >
+                    Please Enter Your Email address associated with the account. <br/>
+                        <input 
+                            type="text"
+                            id="ForgotUserText"
+                            style={{
+                                height:'inherit',
+                                border: '1px #b3b3b3 solid',
+                                outlineWidth: '0',
+                                fontSize:'20px'
+                            }}
+                        />
+                </Dialog>
+                <Snackbar
+                    open={this.state.snackbar}
+                    message="A link has been sent to your email address to reset the password."
+                    autoHideDuration={5000}
+                    onRequestClose={this.handleCloseForgotPassDailog}
+                />            
             </div>
             
             </Flex>
