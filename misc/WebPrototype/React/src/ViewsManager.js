@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import { Card, CardText } from 'material-ui/Card';
-import { Flex } from 'react-flex-material';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
@@ -159,7 +158,9 @@ class ViewsManager extends React.Component {
                                 label = "Back"
                                 onClick = { () => this.flip("Funnel") }
                                 style = {{ 
-                                    width: "100%", 
+                                    width: "80%", 
+                                    minWidth: "331px", 
+                                    margin: "0 auto",
                                     display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" ? "" : "none")
                                 }}
                                 buttonStyle = {{
@@ -292,9 +293,9 @@ class ViewsManager extends React.Component {
 
                                     </div>
                                     <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px" }} >
-                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "52px 0px 68px" }} > {marketingAndRecruiting} {backButton} </div> 
-                                                : (this.state.type === "Admissions" ? <div style = {{ margin: "18px 0px 32px" }} > {admissions} {backButton} </div> 
-                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: "69px 0px 86px" }} > {financialAid} {backButton} </div> : null)) 
+                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "63px 0px 62px" }} > {marketingAndRecruiting} {backButton} </div> 
+                                                : (this.state.type === "Admissions" ? <div style = {{ margin: "30px 0px 25px" }} > {admissions} {backButton} </div> 
+                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: "80px 0px 80px" }} > {financialAid} {backButton} </div> : null)) 
                                             }
                                             
                                     </div>
@@ -309,7 +310,7 @@ class ViewsManager extends React.Component {
                                     backgroundColor = "#dcdcdc"
                                     onClick = { this.handlePrev }
                                     style = {{ marginRight: 12 }}
-                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "0px 0px 0px 11px", bottom: "10px" }}
+                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 0px 0px 11px", bottom: "10px" }}
                                 />
                                 <AllViewsModal type = { this.state.selectionType } />
                             </div>

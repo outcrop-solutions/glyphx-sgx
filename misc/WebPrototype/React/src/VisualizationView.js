@@ -32,6 +32,51 @@ class VisualizationView extends React.Component {
 	 */
     componentDidMount() {
         this.init();
+
+        var style = document.getElementById('themeStyles');
+		
+		if (style != null) {
+			style.parentElement.removeChild(style);
+			console.log('deleting old rules');
+		}
+		
+		style = document.createElement("style");
+
+		// WebKit hack
+		style.appendChild(document.createTextNode(""));
+		style.setAttribute('id','themeStyles');
+
+		// Add the <style> element to the page
+		document.head.appendChild(style);
+		
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: none; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
+		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
+		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
+		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
+		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
+		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; }', 6);
+		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
+		
+		// For the selectboxes  
+		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
+		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 9);
+        style.sheet.insertRule('.Select-control { background-color: ' + this.props.settings.colors.tableSelectColor.background + '!important; }', 10);
+		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
+		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
+		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 13);
+        style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.colors.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px;}', 14);
+		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.colors.tableSelectColor.deleteHover + ' !important; padding: 0px 3px 0px 3px; margin: 1px 0px 0px 0px; font-size: 18px;}', 15);
+        style.sheet.insertRule('.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus { color: ' + this.props.settings.colors.tableSelectColor.deleteHover + '!important; }', 16);
+
+        style.sheet.insertRule('.faqCollapse { background: #caccff !important; }', 17);
+        style.sheet.insertRule('.faqCollapse:after { color: #000000 !important }', 18);
+        style.sheet.insertRule('.faqCollapse:hover { background: #dcdeff !important; }', 19);
+        style.sheet.insertRule('.faqCollapse.is-open { background: #9397d1 !important; }', 20);
+        style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 21);
+
+        style.sheet.insertRule('.subCollapsibleInner { background-color: ' + this.props.settings.colors.homePageColors.subBackground + '; }', 22);
+
     }
 
 	

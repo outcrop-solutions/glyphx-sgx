@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Flex} from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
@@ -11,10 +11,8 @@ import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
 
 /**
- * This is the side bar that you see on the right side of the screen.
- * This is made up of two other componenets:
- *  1) FilterSideBarTopView.
- *  2) FilterSideBarBottomView.
+ * This is the side bar that you see on the right side of the glyph viewer screen.
+ * Has no props passed down.
  */
 class FilterSideBar extends Component {
 
@@ -42,6 +40,9 @@ class FilterSideBar extends Component {
     };
 
 
+    /**
+     * Set colors of the main collapsible text and the sub collapsible text
+     */
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
         for (var i = 0; i < collapsibles.length; i++) {
@@ -50,6 +51,7 @@ class FilterSideBar extends Component {
         }
     };
 
+
     /**
      * Use to make server call to fetch data.
      */
@@ -57,6 +59,7 @@ class FilterSideBar extends Component {
         var data = require('../src/Data/TempData.json');
         return data.Data;
     };
+
  
     /**
 	* This method shows a little popup alert on the left bottom screen
@@ -70,11 +73,12 @@ class FilterSideBar extends Component {
         })
     };
 
+
     /**
      * This method constructs the structure of the Filter that is saved in the store and accessed everywhere throughout the applciation.
      * @param {Object} Obj:
      */
-    makeFilterStructure = (Obj,Options) => {
+    makeFilterStructure = (Obj) => {
         var returnObj = {};
 
         for(var property in Obj){
@@ -87,9 +91,11 @@ class FilterSideBar extends Component {
 
                 range = [minMax.min, minMax.max, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false];
             }
+            
             else if (type === "Text") {
                 range = [0, 25, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false, 1, ""];
             }
+
             else {
                 // Date range
             }
@@ -103,12 +109,11 @@ class FilterSideBar extends Component {
                 type: type,
                 displayName: this.generateDisplayName(column)
             }
-
-
         }
 
         this.props.dispatch(init(returnObj));
     };
+
 
     /**
      * This function replaces "_" with "<space>" and replaces "<Capital letter>" with "<space><Capital letter>" to make the display name!
@@ -134,6 +139,7 @@ class FilterSideBar extends Component {
         }
         return newString;
     };
+
 
     /**
      * This function caculates the min and max of the value in an array.
@@ -161,13 +167,16 @@ class FilterSideBar extends Component {
         return obj;
     };
 
+
     /**
      * This is just a link function that links the icon of the topview to the function in the bottom view.
      */
     scrollToCollapsibleElement = (element, Elastic) => {
-        if(this.refs['bottom'] && this.refs['bottom'].getWrappedInstance())
-            this.refs['bottom'].getWrappedInstance().scrollToCollapsibleElement(element,Elastic);
+        if (this.refs['bottom'] && this.refs['bottom'].getWrappedInstance()) {
+            this.refs['bottom'].getWrappedInstance().scrollToCollapsibleElement(element, Elastic);
+        }   
     }
+
 
    /**
     * This method is called when the user clicks on the 'arrow' to hide/show the top view of the filter
@@ -185,21 +194,21 @@ class FilterSideBar extends Component {
 			collapseTopViewButton.style.transform = 'rotateZ(180deg)';
 		    this.refs['topCollapisble'].closeCollapsible();
 		}
-        
     };
 
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
-                <Flex 
-                    layout = "column" 
-                    id = "FilterWindowOuterContiner"
-                    style = {{ 
-                        height: '100%',
-                        overflow:'hidden',
-                        transition: '1s'
-                    }}
-                >
+            <Flexbox 
+                flexDirection = "column" 
+                style = {{ 
+                    height: "100%",
+                    overflow:'hidden',
+                    transition: '1s',
+                    backgroundColor: this.props.settings.colors.homePageColors.bodyBackground
+                }}
+                id = "FilterWindowOuterContiner"
+            >
                      {/* TOP SECTION */}
                     <div>
                         <AlertContainer ref = { a => this.msg = a } />
@@ -208,13 +217,14 @@ class FilterSideBar extends Component {
                     <Collapsible
                         transitionTime = {200} 
                         open = { true }
-                        triggerDisabled ={true}
+                        triggerDisabled = { true }
                         contentInnerClassName  = "Flex__layout-column"
                         ref = 'topCollapisble'
 						triggerClassName = 'noHeaderTrigger cursorNormal'
 						triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
                         contentOuterClassName = "cursorNormal"
-                        overflowWhenOpen = "visible">
+                        overflowWhenOpen = "visible"
+                    >
 
                         <FilterSideBarTopView 
                             initParams = { this.state.topViewInitParams } 
@@ -245,11 +255,11 @@ class FilterSideBar extends Component {
                     {/* BOTTOM SECTION */}
                     
                     <FilterSideBarBottomView 
-                        ref="bottom"
-                        tableData={this.state.tableData}
+                        ref = "bottom"
+                        tableData = { this.state.tableData }
                     />
 
-                </Flex>
+                </Flexbox>
         );
     }
 }

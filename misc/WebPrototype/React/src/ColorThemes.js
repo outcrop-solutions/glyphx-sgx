@@ -30,7 +30,7 @@ const themeSettingColors = [
 
         filterTabColor: {
             titleText: "#ffffff",
-            tabBackground: shadeHexColors("#2d3091", -0.4),
+            tabBackground: "#4c4d6f",
         },
 
         collapsibleColor: {
@@ -83,7 +83,7 @@ const themeSettingColors = [
 
         tableSelectColor: {
             text: "#000000",
-            background: shadeHexColors("#2d3091", 0.8),
+            background: "#f5f5ff",
             selectedBackground: "#2d3091",
             selectedText: "#ffffff",
             chipBackground: shadeHexColors("#2d3091", -0.4),

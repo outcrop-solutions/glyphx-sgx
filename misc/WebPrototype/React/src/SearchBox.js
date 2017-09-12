@@ -1,20 +1,31 @@
-import React, { Component } from 'react';
-import {Flex} from 'react-flex-material';
+import React from 'react';
+import Flexbox from 'flexbox-react';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import 'font-awesome/css/font-awesome.min.css';
 
-
-class SearchBox extends Component {
+/**
+ * @param onTextFieldValueChange: - ADCMT
+ * @param pinned: - ADCMT
+ * @param id: - ADCMT
+ * @param hintText: - ADCMT
+ * @param collapseButton: - ADCMT
+ **/
+class SearchBox extends React.Component {
 
     constructor(props){
         super(props);
-        this.state ={ 
+        this.state = { 
             textFieldValue: ""
         }
     }
 
+
+    /**
+     * - ADCMT
+     * @param evt: - ADCMT
+     **/
     onChange = (evt) => {
         var tf = this.refs['SearchTextField'];
         var innerTF = tf.getInputNode();
@@ -24,10 +35,16 @@ class SearchBox extends Component {
             textFieldValue: innerTF.value
         });
 
-        if(typeof this.props.onTextFieldValueChange === "function")
+        if (typeof this.props.onTextFieldValueChange === "function") {
             this.props.onTextFieldValueChange(evt,this.props.pinned);
+        }
     }
 
+
+    /**
+     * - ADCMT
+     * @param evt: - ADCMT
+     **/
     clearText = (evt) => {
         var tf = this.refs['SearchTextField'];
         var innerTF = tf.getInputNode();
@@ -44,14 +61,12 @@ class SearchBox extends Component {
 
     render() {
         return (
-            <Flex layout = "row">
-                <Flex 
-                    flex = {this.props.collapseButton ? "75": "100"} 
-                    align="space-between center" 
-                >
+            <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
+
+                <Flexbox style = {{ width: "100%", borderRadius: "5px", backgroundColor: this.props.settings.tableSelectColor }} > 
                     <TextField
                         id = {this.props.id}
-                        type="search"
+                        type = "search"
                         ref = "SearchTextField"
                         value = {this.state.textFieldValue}
                         style = {{
@@ -66,22 +81,22 @@ class SearchBox extends Component {
                             paddingRight:"5px"
                         }}
                         hintStyle = {{
-                            bottom: "-3px",
-                            paddingLeft:"7px"
+                            paddingLeft:"7px",
+                            bottom: "-1px"
                         }}
                         underlineStyle = {{
-                            margin: "0px 0px -8px 0px"
+                            margin: "0px 0px -8px"
                         }}
                         onChange = {this.onChange} 
                         hintText = {
                             <span 
                                 style = {{
-                                        fontSize: 'inherit',
-                                        color: 'rgba(0, 0, 0, 0.3)'
-                                    }}
+                                    fontSize: 'inherit',
+                                    color: 'rgba(0, 0, 0, 0.5)',
+                                }}
                             >
                                 <FontIcon
-                                    className="fa fa-search" 
+                                    className = "fa fa-search" 
                                     style = {{
                                         padding: '0px',
                                         width: '24px',
@@ -95,18 +110,20 @@ class SearchBox extends Component {
                         }
                         underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
                     /> 
-                </Flex>
+                </Flexbox>
+
+                {/* Conditionally renders the collapse button */}
                 {this.props.collapseButton ? 
-                    <Flex flex = "25" style = {{ margin: "0px 0px 0px 9px" }}>
+                    <Flexbox style = {{ width: "25%", margin: "0px 4px 0px 9px" }} > 
                         <RaisedButton 
-                            label="Collapse" 
-                            primary={true} 
-                            buttonStyle={{
+                            label = "Collapse" 
+                            primary = { true } 
+                            buttonStyle = {{
                                 height: '30px',
                                 lineHeight: '30px',
                                 backgroundColor: this.props.settings.overviewButtonsColorBg,
                             }} 
-                            labelStyle= {{
+                            labelStyle = {{
                                 fontSize: '13px',
                                 color: this.props.settings.overviewButtonsColorText
                             }}
@@ -114,13 +131,13 @@ class SearchBox extends Component {
                                 height: '30px',
                                 lineHeight: '30px',
                             }}
-                            onClick={(evt) => this.props.onCollapseAllClick(evt,this.props.pinned)}
+                            onClick = { (evt) => this.props.onCollapseAllClick(evt,this.props.pinned) }
                         />
-                    </Flex>
+                    </Flexbox>
                 : null
                 }
-            
-            </Flex>
+
+            </Flexbox>
         );
     }
 }

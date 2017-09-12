@@ -4,7 +4,6 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FontIcon from 'material-ui/FontIcon';
-import {Flex} from 'react-flex-material';
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
@@ -12,13 +11,14 @@ import './FilterSideBar.css';
 /**
  * This is the pop up dialog that you see when you click "pin filters" inside the pinned collapsible.
  * This class also encapsulates the dual list box.
+ * @param pinnedOptions: - ADCMT
  */
 class FilterSideBarPinningViewsDialog extends Component {
 
     constructor(props) {
         super(props);
         
-        //Store the states of all the elements inside this data structure.
+        // Store the states of all the elements inside this data structure.
         this.state  = {
             pinDailog: {
                 open: false,
@@ -28,28 +28,26 @@ class FilterSideBarPinningViewsDialog extends Component {
         };
     };
 
+
     /**
      * This function handles the open/close of the dialog.
      * This also handles the cancel click on the dialog.
      * @param {bool} open: should the dialog be open or not
      * @param {obj} extra: To pass some extra objects
      */
-    handlePinDialogOpenClose = (open,extra) => {
+    handlePinDialogOpenClose = (open, extra) => {
         if (open) {
             this.setState( {pinnedDialogPrevState: this.state.pinnedDialogSelectedValues} );
-            this.setState( {pinDailog: { open: true }} ); 
+            this.setState( {pinDailog: { open: true } }); 
         }
         else {
             if (extra ? extra.cancel : false) {
-                this.setState({pinnedDialogSelectedValues: this.state.pinnedDialogPrevState});
+                this.setState({ pinnedDialogSelectedValues: this.state.pinnedDialogPrevState });
             }
-            
-            this.setState({pinDailog:{
-                open: false
-            }});
+            this.setState({ pinDailog: { open: false } });
         }
-        
     };
+
 
     /**
      * This gets called when "ok" is clicked dialog box.
@@ -59,10 +57,10 @@ class FilterSideBarPinningViewsDialog extends Component {
         var pinnedValues = context.state.pinnedDialogSelectedValues.slice();
 		var prevSelectedValues = context.state.pinnedDialogPrevState;
         var unpinnedArray = [];
-		var len=prevSelectedValues.length;
+		var len = prevSelectedValues.length;
         var len2;
 		
-		//find values that were unpinned
+		// Find values that were unpinned
 		for (var i = 0; i < len; i++) {
 			if (pinnedValues.indexOf(prevSelectedValues[i]) == -1) {
 				unpinnedArray.push(prevSelectedValues[i]);
@@ -71,23 +69,24 @@ class FilterSideBarPinningViewsDialog extends Component {
 		
         len2 = unpinnedArray.length;
             
-        //unpin previously pinned together.
+        // Unpin previously pinned together.
         for (var k = 0; k < len2; k++) {
-            this.props.dispatch( {type: 'Update_Pin', details: {colName: unpinnedArray[k], pinned: false}} );
+            this.props.dispatch({ type: 'Update_Pin', details: {colName: unpinnedArray[k], pinned: false} });
         } 
 
         len2 = pinnedValues.length;
-        //pin new values
+
+        // Pin new values
         for (var j = 0; j < len2; j++) {
             if (!this.props.GLOBAL[pinnedValues[j]].pinned) {
-                this.props.dispatch( {type: 'Update_Pin', details: {colName: pinnedValues[j], pinned: true}} );
+                this.props.dispatch({ type: 'Update_Pin', details: {colName: pinnedValues[j], pinned: true} });
             }
         }
 
         this.handlePinDialogOpenClose(false);
     };
 
-    shouldComponentUpdate(newProps,newState){
+    shouldComponentUpdate(newProps, newState){
         if (this.state != newState) {
             return true;
         }
@@ -101,20 +100,20 @@ class FilterSideBarPinningViewsDialog extends Component {
     render() {
         return (
             <div>
-                <Flex layout="row" >
+                <div style = {{ width: (this.props.fullWidth ? "100%" : "72%"), margin: "0 auto 3px" }} >
                     <RaisedButton
                         primary = { true } 
                         label = "Pin Filters"
                         style = {{
                             width: "100%",
-                            margin: "0px 0px 6px 0px"
+                            margin: "0px 0px 2px"
                         }}
-                        buttonStyle={{
+                        buttonStyle = {{
                             height: '28px',
                             lineHeight: '28px',
                             backgroundColor: this.props.settings.overviewButtonsColor.background
                         }} 
-                        labelStyle= {{
+                        labelStyle = {{
                             fontSize: '13px',
                             color: this.props.settings.overviewButtonsColor.text
                         }}
@@ -122,7 +121,7 @@ class FilterSideBarPinningViewsDialog extends Component {
                             height: '28px',
                             lineHeight: '28px'
                         }}
-                        onClick = { () => this.handlePinDialogOpenClose( true) }
+                        onClick = { () => this.handlePinDialogOpenClose(true) }
                         icon = {
                             <FontIcon
                                 className = "fa fa-plus"
@@ -134,7 +133,7 @@ class FilterSideBarPinningViewsDialog extends Component {
                             />
                         }
                     />
-                </Flex>
+                </div>
 
                 <Dialog
                     title = "Pinning Views"
@@ -162,19 +161,12 @@ class FilterSideBarPinningViewsDialog extends Component {
                             ref = "pinnedDialog"
                             options = { this.props.pinnedOptions }
                             selected = { this.state.pinnedDialogSelectedValues }
-                            onChange = { 
-                                (selected) => {
-                                    this.setState({pinnedDialogSelectedValues: selected});
-                                }
-                            }
+                            onChange = { (selected) => { this.setState({ pinnedDialogSelectedValues: selected }); } }
                         />
-
                 </Dialog>
             </div>
         );
     }
-
-
 }
 
 export default FilterSideBarPinningViewsDialog;

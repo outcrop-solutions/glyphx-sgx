@@ -20,50 +20,56 @@ class MyViews extends React.Component {
         return(
             <div style = {{ padding: "10px" }} >
 
-                <Collapsible
-                    transitionTime = {200} 
-                    trigger = "Shared Views"
-                >
-                    <Card containerStyle = {{ padding: "0px", backgroundColor: "#e6e6e6" }} >
-                        <CardText
-                            style = {{
-                                padding: "7px",
-                            }}
-                        >
-                            HI<br />Shared<br />Views
-                        </CardText>
-                    </Card>
-                </Collapsible>
+                <div style = {{ marginBottom: "3px" }} >
+                    <Collapsible
+                        transitionTime = {200} 
+                        trigger = "Shared Views"
+                    >
+                        <Card containerStyle = {{ padding: "0px", backgroundColor: "#e6e6e6" }} >
+                            <CardText
+                                style = {{
+                                    padding: "7px",
+                                }}
+                            >
+                                HI<br />Shared<br />Views
+                            </CardText>
+                        </Card>
+                    </Collapsible>
+                </div>
 
-                <Collapsible
-                    transitionTime = {200} 
-                    trigger = "Custom Views"
-                >
-                    <Card containerStyle = {{ padding: "0px", backgroundColor: "#e6e6e6" }} >
-                        <CardText
-                            style = {{
-                                padding: "7px",
-                            }}
-                        >
-                            HI<br />Custom<br />Views
-                        </CardText>
-                    </Card>
-                </Collapsible>
+                <div style = {{ marginBottom: "3px" }} >
+                    <Collapsible
+                        transitionTime = {200} 
+                        trigger = "Custom Views"
+                    >
+                        <Card containerStyle = {{ padding: "0px", backgroundColor: "#e6e6e6" }} >
+                            <CardText
+                                style = {{
+                                    padding: "7px",
+                                }}
+                            >
+                                HI<br />Custom<br />Views
+                            </CardText>
+                        </Card>
+                    </Collapsible>
+                </div>
 
-                <Collapsible
-                    transitionTime = {200} 
-                    trigger = "Saved Views"
-                >
-                    <Card containerStyle = {{ padding: "0px", backgroundColor: "#e6e6e6" }} >
-                        <CardText
-                            style = {{
-                                padding: "7px",
-                            }}
-                        >
-                            HI<br />Saved<br />Views
-                        </CardText>
-                    </Card>
-                </Collapsible>
+                <div style = {{ marginBottom: "3px" }} >
+                    <Collapsible
+                        transitionTime = {200} 
+                        trigger = "Saved Views"
+                    >
+                        <Card containerStyle = {{ padding: "0px", backgroundColor: "#e6e6e6" }} >
+                            <CardText
+                                style = {{
+                                    padding: "7px",
+                                }}
+                            >
+                                HI<br />Saved<br />Views
+                            </CardText>
+                        </Card>
+                    </Collapsible>
+                </div>
             </div>       
         );
     }

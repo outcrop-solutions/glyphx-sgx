@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import {Flex} from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -16,16 +17,19 @@ import 'react-select/dist/react-select.min.css';
 
 /**
  * This is the top view of the filter side bar that you see on the right side.
+ * @param initParams: - ADCMT
+ * @param colList: - ADCMT
+ * @param showAlert: - ADCMT
  */
-class FilterSideBarTopView extends Component {
+class FilterSideBarTopView extends React.Component {
 	
 	constructor(props) {
         super(props);
 	
-        //Load values into the view select dropdown.
-        var viewSelectItems = this.makeList(props.initParams.viewSelectItems,"viewSelectItems");
+        // Load values into the view select dropdown.
+        var viewSelectItems = this.makeList(props.initParams.viewSelectItems, "viewSelectItems");
 
-        //Store the states of all the elements inside this data structure.
+        // Store the states of all the elements inside this data structure.
         this.state = {
             topViewVisible: true,
             hideShowButtonTextFlag: true,
@@ -41,6 +45,7 @@ class FilterSideBarTopView extends Component {
         };
 	}
 	
+
 	/**
      * This function holds the templates of certain UI elements. Call this and pass a type
      * to generate a JSX code that you can use to render that particular element.
@@ -48,7 +53,7 @@ class FilterSideBarTopView extends Component {
      * @param {string} type: any one of [viewSelectItems,tableSelectItems,appliedFiltersItems,columns]
      * @param {object} extra: An object to pass extra params.
      */
-    makeList(arrValues,type,extra){
+    makeList(arrValues, type, extra){
         if (!Array.isArray(arrValues)) {
             return "PLEASE PROVIDE AN ARRAY";
         }
@@ -67,7 +72,6 @@ class FilterSideBarTopView extends Component {
                         }
                     );
                 }
-
                 break;
 
             case 'tableSelectItems':
@@ -83,7 +87,6 @@ class FilterSideBarTopView extends Component {
                         />
                     );
                 }
-
                 break;
                  
             default:
@@ -99,40 +102,25 @@ class FilterSideBarTopView extends Component {
      * @param {bool} open: whether the menu/dialog should be opened or closed.
      * @param {obj} evt: the event object.
      */
-    handleOpenClose = (strName,open,evt) =>{
+    handleOpenClose = (strName, open, evt) =>{
         switch (strName){
             case 'save':
                 if (open) {
-                    this.setState({
-						saveDailogOpen: true,
-                        viewNameTextFieldError: ""
-                    }); 
+                    this.setState({ saveDailogOpen: true, viewNameTextFieldError: "" }); 
                 }
                 else {
                     this.setState({ saveDailogOpen: false });
                 }
-                
                 break;
             
             case 'menu':
                  if (open) {
                     evt.preventDefault();
-
-                    this.setState({
-                        menu: {
-                            open: true,
-                            anchorEl: evt.currentTarget
-                        }
-                    });
+                    this.setState({ menu: { open: true, anchorEl: evt.currentTarget } });
                 }
                 else {
-                    this.setState({
-                        menu: {
-                            open: false
-                        }
-                    });
+                    this.setState({ menu: { open: false } });
                 }
-
                 break;
 
             case 'statistics':
@@ -141,12 +129,9 @@ class FilterSideBarTopView extends Component {
                     this.setState({ statisticsModalOpen: true });
                     console.log("linked");
                 }
-
                 else {
                     this.setState({ statisticsModalOpen: false });
                 }
-
-
                 break;
             
             default:
@@ -167,12 +152,12 @@ class FilterSideBarTopView extends Component {
 
         if( viewName == null || viewName.trim() == "" )
         {
-            //error
+            // Error
             context.setState({ viewNameTextFieldError: "This textfield is required!" });
         }
         else {
         
-            //check if same name view already exists
+            // Check if same name view already exists
             context.state.viewSelectItems.forEach(function(element) {
                 if (element.key == viewName ) {
                     nameAlreadyExists = true;
@@ -185,23 +170,23 @@ class FilterSideBarTopView extends Component {
             }
             else {
                 
-                //Save the view
+                // Save the view
                 if (context.saveView(context,viewName)) {
-					//Actually Add it to the existing list of views!
+					// Actually Add it to the existing list of views!
 					context.state.viewSelectItems.push(context.makeList([viewName],'viewSelectItems')[0]);
 					context.setState({ viewSelectItems: context.state.viewSelectItems });
 
-					//Make it selected in the list of views
+					// Make it selected in the list of views
 					context.setState({ viewSelectValue: viewName });
 
-					//Close the dialog
+					// Close the dialog
 					context.handleOpenClose('save',false);
 					console.log("View saved with name: " + viewName);
 
-					//show the success message
+					// Show the success message
 					context.props.showAlert('Success The View has been saved!');
 				}
-				else { //didn't save due to some network error.
+				else { // Didn't save due to some network error.
 					console.error("ERROR");
 				}
             }
@@ -209,6 +194,9 @@ class FilterSideBarTopView extends Component {
     };
 
 
+    /**
+     * - ADCMT
+     */
     onApplyStatistics() {
         this.props.dispatch(updateStatistics(this.state.statisticColSelectValues, this.state.statisticStatSelectValues, true));
         this.handleOpenClose('statistics', false);
@@ -216,26 +204,27 @@ class FilterSideBarTopView extends Component {
 
 
     /**
-     * 
-     */
-    saveView = (context,viewName) => {
+	* - ADCMT
+    * @param context: - ADCMT
+    * @param viewName: - ADCMT
+	*/
+    saveView = (context, viewName) => {
 		var saveObj = {
 			viewName: viewName,
 			filterObj: {}
 		};
 		
-		//make the object to be sent to the server to save.
+		// Make the object to be sent to the server to save.
 		saveObj.filterObj = context.props.GLOBALSTORE.Filter;
 		
-		//make the ajax call to the server to save.
-		
+		// Make the ajax call to the server to save.
 		
 		return true;
     };
 
     
     /**
-     * 
+     * - ADCMT
      */
     applyFilter = () => {
         console.log('Filter Applied');
@@ -244,24 +233,22 @@ class FilterSideBarTopView extends Component {
 
     /**
 	* This method is called when an item is selected in the "select view" dropdown that is present in the top left.
+    * @param value: - ADCMT
 	*/
     onSelectViewChange = (value) => {
-        this.setState({
-            viewSelectValue: value
-        });
+        this.setState({ viewSelectValue: value });
         console.log(value);
 
-        //Load Filters!
+        // Load Filters!
     };
 
 
     /**
 	* This method is called when an item is selected in the "select Table" dropdown that is present in the top left.
+    * @param value: - ADCMT
 	*/
     onSelectTableChange = (value) => {
-        this.setState({
-            tableSelectValues: value
-        });
+        this.setState({ tableSelectValues: value });
         console.log(value);
         var url = "getdata?tablename=" + value;
 
@@ -271,22 +258,32 @@ class FilterSideBarTopView extends Component {
         })*/
     };
 
+
+    /**
+	* - ADCMT
+    * @param value: - ADCMT
+	*/
     onSelectStatisticStatChange = (value) => {
         this.setState({
             statisticStatSelectValues: value
         });
         console.log(value);
 
-        //Load Table Columns
+        // Load Table Columns
     };
 
+
+    /**
+	* - ADCMT
+    * @param value: - ADCMT
+	*/
     onSelectStatisticColChange = (value) => {
         this.setState({
             statisticColSelectValues: value
         });
         console.log(value);
 
-        //Load Table Columns
+        // Load Table Columns
     };
 
 
@@ -308,75 +305,84 @@ class FilterSideBarTopView extends Component {
 
     /**
 	* This method is called when the user clicks on the 'Hide/Show'.
+    * @param event: - ADCMT
 	*/
     onHideFilteredData = (event) => {
         console.log("Hide");
-        this.setState({
-            hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag,
-        });
+        this.setState({ hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag });
 
         //console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
         
-        //if the flag true then button --> |HIDE| else button --> |SHOW|
+        // If the flag true then button --> |HIDE| else button --> |SHOW|
         if (this.state.hideShowButtonTextFlag) {
-            //hide the glyphs that don't match the filter critera.
+            // Hide the glyphs that don't match the filter critera.
         }
         else {
-            //show all the glyphs!
+            // Show all the glyphs!
         }
     };
+
 	
     /**
 	* This method is called when the user clicks on the 'New' inside the menu.
+    * @param event: - ADCMT
 	*/
     onMenuNewClick  = (event) => {
         console.log("new");
 
-        //Maybe are you sure you don't want to save existing work? if filters applied.
+        // Maybe are you sure you don't want to save existing work? if filters applied.
 
-
-        //Clear All Filters
+        // Clear All Filters
         this.onClearAllFilters();
 
-        //Clear the value of viewName
+        // Clear the value of viewName
         this.setState({ viewSelectValue: null });
 
-        //close the menu
-        this.handleOpenClose('menu', false,event);
+        // Close the menu
+        this.handleOpenClose('menu', false, event);
     };
+
 
      /**
 	* This method is called when the user clicks on the 'Save' inside the menu.
+    * @param event: - ADCMT
 	*/
     onMenuSaveClick = (event) => {
         console.log("Save");
         
         //Save As call
-        if(this.state.viewSelectValue == null || this.state.viewSelectValue == "")
-        {
+        if (this.state.viewSelectValue == null || this.state.viewSelectValue == "") {
             this.onMenuSaveAsClick(event);
             return;
         }
 
-        //Save
-        this.saveView(this,this.state.viewSelectValue);
+        // Save
+        this.saveView(this, this.state.viewSelectValue);
         
-        //close the menu
-        this.handleOpenClose('menu',false,event);
+        // Close the menu
+        this.handleOpenClose('menu', false, event);
     };
+
 
     /**
 	* This method is called when the user clicks on the 'Save As' inside the menu.
+    * @param event: - ADCMT
 	*/
     onMenuSaveAsClick = (event) => {
         console.log("Save As");
         
-        this.handleOpenClose('save',true);
-        //close the menu
-        this.handleOpenClose('menu',false,event);
+        this.handleOpenClose('save', true);
+        // Close the menu
+        this.handleOpenClose('menu', false, event);
     };
 
-    shouldComponentUpdate(newProps,newState){
+
+    /**
+	* - ADCMT
+    * @param newProps: - ADCMT
+    * @param newState: - ADCMT
+	*/
+    shouldComponentUpdate(newProps, newState){
         if (this.state != newState) {
             return true;
         }
@@ -394,42 +400,30 @@ class FilterSideBarTopView extends Component {
     };
 	
 	render = () => {
-		 //Load values into the table select dropdown.
+		// Load values into the table select dropdown.
         var tableSelectItems = [];
 		
-		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value){
-			return(
-                {
-                    label: value, value: value
-                }
-            );
+		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value) {
+			return({ label: value, value: value });
 		});
 
 
         var statisticStatSelectItems = ["Count", "Min", "Max", "Average", "Median", "Sum", "Range", "St. Dev.", "Varience", "Skewness", "Kurtosis"];
 
-        statisticStatSelectItems = statisticStatSelectItems.map(function(value){
-			return(
-                {
-                    label: value, value: value
-                }
-            );
+        statisticStatSelectItems = statisticStatSelectItems.map(function(value) {
+			return({ label: value, value: value });
 		});
 
 
-        var statisticColSelectItems = this.props.colList.map(function(value){
-			return(
-                {
-                    label: value, value: value
-                }
-            );
+        var statisticColSelectItems = this.props.colList.map(function(value) {
+			return({ label: value, value: value });
 		});
 		
 		return(
-			<Flex id = "TopView">
+            <Flexbox flexDirection = "column" id = "TopView" style = {{ height: "100%" }}>
                 {/* Row 1 */}
-                <Flex layout = "row" align = "space-between center" style = {{ height: '15%',marginBottom: '5px' }}>
-                    <Flex flex = "80">
+                <Flexbox flexDirection = "row" >
+                    <Flexbox style = {{ width: "80%", margin: "9px 10px 0px 0px" }} > 
                         <Select 
                             className = "selectViewName"
                             simpleValue
@@ -441,10 +435,9 @@ class FilterSideBarTopView extends Component {
                                 margin: "-11px 0px 0px 0px"
                             }}
                         />
-                    </Flex>
+                    </Flexbox>
                     
-                    <Flex divider />
-                    <Flex flex = "20">
+                    <Flexbox style = {{ width: "20%" }} > 
                         <div>
                             <RaisedButton
                                 onClick = { (evt) => this.handleOpenClose('menu', true,evt) }
@@ -514,17 +507,17 @@ class FilterSideBarTopView extends Component {
                             </Dialog>
 
                         </div>
-                    </Flex>
-                </Flex>
+                    </Flexbox>
+                </Flexbox>
                                 
                 {/* Row 2 */}
-                <Flex layout = "row" style = {{ height:'65%',marginBottom: '5px' }}>
+                <Flexbox flexDirection = "row" >
                     <FilterViewForm ref = 'filterSummaryView' onScroll = { (element, elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
-                </Flex>
+                </Flexbox>
                 
                 {/* Row 3 */}
-                <Flex layout = "row" style = {{ height:'10%',marginBottom: '5px' }}>
-                    <Flex flex = "20" style = {{ margin: "-5px 24px 10px 0px" }}>
+                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: "10px 0px 8px" }} >
+                    <Flexbox style = {{ width: "20%" }} > 
                         <RaisedButton 
                             label = "Clear All"
                             style = {{
@@ -548,10 +541,11 @@ class FilterSideBarTopView extends Component {
 							}}
                             onClick = { this.onClearAllFilters }
                             primary = {true } />
-                    </Flex>
+                    </Flexbox>
 
+                    <Flexbox style = {{ width: "3.33%" }} /> 
 
-                    <Flex flex = "15" style = {{ margin: "-5px 31px 0px -10px" }}>
+                    <Flexbox style = {{ width: "20%" }} > 
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
@@ -579,9 +573,11 @@ class FilterSideBarTopView extends Component {
                                 labelPosition="right"
                                 />
                             */}
-                    </Flex>
+                    </Flexbox>
 
-                    <Flex flex = "20" style = {{ margin: "-5px -6px 0px 4px" }}>
+                    <Flexbox style = {{ width: "3.33%" }} /> 
+
+                    <Flexbox style = {{ width: "25%" }} > 
                         <RaisedButton 
                             primary = { true } 
                             label = "Apply Filters" 
@@ -605,9 +601,11 @@ class FilterSideBarTopView extends Component {
 								lineHeight: '25px'
 							}}
 					/>
-                    </Flex>
+                    </Flexbox>
 
-                    <Flex flex = "20" style = {{ margin: "-5px -6px 0px 41px" }}>
+                    <Flexbox style = {{ width: "3.33%" }} /> 
+
+                    <Flexbox style = {{ width: "25%" }} > 
                         <RaisedButton 
                             primary = { true } 
                             label = "Statistics" 
@@ -629,9 +627,9 @@ class FilterSideBarTopView extends Component {
 								lineHeight: '25px'
 							}}
 					/>
-                    </Flex>
+                    </Flexbox>
                     
-                </Flex>
+                </Flexbox>
 
                 <Dialog
                     title = "Statistics"
@@ -683,7 +681,7 @@ class FilterSideBarTopView extends Component {
                 </Dialog>
                 
                 {/* Row 4 */}
-                <Flex layout = "row" style = {{ height:'10%' }}>
+                <Flexbox flexDirection = "row" >
                     <Select 
                         multi 
                         className = "selectTableName"
@@ -694,8 +692,8 @@ class FilterSideBarTopView extends Component {
                         onChange = { this.onSelectTableChange.bind(this) } 
                     />
 
-                </Flex>
-            </Flex>
+                </Flexbox>
+            </Flexbox>
 		);
 	}
 }
