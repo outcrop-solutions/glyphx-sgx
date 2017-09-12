@@ -39,10 +39,10 @@ class AnnouncementsDisplay extends React.Component {
         var announcements = announcementList.map( function(announcement) {
             return (
 
-                (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } last = { announcement === announcementList[announcementList.length - 1] } first = { announcement === announcementList[0] } /> : 
-                    (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } last = { announcement === announcementList[announcementList.length - 1] } first = { announcement === announcementList[0] } /> :
-                        (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } last = { announcement === announcementList[announcementList.length - 1] } first = { announcement === announcementList[0] } /> :
-                            (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } last = { announcement === announcementList[announcementList.length - 1] } first = { announcement === announcementList[0] } /> :
+                (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> : 
+                    (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                        (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                            (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
                                 "Error! Announcement Type Not Recognized!!"
                 ))))
             )
@@ -53,15 +53,17 @@ class AnnouncementsDisplay extends React.Component {
                 <Card containerStyle = {{ height: "100%", width: "100%", padding: "0px", borderRadius: "2px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} style = {{ borderRadius: "2px", width: "100%", height: "100%" }} >
                     <CardText
                         style = {{
-                            padding: "7px 7px 0px 7px",
+                            padding: "7px",
                             height: "100%",
                             width: "100%",
                             borderRadius: "2px",
-                            overflowY: "auto"
+                            
                         }}
-                        className = "announcementsScroll"
+                        
                     >
-                        {announcements}
+                        <div style = {{ height: "100%", overflowY: "scroll" }} className = "announcementsScroll" >
+                            {announcements}
+                        </div>
 
                         
     
@@ -76,7 +78,7 @@ class MaintenanceAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
@@ -114,7 +116,7 @@ class ReleaseAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
@@ -167,7 +169,7 @@ class PollAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
@@ -207,7 +209,7 @@ class ShoutAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",

@@ -26,22 +26,22 @@ class FilterTable extends Component {
         var tableData = processedData;
 
         this.state = {
-        fixedHeader: true,
-        fixedFooter: true,
-        stripedRows: false,
-        showRowHover: true,
-        selectable: true,
-        tableHeight: 300,
-        multiSelectable: true,
-        enableSelectAll: false,
-        deselectOnClickaway: false,
-        showCheckboxes: false,
-        selectAll: false,
-        prevSelectedIndex: null,
-        checkboxClicked:false,
-        tableData: tableData,
-        flatData: [],
-        indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1)
+            fixedHeader: true,
+            fixedFooter: true,
+            stripedRows: false,
+            showRowHover: true,
+            selectable: true,
+            tableHeight: 300,
+            multiSelectable: true,
+            enableSelectAll: false,
+            deselectOnClickaway: false,
+            showCheckboxes: false,
+            selectAll: false,
+            prevSelectedIndex: null,
+            checkboxClicked:false,
+            tableData: tableData,
+            flatData: [],
+            indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1)
         };
     }
 
@@ -469,7 +469,8 @@ class FilterTable extends Component {
                             SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
                             searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
                             overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
-                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text
+                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
+                            tableSelectColor: this.props.settings.colors.tableSelectColor.background
                         }}
 
                         onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, internalColName, this.state.indexColumnToSearch) }
@@ -481,94 +482,101 @@ class FilterTable extends Component {
 
 				<br/>
 				
-                <div
-                    onMouseEnter = { this.mouseIn }
-                    onMouseLeave = { this.mouseOut }
-                >
-                    <Table
-                        className = { "table-" + internalColName }
-                        fixedHeader = { true }
-                        fixedFooter = { true }
-                        selectable = { this.state.selectable }
-                        wrapperStyle={{
-                            maxHeight: this.state.tableHeight + "px",
-                            overflow: 'hidden'
-                        }}
-                        bodyStyle={{
-                            maxHeight: tableBodyHeight,
-                            overflow: 'auto'
-                        }}
-                        multiSelectable = { this.state.multiSelectable }
-                        onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
-                    >
-                        <TableHeader
-                            displaySelectAll = { false }
-                            adjustForCheckbox = { this.state.showCheckboxes }
-                            enableSelectAll = { this.state.enableSelectAll }
+                <div style = {{ padding: "0px 15px" }} >
+                    <div onMouseEnter = { this.mouseIn } onMouseLeave = { this.mouseOut } >
+                        <Table
+                            className = { "table-" + internalColName }
+                            fixedHeader = { true }
+                            fixedFooter = { true }
+                            selectable = { this.state.selectable }
+                            wrapperStyle = {{
+                                maxHeight: this.state.tableHeight + "px",
+                                overflow: 'hidden',
+                                borderRadius: "4px",
+                            }}
+                            bodyStyle = {{
+                                maxHeight: tableBodyHeight,
+                                overflow: 'auto',
+                                width: "100%",
+                            }}
+                            style = {{ backgroundColor: this.props.settings.colors.tableSelectColor.background }}
+                            multiSelectable = { this.state.multiSelectable }
+                            onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
                         >
-                            <TableRow style = {{ height:'30px' }}>
-                                
-                                {/*Header Checkbox*/}
-                                <TableHeaderColumn 
-                                    style = {{ 
-                                        height:'inherit', 
-                                        width:'25px' 
-                                    }}
-                                >
-                                    <Checkbox 
-                                        id = { "cb-" + internalColName } 
-                                        checked = { this.props.tableState[id].selectedValues.length == this.state.flatData.length } 
-                                        onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
-                                        iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkAllBox }}
-                                    />
-                                </TableHeaderColumn>
-                                
-                                {/*Value Column header*/}
-                                <TableHeaderColumn 
-                                    style = {{ 
-                                        paddingLeft:'0px', 
-                                        paddingRight: '0px', 
-                                        height:'inherit',
-                                        userSelect: 'none'
-                                    }}
-                                >
-                                    <div 
-                                        onClick={(evt) => this.onSortClick(evt,"valueColumnHeader" + internalColName)}
+                            <TableHeader
+                                displaySelectAll = { false }
+                                adjustForCheckbox = { this.state.showCheckboxes }
+                                enableSelectAll = { this.state.enableSelectAll }
+                                style = {{
+                                    backgroundColor: "#b2b2b2",
+                                }}
+                            >
+                                <TableRow style = {{ height:'30px' }}>
+                                    
+                                    {/*Header Checkbox*/}
+                                    <TableHeaderColumn 
+                                        style = {{ 
+                                            height:'inherit', 
+                                            width:'25px' 
+                                        }}
                                     >
-                                        Value &nbsp;
-                                        <i id={"valueColumnHeader" + internalColName} className="fa fa-sort"></i> 
-                                    </div> 
-                                </TableHeaderColumn>
-                                
-                                {/*Count Column Header*/}
-                                <TableHeaderColumn 
-                                    style = {{
-                                        height:'inherit',
-                                        userSelect: 'none' 
-                                    }}
-                                >
-                                    <div 
-                                        onClick={(evt) => this.onSortClick(evt,"countColumnHeader" + internalColName)}
+                                        <Checkbox 
+                                            id = { "cb-" + internalColName } 
+                                            checked = { this.props.tableState[id].selectedValues.length == this.state.flatData.length } 
+                                            onCheck = { (evt) =>  this.onRowSelect(this, [], !this.state.selectAll) }
+                                            iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkAllBox }}
+                                        />
+                                    </TableHeaderColumn>
+                                    
+                                    {/*Value Column header*/}
+                                    <TableHeaderColumn 
+                                        style = {{ 
+                                            paddingLeft: '7px', 
+                                            paddingRight: '0px', 
+                                            height:'inherit',
+                                            userSelect: 'none',
+                                            color: "#000000"
+                                        }}
                                     >
-                                        Count(%) &nbsp;
-                                        <i id={"countColumnHeader" + internalColName} className="fa fa-sort"></i> 
-                                    </div>
-                                </TableHeaderColumn>
+                                        <div 
+                                            onClick = { (evt) => this.onSortClick(evt,"valueColumnHeader" + internalColName) }
+                                        >
+                                            Value &nbsp;
+                                            <i id = { "valueColumnHeader" + internalColName } className = "fa fa-sort" /> 
+                                        </div> 
+                                    </TableHeaderColumn>
+                                    
+                                    {/*Count Column Header*/}
+                                    <TableHeaderColumn 
+                                        style = {{
+                                            height:'inherit',
+                                            userSelect: 'none',
+                                            color: "#000000"
+                                        }}
+                                    >
+                                        <div 
+                                            onClick = { (evt) => this.onSortClick(evt,"countColumnHeader" + internalColName) }
+                                        >
+                                            Count(%) &nbsp;
+                                            <i id = { "countColumnHeader" + internalColName } className = "fa fa-sort" /> 
+                                        </div>
+                                    </TableHeaderColumn>
 
-                            </TableRow>
+                                </TableRow>
 
-                        </TableHeader>
+                            </TableHeader>
 
-                        <TableBody
-                            displayRowCheckbox = { this.state.showCheckboxes }
-                            deselectOnClickaway = { this.state.deselectOnClickaway }
-                            showRowHover = { this.state.showRowHover }
-                            stripedRows = { false }
-                            className = {internalColName + "-E"}
-                        >
-                            {rows}
-                        </TableBody>
-                    </Table>
+                            <TableBody
+                                displayRowCheckbox = { this.state.showCheckboxes }
+                                deselectOnClickaway = { this.state.deselectOnClickaway }
+                                showRowHover = { this.state.showRowHover }
+                                stripedRows = { false }
+                                className = {internalColName + "-E"}
+                            >
+                                {rows}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
             </div>
         );
@@ -614,7 +622,7 @@ class FilterRow extends Component {
                 onClick = { this.onClickRow }
             >
             <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}/></TableRowColumn>
-            <TableRowColumn style = {{ paddingLeft:'0px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
+            <TableRowColumn style = {{ paddingLeft:'7px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
             <TableRowColumn style = {{ height:'inherit' }}>{this.props.percentStr}</TableRowColumn>
             </TableRow>
         );

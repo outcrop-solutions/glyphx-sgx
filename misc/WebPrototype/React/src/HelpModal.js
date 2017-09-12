@@ -214,7 +214,7 @@ class HelpModal extends React.Component {
 
 					<div style = {{ backgroundColor: "#707192", padding: "10px", width: "81%", margin: "0 auto", borderRadius: "3px", height: "230px" }} >
 						<div style = {{ backgroundColor: "#707192", height: "210px", overflowY: "auto" }} >
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -227,7 +227,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -240,7 +240,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -253,7 +253,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -266,7 +266,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -279,7 +279,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -292,7 +292,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
@@ -305,20 +305,7 @@ class HelpModal extends React.Component {
 								</Collapsible>
 							</div>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff" }} >
+							<div style = {{ backgroundColor: "#ffffff", marginRight: "5px" }} >
 								<Collapsible
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"

@@ -158,7 +158,9 @@ class ViewsManager extends React.Component {
                                 label = "Back"
                                 onClick = { () => this.flip("Funnel") }
                                 style = {{ 
-                                    width: "100%", 
+                                    width: "80%", 
+                                    minWidth: "331px", 
+                                    margin: "0 auto",
                                     display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" ? "" : "none")
                                 }}
                                 buttonStyle = {{
@@ -291,9 +293,9 @@ class ViewsManager extends React.Component {
 
                                     </div>
                                     <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px" }} >
-                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "52px 0px 68px" }} > {marketingAndRecruiting} {backButton} </div> 
-                                                : (this.state.type === "Admissions" ? <div style = {{ margin: "18px 0px 32px" }} > {admissions} {backButton} </div> 
-                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: "69px 0px 86px" }} > {financialAid} {backButton} </div> : null)) 
+                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "63px 0px 62px" }} > {marketingAndRecruiting} {backButton} </div> 
+                                                : (this.state.type === "Admissions" ? <div style = {{ margin: "30px 0px 25px" }} > {admissions} {backButton} </div> 
+                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: "80px 0px 80px" }} > {financialAid} {backButton} </div> : null)) 
                                             }
                                             
                                     </div>

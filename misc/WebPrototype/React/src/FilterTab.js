@@ -69,20 +69,20 @@ class FilterTabs extends React.Component {
         return (
             <div>
                 <Tabs
-                    onChange = { (value) => this.handleChange(value,this) }
+                    onChange = { (value) => this.handleChange(value, this) }
                     value = { this.state.slideIndex }
                 >
                     <Tab 
                         label = "Elastic" 
                         value = { 0 }
-                        icon = { <FontIcon className="fa fa-list-ul" ></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
+                        icon = { <FontIcon style = {{ color: this.props.settings.colors.filterTabColor.titleText }} className = "fa fa-list-ul" ></FontIcon> }
+                        buttonStyle = { {height: "49px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
                     />
                     <Tab 
                         label = "Range" 
                         value = { 1 }
-                        icon = { <FontIcon className="fa fa-sliders"></FontIcon> }
-                        buttonStyle = { {height: "55px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
+                        icon = { <FontIcon style = {{ color: this.props.settings.colors.filterTabColor.titleText }} className="fa fa-sliders"></FontIcon> }
+                        buttonStyle = { {height: "49px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
                     />
                 </Tabs>
 

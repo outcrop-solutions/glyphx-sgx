@@ -84,6 +84,8 @@ class HomePage extends React.Component {
         style.sheet.insertRule('.faqCollapse:hover { background: #dcdeff !important; }', 24);
         style.sheet.insertRule('.faqCollapse.is-open { background: #9397d1 !important; }', 25);
 
+        style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 26);
+
         
     }
 

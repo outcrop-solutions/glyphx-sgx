@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ScrollIntoView from 'scroll-into-view-if-needed';
-import {Flex} from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import Collapsible from 'react-collapsible';
 import IconButton from 'material-ui/IconButton';
 import FilterTabs from './FilterTab.js';
@@ -13,17 +13,19 @@ import './FilterSideBar.css';
 
 /**
  * This is the bottom view of the side bar that you see on the right side of the screen.
+ * @param tableData: - Data formatted into form needed to load filters
  */
 class FilterSideBarBottomView extends Component {
 
     constructor(props) {
         super(props);
         
-        //Store the states of all the elements inside this data structure.
+        // Store the states of all the elements inside this data structure.
         this.state  = {
             activeColumns: []
         };
     };
+
 
     /**
      * This function will make columns and filterStructure
@@ -38,7 +40,6 @@ class FilterSideBarBottomView extends Component {
         var columnsFilterStructure = this.props.GLOBAL;
         var arrColumnsReturn = [], arrPinnedColumnsReturn = [], arrPinDialogOptions = [], arrPinDialogSelected = [], objReturn = {};
 		var config;
-		this.insertStyles();
 
         for (var property in data) {
             var columnName = property;
@@ -55,13 +56,13 @@ class FilterSideBarBottomView extends Component {
                 iconClassName: pinnedClsName
             };
 
-            //Normal Columns in the filters collapsible.
+            // Normal Columns in the filters collapsible.
             arrColumnsReturn.push(
                 this.getColumnHTML(config)
             );
             arrPinDialogOptions.push( {value: columnName, label: displayName} );
 
-            //Pinned Columns in the pinned collapsible.
+            // Pinned Columns in the pinned collapsible.
             if (colElasticFilterStruc.pinned) {
                 config = {
                     outerDivClassName: 'searchableColumnPinned',
@@ -88,6 +89,7 @@ class FilterSideBarBottomView extends Component {
         return objReturn;
     };
 
+
     /**
      * This function creates and returns the markup for the column.
      * @param {object} config: 
@@ -102,49 +104,53 @@ class FilterSideBarBottomView extends Component {
      * @return {object} The HTML of the column
      */
     getColumnHTML = (config) => {
-        return (<div id = { config.internalColName } name= { config.displayName } key = { config.internalColName } className={config.outerDivClassName}>
-                        <Collapsible 
-                            transitionTime = { 200 } 
-                            key = { config.internalColName }
-                            ref = { config.internalColName }
-                            triggerOpenedClassName = "columnNameHeader"
-                            handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,config.internalColName) }
-                            contentOuterClassName = "cursorNormal"
-                            trigger = {
-                                <div>
-                                    <IconButton 
-                                        id = { "btn_" + config.globalStoreName } 
-                                        onClick = { this.onPinClick.bind(this) } 
-                                        iconClassName = { config.iconClassName }
-                                        style = {{ 
-                                            padding: '0px',
-                                            width: 'inherit',
-                                            height: 'inherit' 
-                                        }}
-                                    />
-                                    <span 
-                                        style = {{
-                                            paddingLeft: '10px',
-                                            fontSize: '1rem',
-                                            color: this.props.settings.colors.collapsibleColor.subText
-                                        }}
-                                    >
-                                        {config.displayName}
-                                    </span>
-                                </div>
-                            } 
-                            triggerClassName = 'columnNameHeader'
-                        >
-                            <FilterTabs 
-                                ref = { 'tab-' + config.internalColName } 
-                                internalColName = { config.internalColName } 
-                                id = { config.globalStoreName } 
-                                displayName = { config.displayName } 
-                                data = { config.data } 
+        return (
+            <div id = { config.internalColName } name = { config.displayName } key = { config.internalColName } className = { config.outerDivClassName } style = {{ marginBottom: "2px" }} >
+                <Collapsible 
+                    transitionTime = { 200 } 
+                    key = { config.internalColName }
+                    ref = { config.internalColName }
+                    triggerOpenedClassName = "columnNameHeader"
+                    handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,config.internalColName) }
+                    contentOuterClassName = "cursorNormal"
+                    contentInnerClassName = "subCollapsibleInner"
+                    trigger = {
+                        <div>
+                            <IconButton 
+                                id = { "btn_" + config.globalStoreName } 
+                                onClick = { this.onPinClick.bind(this) } 
+                                iconClassName = { config.iconClassName }
+                                style = {{ 
+                                    padding: '0px',
+                                    width: 'inherit',
+                                    height: 'inherit' 
+                                }}
                             />
-                        </Collapsible>
-                    </div>);
+                            <span 
+                                style = {{
+                                    paddingLeft: '10px',
+                                    fontSize: '1.1rem',
+                                    color: this.props.settings.colors.collapsibleColor.subText
+                                }}
+                            >
+                                {config.displayName}
+                            </span>
+                        </div>
+                    } 
+                    triggerClassName = 'columnNameHeader'
+                >
+                    <FilterTabs 
+                        ref = { 'tab-' + config.internalColName } 
+                        internalColName = { config.internalColName } 
+                        id = { config.globalStoreName } 
+                        displayName = { config.displayName } 
+                        data = { config.data } 
+                    />
+                </Collapsible>
+            </div>
+        );
     }
+
     
     /**
      * This function is called when the pin is clicked on the table collapsible element.
@@ -169,8 +175,7 @@ class FilterSideBarBottomView extends Component {
                 selectedValues.push(colName);
             }
                 
-            if(this.refs['PinningDialog'])
-            {
+            if (this.refs['PinningDialog']) {
                 this.refs['PinningDialog'].setState({pinnedDialogSelectedValues: selectedValues});
             }
         
@@ -178,50 +183,6 @@ class FilterSideBarBottomView extends Component {
         }
     };
 
-    /**
-     * This function is used to insert styles directly into the head of the dom.
-     * This code overwrites the styles that are provided by the different modules.
-     */
-	insertStyles = () => {
-		var style = document.getElementById('themeStyles');
-		
-		if(style != null)
-		{
-			style.parentElement.removeChild(style);
-			console.log('deleting old rules');
-		}
-		
-		style = document.createElement("style");
-
-		// WebKit hack
-		style.appendChild(document.createTextNode(""));
-		style.setAttribute('id','themeStyles');
-
-		// Add the <style> element to the page
-		document.head.appendChild(style);
-		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: 1px solid white; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
-		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
-		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
-		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
-		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
-		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
-		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; }', 6);
-		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
-		
-		// For the selectboxes  
-		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
-		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 9);
-        style.sheet.insertRule('.Select-control { background-color: ' + this.props.settings.colors.tableSelectColor.background + '!important; }', 10);
-		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
-		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
-		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 13);
-        style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.colors.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px;}', 14);
-		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.colors.tableSelectColor.deleteHover + ' !important; padding: 0px 3px 0px 3px; margin: 1px 0px 0px 0px; font-size: 18px;}', 15);
-        style.sheet.insertRule('.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus { color: ' + this.props.settings.colors.tableSelectColor.deleteHover + '!important; }', 16); 
-
-            
-	}
 
     /**
      * This is called when the collapsibles are clicked.
@@ -232,13 +193,13 @@ class FilterSideBarBottomView extends Component {
 
         if (elem.state.isClosed) {
             elem.openCollapsible();
-            
-            this.checkToScroll(element,elem,this);
+            this.checkToScroll(element, elem, this);
         }
         else {
             elem.closeCollapsible();
         }
     }
+
 
     /**
      * This function is called when the "Elastic/Range" Icon is clicked on from the filterView.
@@ -268,6 +229,7 @@ class FilterSideBarBottomView extends Component {
             }
 
         }
+
         else {
 			context.clearSearchBox(null,'filterCollapisbleSearchBox');
 
@@ -286,6 +248,7 @@ class FilterSideBarBottomView extends Component {
         if (Elastic && tab.state.slideIndex != 0) {
             tab.handleChange(0, tab);
         }
+
         else if (!Elastic && tab.state.slideIndex != 1) {
             tab.handleChange(1, tab);
         }
@@ -293,21 +256,23 @@ class FilterSideBarBottomView extends Component {
 		this.checkToScroll(element,columnCollapisble,this);
     }
 
+
     /**
      * This function will bring the scroll to that element.
      * @param {String/Object} element: this is the name of the column
      */
     scroll = (element) => {
-        if(typeof element == 'string')
+        if (typeof element == 'string') {
             element = document.getElementById(element);
+        }
 
-        if(element)
-            ScrollIntoView(element, false, {
-                            duration: 150
-                            });
+        if (element) {
+            ScrollIntoView(element, false, { duration: 150 });
+        }
         else
             return false;
     }
+
 	
 	/**
 	 * Sometimes scrollbars only appear after the collapisbles have expanded. So we wait for them to expand and then scroll
@@ -329,14 +294,17 @@ class FilterSideBarBottomView extends Component {
         }, 250);
 	}
 	
+
 	/**
 	 * This is clears the top level search box inside pinned and filter collapsibles.
+     * @param evt: - ADCMT
+	 * @param strSearchBoxId: - ADCMT
 	 */
-	clearSearchBox = (evt,strSearchBoxId) => {
+	clearSearchBox = (evt, strSearchBoxId) => {
 		var sb = this.refs[strSearchBoxId];
-		if(sb){
+		if (sb) {
 			evt = sb.clearText(evt);
-            this.searchMultipleColumns(evt,sb.props.pinned,{filterViewClick:true});
+            this.searchMultipleColumns(evt, sb.props.pinned, {filterViewClick: true} );
 		}
 	}
 	
@@ -345,12 +313,13 @@ class FilterSideBarBottomView extends Component {
 	 * This will perform multiple search for the underlying collapisbles and show only those that match the textfield.
 	 * @param {Obj} evt: actual event object
 	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
+     * @param extra: - ADCMT
 	 */
-	searchMultipleColumns = (evt,pinned,extra) => {
+	searchMultipleColumns = (evt, pinned, extra) => {
 		var inputValue = evt.currentTarget.value ? evt.currentTarget.value.toUpperCase() : "";
 		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
 		var len = divList.length;
-		var name,i;
+		var name, i;
 		var shouldBeVisible;
         var ref;
 		var inputValues = inputValue.split(',');
@@ -359,20 +328,19 @@ class FilterSideBarBottomView extends Component {
             name = divList[i].getAttribute('name');
             ref = this.refs[divList[i].getAttribute('id')] 
             
-            if(ref && (extra ? !extra.filterViewClick : true) )
+            if(ref && (extra ? !extra.filterViewClick : true) ) {
                 ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
+            }
 			
             shouldBeVisible = false;
             
             if (name) {
-				
-				for(var j=0; j < inputValues.length; j++)
+				for(var j = 0; j < inputValues.length; j++)
 				{
 					if (name.toUpperCase().indexOf(inputValues[j]) > -1) {
 						shouldBeVisible = true;
 					}
 				}
-				
 				!shouldBeVisible ? divList[i].style.display = "none" : divList[i].style.display = "" ;
             } 
         }
@@ -383,16 +351,17 @@ class FilterSideBarBottomView extends Component {
 	 * @param {Obj} evt: actual event object
 	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
 	 */
-	collapseAll = (evt,pinned) => {
+	collapseAll = (evt, pinned) => {
 		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
 		var len = divList.length;
-		var i,ref;
+		var i, ref;
 		
 		for (i = 0; i < len; i++) {
-            ref = this.refs[divList[i].getAttribute('id')] 
+            ref = this.refs[divList[i].getAttribute('id')];
             
-            if(ref)
+            if(ref) {
                 ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
+            }
 		}
     }
 	
@@ -402,11 +371,11 @@ class FilterSideBarBottomView extends Component {
 	 * @param {Obj} evt: actual event object
 	 * @param {Bool} pinned: if true then search on pinned collapsible columns else on filter collapisbles.
 	 */
-	searchColumns = (evt,pinned) => {
+	searchColumns = (evt, pinned) => {
 		var inputValue = evt.currentTarget.value.toUpperCase();
 		var divList = pinned ? document.getElementsByClassName('searchableColumnPinned') : document.getElementsByClassName('searchableColumn');
 		var len = divList.length;
-		var name,i;
+		var name, i;
 		
 		for (i = 0; i < len; i++) {
             name = divList[i].getAttribute('name');
@@ -422,37 +391,47 @@ class FilterSideBarBottomView extends Component {
     }
 
     render() {
-        var pinnedEmptyString = <div className="centerText cursorNormal"><h3> Nothing Pinned </h3><label> Anything you pin shows up here, so <br/> you can keep track of filters you <br/> need to get back to. </label><br/><br/></div>;
+        var pinnedEmptyString = <div className = "centerText cursorNormal" style = {{ margin: "0px 60px 7px", borderRadius: "5px" }} >
+                                    <div style = {{ fontSize: "17px", fontWeight: "bold", paddingTop: "6px", color: "#000000" }} > Nothing Pinned </div>
+                                    <div style = {{ fontWeight: "bold", fontSize: "14px", margin: "8px 0px -32px", color: "#000000" }} > Anything you pin shows up here for <br/> keeping track of important filters. </div>
+                                    <br/><br/>
+                                </div>;
         var columnsObj = this.makeColumns(this.props.tableData);
-        var pinnedSearchBar = <div style = {{ margin: "1px -3px -6px 1px" }}>
-                                <SearchBox 
-                                    ref="pinnedCollapisbleSearchBox"
-                                    hintText="Search For Column"
-                                    settings={{
-                                        SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
-                                        searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
-                                        overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
-                                        overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text
-                                    }}
-                                    onTextFieldValueChange= {(evt,pinned) => this.searchMultipleColumns(evt,pinned)}
-                                    onCollapseAllClick={(evt,pinned) => this.collapseAll(evt,pinned)}
-                                    id="pinnedCollapisbleSearchBox"
-                                    pinned={true}
-                                    collapseButton={true} />
-                             <br />
-                             </div>;
-
+        var pinnedSearchBar =   <div style = {{ margin: "1px -3px -6px 1px" }} >
+                                    <SearchBox 
+                                        ref = "pinnedCollapisbleSearchBox"
+                                        hintText = "Search for column..."
+                                        settings = {{
+                                            SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+                                            searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
+                                            overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
+                                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
+                                            tableSelectColor: this.props.settings.colors.tableSelectColor.background
+                                        }}
+                                        onTextFieldValueChange = { (evt, pinned) => this.searchMultipleColumns(evt, pinned) }
+                                        onCollapseAllClick = { (evt, pinned) => this.collapseAll(evt, pinned) }
+                                        id = "pinnedCollapisbleSearchBox"
+                                        pinned = { true }
+                                        collapseButton = { true } 
+                                    />
+                                    <br />
+                                </div>;
 
         return (
-            <Flex  
-                style = {{
-                    'overflow':'auto',
-                    'overflowX': 'hidden'
-                    }} 
-                id = 'BottomView'
+
+            <Flexbox 
+                flexDirection = "column" 
+                style = {{ 
+                    height: "100%",
+                    overflow: 'auto',
+                    overflowX: "hidden",
+                    transition: '1s',
+                    padding: "6px"
+                }}
+                id = "BottomView"
                 className = "sidenavbar"
             >
-                <div id = 'pinnedCollapisble'>
+                <div id = 'pinnedCollapisble' style = {{ marginBottom: "3px" }} >
                     <Collapsible 
                         transitionTime = {200} 
                         ref = 'pinnedCollapisble'
@@ -465,7 +444,7 @@ class FilterSideBarBottomView extends Component {
                                 <span 
                                     style={{
                                         paddingLeft: '10px',
-                                        fontSize: '1rem',
+                                        fontSize: '1.3rem',
                                         color: this.props.settings.colors.collapsibleColor.mainText
                                     }}
                                 >
@@ -477,14 +456,15 @@ class FilterSideBarBottomView extends Component {
                         {columnsObj.pinnnedColumns.length > 0 ? null : pinnedEmptyString}
 
                         <PinningDialog 
-                            ref="PinningDialog"
-                            pinnedOptions={columnsObj.pinnedOptions}
+                            ref = "PinningDialog"
+                            pinnedOptions = { columnsObj.pinnedOptions }
                             settings = {{
                                 overviewButtonsColor: this.props.settings.colors.overviewButtonsColor,
                                 pinFilterColor: this.props.settings.colors.pinFilterColor
                             }}
-                            GLOBAL={this.props.GLOBAL}
-                            dispatch={this.props.dispatch}
+                            GLOBAL = { this.props.GLOBAL }
+                            dispatch = { this.props.dispatch }
+                            fullWidth = { columnsObj.pinnnedColumns.length > 0 ? true : false }
                         />   
 
                         {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
@@ -506,8 +486,8 @@ class FilterSideBarBottomView extends Component {
                                 <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                                 <span 
                                     style = {{
-                                        paddingLeft: '10px',
-                                        fontSize: '1rem',
+                                        paddingLeft: '9px',
+                                        fontSize: '1.3rem',
                                         color: this.props.settings.colors.collapsibleColor.mainText
                                     }}
                                 >
@@ -523,9 +503,10 @@ class FilterSideBarBottomView extends Component {
                                     SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
                                     searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
                                     overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
-                                    overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text
+                                    overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
+                                    tableSelectColor: this.props.settings.colors.tableSelectColor.background
                                 }}
-                                hintText = "Search For Column"
+                                hintText = "Search for column..."
                                 ref = "filterCollapisbleSearchBox"
                                 onTextFieldValueChange = { (evt) => this.searchMultipleColumns(evt) }
                                 onCollapseAllClick = { (evt, pinned) => this.collapseAll(evt, pinned) }
@@ -539,7 +520,7 @@ class FilterSideBarBottomView extends Component {
                         {columnsObj.columns}
                     </Collapsible>
                 </div>
-            </Flex>
+            </Flexbox>
         );
     }
 }

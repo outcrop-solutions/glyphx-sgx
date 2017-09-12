@@ -14,7 +14,7 @@ class GlyphLegend extends React.Component {
                     x: 10,
                     y: 10,
                     width: 324,
-                    height: 236,
+                    height: 233,
                 }}
                 enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
                 style = {{
@@ -22,23 +22,19 @@ class GlyphLegend extends React.Component {
                 }}
                 bounds = "parent"
             >
-                <div className = "statisticsBox" style = {{ height: "inherit" }} >
+                <div className = "statisticsBox" style = {{ height: "inherit", borderRadius: "7px" }} >
 
                     <div style = {{ backgroundColor: this.props.settings.colors.statisticsDragColor.topBar, height: "26px", color: "#ffffff", borderTopRightRadius: "5px", borderTopLeftRadius: "5px" }} >
                         <label style = {{ margin: "6px 0px 0px 5px", float: "left" }} > LEGEND </label>
                         <FontIcon 
                             className = "fa fa-window-close cursorHand" 
-                            style = {{ color: "#ffffff",  fontSize: "21px", margin: "2px 0px 0px 0px", float: "right", paddingRight: "2px" }} 
+                            style = {{ color: "#ffffff",  fontSize: "27px", margin: "0px -2px 0px 0px", float: "right", paddingRight: "2px" }} 
                             onClick = { () => this.props.dispatch(editModalDisplay(false)) } 
                         />
                     </div>
-                    <table style = {{ verticalAlign: "middle", textAlign: "center" }} >
-                        <tbody>
-                            <tr>
-                                <img src = "./Res/Img/SampleLegend.png" style = {{ width: '320px' }} alt = "Legend" className = "legendImage" />
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div style = {{ width: "320px", margin: "0 auto" }} >
+                        <img src = "./Res/Img/SampleLegend.png" style = {{ width: '320px', borderBottomRightRadius: "7px", borderBottomLeftRadius: "7px", marginTop: "-1px" }} alt = "Legend" className = "legendImage" />
+                    </div>
                 </div>
             </Rnd>
         );

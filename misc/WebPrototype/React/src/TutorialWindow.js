@@ -18,7 +18,7 @@ class TutorialWindow extends React.Component {
                     marginLeft: "-14.5%", 
                     height: "auto", 
                     padding: "7px", 
-                    orderRadius: "5px", 
+                    borderRadius: "5px", 
                     backgroundColor: this.props.settings.colors.homePageColors.myViewsButton, 
                     zIndex: "400", 
                     position: "fixed", 
