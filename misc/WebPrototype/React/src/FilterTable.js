@@ -251,7 +251,7 @@ class FilterTable extends Component {
 
     mouseIn = () => {
         var elements = document.getElementsByClassName(this.props.internalColName + "-E");
-        if (elements[0].scrollHeight > 300) {
+        if (elements[0].scrollHeight >= 300) {
             var scrollDiv = document.getElementsByClassName("sidenavbar");
             scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
         }
@@ -260,7 +260,7 @@ class FilterTable extends Component {
 
     mouseOut = () => {
         var elements = document.getElementsByClassName(this.props.internalColName + "-E");
-        if (elements[0].scrollHeight > 300) {
+        if (elements[0].scrollHeight >= 300) {
             var scrollDiv = document.getElementsByClassName("sidenavbar");
             scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
         }
