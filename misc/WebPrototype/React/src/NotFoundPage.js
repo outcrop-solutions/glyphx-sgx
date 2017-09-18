@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Flex } from 'react-flex-material';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
 import FilterSideBar from './FilterSideBar.js';

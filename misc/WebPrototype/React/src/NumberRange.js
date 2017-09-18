@@ -3,6 +3,7 @@ import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
 import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import Range from 'rc-slider/lib/Range'; 
 import { Card, CardText } from 'material-ui/Card';
 import { red500, blue500 } from 'material-ui/styles/colors';
@@ -74,31 +75,33 @@ class NumberRangeTable extends React.Component {
         });
 
         return (
-            <div>
-                {/* Displays the mapped ranges */}
-                {range}
+            <div style = {{ padding: "0px 15px", margin: "0px 0px 1px" }} >
+                <div style = {{ borderRadius: "3px", backgroundColor: "#9f9f9f", padding: "8px 3px",  }} >
 
-                {/* Add range button below*/}
-                <Card containerStyle = {{ padding: "0px" }}>
-                    <CardText
-                        style = {{
-                            padding: "0px"
-                        }}
-                    >
-                        <Flex layout = "row">
-                            <Flex divider />
-                            <FontIcon
-                                onClick = { this.handleAddEvent.bind(this) }
-                                className = "fa fa-plus cursorHand"
-                                hoverColor = { this.props.settings.colors.rangeColor.addHover }
-                                style = {{
-                                    fontSize: "1.7rem",
-                                    margin: "13px 0px 0px -9px"
-                                }}
-                            />
-                        </Flex>
-                    </CardText>
-                </Card>
+                    {/* Displays the mapped ranges */}
+                    {range}
+
+                    {/* Add range button below*/}
+                    <Card containerStyle = {{ padding: "0px" }}>
+                        <CardText
+                            style = {{
+                                padding: "0px"
+                            }}
+                        >
+                            <Flexbox flexDirection = "row" style = {{ margin: "-4px 0px -4px 3px" }} >
+                                <FontIcon
+                                    onClick = { this.handleAddEvent.bind(this) }
+                                    className = "fa fa-plus cursorHand"
+                                    hoverColor = { this.props.settings.colors.rangeColor.addHover }
+                                    style = {{
+                                        fontSize: "1.7rem",
+                                        margin: "12px 0px 6px 5px"
+                                    }}
+                                />
+                            </Flexbox>
+                        </CardText>
+                    </Card>
+                </div>
             </div>
         );
     }
@@ -369,26 +372,25 @@ class NumberRangeRow extends React.Component {
             <Card containerStyle = {{ padding: "0px" }}>
                 <CardText
                     style = {{
-                        padding: "0px",
-                        backgroundColor: this.state.backgroundColor
+                        backgroundColor: this.state.backgroundColor,
+                        padding: "0px"
                     }}
                 >
-                    <Flex layout = "row">
-                        <Flex divider /> 
+                    <Flexbox flexDirection = "row" style = {{ margin: "-4px 0px" }} >
 
-                        <Flex flex = "10">
+                        <Flexbox style = {{ width: "10%", margin: "0px 8px 0px 3px" }} > 
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash cursorHand"
                                 hoverColor = { this.props.settings.colors.rangeColor.deleteHover }
                                 style = {{
-                                    fontSize: "1.5rem",
-                                    margin: "12px 0px 0px -6px"
+                                    fontSize: "1.7rem",
+                                    margin: "12px 0px 6px 5px"
                                 }}
                             />
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex flex = "20">
+                        <Flexbox style = {{ width: "20%", margin: "0px 0px -1px" }} > 
                             <TextField 
                                 type = 'number' 
                                 name = "min"
@@ -407,19 +409,12 @@ class NumberRangeRow extends React.Component {
                                     (e) => this.onKeyPressMin(e)
                                 }
                                 underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
-                                underlineStyle = {{ borderColor: "#d2d2d2",margin: "0px 0px 4px 0px" }}
+                                underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 4px 0px" }}
                             />
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex divider />
-                        <Flex divider />
+                        <Flexbox style = {{ width: "40%", margin: "16px 17px 0px 8px" }} > 
 
-                        <Flex flex = "40"
-                            style = {{
-                                margin: "17px 0px 0px -8px",
-                                width: "20px"
-                            }}
-                        >
                             <Range
                                 min = { this.props.minVal }
                                 max = { this.props.maxVal }
@@ -436,12 +431,9 @@ class NumberRangeRow extends React.Component {
                                 trackStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderTrack }] }
                                 handleStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }] }
                             />
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex divider />
-                        <Flex divider />
-
-                        <Flex flex = "20">
+                        <Flexbox style = {{ width: "20%", margin: "0px -5px -1px 2px" }} > 
                             <TextField 
                                 type = 'number' 
                                 name = "max"
@@ -462,15 +454,9 @@ class NumberRangeRow extends React.Component {
                                 underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
                                 underlineStyle = {{ borderColor: "#d2d2d2",margin: "0px 0px 4px 0px" }}
                             />
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex divider />
-
-                        <Flex flex = "10"
-                            style = {{
-                                margin: "12px 5px 0px -14px"
-                            }} 
-                        >
+                        <Flexbox style = {{ width: "10%", margin: "11px 11px 0px 0px" }} > 
                             <Toggle 
                                 name = "applied" 
                                 id = { this.props.range.id } 
@@ -491,9 +477,9 @@ class NumberRangeRow extends React.Component {
                                 }}
                                 thumbSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleCircle, left: "40%" }}
                             />
-                        </Flex>
+                        </Flexbox>
 
-                    </Flex>
+                    </Flexbox>
                 </CardText>
             </Card>
         );

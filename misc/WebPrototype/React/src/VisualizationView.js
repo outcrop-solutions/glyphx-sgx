@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {hideSplashScreen} from './LoadMaskHelper.js';
 import FilterSideBar from './FilterSideBar.js';
@@ -55,7 +55,7 @@ class VisualizationView extends React.Component {
 		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
 		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
 		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
-		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; }', 6);
+		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; }', 6);
 		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
 		
 		// For the selectboxes  
@@ -73,9 +73,11 @@ class VisualizationView extends React.Component {
         style.sheet.insertRule('.faqCollapse:after { color: #000000 !important }', 18);
         style.sheet.insertRule('.faqCollapse:hover { background: #dcdeff !important; }', 19);
         style.sheet.insertRule('.faqCollapse.is-open { background: #9397d1 !important; }', 20);
-        style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 21);
+        style.sheet.insertRule('.Collapsible__contentInner { border: none; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }', 21);
 
         style.sheet.insertRule('.subCollapsibleInner { background-color: ' + this.props.settings.colors.homePageColors.subBackground + '; }', 22);
+
+        style.sheet.insertRule('html { overflow: hidden; }', 23);
 
     }
 
@@ -110,7 +112,7 @@ class VisualizationView extends React.Component {
 	
 
 	/**
-	 * OnLoad of the glyphviewer(iframe) we set this to true so that the loadmask can hide.
+	 * OnLoad of the glyphviewer (iframe) we set this to true so that the loadmask can hide.
 	 */
     onLoadGlyphView(){
         this.setState({
@@ -122,7 +124,7 @@ class VisualizationView extends React.Component {
     render() {
         return (
             <MuiThemeProvider>
-                <div style = {{ width:'100%', height:'100%' }}>
+                <div style = {{ width: '100%', height: '100%' }}>
 						
 					{/* Circular Load Mask to show when server calls made. */}
                     <div 
@@ -148,28 +150,25 @@ class VisualizationView extends React.Component {
                             thickness = { 7 } 
                         />
                     </div>
+
+                    <div id  = "filterNav" className = "sidenav" style = {{ fontWeight: "normal", height: "calc(100% - 56px)", marginTop: "56px" }} >
+                        <FilterSideBar/>
+                    </div>
 					
 					{/* Actual Application body that you see */}
-                    <Flex layout = "column" style = {{ position:'absolute', width:'100%', height:'100%' }}>
+                    <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
 
-                        <Flex >
-                            <div className = "TopNav" id = "TopNav" style = {{ width:'100%', height:'56px', transition: '1s' }}>
+                        <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '56px', transition: '1s' }}>
+                            <TopNavBar glyphWindowWidth = { this.state.glyphWindowWidth } />
+                        </div>
 
-                                <TopNavBar glyphWindowWidth = { this.state.glyphWindowWidth } />
-								
-                                <div id  = "filterNav" className = "sidenav" style = {{ fontWeight: "normal" }} >
-                                    <FilterSideBar/>
-                                </div>
-					
-                            </div>
-                        </Flex>
+                        <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 
-                        <Flex id = "iframeDiv" flex = "100" style = {{ overflow: 'hidden' }}>
-                            <div id = "GlyphViewerContainer" style = {{ transition:'0.37s', width:'100%', height:'100%' }} >
+                            
 
+                            <div id = "GlyphViewerContainer" style = {{ transition: '0.37s', width: '100%', height: '100%' }} >
                                 <StatisticModal />
                                 <GlyphLegend />
-
                                 <iframe 
                                     id = "GlyphViewer" 
                                     onLoad={this.onLoadGlyphView.bind(this)} 
@@ -177,11 +176,10 @@ class VisualizationView extends React.Component {
                                     style = {{ width:'100%', height:'100%', border: 'none' }} 
                                     src = "https://s3.amazonaws.com/synglyphx/demo.html" 
                                 /> 
-
                             </div>
                             <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 
-                        </Flex>
-                    </Flex>
+                        </Flexbox>
+                    </Flexbox>
                 </div>
           </MuiThemeProvider>
         );

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import { connect } from 'react-redux';
 import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
 import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import FontIcon from 'material-ui/FontIcon';
+import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/FontIcon';
 import {withRouter} from 'react-router';
 import 'font-awesome/css/font-awesome.min.css';
@@ -27,14 +26,12 @@ class Login extends Component {
         //Caculates the position of the login button to be initially.
         var ycalc = 0;
         var docHeight = document.body.offsetHeight;
-        var forgotPass = document.getElementById("forgotPass");
-        var loginForm = document.getElementById("loginForm");
 
         var loginButton = document.getElementById('loginButton');
         var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
         
         var translate = 'translate(0px,'+ ycalc +'px)';
-        ycalc = docHeight - loginButtonBottom - 25;
+        ycalc = docHeight - loginButtonBottom - 65;
 
         this.setState({loginButtonBottomTranslateCalc: ycalc});
 
@@ -43,7 +40,9 @@ class Login extends Component {
 
     state = {
         loginVisible: true,
-        loginButtonBottomTranslateCalc:0
+        loginButtonBottomTranslateCalc:0,
+        openForgotPasswordDialog: false,
+        snackbar:false
     }
 
     navigate = (str) => {
@@ -160,172 +159,224 @@ class Login extends Component {
         }
     }
 
+    handleOpenForgotPassDailog = () => {
+        this.setState({openForgotPasswordDialog: true});
+    };
+    
+    handleCloseForgotPassDailog = () => {
+    this.setState({openForgotPasswordDialog: false,snackbar:false});
+    };
+
+    handleForgotPassSubmit = () => {
+        var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
+        console.log(email);
+        this.handleCloseForgotPassDailog();
+        //send server call to email password recovery link.
+        this.setState({snackbar:true});
+    }
+
     render() {
         return (
-            <Flex style={{
+            <Flexbox style={{
                 width: '100%',
                 height: '100%',
             }} >
-            <video playsInline  autoPlay loop muted 
-                poster="./Res/Img/synglyphx_bio.png" 
-                id="bgvid"
-                onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
-                >
-                        {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
-                        <source src="./Res/Vid/GlyphEd1.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-            </video>
-            
-            <div 
-                id = "loginOverlay"
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'table',
-                    overflow: 'hidden'
-                }}>
-                <center
+                <video playsInline  autoPlay loop muted 
+                    poster="./Res/Img/synglyphx_bio.png" 
+                    id="bgvid"
+                    onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
+                    >
+                            {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
+                            <source src="./Res/Vid/GlyphEd.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                </video>
+                
+                <div 
+                    id = "loginOverlay"
                     style={{
-                        display: 'table-cell',
-                        verticalAlign: 'middle'
+                        width: '100%',
+                        height: '100%',
+                        display: 'table',
+                        overflow: 'hidden'
                     }}>
-                    <Paper 
-                        id="loginForm"
-                        zDepth={3} 
+                    <center
                         style={{
-                            backgroundColor:'rgba(75, 38, 38, 0.35)',
-                            width: '23%',
-                            height: '45%',
-                            }}>
-                        <div className="loginFormOtherElements" style={{ 'textAlign': 'center', paddingBottom: '0px'}}>
-                            <a href="http://www.synglyphx.com/" target="_blank"><img src="./Res/Img/synglyphx-wht-3.png" style={{width:"325px", height:"70px"}}/> </a>
-                        </div>
-                        <br/>
-                        <label className="loginFormOtherElements"
+                            display: 'table-cell',
+                            verticalAlign: 'middle'
+                        }}>
+                        <Paper 
+                            id="loginForm"
                             style={{
-                                color: 'white',
-                                fontSize:'30px',
-                                fontWeight:'200'
-                            }}> 
-                        USER LOGIN 
-                        </label>
-                        <br/>
-                        <br/>
-                        
-                        <div className="loginFormOtherElements"
-                            style={{
-                                width:"80%",
-                                borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                borderRadius: '5px 5px 5px 5px',
-                                border: "1px solid #ccc",
-                                height:"40px",
-                                overflow:'hidden',
-                                backgroundColor:"white"
-                            }}>
-                            
-                                <i 
-                                className="fa fa-user" 
+                                backgroundColor:'rgba(75, 38, 38, 0.50)',
+                                width: '23%',
+                                height: '45%',
+                                }}>
+                            <div className="loginFormOtherElements" style={{ 'textAlign': 'center', paddingBottom: '0px'}}>
+                                <a href="http://www.synglyphx.com/" target="_blank"><img src="./Res/Img/synglyphx-wht-3.png"/> </a>
+                            </div>
+                            <br/>
+                            <label className="loginFormOtherElements"
                                 style={{
-                                    fontSize: '2.25rem',
-                                    backgroundColor: 'white',
-                                    height:'inherit',
-                                    width:'5%',
-                                    float:'left',
-                                    paddingLeft:'7px',
-                                    paddingTop:'3px'
-                                }}/>
-
-                                <input 
-                                    type="text"
-                                    id="UserText"
-                                    style={{
-                                        border:"none",
-                                        height:'inherit',
-                                        width:'90%',
-                                        borderLeft: '1px #b3b3b3 solid',
-                                        float:'right',
-                                        outlineWidth: '0',
-                                        fontSize:'23px'
-                                    }}
-                                />
-                        </div>
-                        <br/> <br/>
-                        <div className="loginFormOtherElements"
-                            style={{
-                                width:"80%",
-                                borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                borderRadius: '5px 5px 5px 5px',
-                                border: "1px solid #ccc",
-                                height:"40px",
-                                overflow:'hidden',
-                                backgroundColor:"white"
-                            }}>
+                                    color: 'white',
+                                    fontSize:'30px',
+                                    fontWeight:'200'
+                                }}> 
+                            USER LOGIN 
+                            </label>
+                            <br/>
+                            <br/>
                             
-                                <i 
-                                className="fa fa-lock" 
+                            <div className="loginFormOtherElements"
                                 style={{
-                                    fontSize: '2.25rem',
-                                    backgroundColor: 'white',
-                                    height:'inherit',
-                                    width:'5%',
-                                    float:'left',
-                                    paddingLeft:'7px',
-                                    paddingTop:'3px'
-                                }}/>
-
-                                <input 
-                                    type="password"
-                                    id="PassText"
+                                    width:"80%",
+                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                    borderRadius: '5px 5px 5px 5px',
+                                    border: "1px solid #ccc",
+                                    height:"40px",
+                                    overflow:'hidden',
+                                    backgroundColor:"white"
+                                }}>
+                                
+                                    <i 
+                                    className="fa fa-user" 
                                     style={{
-                                        border:"none",
+                                        fontSize: '2.25rem',
+                                        backgroundColor: 'white',
                                         height:'inherit',
-                                        borderLeft: '1px #b3b3b3 solid',
-                                        width:'90%',
-                                        float:'right',
-                                        outlineWidth: '0',
-                                        fontSize:'23px'
-                                    }}
-                                />
-                        </div>
-                        <label className="loginFormOtherElements" id="errPass" style={{color: 'red'}}  />
-                        <br/> <br/>
-                        <RaisedButton
-                                    label = "Login"
-                                    id="loginButton"
-                                    labelStyle={{
-                                        fontWeight: 'bold',
-                                        fontSize: '20px'
-                                    }}
-                                    secondary = { true }
-                                    onClick = { (evt) => this.buttonClick(evt,this) }
-                                    buttonStyle={{
-                                        backgroundColor : '#009688',
-                                        borderRadius: '5px',
-                                    }}
-                                    style = {{ 
-                                        position:'relative', 
-                                        width: "65%",
-                                        display:'block',
-                                        borderRadius: '5px',
-                                        color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                />
-                        <br />
-                        <label className="loginFormOtherElements" id="forgotPass" style={{fontSize: '16px'}}>
-                            <a href="#" style={{color:'#b3b3b3'}}> forgot password? </a>
-                        </label>
-                        <br />
-                        <IconButton 
-                            iconClassName="fa fa-arrow-circle-down" 
-                            iconStyle={{color:'white'}}
-                            onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
-                        />
-                    </ Paper>
-                </ center>
-                <br/>
+                                        width:'5%',
+                                        float:'left',
+                                        paddingLeft:'7px',
+                                        paddingTop:'3px'
+                                    }}/>
 
-            </div>
+                                    <input 
+                                        type="text"
+                                        id="UserText"
+                                        style={{
+                                            border:"none",
+                                            height:'inherit',
+                                            width:'90%',
+                                            borderLeft: '1px #b3b3b3 solid',
+                                            float:'right',
+                                            outlineWidth: '0',
+                                            fontSize:'23px'
+                                        }}
+                                    />
+                            </div>
+                            <br/> <br/>
+                            <div className="loginFormOtherElements"
+                                style={{
+                                    width:"80%",
+                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                    borderRadius: '5px 5px 5px 5px',
+                                    border: "1px solid #ccc",
+                                    height:"40px",
+                                    overflow:'hidden',
+                                    backgroundColor:"white"
+                                }}>
+                                
+                                    <i 
+                                    className="fa fa-lock" 
+                                    style={{
+                                        fontSize: '2.25rem',
+                                        backgroundColor: 'white',
+                                        height:'inherit',
+                                        width:'5%',
+                                        float:'left',
+                                        paddingLeft:'7px',
+                                        paddingTop:'3px'
+                                    }}/>
+
+                                    <input 
+                                        type="password"
+                                        id="PassText"
+                                        style={{
+                                            border:"none",
+                                            height:'inherit',
+                                            borderLeft: '1px #b3b3b3 solid',
+                                            width:'90%',
+                                            float:'right',
+                                            outlineWidth: '0',
+                                            fontSize:'23px'
+                                        }}
+                                    />
+                            </div>
+                            <label className="loginFormOtherElements" id="errPass" style={{color: 'red'}}  />
+                            <br/> <br/>
+                            <RaisedButton
+                                        label = "Login"
+                                        id="loginButton"
+                                        labelStyle={{
+                                            fontWeight: 'bold',
+                                            fontSize: '20px'
+                                        }}
+                                        secondary = { true }
+                                        onClick = { (evt) => this.buttonClick(evt,this) }
+                                        buttonStyle={{
+                                            backgroundColor : '#009688',
+                                            borderRadius: '5px',
+                                        }}
+                                        style = {{ 
+                                            position:'relative', 
+                                            width: "65%",
+                                            display:'block',
+                                            borderRadius: '5px',
+                                            color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                    />
+                            <br />
+                            <label className="loginFormOtherElements" id="forgotPass" style={{fontSize: '16px'}}>
+                                <a onClick={this.handleOpenForgotPassDailog} style={{color:'#b3b3b3',cursor:'pointer'}}><u> forgot password? </u></a>
+                            </label>
+                            <br />
+                            <IconButton 
+                                iconClassName="fa fa-arrow-circle-down" 
+                                iconStyle={{color:'white'}}
+                                onClick= {(evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc)}
+                            />
+                        </ Paper>
+                    </ center>
+                    <br/>
+                    
+                    <Dialog
+                        title="Forgot Password?"
+                        actions={[
+                            <RaisedButton
+                                label="Submit"
+                                primary={true}
+                                onClick={this.handleForgotPassSubmit}
+                            />,
+                            <span> &nbsp; </span>,
+                            <RaisedButton
+                                label="Cancel"
+                                primary={true}
+                                onClick={this.handleCloseForgotPassDailog}
+                            />
+                        ]}
+                        modal={true}
+                        open={this.state.openForgotPasswordDialog}
+                        onRequestClose={this.handleCloseForgotPassDailog}
+                        >
+                        Please Enter Your Email address associated with the account. <br/>
+                            <input 
+                                type="text"
+                                id="ForgotUserText"
+                                style={{
+                                    height:'inherit',
+                                    border: '1px #b3b3b3 solid',
+                                    outlineWidth: '0',
+                                    fontSize:'20px'
+                                }}
+                            />
+                    </Dialog>
+                    <Snackbar
+                        open={this.state.snackbar}
+                        message="A link has been sent to your email address to reset the password."
+                        autoHideDuration={5000}
+                        onRequestClose={this.handleCloseForgotPassDailog}
+                    />            
+                </div>
             
-            </Flex>
+            </Flexbox>
         );
     }
 }

@@ -185,12 +185,11 @@ class FilterSideBar extends Component {
     toggleTopView = (event) => {
 		var collapseTopViewButton = document.getElementById("collapseTopViewButton");
 		
-        if(this.refs['topCollapisble'].state.isClosed)
-		{
+        if (this.refs['topCollapisble'].state.isClosed) {
 			collapseTopViewButton.style.transform = '';
 		    this.refs['topCollapisble'].openCollapsible();
 		}
-        else{
+        else {
 			collapseTopViewButton.style.transform = 'rotateZ(180deg)';
 		    this.refs['topCollapisble'].closeCollapsible();
 		}
@@ -200,7 +199,8 @@ class FilterSideBar extends Component {
         var colList = Object.keys(this.state.tableData);
         return (
             <Flexbox 
-                flexDirection = "column" 
+                flexDirection = "column"
+                flexGrow = {1}
                 style = {{ 
                     height: "100%",
                     overflow:'hidden',

@@ -3,7 +3,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-import {Flex} from 'react-flex-material';
 import Flexbox from 'flexbox-react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';

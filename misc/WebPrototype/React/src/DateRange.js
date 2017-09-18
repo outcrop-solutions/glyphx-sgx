@@ -2,7 +2,6 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
-import { Flex } from 'react-flex-material';
 import Range from 'rc-slider/lib/Range';
 import DatePicker from 'react-datepicker';
 import { Card, CardText } from 'material-ui/Card';
@@ -81,15 +80,12 @@ class DateRangeTable extends React.Component {
                 {/* Add range button */}
                 <Card>
                     <CardText>
-                        <Flex layout="row">
-                            <Flex divider />
                             <FontIcon
                                 onClick = { this.handleAddEvent.bind(this) }
                                 className = "fa fa-plus fa-2x"
                                 hoverColor = { blue500 }
                                 style = { styleSet.iconStyles }
                             />
-                        </Flex>
                     </CardText>
                 </Card>
             </div>
@@ -209,21 +205,14 @@ class DateRangeRow extends React.Component {
         return (
             <Card>
                 <CardText>
-                    <Flex layout="row">      
 
-                        <Flex divider />  
-
-                        <Flex flex="10">
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash fa-2x"
                                 hoverColor = { red500 }
                                 style = { styleSet.iconStyles }
                             />
-                        </Flex>
 
-
-                        <Flex flex="80">
                             <DatePicker
                                 selected = { this.state.min }
                                 selectsStart
@@ -239,16 +228,7 @@ class DateRangeRow extends React.Component {
                                 endDate = { this.state.max }
                                 onChange = { (e) => this.handleChangeEnd(e) }
                             />
-                        </Flex>
 
-                        <Flex divider />
-
-
-                        <Flex flex="10"
-                            style = {{
-                                margin: "11px 0px 0px -11px"
-                            }} 
-                        >
                             <Toggle 
                                 name = "applied" 
                                 id = { this.props.range.id } 
@@ -257,10 +237,7 @@ class DateRangeRow extends React.Component {
                                     (e) => this.onToggle(e)
                                 }
                             />
-                        </Flex>
 
-
-                    </Flex>
                 </CardText>
             </Card>
         );

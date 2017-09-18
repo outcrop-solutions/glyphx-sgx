@@ -2,7 +2,7 @@ import React from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Badge from 'material-ui/Badge';
-import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import { Card, CardText } from 'material-ui/Card';
 import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
@@ -80,8 +80,9 @@ class FilterViewForm extends React.Component {
 
             else if (filterType === "Number") {
                 if (filterList[colName].selectedValues.length) {
-                    min = parseInt(filterList[colName].selectedValues[0], 10);
-                    max = parseInt(filterList[colName].selectedValues[0], 10);
+                    console.log(filterList[colName].selectedValues);
+                    min = parseFloat(filterList[colName].selectedValues[0], 10);
+                    max = parseFloat(filterList[colName].selectedValues[0], 10);
                 }
                 else {
                     continue;
@@ -89,7 +90,7 @@ class FilterViewForm extends React.Component {
 
 
                 for (i = 0; i < filterList[colName].selectedValues.length; i++) {
-                    curNum = parseInt(filterList[colName].selectedValues[i], 10);
+                    curNum = parseFloat(filterList[colName].selectedValues[i], 10);
                     if (curNum < min) {
                         min = curNum;
                     }
@@ -97,6 +98,8 @@ class FilterViewForm extends React.Component {
                         max = curNum;
                     }
                 }
+
+                console.log("min: " + min + ", max: " + max);
 
             }
 
@@ -136,37 +139,36 @@ class FilterViewForm extends React.Component {
 
         return (
 
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px'}} containerStyle = {{ padding: "0px", }}>
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px', borderRadius: "5px" }} containerStyle = {{ padding: "0px", borderRadius: "5px" }}>
                 <CardText
                     style = {{
-                        padding: "5px"
+                        padding: "3px 8px",
+                        borderRadius: "5px"
                     }}
                 >
                     <div>
 
-                        <Flex layout = "row"> 
+                        <Flexbox flexDirection = "row" >
                             
-                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 10px" }}>
+                            <Flexbox style = {{ width: "100%" }} > 
                                 <span style = {{ color: "#000000", width: "123px" }} > Options </span>
-                            </Flex>
+                            </Flexbox>
 
-                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 71px" }}>
+                            <Flexbox style = {{ width: "100%" }} > 
                                 <span style = {{ color: "#000000", width: "106px"}} > Filter </span>
-                            </Flex>
+                            </Flexbox>
 
-                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 75px" }}>
+                            <Flexbox style = {{ width: "100%" }} > 
                                 <span style = {{ color: "#000000", width: "84px" }} > Min </span>
-                            </Flex>
+                            </Flexbox>
 
-                            <Flex flex = "10" style = {{ margin: "5px 0px 0px 53px" }}>
+                            <Flexbox style = {{ width: "100%" }} > 
                                 <span style = {{ color: "#000000" }} > Max </span>
-                            </Flex>
+                            </Flexbox>
 
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex divider /> 
-                        <Divider />
-                        <Flex divider /> 
+                        <Divider style = {{ marginBottom: "0px", backgroundColor: "#000000" }} />
 
                         {/* Displays the mapped views*/}
                         {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3> No Filters Selected </h3></div>}
@@ -194,126 +196,112 @@ class FilterViewRow extends React.Component {
 
         // Shorten display text if theyre too long
         var displayName = this.props.view[0];
-        var min = this.props.view[2];
-        var max = this.props.view[3];
+        var min = this.props.view[2].toString();
+        var max = this.props.view[3].toString();
 
-        if(displayName.length > 25) {
-            displayName = displayName.substring(0,24) + "...";
+        if(displayName.length > 13) {
+            displayName = displayName.substring(0,12) + "...";
         }
 
-        if(min.length > 12) {
-            min = min.substring(0,11) + "...";
+        if(min.length > 10) {
+            min = min.substring(0,9) + "...";
         }
 
-        if(max.length > 12) {
-            max = max.substring(0,11) + "...";
+        if(max.length > 10) {
+            max = max.substring(0,9) + "...";
         }
 
         return (
             <div >
-                <Flex layout = "row" style = {{ minHeight: "32px", margin: "12px -5px 5px -2px" }}>
+                <Flexbox flexDirection = "row" style = {{ minHeight: "32px", marginTop: "11.5px" }} >
 
-                    <Flex flex = "1" style = {{ margin: "-4px 10px 0px 10px" }}>
-                        <FontIcon
-                            onClick = { this.onDelEvent.bind(this) }
-                            className = "fa fa-trash cursorHand"
-                            hoverColor = { this.props.settings.colors.filterOverviewColor.deleteHover }
-                        />
-                    </Flex>
+                        <div style = {{ width: "31px" }} >
+                            <FontIcon
+                                onClick = { this.onDelEvent.bind(this) }
+                                className = "fa fa-trash cursorHand"
+                                hoverColor = { this.props.settings.colors.filterOverviewColor.deleteHover }
+                            />
+                        </div>
 
-                    <Flex flex = "14">
-                        <Flex layout = "row"> 
-                            <Flex flex = "50" style = {{ margin: "-4px -3px 0px 2px" }}>
-                                <Badge
-                                    badgeContent = { this.props.view[4] }
-                                    primary = { true }
-                                    style = {{ padding: "0px 0px 0px 0px" }}
-                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, color: this.props.settings.colors.filterOverviewColor.badgeText }}
-                                    >
-                                    <FontIcon
-                                        onClick = { (evt) => this.onClickIcon(evt,this,true) }
-                                        className = "fa fa-list-ul cursorHand"
-                                        hoverColor = { this.props.settings.colors.filterOverviewColor.elasticHover }
-                                    />
-                                </Badge>
-                            </Flex>
+                    <div style = {{ width: "41px" }} >
+                        <Badge
+                            badgeContent = { this.props.view[4] }
+                            primary = { true }
+                            style = {{ padding: "0px 0px 0px 0px" }}
+                            badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, color: this.props.settings.colors.filterOverviewColor.badgeText }}
+                            >
+                            <FontIcon
+                                onClick = { (evt) => this.onClickIcon(evt,this,true) }
+                                className = "fa fa-list-ul cursorHand"
+                                hoverColor = { this.props.settings.colors.filterOverviewColor.elasticHover }
+                            />
+                        </Badge>
+                    </div>
 
-                            <Flex divider /> 
-                            <Flex divider /> 
 
-                            <Flex flex = "50" style = {{ margin: "-4px -5px 0px 0px" }}>
-                                <Badge
-                                    badgeContent = { this.props.view[5] }
-                                    primary = { true }
-                                    style = {{ padding: "0px 0px 0px 0px" }}
-                                    badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, color: this.props.settings.colors.filterOverviewColor.badgeText }}
-                                    >
-                                    <FontIcon
-                                        onClick = { (evt) => this.onClickIcon(evt,this,false) }
-                                        className = "fa fa-sliders cursorHand"
-                                        hoverColor = { this.props.settings.colors.filterOverviewColor.rangeHover }
-                                    />
-                                </Badge>
-                            </Flex>
-                        </Flex> 
-                    </Flex>
+                    <div style = {{ width: "51px" }} >
+                        <Badge
+                            badgeContent = { this.props.view[5] }
+                            primary = { true }
+                            style = {{ padding: "0px 0px 0px 0px" }}
+                            badgeStyle = {{ width: "20px", height: "20px", top: "-10px", right: "-13px", backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, color: this.props.settings.colors.filterOverviewColor.badgeText }}
+                            >
+                            <FontIcon
+                                onClick = { (evt) => this.onClickIcon(evt, this, false) }
+                                className = "fa fa-sliders cursorHand"
+                                hoverColor = { this.props.settings.colors.filterOverviewColor.rangeHover }
+                            />
+                        </Badge>
+                    </div>
+ 
 
-                    <Flex divider /> 
-                    <Flex divider /> 
+                    <div style = {{ width: "106px" }} >
+                        <Tooltip
+                            placement = 'bottom'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { <div> {this.props.view[0]} </div> }
+                        >
+                            <span style = {{  wordWrap: "break-word", display: "block" }} >
+                                {displayName}
+                            </span> 
+                        </Tooltip>
+                    </div>
+                  
 
-                    <Flex flex="85">
-                        <Flex layout="row"> 
-                            <Flex flex = "40" style = {{ margin: "0px -5px 0px 3px" }}>
-                                <Tooltip
-                                    placement = 'bottom'
-                                    mouseEnterDelay = { 0.5 }
-                                    mouseLeaveDelay = { 0.15 }
-                                    destroyTooltipOnHide = { false }
-                                    trigger = { Object.keys( {hover: 1} ) }
-                                    overlay = { <div> {this.props.view[0]} </div> }
-                                >
-                                    <span style = {{  wordWrap: "break-word", display: "block" }}>
-                                        {displayName}
-                                    </span> 
-                                </Tooltip>
-                            </Flex>
+                   <div style = {{ width: "92.5px" }} >
+                        <Tooltip
+                            placement = 'bottom'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { <div> {this.props.view[2]} </div> }
+                        >
+                            <span style = {{  wordWrap: "break-word" }} >
+                                {min}
+                            </span>
+                        </Tooltip>
+                    </div>
+      
+                    <Tooltip
+                        placement = 'bottom'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlay = { <div> {this.props.view[3]} </div> }
+                    >
+                        <span style = {{  wordWrap: "break-word" }} >
+                            {max}
+                        </span>
+                    </Tooltip>
+         
+                </Flexbox>
 
-                            <Flex divider /> 
-
-                            <Flex flex = "30">
-                                <Tooltip
-                                    placement = 'bottom'
-                                    mouseEnterDelay = { 0.5 }
-                                    mouseLeaveDelay = { 0.15 }
-                                    destroyTooltipOnHide = { false }
-                                    trigger = { Object.keys( {hover: 1} ) }
-                                    overlay = { <div> {this.props.view[2]} </div> }
-                                >
-                                    <span style = {{  wordWrap: "break-word" }}>
-                                        {min}
-                                    </span>
-                                </Tooltip>
-                            </Flex>
-
-                            <Flex divider /> 
-
-                            <Flex flex = "30">
-                                <Tooltip
-                                    placement = 'bottom'
-                                    mouseEnterDelay = { 0.5 }
-                                    mouseLeaveDelay = { 0.15 }
-                                    destroyTooltipOnHide = { false }
-                                    trigger = { Object.keys( {hover: 1} ) }
-                                    overlay = { <div> {this.props.view[3]} </div> }
-                                >
-                                    <span style = {{  wordWrap: "break-word" }}>
-                                        {max}
-                                    </span>
-                                </Tooltip>
-                            </Flex>
-                        </Flex>
-                    </Flex>
-                </Flex>
+                <Divider />
             </div>
         );
     }

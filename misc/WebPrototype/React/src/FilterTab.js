@@ -22,18 +22,17 @@ class FilterTabs extends React.Component {
 
     mouseIn = () => {
         var elements = document.getElementsByClassName(this.props.id + "-R");
-        if (elements[0].scrollHeight > 393) {
+        console.log(elements[0].scrollHeight)
+        if (elements[0].scrollHeight > 345) {
             var scrollDiv = document.getElementsByClassName("sidenavbar");
             scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
         }
         
     }
 
-    mouseOut = () => {        var elements = document.getElementsByClassName(this.props.id + "-R");
-        if (elements[0].scrollHeight > 393) {
-            var scrollDiv = document.getElementsByClassName("sidenavbar");
-            scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
-        }
+    mouseOut = () => {        
+        var scrollDiv = document.getElementsByClassName("sidenavbar");
+        scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
     }
 
 
@@ -53,7 +52,7 @@ class FilterTabs extends React.Component {
         if (this.active === "ELASTIC") {
             if (document.getElementById(this.state.rangeID)) {
                 document.getElementById(this.state.tableID).style.maxHeight = "0px";
-                document.getElementById(this.state.rangeID).style.maxHeight = "393px";
+                document.getElementById(this.state.rangeID).style.maxHeight = "345px";
             }
         }
         else {            if (document.getElementById(this.state.tableID)) {
@@ -75,14 +74,14 @@ class FilterTabs extends React.Component {
                     <Tab 
                         label = "Elastic" 
                         value = { 0 }
-                        icon = { <FontIcon style = {{ color: this.props.settings.colors.filterTabColor.titleText }} className = "fa fa-list-ul" ></FontIcon> }
-                        buttonStyle = { {height: "49px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
+                        icon = { <FontIcon style = {{ color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className = "fa fa-list-ul" ></FontIcon> }
+                        buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 0 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
                     />
                     <Tab 
                         label = "Range" 
                         value = { 1 }
-                        icon = { <FontIcon style = {{ color: this.props.settings.colors.filterTabColor.titleText }} className="fa fa-sliders"></FontIcon> }
-                        buttonStyle = { {height: "49px", backgroundColor: this.props.settings.colors.filterTabColor.tabBackground, color: this.props.settings.colors.filterTabColor.titleText} }
+                        icon = { <FontIcon style = {{ color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className="fa fa-sliders"></FontIcon> }
+                        buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 1 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
                     />
                 </Tabs>
 
@@ -107,8 +106,9 @@ class FilterTabs extends React.Component {
                     <div
                         id = { this.state.rangeID }
                         style = {{
-                            maxHeight: "393px",
-                            overflowX: "hidden"
+                            maxHeight: "355px",
+                            overflowX: "hidden",
+                            marginTop: "17px"
                         }}
                         onMouseEnter = { this.mouseIn }
                         onMouseLeave = { this.mouseOut }

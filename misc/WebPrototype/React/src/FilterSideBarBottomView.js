@@ -421,8 +421,8 @@ class FilterSideBarBottomView extends Component {
 
             <Flexbox 
                 flexDirection = "column" 
+                flexGrow = {1}
                 style = {{ 
-                    height: "100%",
                     overflow: 'auto',
                     overflowX: "hidden",
                     transition: '1s',
@@ -473,14 +473,14 @@ class FilterSideBarBottomView extends Component {
                     </Collapsible>
                 </div>
             
-                <div id = 'filterCollapisble'>
+                <div id = 'filterCollapisble' style = {{ marginBottom: "-6px" }} >
 
                     <Collapsible 
                         transitionTime = {200} 
                         ref = 'filterCollapisble'
                         key = 'filterCollapisble'
                         contentOuterClassName = "cursorNormal"
-                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'filterCollapisble') }
+                        handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this, 'filterCollapisble') }
                         trigger = {
                             <div>
                                 <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />

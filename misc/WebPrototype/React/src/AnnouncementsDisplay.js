@@ -25,15 +25,15 @@ class AnnouncementsDisplay extends React.Component {
         var context = this;
         var announcementList = [["Maintenance", "We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
                                 ["Release", "Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "Click to vote on which features you would like to see first in the next release."], 
+                                ["Poll", "Click to vote on which features you would like to see first."], 
                                 ["Shout", "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."],
                                 ["Maintenance", "1 We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
                                 ["Release", "1 Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "1 Click to vote on which features you would like to see first in the next release."], 
+                                ["Poll", "1 Click to vote on which features you would like to see first."], 
                                 ["Shout", "1 John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."],
                                 ["Maintenance", "2 We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
                                 ["Release", "2 Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "2 Click to vote on which features you would like to see first in the next release."], 
+                                ["Poll", "2 Click to vote on which features you would like to see first."], 
                                 ["Shout", "2 John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."]];
 
         var announcements = announcementList.map( function(announcement) {
@@ -64,9 +64,6 @@ class AnnouncementsDisplay extends React.Component {
                         <div style = {{ height: "100%", overflowY: "scroll" }} className = "announcementsScroll" >
                             {announcements}
                         </div>
-
-                        
-    
                     </CardText>
                 </Card>
             </Flexbox>

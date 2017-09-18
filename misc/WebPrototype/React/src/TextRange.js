@@ -3,6 +3,7 @@ import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
 import { Flex } from 'react-flex-material';
+import Flexbox from 'flexbox-react';
 import Range from 'rc-slider/lib/Range';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -82,31 +83,33 @@ class TextRangeTable extends React.Component {
 
 
         return (
-            <div>
-                {/* Displays the mapped ranges */}
-                {range}
+            <div style = {{ padding: "0px 15px", margin: "0px 0px 1px" }} >
+                <div style = {{ borderRadius: "3px", backgroundColor: "#9f9f9f", padding: "8px 3px",  }} >
 
-                {/* Add range button below*/}
-                <Card containerStyle = {{ padding: "0px" }} >
-                    <CardText
-                        style = {{
-                            padding: "0px"
-                        }}
-                    >
-                        <Flex layout = "row">
-                            <Flex divider />
-                            <FontIcon
-                                onClick = { this.handleAddEvent.bind(this) }
-                                className = "fa fa-plus cursorHand"
-                                hoverColor = { this.props.settings.colors.rangeColor.addHover }
-                                style = {{
-                                    fontSize: "1.7rem",
-                                    margin: "13px 0px 0px -9px"
-                                }}
-                            />
-                        </Flex>
-                    </CardText>
-                </Card>
+                    {/* Displays the mapped ranges */}
+                    {range}
+
+                    {/* Add range button below*/}
+                    <Card containerStyle = {{ padding: "0px" }} >
+                        <CardText
+                            style = {{
+                                padding: "0px"
+                            }}
+                        >
+                            <Flexbox flexDirection = "row" style = {{ margin: "-4px 0px -4px 3px" }} >
+                                <FontIcon
+                                    onClick = { this.handleAddEvent.bind(this) }
+                                    className = "fa fa-plus cursorHand"
+                                    hoverColor = { this.props.settings.colors.rangeColor.addHover }
+                                    style = {{
+                                        fontSize: "1.7rem",
+                                        margin: "12px 0px 6px 5px"
+                                    }}
+                                />
+                            </Flexbox>
+                        </CardText>
+                    </Card>
+                </div>
             </div>
         );
     }
@@ -369,23 +372,21 @@ class TextRangeRow extends React.Component {
                         backgroundColor: this.state.backgroundColor
                     }}
                 >
-                    <Flex layout = "row">      
+                    <Flexbox flexDirection = "row" style = {{ margin: "-4px 0px" }} >
 
-                        <Flex divider />  
-
-                        <Flex flex = "10">
+                        <Flexbox style = {{ width: "10%" }} > 
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash cursorHand"
                                 hoverColor = { this.props.settings.colors.rangeColor.deleteHover }
                                 style = {{
-                                    fontSize: "1.5rem",
-                                    margin: "12px 0px 0px -6px"
+                                    fontSize: "1.7rem",
+                                    margin: "12px 0px 6px 8px"
                                 }}
                             />
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex flex = "25" style = {{ width: "132px", margin: "-8px 0px 0px 9px" }}>
+                        <Flexbox style = {{ width: "25%", margin: "-10px 0px 0px 17px" }} > 
                             <DropDownMenu 
                                 value = { this.state.value } 
                                 onChange = { this.promptSelectChange } 
@@ -405,14 +406,12 @@ class TextRangeRow extends React.Component {
                                 <MenuItem value = {5} label = "Begins [R]" primaryText = "Begins With [Range]" />
                                 <MenuItem value = {6} label = "Ends [R]" primaryText = "Ends With [Range]" />        
                             </DropDownMenu>
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex divider />
-
-                        <Flex flex = "55" style = {{ margin: "-1px -18px 0px 2px" }}>
+                        <Flexbox style = {{ width: "55%", margin: "-3px 0px 2px 7px" }} >
                             {this.state.value === 5 || this.state.value === 6 ? 
-                                        <Flex layout = "row">
-                                            <Flex flex = "25">
+                                        <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
+                                            <Flexbox style = {{ width: "25%" }} > 
                                                 <TextField 
                                                     type = 'text' 
                                                     name = "min"
@@ -433,17 +432,9 @@ class TextRangeRow extends React.Component {
                                                         (e) => this.onKeyPressMin(e)
                                                     }
                                                 />
-                                            </Flex>
+                                            </Flexbox>
 
-                                            <Flex divider />
-                                            <Flex divider />
-
-                                            <Flex flex = "50"
-                                                style = {{
-                                                    margin: "19px 0px 0px -30px",
-                                                    width: "20px"
-                                                }}
-                                            >
+                                            <Flexbox style = {{ width: "45%", margin: "18px 18px 0px -19px" }} > 
                                                 <Range
                                                     min = { 0 }
                                                     max = { 25 }
@@ -460,12 +451,9 @@ class TextRangeRow extends React.Component {
                                                     railStyle = {{ backgroundColor: "#d2d2d2" }}
                                                     handleStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }] }
                                                 />
-                                            </Flex>
+                                            </Flexbox>
 
-                                            <Flex divider />
-                                            <Flex divider />
-
-                                            <Flex flex = "25">
+                                            <Flexbox style = {{ width: "25%" }} > 
                                                 <TextField 
                                                     type = 'text' 
                                                     name = "max"
@@ -486,8 +474,8 @@ class TextRangeRow extends React.Component {
                                                         (e) => this.onKeyPressMax(e)
                                                     }
                                                 />
-                                            </Flex>
-                                        </Flex>
+                                            </Flexbox>
+                                        </Flexbox>
                                         
                                         : 
 
@@ -514,15 +502,9 @@ class TextRangeRow extends React.Component {
                                             }
                                         /> 
                             }
-                        </Flex>
+                        </Flexbox>
 
-                        <Flex divider />
-
-                        <Flex flex = "10"
-                            style = {{
-                                margin: "16px 9px 0px -8px"
-                            }}  
-                        >
+                        <Flexbox style = {{ width: "10%", margin: "12px 0px 0px -36px" }} > 
                             <Toggle 
                                 name = "applied" 
                                 id = { this.props.range.id } 
@@ -543,8 +525,8 @@ class TextRangeRow extends React.Component {
                                 }}
                                 thumbSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleCircle, left: "40%" }}
                             />
-                        </Flex>
-                    </Flex>
+                        </Flexbox>
+                    </Flexbox>
                 </CardText>
             </Card>
         );
