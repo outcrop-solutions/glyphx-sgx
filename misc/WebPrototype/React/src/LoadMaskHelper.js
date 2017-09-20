@@ -16,12 +16,14 @@ export function hideSplashScreen() {
     }
 };
 
+
 /**
  * This function shows the in app loadmask(cicular waiting).
  */
 export function showLoadMask(){
     //document.getElementById("LoadMask").style.visibility = "visible";
 };
+
 
 /**
  * This function shows the in app loadmask(cicular waiting).

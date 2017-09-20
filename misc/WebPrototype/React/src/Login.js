@@ -20,6 +20,10 @@ class Login extends Component {
     componentDidMount() {
         hideSplashScreen();
         this.calcLoginButtonPosition();
+        var context = this;
+        setTimeout(function () {
+            context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
+        }, 1000);
     }
 
     calcLoginButtonPosition() {

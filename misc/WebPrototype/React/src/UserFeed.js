@@ -73,7 +73,7 @@ class UserFeed extends React.Component {
                     >
                         <Flexbox flexDirection="row" minWidth="100%" >
 
-                                <img src = { post[1] } className = "img-circle" style = {{ marginRight: "10px" }} alt = { post[0] }/>
+                                <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } />
  
                             <Flexbox flexDirection="column" style = {{ width: "100%" }} >
                                 <Flexbox style = {{ height: "100%" }} > 
@@ -82,7 +82,7 @@ class UserFeed extends React.Component {
 
                                 <Divider style = {{ marginBottom: "5px" }} />
 
-                                <Flexbox flexDirection="row" minWidth="100%" >
+                                <Flexbox flexDirection = "row" minWidth = "100%" className = "noselect" >
 
                                         <i className = "fa fa-comments" style = {{ fontSize: "17px", marginRight: "15px" }} />
                                         <i className = "fa fa-thumbs-up" style = {{ fontSize: "17px",marginRight: "25px" }} />
@@ -114,7 +114,8 @@ class UserFeed extends React.Component {
                             paddingTop: "4px",
                             fontSize: "18px",
                             fontWeight: "normal"
-                        }} 
+                        }}
+                        className = "noselect"
                     > 
                         User Feed
                     </div>
@@ -129,6 +130,7 @@ class UserFeed extends React.Component {
                         style = {{
                             margin: "0px 0px 7px 0px",
                         }}
+                        className = "noselect"
                     />
                 
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >

@@ -106,7 +106,7 @@ class ViewsManager extends React.Component {
                         style = {{
                             padding: "7px",
                         }}
-                        className = "funnel-top-body"
+                        className = "funnel-top-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title}
@@ -124,7 +124,7 @@ class ViewsManager extends React.Component {
                         style = {{
                             padding: "7px",
                         }}
-                        className = "funnel-middle-body"
+                        className = "funnel-middle-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title}
@@ -142,7 +142,7 @@ class ViewsManager extends React.Component {
                         style = {{
                             padding: "7px",
                         }}
-                        className = "funnel-bottom-body"
+                        className = "funnel-bottom-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title}
@@ -189,7 +189,8 @@ class ViewsManager extends React.Component {
                             paddingTop: "4px",
                             fontSize: "18px",
                             fontWeight: "normal"
-                        }} 
+                        }}
+                        className = "noselect"
                     > 
                         Views Manager
                     </div>
@@ -200,7 +201,7 @@ class ViewsManager extends React.Component {
                         <StepLabel
                             icon = { 
                                 (this.state.stepIndex === 0 ?
-                                    <span className = "fa-stack fa-lg">
+                                    <span className = "fa-stack fa-lg noselect">
                                         <i 
                                             className = "fa fa-circle fa-stack-2x" 
                                             style = {{     
@@ -212,7 +213,7 @@ class ViewsManager extends React.Component {
                                         <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
                                     </span> 
                                 :
-                                    <span className = "fa-stack fa-lg">
+                                    <span className = "fa-stack fa-lg noselect">
                                         <i 
                                             className = "fa fa-circle fa-stack-2x" 
                                             style = {{     
@@ -233,13 +234,13 @@ class ViewsManager extends React.Component {
                                 )
                             } 
                     >
-                        <label style = {{ color: "#ffffff", fontWeight: "normal" }} > Select a Category </label>
+                        <label className = "noselect" style = {{ color: "#ffffff", fontWeight: "normal" }} > Select a Category </label>
                     </StepLabel>
                     </Step>
                     <Step>
                         <StepLabel
                             icon = {
-                                <span className = "fa-stack fa-lg">
+                                <span className = "fa-stack fa-lg noselect">
                                     <i 
                                         className = "fa fa-circle fa-stack-2x" 
                                         style = {{     
@@ -253,7 +254,7 @@ class ViewsManager extends React.Component {
                             }
                             style = {{ marginRight: "8px" }}
                         >
-                            <label style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), fontWeight: "normal" }} > Select a View </label>
+                            <label className = "noselect" style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), fontWeight: "normal" }} > Select a View </label>
                         </StepLabel>
                     </Step>
                 </Stepper>
@@ -273,19 +274,19 @@ class ViewsManager extends React.Component {
                                     <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} >
 
 
-                                        <div onClick = { () => this.flip("MarketingAndRecruiting") } className = "C-Size-1" >
+                                        <div onClick = { () => this.flip("MarketingAndRecruiting") } className = "C-Size-1 noselect" >
                                             <div style = {{ margin: "-45px auto 0px", width: "216px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
                                                 MARKETING &amp; RECRUITING
                                             </div>
                                         </div>
 
-                                        <div onClick = { () => this.flip("Admissions") } className = "C-Size-2" >
+                                        <div onClick = { () => this.flip("Admissions") } className = "C-Size-2 noselect" >
                                             <div style = {{ margin: "-45px auto 0px", width: "100px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
                                                 ADMISSIONS
                                             </div>
                                         </div>
 
-                                        <div onClick = { () => this.flip("FinancialAid") } className = "C-Size-3" >
+                                        <div onClick = { () => this.flip("FinancialAid") } className = "C-Size-3 noselect" >
                                             <div style = {{ margin: "-45px auto 0px", width: "118px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
                                                 FINANCIAL AID
                                             </div>

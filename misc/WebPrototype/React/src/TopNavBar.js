@@ -28,8 +28,8 @@ class TopNavBar extends React.Component {
         userProfileMenuOpen:false,
         userInfoAnchorEl: {},
         displayAnnouncementsCheckbox: true,
-        imgLogoSrc: <a href = "http://www.glyphed.co/" target = "_blank" rel = "noopener noreferrer">
-						<img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd"/>
+        imgLogoSrc: <a href = "http://www.glyphed.co/" target = "_blank" rel = "noopener noreferrer" draggable = { false } >
+						<img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
 					</a>
     };
     

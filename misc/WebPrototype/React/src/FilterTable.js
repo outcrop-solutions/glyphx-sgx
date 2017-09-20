@@ -279,14 +279,14 @@ class FilterTable extends Component {
         var flatData = context.state.flatData.slice();
 
         //find the other column & remove the sort applied icon.
-        if(columnClicked == 'value'){
+        if (columnClicked == 'value') {
             otherColumn = document.getElementById(columnName.replace('value','count'));
         }
-        else{
+        else {
             otherColumn = document.getElementById(columnName.replace('count','value'));
         }
 
-        if(otherColumn){
+        if (otherColumn) {
             otherColumn.classList.remove('fa-sort-amount-desc');
             otherColumn.classList.remove('fa-sort-amount-asc');
             otherColumn.classList.add('fa-sort');
@@ -295,7 +295,7 @@ class FilterTable extends Component {
         //update the sorting icon
         var sortDirection = this.updateSortIcon(columnObj);
 
-        switch(columnType){
+        switch(columnType) {
             case "Text":
                 if(sortDirection == "asc"){
                     flatData.sort(function(a,b) {
@@ -319,10 +319,10 @@ class FilterTable extends Component {
                     
                 break;
             case "Number":
-                if(sortDirection == "asc"){
+                if (sortDirection == "asc") {
                     flatData.sort(function(a, b){return a[columnClicked] - b[columnClicked]});
                 }
-                else{
+                else {
                     flatData.sort(function(a, b){return a[columnClicked] - b[columnClicked]}).reverse();
                 }
                 break;
@@ -336,26 +336,26 @@ class FilterTable extends Component {
      * @param {Obj} columnObj: The column header object whose sort icon has be updated.
      */
     updateSortIcon = (columnObj) => {
-        var removeIconName="";
-        var addIconName="";
-        var sortDirection="";
+        var removeIconName = "";
+        var addIconName = "";
+        var sortDirection = "";
         var currentState = columnObj.classList.contains('fa-sort') ? 'init' : (columnObj.classList.contains('fa-sort-amount-asc') ? 'asc' : 'desc');
         
         switch(currentState){
             case "init":
-            removeIconName="fa-sort";
-            addIconName="fa-sort-amount-asc";
-            sortDirection="asc";
+            removeIconName = "fa-sort";
+            addIconName = "fa-sort-amount-asc";
+            sortDirection = "asc";
             break;
             case "asc":
-            removeIconName="fa-sort-amount-asc";
-            addIconName="fa-sort-amount-desc";
-            sortDirection="desc";
+            removeIconName = "fa-sort-amount-asc";
+            addIconName = "fa-sort-amount-desc";
+            sortDirection = "desc";
             break;
             case "desc":
-            removeIconName="fa-sort-amount-desc";
-            addIconName="fa-sort-amount-asc";
-            sortDirection="asc";
+            removeIconName = "fa-sort-amount-desc";
+            addIconName = "fa-sort-amount-asc";
+            sortDirection = "asc";
             break;
         }
         
@@ -394,15 +394,15 @@ class FilterTable extends Component {
             for(var i=0;i<sortedValues.length; i++) {
                 count = sortedValues[i].count;
                 percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%" + ")";
-                rows.push(this.generateRowHTML(sortedValues[i].value,sortedValues[i].value,count,percentStr,(selectedValues.indexOf(sortedValues[i].value) !== -1),index));
+                rows.push(this.generateRowHTML(sortedValues[i].value, sortedValues[i].value, count, percentStr, (selectedValues.indexOf(sortedValues[i].value) !== -1), index));
                 index++;
             }
         }
         else{
-            for(var property in data) {
+            for (var property in data) {
                 count = data[property].count;
                 percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%" + ")";
-                rows.push(this.generateRowHTML(property,data[property].value,count,percentStr,(selectedValues.indexOf(data[property]) !== -1),index,true));
+                rows.push(this.generateRowHTML(property,data[property].value, count, percentStr, (selectedValues.indexOf(data[property]) !== -1), index, true));
                 index++;
             }   
         }
@@ -419,19 +419,21 @@ class FilterTable extends Component {
      * @param {int} index: reference index for the flatdata that is updated.
      * @param {bool} initialRowCreate: true if the table is loaded the 1st time.
      */
-    generateRowHTML = (property,value,count,percentStr,checked,index,initialRowCreate) =>{
+    generateRowHTML = (property, value, count, percentStr, checked, index, initialRowCreate) =>{
         var row;
         var context = this;
         
-        row = (<FilterRow 
-                    onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this,rowSelection,null,evt,checked) } 
-                    key = { property } 
-                    index = { index } 
-                    checked = { checked } 
-                    value = { value } 
-                    percentStr = { percentStr }
-                    settings = { context.props.settings }
-                />);
+        row = (
+            <FilterRow 
+                onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this, rowSelection, null, evt, checked) } 
+                key = { property } 
+                index = { index } 
+                checked = { checked } 
+                value = { value } 
+                percentStr = { percentStr }
+                settings = { context.props.settings }
+            />
+        );
 
         if(initialRowCreate)
             this.state.flatData.push({
@@ -461,7 +463,7 @@ class FilterTable extends Component {
                 <div style = {{ margin: "-2px 15px -5px 15px" }} >
                     <SearchBox 
                         ref = "pinnedCollapisbleSearchBox"
-                        hintText = "Search for value.." 
+                        hintText = "Search for value..." 
                         settings = {{
                             SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
                             searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,

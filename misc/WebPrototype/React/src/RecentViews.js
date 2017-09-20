@@ -37,7 +37,7 @@ class RecentViews extends React.Component {
                             borderRadius: "5px",
                             width: "100%"
                         }}
-                        className = "inherit-hover"
+                        className = "inherit-hover noselect"
                         onClick = { () => context.props.history.push("/glyph-viewer") }
                     >
                         <Flexbox flexDirection="row" minWidth="100%" >
@@ -69,7 +69,9 @@ class RecentViews extends React.Component {
                             paddingTop: "4px",
                             fontSize: "18px",
                             fontWeight: "normal"
-                        }} 
+                        }}
+                        className = "noselect"
+                        
                     > 
                         Recent Views
                     </div>

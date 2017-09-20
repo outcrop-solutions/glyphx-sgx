@@ -87,7 +87,7 @@ class MaintenanceAnnouncement extends React.Component {
                     className = "cursorHand"
                     //onClick = {  }
                 >
-                    <Flexbox flexDirection="row"  >
+                    <Flexbox flexDirection = "row" className = "noselect" >
                         <Flexbox style = {{ width: "15%" }} > 
                             <div style = {{ display: "table", height: "100%", width: "100%" }} >
                                 <div style = {{ display: "table-cell", verticalAlign: "middle" }} >
@@ -126,7 +126,7 @@ class ReleaseAnnouncement extends React.Component {
                     //onClick = {  }
                 >
 
-                    <Flexbox flexDirection="row" >
+                    <Flexbox flexDirection = "row" className = "noselect" >
                         <Flexbox style = {{ width: "15%" }} > 
                             <div style = {{ display: "table", height: "100%", width: "100%" }} >
                                 <div style = {{ display: "table-cell", verticalAlign: "middle" }} >
@@ -180,7 +180,7 @@ class PollAnnouncement extends React.Component {
                 >
                     <VotingModal display = { this.state.display } toggleDisplay = { this.toggleDisplay.bind(this)} />
 
-                    <Flexbox flexDirection="row" >
+                    <Flexbox flexDirection = "row" className = "noselect" >
                         <Flexbox style = {{ width: "15%" }} > 
                             <div style = {{ display: "table", height: "100%", width: "100%" }} >
                                 <div style = {{ display: "table-cell", verticalAlign: "middle" }} >
@@ -219,7 +219,7 @@ class ShoutAnnouncement extends React.Component {
                     //onClick = {  }
                 >
 
-                    <Flexbox flexDirection="row" >
+                    <Flexbox flexDirection = "row" className = "noselect" >
                         <Flexbox style = {{ width: "15%" }} > 
                             <div style = {{ display: "table", height: "100%", width: "100%" }} >
                                 <div style = {{ display: "table-cell", verticalAlign: "middle" }} >

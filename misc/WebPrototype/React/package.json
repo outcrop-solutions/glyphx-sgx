@@ -28,7 +28,8 @@
     "scroll-into-view-if-needed": "^1.1.0",
     "react-rnd": "^5.0.9",
     "react-router-dom": "^4.1.2",
-    "react-quill": "^1.1.0"
+    "react-quill": "^1.1.0",
+    "react-table-drag-select": "^0.3.1"
   },
   "scripts": {
     "start": "react-scripts start",

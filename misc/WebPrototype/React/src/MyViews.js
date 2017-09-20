@@ -1,14 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-  } from 'material-ui/Table';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import MenuItem from 'material-ui/MenuItem';
@@ -28,12 +21,30 @@ class MyViews extends React.Component {
         super(props);
 
         this.state = {
-            sharedViewsData: [{userShared:'MSloan',name:'SubViz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
-                              {userShared:'BLewis',name:'SubViz2',origin:'VizG',date:'7-7-2017'},
-                              {userShared:'BHolster',name:'SubViz3',origin:'VizGA',date:'7-7-2017'}],
+            sharedViewsData: [{sharedBy:'MSloan',name:'SubViz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
+                              {sharedBy:'BLewis',name:'SubViz2',origin:'VizG',date:'7-7-2017'},
+                              {sharedBy:'BHolster',name:'Viz3',origin:'VizGA',date:'7-7-2017'},
+                              {sharedBy:'MSloan',name:'Viz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
+                              {sharedBy:'BLewis',name:'Viz2',origin:'VizG',date:'7-7-2017'},
+                              {sharedBy:'BHolster',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
+                              {sharedBy:'MSloan2',name:'SubViz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
+                              {sharedBy:'BLewis2',name:'SubViz2',origin:'VizG',date:'7-7-2017'},
+                              {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
+                              {sharedBy:'MSloan2',name:'Viz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
+                              {sharedBy:'BLewis2',name:'Viz2',origin:'VizG',date:'7-7-2017'},
+                              {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},],
             savedViewsData: [{name:'SubViz1',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
                              {name:'SubViz2',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'SubViz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'}]
+                             {name:'SubViz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'SubViz4',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'SubViz5',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'SubViz6',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'Viz1',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'Viz2',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'Viz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'Viz4',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'Viz5',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
+                             {name:'Viz6',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'}]
         }
     }
 
@@ -44,37 +55,34 @@ class MyViews extends React.Component {
                 <div style = {{ marginBottom: "3px" }} >
                     <Collapsible
                         transitionTime = {200} 
-                        trigger = "Shared Views"
-                    >
-                        <SimpleTable  
-                            id="SharedViews"
-                            settings = {this.props.settings}
-                            data={this.state.sharedViewsData}
-                        />
-                    </Collapsible>
-                </div>
-
-                <div style = {{ marginBottom: "3px" }} >
-                    <Collapsible
-                        transitionTime = {200} 
-                        trigger = "Custom Views"
-                    >
-                    </Collapsible>
-                </div>
-
-                <div style = {{ marginBottom: "3px" }} >
-                    <Collapsible
-                        transitionTime = {200} 
                         trigger = "Saved Views"
+                        className = "noselect"
+                        openedClassName = "noselect"
                     >
                         
                         <SimpleTable  
-                            id="SavedViews"
-                            settings = {this.props.settings}
-                            data={this.state.savedViewsData}
+                            id = "SavedViews"
+                            settings = { this.props.settings }
+                            data = { this.state.savedViewsData }
                         />
                     </Collapsible>
                 </div>
+
+                <div style = {{ marginBottom: "3px" }} >
+                    <Collapsible
+                        transitionTime = {200} 
+                        trigger = "Shared Views"
+                        className = "noselect"
+                        openedClassName = "noselect"
+                    >
+                        <SimpleTable  
+                            id = "SharedViews"
+                            settings = { this.props.settings }
+                            data = { this.state.sharedViewsData }
+                        />
+                    </Collapsible>
+                </div>
+                
             </div>       
         );
     }
@@ -110,9 +118,9 @@ class SimpleTable extends React.Component {
      * @param context: the instance of this react element.
      * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
      */
-	onKeyUpMultiSearch = (context,id) => {
+	onKeyUpMultiSearch = (context, id) => {
 		var input, filter, tr, tdList, td, i,searchString;
-        input = document.getElementById("tf-"+id);
+        input = document.getElementById("tf-" + id);
         filter = input.value.toUpperCase();
         tr = this.fetchTableRows(this.props.id);
 		var shouldBeVisible;
@@ -121,8 +129,7 @@ class SimpleTable extends React.Component {
         for (i = 0; i < this.props.data.length; i++) {
             searchString = this.state.flatData[i].searchString;
             shouldBeVisible = false;
-            for(var k=0; k < filterValues.length; k++)
-            {
+            for (var k = 0; k < filterValues.length; k++) {
                 if (searchString.toUpperCase().indexOf(filterValues[k]) > -1) {
                     shouldBeVisible = true;
                     break;
@@ -131,7 +138,6 @@ class SimpleTable extends React.Component {
             
             !shouldBeVisible ? tr[i].style.display = "none" : tr[i].style.display = "";
         }
-
     }
     
 
@@ -147,9 +153,9 @@ class SimpleTable extends React.Component {
     };
 
 
-    clearSearchBox = (evt,strSearchBoxId) => {
+    clearSearchBox = (evt, strSearchBoxId) => {
 		var sb = document.getElementById("tf-" + strSearchBoxId);
-		if(sb){
+		if (sb) {
 			sb.value = '';
 			this.onKeyUpMultiSearch(this, strSearchBoxId, this.state.indexColumnToSearch);
 		}
@@ -160,16 +166,15 @@ class SimpleTable extends React.Component {
      * @param {Obj} evt: The actual event object.
      * @return {string} columnName: id of the columnHeader.
      */
-    onSortClick = (evt,columnName,type) => {
+    onSortClick = (evt, columnName, type) => {
         var columnObj = document.getElementById(this.props.id + columnName);
-        var columns = document.getElementsByClassName(this.props.id +"sortableColumn");
+        var columns = document.getElementsByClassName(this.props.id + "sortableColumn");
         var otherColumn;
         var flatData = this.state.flatData.slice();
 
         //find the other column & remove the sort applied icon.
-        for(var i=0;i<columns.length;i++)
-        {
-            if(columns[i].id != this.props.id + columnName){
+        for (var i = 0; i < columns.length; i++) {
+            if (columns[i].id != this.props.id + columnName) {
                 columns[i].classList.remove('fa-sort-amount-desc');
                 columns[i].classList.remove('fa-sort-amount-asc');
                 columns[i].classList.add('fa-sort');
@@ -179,35 +184,38 @@ class SimpleTable extends React.Component {
         //update the sorting icon
         var sortDirection = this.updateSortIcon(columnObj);
 
-        switch(type){
+        switch(type) {
             case "Text":
-                if(sortDirection == "asc"){
-                    flatData.sort(function(a,b) {
-                        if (a[columnName] < b[columnName])
+                if (sortDirection == "asc") {
+                    flatData.sort(function(a, b) {
+                        if (a[columnName] < b[columnName]) {
                             return -1;
-                        if (a[columnName] > b[columnName])
+                        }
+                        if (a[columnName] > b[columnName]) {
                             return 1;
+                        }
                         return 0;
                     });
                 }
                 else{
                     flatData.sort(function(a,b) {
-                        if (a[columnName] < b[columnName])
+                        if (a[columnName] < b[columnName]) {
                             return -1;
-                        if (a[columnName] > b[columnName])
-                            return 1;
-                        return 0;
                         }
-                    ).reverse();
+                        if (a[columnName] > b[columnName]) {
+                            return 1;
+                        }
+                        return 0;
+                    }).reverse();
                 }
                     
                 break;
             case "Number":
-                if(sortDirection == "asc"){
-                    flatData.sort(function(a, b){return a[columnName] - b[columnName]});
+                if (sortDirection == "asc") {
+                    flatData.sort(function(a, b) { return a[columnName] - b[columnName] });
                 }
-                else{
-                    flatData.sort(function(a, b){return a[columnName] - b[columnName]}).reverse();
+                else {
+                    flatData.sort(function(a, b) { return a[columnName] - b[columnName] }).reverse();
                 }
                 break;
         }
@@ -220,26 +228,26 @@ class SimpleTable extends React.Component {
      * @param {Obj} columnObj: The column header object whose sort icon has be updated.
      */
     updateSortIcon = (columnObj) => {
-        var removeIconName="";
-        var addIconName="";
-        var sortDirection="";
+        var removeIconName = "";
+        var addIconName = "";
+        var sortDirection = "";
         var currentState = columnObj.classList.contains('fa-sort') ? 'init' : (columnObj.classList.contains('fa-sort-amount-asc') ? 'asc' : 'desc');
         
         switch(currentState){
             case "init":
-                removeIconName="fa-sort";
-                addIconName="fa-sort-amount-asc";
-                sortDirection="asc";
+                removeIconName = "fa-sort";
+                addIconName = "fa-sort-amount-asc";
+                sortDirection = "asc";
                 break;
             case "asc":
-                removeIconName="fa-sort-amount-asc";
-                addIconName="fa-sort-amount-desc";
-                sortDirection="desc";
+                removeIconName = "fa-sort-amount-asc";
+                addIconName = "fa-sort-amount-desc";
+                sortDirection = "desc";
                 break;
             case "desc":
-                removeIconName="fa-sort-amount-desc";
-                addIconName="fa-sort-amount-asc";
-                sortDirection="asc";
+                removeIconName = "fa-sort-amount-desc";
+                addIconName = "fa-sort-amount-asc";
+                sortDirection = "asc";
                 break;
         }
         
@@ -260,93 +268,103 @@ class SimpleTable extends React.Component {
     render() {
         
         var colNames = [];
-        var rows =[];
+        var rows = [];
         var columnCount = 0;
 
-        if(this.state.flatData != null && this.state.flatData.length > 0)
-        {
+        if (this.state.flatData != null && this.state.flatData.length > 0) {
             var keys = Object.keys(this.state.flatData[0]);
             columnCount = keys.length;
 
-            if(keys.indexOf('searchString') > -1)
+            if (keys.indexOf('searchString') > -1) {
                 columnCount--;
+            }
             
-            if(keys.indexOf('index') > -1)
+            if (keys.indexOf('index') > -1) {
                 columnCount--;
+            }
 
-            for(var j=0;j<this.state.flatData.length;j++){
+            for (var j = 0; j < this.state.flatData.length; j++) {
                 var dataRowObject = this.state.flatData[j];
                 var data = [];
                 var searchString = '';
                 
-                for(var k=0;k<columnCount;k++){
+                for (var k = 0; k < columnCount; k++) {
                     let temp = keys[k];
-                    if(j==0)
-                    {
+                    if (j == 0) {
                         colNames.push(
-                            <TableHeaderColumn key={this.props.id + temp} > 
-                                <div
-                                    onClick = { (evt) => this.onSortClick(evt,temp,'Text') }
-                                >
+                            <TableHeaderColumn key = { this.props.id + temp } style = {{ height: "36px", color: "#000000", paddingLeft: "10px", paddingRight: "0px" }} > 
+                                <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {temp} &nbsp;
-                                    <i id = { this.props.id + temp } className = {"fa fa-sort " + this.props.id +"sortableColumn"} /> 
+                                    <i id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
                                 </div>
-                            </TableHeaderColumn>);
+                            </TableHeaderColumn>
+                        );
                     }
     
-                    data.push(<TableRowColumn key={dataRowObject[temp]}>{dataRowObject[temp]}</TableRowColumn>);
+                    data.push(<TableRowColumn key = { dataRowObject[temp] } style = {{ paddingLeft: "10px", paddingRight: "0px" }} > {dataRowObject[temp]} </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
                 
-                //creating a search string to help filter data.
+                // Creating a search string to help filter data.
                 this.state.flatData[j].searchString = searchString;
                 this.state.flatData[j].index = j;
 
                 rows.push(
-                    <TableRow key={j} selected={this.isSelected(j)}>
+                    <TableRow key = {j} selected = { this.isSelected(j) } >
                         {data}
                     </TableRow>
-                )
+                );
             }
 
         }
 
         return (
             <div>
-                <div style = {{ margin: "-2px 15px -5px 15px" }} >
-                <SearchBox 
-                    ref = "SearchBox"
-                    hintText = "Search for value.." 
-                    settings = {{
-                        SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
-                        searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
-                        overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
-                        overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
-                        tableSelectColor: this.props.settings.colors.tableSelectColor.background
-                    }}
-                    onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, this.props.id) }
-                    id = { "tf-" + this.props.id }
-                    collapseButton = { false }
-                />
+                <div style = {{ margin: "1px 4px -9px", width: "98%" }} >
+                    <SearchBox 
+                        ref = "SearchBox"
+                        hintText = "Search for value..." 
+                        settings = {{
+                            SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+                            searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
+                            overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
+                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
+                            tableSelectColor: this.props.settings.colors.tableSelectColor.background
+                        }}
+                        onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, this.props.id) }
+                        id = { "tf-" + this.props.id }
+                        collapseButton = { false }
+                    />
                 </div>
 
                 <br/>
 
-
-                <Table className={this.props.id} onRowSelection={this.handleRowSelection}>
+                <Table 
+                    className = { this.props.id } 
+                    onRowSelection = { this.handleRowSelection } 
+                    wrapperStyle = {{
+                        maxHeight: "350px",
+                        overflow: 'hidden',
+                        borderRadius: "4px",
+                    }}
+                    bodyStyle = {{
+                        maxHeight: "314px",
+                        overflow: 'auto',
+                        width: "100%",
+                    }}
+                >
                     <TableHeader
-                        adjustForCheckbox={false}
-                        displaySelectAll={false}
+                        adjustForCheckbox = { false }
+                        displaySelectAll = { false }
                         fixedHeader = { true }
                         fixedFooter = { true }
-                        >
-                    <TableRow>
+
+                    >
+                    <TableRow style = {{ height: "36px", backgroundColor: "#dadada" }} >
                         {colNames}
                     </TableRow>
                     </TableHeader>
-                    <TableBody 
-                        displayRowCheckbox={false}
-                        >
+                    <TableBody displayRowCheckbox = { false } >
                         {rows}
                     </TableBody>
                 </Table>

@@ -118,11 +118,6 @@ class HomePage extends React.Component {
                             :
                             null
                     }
-
-
-
-                    
-
                     
                     <Flexbox flexGrow = {1} style = {{ height: "100%", margin: "10px 8px 8px", minHeight: "0" }} >
                         <Flexbox flexDirection="row" minWidth="100%" >
@@ -135,9 +130,7 @@ class HomePage extends React.Component {
                                             width: "100%"
                                         }}
                                     >
-
                                         <UserFeed />
-
                                     </CardText>
                                 </Card>
                              </Flexbox>
@@ -150,7 +143,7 @@ class HomePage extends React.Component {
                                     >
                                         <div style = {{ width: '100%' }} >
                                             <div style = {{ width: "350px", margin: "0 auto" }}>
-                                                <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "10px 0px 0px 0px" }} alt = "University Logo"/>
+                                                <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "10px 0px 0px 0px" }} alt = "University Logo" draggable = { false } className = "noselect" />
                                             </div>
                                         </div>
                                     </CardText>
@@ -181,7 +174,7 @@ class HomePage extends React.Component {
                                             width: "100%"
                                         }}
                                     >
-                                        <Flexbox flexDirection="column" style = {{ height: "100%", minHeight: "0" }}  >
+                                        <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  >
 
                                             <RecentViews />
 
@@ -194,7 +187,8 @@ class HomePage extends React.Component {
                                                         paddingTop: "4px",
                                                         fontSize: "18px",
                                                         fontWeight: "normal"
-                                                    }} 
+                                                    }}
+                                                    className = "noselect"
                                                 > 
                                                     Announcements
                                                 </div>
