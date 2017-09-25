@@ -1,8 +1,8 @@
 
-//const serverAddress = "ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5001";
+const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:80" ;
 const serverPort = 80;
-const serverLoginAddress = "/WebViewServerSideRest/server/";
-const serverApiAddress = "/WebViewServerSideRest/server/api/";
+const serverLoginAddress = serverAddress + "/WebViewServerSideRest/server/";
+const serverApiAddress = serverAddress + "/WebViewServerSideRest/server/api/";
 
 /**
  * This function makes a server call and returns the data returned from the server
