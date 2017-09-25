@@ -37,7 +37,7 @@ export function makeServerCall(url,callback,options){
     return true;
 };
 
-function httpGetRequest(saddress,callback,options){
+export function httpGetRequest(saddress,callback,options){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)

@@ -29,15 +29,13 @@ class RecentViews extends React.Component {
 
         var recentViews = recentList.map( function(view) {
             return (
-                <Card containerStyle = {{ padding: "0px", borderRadius: "5px", width: "100%" }} style = {{ height: "35px", width: "100%", borderRadius: "5px", marginTop: (view === recentList[0] ? "0px" : "3px") }} key = { view } >
+                <Card className = "inherit-hover noselect" containerStyle = {{ padding: "0px", borderRadius: "5px", width: "100%" }} style = {{ backgroundColor: "#e7e7fd", height: "35px", width: "100%", borderRadius: "5px", marginTop: (view === recentList[0] ? "0px" : "5px") }} key = { view } >
                     <CardText
                         style = {{
                             padding: "7px",
-                            backgroundColor: "#f5f5ff",
                             borderRadius: "5px",
                             width: "100%"
                         }}
-                        className = "inherit-hover noselect"
                         onClick = { () => context.props.history.push("/glyph-viewer") }
                     >
                         <Flexbox flexDirection="row" minWidth="100%" >
@@ -76,16 +74,9 @@ class RecentViews extends React.Component {
                         Recent Views
                     </div>
                 </div>
-                <Card containerStyle = {{ padding: "0px", backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "2px" }} style = {{ borderRadius: "2px" }} >
-                    <CardText
-                        style = {{
-                            padding: "7px",
-                            borderRadius: "2px"
-                        }}
-                    >
-                        {recentViews}
-                    </CardText>
-                </Card>
+                <div style = {{ padding: "7px" }} >
+                    {recentViews}
+                </div>
             </div>
         );
     }

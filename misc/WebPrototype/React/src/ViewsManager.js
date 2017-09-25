@@ -261,7 +261,7 @@ class ViewsManager extends React.Component {
 
                     <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
                         <div>
-                            <div style = {{ height: "100%", backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "2px", }} >
+                            <div style = {{ height: "100%", borderRadius: "2px" }} >
                                 <div 
                                     className = "Card" 
                                     style = {{ 

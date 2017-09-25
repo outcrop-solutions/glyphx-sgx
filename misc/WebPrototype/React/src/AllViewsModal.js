@@ -4,6 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import { httpGetRequest } from './ServerCallHelper.js';
 import './General.css';
 
 
@@ -12,11 +13,40 @@ class allViewsModal extends React.Component {
 
 	state = {
 		selectionList: [],
-		dragState: 0
+		dragState: 0,
+		data: []
 	}
 	
 	componentDidMount() {
 		window.addEventListener('mouseup', this.handleMouseUp.bind(this));
+
+		var preData;
+
+		httpGetRequest("ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", function() { console.log("Hi") } , "options");
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			{
+				preData = xmlHttp.responseText;
+			}
+		}
+		xmlHttp.open("GET", "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", true); // true for asynchronous
+		xmlHttp.send(null);
+
+		var data = [];
+
+		console.log(preData)
+
+		var keyArray = Object.keys(preData);
+		for (var i = 0; i < keyArray.length; i++) {
+			var dataCol = [keyArray[i]];
+			for (var j = 0; j < preData[keyArray[i]].length; j++) {
+				dataCol.push(preData[keyArray[i]][j][keyArray[i]]);
+			}
+			data.push(dataCol);
+		}
+
+		this.setState({ data: data });
 	}
 
 	componentWillUnmount() {
@@ -114,10 +144,11 @@ class allViewsModal extends React.Component {
 	
 	render() {
 
-		var data = [ ["col1",1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25], ["col2",1,2,3,4,5], ["col3",1,2], ["col4",1,2,3,4,5,6,7,8]  ];
+
+		var data = this.state.data;
 		var context = this;
 
-		var displayData = data.map( function(col) {
+		var displayData = this.state.data.map( function(col) {
 			return (
 				<Flexbox 
 					flexDirection = "column" 
@@ -137,7 +168,7 @@ class allViewsModal extends React.Component {
 						style = {{ 
 							backgroundColor: "#42459c", 
 							color: "#ffffff", 
-							height: "27px",
+							height: "30px",
     						fontSize: "21px",
 							textAlign: "center"
 						}} 
@@ -146,28 +177,30 @@ class allViewsModal extends React.Component {
 							<i className = "fa fa-check" style = {{ marginRight: "3px" }} onClick = { () => context.selectDeselectCol(col, "select") } /> 
 							<i className = "fa fa-times" onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
 						</div> 
-						<div style = {{ marginTop: "-20px" }} > {col[0]} </div>
+						<div style = {{ marginTop: "-16px", paddingBottom: "4px" }} > {col[0]} </div>
 					</div>
 
-					{col.map( function(elem) {
-						return (
-							(elem !== col[0] ? 
-								<div
-									className = "noselect lightHover"
-									style = {{ 
-										backgroundColor: ( context.checkSelected([col[0], elem], context.state.selectionList) !== false ? "#7c78a0" : "white" ), 
-										textAlign: "center",
-										padding: "2px",
-									}} 
-									key = {elem}
-									onMouseDown = { () => context.toggleSelection([col[0], elem]) }
-									onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
-								> 
-									{elem} 
-								</div> 
-							: "")
-						)
-					})}
+					<div style = {{ overflow: "auto" }} >
+						{col.map( function(elem) {
+							return (
+								(elem !== col[0] ? 
+									<div
+										className = "noselect lightHover"
+										style = {{ 
+											backgroundColor: ( context.checkSelected([col[0], elem], context.state.selectionList) !== false ? "#7c78a0" : "white" ), 
+											textAlign: "center",
+											padding: "2px",
+										}} 
+										key = {elem}
+										onMouseDown = { () => context.toggleSelection([col[0], elem]) }
+										onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
+									> 
+										{elem} 
+									</div> 
+								: "")
+							)
+						})}
+					</div>
 				</Flexbox>
 			)
 		});
@@ -220,65 +253,66 @@ class allViewsModal extends React.Component {
 				modal = { true }
 				open = { this.props.allViewsDisplay }
 			>
+				<div style = {{ height: "60vh", paddingBottom: "30px" }} >
+					<RaisedButton 
+						label = { "Select All" }
+						style = {{
+							width: "112px",
+							margin: "8px 10px 9px 0px"
+						}}
+						buttonStyle = {{
+							height: '35px',
+							lineHeight: '35px',
+							backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+						}} 
+						labelStyle = {{
+							fontSize: '12px',
+							textAlign: "center",
+							color: this.props.settings.colors.overviewButtonsColor.text,
+							fontFamily: "Arial Black, Gadget, sans-serif",
+							margin: "0px 0px 0px -3px",
+							paddingLeft: "0px",
+							paddingRight: "0px"
+						}}
+						overlayStyle = {{
+							height: '35px',
+							lineHeight: '35px',
+						}}
+						onClick = { () => this.selectDesectAll(data, "select") }
+						primary = {true } 
+					/>
 
-				<RaisedButton 
-					label = { "Select All" }
-					style = {{
-						width: "112px",
-    					margin: "8px 10px 9px 0px"
-					}}
-					buttonStyle = {{
-						height: '35px',
-						lineHeight: '35px',
-						backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
-					}} 
-					labelStyle = {{
-						fontSize: '12px',
-						textAlign: "center",
-						color: this.props.settings.colors.overviewButtonsColor.text,
-						fontFamily: "Arial Black, Gadget, sans-serif",
-						margin: "0px 0px 0px -3px",
-						paddingLeft: "0px",
-						paddingRight: "0px"
-					}}
-					overlayStyle = {{
-						height: '35px',
-						lineHeight: '35px',
-					}}
-					onClick = { () => this.selectDesectAll(data, "select") }
-					primary = {true } 
-				/>
+					<RaisedButton 
+						label = { "Deselect All" }
+						style = {{
+							width: "118px"
+						}}
+						buttonStyle = {{
+							height: '35px',
+							lineHeight: '35px',
+							backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+						}} 
+						labelStyle = {{
+							fontSize: '12px',
+							textAlign: "center",
+							color: this.props.settings.colors.overviewButtonsColor.text,
+							fontFamily: "Arial Black, Gadget, sans-serif",
+							margin: "0px 0px 0px -3px",
+							paddingLeft: "0px",
+							paddingRight: "0px"
+						}}
+						overlayStyle = {{
+							height: '35px',
+							lineHeight: '35px',
+						}}
+						onClick = { () => this.selectDesectAll(data, "deselect") }
+						primary = {true } 
+					/>
 
-				<RaisedButton 
-					label = { "Deselect All" }
-					style = {{
-						width: "118px"
-					}}
-					buttonStyle = {{
-						height: '35px',
-						lineHeight: '35px',
-						backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
-					}} 
-					labelStyle = {{
-						fontSize: '12px',
-						textAlign: "center",
-						color: this.props.settings.colors.overviewButtonsColor.text,
-						fontFamily: "Arial Black, Gadget, sans-serif",
-						margin: "0px 0px 0px -3px",
-						paddingLeft: "0px",
-						paddingRight: "0px"
-					}}
-					overlayStyle = {{
-						height: '35px',
-						lineHeight: '35px',
-					}}
-					onClick = { () => this.selectDesectAll(data, "deselect") }
-					primary = {true } 
-				/>
-
-				<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
-					{displayData}
-				</Flexbox>
+					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
+						{displayData}
+					</Flexbox>
+				</div>
 			</Dialog>
 		);
 	}

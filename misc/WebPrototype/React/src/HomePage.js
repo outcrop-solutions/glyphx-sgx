@@ -119,86 +119,56 @@ class HomePage extends React.Component {
                             null
                     }
                     
-                    <Flexbox flexGrow = {1} style = {{ height: "100%", margin: "10px 8px 8px", minHeight: "0" }} >
+                    <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
                         <Flexbox flexDirection="row" minWidth="100%" >
                             <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }}>
-                                <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "5px",
-                                            height: "100%",
-                                            width: "100%"
-                                        }}
-                                    >
-                                        <UserFeed />
-                                    </CardText>
-                                </Card>
+                                <div style = {{ padding: "12px 0px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                    <UserFeed />
+                                </div>
                              </Flexbox>
-                             <Flexbox flexDirection="column" style = {{ width: "40%", margin: "0px 10px" }}>
-                                <Card containerStyle = {{ padding: "0px" }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "0px",
-                                        }}
-                                    >
-                                        <div style = {{ width: '100%' }} >
-                                            <div style = {{ width: "350px", margin: "0 auto" }}>
-                                                <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit', margin: "10px 0px 0px 0px" }} alt = "University Logo" draggable = { false } className = "noselect" />
-                                            </div>
+                             <Flexbox flexDirection="column" style = {{ width: "40%" }}>
+
+                                <div style = {{ backgroundColor: "#ffffff" }} >
+                                    <div style = {{ width: '100%', margin: "15px 0px -6px" }} >
+                                        <div style = {{ width: "350px", margin: "0 auto" }}>
+                                            <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit' }} alt = "University Logo" draggable = { false } className = "noselect" />
                                         </div>
-                                    </CardText>
-                                </Card>
+                                    </div>
+                                </div>
 
-
-                                <Flexbox flexGrow = {1} style = {{ height: "100%", marginTop: "10px", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
-                                   <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
-                                        <CardText
-                                            style = {{
-                                                padding: "5px",
-                                                height: "100%",
-                                                width: "100%"
-                                            }}
-                                        >
-                                            <ViewsManager />
-                                        </CardText>
-                                    </Card>
+                                <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
+                                   <div style = {{ padding: "5px 15px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                        <ViewsManager />
+                                    </div>
                                 </Flexbox>
 
                              </Flexbox>   
                              <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
-                                <Card containerStyle = {{ padding: "5px", height: "100%", width: "100%" }} style = {{ height: "100%", width: "100%", overflow: "auto", backgroundColor: this.props.settings.colors.homePageColors.bodyBackground }} >
-                                    <CardText
-                                        style = {{
-                                            padding: "5px",
-                                            height: "100%",
-                                            width: "100%"
-                                        }}
-                                    >
-                                        <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  >
+                                <div style = {{ padding: "12px 12px 12px 0px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                    <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  >
 
-                                            <RecentViews />
+                                        <RecentViews />
 
-                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
-                                                <div 
-                                                    style = {{ 
-                                                        color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                        margin: "0 auto",
-                                                        width: "130px", 
-                                                        paddingTop: "4px",
-                                                        fontSize: "18px",
-                                                        fontWeight: "normal"
-                                                    }}
-                                                    className = "noselect"
-                                                > 
-                                                    Announcements
-                                                </div>
+                                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
+                                            <div 
+                                                style = {{ 
+                                                    color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                    margin: "0 auto",
+                                                    width: "130px", 
+                                                    paddingTop: "4px",
+                                                    fontSize: "18px",
+                                                    fontWeight: "normal"
+                                                }}
+                                                className = "noselect"
+                                            > 
+                                                Announcements
                                             </div>
+                                        </div>
 
-                                            <AnnouncementsDisplay />
+                                        <AnnouncementsDisplay />
 
-                                        </Flexbox>
-                                    </CardText>
-                                </Card>
+                                    </Flexbox>
+                                </div>
                              </Flexbox>   
                         </Flexbox>
                     </Flexbox>

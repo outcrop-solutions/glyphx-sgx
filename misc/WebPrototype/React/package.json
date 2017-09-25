@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:80",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "flexbox-react": "^4.4.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
