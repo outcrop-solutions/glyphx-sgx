@@ -168,8 +168,7 @@ class TopNavBar extends React.Component {
                                     {(this.props.userInfo.FName ? this.props.userInfo.FName[0] : "") + (this.props.userInfo.LName ? this.props.userInfo.LName[0] : "")}
                                 </Avatar>
                             }
-                            primaryText = { this.props.userInfo.FName + " " + this.props.userInfo.LName }
-                            secondaryText = { this.props.userInfo ? this.props.userInfo.Type : null }
+                            primaryText = { this.props.userInfo.Name }
                         />
 
                         <MenuItem className = "menuItemStyling" primaryText = "Help &amp; feedback" />

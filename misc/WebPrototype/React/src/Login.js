@@ -109,7 +109,7 @@ class Login extends React.Component {
     authenticate = (evt, context) => {
         var username = document.getElementById('UserText').value;
         var password = document.getElementById('PassText').value;
-        var url = 'doLogin?username=' + username + "&password=" + password;
+        var url = 'login?username=' + username + "&password=" + password;
         showLoadMask();
         
         var lblErrPass = document.getElementById('errPass');
@@ -139,7 +139,6 @@ class Login extends React.Component {
         
         try {
             result = JSON.parse(response);
-            result = result.result;
         }
         catch(e) {
             result = null;
@@ -149,19 +148,18 @@ class Login extends React.Component {
 
         if (result && result.status == 'success') { 
             // Save the details to store
-            if (result.userInfo) {
-                result.userInfo.loggedInTime = new Date();
-                result.userInfo.idleTime = 0;
+            if (result.userInformation) {
+                result.userInformation.loggedInTime = new Date();
+                result.userInformation.idleTime = 0;
             }
-            this.saveUserInfo(result.userInfo);
+            this.saveUserInfo(result.userInformation);
+            //result.funnelInfo
         }
-
         else if (result && result.status == "failure") {
             console.log('Error');
             lblErrPass.hidden = false;
             lblErrPass.innerText = "Incorrect Username/Password";
         }
-
         else {
             this.navigate("/maintenance");
         }

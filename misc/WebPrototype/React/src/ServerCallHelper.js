@@ -1,7 +1,6 @@
 
-const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:80" ;
+const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000" ;
 const serverPort = 80;
-const serverLoginAddress = serverAddress + "/WebViewServerSideRest/server/";
 const serverApiAddress = serverAddress + "/WebViewServerSideRest/server/api/";
 
 /**
@@ -11,12 +10,7 @@ const serverApiAddress = serverAddress + "/WebViewServerSideRest/server/api/";
  */
 export function makeServerCall(url,callback,options){
     var returnObj=null;
-    var saddress = serverLoginAddress;
-
-    if(options && options.api)
-    {
-        saddress = serverApiAddress;
-    }
+    var saddress = serverAddress;
 
     if(url == null || (callback && typeof callback != 'function'))
     {
@@ -72,7 +66,7 @@ function httpPostRequest(saddress,url,callback,options){
 
 export function checkUserLoggedIn(onServerError){
     var xmlHttp = new XMLHttpRequest();
-    var url = serverLoginAddress + "isUserLoggedIn";
+    var url = serverAddress + "isUserLoggedIn";
     xmlHttp.open("GET", url, false); // true for asynchronous 
     xmlHttp.send(null);
     if (xmlHttp.status === 200) {
