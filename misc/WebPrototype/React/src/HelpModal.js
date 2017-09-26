@@ -142,7 +142,7 @@ class HelpModal extends React.Component {
 							hintStyle = {{ color: "#707192", marginLeft: "6px" }}
 							textareaStyle = {{ marginLeft: "6px", width: "98%" }}
 							underlineStyle = {{ borderColor: "grey" }}
-							underlineFocusStyle = {{ borderColor: this.props.settings.colors.homePageColors.myViewsButton }}
+							underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
 						/>
 					</div>
 					<div style = {{ width: "200px", margin: "0 auto" }} >
@@ -155,7 +155,7 @@ class HelpModal extends React.Component {
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
-								backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+								backgroundColor: this.props.settings.colors.buttons.general
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
@@ -192,7 +192,7 @@ class HelpModal extends React.Component {
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
-								backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+								backgroundColor: this.props.settings.colors.buttons.general
 							}} 
 							labelStyle = {{
 								fontSize: '12px',

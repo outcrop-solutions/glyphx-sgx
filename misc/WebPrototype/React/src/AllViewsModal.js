@@ -8,7 +8,10 @@ import { httpGetRequest } from './ServerCallHelper.js';
 import './General.css';
 
 
-
+/**
+ * This component handles the front-end filters
+ * @param type: string name of the selection made
+ */
 class allViewsModal extends React.Component {
 
 	state = {
@@ -18,10 +21,12 @@ class allViewsModal extends React.Component {
 	}
 	
 	componentDidMount() {
+		// Mouseup listener used to handle click drag selection
 		window.addEventListener('mouseup', this.handleMouseUp.bind(this));
 
 		var context = this;
 
+		// Get the corresponding data (change this to handle changing data, will also have to move its location)
 		httpGetRequest("http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", 
 			function(responseText) { 
 				var preData = JSON.parse(responseText); 
@@ -43,35 +48,72 @@ class allViewsModal extends React.Component {
 		window.removeEventListener('mouseup', this.handleMouseUp.bind(this));
 	}
 
+
+	/**
+     * Tells react if it should re-render the component
+     * @param nextProps: The props the component would have after the change
+     * @param nextState: The state the component would have after the change
+     * @returns: true if it should render and false if it shouldn't
+     **/
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.state.selectionList != nextState.selectionList) {
+            return true;
+        }
+
+		if (this.props.allViewsDisplay != nextProps.allViewsDisplay) {
+			return true;
+		}
+
+        return false;
+    };
+
+
+	/**
+	 * Resets the drag type on mouse up
+	 */
 	handleMouseUp() {
 		if (this.props.allViewsDisplay) {
 			this.setState({ dragState: 0 });
 		}
 	}
 
+
+	/**
+	 * Closes the modal
+	 */
 	handleBackClick = () => {
 		this.props.dispatch(editModalDisplay(false));
 	}
 
+
+	/**
+	 * Handles select all and deselect all for individual columns
+	 */
 	selectDeselectCol(col, action) {
 		var sList = this.state.selectionList.slice();
+		var index = this.checkSelected([col[0], col[1]], sList);
 
-		for (var i = 1; i < col.length; i++) {
-			var index = this.checkSelected([col[0], col[i]], sList);
-			if (action === "select") {
-				if (index === false) {
-					sList.push([col[0], col[i]]);
-				}
+		if (action === "select") {
+			if (index !== false) {
+				sList[index[0]] = col;
 			}
 			else {
-				if (index !== false) {
-					sList.splice(index, 1);
-				}
+				sList.push(col);
+			}
+		}
+
+		else {
+			if (index !== false) {
+				sList.splice(index[0], 1);
 			}
 		}
 		this.setState({ selectionList: sList });
 	}
+	
 
+	/**
+	 * Handles select all and deselect all for all the columns
+	 */
 	selectDesectAll(data, action) {
 		if (action === "deselect") {
 			this.setState({ selectionList: [] });
@@ -79,53 +121,108 @@ class allViewsModal extends React.Component {
 		else {
 			var sList = [];
 			for (var i = 0; i < data.length; i++) {
+				var newList = [data[i][0]];
+				
 				for (var j = 1; j < data[i].length; j++) {
-					sList.push([data[i][0], data[i][j]]);
+					newList.push(data[i][j]);
 				}
+				sList.push(newList);
 			}
 			this.setState({ selectionList: sList });
 		}
 	}
 
+
+	/**
+	 * Handles click selection
+	 */
 	toggleSelection(selection) {
 		var sList = this.state.selectionList.slice();
 		var index = this.checkSelected(selection, sList);
-		if (index !== false) {
+		
+		if (index !== false && index[1] !== false) {
 			if (this.state.dragState === 0) {
 				this.setState({ dragState: false });
-				sList.splice(index, 1);
+				sList[index[0]].splice(index[1], 1);
 			}
 		}
+
 		else {
 			if (this.state.dragState === 0) {
 				this.setState({ dragState: true });
-				sList.push(selection);
+				if (index !== false) {
+					sList[index[0]].push(selection[1]);
+				}
+
+				else {
+					sList.push( [selection[0], selection[1]] );
+				}
+				
 			}
 		}
 		this.setState({ selectionList: sList });
 	}
 
+
+	/**
+	 * Handles drag selection
+	 */
 	toggleDragSelection(selection) {
 		var sList = this.state.selectionList.slice();
 		var index = this.checkSelected(selection, sList);
-		if (index !== false) {
+
+		if (index !== false && index[1] !== false) {
 			if (this.state.dragState === false) {
-				sList.splice(index, 1);
-			}
-		}
-		else {
-			if (this.state.dragState === true) {
-				sList.push(selection);
+				sList[index[0]].splice(index[1], 1);
 			}
 		}
 
+		else {
+			if (this.state.dragState === true) {
+				if (index !== false) {
+					sList[index[0]].push(selection[1]);
+				}
+
+				else {
+					sList.push( [selection[0], selection[1]] );
+				}
+			}
+		}
 		this.setState({ selectionList: sList });
 	}
 
+
+	/**
+	 * Checks is the value is selected
+	 */
 	checkSelected(array, sList) {
 		for (var i = 0; i < sList.length; i++) {
-			if (sList[i][0] === array[0] && sList[i][1] === array[1]) {
-				return i;
+			if (sList[i][0] === array[0]) {
+				var index = sList[i].indexOf(array[1]);
+				if (index !== -1) {
+					return [i, index];
+				}
+				else {
+					return [i, false];
+				}
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Checks is the value is selected for display
+	 */
+	checkSelectedDisplay(array, sList) {
+		for (var i = 0; i < sList.length; i++) {
+			if (sList[i][0] === array[0]) {
+				if (sList[i].indexOf(array[1]) !== -1) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 		}
 		return false;
@@ -174,9 +271,9 @@ class allViewsModal extends React.Component {
 							return (
 								(elem !== col[0] ? 
 									<div
-										className = "noselect lightHover"
+										className = {context.checkSelectedDisplay([col[0], elem], context.state.selectionList) !== false ? "noselect darkHover" : "noselect lightHover" }
 										style = {{ 
-											backgroundColor: ( context.checkSelected([col[0], elem], context.state.selectionList) !== false ? "#7c78a0" : "white" ), 
+											backgroundColor: ( context.checkSelectedDisplay([col[0], elem], context.state.selectionList) !== false ? "#7c78a0" : "white" ), 
 											textAlign: "center",
 											padding: "2px",
 										}} 
@@ -218,7 +315,7 @@ class allViewsModal extends React.Component {
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
-								backgroundColor: (this.state.selectionList.length === 0 ? "grey" : this.props.settings.colors.homePageColors.myViewsButton) 
+								backgroundColor: (this.state.selectionList.length === 0 ? "grey" : this.props.settings.colors.buttons.general) 
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
@@ -234,7 +331,7 @@ class allViewsModal extends React.Component {
 								lineHeight: '35px',
 							}}
 							disabled = { (this.state.selectionList.length === 0 ? true : false)  }
-							onClick = { () => console.log("goon") }
+							onClick = { () => console.log(this.state.selectionList) }
 							primary = {true } 
 						/>
 					]
@@ -252,7 +349,7 @@ class allViewsModal extends React.Component {
 						buttonStyle = {{
 							height: '35px',
 							lineHeight: '35px',
-							backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+							backgroundColor: this.props.settings.colors.buttons.general
 						}} 
 						labelStyle = {{
 							fontSize: '12px',
@@ -279,7 +376,7 @@ class allViewsModal extends React.Component {
 						buttonStyle = {{
 							height: '35px',
 							lineHeight: '35px',
-							backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+							backgroundColor: this.props.settings.colors.buttons.general
 						}} 
 						labelStyle = {{
 							fontSize: '12px',
@@ -306,6 +403,7 @@ class allViewsModal extends React.Component {
 		);
 	}
 }
+
 
 /**
  * Constants defined to make dispatching for the redux store consistent

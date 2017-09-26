@@ -95,7 +95,7 @@ class VotingModal extends React.Component {
                         buttonStyle = {{
                             height: '35px',
                             lineHeight: '35px',
-                            backgroundColor: this.props.settings.colors.homePageColors.myViewsButton  
+                            backgroundColor: this.props.settings.colors.buttons.general  
                         }} 
                         labelStyle = {{
                             fontSize: '14px',

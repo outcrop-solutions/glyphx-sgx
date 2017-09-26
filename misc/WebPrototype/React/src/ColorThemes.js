@@ -111,8 +111,8 @@ const themeSettingColors = [
             elasticHover: "#339cee",
             rangeHover: "#339cee"
         },
+
         homePageColors: {
-            bodyBackground: "#caccff",
             headerBackground: shadeHexColors("#2d3091", 0.1),
             subBackground: shadeHexColors("#2d3091", 0.4),
             hoverBackground: shadeHexColors("#2d3091", 0.8),
@@ -127,9 +127,19 @@ const themeSettingColors = [
             funnelBottom: "#edce8e",
             funnelBottomBody: "#edce8e",
             funnelBottomLine: shadeHexColors("#edce8e", 0.4),
-            funnelBottomHover: shadeHexColors("#edce8e", 0.3),
-            myViewsButton: shadeHexColors("#2d3091", 0.1)
+            funnelBottomHover: shadeHexColors("#edce8e", 0.3)
         },
+
+        buttons: {
+            general: "#2d3091"
+        },
+
+        general: {
+            lightBubble: "#e7e7fd",
+            lighterBubble: shadeHexColors("#e7e7fd", 0.4),
+            darkerBubble: "#b9c0e1"
+        },
+
         announcementColors: {
             maintenance: "#e9dc9a",
             release: "#a9b9e0",
@@ -251,6 +261,34 @@ const themeSettingColors = [
             funnelBottom: "yellow",
             myViewsButton: "#9d2235"
         },
+        homePageColors: {
+            headerBackground: shadeHexColors("#9d2235", 0.1),
+            subBackground: shadeHexColors("#9d2235", 0.4),
+            hoverBackground: shadeHexColors("#2d3091", 0.8),
+            funnelTop: "#F7B267",
+            funnelTopHover: shadeHexColors("#F7B267", 0.3),
+            funnelTopBody: "#ffd6a7",
+            funnelTopLine: "#fff0df",
+            funnelMiddle: "#FFC857",
+            funnelMiddleBody: "#ffe2a4",
+            funnelMiddleLine: "#feefcf",
+            funnelMiddleHover: shadeHexColors("#FFC857", 0.3),
+            funnelBottom: "#edce8e",
+            funnelBottomBody: "#edce8e",
+            funnelBottomLine: shadeHexColors("#edce8e", 0.4),
+            funnelBottomHover: shadeHexColors("#edce8e", 0.3)
+        },
+
+        buttons: {
+            general: "#9d2235"
+        },
+
+        general: {
+            lightBubble: "#fddcdc",
+            lighterBubble: shadeHexColors("#fddcdc", 0.4),
+            darkerBubble: "#efc0c0"
+        },
+
         announcementColors: {
             maintenance: "#e9dc9a",
             release: "#a9b9e0",

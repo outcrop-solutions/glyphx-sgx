@@ -19,7 +19,7 @@ class TutorialWindow extends React.Component {
                     height: "auto", 
                     padding: "7px", 
                     borderRadius: "5px", 
-                    backgroundColor: this.props.settings.colors.homePageColors.myViewsButton, 
+                    backgroundColor: this.props.settings.colors.buttons.general, 
                     zIndex: "400", 
                     position: "fixed", 
                     marginTop: "100px" 
@@ -40,7 +40,7 @@ class TutorialWindow extends React.Component {
                                 buttonStyle = {{
                                     height: '50px',
                                     lineHeight: '50px',
-                                    backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+                                    backgroundColor: this.props.settings.colors.buttons.general
                                 }} 
                                 labelStyle = {{
                                     fontSize: '14px',
@@ -166,7 +166,7 @@ class TutorialWindow extends React.Component {
                                 buttonStyle = {{
                                     height: '50px',
                                     lineHeight: '50px',
-                                    backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+                                    backgroundColor: this.props.settings.colors.buttons.general
                                 }} 
                                 labelStyle = {{
                                     fontSize: '14px',

@@ -5,11 +5,11 @@ import FlatButton from 'material-ui/FlatButton';
 import Checkbox from 'material-ui/Checkbox';
 
 
-
 /**
  * This class represents the alerts dialog that can be used to send the user information about updates and latest news.
- * Initially when the application is 1st loaded, this will make a server call to check for important updates and show it to the user upon login.
+ * Initially when the application is first loaded, this will make a server call to check for important updates and show it to the user upon login.
  * However, this can be used even after that. On click of the notification(bell) icon on the toolbar this will get displayed.
+ * @param checkBoxDisplay: -ADCMT
  */
 class AlertsModal extends React.Component {
 	

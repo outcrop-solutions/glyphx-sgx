@@ -70,21 +70,20 @@ class HomePage extends React.Component {
         style.sheet.insertRule('.funnel-middle-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelMiddleLine + ' !important; }', 13);
         style.sheet.insertRule('.funnel-bottom-body:Hover { background-color: ' + this.props.settings.colors.homePageColors.funnelBottomLine + ' !important; }', 14);
 
-        style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 15);
+        style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 15);
+		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 16);
+		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 14px !important;}', 17);
+		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 18);
+		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 19);
+        style.sheet.insertRule('.Select-control { background-color: ' + this.props.settings.colors.general.lighterBubble + ' !important; }', 20);
 
-        style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 16);
-		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 17);
-		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 14px !important;}', 18);
-		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 19);
-		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 20);
-        style.sheet.insertRule('.Select-control { background-color: ' + "#f5f5ff" + ' !important; }', 21);
+        style.sheet.insertRule('.faqCollapse { background: #caccff !important; }', 21);
+        style.sheet.insertRule('.faqCollapse:after { color: #000000 !important }', 22);
+        style.sheet.insertRule('.faqCollapse:hover { background: #dcdeff !important; }', 23);
+        style.sheet.insertRule('.faqCollapse.is-open { background: #9397d1 !important; }', 24);
 
-        style.sheet.insertRule('.faqCollapse { background: #caccff !important; }', 22);
-        style.sheet.insertRule('.faqCollapse:after { color: #000000 !important }', 23);
-        style.sheet.insertRule('.faqCollapse:hover { background: #dcdeff !important; }', 24);
-        style.sheet.insertRule('.faqCollapse.is-open { background: #9397d1 !important; }', 25);
-
-        style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 26);
+        style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 25);
+        style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
 
         
     }

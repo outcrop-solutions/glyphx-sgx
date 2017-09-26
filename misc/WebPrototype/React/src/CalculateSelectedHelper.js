@@ -1,9 +1,8 @@
-
-
 /**
  * Used to translate slider values to letters
  **/
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
 
 /**
  * Calculates selected values given the updated range List as well as the range prior to its edit
@@ -238,6 +237,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
     console.log(selectedValues);
     return selectedValues;
 }
+
 
 /**
  * 

@@ -20,7 +20,7 @@
 .customScroll::-webkit-scrollbar-thumb
 {
 	border-radius: 4px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0;0;0;.3);
+	--webkit-box-shadow: inset 0 0 6px rgba(0;0;0;.3);
 	background-color: #878c9b;
 }
 
@@ -56,10 +56,10 @@ body {
   font-family: sans-serif;
 }
 
-html,body { height:100%; } 
-#wrapper { height:100%; }
-#container { height:100%; }
-.section { height:100%; }
+html,body { height: 100%; } 
+#wrapper { height: 100%; }
+#container { height: 100%; }
+.section { height: 100%; }
 
 .grey-hover:Hover {
     background-color: #e6e6e6
@@ -72,6 +72,10 @@ html,body { height:100%; }
 
 .lightHover:hover {
     background-color: #e3e4ef !important;
+}
+
+.darkHover:hover {
+    background-color: #8984b4 !important;
 }
 
 

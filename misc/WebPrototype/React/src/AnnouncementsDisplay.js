@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Flexbox from 'flexbox-react';
+import { withRouter } from 'react-router-dom';
 import { Card, CardText } from 'material-ui/Card';
-import { withRouter } from 'react-router-dom'
+import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import FilterSideBar from './FilterSideBar.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -14,9 +14,8 @@ import GlyphLegend from './GlyphLegend.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import VotingModal from './VotingModal.js';
-import './General.css';
-import './AnnouncementsDisplay.css';
 import 'font-awesome/css/font-awesome.min.css';
+import './General.css';
 
 
 class AnnouncementsDisplay extends React.Component {
@@ -64,7 +63,7 @@ class MaintenanceAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: "#e7e7fd", borderRadius: "5px", marginRight: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
@@ -109,7 +108,7 @@ class ReleaseAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: "#e7e7fd", borderRadius: "5px", marginRight: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
@@ -169,7 +168,7 @@ class PollAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: "#e7e7fd", borderRadius: "5px", marginRight: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",
@@ -217,7 +216,7 @@ class ShoutAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: "#e7e7fd", borderRadius: "5px", marginRight: "5px" }} >
+            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
                 <CardText
                     style = {{
                         padding: "7px",

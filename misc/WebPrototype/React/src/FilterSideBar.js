@@ -204,8 +204,7 @@ class FilterSideBar extends Component {
                 style = {{ 
                     height: "100%",
                     overflow:'hidden',
-                    transition: '1s',
-                    backgroundColor: this.props.settings.colors.homePageColors.bodyBackground
+                    transition: '1s'
                 }}
                 id = "FilterWindowOuterContiner"
             >

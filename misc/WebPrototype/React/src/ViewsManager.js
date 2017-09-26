@@ -260,7 +260,7 @@ class ViewsManager extends React.Component {
                 </Stepper>
 
                     <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
-                        <div style = {{ backgroundColor: "#8183bd", borderRadius: "3px" }} >
+                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "3px" }} >
                             <div style = {{ height: "100%", borderRadius: "2px" }} >
                                 <div 
                                     className = "Card" 
@@ -328,7 +328,7 @@ class ViewsManager extends React.Component {
                                         buttonStyle = {{
                                             height: '50px',
                                             lineHeight: '50px',
-                                            backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+                                            backgroundColor: this.props.settings.colors.buttons.general
                                         }} 
                                         labelStyle = {{
                                             fontSize: '14px',

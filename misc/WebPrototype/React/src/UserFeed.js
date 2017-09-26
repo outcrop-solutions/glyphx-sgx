@@ -61,9 +61,11 @@ class UserFeed extends React.Component {
                         ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "6"],
                         ];
 
+        var context = this;
+
         var posts = postList.map( function(post) {
             return (
-                <Card containerStyle = {{ padding: "0px", borderRadius: "10px" }} style = {{ backgroundColor: "#e7e7fd", borderRadius: "10px", paddingBottom: "2px", marginTop: (post === postList[0] ? "0px" : "7px") }} key = { post } >
+                <Card containerStyle = {{ padding: "0px", borderRadius: "10px" }} style = {{ backgroundColor: context.props.settings.colors.general.lightBubble, borderRadius: "10px", paddingBottom: "2px", marginTop: (post === postList[0] ? "0px" : "7px") }} key = { post } >
                     <CardText
                         style = {{
                             padding: "5px",
@@ -148,7 +150,7 @@ class UserFeed extends React.Component {
                         </div>
                     </Flexbox>
 
-                    <div id = "toolbar" style = {{ marginTop: "7px", backgroundColor: "#ddddf8", borderTopRightRadius: "3px", borderTopLeftRadius: "3px" }} >
+                    <div id = "toolbar" style = {{ marginTop: "7px", backgroundColor: this.props.settings.colors.general.darkerBubble, borderTopRightRadius: "3px", borderTopLeftRadius: "3px" }} >
                         <Flexbox flexDirection="row" >
                             <Flexbox style = {{ width: "100%" }} > 
                                 <button className = "ql-italic"></button>
@@ -193,7 +195,7 @@ class UserFeed extends React.Component {
                         theme = "snow"
                         modules = {{ toolbar: '#toolbar' }}
                     >
-                        <div className = "my-editing-area" style = {{ height: "150px", overflow: "auto", backgroundColor: "#f5f5ff", borderBottomRightRadius: "3px", borderBottomLeftRadius: "3px" }} />
+                        <div className = "my-editing-area" style = {{ height: "150px", overflow: "auto", backgroundColor: this.props.settings.colors.general.lighterBubble, borderBottomRightRadius: "3px", borderBottomLeftRadius: "3px" }} />
                     </ReactQuill>
                 </Flexbox>
 
