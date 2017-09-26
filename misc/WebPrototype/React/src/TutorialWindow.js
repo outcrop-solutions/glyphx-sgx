@@ -26,6 +26,7 @@ class TutorialWindow extends React.Component {
                 }} 
             >
                 <div style = {{ height: "100%", width: "100%", backgroundColor: "white", borderRadius: "5px", padding: "7px 7px 0px" }} >
+                    <div onClick = { () => this.props.updateStage("done") } style = {{ width: "100%", textAlign: "right", display: (this.props.tutorialStage === 0? "none" : "") }} > <i className = "fa fa-times" style = {{ fontSize: "18px" }} /> </div>
                     { this.props.tutorialStage === 0 ? 
                         <div>
                             <div style = {{ fontSize: "22px", textAlign: "center", lineHeight: "30px" }} > Would you like to take a quick walkthrough of the site? </div>

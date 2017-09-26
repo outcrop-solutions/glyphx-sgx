@@ -20,33 +20,23 @@ class allViewsModal extends React.Component {
 	componentDidMount() {
 		window.addEventListener('mouseup', this.handleMouseUp.bind(this));
 
-		var preData;
+		var context = this;
 
-		httpGetRequest("ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", function() { console.log("Hi") } , "options");
-		var xmlHttp = new XMLHttpRequest();
-		xmlHttp.onreadystatechange = function() {
-			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-			{
-				preData = xmlHttp.responseText;
-			}
-		}
-		xmlHttp.open("GET", "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", true); // true for asynchronous
-		xmlHttp.send(null);
-
-		var data = [];
-
-		console.log(preData)
-
-		var keyArray = Object.keys(preData);
-		for (var i = 0; i < keyArray.length; i++) {
-			var dataCol = [keyArray[i]];
-			for (var j = 0; j < preData[keyArray[i]].length; j++) {
-				dataCol.push(preData[keyArray[i]][j][keyArray[i]]);
-			}
-			data.push(dataCol);
-		}
-
-		this.setState({ data: data });
+		httpGetRequest("http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", 
+			function(responseText) { 
+				var preData = JSON.parse(responseText); 
+				var data = [];
+				var keyArray = Object.keys(preData);
+				for (var i = 0; i < keyArray.length; i++) {
+					var dataCol = [keyArray[i]];
+					for (var j = 0; j < preData[keyArray[i]].length; j++) {
+						dataCol.push(preData[keyArray[i]][j][keyArray[i]]);
+					}
+					data.push(dataCol);
+				}
+				context.setState({ data: data });
+			},
+		"options");
 	}
 
 	componentWillUnmount() {
@@ -79,7 +69,6 @@ class allViewsModal extends React.Component {
 				}
 			}
 		}
-
 		this.setState({ selectionList: sList });
 	}
 
@@ -255,9 +244,9 @@ class allViewsModal extends React.Component {
 			>
 				<div style = {{ height: "60vh", paddingBottom: "30px" }} >
 					<RaisedButton 
-						label = { "Select All" }
+						label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
 						style = {{
-							width: "112px",
+							width: "121px",
 							margin: "8px 10px 9px 0px"
 						}}
 						buttonStyle = {{
@@ -283,9 +272,9 @@ class allViewsModal extends React.Component {
 					/>
 
 					<RaisedButton 
-						label = { "Deselect All" }
+						label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
 						style = {{
-							width: "118px"
+							width: "135px"
 						}}
 						buttonStyle = {{
 							height: '35px',

@@ -24,7 +24,46 @@ class Login extends Component {
         setTimeout(function () {
             context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
         }, 1000);
+
+        var context = this; 
+
+        document.getElementById("UserText")
+            .addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode == 13) {
+                context.buttonClick();
+            }
+        });
+
+        document.getElementById("PassText")
+            .addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode == 13) {
+                context.buttonClick();
+            }
+        });
     }
+
+	componentWillUnmount() {
+
+        var context = this;
+
+        document.getElementById("UserText")
+            .removeEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode == 13) {
+                context.buttonClick();
+            }
+        });
+
+        document.getElementById("PassText")
+            .removeEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode == 13) {
+                context.buttonClick();
+            }
+        });
+	}
 
     calcLoginButtonPosition() {
         //Caculates the position of the login button to be initially.

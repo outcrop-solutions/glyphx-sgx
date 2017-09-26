@@ -122,7 +122,7 @@ class HomePage extends React.Component {
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
                         <Flexbox flexDirection="row" minWidth="100%" >
                             <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }}>
-                                <div style = {{ padding: "12px 0px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
                              </Flexbox>
@@ -137,14 +137,14 @@ class HomePage extends React.Component {
                                 </div>
 
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
-                                   <div style = {{ padding: "5px 15px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                   <div style = {{ padding: "5px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                         <ViewsManager />
                                     </div>
                                 </Flexbox>
 
                              </Flexbox>   
                              <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
-                                <div style = {{ padding: "12px 12px 12px 0px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  >
 
                                         <RecentViews />

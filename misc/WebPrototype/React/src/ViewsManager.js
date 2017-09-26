@@ -260,7 +260,7 @@ class ViewsManager extends React.Component {
                 </Stepper>
 
                     <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
-                        <div>
+                        <div style = {{ backgroundColor: "#8183bd", borderRadius: "3px" }} >
                             <div style = {{ height: "100%", borderRadius: "2px" }} >
                                 <div 
                                     className = "Card" 
@@ -318,32 +318,34 @@ class ViewsManager extends React.Component {
                         
 
                             {this.state.stepIndex === 0 ? 
-                                <RaisedButton 
-                                    label = "My Views"
-                                    style = {{
-                                        width: "100%",
-                                        margin: "10px auto",
-                                    }}
-                                    buttonStyle = {{
-                                        height: '50px',
-                                        lineHeight: '50px',
-                                        backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
-                                    }} 
-                                    labelStyle = {{
-                                        fontSize: '14px',
-                                        color: this.props.settings.colors.overviewButtonsColor.text,
-                                        fontFamily: "Arial Black, Gadget, sans-serif",
-                                        margin: "0px 0px 0px -3px",
-                                        paddingLeft: "0px",
-                                        paddingRight: "0px"
-                                    }}
-                                    overlayStyle = {{
-                                        height: '50px',
-                                        lineHeight: '50px',
-                                    }}
-                                    onClick = { this.handleNext.bind(this, "My Views") }
-                                    primary = {true } 
-                                />
+                                <div style = {{ margin: "0 auto", width: "82%", minWidth: "370px", padding: "0 20px" }} >
+                                    <RaisedButton 
+                                        label = "My Views"
+                                        style = {{
+                                            width: "100%",
+                                            margin: "10px auto 20px",
+                                        }}
+                                        buttonStyle = {{
+                                            height: '50px',
+                                            lineHeight: '50px',
+                                            backgroundColor: this.props.settings.colors.homePageColors.myViewsButton
+                                        }} 
+                                        labelStyle = {{
+                                            fontSize: '14px',
+                                            color: this.props.settings.colors.overviewButtonsColor.text,
+                                            fontFamily: "Arial Black, Gadget, sans-serif",
+                                            margin: "0px 0px 0px -3px",
+                                            paddingLeft: "0px",
+                                            paddingRight: "0px"
+                                        }}
+                                        overlayStyle = {{
+                                            height: '50px',
+                                            lineHeight: '50px',
+                                        }}
+                                        onClick = { this.handleNext.bind(this, "My Views") }
+                                        primary = {true } 
+                                    />
+                                </div>
                                 : 
                                 null
                             }
