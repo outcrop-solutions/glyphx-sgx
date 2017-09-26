@@ -25,7 +25,7 @@ class ApplicationRouter extends React.Component{
     var context = this;
     try{
       var res = checkUserLoggedIn(this.onServerError);
-      var loggedIn = JSON.parse(res) ? JSON.parse(res).isLoggedIn : false;
+      var loggedIn = JSON.parse(res) ? JSON.parse(res).isUserLoggedIn : false;
       if(loggedIn)
         {
           setCookie(getLoginCookieName(),1,0.5);
