@@ -1,6 +1,7 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
+import ScrollIntoView from 'scroll-into-view-if-needed';
 import FontIcon from 'material-ui/FontIcon';
 import FilterTable from './FilterTable.js';
 import NumberRangeTable from './NumberRange.js';
@@ -38,14 +39,15 @@ class FilterTabs extends React.Component {
 
     active = "RANGE";
 
-    handleChange = (value,context) => {
+    handleChange = (value, context) => {
         context.setState({
             slideIndex: value
         });
 
         if (this.active === "ELASTIC") {
             this.active = "RANGE";
-        }        else {
+        }        
+        else {
             this.active = "ELASTIC";
         }
         
@@ -53,15 +55,35 @@ class FilterTabs extends React.Component {
             if (document.getElementById(this.state.rangeID)) {
                 document.getElementById(this.state.tableID).style.maxHeight = "0px";
                 document.getElementById(this.state.rangeID).style.maxHeight = "345px";
+                context.scroll(context.state.rangeID);
             }
         }
-        else {            if (document.getElementById(this.state.tableID)) {
+        else {            
+            if (document.getElementById(this.state.tableID)) {
                 document.getElementById(this.state.rangeID).style.maxHeight = "0px";
                 document.getElementById(this.state.tableID).style.maxHeight = "393px";
+                context.scroll(context.state.tableID);
             }
         }
 
     };
+
+
+    /**
+     * This function will bring the scroll to that element.
+     * @param {String/Object} element: this is the name of the column
+     */
+    scroll = (element) => {
+        if (typeof element == 'string') {
+            element = document.getElementById(element);
+        }
+
+        if (element) {
+            ScrollIntoView(element, false, { duration: 150 });
+        }
+        else
+            return false;
+    }
 
 
     render() {
