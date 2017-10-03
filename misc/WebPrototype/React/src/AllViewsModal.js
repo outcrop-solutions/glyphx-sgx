@@ -235,6 +235,18 @@ class allViewsModal extends React.Component {
 		}
 		return false;
 	}
+
+
+	onLaunch() {
+		makeServerCall('applyFrontEndFilters',
+			function(a,b,c) {
+				console.log("callback");
+			},
+			{post: true, 
+				data: { tableName: this.state.table, frontEndFilters: this.state.selectionList } 
+			}
+		);
+	}
 	
 	render() {
 
@@ -339,7 +351,7 @@ class allViewsModal extends React.Component {
 								lineHeight: '35px',
 							}}
 							disabled = { (this.state.selectionList.length === 0 ? true : false)  }
-							onClick = { () => console.log(this.state.selectionList) }
+							onClick = { () => this.onLaunch() }
 							primary = {true } 
 						/>
 					]
