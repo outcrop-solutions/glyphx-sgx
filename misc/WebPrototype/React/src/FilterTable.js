@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
+import ScrollIntoView from 'scroll-into-view-if-needed';
 import SearchBox from './SearchBox.js';
 import { connect } from 'react-redux';
 import './General.css'
@@ -249,7 +250,8 @@ class FilterTable extends React.Component {
         this.componentDidUpdate();
     }
 
-    mouseIn = () => {
+    mouseIn = (evt) => {
+        ScrollIntoView(evt.currentTarget, false, { duration: 150 });
         if (this.props.settings.hideScrollHover) {
             var elements = document.getElementsByClassName(this.props.internalColName + "-E");
             if (elements[0].scrollHeight >= 300) {
