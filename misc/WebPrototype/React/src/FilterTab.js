@@ -36,35 +36,24 @@ class FilterTabs extends React.Component {
         scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
     }
 
+    handleChange = (value) => {
 
-    active = "RANGE";
-
-    handleChange = (value, context) => {
-        context.setState({
-            slideIndex: value
+        this.setState({ slideIndex: value }, function() {
+            console.log(value);
+            if (value === 0) {
+                if (document.getElementById(this.state.tableID)) {
+                    document.getElementById(this.state.rangeID).style.maxHeight = "0px";
+                    document.getElementById(this.state.tableID).style.maxHeight = "393px";
+                    this.scroll(this.state.tableID);
+                }
+            }
+            else {
+                if (document.getElementById(this.state.rangeID)) {
+                    document.getElementById(this.state.tableID).style.maxHeight = "0px";
+                    document.getElementById(this.state.rangeID).style.maxHeight = "345px";
+                }
+            }
         });
-
-        if (this.active === "ELASTIC") {
-            this.active = "RANGE";
-        }        
-        else {
-            this.active = "ELASTIC";
-        }
-        
-        if (this.active === "ELASTIC") {
-            if (document.getElementById(this.state.rangeID)) {
-                document.getElementById(this.state.tableID).style.maxHeight = "0px";
-                document.getElementById(this.state.rangeID).style.maxHeight = "345px";
-                context.scroll(context.state.rangeID);
-            }
-        }
-        else {            
-            if (document.getElementById(this.state.tableID)) {
-                document.getElementById(this.state.rangeID).style.maxHeight = "0px";
-                document.getElementById(this.state.tableID).style.maxHeight = "393px";
-                context.scroll(context.state.tableID);
-            }
-        }
 
     };
 

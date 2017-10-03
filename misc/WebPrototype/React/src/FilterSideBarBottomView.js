@@ -111,7 +111,7 @@ class FilterSideBarBottomView extends Component {
                     key = { config.internalColName }
                     ref = { config.internalColName }
                     triggerOpenedClassName = "columnNameHeader"
-                    handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,config.internalColName) }
+                    handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this, config.internalColName) }
                     contentOuterClassName = "cursorNormal"
                     contentInnerClassName = "subCollapsibleInner"
                     trigger = {
@@ -280,7 +280,7 @@ class FilterSideBarBottomView extends Component {
 	 * @param {Obj} element: the actual element object.
 	 * @param {Obj} context: the context of FilterSideBar. 
 	 */
-	checkToScroll = (elementName,element,context) => {
+	checkToScroll = (elementName, element, context) => {
         clearInterval(context['timeout']);
         context['counter'] = 0;
         context['timeout'] = window.setInterval(function() {
@@ -328,15 +328,14 @@ class FilterSideBarBottomView extends Component {
             name = divList[i].getAttribute('name');
             ref = this.refs[divList[i].getAttribute('id')] 
             
-            if(ref && (extra ? !extra.filterViewClick : true) ) {
+            if (ref && (extra ? !extra.filterViewClick : true) ) {
                 ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
             }
 			
             shouldBeVisible = false;
             
             if (name) {
-				for(var j = 0; j < inputValues.length; j++)
-				{
+				for (var j = 0; j < inputValues.length; j++) {
 					if (name.toUpperCase().indexOf(inputValues[j]) > -1) {
 						shouldBeVisible = true;
 					}
@@ -359,7 +358,7 @@ class FilterSideBarBottomView extends Component {
 		for (i = 0; i < len; i++) {
             ref = this.refs[divList[i].getAttribute('id')];
             
-            if(ref) {
+            if (ref) {
                 ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
             }
 		}
@@ -442,7 +441,7 @@ class FilterSideBarBottomView extends Component {
                             <div>
                                 <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                                 <span 
-                                    style={{
+                                    style = {{
                                         paddingLeft: '10px',
                                         fontSize: '1.3rem',
                                         color: this.props.settings.colors.collapsibleColor.mainText
