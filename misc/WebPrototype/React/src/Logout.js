@@ -16,7 +16,7 @@ class Logout extends React.Component {
     render() {
         this.deleteLoginCookie();
         hideSplashScreen();
-        makeServerCall("doLogout");
+        makeServerCall("logout");
         return(
             <Dialog
                 actions = {
