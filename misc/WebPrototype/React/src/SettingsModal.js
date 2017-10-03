@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Flexbox from 'flexbox-react';
 import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -20,6 +21,8 @@ class SettingsModal extends React.Component {
         themeTempSelection: 0,
         overlapSelection: 0,
         overlapTempSelection: 0,
+        hideScrollSelection: 0,
+        hideScrollTempSelection: 0,
     };
 
 
@@ -35,6 +38,9 @@ class SettingsModal extends React.Component {
         else if (target === "Overlap") {
             this.setState({ overlapTempSelection: value });
         }
+        else if (target === "HideScroll") {
+            this.setState({ hideScrollTempSelection: value });
+        }
     }
 
 
@@ -44,7 +50,8 @@ class SettingsModal extends React.Component {
     onSettingsSave() {
         this.setState({ themeSelection: this.state.themeTempSelection });
         this.setState({ overlapSelection: this.state.overlapTempSelection });
-        this.props.dispatch(editSettings(this.state.themeTempSelection, (this.props.homePage ? null : (this.state.overlapTempSelection === 0 ? false : true)), false));
+        this.setState({ hideScrollSelection: this.state.hideScrollTempSelection });
+        this.props.dispatch(editSettings(this.state.themeTempSelection, (this.props.homePage ? null : (this.state.overlapTempSelection === 0 ? false : true)), false, (this.props.homePage ? null : (this.state.hideScrollTempSelection === 0 ? true : false))));
 
         if (!this.props.homePage) {
             var gv = document.getElementById('GlyphViewerContainer');
@@ -65,12 +72,13 @@ class SettingsModal extends React.Component {
         }
     }
 
+
     /**
      * Reverts to previous settings if any where changed and closes the modal
      **/
     onSettingsCancel() {
-        this.setState({ themeTempSelection: this.state.themeSelection, overlapTempSelection: this.state.overlapSelection, });
-        this.props.dispatch(editSettings(null, null, false));
+        this.setState({ themeTempSelection: this.state.themeSelection, overlapTempSelection: this.state.overlapSelection, hideScrollTempSelection: this.state.hideScrollSelection });
+        this.props.dispatch(editSettings(null, null, false, null));
     }
 
     render(){
@@ -97,38 +105,58 @@ class SettingsModal extends React.Component {
                 modal = { true }
                 open = { this.props.settingsDisplay }
             >
-                <label><h4> Theme Settings </h4></label>
-                <DropDownMenu
-                    value = { this.state.themeTempSelection }
-                    onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Theme") }
-                    iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
-                    underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
-                    selectedMenuItemStyle = {{ 
-                        backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
-                        color: this.props.settings.colors.settingsModalColor.selectedText
-                    }}
-                >
-                    <MenuItem value = { 0 } primaryText = "SynGlyphX" />
-                    <MenuItem value = { 1 } primaryText = "Gannon" />
-                </DropDownMenu>
+                <Flexbox flexDirection = "row" >
+                    <label><h4> Theme </h4></label>
+                    <DropDownMenu
+                        value = { this.state.themeTempSelection }
+                        onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Theme") }
+                        iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
+                        underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
+                        selectedMenuItemStyle = {{ 
+                            backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
+                            color: this.props.settings.colors.settingsModalColor.selectedText
+                        }}
+                    >
+                        <MenuItem value = { 0 } primaryText = "SynGlyphX" />
+                        <MenuItem value = { 1 } primaryText = "Gannon" />
+                    </DropDownMenu>
+                </Flexbox>
 
-                <br />
                 {this.props.homePage ? null :
                     <div>
-                        <label><h4> Overlap Settings </h4></label>
-                        <DropDownMenu
-                            value = { this.state.overlapTempSelection }
-                            onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Overlap") }
-                            iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
-                            underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
-                            selectedMenuItemStyle = {{ 
-                                backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
-                                color: this.props.settings.colors.settingsModalColor.selectedText
-                            }}
-                        >
-                            <MenuItem value = { 0 } primaryText = "Sidebar pushes view" />
-                            <MenuItem value = { 1 } primaryText = "Sidebar overlaps view" />
-                        </DropDownMenu>
+                        <Flexbox flexDirection = "row" >
+                            <label><h4> Filter Sidebar </h4></label>
+                            <DropDownMenu
+                                value = { this.state.overlapTempSelection }
+                                onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Overlap") }
+                                iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
+                                underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
+                                selectedMenuItemStyle = {{ 
+                                    backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
+                                    color: this.props.settings.colors.settingsModalColor.selectedText
+                                }}
+                            >
+                                <MenuItem value = { 0 } primaryText = "Sidebar pushes view" />
+                                <MenuItem value = { 1 } primaryText = "Sidebar overlaps view" />
+                            </DropDownMenu>
+                        </Flexbox>
+
+                        <Flexbox flexDirection = "row" >
+                            <label><h4> Mouse Hover </h4></label>
+                            <DropDownMenu
+                                value = { this.state.hideScrollTempSelection }
+                                onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "HideScroll") }
+                                iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
+                                underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
+                                selectedMenuItemStyle = {{ 
+                                    backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
+                                    color: this.props.settings.colors.settingsModalColor.selectedText
+                                }}
+                            >
+                                <MenuItem value = { 0 } primaryText = "Hover hides scroll" />
+                                <MenuItem value = { 1 } primaryText = "Hover shows scroll" />
+                            </DropDownMenu>
+                        </Flexbox>
                     </div>
                 }
             </Dialog>             
@@ -140,11 +168,12 @@ class SettingsModal extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editSettings = (theme, overlap, display) => ({
+export const editSettings = (theme, overlap, display, hideScroll) => ({
     type: 'EDIT_SETTINGS',
     theme,
     overlap,
-    display
+    display,
+    hideScroll
 });
 
 

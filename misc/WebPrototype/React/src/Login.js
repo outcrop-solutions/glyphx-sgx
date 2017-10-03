@@ -152,8 +152,9 @@ class Login extends React.Component {
                 result.userInformation.loggedInTime = new Date();
                 result.userInformation.idleTime = 0;
             }
-            this.saveUserInfo(result.userInformation);
-            //result.funnelInfo
+
+            console.log(result);
+            this.saveUserInfo(result.userInformation, result.funnelInfo);
         }
         else if (result && result.status == "failure") {
             console.log('Error');
@@ -169,16 +170,17 @@ class Login extends React.Component {
 
     /**
      * -ADCMT
-     * @param info: -ADCMT
+     * @param userInfo: -ADCMT
+     * @param funnelInfo: -ADCMT
      **/
-    saveUserInfo = (info) => {
+    saveUserInfo = (userInfo, funnelInfo) => {
         console.log('Success');
         this.setState({ openPassword: false });
-        this.props.dispatch(saveUserInfo(info));
+        this.props.dispatch(saveUserInfo(userInfo, funnelInfo));
 
         // Call function post login if provided.
         if (typeof this.props.doAfterLogin == 'function') {
-            this.props.doAfterLogin(info);
+            this.props.doAfterLogin(userInfo);
         }
         
         // Login cookie
@@ -462,9 +464,10 @@ class Login extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const saveUserInfo = (info) => ({
+export const saveUserInfo = (userInfo, funnelInfo) => ({
     type: 'SAVE_USER_INFO',
-    info
+    userInfo,
+    funnelInfo
 });
 
 

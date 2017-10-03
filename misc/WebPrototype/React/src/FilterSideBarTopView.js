@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { makeServerCall, setCookie, getLoginCookieName } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
@@ -9,8 +11,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FilterViewForm from './FilterSummaryView.js';
 import Select from 'react-select';
-import {makeServerCall,setCookie,getLoginCookieName} from './ServerCallHelper.js';
-import { connect } from 'react-redux';
+import Checkbox from 'material-ui/Checkbox';
+import Snackbar from 'material-ui/Snackbar';
 import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
 
@@ -40,9 +42,46 @@ class FilterSideBarTopView extends React.Component {
             viewNameTextFieldError: "",
             statisticsModalOpen: false,
             statisticStatSelectValues: "",
-            statisticColSelectValues: ""
+            statisticColSelectValues: "",
+            allowHistoryUpdate: true,
+            undoSnackbar: false,
+            redoSnackbar: false
         };
 	}
+
+
+    /**
+	* - ADCMT
+    * @param newProps: - ADCMT
+    * @param newState: - ADCMT
+	*/
+
+
+    /*
+    shouldComponentUpdate(newProps, newState){
+        if (this.state != newState) {
+            return true;
+        }
+        else if (this.props.initParams != newProps.initParams) {
+            return true;
+        }
+        else if (this.props.settings != newProps.settings) {
+            return true;
+        }
+        else if (this.props.statisticDisplay != newProps.statisticDisplay) {
+            return true;
+        }
+
+        return false;
+    };
+
+    */
+
+
+    componentDidMount() {
+        window.localStorage.setItem('history', []);
+        window.localStorage.setItem('position', 0);
+    }
 	
 
 	/**
@@ -179,7 +218,7 @@ class FilterSideBarTopView extends React.Component {
 					context.setState({ viewSelectValue: viewName });
 
 					// Close the dialog
-					context.handleOpenClose('save',false);
+					context.handleOpenClose('save', false);
 					console.log("View saved with name: " + viewName);
 
 					// Show the success message
@@ -376,27 +415,71 @@ class FilterSideBarTopView extends React.Component {
     };
 
 
-    /**
-	* - ADCMT
-    * @param newProps: - ADCMT
-    * @param newState: - ADCMT
-	*/
-    shouldComponentUpdate(newProps, newState){
-        if (this.state != newState) {
-            return true;
+    handleRedo() {
+        var position = ( parseInt(window.localStorage.getItem('position'), 10) + 1 );
+        var history = this.historyToArray();
+
+        if (position < history.length) {
+            this.setState({ allowHistoryUpdate: false });
+            console.log("REDID");
+            window.localStorage.setItem('position', position);
+            this.props.dispatch(updateFilterFromSnapshot(history[position]));
+            this.setState({ allowHistoryUpdate: true });
         }
-        else if (this.props.initParams != newProps.initParams) {
-            return true;
+        else {
+            this.setState({ redoSnackbar: true });
         }
-        else if (this.props.settings != newProps.settings) {
-            return true;
+    }
+
+    handleUndo() {
+        var position = ( parseInt(window.localStorage.getItem('position'), 10) - 1 );
+        var history = this.historyToArray();
+        console.log("HISTORY-----\n");
+        console.log(history);
+        console.log("\n\n\n\n\n");
+        
+        if (position > -1) {
+            this.setState({ allowHistoryUpdate: false });
+            console.log("UNDID");
+            window.localStorage.setItem('position', position);
+            console.log("position: " + position);
+            console.log(history[position]);
+            this.props.dispatch(updateFilterFromSnapshot(history[position])); 
+            this.setState({ allowHistoryUpdate: true });
         }
-        else if (this.props.statisticDisplay != newProps.statisticDisplay) {
-            return true;
+        else {
+            this.setState({ undoSnackbar: true });
+        }
+    }
+
+    historyToArray() {
+        var history = window.localStorage.getItem('history');
+        var returnHistory = [];
+        
+        if (history.length > 0) {
+            if (history.includes("!!")) {
+                returnHistory = history.split("!!");
+                for (var i = 0; i < returnHistory.length; i++) {
+                    returnHistory[i] = JSON.parse(returnHistory[i]);
+                }
+            }
+            else {
+                returnHistory.push(JSON.parse(history));
+            }
         }
 
-        return false;
-    };
+        return returnHistory;
+    }
+
+    closeSnackbar(type) {
+        if (type === "undo") {
+            this.setState({ undoSnackbar: false });
+        }
+        else {
+            this.setState({ redoSnackbar: false });
+        }
+    }
+
 	
 	render = () => {
 		// Load values into the table select dropdown.
@@ -420,9 +503,25 @@ class FilterSideBarTopView extends React.Component {
 		
 		return(
             <Flexbox flexDirection = "column" id = "TopView" style = {{ height: "100%" }}>
+
+                <Snackbar
+                    open = { this.state.undoSnackbar }
+                    message = "Cannot undo any further."
+                    autoHideDuration = { 4000 }
+                    onRequestClose = { () => this.closeSnackbar("undo") }
+                    //contentStyle = {{ backgroundColor: "#ffffff" }}
+                />
+
+                <Snackbar
+                    open = { this.state.redoSnackbar }
+                    message = "Cannot redo any further."
+                    autoHideDuration = { 4000 }
+                    onRequestClose = { () => this.closeSnackbar("redo") }
+                />
+
                 {/* Row 1 */}
                 <Flexbox flexDirection = "row" >
-                    <Flexbox style = {{ width: "80%", margin: "9px 10px 0px 0px" }} > 
+                    <Flexbox style = {{ width: "60%", margin: "9px 10px 0px 0px" }} > 
                         <Select 
                             className = "selectViewName"
                             simpleValue
@@ -436,13 +535,83 @@ class FilterSideBarTopView extends React.Component {
                         />
                     </Flexbox>
                     
-                    <Flexbox style = {{ width: "20%" }} > 
+                    <Flexbox style = {{ width: "40%", marginBottom: "-4px" }} >
+
+                        {/*
+
+                        <Checkbox
+                            label = { <span> Apply on <br /> Change </span> }
+                            labelPosition = "left"
+                            style = {{ margin: " 4px 0px 0px" }}
+                            inputStyle = {{ width: "70px" }}
+                            labelStyle = {{ lineHeight: "12px", width: "51px", margin: "0px -20px 0px -3px" }}
+                            iconStyle = {{ margin: "0px 0px 0px 10px" }}
+                        />
+
+                        */}
+
+                        <RaisedButton
+                            onClick = { () => this.handleUndo() }
+                            label = { <i className = "fa fa-undo" style = {{ margin: "0px 0px 0px -3px" }} /> }
+                            style = {{
+                                margin: "4px 6px 11px -2px",
+                                minWidth: "37px",
+                                width: "37px",
+                                height: "25px"
+                            }}
+                            buttonStyle = {{
+                                height: '25px',
+                                lineHeight: '25px',
+                                //backgroundColor: ( this.canUndoRedo("undo") ? this.props.settings.colors.collapsibleColor.subBackground : "#bebebe" )
+                                backgroundColor: this.props.settings.colors.collapsibleColor.subBackground
+                            }} 
+                            labelStyle = {{
+                                fontSize: '13px',
+                                color: this.props.settings.colors.overviewButtonsColor.text
+                            }}
+                            overlayStyle = {{
+                                height: '25px',
+                                lineHeight: '25px'
+                            }}
+                            primary = { true }
+                            //disabled = { true }
+                        />
+
+                        <RaisedButton
+                            onClick = { () => this.handleRedo() }
+                            label = { <i className = "fa fa-repeat" style = {{ margin: "0px 0px 0px -3px" }} /> }
+                            style = {{
+                                margin: "4px 2px 0px 0px",
+                                minWidth: "37px",
+                                width: "37px",
+                                height: "25px"
+                            }}
+                            buttonStyle = {{
+                                height: '25px',
+                                lineHeight: '35px',
+                                //backgroundColor: ( this.canUndoRedo("redo") ? this.props.settings.colors.collapsibleColor.subBackground : "#bebebe" )
+                                backgroundColor: this.props.settings.colors.collapsibleColor.subBackground
+                            }} 
+                            labelStyle = {{
+                                fontSize: '13px',
+                                color: this.props.settings.colors.overviewButtonsColor.text
+                            }}
+                            overlayStyle = {{
+                                height: '25px',
+                                lineHeight: '25px'
+                            }}
+                            primary = { true }
+                            //disabled = { true }
+                        />
+
                         <div>
                             <RaisedButton
-                                onClick = { (evt) => this.handleOpenClose('menu', true,evt) }
+                                onClick = { (evt) => this.handleOpenClose('menu', true, evt) }
                                 label = "Menu"
                                 style = {{
-                                    margin: "-1px 0px 11px -3px"
+                                    margin: "-1px 0px 11px 4px",
+                                    minWidth: "85px",
+                                    width: "85px"
                                 }}
 								buttonStyle = {{
 									height: '35px',
@@ -463,7 +632,7 @@ class FilterSideBarTopView extends React.Component {
                             <Popover
                                 open = { this.state.menu.open }
                                 anchorEl = { this.state.menu.anchorEl }
-                                onRequestClose = { (evt) => this.handleOpenClose('menu', false,evt) }
+                                onRequestClose = { (evt) => this.handleOpenClose('menu', false, evt) }
                                 style = {{ fontSize: '13px' }}
                             >
                                 <Menu>
@@ -696,6 +865,12 @@ class FilterSideBarTopView extends React.Component {
 		);
 	}
 }
+
+
+export const updateFilterFromSnapshot = (snapshot) => ({
+    type: 'UPDATE_FILTER_SNAPSHOT',
+    snapshot
+});
 
 
 export const updateStatistics = (colList, statList, display) => ({

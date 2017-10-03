@@ -14,9 +14,11 @@ import './General.css';
  **/
 const initialFilterState = {
     Filter: {},
+    LatestFilterChange: "none",
     Settings: { 
         colors: themeSettingColors[0],
         sideBarOverlap: false,
+        hideScrollHover: true
     },
     ModalDisplay: {
         settingsModal: false,
@@ -27,6 +29,8 @@ const initialFilterState = {
         helpModal: false,
     },
     UserInfo: {
+    },
+    FunnelData: {
     },
     isUserLoggedIn: false,
     Statistics: { 
@@ -53,6 +57,18 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 Filter: action.storeFilterStruc,
+            }
+
+
+        /**
+         * Changes entire filter structure to a snapshot of its previous or future self for undeo-redo
+         * @param action.snapshot: snapshot to change to
+         **/
+        case 'UPDATE_FILTER_SNAPSHOT':
+            return {
+                ...state,
+                Filter: action.snapshot,
+                LatestFilterChange: "snapshot"
             }
 
 
@@ -85,7 +101,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter[action.colName],
                         rangeList: stateVal
                     }
-                }
+                },
+                LatestFilterChange: "range"
             }
 
 
@@ -121,7 +138,8 @@ const filterReducer = function(state = initialFilterState, action) {
                             rangeList: stateVal,
                             selectedValues: selected
                         }
-                    }
+                    },
+                    LatestFilterChange: "range"
                 }
             }
 
@@ -237,7 +255,8 @@ const filterReducer = function(state = initialFilterState, action) {
                             rangeList: stateVal,
                             selectedValues: selected
                         }
-                    }
+                    },
+                    LatestFilterChange: "range"
                 }
             }
          
@@ -249,7 +268,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter[action.colName],
                         rangeList: stateVal,
                     }
-                }
+                },
+                LatestFilterChange: "range"
             }
 
 
@@ -281,7 +301,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         rangeList: stateVal,
                         selectedValues: [],
                     }
-                }
+                },
+                LatestFilterChange: "filterview"
             }
 
         
@@ -343,7 +364,8 @@ const filterReducer = function(state = initialFilterState, action) {
                             selectedValues: action.filter.selectedValues,
                             rangeList: stateVal,
                         }
-                    }
+                    },
+                    LatestFilterChange: "elastic"
                 };
             }
 
@@ -355,7 +377,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter[col],
                         selectedValues: action.filter.selectedValues,
                     }
-                }
+                },
+                LatestFilterChange: "elastic"
             };
 
 
@@ -373,7 +396,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         ...state.Filter[action.details.colName],
                         pinned: action.details.pinned
                     }
-                }
+                },
+                LatestFilterChange: "pin"
             };
 
 
@@ -385,6 +409,7 @@ const filterReducer = function(state = initialFilterState, action) {
 
             display = state.ModalDisplay.settingsModal;
             var overlap = state.Settings.sideBarOverlap;
+            var hideScroll = state.Settings.hideScrollHover;
             var colors = state.Settings.colors;
 
             if (action.display != null) {
@@ -392,6 +417,9 @@ const filterReducer = function(state = initialFilterState, action) {
             }
             if (action.overlap != null) {
                 overlap = action.overlap
+            }
+            if (action.hideScroll != null) {
+                hideScroll = action.hideScroll
             }
             if (action.theme != null) {
                 colors = themeSettingColors[action.theme]
@@ -402,7 +430,8 @@ const filterReducer = function(state = initialFilterState, action) {
                 Settings: {
                     ...state.Settings,
                     colors: colors,
-                    sideBarOverlap: overlap
+                    sideBarOverlap: overlap,
+                    hideScrollHover: hideScroll
                 },
                 ModalDisplay: {
                     ...state.ModalDisplay,
@@ -411,10 +440,12 @@ const filterReducer = function(state = initialFilterState, action) {
             };
 
         case 'SAVE_USER_INFO':
+
             return {
                 ...state,
-                UserInfo: action.info,
-                isUserLoggedIn: true
+                UserInfo: action.userInfo,
+                isUserLoggedIn: true,
+                FunnelData: action.funnelInfo
             }
 
         case 'UPDATE_STATISTICS':

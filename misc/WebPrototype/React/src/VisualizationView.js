@@ -10,6 +10,7 @@ import StatisticModal from './StatisticModal.js'
 import TopNavBar from './TopNavBar.js';
 import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
+import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import './topNav.css';
 import 'font-awesome/css/font-awesome.min.css';
 
@@ -24,6 +25,7 @@ class VisualizationView extends React.Component {
         glyphViewLoaded: false,
         glyphWindowWidth: 0,
         topNavBarHeight: 0,
+        showCorrection: false
     };
 
 	/**
@@ -120,6 +122,10 @@ class VisualizationView extends React.Component {
         });
     }
 
+    handleDraggableCorrection(action) {
+        this.setState({ showCorrection: action });
+    }
+
 
     render() {
         return (
@@ -167,11 +173,16 @@ class VisualizationView extends React.Component {
                             
 
                             <div id = "GlyphViewerContainer" style = {{ transition: '0.37s', width: '100%', height: '100%' }} >
-                                <StatisticModal />
-                                <GlyphLegend />
+                                <StatisticModal handleCorrection = { this.handleDraggableCorrection.bind(this) } />
+                                <GlyphLegend handleCorrection = { this.handleDraggableCorrection.bind(this) } />
+                                
+                                <UndoRedoChangeListener />
+
+                                <div style = {{ height: "100vh", width: "100vw", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }} />
+
                                 <iframe 
                                     id = "GlyphViewer" 
-                                    onLoad={this.onLoadGlyphView.bind(this)} 
+                                    onLoad = { this.onLoadGlyphView.bind(this) } 
                                     title = "3D rendering engine" 
                                     style = {{ width:'100%', height:'100%', border: 'none' }} 
                                     src = "https://s3.amazonaws.com/synglyphx/demo.html" 

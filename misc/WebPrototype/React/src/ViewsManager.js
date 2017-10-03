@@ -24,6 +24,7 @@ class ViewsManager extends React.Component {
         stepIndex: 0,
         type: "Funnel",
         selectionType: "",
+        selectionTypeURL: "",
         flipped: false,
         clicked: false
     };
@@ -88,7 +89,8 @@ class ViewsManager extends React.Component {
     handleViewSelect = (type) => {
         this.props.dispatch(editModalDisplay(true));
         this.setState({
-            selectionType: type
+            selectionType: type[0],
+            selectionTypeURL: type[1]
         });
     }
 
@@ -96,8 +98,13 @@ class ViewsManager extends React.Component {
     render() {
         const contentStyle = {margin: '0 16px'};
         var context = this;
+        
+        var funnelData = this.props.funnelData;
 
-        var mandrList = ["Prospects", "High School Profiles", "Prospects & High Schools (Geospatial)"];
+        var mandrList = funnelData["Marketing and Recruiting"];
+        var admList = funnelData["Admissions"];
+        var faList = funnelData["Financial Aid"];
+        var customList = funnelData["Custom"];
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
@@ -109,13 +116,11 @@ class ViewsManager extends React.Component {
                         className = "funnel-top-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
-                        {title}
+                        {title[0]}
                     </CardText>
                 </Card>
             )
         });
-
-        var admList = ["Global Admissions", "Applicants", "Applicants by High School", "Review Committee", "Current Year RC with Prior Year Admits"];
 
         var admissions = admList.map( function(title) {
             return (
@@ -127,13 +132,11 @@ class ViewsManager extends React.Component {
                         className = "funnel-middle-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
-                        {title}
+                        {title[0]}
                     </CardText>
                 </Card>
             )
         });
-
-        var faList = ["FA Package Summaries", "FA Package Summaries (Grid)"];
 
         var financialAid = faList.map( function(title) {
             return (
@@ -145,7 +148,23 @@ class ViewsManager extends React.Component {
                         className = "funnel-bottom-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
-                        {title}
+                        {title[0]}
+                    </CardText>
+                </Card>
+            )
+        });
+
+        var custom = customList.map( function(title) {
+            return (
+                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody }} key = { title } >
+                    <CardText
+                        style = {{
+                            padding: "7px",
+                        }}
+                        className = "funnel-bottom-body noselect"
+                        onClick = { context.handleViewSelect.bind(context, title) }
+                    >
+                        {title[0]}
                     </CardText>
                 </Card>
             )
@@ -155,28 +174,30 @@ class ViewsManager extends React.Component {
         if (!this.state.clicked) flippedCSS =  "";
 
         var backButton = <RaisedButton
-                                label = "Back"
-                                onClick = { () => this.flip("Funnel") }
-                                style = {{ 
-                                    width: "80%", 
-                                    minWidth: "331px", 
-                                    margin: "0 auto",
-                                    display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" ? "" : "none")
-                                }}
-                                buttonStyle = {{
-                                    height: '30px',
-                                    lineHeight: '30px',
-                                    backgroundColor: "#818181"
-                                }} 
-                                labelStyle = {{
-                                    fontSize: '13px',
-                                    color: "#ffffff"
-                                }}
-                                overlayStyle = {{
-                                    height: '30px',
-                                    lineHeight: '30px'
-                                }}
-                            />;
+                            label = "Back"
+                            onClick = { () => this.flip("Funnel") }
+                            style = {{ 
+                                width: "80%", 
+                                minWidth: "331px", 
+                                margin: "0 auto",
+                                display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "" : "none")
+                            }}
+                            buttonStyle = {{
+                                height: '30px',
+                                lineHeight: '30px',
+                                backgroundColor: "#818181"
+                            }} 
+                            labelStyle = {{
+                                fontSize: '13px',
+                                color: "#ffffff"
+                            }}
+                            overlayStyle = {{
+                                height: '30px',
+                                lineHeight: '30px'
+                            }}
+                        />;
+
+        var marginList = ["10px 0px", "80px 0px 80px", "63px 0px 62px", "10px 0px", "30px 0px 25px"];
 
         return(
             <div>
@@ -268,7 +289,7 @@ class ViewsManager extends React.Component {
                                         marginBottom: "0px", 
                                         width: "100%", 
                                         display: (this.state.stepIndex === 0 ? "" : "none"),
-                                        marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" ? "-250px" : "0px")
+                                        marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
                                 >
                                     <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} >
@@ -292,11 +313,18 @@ class ViewsManager extends React.Component {
                                             </div>
                                         </div>
 
+                                        <div onClick = { () => this.flip("Custom") } className = "C-Size-3 noselect" style = {{ width: "32%", minWidth: "140px" }} >
+                                            <div style = {{ margin: "-45px auto 0px", width: "67px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                                CUSTOM
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px" }} >
-                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: "63px 0px 62px" }} > {marketingAndRecruiting} {backButton} </div> 
-                                                : (this.state.type === "Admissions" ? <div style = {{ margin: "30px 0px 25px" }} > {admissions} {backButton} </div> 
-                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: "80px 0px 80px" }} > {financialAid} {backButton} </div> : null)) 
+                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: marginList[mandrList.length - 1] }} > {marketingAndRecruiting} {backButton} </div> 
+                                                : (this.state.type === "Admissions" ? <div style = {{ margin: marginList[admList.length - 1] }} > {admissions} {backButton} </div> 
+                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: marginList[faList.length - 1] }} > {financialAid} {backButton} </div> 
+                                                        : (this.state.type === "Custom" ? <div style = {{ margin: marginList[customList.length - 1] }} > {custom} {backButton} </div> : null)))
                                             }
                                             
                                     </div>
@@ -313,7 +341,7 @@ class ViewsManager extends React.Component {
                                     style = {{ marginRight: 12 }}
                                     style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 0px 0px 11px", bottom: "10px" }}
                                 />
-                                <AllViewsModal type = { this.state.selectionType } />
+                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } />
                             </div>
                         
 
@@ -370,6 +398,7 @@ export const editModalDisplay = (allViewsModal) => ({
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
+    funnelData: state.filterState.FunnelData
   }
 }
 

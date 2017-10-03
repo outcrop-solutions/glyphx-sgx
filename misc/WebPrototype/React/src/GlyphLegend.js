@@ -16,10 +16,13 @@ class GlyphLegend extends React.Component {
                     width: 324,
                     height: 233,
                 }}
+                z = { 1000 }
                 enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
                 style = {{
                     display: ( this.props.legendDisplay ? "block" : "none" )
                 }}
+                onDragStart = { () => this.props.handleCorrection(true) }
+                onDragStop = { () => this.props.handleCorrection(false) }
                 bounds = "parent"
             >
                 <div className = "statisticsBox" style = {{ height: "inherit", borderRadius: "7px" }} >

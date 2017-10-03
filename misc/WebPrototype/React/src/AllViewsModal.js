@@ -23,25 +23,6 @@ class allViewsModal extends React.Component {
 	componentDidMount() {
 		// Mouseup listener used to handle click drag selection
 		window.addEventListener('mouseup', this.handleMouseUp.bind(this));
-
-		var context = this;
-
-		// Get the corresponding data (change this to handle changing data, will also have to move its location)
-		httpGetRequest("http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/WGSData", 
-			function(responseText) { 
-				var preData = JSON.parse(responseText); 
-				var data = [];
-				var keyArray = Object.keys(preData);
-				for (var i = 0; i < keyArray.length; i++) {
-					var dataCol = [keyArray[i]];
-					for (var j = 0; j < preData[keyArray[i]].length; j++) {
-						dataCol.push(preData[keyArray[i]][j][keyArray[i]]);
-					}
-					data.push(dataCol);
-				}
-				context.setState({ data: data });
-			},
-		"options");
 	}
 
 	componentWillUnmount() {
@@ -56,7 +37,7 @@ class allViewsModal extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.state.selectionList != nextState.selectionList) {
+        if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
             return true;
         }
 
@@ -66,6 +47,37 @@ class allViewsModal extends React.Component {
 
         return false;
     };
+
+	componentWillReceiveProps(nextProps) {
+        if (nextProps.typeURL != this.props.typeURL) {
+            var context = this;
+			
+			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+
+			console.log('http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/' + nextProps.typeURL.substring(index + 1).replace("\\", "\\\\"));
+
+			// Get the corresponding data (change this to handle changing data, will also have to move its location)
+			httpGetRequest(window.encodeURI('http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
+				function(responseText) { 
+					var preData = JSON.parse(responseText); 
+					var data = [];
+					var keyArray = Object.keys(preData);
+					for (var i = 0; i < keyArray.length; i++) {
+						var dataCol = [keyArray[i]];
+						for (var j = 0; j < preData[keyArray[i]].length; j++) {
+							dataCol.push(preData[keyArray[i]][j][keyArray[i]]);
+						}
+						data.push(dataCol);
+					}
+					context.setState({ data: data });
+
+					console.log(data);
+
+					//context.forceUpdate();
+				}
+			);
+        }
+    }
 
 
 	/**

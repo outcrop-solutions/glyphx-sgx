@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
 import SearchBox from './SearchBox.js';
@@ -15,10 +15,8 @@ import './General.css'
  * @param tableData: [array of strings]  eg: tableData: ['a','b','c','a']
  */
 
-class FilterTable extends Component {
+class FilterTable extends React.Component {
 
-    
-    
     constructor(props) {
         super(props);
         
@@ -41,8 +39,10 @@ class FilterTable extends Component {
             checkboxClicked:false,
             tableData: tableData,
             flatData: [],
-            indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1)
+            indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
+            history: []
         };
+
     }
 
     /**
@@ -128,9 +128,9 @@ class FilterTable extends Component {
                     data: context.props.tableData
             }
 
-            context.props.dispatch(addRemoveElastic(filterStructure));
-        
+            context.props.dispatch(addRemoveElastic(filterStructure));        
     };
+    
 
     /**
      * This method is called when the keyup event is fired in the search textfield on top of the table. 
@@ -250,17 +250,20 @@ class FilterTable extends Component {
     }
 
     mouseIn = () => {
-        var elements = document.getElementsByClassName(this.props.internalColName + "-E");
-        if (elements[0].scrollHeight >= 300) {
-            var scrollDiv = document.getElementsByClassName("sidenavbar");
-            scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+        if (this.props.settings.hideScrollHover) {
+            var elements = document.getElementsByClassName(this.props.internalColName + "-E");
+            if (elements[0].scrollHeight >= 300) {
+                var scrollDiv = document.getElementsByClassName("sidenavbar");
+                scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+            }
         }
-        
     }
 
     mouseOut = () => {
-        var scrollDiv = document.getElementsByClassName("sidenavbar");
-        scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
+        if (this.props.settings.hideScrollHover) {
+            var scrollDiv = document.getElementsByClassName("sidenavbar");
+            scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
+        }
     }
 
     /**
@@ -593,7 +596,7 @@ class FilterTable extends Component {
  *      settings = { global theme settings object }
  * }
  */
-class FilterRow extends Component {
+class FilterRow extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.checked != nextProps.checked || this.props.settings != nextProps.settings) {
@@ -607,7 +610,7 @@ class FilterRow extends Component {
         }
     }
 
-    onClickRow = (evt,) => {
+    onClickRow = (evt) => {
         this.props.onRowSelect(evt, this.props.rowNumber, !this.props.checked);
     }
 
