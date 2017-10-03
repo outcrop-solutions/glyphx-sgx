@@ -165,10 +165,10 @@ class TopNavBar extends React.Component {
                                     //src="./Res/Img/x.png"
                                     backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                                 >
-                                    { this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0) }
+                                    { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" }
                                 </Avatar>
                             }
-                            primaryText = { this.props.userInfo.Name }
+                            primaryText = { this.props.userInfo ? this.props.userInfo.Name : ""}
                         />
 
                         <MenuItem className = "menuItemStyling" primaryText = "Help &amp; feedback" />

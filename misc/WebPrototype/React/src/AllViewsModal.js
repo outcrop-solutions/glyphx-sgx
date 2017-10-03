@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import { httpGetRequest } from './ServerCallHelper.js';
+import { makeServerCall } from './ServerCallHelper.js';
 import './General.css';
 
 
@@ -54,10 +54,10 @@ class allViewsModal extends React.Component {
 			
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
-			console.log('http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/' + nextProps.typeURL.substring(index + 1).replace("\\", "\\\\"));
+			console.log('/frontEndFilterData/' + nextProps.typeURL.substring(index + 1).replace("\\", "\\\\"));
 
 			// Get the corresponding data (change this to handle changing data, will also have to move its location)
-			httpGetRequest(window.encodeURI('http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
+			makeServerCall(window.encodeURI('/frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function(responseText) { 
 					var preData = JSON.parse(responseText); 
 					var data = [];

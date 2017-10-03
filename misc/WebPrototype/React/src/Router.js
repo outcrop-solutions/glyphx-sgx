@@ -25,11 +25,12 @@ class ApplicationRouter extends React.Component{
     var context = this;
     try{
       var res = checkUserLoggedIn(this.onServerError);
-      var loggedIn = JSON.parse(res) ? JSON.parse(res).isUserLoggedIn : false;
-      if(loggedIn)
+      var jsonRes = JSON.parse(res);
+      var loggedIn = jsonRes ? jsonRes.isUserLoggedIn : false;
+      if(loggedIn && jsonRes)
         {
-          setCookie(getLoginCookieName(),1,0.5);
-          context.props.dispatch(saveUserInfo(JSON.parse(res)));
+          //setCookie(getLoginCookieName(),1,0.5);
+          context.props.dispatch(saveUserInfo(jsonRes.userInformation,jsonRes.funnelInfo));
           isUserLoggedIn=true;
         }
     }
@@ -98,9 +99,10 @@ class ApplicationRouter extends React.Component{
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const saveUserInfo = (info) => ({
+export const saveUserInfo = (userInfo, funnelInfo) => ({
   type: 'SAVE_USER_INFO',
-  info
+  userInfo,
+  funnelInfo
 });
 
 /**

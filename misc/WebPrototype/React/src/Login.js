@@ -184,7 +184,7 @@ class Login extends React.Component {
         }
         
         // Login cookie
-        setCookie(getLoginCookieName(), 1,0.5);
+        //setCookie(getLoginCookieName(), 1,0.5);
 
         // Redirect to home page.
         this.navigate("/home");
