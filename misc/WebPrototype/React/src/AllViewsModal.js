@@ -17,7 +17,8 @@ class allViewsModal extends React.Component {
 	state = {
 		selectionList: [],
 		dragState: 0,
-		data: []
+		data: [],
+		table: ""
 	}
 	
 	componentDidMount() {
@@ -54,12 +55,11 @@ class allViewsModal extends React.Component {
 			
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
-			console.log('/frontEndFilterData/' + nextProps.typeURL.substring(index + 1).replace("\\", "\\\\"));
-
-			// Get the corresponding data (change this to handle changing data, will also have to move its location)
+			// Get the corresponding data
 			makeServerCall(window.encodeURI('/frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function(responseText) { 
-					var preData = JSON.parse(responseText); 
+					var response = JSON.parse(responseText);
+					var preData = response.frontEndFilterData; 
 					var data = [];
 					var keyArray = Object.keys(preData);
 					for (var i = 0; i < keyArray.length; i++) {
@@ -69,11 +69,7 @@ class allViewsModal extends React.Component {
 						}
 						data.push(dataCol);
 					}
-					context.setState({ data: data });
-
-					console.log(data);
-
-					//context.forceUpdate();
+					context.setState({ data: data, table: response.tableName });
 				}
 			);
         }

@@ -112,7 +112,14 @@ class FilterTabs extends React.Component {
                             overflow: "hidden"
                         }}
                     >
-                        <FilterTable internalColName = {this.props.internalColName} displayName = {this.props.displayName} tableData = {this.state.tableData} id = {this.props.id} selectedRows={this.state.FilterTableSelectedRows}></FilterTable>
+                        <FilterTable 
+                            internalColName = { this.props.internalColName } 
+                            displayName = { this.props.displayName } 
+                            tableData = { this.state.tableData } 
+                            id = { this.props.id } 
+                            selectedRows = { this.state.FilterTableSelectedRows } 
+                            tableID = { this.state.tableID }
+                        />
                     </div>
                     <div
                         id = { this.state.rangeID }

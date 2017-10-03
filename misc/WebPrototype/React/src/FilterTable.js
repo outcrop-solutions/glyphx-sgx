@@ -251,12 +251,12 @@ class FilterTable extends React.Component {
     }
 
     mouseIn = (evt) => {
-        ScrollIntoView(evt.currentTarget, false, { duration: 150 });
         if (this.props.settings.hideScrollHover) {
             var elements = document.getElementsByClassName(this.props.internalColName + "-E");
             if (elements[0].scrollHeight >= 300) {
                 var scrollDiv = document.getElementsByClassName("sidenavbar");
                 scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+                this.scroll(this.props.tableID);
             }
         }
     }
@@ -267,6 +267,7 @@ class FilterTable extends React.Component {
             scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
         }
     }
+
 
     /**
      * This is called when the header is clicked for sorting.
@@ -283,7 +284,7 @@ class FilterTable extends React.Component {
         var context = this;
         var flatData = context.state.flatData.slice();
 
-        //find the other column & remove the sort applied icon.
+        // Find the other column & remove the sort applied icon.
         if (columnClicked == 'value') {
             otherColumn = document.getElementById(columnName.replace('value','count'));
         }
@@ -297,13 +298,13 @@ class FilterTable extends React.Component {
             otherColumn.classList.add('fa-sort');
         }
         
-        //update the sorting icon
+        // Update the sorting icon
         var sortDirection = this.updateSortIcon(columnObj);
 
         switch(columnType) {
             case "Text":
                 if(sortDirection == "asc"){
-                    flatData.sort(function(a,b) {
+                    flatData.sort(function(a, b) {
                         if (a[columnClicked] < b[columnClicked])
                             return -1;
                         if (a[columnClicked] > b[columnClicked])
@@ -312,7 +313,7 @@ class FilterTable extends React.Component {
                     });
                 }
                 else{
-                    flatData.sort(function(a,b) {
+                    flatData.sort(function(a, b) {
                         if (a[columnClicked] < b[columnClicked])
                             return -1;
                         if (a[columnClicked] > b[columnClicked])
@@ -325,16 +326,17 @@ class FilterTable extends React.Component {
                 break;
             case "Number":
                 if (sortDirection == "asc") {
-                    flatData.sort(function(a, b){return a[columnClicked] - b[columnClicked]});
+                    flatData.sort(function(a, b) { return a[columnClicked] - b[columnClicked] } );
                 }
                 else {
-                    flatData.sort(function(a, b){return a[columnClicked] - b[columnClicked]}).reverse();
+                    flatData.sort(function(a, b) { return a[columnClicked] - b[columnClicked] } ).reverse();
                 }
                 break;
         }
         
-        this.setState({flatData: flatData});
+        this.setState({ flatData: flatData });
     }
+
     
     /**
      * This updates the sortIcon for the correspoding column header clicked.
@@ -346,22 +348,24 @@ class FilterTable extends React.Component {
         var sortDirection = "";
         var currentState = columnObj.classList.contains('fa-sort') ? 'init' : (columnObj.classList.contains('fa-sort-amount-asc') ? 'asc' : 'desc');
         
-        switch(currentState){
+        switch(currentState) {
             case "init":
-            removeIconName = "fa-sort";
-            addIconName = "fa-sort-amount-asc";
-            sortDirection = "asc";
-            break;
+                removeIconName = "fa-sort";
+                addIconName = "fa-sort-amount-asc";
+                sortDirection = "asc";
+                break;
+
             case "asc":
-            removeIconName = "fa-sort-amount-asc";
-            addIconName = "fa-sort-amount-desc";
-            sortDirection = "desc";
-            break;
+                removeIconName = "fa-sort-amount-asc";
+                addIconName = "fa-sort-amount-desc";
+                sortDirection = "desc";
+                break;
+
             case "desc":
-            removeIconName = "fa-sort-amount-desc";
-            addIconName = "fa-sort-amount-asc";
-            sortDirection = "asc";
-            break;
+                removeIconName = "fa-sort-amount-desc";
+                addIconName = "fa-sort-amount-asc";
+                sortDirection = "asc";
+                break;
         }
         
         columnObj.classList.remove(removeIconName);
@@ -450,6 +454,23 @@ class FilterTable extends React.Component {
         return row;
     }
 
+
+    /**
+     * This function will bring the scroll to that element.
+     * @param {String/Object} element: this is the name of the column
+     */
+    scroll = (element) => {
+        if (typeof element == 'string') {
+            element = document.getElementById(element);
+        }
+
+        if (element) {
+            ScrollIntoView(element, false, { duration: 150 });
+        }
+        else
+            return false;
+    }
+
     render() {
         var id = this.props.id;
         var internalColName = this.props.internalColName;
@@ -459,7 +480,7 @@ class FilterTable extends React.Component {
         return (
 
             <div
-                style={{
+                style = {{
                     height:"inherit"
                 }}
             >

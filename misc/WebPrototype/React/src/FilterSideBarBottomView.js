@@ -36,7 +36,7 @@ class FilterSideBarBottomView extends Component {
      *      }      
      * }
      */
-    makeColumns = (data,extra) => {
+    makeColumns = (data, extra) => {
         var columnsFilterStructure = this.props.GLOBAL;
         var arrColumnsReturn = [], arrPinnedColumnsReturn = [], arrPinDialogOptions = [], arrPinDialogSelected = [], objReturn = {};
 		var config;
@@ -60,7 +60,7 @@ class FilterSideBarBottomView extends Component {
             arrColumnsReturn.push(
                 this.getColumnHTML(config)
             );
-            arrPinDialogOptions.push( {value: columnName, label: displayName} );
+            arrPinDialogOptions.push({ value: columnName, label: displayName });
 
             // Pinned Columns in the pinned collapsible.
             if (colElasticFilterStruc.pinned) {
