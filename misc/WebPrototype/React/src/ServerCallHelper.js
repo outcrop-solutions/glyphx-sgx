@@ -18,7 +18,8 @@ export function makeServerCall(url,callback,options){
         
     if(options && options.post)
     {
-        httpPostRequest(saddress,url,callback,options);
+        saddress = saddress+url;
+        httpPostRequest(saddress,callback,options);
     }
     else{
         saddress = saddress+url;
@@ -45,7 +46,7 @@ export function httpGetRequest(saddress,callback,options){
     xmlHttp.send(null);
 }
 
-function httpPostRequest(saddress,url,callback,options){
+function httpPostRequest(saddress,callback,options){
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
@@ -57,9 +58,10 @@ function httpPostRequest(saddress,url,callback,options){
             options.onServerCallError();
         }
     }
-    xmlHttp.open("POST", saddress, true); // true for asynchronous 
-    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlHttp.send(url);
+    xmlHttp.open("POST", saddress, "/json-handler", true);
+    xmlHttp.setRequestHeader("Content-Type", "application/json");
+    xmlHttp.send(JSON.stringify(options.data));
+
 }
 
 export function checkUserLoggedIn(onServerError){
