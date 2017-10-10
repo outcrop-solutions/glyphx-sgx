@@ -30,7 +30,8 @@
     "react-rnd": "^5.0.9",
     "react-router-dom": "^4.1.2",
     "react-quill": "^1.1.0",
-    "react-table-drag-select": "^0.3.1"
+    "react-table-drag-select": "^0.3.1",
+    "react-visibility-sensor": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",

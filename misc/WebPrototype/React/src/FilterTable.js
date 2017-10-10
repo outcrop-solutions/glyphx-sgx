@@ -41,7 +41,6 @@ class FilterTable extends React.Component {
             tableData: tableData,
             flatData: [],
             indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
-            history: []
         };
 
     }

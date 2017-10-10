@@ -32,7 +32,9 @@ class MyViews extends React.Component {
                               {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
                               {sharedBy:'MSloan2',name:'Viz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
                               {sharedBy:'BLewis2',name:'Viz2',origin:'VizG',date:'7-7-2017'},
-                              {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},],
+                              {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
+                             ],
+
             savedViewsData: [{name:'SubViz1',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
                              {name:'SubViz2',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
                              {name:'SubViz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
@@ -44,7 +46,8 @@ class MyViews extends React.Component {
                              {name:'Viz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
                              {name:'Viz4',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
                              {name:'Viz5',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz6',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'}]
+                             {name:'Viz6',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'}
+                            ]
         }
     }
 

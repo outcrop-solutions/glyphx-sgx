@@ -13,7 +13,6 @@ class UndoRedoChangeListener extends React.Component {
         history.push(JSON.stringify(this.props.filterList));
     }
 
-
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.filterList != nextProps.filterList && nextProps.lastUpdate != "snapshot") {
             this.handleHistoryUpdate(nextProps.filterList);
