@@ -35,7 +35,7 @@ class SearchBox extends React.Component {
             textFieldValue: innerTF.value
         });
 
-        if (typeof this.props.onTextFieldValueChange === "function") {
+        if (typeof this.props.onTextFieldValueChange === "function" && !this.props.shouldOnBlur) {
             this.props.onTextFieldValueChange(evt,this.props.pinned);
         }
     }
@@ -57,6 +57,13 @@ class SearchBox extends React.Component {
         });
 
         return evt;
+    }
+
+    blurOnEnter(e, id) {
+        if (e.which === 13) {
+            var input = document.getElementById(id);
+            input.blur();
+        }
     }
 
     render() {
@@ -88,6 +95,7 @@ class SearchBox extends React.Component {
                             margin: "0px 0px -8px"
                         }}
                         onChange = {this.onChange} 
+                        onKeyPress = { (e) => this.blurOnEnter(e, this.props.id) }
                         hintText = {
                             <span 
                                 style = {{
@@ -109,6 +117,7 @@ class SearchBox extends React.Component {
                             </span>
                         }
                         underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
+                        onBlur = { this.props.shouldOnBlur ? (evt) => this.props.onTextFieldValueChange(evt,this.props.pinned) : null }
                     /> 
                 </Flexbox>
 

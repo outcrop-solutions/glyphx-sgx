@@ -82,6 +82,11 @@ class FilterSideBarTopView extends React.Component {
         window.localStorage.setItem('history', []);
         window.localStorage.setItem('position', 0);
     }
+
+    componentWillUnmount() {
+        window.localStorage.removeItem("history");
+        window.localStorage.removeItem("position");
+    }
 	
 
 	/**
@@ -164,7 +169,7 @@ class FilterSideBarTopView extends React.Component {
             case 'statistics':
 
                 if (open) {
-                    this.setState({ statisticsModalOpen: true });
+                    this.setState({ statisticsModalOpen: true, menu: { open: false } });
                     console.log("linked");
                 }
                 else {
@@ -421,7 +426,6 @@ class FilterSideBarTopView extends React.Component {
 
         if (position < history.length) {
             this.setState({ allowHistoryUpdate: false });
-            console.log("REDID");
             window.localStorage.setItem('position', position);
             this.props.dispatch(updateFilterFromSnapshot(history[position]));
             this.setState({ allowHistoryUpdate: true });
@@ -434,16 +438,10 @@ class FilterSideBarTopView extends React.Component {
     handleUndo() {
         var position = ( parseInt(window.localStorage.getItem('position'), 10) - 1 );
         var history = this.historyToArray();
-        console.log("HISTORY-----\n");
-        console.log(history);
-        console.log("\n\n\n\n\n");
         
         if (position > -1) {
             this.setState({ allowHistoryUpdate: false });
-            console.log("UNDID");
             window.localStorage.setItem('position', position);
-            console.log("position: " + position);
-            console.log(history[position]);
             this.props.dispatch(updateFilterFromSnapshot(history[position])); 
             this.setState({ allowHistoryUpdate: true });
         }
@@ -520,8 +518,8 @@ class FilterSideBarTopView extends React.Component {
                 />
 
                 {/* Row 1 */}
-                <Flexbox flexDirection = "row" >
-                    <Flexbox style = {{ width: "60%", margin: "9px 10px 0px 0px" }} > 
+                <Flexbox flexDirection = "row" style = {{ margin: "-2px 0px 3px 0px" }} >
+                    <Flexbox style = {{ width: "55%", margin: "9px 10px 0px 0px" }} > 
                         <Select 
                             className = "selectViewName"
                             simpleValue
@@ -535,7 +533,7 @@ class FilterSideBarTopView extends React.Component {
                         />
                     </Flexbox>
                     
-                    <Flexbox style = {{ width: "40%", marginBottom: "-4px" }} >
+                    <Flexbox style = {{ width: "45%", marginBottom: "-4px" }} >
 
                         {/*
 
@@ -609,13 +607,13 @@ class FilterSideBarTopView extends React.Component {
                                 onClick = { (evt) => this.handleOpenClose('menu', true, evt) }
                                 label = "Menu"
                                 style = {{
-                                    margin: "-1px 0px 11px 4px",
-                                    minWidth: "85px",
-                                    width: "85px"
+                                    margin: "4px 0px 11px 4px",
+                                    minWidth: "112px",
+                                    width: "112px"
                                 }}
 								buttonStyle = {{
-									height: '35px',
-									lineHeight: '35px',
+									height: '25px',
+									lineHeight: '25px',
 									backgroundColor: this.props.settings.colors.overviewButtonsColor.background
 								}} 
 								labelStyle = {{
@@ -623,8 +621,8 @@ class FilterSideBarTopView extends React.Component {
 									color: this.props.settings.colors.overviewButtonsColor.text
 								}}
 								overlayStyle = {{
-									height: '35px',
-									lineHeight: '35px'
+									height: '25px',
+									lineHeight: '25px'
 								}}
                                 primary = { true }
                             />
@@ -639,6 +637,7 @@ class FilterSideBarTopView extends React.Component {
                                     <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
                                     <MenuItem primaryText = "Save" className = "menuItemStyling" onClick = { this.onMenuSaveClick }/>
                                     <MenuItem primaryText = "Save As" className = "menuItemStyling" onClick = { this.onMenuSaveAsClick }/>
+                                    <MenuItem primaryText = "Statistics" className = "menuItemStyling" onClick = { () => this.handleOpenClose('statistics', true) }/>
                                 </Menu>
                             </Popover>
 
@@ -685,11 +684,11 @@ class FilterSideBarTopView extends React.Component {
                 
                 {/* Row 3 */}
                 <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: "10px 0px 8px" }} >
-                    <Flexbox style = {{ width: "20%" }} > 
+                    <Flexbox style = {{ width: "30%" }} > 
                         <RaisedButton 
                             label = "Clear All"
                             style = {{
-                                width: "85px"
+                                width: "100%"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -711,14 +710,14 @@ class FilterSideBarTopView extends React.Component {
                             primary = {true } />
                     </Flexbox>
 
-                    <Flexbox style = {{ width: "3.33%" }} /> 
+                    <Flexbox style = {{ width: "5%" }} /> 
 
-                    <Flexbox style = {{ width: "20%" }} > 
+                    <Flexbox style = {{ width: "30%" }} > 
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
                             style = {{
-                                width: "85px"
+                                width: "100%"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -743,15 +742,15 @@ class FilterSideBarTopView extends React.Component {
                             */}
                     </Flexbox>
 
-                    <Flexbox style = {{ width: "3.33%" }} /> 
+                    <Flexbox style = {{ width: "5%" }} /> 
 
-                    <Flexbox style = {{ width: "25%" }} > 
+                    <Flexbox style = {{ width: "30%" }} > 
                         <RaisedButton 
                             primary = { true } 
                             label = "Apply Filters" 
                             onClick = { this.applyFilter.bind(this) }
                             style = {{
-                                width: "110px"
+                                width: "100%"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -763,32 +762,6 @@ class FilterSideBarTopView extends React.Component {
 								color: this.props.settings.colors.overviewButtonsColor.text,
                                 paddingLeft: "0px",
                                 paddingRight: "0px"
-							}}
-							overlayStyle = {{
-								height: '25px',
-								lineHeight: '25px'
-							}}
-					/>
-                    </Flexbox>
-
-                    <Flexbox style = {{ width: "3.33%" }} /> 
-
-                    <Flexbox style = {{ width: "25%" }} > 
-                        <RaisedButton 
-                            primary = { true } 
-                            label = "Statistics" 
-                            onClick = { () => this.handleOpenClose('statistics', true) }
-                            style = {{
-                                width: "110px"
-                            }}
-                            buttonStyle = {{
-								height: '25px',
-								lineHeight: '25px',
-								backgroundColor: this.props.settings.colors.overviewButtonsColor.background
-							}} 
-							labelStyle = {{
-								fontSize: '12px',
-								color: this.props.settings.colors.overviewButtonsColor.text
 							}}
 							overlayStyle = {{
 								height: '25px',

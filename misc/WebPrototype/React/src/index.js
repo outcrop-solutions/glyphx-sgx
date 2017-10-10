@@ -18,7 +18,7 @@ const initialFilterState = {
     Settings: { 
         colors: themeSettingColors[0],
         sideBarOverlap: false,
-        hideScrollHover: true
+        hideScrollHover: false
     },
     ModalDisplay: {
         settingsModal: false,

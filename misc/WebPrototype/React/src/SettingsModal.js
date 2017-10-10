@@ -5,6 +5,9 @@ import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import FontIcon from 'material-ui/FontIcon';
+import Divider from 'material-ui/Divider';
+import Select from 'react-select';
 
 
 /**
@@ -17,12 +20,13 @@ class SettingsModal extends React.Component {
      * Initial state of the component.
      **/
 	state = {
-        themeSelection: 0,
-        themeTempSelection: 0,
-        overlapSelection: 0,
-        overlapTempSelection: 0,
-        hideScrollSelection: 0,
-        hideScrollTempSelection: 0,
+        colorThemes: ["SynGlyphX", "Gannon"],
+        themeSelection: "SynGlyphX",
+        themeTempSelection: "SynGlyphX",
+        overlapSelection: "No",
+        overlapTempSelection: "No",
+        hideScrollSelection: "No",
+        hideScrollTempSelection: "No",
     };
 
 
@@ -48,17 +52,15 @@ class SettingsModal extends React.Component {
      * When settings are saved, updates the redux store and local state to reflect the changes
      **/
     onSettingsSave() {
-        this.setState({ themeSelection: this.state.themeTempSelection });
-        this.setState({ overlapSelection: this.state.overlapTempSelection });
-        this.setState({ hideScrollSelection: this.state.hideScrollTempSelection });
-        this.props.dispatch(editSettings(this.state.themeTempSelection, (this.props.homePage ? null : (this.state.overlapTempSelection === 0 ? false : true)), false, (this.props.homePage ? null : (this.state.hideScrollTempSelection === 0 ? true : false))));
+        this.setState({ themeSelection: this.state.themeTempSelection, overlapSelection: this.state.overlapTempSelection, hideScrollSelection: this.state.hideScrollTempSelection });
+        this.props.dispatch(editSettings(this.state.colorThemes.indexOf(this.state.themeTempSelection), (this.props.homePage ? null : (this.state.overlapTempSelection === "No" ? false : true)), false, (this.props.homePage ? null : (this.state.hideScrollTempSelection === "Yes" ? true : false))));
 
         if (!this.props.homePage) {
             var gv = document.getElementById('GlyphViewerContainer');
             var filterNav = document.getElementById("filterNav");
             var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
 
-            if (this.state.overlapTempSelection === 0) {
+            if (this.state.overlapTempSelection === "No") {
                 if (filterNavOpen) {
                     gv.style.width = this.props.glyphWindowWidth + "px";
                 }
@@ -82,13 +84,23 @@ class SettingsModal extends React.Component {
     }
 
     render(){
+
+        var yesNoSelectItems = ["Yes", "No"];
+        yesNoSelectItems = yesNoSelectItems.map(function(value) {
+			return({ label: value, value: value });
+		});
+
+        var colorThemes = this.state.colorThemes.map(function(value) {
+			return({ label: value, value: value });
+		});
+
         return(
             <Dialog
-                title = "Settings"
+				title = { <div> <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Settings </div> }
                 ref = "Settings"
-                actions = {
-                    [
-                        <FlatButton
+				actions = {
+					[
+						<FlatButton
                             label = "Save"
                             primary = { true }
                             onClick = { () => this.onSettingsSave() }
@@ -100,65 +112,71 @@ class SettingsModal extends React.Component {
                             onClick = { () => this.onSettingsCancel() }
                             style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
                         />
-                    ]
-                }
-                modal = { true }
-                open = { this.props.settingsDisplay }
-            >
+					]
+				}
+				modal = { true }
+				open = { this.props.settingsDisplay }
+				bodyStyle = {{ padding: "0px 24px 10px" }}
+				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
+				
+			>
+
+                <div style = {{ margin: "20px 0px 3px", color: "#000000" }} > General </div>
+                <div style = {{ marginBottom: "20px" }} >
+                    <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
+                </div>
                 <Flexbox flexDirection = "row" >
-                    <label><h4> Theme </h4></label>
-                    <DropDownMenu
-                        value = { this.state.themeTempSelection }
-                        onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Theme") }
-                        iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
-                        underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
-                        selectedMenuItemStyle = {{ 
-                            backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
-                            color: this.props.settings.colors.settingsModalColor.selectedText
-                        }}
-                    >
-                        <MenuItem value = { 0 } primaryText = "SynGlyphX" />
-                        <MenuItem value = { 1 } primaryText = "Gannon" />
-                    </DropDownMenu>
+
+                    <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Color Theme </h4></label>
+
+                    <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2001" }} >
+                        <Select 
+                            simpleValue
+                            value = { this.state.themeTempSelection } 
+                            placeholder = "Select" 
+                            options = { colorThemes } 
+                            onChange = { (value) => this.setState({ themeTempSelection: value }) } 
+                            style = {{  width: "150px" }}
+                            clearable = { false }
+                        />
+                    </div>
+
                 </Flexbox>
 
-                {this.props.homePage ? null :
-                    <div>
-                        <Flexbox flexDirection = "row" >
-                            <label><h4> Filter Sidebar </h4></label>
-                            <DropDownMenu
-                                value = { this.state.overlapTempSelection }
-                                onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "Overlap") }
-                                iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
-                                underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
-                                selectedMenuItemStyle = {{ 
-                                    backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
-                                    color: this.props.settings.colors.settingsModalColor.selectedText
-                                }}
-                            >
-                                <MenuItem value = { 0 } primaryText = "Sidebar pushes view" />
-                                <MenuItem value = { 1 } primaryText = "Sidebar overlaps view" />
-                            </DropDownMenu>
-                        </Flexbox>
-
-                        <Flexbox flexDirection = "row" >
-                            <label><h4> Mouse Hover </h4></label>
-                            <DropDownMenu
-                                value = { this.state.hideScrollTempSelection }
-                                onChange = { (event, index, value) => this.handleSelectChange(event, index, value, "HideScroll") }
-                                iconStyle = {{ fill: this.props.settings.colors.settingsModalColor.text}}
-                                underlineStyle = {{ borderColor: this.props.settings.colors.settingsModalColor.text }}
-                                selectedMenuItemStyle = {{ 
-                                    backgroundColor: this.props.settings.colors.settingsModalColor.selectedBackground, 
-                                    color: this.props.settings.colors.settingsModalColor.selectedText
-                                }}
-                            >
-                                <MenuItem value = { 0 } primaryText = "Hover hides scroll" />
-                                <MenuItem value = { 1 } primaryText = "Hover shows scroll" />
-                            </DropDownMenu>
-                        </Flexbox>
+                <div style = {{ margin: "20px 0px 3px", color: "#000000" }} > Filter Sidebar </div>
+                <div style = {{ marginBottom: "20px" }} >
+                    <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
+                </div>
+                <Flexbox flexDirection = "row" >
+                    <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Overlap Glyph Viewer </h4></label>
+                    <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2002" }} >
+                        <Select 
+                            simpleValue
+                            value = { this.state.overlapTempSelection } 
+                            placeholder = "Select" 
+                            options = { yesNoSelectItems } 
+                            onChange = { (value) => this.setState({ overlapTempSelection: value }) } 
+                            style = {{  width: "150px" }}
+                            clearable = { false }
+                        />
                     </div>
-                }
+                </Flexbox>
+
+                <Flexbox flexDirection = "row" >
+                    <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Mouse Hover Hides Scrollbar </h4></label>
+                    <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2000" }} >
+                        <Select 
+                            simpleValue
+                            value = { this.state.hideScrollTempSelection } 
+                            placeholder = "Select" 
+                            options = { yesNoSelectItems } 
+                            onChange = { (value) => this.setState({ hideScrollTempSelection: value }) } 
+                            style = {{  width: "150px" }}
+                            clearable = { false }
+                        />
+                    </div>
+                </Flexbox>
+                
             </Dialog>             
         );
     }

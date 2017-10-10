@@ -5,6 +5,8 @@ import Flexbox from 'flexbox-react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { makeServerCall } from './ServerCallHelper.js';
+import SearchBox from './SearchBox.js';
+import Tooltip from 'rc-tooltip';
 import './General.css';
 
 
@@ -18,7 +20,9 @@ class allViewsModal extends React.Component {
 		selectionList: [],
 		dragState: 0,
 		data: [],
-		table: ""
+		table: "",
+		selection: "",
+		selectAll: []
 	}
 	
 	componentDidMount() {
@@ -61,15 +65,17 @@ class allViewsModal extends React.Component {
 					var response = JSON.parse(responseText);
 					var preData = response.frontEndFilterData; 
 					var data = [];
+					var selectAll = [];
 					var keyArray = Object.keys(preData);
 					for (var i = 0; i < keyArray.length; i++) {
 						var dataCol = [keyArray[i]];
-						for (var j = 0; j < preData[keyArray[i]].length; j++) {
-							dataCol.push(preData[keyArray[i]][j][keyArray[i]]);
+						selectAll.push([keyArray[i], preData[keyArray[i]]["selectAll"]]);
+						for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
+							dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
 						}
 						data.push(dataCol);
 					}
-					context.setState({ data: data, table: response.tableName });
+					context.setState({ data: data, table: response.tableName, selectAll: selectAll });
 				}
 			);
         }
@@ -144,20 +150,27 @@ class allViewsModal extends React.Component {
 	/**
 	 * Handles click selection
 	 */
-	toggleSelection(selection) {
+	toggleSelection(selection, e) {
 		var sList = this.state.selectionList.slice();
 		var index = this.checkSelected(selection, sList);
+
+		if (!e.ctrlKey) {
+			if (index !== false) {
+				sList.splice(index[0], 1);
+				index = false;
+			}
+		}
 		
 		if (index !== false && index[1] !== false) {
 			if (this.state.dragState === 0) {
-				this.setState({ dragState: false });
+				this.setState({ dragState: false, selection: selection });
 				sList[index[0]].splice(index[1], 1);
 			}
 		}
 
 		else {
 			if (this.state.dragState === 0) {
-				this.setState({ dragState: true });
+				this.setState({ dragState: true, selection: selection });
 				if (index !== false) {
 					sList[index[0]].push(selection[1]);
 				}
@@ -165,7 +178,6 @@ class allViewsModal extends React.Component {
 				else {
 					sList.push( [selection[0], selection[1]] );
 				}
-				
 			}
 		}
 		this.setState({ selectionList: sList });
@@ -179,29 +191,88 @@ class allViewsModal extends React.Component {
 		var sList = this.state.selectionList.slice();
 		var index = this.checkSelected(selection, sList);
 
-		if (index !== false && index[1] !== false) {
-			if (this.state.dragState === false) {
-				sList[index[0]].splice(index[1], 1);
-			}
-		}
+		var oldSelectionIndex = this.checkSelected(this.state.selection, this.state.data);
+		var newSelectionIndex = this.checkSelected(selection, this.state.data);
 
-		else {
-			if (this.state.dragState === true) {
-				if (index !== false) {
-					sList[index[0]].push(selection[1]);
-				}
+		// Don't allow cross-column drag selection
+		if (newSelectionIndex[0] === oldSelectionIndex[0]) {
 
-				else {
-					sList.push( [selection[0], selection[1]] );
+			// Match was found
+			if (index !== false && index[1] !== false) {
+				if (this.state.dragState === false) {
+
+					// Remove match
+					sList[index[0]].splice(index[1], 1);
+
+					// Remove all values between match and start of drag (incase one is missed)
+					if (newSelectionIndex[1] > oldSelectionIndex[1]) {
+						for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
+							var val = this.state.data[newSelectionIndex[0]][i];
+							var tempIndex = sList[index[0]].indexOf(val);
+							if (tempIndex !== -1) {
+								sList[index[0]].splice(tempIndex, 1)
+							}
+						}
+					}
+
+					else {
+						for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
+							var val = this.state.data[newSelectionIndex[0]][i];
+							var tempIndex = sList[index[0]].indexOf(val);
+							if (tempIndex !== -1) {
+								sList[index[0]].splice(tempIndex, 1)
+							}
+						}
+					}
 				}
 			}
+
+			else {
+				if (this.state.dragState === true) {
+					// Match not found but col exists
+					if (index !== false) {
+
+						// Add match
+						sList[index[0]].push(selection[1]);
+						
+						// Add all values between match and start of drag (incase one is missed)
+						if (newSelectionIndex[1] > oldSelectionIndex[1]) {
+							for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
+								var val = this.state.data[newSelectionIndex[0]][i];
+								if (sList[index[0]].indexOf(val) === -1) {
+									sList[index[0]].push(val)
+								}
+							}
+						}
+
+						else {
+							for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
+								var val = this.state.data[newSelectionIndex[0]][i];
+								if (sList[index[0]].indexOf(val) === -1) {
+									sList[index[0]].push(val)
+								}
+							}
+						}
+					}
+
+					else {
+						sList.push( [selection[0], selection[1]] );
+					}
+				}
+			}
+
+			this.setState({ selectionList: sList });
 		}
-		this.setState({ selectionList: sList });
 	}
 
 
 	/**
-	 * Checks is the value is selected
+	 * Checks if the value is selected
+	 * @param array: [colName, value] value to check 
+     * @param sList: List of selected values
+	 * @returns: 	case: not found & nothing from that col has been selected yet: 		FALSE
+	 * 				case: col found but value has not been selected: 					[colIndex, false]
+	 * 				case: col found and val found:										[colIndex, valIndex]
 	 */
 	checkSelected(array, sList) {
 		for (var i = 0; i < sList.length; i++) {
@@ -220,7 +291,9 @@ class allViewsModal extends React.Component {
 
 
 	/**
-	 * Checks is the value is selected for display
+	 * Checks if the value is selected (returns only true and false values for display)
+	 * @param array: [colName, value] value to check 
+     * @param sList: List of selected values
 	 */
 	checkSelectedDisplay(array, sList) {
 		for (var i = 0; i < sList.length; i++) {
@@ -237,6 +310,128 @@ class allViewsModal extends React.Component {
 	}
 
 
+	/**
+     * This method searches on the data of table. Allows Multisearch using "," as a separator. 
+     * @param context: the instance of this react element.
+     * @param id: This is the id used to identify the table and the textfield.
+     */
+	onBlurMultiSearch = (context, id) => {
+		var i;
+
+		// Search box
+        var input = document.getElementById("tf-" + id);
+		var filter = input.value.toUpperCase();
+
+		// Column values
+		var table = document.getElementById(id);
+        var tr = table.getElementsByTagName("div");
+
+		// Message "Search to View. Count: #"
+		var fillerText = document.getElementById("st-" + id);
+
+		// Message "Please refine the search."
+		var errorText = document.getElementById("se-" + id);
+
+		// Generate array of valid search values
+		var fVals = filter.split(',');
+		var filterValues = [];
+		for (i = 0; i < fVals.length; i++) {
+			fVals[i] = fVals[i].trim();
+			if (fVals[i] !== "") {
+				filterValues.push(fVals[i]);
+			}
+		}
+
+		// No valid search value, hide all and display filler message
+		if (filterValues.length === 0) {
+			if (tr.length > 100) {
+				for (i = 0; i < tr.length; i++) {
+					tr[i].style.display = "none";
+				}
+			}
+			else {
+				for (i = 0; i < tr.length; i++) {
+					tr[i].style.display = "";
+				}
+				errorText.style.display = "none";
+			}
+
+			if (fillerText !== null) {
+				fillerText.style.display = "";
+			}
+		}
+
+		else {
+			// Tracks if the search timed out
+			var errorSet = false;
+
+			// Save epoch time before starting search
+			var date = new Date();
+			var seconds = Math.round(date.getTime() / 1000);
+
+			// Search all the records for the filter values
+			for (i = 0; i < tr.length; i++) {
+
+				// Every 200 records check if the seach should be timed out
+				if (i % 200 === 0) {
+					var date2 = new Date();
+					var seconds2 = Math.round(date2.getTime() / 1000);
+					if (seconds + 2 < seconds2) {
+
+						// Hide all records that were displayed
+						for (var j = 0; j < tr.length; j++) {
+							tr[j].style.display = "none";
+						}
+
+						// Display the error text
+						errorText.style.display = "";
+						errorSet = true;
+						break;
+					}
+				}
+
+
+				var shouldBeVisible = false;
+				
+				for (var j = 0; j < filterValues.length; j++) {
+					// If there is a space in the search term then search the full text for it
+					if (filterValues[j].includes(" ")) {
+						if (tr[i].innerHTML.toUpperCase().indexOf(filterValues[j]) !== -1) {
+							shouldBeVisible = true;
+							break;
+						} 
+					}
+					else {
+						// Otherwise check the beginning of each word
+						var words = tr[i].innerText.toUpperCase().split(" ");
+						for (var k = 0; k < words.length; k++) {
+							if (words[k].startsWith(filterValues[j])) {
+								shouldBeVisible = true;
+								break;
+							}
+						}
+					}
+				}
+				
+				if (shouldBeVisible) {
+					tr[i].style.display = "";
+				}
+				else {
+					tr[i].style.display = "none";
+				}
+			}
+
+			if (!errorSet) {
+				errorText.style.display = "none";
+			}
+
+			if (fillerText !== null) {
+				fillerText.style.display = "none";
+			}
+		}
+	}
+
+
 	onLaunch() {
 		makeServerCall('applyFrontEndFilters',
 			function(a,b,c) {
@@ -249,8 +444,6 @@ class allViewsModal extends React.Component {
 	}
 	
 	render() {
-
-
 		var data = this.state.data;
 		var context = this;
 
@@ -258,6 +451,7 @@ class allViewsModal extends React.Component {
 			return (
 				<Flexbox 
 					flexDirection = "column" 
+					//flexGrow = {1}
 					style = {{ 
 							width: "100%", 
 							border: "1px solid", 
@@ -283,27 +477,48 @@ class allViewsModal extends React.Component {
 							<i className = "fa fa-check" style = {{ marginRight: "3px" }} onClick = { () => context.selectDeselectCol(col, "select") } /> 
 							<i className = "fa fa-times" onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
 						</div> 
-						<div style = {{ marginTop: "-16px", paddingBottom: "4px" }} > {col[0]} </div>
+						<div style = {{ marginTop: "-16px", paddingBottom: "4px", fontSize: "14px" }} > 
+							{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
+						</div>
 					</div>
 
-					<div style = {{ overflow: "auto" }} >
+					<div style = {{ margin: "1px 1px 0px 0px" }} >
+						<SearchBox 
+							ref = "SearchBox"
+							hintText = "Search for value..." 
+							settings = {{
+								SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+								searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
+								overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
+								overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
+								tableSelectColor: context.props.settings.colors.tableSelectColor.background
+							}}
+							onTextFieldValueChange = { (evt) => context.onBlurMultiSearch(context, col[0]) }
+							id = { "tf-" + col[0] }
+							collapseButton = { false }
+							shouldOnBlur = { true }
+						/>
+					</div>
+
+					<div id = { col[0] } style = {{ overflow: "auto" }} >
+						{ (col.length > 100 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br />Count: {col.length - 1} </div> : null) }
+						<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
 						{col.map( function(elem) {
 							return (
 								(elem !== col[0] ? 
 									<div
-										className = {context.checkSelectedDisplay([col[0], elem], context.state.selectionList) !== false ? "noselect darkHover" : "noselect lightHover" }
-										style = {{ 
-											backgroundColor: ( context.checkSelectedDisplay([col[0], elem], context.state.selectionList) !== false ? "#7c78a0" : "white" ), 
-											textAlign: "center",
-											padding: "2px",
-										}} 
-										key = {elem}
-										onMouseDown = { () => context.toggleSelection([col[0], elem]) }
+										key = { elem } 
+										onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
 										onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
-									> 
-										{elem} 
-									</div> 
-								: "")
+										style = {{ 
+											display: (col.length > 100 ? "none" : "")
+										 }}
+									>
+										<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
+											{elem} 
+										</AllViewsRow>
+									</div> : ""
+								)
 							)
 						})}
 					</div>
@@ -314,7 +529,7 @@ class allViewsModal extends React.Component {
 		return(
 			<Dialog
 				title = { this.props.type }
-				contentStyle = {{ width: "90%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
+				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
 				actionsContainerStyle = {{ backgroundColor: "#c5c5f7" }}
 				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", fontSize: "36px", fontWeight: "bold", lineHeight: "16px" }}
@@ -423,6 +638,41 @@ class allViewsModal extends React.Component {
 		);
 	}
 }
+
+
+/**
+ * This component handles the front-end filters
+ * @param type: string name of the selection made
+ */
+class AllViewsRow extends React.Component {
+
+	shouldComponentUpdate(newProps, newState){
+        if (this.props.selected != newProps.selected) {
+			
+            return true;
+        }
+        return false;
+    };
+	
+	
+	render() {
+
+		return(
+			<p
+				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
+				style = {{ 
+					backgroundColor: ( this.props.selected ? "#7c78a0" : "white" ), 
+					textAlign: "center",
+					padding: "2px",
+					margin: "0"
+				}} 
+			> 
+				{this.props.children}
+			</p>
+		);
+	}
+}
+
 
 
 /**
