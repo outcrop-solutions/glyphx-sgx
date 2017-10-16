@@ -31,10 +31,18 @@ class FilterSideBarBottomView extends Component {
      * This function will make columns and filterStructure
      * @param {Object} data - pass object of objects
      *  Eg: {
-     *     colName: {
-     *        data: []
-     *      }      
-     * }
+     *     colName1: {
+     *        values:{},
+     *        totalCount:'',
+     *        flatValues: []
+     *      },
+     *     colName2: {
+     *        values:{},
+     *        totalCount:'',
+     *        flatValues: []
+     *      },
+     *     ...      
+     *  }
      */
     makeColumns = (data, extra) => {
         var columnsFilterStructure = this.props.GLOBAL;

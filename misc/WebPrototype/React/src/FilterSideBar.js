@@ -5,6 +5,8 @@ import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
+import Promise from 'bluebird';
+import { makeServerCall } from './ServerCallHelper.js';
 import { connect } from 'react-redux';
 import 'font-awesome/css/font-awesome.min.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
@@ -19,17 +21,15 @@ class FilterSideBar extends Component {
     constructor(props) {
         super(props);
         
-		var tableData = this.fetchData();
-
-        //Make columns and global store structure
-        this.makeFilterStructure(tableData);
+		//Make columns and global store structure
+        //this.makeFilterStructure(tableData);
 
         //fetch the table names and view names.
         
         
         //Store the states of all the elements inside this data structure.
         this.state  = {
-            tableData: tableData,
+            tableData: {},//tableData,
 			topViewInitParams: {
 				viewSelectItems: ['view 0', 'view 1', 'view 4', 'view 5'],
 				tableSelectItems: ['table 0', 'table 1', 'table 4', 'table 5'],
@@ -45,22 +45,26 @@ class FilterSideBar extends Component {
      */
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
+		var context = this;
         for (var i = 0; i < collapsibles.length; i++) {
             collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
         }
+		
+		makeServerCall('applyFrontEndFilters',
+			function(res,b,c) {
+                //hide the loadmask.
+                var result = context.convertToCompatibleDataObject(res);
+				context.makeFilterStructure(result);
+				context.setState({tableData: result});
+			},
+			{
+				post: true, 
+				data:  { tableName: this.props.VizParams.tableName, frontEndFilters: this.props.VizParams.frontEndFilters }
+			}
+		)
     };
 
-
-    /**
-     * Use to make server call to fetch data.
-     */
-    fetchData = () => {
-        var data = require('../src/Data/TempData.json');
-        return data.Data;
-    };
-
- 
     /**
 	* This method shows a little popup alert on the left bottom screen
     * @param {string} strMsg: the message you want to be displayed.
@@ -73,21 +77,97 @@ class FilterSideBar extends Component {
         })
     };
 
+    /**
+     * This method converts the server response to the way the client can consume.
+     * @param {*} obj : array of records [{col1:,col2:,col3:,..},{col1:,col2:,col3:,..},...]
+     * @return: 
+     * {
+     *  colName: {
+     *      values:{
+     *              v1:{
+     *                  value:v1,
+     *                  count: repetition of values,
+     *                  recId:for future disable rows feature}},
+     *              ...
+     *              },
+     *      totalCount: number         
+     * 
+     *  },
+     *  colName:{},     
+     *  ....
+     * }
+     */
+    convertToCompatibleDataObject(obj){
+        var resObj = typeof obj == 'string' ? JSON.parse(obj) : obj;
+        var returnObj = {};
+        var resObjLen = resObj.length;
+        var columnObj = null;
+        var valueObj = null;
+        var key = null;
+        var record = null;
+        var value = "";
+        var keys = Object.keys(resObj[0]);
+        var allowedColumns = this.props.VizParams.filterAllowedColumnList ? this.props.VizParams.filterAllowedColumnList : null;
+        var keyLen = keys.length;
+
+        keys.forEach(function(val){
+            if(allowedColumns.indexOf(val) > -1)
+            {
+                returnObj[val] = {
+                    values: {},
+                    totalCount: 0,
+                    flatValues : []
+                }
+            }
+            
+        })
+        
+        var newKeys = Object.keys(returnObj);
+
+        for(var recIndex=0;recIndex<resObjLen;recIndex++)
+        {
+            for(var colIndex=0;colIndex<newKeys.length;colIndex++)
+            {
+                key = newKeys[colIndex];//This is the current column name.
+                record = resObj[recIndex];//This is the record inside response data.
+                columnObj = returnObj[key]; //this is the column object of the returnObj;
+                value = record[key]; //this is the value inside server response data obj.
+                columnObj.totalCount++;
+                if(columnObj.values.hasOwnProperty(value))
+                {
+                    ++columnObj.values[value].count; 
+                }
+                else{
+                    columnObj.flatValues.push(value);
+                    columnObj.values[value] = {
+                        value: value,
+                        count: 1,
+                        recId: recIndex
+                    }
+                }
+            }
+        }
+
+        return returnObj;
+    }
 
     /**
      * This method constructs the structure of the Filter that is saved in the store and accessed everywhere throughout the applciation.
-     * @param {Object} Obj:
+     * @param {Object} Obj: {col1:{values:{},totalCount:,flatValues:[]},col2:[data],...}
      */
     makeFilterStructure = (Obj) => {
         var returnObj = {};
-
+        
         for(var property in Obj){
-            var column = property;
+           
+            var columnObj = Obj[property];
+            var columnName = property;
             var range;
-            var type = isNaN(Obj[property][0]) ? 'Text' : 'Number';
+            //var type = isNaN(columnObj.flatValues[0]) ||  columnObj.flatValues[0]=='' ? 'Text' : 'Number';
+            var type = typeof columnObj.flatValues[0] == 'string' ? 'Text' : 'Number';
 
             if (type === "Number") {
-                var minMax = this.findMinMax( Obj[property] );
+                var minMax = this.findMinMax( columnObj.flatValues );
 
                 range = [minMax.min, minMax.max, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false];
             }
@@ -107,7 +187,7 @@ class FilterSideBar extends Component {
                 selectedValues: [],
                 pinned: false,
                 type: type,
-                displayName: this.generateDisplayName(column)
+                displayName: this.generateDisplayName(columnName)
             }
         }
 
@@ -155,6 +235,9 @@ class FilterSideBar extends Component {
         };
 
         for (var i = 0; i < len; i++) {
+            if(arrValues[i] == '')
+                continue;
+
             if (arrValues[i] > obj.max) {
                 obj.max = arrValues[i];
             }
@@ -272,7 +355,8 @@ export const init = (storeFilterStruc) => ({
 const mapStateToProps = function(state){
   return {
     GLOBAL: state.filterState.Filter,
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+	VizParams: state.filterState.VizParams
   }
 };
 

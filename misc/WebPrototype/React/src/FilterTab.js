@@ -135,14 +135,14 @@ class FilterTabs extends React.Component {
                         {this.props.filterList[this.props.id].type === "Number" ? 
                                 <NumberRangeTable 
                                     colName = { this.props.id } 
-                                    data = { this.state.tableData } 
+                                    data = { this.state.tableData.flatValues } 
                                     minVal = { this.props.filterList[this.props.id].bounds[0] } 
                                     maxVal = { this.props.filterList[this.props.id].bounds[1] }
                                 /> : 
                             (this.props.filterList[this.props.id].type === "Text" ? 
                                     <TextRangeTable 
                                         colName = { this.props.id } 
-                                        data = { this.state.tableData } 
+                                        data = { this.state.tableData.flatValues } 
                                     /> :  
                             "TODO: Add Date Range Here") 
                         }

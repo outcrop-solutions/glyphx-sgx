@@ -17,12 +17,15 @@ import './General.css';
  */
 class allViewsModal extends React.Component {
 
+	mouseup=true;
+
 	state = {
 		selectionList: [],
 		dragState: 0,
 		data: [],
 		table: "",
 		selection: "",
+		mouseup: true,
 		selectAll: []
 	}
 	
@@ -76,7 +79,7 @@ class allViewsModal extends React.Component {
 						}
 						data.push(dataCol);
 					}
-					context.setState({ data: data, table: response.tableName, selectAll: selectAll });
+					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList });
 				}
 			);
         }
@@ -87,7 +90,7 @@ class allViewsModal extends React.Component {
 	 * Resets the drag type on mouse up
 	 */
 	handleMouseUp() {
-		if (this.props.allViewsDisplay) {
+		if (this.props.allViewsDisplay && this.mouseup) {
 			this.setState({ dragState: 0 });
 		}
 	}
@@ -435,7 +438,8 @@ class allViewsModal extends React.Component {
 
 	onLaunch() {
 		//set the params to the store and then goto viz page.
-		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList }));
+		this.mouseup=false;
+		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList, filterAllowedColumnList:  this.state.filterAllowedColumnList}));
 		this.props.history.push('/glyph-viewer');
 	}
 	
