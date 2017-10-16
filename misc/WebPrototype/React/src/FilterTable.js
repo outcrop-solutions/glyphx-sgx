@@ -239,14 +239,19 @@ class FilterTable extends React.Component {
     }
 
     componentDidUpdate() {
-        if(this.props.tableState[this.props.id].selectedValues.length == this.state.flatData.length)
+        if (this.props.tableState[this.props.id].selectedValues.length == this.state.flatData.length) {
             this.setState({ selectAll: true });
-        else
+        }
+        else {
             this.setState({ selectAll: false });
+        }
     }
 
     componentDidMount() {
+        console.log(this.props.tableState);
+        //debugger;
         this.componentDidUpdate();
+        this.forceUpdate();
     }
 
     mouseIn = (evt) => {
@@ -397,16 +402,15 @@ class FilterTable extends React.Component {
          *          }
          * }
          */
-        if(sortedValues.length > 0)
-        {
-            for(var i=0;i<sortedValues.length; i++) {
+        if (sortedValues.length > 0) {
+            for(var i = 0; i < sortedValues.length; i++) {
                 count = sortedValues[i].count;
                 percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%" + ")";
                 rows.push(this.generateRowHTML(sortedValues[i].value, sortedValues[i].value, count, percentStr, (selectedValues.indexOf(sortedValues[i].value) !== -1), index));
                 index++;
             }
         }
-        else{
+        else {
             for (var property in data) {
                 count = data[property].count;
                 percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%" + ")";
