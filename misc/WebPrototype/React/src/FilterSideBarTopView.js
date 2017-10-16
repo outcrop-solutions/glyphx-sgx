@@ -284,7 +284,7 @@ class FilterSideBarTopView extends React.Component {
                     tempRowIds.push(Object.values(data[index]).toString());
                 }
 
-                //iframe.postMessage([1], '*');
+                iframe.postMessage(tempRowIds, '*');
             },
             {post: true, 
                 data: { tableName: this.state.tableName, filterObj: this.props.filter } 

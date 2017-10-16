@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 import FlatButton from 'material-ui/FlatButton';
@@ -433,14 +434,9 @@ class allViewsModal extends React.Component {
 
 
 	onLaunch() {
-		makeServerCall('applyFrontEndFilters',
-			function(a,b,c) {
-				console.log("callback");
-			},
-			{post: true, 
-				data: { tableName: this.state.table, frontEndFilters: this.state.selectionList } 
-			}
-		);
+		//set the params to the store and then goto viz page.
+		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList }));
+		this.props.history.push('/glyph-viewer');
 	}
 	
 	render() {
@@ -683,6 +679,14 @@ export const editModalDisplay = (allViewsModal) => ({
     allViewsModal,
 });
 
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
+export const setCurrentVizParams = (vizParams) => ({
+    type: 'SET_VIZ_PARAMS',
+    vizParams,
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -699,4 +703,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the Announcements Dialog component to the redux store
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(allViewsModal);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(allViewsModal));

@@ -37,6 +37,9 @@ const initialFilterState = {
         colList: "",
         statList: ""
     },
+	VizParams: {
+		
+	}
 };
 
 
@@ -524,7 +527,14 @@ const filterReducer = function(state = initialFilterState, action) {
                     }
                 };
 
-
+		case 'SET_VIZ_PARAMS':
+		{
+			return {
+                ...state,
+                VizParams: action.vizParams
+			}
+		}
+		
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/
