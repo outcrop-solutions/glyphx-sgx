@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { makeServerCall } from './ServerCallHelper.js';
 import SearchBox from './SearchBox.js';
+import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
 import './General.css';
 
@@ -26,7 +27,8 @@ class allViewsModal extends React.Component {
 		table: "",
 		selection: "",
 		mouseup: true,
-		selectAll: []
+		selectAll: [],
+		loadMask: true
 	}
 	
 	componentDidMount() {
@@ -59,6 +61,9 @@ class allViewsModal extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
         if (nextProps.typeURL != this.props.typeURL) {
+
+			this.setState({ loadMask: true });
+
             var context = this;
 			
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
@@ -69,17 +74,17 @@ class allViewsModal extends React.Component {
 					var response = JSON.parse(responseText);
 					var preData = response.frontEndFilterData; 
 					var data = [];
-					var selectAll = [];
+					var selectAll = {};
 					var keyArray = Object.keys(preData);
 					for (var i = 0; i < keyArray.length; i++) {
 						var dataCol = [keyArray[i]];
-						selectAll.push([keyArray[i], preData[keyArray[i]]["selectAll"]]);
+						selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
 						for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
 							dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
 						}
 						data.push(dataCol);
 					}
-					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList });
+					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false });
 				}
 			);
         }
@@ -108,24 +113,26 @@ class allViewsModal extends React.Component {
 	 * Handles select all and deselect all for individual columns
 	 */
 	selectDeselectCol(col, action) {
-		var sList = this.state.selectionList.slice();
-		var index = this.checkSelected([col[0], col[1]], sList);
+		if (this.state.selectAll[col[0]] === "true" || action !== "select") {
+			var sList = this.state.selectionList.slice();
+			var index = this.checkSelected([col[0], col[1]], sList);
 
-		if (action === "select") {
-			if (index !== false) {
-				sList[index[0]] = col;
+			if (action === "select") {
+				if (index !== false) {
+					sList[index[0]] = col;
+				}
+				else {
+					sList.push(col);
+				}
 			}
+
 			else {
-				sList.push(col);
+				if (index !== false) {
+					sList.splice(index[0], 1);
+				}
 			}
+			this.setState({ selectionList: sList });
 		}
-
-		else {
-			if (index !== false) {
-				sList.splice(index[0], 1);
-			}
-		}
-		this.setState({ selectionList: sList });
 	}
 	
 
@@ -139,12 +146,14 @@ class allViewsModal extends React.Component {
 		else {
 			var sList = [];
 			for (var i = 0; i < data.length; i++) {
-				var newList = [data[i][0]];
-				
-				for (var j = 1; j < data[i].length; j++) {
-					newList.push(data[i][j]);
+				if (this.state.selectAll[data[i][0]] === "true") {
+					var newList = [data[i][0]];
+					
+					for (var j = 1; j < data[i].length; j++) {
+						newList.push(data[i][j]);
+					}
+					sList.push(newList);
 				}
-				sList.push(newList);
 			}
 			this.setState({ selectionList: sList });
 		}
@@ -158,7 +167,7 @@ class allViewsModal extends React.Component {
 		var sList = this.state.selectionList.slice();
 		var index = this.checkSelected(selection, sList);
 
-		if (!e.ctrlKey) {
+		if ( !e.ctrlKey || !(this.state.selectAll[selection[0]] === "true") ) {
 			if (index !== false) {
 				sList.splice(index[0], 1);
 				index = false;
@@ -192,59 +201,30 @@ class allViewsModal extends React.Component {
 	 * Handles drag selection
 	 */
 	toggleDragSelection(selection) {
-		var sList = this.state.selectionList.slice();
-		var index = this.checkSelected(selection, sList);
+		if (this.state.selectAll[selection[0]] === "true") {
+			var sList = this.state.selectionList.slice();
+			var index = this.checkSelected(selection, sList);
 
-		var oldSelectionIndex = this.checkSelected(this.state.selection, this.state.data);
-		var newSelectionIndex = this.checkSelected(selection, this.state.data);
+			var oldSelectionIndex = this.checkSelected(this.state.selection, this.state.data);
+			var newSelectionIndex = this.checkSelected(selection, this.state.data);
 
-		// Don't allow cross-column drag selection
-		if (newSelectionIndex[0] === oldSelectionIndex[0]) {
+			// Don't allow cross-column drag selection
+			if (newSelectionIndex[0] === oldSelectionIndex[0]) {
 
-			// Match was found
-			if (index !== false && index[1] !== false) {
-				if (this.state.dragState === false) {
+				// Match was found
+				if (index !== false && index[1] !== false) {
+					if (this.state.dragState === false) {
 
-					// Remove match
-					sList[index[0]].splice(index[1], 1);
+						// Remove match
+						sList[index[0]].splice(index[1], 1);
 
-					// Remove all values between match and start of drag (incase one is missed)
-					if (newSelectionIndex[1] > oldSelectionIndex[1]) {
-						for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
-							var val = this.state.data[newSelectionIndex[0]][i];
-							var tempIndex = sList[index[0]].indexOf(val);
-							if (tempIndex !== -1) {
-								sList[index[0]].splice(tempIndex, 1)
-							}
-						}
-					}
-
-					else {
-						for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
-							var val = this.state.data[newSelectionIndex[0]][i];
-							var tempIndex = sList[index[0]].indexOf(val);
-							if (tempIndex !== -1) {
-								sList[index[0]].splice(tempIndex, 1)
-							}
-						}
-					}
-				}
-			}
-
-			else {
-				if (this.state.dragState === true) {
-					// Match not found but col exists
-					if (index !== false) {
-
-						// Add match
-						sList[index[0]].push(selection[1]);
-						
-						// Add all values between match and start of drag (incase one is missed)
+						// Remove all values between match and start of drag (incase one is missed)
 						if (newSelectionIndex[1] > oldSelectionIndex[1]) {
 							for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
 								var val = this.state.data[newSelectionIndex[0]][i];
-								if (sList[index[0]].indexOf(val) === -1) {
-									sList[index[0]].push(val)
+								var tempIndex = sList[index[0]].indexOf(val);
+								if (tempIndex !== -1) {
+									sList[index[0]].splice(tempIndex, 1)
 								}
 							}
 						}
@@ -252,20 +232,51 @@ class allViewsModal extends React.Component {
 						else {
 							for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
 								var val = this.state.data[newSelectionIndex[0]][i];
-								if (sList[index[0]].indexOf(val) === -1) {
-									sList[index[0]].push(val)
+								var tempIndex = sList[index[0]].indexOf(val);
+								if (tempIndex !== -1) {
+									sList[index[0]].splice(tempIndex, 1)
 								}
 							}
 						}
 					}
+				}
 
-					else {
-						sList.push( [selection[0], selection[1]] );
+				else {
+					if (this.state.dragState === true) {
+						// Match not found but col exists
+						if (index !== false) {
+
+							// Add match
+							sList[index[0]].push(selection[1]);
+							
+							// Add all values between match and start of drag (incase one is missed)
+							if (newSelectionIndex[1] > oldSelectionIndex[1]) {
+								for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
+									var val = this.state.data[newSelectionIndex[0]][i];
+									if (sList[index[0]].indexOf(val) === -1) {
+										sList[index[0]].push(val)
+									}
+								}
+							}
+
+							else {
+								for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
+									var val = this.state.data[newSelectionIndex[0]][i];
+									if (sList[index[0]].indexOf(val) === -1) {
+										sList[index[0]].push(val)
+									}
+								}
+							}
+						}
+
+						else {
+							sList.push( [selection[0], selection[1]] );
+						}
 					}
 				}
-			}
 
-			this.setState({ selectionList: sList });
+				this.setState({ selectionList: sList });
+			}
 		}
 	}
 
@@ -310,6 +321,40 @@ class allViewsModal extends React.Component {
 				}
 			}
 		}
+		return false;
+	}
+
+
+	shouldLaunchBeDisabled() {
+		var selectAll = this.state.selectAll;
+		var sList = this.state.selectionList;
+		var keys = Object.keys(selectAll);
+		var notSelectAll = [];
+		for (var i = 0; i < keys.length; i++) {
+			if (selectAll[keys[i]] === "false") {
+				notSelectAll.push(keys[i]);
+			}
+		}
+
+		if (notSelectAll.length > 0) {
+			for (var i = 0; i < notSelectAll.length; i++) {
+				var shouldBeDisabled = true;
+				for (var j = 0; j < sList.length; j++) {
+					if (notSelectAll[i] === sList[j][0]) {
+						shouldBeDisabled = false;
+						break;
+					}
+				}
+				if (shouldBeDisabled) {
+					return true;
+				}
+			}
+		}
+
+		if (sList.length === 0) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -394,7 +439,6 @@ class allViewsModal extends React.Component {
 					}
 				}
 
-
 				var shouldBeVisible = false;
 				
 				for (var j = 0; j < filterValues.length; j++) {
@@ -437,6 +481,8 @@ class allViewsModal extends React.Component {
 
 
 	onLaunch() {
+		// Handle launch when no selections made on a column (select all unless its not allowed to select all)
+		
 		//set the params to the store and then goto viz page.
 		this.mouseup=false;
 		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList, filterAllowedColumnList:  this.state.filterAllowedColumnList}));
@@ -550,7 +596,7 @@ class allViewsModal extends React.Component {
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
-								backgroundColor: (this.state.selectionList.length === 0 ? "grey" : this.props.settings.colors.buttons.general) 
+								backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : this.props.settings.colors.buttons.general)
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
@@ -565,7 +611,7 @@ class allViewsModal extends React.Component {
 								height: '35px',
 								lineHeight: '35px',
 							}}
-							disabled = { (this.state.selectionList.length === 0 ? true : false)  }
+							disabled = { this.shouldLaunchBeDisabled() }
 							onClick = { () => this.onLaunch() }
 							primary = {true } 
 						/>
@@ -574,7 +620,11 @@ class allViewsModal extends React.Component {
 				modal = { true }
 				open = { this.props.allViewsDisplay }
 			>
-				<div style = {{ height: "60vh", paddingBottom: "30px" }} >
+				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
+					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+				</div>
+
+				<div style = {{ height: "60vh", paddingBottom: "30px", display: (this.state.loadMask ? "none" : "") }} >
 					<RaisedButton 
 						label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
 						style = {{
@@ -600,7 +650,7 @@ class allViewsModal extends React.Component {
 							lineHeight: '35px',
 						}}
 						onClick = { () => this.selectDesectAll(data, "select") }
-						primary = {true } 
+						primary = { true } 
 					/>
 
 					<RaisedButton 
@@ -627,7 +677,7 @@ class allViewsModal extends React.Component {
 							lineHeight: '35px',
 						}}
 						onClick = { () => this.selectDesectAll(data, "deselect") }
-						primary = {true } 
+						primary = { true } 
 					/>
 
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
