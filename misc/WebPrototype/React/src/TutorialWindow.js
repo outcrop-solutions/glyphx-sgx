@@ -45,7 +45,6 @@ class TutorialWindow extends React.Component {
                                 labelStyle = {{
                                     fontSize: '14px',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    fontFamily: "Arial Black, Gadget, sans-serif",
                                     margin: "0px 0px 0px -3px",
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
@@ -71,7 +70,6 @@ class TutorialWindow extends React.Component {
                                 labelStyle = {{
                                     fontSize: '14px',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    fontFamily: "Arial Black, Gadget, sans-serif",
                                     margin: "0px 0px 0px -3px",
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
@@ -140,7 +138,6 @@ class TutorialWindow extends React.Component {
                                 labelStyle = {{
                                     fontSize: '14px',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    fontFamily: "Arial Black, Gadget, sans-serif",
                                     margin: "0px 0px 0px -3px",
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
@@ -171,7 +168,6 @@ class TutorialWindow extends React.Component {
                                 labelStyle = {{
                                     fontSize: '14px',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    fontFamily: "Arial Black, Gadget, sans-serif",
                                     margin: "0px 0px 0px -3px",
                                     paddingLeft: "0px",
                                     paddingRight: "0px"

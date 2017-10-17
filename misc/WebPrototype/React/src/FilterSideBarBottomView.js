@@ -391,8 +391,8 @@ class FilterSideBarBottomView extends Component {
 
     render() {
         var pinnedEmptyString = <div className = "centerText cursorNormal" style = {{ margin: "0px 60px 7px", borderRadius: "5px" }} >
-                                    <div style = {{ fontSize: "17px", fontWeight: "bold", paddingTop: "6px", color: "#000000" }} > Nothing Pinned </div>
-                                    <div style = {{ fontWeight: "bold", fontSize: "14px", margin: "8px 0px -32px", color: "#000000" }} > Anything you pin shows up here for <br/> keeping track of important filters. </div>
+                                    <div style = {{ fontSize: "17px", paddingTop: "6px", color: "#000000" }} > Nothing Pinned </div>
+                                    <div style = {{ fontSize: "14px", margin: "8px 0px -32px", color: "#000000" }} > Anything you pin shows up here for <br/> keeping track of important filters. </div>
                                     <br/><br/>
                                 </div>;
         var columnsObj = this.makeColumns(this.props.tableData);

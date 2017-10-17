@@ -286,7 +286,7 @@ class Login extends React.Component {
                             </div>
 
                             <br/>
-                            <label className = "loginFormOtherElements" style = {{ color: 'white', fontSize:'30px', fontWeight:'200' }} > 
+                            <label className = "loginFormOtherElements" style = {{ color: 'white', fontSize:'30px' }} > 
                                 USER LOGIN 
                             </label>
                             <br/><br/>
@@ -381,7 +381,6 @@ class Login extends React.Component {
                                 label = "Login"
                                 id = "loginButton"
                                 labelStyle = {{
-                                    fontWeight: 'bold',
                                     fontSize: '20px'
                                 }}
                                 secondary = { true }

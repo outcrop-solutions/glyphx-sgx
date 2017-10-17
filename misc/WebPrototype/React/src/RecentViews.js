@@ -65,8 +65,7 @@ class RecentViews extends React.Component {
                             margin: "0 auto",
                             width: "111px", 
                             paddingTop: "4px",
-                            fontSize: "18px",
-                            fontWeight: "normal"
+                            fontSize: "18px"
                         }}
                         className = "noselect"
                         

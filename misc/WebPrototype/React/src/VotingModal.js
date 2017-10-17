@@ -37,9 +37,6 @@ class VotingModal extends React.Component {
                 <div style = {{ display: (this.state.voted ? "none" : "") }} >
                     <RadioButtonGroup 
                         name = "votingGroup"
-                        style = {{
-                            fontWeight: "normal"
-                        }}
                         onChange = { (event, value) => this.setState({ value : value }) }
 
                     >
@@ -100,7 +97,6 @@ class VotingModal extends React.Component {
                         labelStyle = {{
                             fontSize: '14px',
                             color: this.props.settings.colors.overviewButtonsColor.text,
-                            fontFamily: "Arial Black, Gadget, sans-serif",
                             margin: "0px 0px 0px -3px",
                             paddingLeft: "0px",
                             paddingRight: "0px"

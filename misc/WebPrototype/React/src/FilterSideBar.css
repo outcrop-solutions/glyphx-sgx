@@ -41,7 +41,6 @@
 
 .collapsibleHeader {
     padding: 16px;
-    font-weight: 500;
     box-sizing: border-box;
     position: relative;
     white-space: nowrap;
@@ -82,7 +81,6 @@
 
 .Collapsible__trigger {
     display: block;
-    font-weight: 400;
     text-decoration: none;
     position: relative;
     border: 1px solid white;

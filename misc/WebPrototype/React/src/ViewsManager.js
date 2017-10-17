@@ -208,8 +208,7 @@ class ViewsManager extends React.Component {
                             margin: "0 auto",
                             width: "125px", 
                             paddingTop: "4px",
-                            fontSize: "18px",
-                            fontWeight: "normal"
+                            fontSize: "18px"
                         }}
                         className = "noselect"
                     > 
@@ -231,7 +230,7 @@ class ViewsManager extends React.Component {
                                                 margin: "5px 0px 0px 0px"
                                             }} 
                                         />
-                                        <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
+                                        <div className = "fa-stack-1x" style = {{ fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
                                     </span> 
                                 :
                                     <span className = "fa-stack fa-lg noselect">
@@ -255,7 +254,7 @@ class ViewsManager extends React.Component {
                                 )
                             } 
                     >
-                        <label className = "noselect" style = {{ color: "#ffffff", fontWeight: "normal" }} > Select a Category </label>
+                        <label className = "noselect" style = {{ color: "#ffffff" }} > Select a Category </label>
                     </StepLabel>
                     </Step>
                     <Step>
@@ -270,12 +269,12 @@ class ViewsManager extends React.Component {
                                             margin: "5px 0px 0px 0px",
                                         }} 
                                     />
-                                    <div className = "fa-stack-1x" style = {{ fontWeight: "bold", fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-1px 0px 0px" }} > 2 </div>
+                                    <div className = "fa-stack-1x" style = {{ fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-1px 0px 0px" }} > 2 </div>
                                 </span> 
                             }
                             style = {{ marginRight: "8px" }}
                         >
-                            <label className = "noselect" style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), fontWeight: "normal" }} > Select a View </label>
+                            <label className = "noselect" style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ) }} > Select a View </label>
                         </StepLabel>
                     </Step>
                 </Stepper>
@@ -296,25 +295,25 @@ class ViewsManager extends React.Component {
 
 
                                         <div onClick = { () => this.flip("MarketingAndRecruiting") } className = "C-Size-1 noselect" >
-                                            <div style = {{ margin: "-45px auto 0px", width: "216px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                            <div style = {{ margin: "-45px auto 0px", width: "216px", fontSize: '1rem', color: "#000000" }} >
                                                 MARKETING &amp; RECRUITING
                                             </div>
                                         </div>
 
                                         <div onClick = { () => this.flip("Admissions") } className = "C-Size-2 noselect" >
-                                            <div style = {{ margin: "-45px auto 0px", width: "100px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                            <div style = {{ margin: "-45px auto 0px", width: "100px", fontSize: '1rem', color: "#000000" }} >
                                                 ADMISSIONS
                                             </div>
                                         </div>
 
                                         <div onClick = { () => this.flip("FinancialAid") } className = "C-Size-3 noselect" >
-                                            <div style = {{ margin: "-45px auto 0px", width: "118px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                            <div style = {{ margin: "-45px auto 0px", width: "118px", fontSize: '1rem', color: "#000000" }} >
                                                 FINANCIAL AID
                                             </div>
                                         </div>
 
                                         <div onClick = { () => this.flip("Custom") } className = "C-Size-3 noselect" style = {{ width: "32%", minWidth: "140px" }} >
-                                            <div style = {{ margin: "-45px auto 0px", width: "67px", fontSize: '1rem', fontFamily: "Arial Black, Gadget, sans-serif", color: "#000000" }} >
+                                            <div style = {{ margin: "-45px auto 0px", width: "67px", fontSize: '1rem', color: "#000000" }} >
                                                 CUSTOM
                                             </div>
                                         </div>
@@ -361,7 +360,6 @@ class ViewsManager extends React.Component {
                                         labelStyle = {{
                                             fontSize: '14px',
                                             color: this.props.settings.colors.overviewButtonsColor.text,
-                                            fontFamily: "Arial Black, Gadget, sans-serif",
                                             margin: "0px 0px 0px -3px",
                                             paddingLeft: "0px",
                                             paddingRight: "0px"

@@ -575,7 +575,7 @@ class allViewsModal extends React.Component {
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
 				actionsContainerStyle = {{ backgroundColor: "#c5c5f7" }}
-				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", fontSize: "36px", fontWeight: "bold", lineHeight: "16px" }}
+				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", fontSize: "36px", lineHeight: "16px" }}
 				actions = {
 					[
 						<FlatButton
@@ -599,7 +599,6 @@ class allViewsModal extends React.Component {
 								fontSize: '12px',
 								textAlign: "center",
 								color: this.props.settings.colors.overviewButtonsColor.text,
-								fontFamily: "Arial Black, Gadget, sans-serif",
 								margin: "0px 0px 0px -3px",
 								paddingLeft: "0px",
 								paddingRight: "0px"
@@ -637,7 +636,6 @@ class allViewsModal extends React.Component {
 							fontSize: '12px',
 							textAlign: "center",
 							color: this.props.settings.colors.overviewButtonsColor.text,
-							fontFamily: "Arial Black, Gadget, sans-serif",
 							margin: "0px 0px 0px -3px",
 							paddingLeft: "0px",
 							paddingRight: "0px"
@@ -664,7 +662,6 @@ class allViewsModal extends React.Component {
 							fontSize: '12px',
 							textAlign: "center",
 							color: this.props.settings.colors.overviewButtonsColor.text,
-							fontFamily: "Arial Black, Gadget, sans-serif",
 							margin: "0px 0px 0px -3px",
 							paddingLeft: "0px",
 							paddingRight: "0px"

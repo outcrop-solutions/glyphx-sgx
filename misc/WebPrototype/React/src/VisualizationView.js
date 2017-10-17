@@ -51,7 +51,7 @@ class VisualizationView extends React.Component {
 		// Add the <style> element to the page
 		document.head.appendChild(style);
 		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; font-weight: 400; text-decoration: none; color: #333333; position: relative; border: none; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; text-decoration: none; color: #333333; position: relative; border: none; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
 		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
 		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
 		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
@@ -157,7 +157,7 @@ class VisualizationView extends React.Component {
                         />
                     </div>
 
-                    <div id  = "filterNav" className = "sidenav" style = {{ fontWeight: "normal", height: "calc(100% - 56px)", marginTop: "56px" }} >
+                    <div id  = "filterNav" className = "sidenav" style = {{ height: "calc(100% - 56px)", marginTop: "56px" }} >
                         <FilterSideBar/>
                     </div>
 					

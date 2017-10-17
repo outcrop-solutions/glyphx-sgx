@@ -84,7 +84,6 @@ class HelpModal extends React.Component {
 							labelStyle = {{
 								fontSize: '14px',
 								color: this.props.settings.colors.overviewButtonsColor.text,
-								fontFamily: "Arial Black, Gadget, sans-serif",
 								margin: "0px 0px 0px -3px",
 								paddingLeft: "0px",
 								paddingRight: "0px"
@@ -113,7 +112,6 @@ class HelpModal extends React.Component {
 							labelStyle = {{
 								fontSize: '14px',
 								color: this.props.settings.colors.overviewButtonsColor.text,
-								fontFamily: "Arial Black, Gadget, sans-serif",
 								margin: "0px 0px 0px -3px",
 								paddingLeft: "0px",
 								paddingRight: "0px"
@@ -161,7 +159,6 @@ class HelpModal extends React.Component {
 								fontSize: '12px',
 								textAlign: "center",
 								color: this.props.settings.colors.overviewButtonsColor.text,
-								fontFamily: "Arial Black, Gadget, sans-serif",
 								margin: "0px 0px 0px -3px",
 								paddingLeft: "0px",
 								paddingRight: "0px"
@@ -198,7 +195,6 @@ class HelpModal extends React.Component {
 								fontSize: '12px',
 								textAlign: "center",
 								color: this.props.settings.colors.overviewButtonsColor.text,
-								fontFamily: "Arial Black, Gadget, sans-serif",
 								margin: "0px 0px 0px -3px",
 								paddingLeft: "0px",
 								paddingRight: "0px"
@@ -219,7 +215,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -232,7 +228,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -245,7 +241,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -258,7 +254,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -271,7 +267,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -284,7 +280,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -297,7 +293,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
@@ -310,7 +306,7 @@ class HelpModal extends React.Component {
 									transitionTime = {200}
 									triggerClassName = "faqCollapse"
 									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", fontWeight: "bold", color: "#000000" }}>How do I share my saved views with team members?</div> }
+									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
 								>
 									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
 										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar

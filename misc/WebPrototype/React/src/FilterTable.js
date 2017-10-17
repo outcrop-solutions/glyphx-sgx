@@ -248,8 +248,6 @@ class FilterTable extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.tableState);
-        //debugger;
         this.componentDidUpdate();
         this.forceUpdate();
     }
