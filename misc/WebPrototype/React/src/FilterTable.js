@@ -13,16 +13,13 @@ import './General.css'
  * @param columnToSearch: the index of the column you want the search funcationality to work on.
  * @param internalColName: name of the column used for internal mapping purposes
  * @param displayName: the name of the column as showed on the UI.
- * @param tableData: [array of strings]  eg: tableData: ['a','b','c','a']
+ * @param tableData: {colName:{values:{value:'',count:'',recId:''},totalCount:,flatValues:[]} , ...}
  */
 
 class FilterTable extends React.Component {
 
     constructor(props) {
         super(props);
-        
-        var processedData =  this.processData(props.tableData ? props.tableData : []);
-        var tableData = processedData;
 
         this.state = {
             fixedHeader: true,
@@ -38,7 +35,7 @@ class FilterTable extends React.Component {
             selectAll: false,
             prevSelectedIndex: null,
             checkboxClicked:false,
-            tableData: tableData,
+            tableData: props.tableData,
             flatData: [],
             indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
         };
@@ -125,7 +122,7 @@ class FilterTable extends React.Component {
                     value: (context.state.flatData[rowSelection] ? context.state.flatData[rowSelection].value : null),
                     checked: checked,
                     type: context.props.tableState[context.props.id].type,
-                    data: context.props.tableData
+                    data: context.props.tableData.flatValues
             }
 
             context.props.dispatch(addRemoveElastic(filterStructure));        
@@ -280,8 +277,8 @@ class FilterTable extends React.Component {
         var columnObj = document.getElementById(columnName);
         var columnType = this.props.tableState[this.props.id].type;
         var columnClicked = columnName.indexOf('value') > -1 ? 'value' : 'count';
-        var data = this.state.tableData.data;
-        var keys = Object.keys(data);
+        //var data = this.state.tableData.values;
+        //var keys = Object.keys(data);
         var otherColumn;
         var context = this;
         var flatData = context.state.flatData.slice();
@@ -382,7 +379,7 @@ class FilterTable extends React.Component {
     createRows = () => {
         
         var id = this.props.id;
-        var data = this.state.tableData.data;
+        var data = this.state.tableData.values;
         var totalCount = this.state.tableData.totalCount;
         var selectedValues = this.props.tableState[id].selectedValues;
         var rows = [];
