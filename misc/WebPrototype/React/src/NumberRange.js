@@ -418,6 +418,7 @@ class NumberRangeRow extends React.Component {
                             <Range
                                 min = { this.props.minVal }
                                 max = { this.props.maxVal }
+                                step = { (this.props.minVal % 1 === 0 && this.props.maxVal % 1 === 0 ? 1 : 0.1) }
                                 value = {this.arrayNumConversion(this.state.min, this.state.max) }
                                 defaultValue = { [this.props.minVal,this.props.maxVal] }
                                 allowCross = { false }
@@ -456,7 +457,7 @@ class NumberRangeRow extends React.Component {
                             />
                         </Flexbox>
 
-                        <Flexbox style = {{ width: "10%", margin: "11px 11px 0px 0px" }} > 
+                        <Flexbox style = {{ width: "10%", marginTop: "11px", marginRight: "11px" }} > 
                             <Toggle 
                                 name = "applied" 
                                 id = { this.props.range.id } 
@@ -466,7 +467,7 @@ class NumberRangeRow extends React.Component {
                                 }
                                 trackStyle = {{
                                     height: "12px",
-                                    margin: "2px 0px 0px 0px",
+                                    marginTop: "2px",
                                     width: "84%"
                                 }}
                                 trackSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleTrack }}

@@ -201,6 +201,8 @@ class FilterSideBar extends Component {
      * @return display name string.
      */
     generateDisplayName = (str) => {
+        return str.replace(new RegExp("_", 'g'), " ");
+        /*
         var newString = str.charAt(0);
         var len = str.length;
         for (var i = 1; i < len; i++) {
@@ -218,6 +220,7 @@ class FilterSideBar extends Component {
             }
         }
         return newString;
+        */
     };
 
 

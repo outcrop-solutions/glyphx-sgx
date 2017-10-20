@@ -22,7 +22,8 @@ class FilterSideBarBottomView extends Component {
         
         // Store the states of all the elements inside this data structure.
         this.state  = {
-            activeColumns: []
+            activeColumns: [],
+            openCols: {}
         };
     };
 
@@ -112,6 +113,7 @@ class FilterSideBarBottomView extends Component {
      * @return {object} The HTML of the column
      */
     getColumnHTML = (config) => {
+        console.log();
         return (
             <div id = { config.internalColName } name = { config.displayName } key = { config.internalColName } className = { config.outerDivClassName } style = {{ marginBottom: "2px" }} >
                 <Collapsible 
@@ -146,6 +148,8 @@ class FilterSideBarBottomView extends Component {
                         </div>
                     } 
                     triggerClassName = 'columnNameHeader'
+                    onClose = { () => this.updateTabRender('tab-' + config.internalColName, false) }
+                    onOpen = { () => this.updateTabRender('tab-' + config.internalColName, true) }
                 >
                     <FilterTabs 
                         ref = { 'tab-' + config.internalColName } 
@@ -153,10 +157,17 @@ class FilterSideBarBottomView extends Component {
                         id = { config.globalStoreName } 
                         displayName = { config.displayName } 
                         data = { config.data } 
+                        open = { config.data.flatValues.length < 20 || this.state.openCols['tab-' + config.internalColName] ? true : false }
                     />
                 </Collapsible>
             </div>
         );
+    }
+
+    updateTabRender(ref, action) {
+        var oCols = this.state.openCols;
+        oCols[ref] = action;
+        this.setState({openCols: oCols});
     }
 
     
@@ -201,7 +212,12 @@ class FilterSideBarBottomView extends Component {
 
         if (elem.state.isClosed) {
             elem.openCollapsible();
-            this.checkToScroll(element, elem, this);
+
+            var context = this;
+            setTimeout(function () {
+                context.checkToScroll(element, elem, context);
+            }, 200);
+            
         }
         else {
             elem.closeCollapsible();

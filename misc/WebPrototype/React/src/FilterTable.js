@@ -26,7 +26,7 @@ class FilterTable extends React.Component {
             fixedFooter: true,
             stripedRows: false,
             showRowHover: true,
-            selectable: true,
+            selectable: false,
             tableHeight: 300,
             multiSelectable: true,
             enableSelectAll: false,
@@ -47,11 +47,11 @@ class FilterTable extends React.Component {
      * @param tableData 
      * @return Object : {'data':<object of data in form of "dataValue : count",'totalCount': totalCount}
      */
-    processData(tableData){
+    processData(tableData) {
         var temp = {};
         var totalCount = tableData.length;
         tableData.map((row) => {
-            if(temp.hasOwnProperty(row)) {
+            if (temp.hasOwnProperty(row)) {
                 ++temp[row]['count'];
             }
             else {
@@ -60,7 +60,6 @@ class FilterTable extends React.Component {
         });
         return {'data':temp,'totalCount':totalCount};
     };
-    
 
     static COUNT = 0;
 
@@ -137,7 +136,7 @@ class FilterTable extends React.Component {
      */
     onKeyUp = (context,id,indexColumnToSearch) => {
         var input, filter, tr, td, i;
-        input = document.getElementById("tf-"+id);
+        input = document.getElementById("tf-" + id);
         filter = input.value.toUpperCase();
         tr = this.fetchTableRows(this.getInternalTableName());
 
@@ -405,6 +404,7 @@ class FilterTable extends React.Component {
                 index++;
             }
         }
+
         else {
             for (var property in data) {
                 count = data[property].count;
@@ -413,6 +413,7 @@ class FilterTable extends React.Component {
                 index++;
             }   
         }
+
         return rows;
     }
 
@@ -442,12 +443,13 @@ class FilterTable extends React.Component {
             />
         );
 
-        if(initialRowCreate)
+        if(initialRowCreate) {
             this.state.flatData.push({
                 value: value,
                 count: count,
                 index: index
             });
+        }
             
         return row;
     }
@@ -465,8 +467,10 @@ class FilterTable extends React.Component {
         if (element) {
             ScrollIntoView(element, false, { duration: 150 });
         }
-        else
+        
+        else {
             return false;
+        }
     }
 
     render() {
@@ -620,15 +624,7 @@ class FilterTable extends React.Component {
 class FilterRow extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.checked != nextProps.checked || this.props.settings != nextProps.settings) {
-            return true;
-        }
-        else if (this.props.value != nextProps.value) {
-            return true; 
-        }
-        else {
-            return false;
-        }
+        return (this.props.checked != nextProps.checked || this.props.settings != nextProps.settings)
     }
 
     onClickRow = (evt) => {
@@ -644,7 +640,7 @@ class FilterRow extends React.Component {
                 selected = { this.props.checked }
                 onClick = { this.onClickRow }
             >
-            <TableRowColumn style = {{ height:'inherit', width:'25px' }}><Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}/></TableRowColumn>
+            <TableRowColumn style = {{ height:'inherit', width:'25px' }}> {/* <Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}/> */} </TableRowColumn>
             <TableRowColumn style = {{ paddingLeft:'7px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
             <TableRowColumn style = {{ height:'inherit' }}>{this.props.percentStr}</TableRowColumn>
             </TableRow>

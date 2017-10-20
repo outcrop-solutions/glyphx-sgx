@@ -238,8 +238,9 @@ const filterReducer = function(state = initialFilterState, action) {
             }
 
             // Determines if selected values should be recalculated
+
             if (previousRange[3] || action.applied) {
-                if (action.selectType !== undefined) {
+                if (action.selectType !== undefined && action.selectType !== null) {
                     selected = calcSelectedRemoved(stateVal, action.rangeType, action.data, previousRange, state.Filter[action.colName].selectedValues.slice());
                 }
                 else if (action.applied === false) {

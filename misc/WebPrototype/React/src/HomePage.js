@@ -31,15 +31,18 @@ class HomePage extends React.Component {
 
 	/**
 	 * This function is called right after the react component is mounted.
-	 * It decides whether to show the login form and calls the init().
+	 * Places some css rules that depend on variable color.
 	 */
     componentDidMount() {
+
+        // Removes the spinning load mask
         hideSplashScreen();
+
+
         this.setState({ height: window.innerHeight });
 
         var style = document.getElementById('themeStyles');
-		if(style != null)
-		{
+		if (style != null){
 			style.parentElement.removeChild(style);
 			console.log('deleting old rules');
 		}
@@ -84,7 +87,6 @@ class HomePage extends React.Component {
 
         style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 25);
         style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
-
         
     }
 
@@ -101,15 +103,15 @@ class HomePage extends React.Component {
     render() {
 
         return (
-            <MuiThemeProvider style = {{ height: "100%" }} >
+            <MuiThemeProvider style={{ height: "100%" }} >
 
-                <Flexbox flexDirection="column" minHeight="100vh" style = {{ height: "100vh" }}>
-                    <TopNavBar homePage = { true } tutorialStage = { this.state.tutorialStage } />
+                <Flexbox flexDirection="column" minHeight="100vh" style={{ height: "100vh" }} >
+                    <TopNavBar homePage={ true } tutorialStage={ this.state.tutorialStage } />
 
-                    { this.state.tutorialStage !== "done" ?
-                            <div style = {{ height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.6)", zIndex: "100", position: "fixed" }} />
-                            :
-                            null
+                    {this.state.tutorialStage !== "done" ?
+                        <div style={{ height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.6)", zIndex: "100", position: "fixed" }} />
+                        :
+                        null
                     }
 
                     { this.state.tutorialStage !== "done" ?
@@ -119,13 +121,13 @@ class HomePage extends React.Component {
                     }
                     
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
-                        <Flexbox flexDirection="row" minWidth="100%" >
+                        <Flexbox flexDirection = "row" minWidth = "100%" >
                             <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }}>
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
                              </Flexbox>
-                             <Flexbox flexDirection="column" style = {{ width: "40%" }}>
+                             <Flexbox flexDirection = "column" style = {{ width: "40%" }}>
 
                                 <div style = {{ backgroundColor: "#ffffff" }} >
                                     <div style = {{ width: '100%', margin: "15px 0px -6px" }} >
@@ -153,7 +155,7 @@ class HomePage extends React.Component {
                                                 style = {{ 
                                                     color: this.props.settings.colors.overviewButtonsColor.text, 
                                                     margin: "0 auto",
-                                                    width: "130px", 
+                                                    width: "138px", 
                                                     paddingTop: "4px",
                                                     fontSize: "18px"
                                                 }}

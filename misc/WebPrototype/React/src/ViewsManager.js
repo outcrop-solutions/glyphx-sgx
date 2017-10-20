@@ -206,7 +206,7 @@ class ViewsManager extends React.Component {
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "125px", 
+                            width: "128px", 
                             paddingTop: "4px",
                             fontSize: "18px"
                         }}

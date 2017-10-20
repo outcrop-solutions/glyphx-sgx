@@ -18,8 +18,6 @@ import './General.css';
  */
 class allViewsModal extends React.Component {
 
-	mouseup=true;
-
 	state = {
 		selectionList: [],
 		dragState: 0,
@@ -33,11 +31,11 @@ class allViewsModal extends React.Component {
 	
 	componentDidMount() {
 		// Mouseup listener used to handle click drag selection
-		window.addEventListener('mouseup', this.handleMouseUp.bind(this));
+		window.onmouseup = this.handleMouseUp.bind(this);
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('mouseup', this.handleMouseUp.bind(this));
+		window.onmouseup = null;
 	}
 
 
@@ -95,7 +93,7 @@ class allViewsModal extends React.Component {
 	 * Resets the drag type on mouse up
 	 */
 	handleMouseUp() {
-		if (this.props.allViewsDisplay && this.mouseup) {
+		if (this.props.allViewsDisplay) {
 			this.setState({ dragState: 0 });
 		}
 	}
@@ -447,7 +445,7 @@ class allViewsModal extends React.Component {
 						if (tr[i].innerHTML.toUpperCase().indexOf(filterValues[j]) !== -1) {
 							shouldBeVisible = true;
 							break;
-						} 
+						}
 					}
 					else {
 						// Otherwise check the beginning of each word
@@ -482,10 +480,10 @@ class allViewsModal extends React.Component {
 
 	onLaunch() {
 		// Handle launch when no selections made on a column (select all unless its not allowed to select all)
-		
+
 		//set the params to the store and then goto viz page.
-		this.mouseup=false;
 		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList, filterAllowedColumnList:  this.state.filterAllowedColumnList}));
+		this.props.dispatch(editModalDisplay(false));
 		this.props.history.push('/glyph-viewer');
 	}
 	
@@ -531,7 +529,6 @@ class allViewsModal extends React.Component {
 					<div style = {{ margin: "1px 1px 0px 0px" }} >
 						<SearchBox 
 							ref = "SearchBox"
-							hintText = "Search for value..." 
 							settings = {{
 								SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
 								searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
@@ -553,7 +550,7 @@ class allViewsModal extends React.Component {
 							return (
 								(elem !== col[0] ? 
 									<div
-										key = { elem } 
+										key = { col[0] + elem } 
 										onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
 										onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
 										style = {{ 

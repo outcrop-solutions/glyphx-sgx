@@ -15,6 +15,7 @@ const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M
 export function calcSelected(rList, rangeType, data, previousRange, selectedValues) {
     var i, j, curNum, previousList, newList, index;
     if (rangeType === "Number") {
+        console.log("selectedValues1: ");
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 if (rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1]) ) {
@@ -63,6 +64,7 @@ export function calcSelected(rList, rangeType, data, previousRange, selectedValu
     }
 
     else if (rangeType === "Text") {
+        console.log("selectedValues2: ");
         var foundRange = false;
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
@@ -101,9 +103,10 @@ export function calcSelected(rList, rangeType, data, previousRange, selectedValu
 
     else {
         // TODO: Add Date Range here
+        console.log("selectedValues3: ");
     }
 
-    console.log("selectedValues: ");
+    console.log("selectedValues1000: ");
     console.log(selectedValues);
     return selectedValues;
 }
@@ -205,6 +208,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
     var i, j;
 
     if (rangeType === "Number") {
+        console.log("selectedValues21: ");
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 for (j = 0; j < data.length; j++) {
@@ -217,6 +221,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
     }
 
     else if (rangeType === "Text") {
+        console.log("selectedValues22: ");
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 var newList = calcTextSelected(rList[i], data);
@@ -231,9 +236,10 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
 
     else {
         // TODO: Add Date Range here
+        console.log("selectedValues23: ");
     }
     
-    console.log("selectedValues: ");
+    console.log("selectedValues2000: ");
     console.log(selectedValues);
     return selectedValues;
 }
@@ -250,6 +256,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
 export function calcSelectedRemoved(rList, rangeType, data, previousRange, selectedValues) {
     var i, j, curNum, previousList, newList, index;
     if (rangeType === "Number") {
+        console.log("selectedValues31: ");
 
         newList = calcSelectedNoPrevious(rList, rangeType, data);
         previousList = [];
@@ -270,6 +277,7 @@ export function calcSelectedRemoved(rList, rangeType, data, previousRange, selec
     }
 
     else if (rangeType === "Text") {
+        console.log("selectedValues32: ");
         newList = calcSelectedNoPrevious(rList, rangeType, data);
         previousList = calcTextSelected(previousRange, data);
 
@@ -283,9 +291,10 @@ export function calcSelectedRemoved(rList, rangeType, data, previousRange, selec
 
     else {
         // TODO: Add Date Range here
+        console.log("selectedValues33: ");
     }
 
-    console.log("selectedValues: ");
+    console.log("selectedValues3000: ");
     console.log(selectedValues);
     return selectedValues;
 }

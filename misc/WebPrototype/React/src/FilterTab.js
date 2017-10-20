@@ -17,7 +17,7 @@ class FilterTabs extends React.Component {
             Range: null,
             tableData: props.data,
             tableID: ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),
-            rangeID: ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36)
+            rangeID: ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36),
         };
     };
 
@@ -78,78 +78,84 @@ class FilterTabs extends React.Component {
     render() {
         return (
             <div>
-                <Tabs
-                    onChange = { (value) => this.handleChange(value, this) }
-                    value = { this.state.slideIndex }
-                >
-                    <Tab 
-                        label = "Elastic" 
-                        value = { 0 }
-                        icon = { <FontIcon style = {{ color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className = "fa fa-list-ul" ></FontIcon> }
-                        buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 0 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
-                    />
-                    <Tab 
-                        label = "Range" 
-                        value = { 1 }
-                        icon = { <FontIcon style = {{ color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className="fa fa-sliders"></FontIcon> }
-                        buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 1 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
-                    />
-                </Tabs>
-
-                <SwipeableViews
-                    index = { this.state.slideIndex }
-                    onChangeIndex = { this.handleChange }
-
-                    style = {{
-                        overflowY: "hidden",
-                        padding: "0px"
-                    }}           
-                >
-                    <div
-                        id = { this.state.tableID }
-                        style = {{
-                            maxHeight: "393px",
-                            overflow: "hidden"
-                        }}
+                {this.props.open ? 
+                <div>
+                    <Tabs
+                        onChange = { (value) => this.handleChange(value, this) }
+                        value = { this.state.slideIndex }
                     >
-                        <FilterTable 
-                            internalColName = { this.props.internalColName } 
-                            displayName = { this.props.displayName } 
-                            tableData = { this.state.tableData } 
-                            id = { this.props.id } 
-                            selectedRows = { this.state.FilterTableSelectedRows } 
-                            tableID = { this.state.tableID }
+                        <Tab 
+                            label = "Elastic" 
+                            value = { 0 }
+                            icon = { <FontIcon style = {{ color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className = "fa fa-list-ul" ></FontIcon> }
+                            buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 0 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
                         />
-                    </div>
-                    <div
-                        id = { this.state.rangeID }
+                        <Tab 
+                            label = "Range" 
+                            value = { 1 }
+                            icon = { <FontIcon style = {{ color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className="fa fa-sliders"></FontIcon> }
+                            buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 1 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
+                        />
+                    </Tabs>
+
+                    <SwipeableViews
+                        index = { this.state.slideIndex }
+                        onChangeIndex = { this.handleChange }
+
                         style = {{
-                            maxHeight: "355px",
-                            overflowX: "hidden",
-                            marginTop: "17px"
-                        }}
-                        onMouseEnter = { this.mouseIn }
-                        onMouseLeave = { this.mouseOut }
-                        className = {this.props.id + "-R"}
+                            overflowY: "hidden",
+                            padding: "0px"
+                        }}           
                     >
-                        {this.props.filterList[this.props.id].type === "Number" ? 
-                                <NumberRangeTable 
-                                    colName = { this.props.id } 
-                                    data = { this.state.tableData.flatValues } 
-                                    minVal = { this.props.filterList[this.props.id].bounds[0] } 
-                                    maxVal = { this.props.filterList[this.props.id].bounds[1] }
-                                /> : 
-                            (this.props.filterList[this.props.id].type === "Text" ? 
-                                    <TextRangeTable 
+                        <div
+                            id = { this.state.tableID }
+                            style = {{
+                                maxHeight: "393px",
+                                overflow: "hidden"
+                            }}
+                        >
+                            <FilterTable 
+                                internalColName = { this.props.internalColName } 
+                                displayName = { this.props.displayName } 
+                                tableData = { this.state.tableData } 
+                                id = { this.props.id } 
+                                selectedRows = { this.state.FilterTableSelectedRows } 
+                                tableID = { this.state.tableID }
+                            />
+                        </div>
+                        <div
+                            id = { this.state.rangeID }
+                            style = {{
+                                maxHeight: "355px",
+                                overflowX: "hidden",
+                                marginTop: "17px"
+                            }}
+                            onMouseEnter = { this.mouseIn }
+                            onMouseLeave = { this.mouseOut }
+                            className = {this.props.id + "-R"}
+                        >
+                            {this.props.filterList[this.props.id].type === "Number" ? 
+                                    <NumberRangeTable 
                                         colName = { this.props.id } 
                                         data = { this.state.tableData.flatValues } 
-                                    /> :  
-                            "TODO: Add Date Range Here") 
-                        }
-                        
+                                        minVal = { this.props.filterList[this.props.id].bounds[0] } 
+                                        maxVal = { this.props.filterList[this.props.id].bounds[1] }
+                                    /> : 
+                                (this.props.filterList[this.props.id].type === "Text" ? 
+                                        <TextRangeTable 
+                                            colName = { this.props.id } 
+                                            data = { this.state.tableData.flatValues } 
+                                        /> :  
+                                "TODO: Add Date Range Here") 
+                            }
+                            
 
-                    </div>
-                </SwipeableViews>
+                        </div>
+                    </SwipeableViews>
+                </div>
+                :
+                ""
+                }
             </div>
         );
     }
