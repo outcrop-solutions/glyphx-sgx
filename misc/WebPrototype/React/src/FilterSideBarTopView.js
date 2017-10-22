@@ -279,12 +279,24 @@ class FilterSideBarTopView extends React.Component {
                 var resultJson = JSON.parse(result);
                 var data = resultJson.data;
                 var tempRowIds = [];
-                for(var index=0;index<data.length;index++)
-                {
-                    tempRowIds.push(Object.values(data[index]).toString());
-                }
-
-                iframe.postMessage(tempRowIds, '*');
+                
+				if(data && Array.isArray(data))
+				{
+					if(data.length > 1)
+					{							
+						for(var index=0;index<data.length;index++)
+						{
+							tempRowIds.push(Object.values(data[index]).toString());
+						}
+					}
+					else{
+						//This means no data was matched.
+						//show message.
+						console.log('NO MATCH');
+					}
+				}
+				
+				iframe.postMessage({action:'filter',args:tempRowIds}, '*');
             },
             {post: true, 
                 data: { tableName: this.state.tableName, filterObj: this.props.filter } 
@@ -358,6 +370,10 @@ class FilterSideBarTopView extends React.Component {
         var columnsFilterApplied = filterSummaryView.refs;
         //filterSummaryView.handleRowDel('StaffAssigned');
         
+		var iframe = document.getElementById('GlyphViewer').contentWindow;
+        iframe.postMessage({action:'clear'}, '*');
+        
+		
         for (var property in columnsFilterApplied) {
             columnsFilterApplied[property].onDelEvent();
         }
