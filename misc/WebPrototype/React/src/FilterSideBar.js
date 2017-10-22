@@ -54,9 +54,20 @@ class FilterSideBar extends Component {
 		makeServerCall('applyFrontEndFilters',
 			function(res,b,c) {
                 //hide the loadmask.
-                var result = context.convertToCompatibleDataObject(res);
-				context.makeFilterStructure(result);
-				context.setState({tableData: result});
+				
+				if(typeof res == 'string')
+					res = JSON.parse(res);
+				
+				if(Array.isArray(res) && res.length > 0)
+				{
+					var result = context.convertToCompatibleDataObject(res);
+					context.makeFilterStructure(result);
+					context.setState({tableData: result});
+				}
+				else{
+					//0 records matched.
+					console.log('none matched');
+				}
 			},
 			{
 				post: true, 

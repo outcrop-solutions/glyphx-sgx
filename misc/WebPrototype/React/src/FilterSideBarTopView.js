@@ -32,7 +32,6 @@ class FilterSideBarTopView extends React.Component {
 
         // Store the states of all the elements inside this data structure.
         this.state = {
-            tableName: 'GlobalAdmissions',
             topViewVisible: true,
             hideShowButtonTextFlag: true,
             menu: { open: false },
@@ -299,7 +298,7 @@ class FilterSideBarTopView extends React.Component {
 				iframe.postMessage({action:'filter',args:tempRowIds}, '*');
             },
             {post: true, 
-                data: { tableName: this.state.tableName, filterObj: this.props.filter } 
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
             }
         );
     };
@@ -324,12 +323,7 @@ class FilterSideBarTopView extends React.Component {
     onSelectTableChange = (value) => {
         this.setState({ tableSelectValues: value });
         console.log(value);
-        var url = "getdata?tablename=" + value;
-
-        //Load Table Columns
-        /*makeServerCall(url,function(res){
-            debugger;
-        })*/
+		
     };
 
 
@@ -892,7 +886,8 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
     statisticDisplay: state.filterState.ModalDisplay.statisticsModal,
-    filter: state.filterState.Filter
+    filter: state.filterState.Filter,
+	VizParams: state.filterState.VizParams
   }
 };
 
