@@ -128,6 +128,8 @@ class VisualizationView extends React.Component {
 
 
     render() {
+		var vizName = "#admissions";
+		
         return (
             <MuiThemeProvider>
                 <div style = {{ width: '100%', height: '100%' }}>
@@ -185,7 +187,7 @@ class VisualizationView extends React.Component {
                                     onLoad = { this.onLoadGlyphView.bind(this) } 
                                     title = "3D rendering engine" 
                                     style = {{ width:'100%', height:'100%', border: 'none' }} 
-                                    src = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html" 
+                                    src = {"http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html"+vizName}
                                 /> 
                             </div>
                             <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 

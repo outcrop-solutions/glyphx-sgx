@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { withRouter } from 'react-router';
 import 'font-awesome/css/font-awesome.min.css';
 
 class FloatingToggleButtons extends React.Component {
@@ -85,7 +86,10 @@ class FloatingToggleButtons extends React.Component {
         }
     }
 	
-
+	closeViz() {
+		this.props.history.push('/home');
+	}
+	
     render() {
         
 
@@ -141,9 +145,10 @@ class FloatingToggleButtons extends React.Component {
                     backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                     style = { styles.floatingMiniStyles } 
                     className = "toggleOptionsMenuItems"
+					onClick = { this.closeViz.bind(this) }
                     mini = { true }
                 >
-                    <i className = "fa fa-pencil" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                    <i className = "fa fa-times" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                 </FloatingActionButton>
             </div>
         );
@@ -190,5 +195,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the TopNav component to the redux store
  **/
-export default connect(mapStateToProps)(FloatingToggleButtons);
-
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(FloatingToggleButtons));
