@@ -102,6 +102,9 @@ class HomePage extends React.Component {
 
     render() {
 
+        //var imgsrc = "./Res/Img/notredame.png"; 
+        var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/"+window.encodeURIComponent(this.props.userInfo.institutionDir);
+
         return (
             <MuiThemeProvider style={{ height: "100%" }} >
 
@@ -132,7 +135,7 @@ class HomePage extends React.Component {
                                 <div style = {{ backgroundColor: "#ffffff" }} >
                                     <div style = {{ width: '100%', margin: "15px 0px -6px" }} >
                                         <div style = {{ width: "350px", margin: "0 auto" }}>
-                                            <img src = "./Res/Img/notredame.png" style = {{ width: 'inherit' }} alt = "University Logo" draggable = { false } className = "noselect" />
+                                            <img src = {imgsrc} style = {{ width: 'inherit' }} alt = "University Logo" draggable = { false } className = "noselect" />
                                         </div>
                                     </div>
                                 </div>
