@@ -67,7 +67,7 @@ class allViewsModal extends React.Component {
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
 			// Get the corresponding data
-			makeServerCall(window.encodeURI('/frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
+			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function(responseText) { 
 					var response = JSON.parse(responseText);
 					var preData = response.frontEndFilterData; 

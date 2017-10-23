@@ -1,5 +1,5 @@
 
-const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000" ;
+const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/" ;
 
 /**
  * This function makes a server call and returns the data returned from the server
@@ -32,6 +32,7 @@ export function makeServerCall(url,callback,options){
 
 export function httpGetRequest(saddress,callback,options){
     var xmlHttp = new XMLHttpRequest();
+    xmlHttp.withCredentials=true;
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
         {
@@ -48,6 +49,7 @@ export function httpGetRequest(saddress,callback,options){
 
 function httpPostRequest(saddress,callback,options){
     var xmlHttp = new XMLHttpRequest();
+    xmlHttp.withCredentials=true;
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
         {
@@ -68,6 +70,7 @@ export function checkUserLoggedIn(onServerError){
     var xmlHttp = new XMLHttpRequest();
     var url = serverAddress + "isUserLoggedIn";
     xmlHttp.open("GET", url, false); // true for asynchronous 
+    xmlHttp.withCredentials=true;
     xmlHttp.send(null);
     if (xmlHttp.status === 200) {
         console.log(xmlHttp.responseText);
