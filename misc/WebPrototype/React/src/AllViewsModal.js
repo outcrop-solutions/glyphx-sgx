@@ -480,11 +480,28 @@ class allViewsModal extends React.Component {
 
 	onLaunch() {
 		// Handle launch when no selections made on a column (select all unless its not allowed to select all)
-
+		var context = this;
 		//set the params to the store and then goto viz page.
-		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList, filterAllowedColumnList:  this.state.filterAllowedColumnList}));
-		this.props.dispatch(editModalDisplay(false));
-		this.props.history.push('/glyph-viewer');
+		makeServerCall('checkFrontEndFilterQuery',function(res){
+			res = JSON.parse(res);
+
+			//check if match flag is true means that at least one row was returned using the query.
+			if(res.match == true || res.match == "true")
+			{
+				context.props.dispatch(setCurrentVizParams({ tableName: context.state.table, query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList}));
+				context.props.dispatch(editModalDisplay(false));
+				context.props.history.push('/glyph-viewer');
+			}
+			else{
+				//show dialog stating that none were matched.
+				console.log('none matched!');
+			}
+			},
+			{
+				post: true, 
+				data:  { tableName: context.state.table, frontEndFilters: context.state.selectionList }
+			}
+		);
 	}
 	
 	render() {

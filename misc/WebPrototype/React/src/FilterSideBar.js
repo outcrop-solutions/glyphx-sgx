@@ -51,7 +51,7 @@ class FilterSideBar extends Component {
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
         }
 		
-		makeServerCall('applyFrontEndFilters',
+		makeServerCall('loadVisualization',
 			function(res,b,c) {
                 //hide the loadmask.
 				
@@ -71,7 +71,7 @@ class FilterSideBar extends Component {
 			},
 			{
 				post: true, 
-				data:  { tableName: this.props.VizParams.tableName, frontEndFilters: this.props.VizParams.frontEndFilters }
+				data:  { tableName: this.props.VizParams.tableName, query: this.props.VizParams.query }
 			}
 		)
     };
