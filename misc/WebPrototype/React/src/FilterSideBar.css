@@ -1,7 +1,7 @@
 
 :root {
-    --collapsible-text-color-main: white; /* the default */
-    --collapsible-text-color-sub: white; /* the default */
+    --collapsible-text-color-main:  white; /* the default */
+    --collapsible-text-color-sub:   white; /* the default */
 }
 
 .Collapsible__contentInner {
@@ -11,17 +11,17 @@
 .animate-close {
     overflow: hidden;
     -webkit-transition: height 0.3s ease-in;
-    -moz-transition: height 0.3s ease-in;
-    -o-transition: height 0.3s ease-in;
-    -ms-transition: height 0.3s ease-in;
-    transition: height 0.3s ease-in;
+    -moz-transition:    height 0.3s ease-in;
+    -o-transition:      height 0.3s ease-in;
+    -ms-transition:     height 0.3s ease-in;
+    transition:         height 0.3s ease-in;
 }
 
 .menuItemStyling {
-    font-size: 13px !important;
-    min-height: 0px !important;
-    height:25px !important;
-    line-height: 30px !important;
+    font-size:      13px !important;
+    min-height:     0px !important;
+    height:         25px !important;
+    line-height:    30px !important;
 }
 
 .cancelIconStyle {
@@ -30,13 +30,13 @@
 }
 
 .hideTopView {
-    -webkit-transform: translate(0px, -300px);
-    -moz-transform:    translate(0px, -300px);
-    -ms-transform:     translate(0px, -300px);
-    -o-transform:      translate(0px, -300px);
-    transform: translate(0px, -300px);
-    -webkit-transition:1s;
-    transition:1s;
+    -webkit-transform:  translate(0px, -300px);
+    -moz-transform:     translate(0px, -300px);
+    -ms-transform:      translate(0px, -300px);
+    -o-transform:       translate(0px, -300px);
+    transform:          translate(0px, -300px);
+    -webkit-transition: 1s;
+    transition:         1s;
 }
 
 .collapsibleHeader {

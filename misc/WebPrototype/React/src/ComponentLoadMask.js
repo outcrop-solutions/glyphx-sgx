@@ -1,13 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
 import Flexbox from 'flexbox-react';
 import './General.css';
 
 
 /**
- * 
+ * Load mask which takes the full size of the parent component.
  */
 class ComponentLoadMask extends React.Component {
 
@@ -27,6 +25,6 @@ class ComponentLoadMask extends React.Component {
 
 
 /**
- * Connects the Announcements Dialog component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default ComponentLoadMask;

@@ -1,24 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import DualListBox from 'react-dual-listbox';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FontIcon from 'material-ui/FontIcon';
-import 'font-awesome/css/font-awesome.min.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
+
 
 /**
  * This is the pop up dialog that you see when you click "pin filters" inside the pinned collapsible.
  * This class also encapsulates the dual list box.
  * @param pinnedOptions: - ADCMT
+ * @param settings: - ADCMT
+ * @param GLOBAL: - ADCMT
+ * @param dispatch: - ADCMT
+ * @param fullWidth: - ADCMT
  */
-class FilterSideBarPinningViewsDialog extends Component {
+class FilterSideBarPinningViewsDialog extends React.Component {
 
     constructor(props) {
         super(props);
         
-        // Store the states of all the elements inside this data structure.
         this.state  = {
             pinDailog: {
                 open: false,
@@ -30,6 +33,28 @@ class FilterSideBarPinningViewsDialog extends Component {
 
 
     /**
+     * React built-in which tells react if it should re-render the component
+     * @param nextProps: The props the component would have after the change
+     * @param nextState: The state the component would have after the change
+     * @returns: true if it should render and false if it shouldn't
+     **/
+    shouldComponentUpdate(nextProps, nextState){
+        return (this.state != nextState || this.props.settings != nextProps.settings);
+
+        /*
+        if (this.state != nextState) {
+            return true;
+        }
+        else if (this.props.settings != nextProps.settings) {
+            return true;
+        }
+
+        return false;
+        */
+    };
+
+
+    /**
      * This function handles the open/close of the dialog.
      * This also handles the cancel click on the dialog.
      * @param {bool} open: should the dialog be open or not
@@ -37,9 +62,10 @@ class FilterSideBarPinningViewsDialog extends Component {
      */
     handlePinDialogOpenClose = (open, extra) => {
         if (open) {
-            this.setState( {pinnedDialogPrevState: this.state.pinnedDialogSelectedValues} );
-            this.setState( {pinDailog: { open: true } }); 
+            this.setState({ pinnedDialogPrevState: this.state.pinnedDialogSelectedValues });
+            this.setState({ pinDailog: { open: true } }); 
         }
+
         else {
             if (extra ? extra.cancel : false) {
                 this.setState({ pinnedDialogSelectedValues: this.state.pinnedDialogPrevState });
@@ -62,7 +88,7 @@ class FilterSideBarPinningViewsDialog extends Component {
 		
 		// Find values that were unpinned
 		for (var i = 0; i < len; i++) {
-			if (pinnedValues.indexOf(prevSelectedValues[i]) == -1) {
+			if (pinnedValues.indexOf(prevSelectedValues[i]) === -1) {
 				unpinnedArray.push(prevSelectedValues[i]);
 			}
 		}
@@ -84,17 +110,6 @@ class FilterSideBarPinningViewsDialog extends Component {
         }
 
         this.handlePinDialogOpenClose(false);
-    };
-
-    shouldComponentUpdate(newProps, newState){
-        if (this.state != newState) {
-            return true;
-        }
-        else if (this.props.settings != newProps.settings) {
-            return true;
-        }
-
-        return false;
     };
 
     render() {
@@ -137,6 +152,8 @@ class FilterSideBarPinningViewsDialog extends Component {
 
                 <Dialog
                     title = "Pinning Views"
+                    modal = { true }
+                    open = { this.state.pinDailog.open } 
                     actions = {
                         [
                             <FlatButton
@@ -153,8 +170,7 @@ class FilterSideBarPinningViewsDialog extends Component {
                             />
                         ]
                     }
-                    modal = { true }
-                    open = { this.state.pinDailog.open } >
+                >
                         <DualListBox
                             canFilter
                             preserveSelectOrder 

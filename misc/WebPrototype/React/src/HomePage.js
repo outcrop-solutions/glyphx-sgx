@@ -22,6 +22,10 @@ import './topNav.css';
 import './General.css';
 import 'font-awesome/css/font-awesome.min.css';
 
+
+/**
+ * Main wrapper for the home page, gets placed by the router
+ */
 class HomePage extends React.Component {
 
     // 0 for start, "done" for end
@@ -29,9 +33,10 @@ class HomePage extends React.Component {
         tutorialStage: 0
     }
 
-	/**
-	 * This function is called right after the react component is mounted.
-	 * Places some css rules that depend on variable color.
+
+    /**
+	 * React built-in which is called when component mounts.
+     * Places some css rules that depend on variable color.
 	 */
     componentDidMount() {
 
@@ -42,10 +47,11 @@ class HomePage extends React.Component {
         this.setState({ height: window.innerHeight });
 
         var style = document.getElementById('themeStyles');
+
 		if (style != null){
 			style.parentElement.removeChild(style);
-			console.log('deleting old rules');
 		}
+
 		style = document.createElement("style");
 
 		// WebKit hack
@@ -87,32 +93,37 @@ class HomePage extends React.Component {
 
         style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 25);
         style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
-        
     }
 
+
+    /**
+	 * Updates tutorial stage
+     * @param stage: stage to change to
+	 */
     updateStage(stage) {
         if (stage === 10) {
             this.setState({ tutorialStage: "done" });
         }
+
         else {
             this.setState({ tutorialStage: stage });
         }
-        
     }
 
     render() {
+        var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/"+window.encodeURIComponent(this.props.userInfo.institutionDir);
 
         //var imgsrc = "./Res/Img/notredame.png"; 
         var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/"+window.encodeURIComponent(this.props.userInfo.institutionDir);
 
         return (
-            <MuiThemeProvider style={{ height: "100%" }} >
+            <MuiThemeProvider style = {{ height: "100%" }} >
 
-                <Flexbox flexDirection="column" minHeight="100vh" style={{ height: "100vh" }} >
-                    <TopNavBar homePage={ true } tutorialStage={ this.state.tutorialStage } />
+                <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh" }} >
+                    <TopNavBar homePage = { true } tutorialStage = { this.state.tutorialStage } />
 
                     {this.state.tutorialStage !== "done" ?
-                        <div style={{ height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.6)", zIndex: "100", position: "fixed" }} />
+                        <div style = {{ height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.6)", zIndex: "100", position: "fixed" }} />
                         :
                         null
                     }
@@ -125,13 +136,14 @@ class HomePage extends React.Component {
                     
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
+
                             <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }}>
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
                              </Flexbox>
-                             <Flexbox flexDirection = "column" style = {{ width: "40%" }}>
 
+                             <Flexbox flexDirection = "column" style = {{ width: "40%" }}>
                                 <div style = {{ backgroundColor: "#ffffff" }} >
                                     <div style = {{ width: '100%', margin: "15px 0px -6px" }} >
                                         <div style = {{ width: "350px", margin: "0 auto" }}>
@@ -145,8 +157,8 @@ class HomePage extends React.Component {
                                         <ViewsManager />
                                     </div>
                                 </Flexbox>
+                             </Flexbox> 
 
-                             </Flexbox>   
                              <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  >
@@ -169,15 +181,15 @@ class HomePage extends React.Component {
                                         </div>
 
                                         <AnnouncementsDisplay />
-
+            
                                     </Flexbox>
                                 </div>
                              </Flexbox>   
+
                         </Flexbox>
                     </Flexbox>
 
                 </Flexbox>
-                
           </MuiThemeProvider>
         );
     }
@@ -197,6 +209,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(HomePage);

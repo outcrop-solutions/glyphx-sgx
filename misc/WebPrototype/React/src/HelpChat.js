@@ -1,16 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
-import { Card, CardText } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
-import MenuItem from 'material-ui/MenuItem';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import Collapsible from 'react-collapsible';
-import ExpandTransition from 'material-ui/internal/ExpandTransition';
-import FontIcon from 'material-ui/FontIcon';
-import './MyViews.css';
 import './General.css';
 
 
@@ -36,6 +25,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(HelpChat);

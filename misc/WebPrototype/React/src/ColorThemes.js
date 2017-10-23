@@ -1,5 +1,4 @@
 
-
 // Will darken or lighten a color by a percent (-1.0 to 1.0) input
 function shadeHexColors(color, percent) {   
     var f = parseInt(color.slice(1),16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
@@ -252,14 +251,6 @@ const themeSettingColors = [
             deleteHover: "#b81616",
             elasticHover: "#339cee",
             rangeHover: "#339cee"
-        },
-        homePageColors: {
-            headerBackground: shadeHexColors("#9d2235", 0.1),
-            subBackground: shadeHexColors("#9d2235", 0.4),
-            funnelTop: "red",
-            funnelMiddle: "blue",
-            funnelBottom: "yellow",
-            myViewsButton: "#9d2235"
         },
         homePageColors: {
             headerBackground: shadeHexColors("#9d2235", 0.1),

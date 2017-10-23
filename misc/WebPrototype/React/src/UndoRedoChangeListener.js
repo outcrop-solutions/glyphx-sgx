@@ -5,17 +5,13 @@ import { connect } from 'react-redux';
 class UndoRedoChangeListener extends React.Component {
 
     state = {
-        history: []
+        history: [],
     }
 
-    componentDidMount() {
-        var history = this.state.history;
-        history.push(JSON.stringify(this.props.filterList));
-    }
 
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.filterList != nextProps.filterList && nextProps.lastUpdate != "snapshot") {
-            this.handleHistoryUpdate(nextProps.filterList);
+            this.handleHistoryUpdate(this.props.filterList, nextProps.filterList);
             return true;
         }
         else {
@@ -23,11 +19,11 @@ class UndoRedoChangeListener extends React.Component {
         }
     }
 
-    handleHistoryUpdate(filterList) {
+    handleHistoryUpdate(oldList, filterList) {
         var history = this.state.history;
         var jString = JSON.stringify(filterList);
 
-        if (history[history.length - 1] != jString) {
+        if (history[history.length - 1] != jString && jString !== "{}") {
 
             var position = parseInt(window.localStorage.getItem('position'), 10);
 
@@ -54,6 +50,8 @@ class UndoRedoChangeListener extends React.Component {
                     formatHistory += ("!!" + history[i]);
                 }
             }
+
+            
 
             window.localStorage.setItem('history', formatHistory);
             var newPosition = ( parseInt(window.localStorage.getItem('position'), 10) + 1 );

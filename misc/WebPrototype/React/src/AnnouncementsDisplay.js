@@ -1,24 +1,41 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { Card, CardText } from 'material-ui/Card';
 import Flexbox from 'flexbox-react';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import FilterSideBar from './FilterSideBar.js';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import CircularProgress from 'material-ui/CircularProgress';
-import StatisticModal from './StatisticModal.js'
-import TopNavBar from './TopNavBar.js';
-import FloatingToggleButtons from './FloatingToggleButtons.js';
-import GlyphLegend from './GlyphLegend.js';
-import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
 import VotingModal from './VotingModal.js';
-import 'font-awesome/css/font-awesome.min.css';
+import ComponentLoadMask from './ComponentLoadMask.js';
 import './General.css';
 
 
+/**
+ * -ADCMT
+ */
 class AnnouncementsDisplay extends React.Component {
+
+    state = {
+        loadMask: true,
+        announcements: [] //restructure announcements to be = [{date: date, type: type, message: message}, ...]
+    }
+
+
+    /**
+	 * React built-in which is called when component mounts
+	 */
+	componentDidMount() {
+
+        var context = this;
+
+
+        // Make server call to grab announcements
+        //makeServerCall(something here),
+        //    function (responseText) { 
+
+                // Post the new data to the state and hide the window load-mask
+                context.setState({ loadMask: false });
+        //   }
+        //);
+	}
+
     
     render() {
         var context = this;
@@ -35,29 +52,40 @@ class AnnouncementsDisplay extends React.Component {
                                 ["Poll", "2 Click to vote on which features you would like to see first."], 
                                 ["Shout", "2 John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."]];
 
-        var announcements = announcementList.map( function(announcement) {
-            return (
-
-                (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> : 
-                    (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
-                        (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
-                            (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
-                                "Error! Announcement Type Not Recognized!!"
-                ))))
-            )
-        });
+        var announcements = announcementList.map( 
+            function(announcement) {
+                return (
+                    (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> : 
+                        (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                            (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                                (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                                    "Error! Announcement Type Not Recognized!!"
+                                )
+                            )
+                        )         
+                    )
+                )
+            }
+        );
 
         return (
             <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
-                <div style = {{ padding: "7px" }} >
+                
+                <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
+                    <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+                </div>
+
+                <div style = {{ padding: "7px", display: (this.state.loadMask ? "none" : "") }} >
                     <div style = {{ height: "100%", overflowY: "scroll", borderRadius: "3px" }} className = "customScroll" >
                         {announcements}
                     </div>
                 </div>
+
             </Flexbox>
         );
     }
 }
+
 
 class MaintenanceAnnouncement extends React.Component {
 
@@ -280,6 +308,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(AnnouncementsDisplay));
+export default connect(mapStateToProps)(AnnouncementsDisplay);

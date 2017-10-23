@@ -1,22 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+import { makeServerCall } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Flexbox from 'flexbox-react';
 import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
-import Promise from 'bluebird';
-import { makeServerCall } from './ServerCallHelper.js';
-import { connect } from 'react-redux';
-import 'font-awesome/css/font-awesome.min.css';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
 
+
 /**
  * This is the side bar that you see on the right side of the glyph viewer screen.
- * Has no props passed down.
  */
-class FilterSideBar extends Component {
+class FilterSideBar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -39,42 +37,39 @@ class FilterSideBar extends Component {
         };
     };
 
-
-    /**
-     * Set colors of the main collapsible text and the sub collapsible text
-     */
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
-		var context = this;
+        var context = this;
         for (var i = 0; i < collapsibles.length; i++) {
             collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
         }
-		
-		makeServerCall('loadVisualization',
-			function(res,b,c) {
-                //hide the loadmask.
-				
-				if(typeof res == 'string')
-					res = JSON.parse(res);
-				
-				if(Array.isArray(res) && res.length > 0)
-				{
-					var result = context.convertToCompatibleDataObject(res);
-					context.makeFilterStructure(result);
-					context.setState({tableData: result});
-				}
-				else{
-					//0 records matched.
-					console.log('none matched');
-				}
-			},
-			{
-				post: true, 
-				data:  { tableName: this.props.VizParams.tableName, query: this.props.VizParams.query }
-			}
-		)
-    };
+        
+        makeServerCall('loadVisualization',
+            function(res,b,c) {
+               // Hide the loadmask.
+                
+                if (typeof res == 'string') {
+                    res = JSON.parse(res);
+                }
+                
+                if (Array.isArray(res) && res.length > 0) {
+                    var result = context.convertToCompatibleDataObject(res);
+                    context.makeFilterStructure(result);
+                    context.setState({tableData: result});
+                }
+                else {
+                    // 0 records matched.
+                    console.log('none matched');
+                }
+            },
+            {
+                post: true, 
+                data:  { tableName: this.props.VizParams.tableName, query: this.props.VizParams.query }
+            }
+        )
+   };
+
 
     /**
 	* This method shows a little popup alert on the left bottom screen
@@ -87,6 +82,7 @@ class FilterSideBar extends Component {
             icon: <i className="fa fa-check-circle" style={{fontSize: '2.5em',color:'green'}}></i>
         })
     };
+
 
     /**
      * This method converts the server response to the way the client can consume.
@@ -102,65 +98,60 @@ class FilterSideBar extends Component {
      *              ...
      *              },
      *      totalCount: number         
-     * 
-     *  },
-     *  colName:{},     
+     *  },   
      *  ....
      * }
      */
-    convertToCompatibleDataObject(obj){
-        var resObj = typeof obj == 'string' ? JSON.parse(obj) : obj;
+    convertToCompatibleDataObject(obj) {
+        var resObj = (typeof obj == 'string' ? JSON.parse(obj) : obj);
         var returnObj = {};
         var resObjLen = resObj.length;
         var columnObj = null;
-        var valueObj = null;
         var key = null;
         var record = null;
         var value = "";
         var keys = Object.keys(resObj[0]);
         var allowedColumns = this.props.VizParams.filterAllowedColumnList ? this.props.VizParams.filterAllowedColumnList : null;
-        var keyLen = keys.length;
 
-        keys.forEach(function(val){
-            if(allowedColumns.indexOf(val) > -1)
-            {
-                returnObj[val] = {
-                    values: {},
-                    totalCount: 0,
-                    flatValues : []
+        keys.forEach(
+            function(val) {
+                if (allowedColumns.indexOf(val) > -1) {
+                    returnObj[val] = {
+                        values: {},
+                        totalCount: 0,
+                        flatValues : []
+                    }
                 }
             }
-            
-        })
+        );
         
         var newKeys = Object.keys(returnObj);
 
-        for(var recIndex=0;recIndex<resObjLen;recIndex++)
-        {
-            for(var colIndex=0;colIndex<newKeys.length;colIndex++)
-            {
-                key = newKeys[colIndex];//This is the current column name.
-                record = resObj[recIndex];//This is the record inside response data.
-                columnObj = returnObj[key]; //this is the column object of the returnObj;
-                value = record[key]; //this is the value inside server response data obj.
+        for (var recIndex = 0; recIndex < resObjLen; recIndex++) {
+            for (var colIndex = 0; colIndex < newKeys.length; colIndex++) {
+                key = newKeys[colIndex];    // Current column name
+                record = resObj[recIndex];  // Record inside response data
+                columnObj = returnObj[key]; // Column object of the returnObj
+                value = record[key];        // Value inside server response data obj
                 columnObj.totalCount++;
-                if(columnObj.values.hasOwnProperty(value))
-                {
+
+                if (columnObj.values.hasOwnProperty(value)) {
                     ++columnObj.values[value].count; 
                 }
-                else{
+                else {
                     columnObj.flatValues.push(value);
                     columnObj.values[value] = {
                         value: value,
                         count: 1,
                         recId: recIndex
-                    }
+                    };
                 }
             }
         }
 
         return returnObj;
     }
+
 
     /**
      * This method constructs the structure of the Filter that is saved in the store and accessed everywhere throughout the applciation.
@@ -169,7 +160,7 @@ class FilterSideBar extends Component {
     makeFilterStructure = (Obj) => {
         var returnObj = {};
         
-        for(var property in Obj){
+        for (var property in Obj) {
            
             var columnObj = Obj[property];
             var columnName = property;
@@ -179,7 +170,6 @@ class FilterSideBar extends Component {
 
             if (type === "Number") {
                 var minMax = this.findMinMax( columnObj.flatValues );
-
                 range = [minMax.min, minMax.max, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false];
             }
             
@@ -213,6 +203,7 @@ class FilterSideBar extends Component {
      */
     generateDisplayName = (str) => {
         return str.replace(new RegExp("_", 'g'), " ");
+
         /*
         var newString = str.charAt(0);
         var len = str.length;
@@ -249,8 +240,9 @@ class FilterSideBar extends Component {
         };
 
         for (var i = 0; i < len; i++) {
-            if(arrValues[i] == '')
+            if (arrValues[i] == '') {
                 continue;
+            }
 
             if (arrValues[i] > obj.max) {
                 obj.max = arrValues[i];
@@ -286,6 +278,7 @@ class FilterSideBar extends Component {
 			collapseTopViewButton.style.transform = '';
 		    this.refs['topCollapisble'].openCollapsible();
 		}
+
         else {
 			collapseTopViewButton.style.transform = 'rotateZ(180deg)';
 		    this.refs['topCollapisble'].closeCollapsible();
@@ -298,80 +291,89 @@ class FilterSideBar extends Component {
             <Flexbox 
                 flexDirection = "column"
                 flexGrow = {1}
+                id = "FilterWindowOuterContiner"
                 style = {{ 
                     height: "100%",
                     overflow:'hidden',
                     transition: '1s'
                 }}
-                id = "FilterWindowOuterContiner"
             >
-                     {/* TOP SECTION */}
-                    <div>
-                        <AlertContainer ref = { a => this.msg = a } />
-                    </div>
+                {/* TOP SECTION */}
+                <div>
+                    <AlertContainer ref = { a => this.msg = a } />
+                </div>
 
-                    <Collapsible
-                        transitionTime = {200} 
-                        open = { true }
-                        triggerDisabled = { true }
-                        contentInnerClassName  = "Flex__layout-column"
-                        ref = 'topCollapisble'
-						triggerClassName = 'noHeaderTrigger cursorNormal'
-						triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
-                        contentOuterClassName = "cursorNormal"
-                        overflowWhenOpen = "visible"
-                    >
+                <Collapsible
+                    transitionTime = {200} 
+                    open = { true }
+                    triggerDisabled = { true }
+                    contentInnerClassName  = "Flex__layout-column"
+                    ref = 'topCollapisble'
+                    triggerClassName = 'noHeaderTrigger cursorNormal'
+                    triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
+                    contentOuterClassName = "cursorNormal"
+                    overflowWhenOpen = "visible"
+                >
 
-                        <FilterSideBarTopView 
-                            initParams = { this.state.topViewInitParams } 
-                            colList = { colList } 
-                            showAlert = { (strMsg) => this.showAlert(strMsg) }
-                        />
-
-                    </Collapsible>
-                
-					{/* COLLAPSE TOP SECTION BUTTON */}
-                    <RaisedButton 
-                        fullWidth = { true } 
-                        primary = { true } 
-                        onClick = { this.toggleTopView.bind(this) }
-                        buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
-                        style = {{ height: '20px', margin: "0px 0px 1px 1px" }}>
-                        <i 
-                            id = "collapseTopViewButton" 
-                            className = "fa fa-caret-up" 
-                            style = {{
-                                fontSize: '1.6em',
-                                color: this.props.settings.colors.hideTopViewButtonColor.icon,
-                                transition: 'transform 500ms'
-                            }}
-                        /> 
-                    </RaisedButton>
-
-                    {/* BOTTOM SECTION */}
-                    
-                    <FilterSideBarBottomView 
-                        ref = "bottom"
-                        tableData = { this.state.tableData }
+                    <FilterSideBarTopView 
+                        initParams = { this.state.topViewInitParams } 
+                        colList = { colList } 
+                        showAlert = { (strMsg) => this.showAlert(strMsg) }
                     />
 
-                </Flexbox>
+                </Collapsible>
+            
+                {/* COLLAPSE TOP SECTION BUTTON */}
+                <RaisedButton 
+                    fullWidth = { true } 
+                    primary = { true } 
+                    onClick = { this.toggleTopView.bind(this) }
+                    buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
+                    style = {{ height: '20px', margin: "0px 0px 1px 1px" }}
+                >
+                    <i 
+                        id = "collapseTopViewButton" 
+                        className = "fa fa-caret-up" 
+                        style = {{
+                            fontSize: '1.6em',
+                            color: this.props.settings.colors.hideTopViewButtonColor.icon,
+                            transition: 'transform 500ms'
+                        }}
+                    /> 
+                </RaisedButton>
+
+                {/* BOTTOM SECTION */}
+                
+                <FilterSideBarBottomView ref = "bottom" tableData = { this.state.tableData } />
+
+            </Flexbox>
         );
     }
 }
 
 
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
 export const init = (storeFilterStruc) => ({
   type: 'INIT',
   storeFilterStruc
 });
 
+
+/**
+ * Maps portions of the store to props of your choosing
+ * @param state: passed down through react-redux's 'connect'
+ **/
 const mapStateToProps = function(state){
   return {
-    GLOBAL: state.filterState.Filter,
     settings: state.filterState.Settings,
 	VizParams: state.filterState.VizParams
   }
 };
 
+
+/**
+ * Connects the redux store to get access to global states.
+ **/
 export default connect(mapStateToProps)(FilterSideBar);

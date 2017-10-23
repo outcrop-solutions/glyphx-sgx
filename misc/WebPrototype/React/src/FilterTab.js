@@ -1,13 +1,23 @@
 import React from 'react';
-import {Tabs, Tab} from 'material-ui/Tabs';
+import { connect } from 'react-redux';
+import { Tabs, Tab } from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import ScrollIntoView from 'scroll-into-view-if-needed';
 import FontIcon from 'material-ui/FontIcon';
 import FilterTable from './FilterTable.js';
 import NumberRangeTable from './NumberRange.js';
 import TextRangeTable from './TextRange.js';
-import { connect } from 'react-redux';
 
+
+
+/**
+ * Tabs which contain the elastic table and ranges for a given column.
+ * @param internalColName: unformatted column name.
+ * @param displayName: column name formatted for display.
+ * @param id: ID corresponding to that column.
+ * @param data: data corresponding to that column.
+ * @param open: determines if the tab should render (not to slow down the page).
+ */
 class FilterTabs extends React.Component {
 
     constructor(props) {
@@ -21,40 +31,56 @@ class FilterTabs extends React.Component {
         };
     };
 
+
+    /**
+     * Hide the main scrollbar when hovering inside the range table while the range table has a scrollbar itself
+     * Only hides if the setting is enabled
+     */
     mouseIn = () => {
-        var elements = document.getElementsByClassName(this.props.id + "-R");
-        console.log(elements[0].scrollHeight)
-        if (elements[0].scrollHeight > 345) {
+        if (this.props.settings.hideScrollHover) {
+            var elements = document.getElementsByClassName(this.props.id + "-R");
+            if (elements[0].scrollHeight > 345) {
+                var scrollDiv = document.getElementsByClassName("sidenavbar");
+                scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+            }
+        } 
+    }
+
+
+    /**
+     * Show the main scrollbar when exiting from the hover
+     */
+    mouseOut = () => {
+        if (this.props.settings.hideScrollHover) {
             var scrollDiv = document.getElementsByClassName("sidenavbar");
-            scrollDiv[0].setAttribute("class", "sidenavbar disableScroll");
+            scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
         }
-        
     }
 
-    mouseOut = () => {        
-        var scrollDiv = document.getElementsByClassName("sidenavbar");
-        scrollDiv[0].setAttribute("class", "sidenavbar enableScroll");
-    }
 
+    /**
+     * Enables the switching between tabs through the state
+     * @param value: 
+     */
     handleChange = (value) => {
+        this.setState({ slideIndex: value }, 
+            function() {
+                if (value === 0) {
+                    if (document.getElementById(this.state.tableID)) {
+                        document.getElementById(this.state.rangeID).style.maxHeight = "0px";
+                        document.getElementById(this.state.tableID).style.maxHeight = "393px";
+                        this.scroll(this.state.tableID);
+                    }
+                }
 
-        this.setState({ slideIndex: value }, function() {
-            console.log(value);
-            if (value === 0) {
-                if (document.getElementById(this.state.tableID)) {
-                    document.getElementById(this.state.rangeID).style.maxHeight = "0px";
-                    document.getElementById(this.state.tableID).style.maxHeight = "393px";
-                    this.scroll(this.state.tableID);
+                else {
+                    if (document.getElementById(this.state.rangeID)) {
+                        document.getElementById(this.state.tableID).style.maxHeight = "0px";
+                        document.getElementById(this.state.rangeID).style.maxHeight = "345px";
+                    }
                 }
             }
-            else {
-                if (document.getElementById(this.state.rangeID)) {
-                    document.getElementById(this.state.tableID).style.maxHeight = "0px";
-                    document.getElementById(this.state.rangeID).style.maxHeight = "345px";
-                }
-            }
-        });
-
+        );
     };
 
 
@@ -70,8 +96,10 @@ class FilterTabs extends React.Component {
         if (element) {
             ScrollIntoView(element, false, { duration: 150 });
         }
-        else
+
+        else {
             return false;
+        }
     }
 
 
@@ -80,10 +108,7 @@ class FilterTabs extends React.Component {
             <div>
                 {this.props.open ? 
                 <div>
-                    <Tabs
-                        onChange = { (value) => this.handleChange(value, this) }
-                        value = { this.state.slideIndex }
-                    >
+                    <Tabs onChange = { (value) => this.handleChange(value, this) } value = { this.state.slideIndex } >
                         <Tab 
                             label = "Elastic" 
                             value = { 0 }
@@ -101,19 +126,12 @@ class FilterTabs extends React.Component {
                     <SwipeableViews
                         index = { this.state.slideIndex }
                         onChangeIndex = { this.handleChange }
-
                         style = {{
                             overflowY: "hidden",
                             padding: "0px"
                         }}           
                     >
-                        <div
-                            id = { this.state.tableID }
-                            style = {{
-                                maxHeight: "393px",
-                                overflow: "hidden"
-                            }}
-                        >
+                        <div id = { this.state.tableID } style = {{ maxHeight: "393px", overflow: "hidden" }} >
                             <FilterTable 
                                 internalColName = { this.props.internalColName } 
                                 displayName = { this.props.displayName } 
@@ -123,33 +141,36 @@ class FilterTabs extends React.Component {
                                 tableID = { this.state.tableID }
                             />
                         </div>
+
                         <div
                             id = { this.state.rangeID }
+                            className = {this.props.id + "-R"}
+                            onMouseEnter = { this.mouseIn }
+                            onMouseLeave = { this.mouseOut }
                             style = {{
                                 maxHeight: "355px",
                                 overflowX: "hidden",
                                 marginTop: "17px"
                             }}
-                            onMouseEnter = { this.mouseIn }
-                            onMouseLeave = { this.mouseOut }
-                            className = {this.props.id + "-R"}
                         >
                             {this.props.filterList[this.props.id].type === "Number" ? 
-                                    <NumberRangeTable 
+                                <NumberRangeTable 
+                                    colName = { this.props.id } 
+                                    data = { this.state.tableData.flatValues } 
+                                    minVal = { this.props.filterList[this.props.id].bounds[0] } 
+                                    maxVal = { this.props.filterList[this.props.id].bounds[1] }
+                                /> 
+                                : 
+                                (this.props.filterList[this.props.id].type === "Text" ? 
+                                    <TextRangeTable 
                                         colName = { this.props.id } 
                                         data = { this.state.tableData.flatValues } 
-                                        minVal = { this.props.filterList[this.props.id].bounds[0] } 
-                                        maxVal = { this.props.filterList[this.props.id].bounds[1] }
-                                    /> : 
-                                (this.props.filterList[this.props.id].type === "Text" ? 
-                                        <TextRangeTable 
-                                            colName = { this.props.id } 
-                                            data = { this.state.tableData.flatValues } 
-                                        /> :  
-                                "TODO: Add Date Range Here") 
+                                    /> 
+                                    :  
+                                    "TODO: Add Date Range Here"
+                                ) 
                             }
                             
-
                         </div>
                     </SwipeableViews>
                 </div>
@@ -161,8 +182,9 @@ class FilterTabs extends React.Component {
     }
 }
 
+
 /**
- * maps portions of the store to props of your choosing
+ * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state){
@@ -174,6 +196,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * connects the FilterTabs component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(FilterTabs);
+export default connect(mapStateToProps)(FilterTabs);

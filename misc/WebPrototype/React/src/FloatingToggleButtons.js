@@ -1,12 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import { withRouter } from 'react-router';
-import 'font-awesome/css/font-awesome.min.css';
 
+
+/**
+ * -ADCMT
+ * @param topNavBarHeight: -ADCMT
+ */
 class FloatingToggleButtons extends React.Component {
-    
-	//initial state of the component.
+
 	state = {
 		fullScreenMode: false,
     };
@@ -20,17 +22,19 @@ class FloatingToggleButtons extends React.Component {
         var len = menuItems.length;
         var translate = 70; // as the 1st menu button should be little more higher than the spacing between the buttons.
 
-        if( this.state.menuOpen) {
+        if (this.state.menuOpen) {
             for (var i = 0; i < len; i++) {
                 menuItems[i].style.transform = '';
             }
             this.setState({ menuOpen: false });
         }
+
         else {
             for (var j = 0; j < len; j++) {
-                menuItems[j].style.transform = 'translate(0px,-'+translate+'px)';
+                menuItems[j].style.transform = 'translate(0px,-' + translate + 'px)';
                 translate = translate + 50;
             }
+
             this.setState({ menuOpen: true });
         }
     }
@@ -38,9 +42,9 @@ class FloatingToggleButtons extends React.Component {
 
 	/**
 	 * This function toggles the full screen mode of the glyphviewer(iframe).
-	 * @param {object} event- event object.
+	 * @param {object} e: event object.
 	 */
-	toggleFullScreenMode(e){
+	toggleFullScreenMode(e) {
         var topNav = document.getElementById('TopNav');
 		var filterNav = document.getElementById("filterNav");
         var gv = document.getElementById('GlyphViewerContainer');
@@ -63,6 +67,7 @@ class FloatingToggleButtons extends React.Component {
 
 			this.setState({fullScreenMode: true});
 		}
+
 		else {
 			//Update the glyphviewer
             topNav.style.height = this.props.topNavBarHeight + "px";
@@ -76,23 +81,23 @@ class FloatingToggleButtons extends React.Component {
 			this.setState({fullScreenMode: false});
 		}
     }
+    
 
-    toggleLegend(){
+    /**
+	 * Toggles visibility of the draggable glyph legend
+	 */
+    toggleLegend() {
 		if (this.props.legendDisplay) {
             this.props.dispatch(editModalDisplay(false));
         }
+
         else {
             this.props.dispatch(editModalDisplay(true));
         }
     }
-	
-	closeViz() {
-		this.props.history.push('/home');
-	}
+
 	
     render() {
-        
-
         return (
             <div>
                 {/* Main Floating Button */}
@@ -132,24 +137,6 @@ class FloatingToggleButtons extends React.Component {
                     <i className = "fa fa-eye" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                 </FloatingActionButton>
 
-                <FloatingActionButton 
-                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                    style = { styles.floatingMiniStyles } 
-                    className = "toggleOptionsMenuItems"
-                    mini = { true }
-                >
-                    <i className = "fa fa-video-camera" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
-                </FloatingActionButton>
-
-                <FloatingActionButton 
-                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                    style = { styles.floatingMiniStyles } 
-                    className = "toggleOptionsMenuItems"
-					onClick = { this.closeViz.bind(this) }
-                    mini = { true }
-                >
-                    <i className = "fa fa-times" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
-                </FloatingActionButton>
             </div>
         );
     }
@@ -193,6 +180,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(FloatingToggleButtons));
+export default connect(mapStateToProps)(FloatingToggleButtons);
