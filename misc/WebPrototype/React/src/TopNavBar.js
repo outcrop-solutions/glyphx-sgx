@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {Toolbar, ToolbarGroup, ToolbarSeparator} from 'material-ui/Toolbar';
+import { withRouter } from 'react-router';
+import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import List from 'material-ui/List/List';
-import {withRouter} from 'react-router';
 import ListItem from 'material-ui/List/ListItem';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
@@ -28,9 +28,8 @@ class TopNavBar extends React.Component {
         userProfileMenuOpen:false,
         userInfoAnchorEl: {},
         displayAnnouncementsCheckbox: true,
-        imgLogoSrc: <a href = "http://www.glyphed.co/" target = "_blank" rel = "noopener noreferrer" draggable = { false } >
-						<img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
-					</a>
+        imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
+
     };
     
     logout = () => {
@@ -102,7 +101,7 @@ class TopNavBar extends React.Component {
             >
                 {/* Logo */}
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
-                    <span style = {{ cursor: 'pointer' }} >
+                    <span style = {{ cursor: 'pointer' }} onClick = { () => this.props.history.push('/home') } >
                         {this.state.imgLogoSrc}
                     </span>
                 </ToolbarGroup>
@@ -213,4 +212,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the TopNav component to the redux store
  **/
-export default withRouter(connect(mapStateToProps)(TopNavBar));
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(TopNavBar));

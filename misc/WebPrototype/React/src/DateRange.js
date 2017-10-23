@@ -8,7 +8,6 @@ import { Card, CardText } from 'material-ui/Card';
 import { red500, blue500 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
-import 'font-awesome/css/font-awesome.min.css';
 
 
 /**

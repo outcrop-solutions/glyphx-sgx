@@ -6,9 +6,9 @@ import Checkbox from 'material-ui/Checkbox';
 
 
 /**
- * This class represents the alerts dialog that can be used to send the user information about updates and latest news.
+ * This class represents the alerts dialog that can be used to send the user notifications for chat messages and user feed posts.
  * Initially when the application is first loaded, this will make a server call to check for important updates and show it to the user upon login.
- * However, this can be used even after that. On click of the notification(bell) icon on the toolbar this will get displayed.
+ * On click of the notification(bell) icon on the toolbar this will get displayed.
  * @param checkBoxDisplay: -ADCMT
  */
 class AlertsModal extends React.Component {
@@ -22,6 +22,18 @@ class AlertsModal extends React.Component {
 			displayText: serverResponse.textToDisplay,
 			shouldBeDisplayed: (serverResponse.textToDisplay === "" || serverResponse.textToDisplay == null) ? false : true,
 			forceDisplayAfterLogin: serverResponse.forceDisplayAfterLogin
+		}
+	}
+
+
+	/**
+	 * React built-in which is called when component mounts
+	 * This function checks to see if there is any notification and hides/shows the icon.
+	 */
+	componentDidMount() {
+		var notificationBadge = document.getElementById('notificationBadge');
+		if (!this.state.shouldBeDisplayed && notificationBadge) {
+			notificationBadge.style.display = 'none';
 		}
 	}
 
@@ -43,23 +55,11 @@ class AlertsModal extends React.Component {
 
 	
 	/**
-	 * On application startup, there is a badge on the notification icon.
-	 * This function checks to see if there is any notification and hides/shows the icon.
-	 */
-	componentDidMount() {
-		var notificationBadge = document.getElementById('notificationBadge');
-		if (!this.state.shouldBeDisplayed && notificationBadge) {
-			notificationBadge.style.display = 'none';
-		}
-	}
-
-	
-	/**
 	 * This function is called on click of "OK" on the dialog box.
 	 * It checks whether the checkbox for "do not show me this message again" is checked.
 	 * If yes then sends a server call to update the information on the server.
 	 */
-	onOkAlerts = (evt) => {
+	onOkAlerts = () => {
 		var notificationBadge = document.getElementById('notificationBadge');
 		console.log('Alerts seen');
 		
@@ -76,10 +76,20 @@ class AlertsModal extends React.Component {
 	}
 	
 	
-	render(){
+	render() {
+		var checkBox = (
+			<Checkbox
+				iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}
+				ref = "dontDisplayAgain"
+				label = "Don't show this message again."
+			/>
+		);
+
 		return(
 			<Dialog
 				title = "Alerts"
+				modal = { true }
+				open = { this.props.alertsDisplay }
 				actions = {
 					[
 						<FlatButton
@@ -90,18 +100,11 @@ class AlertsModal extends React.Component {
 						/>
 					]
 				}
-				modal = { true }
-				open = { this.props.alertsDisplay }
 			>
 				<label><h4> {this.state.displayText === "" ? "No Alerts." : this.state.displayText} </h4></label>
 					
-					{this.props.checkBoxDisplay ? 
-						<Checkbox
-							iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}
-							ref = "dontDisplayAgain"
-							label = "Don't show this message again."
-						/> 
-					: null}
+				{this.props.checkBoxDisplay ? checkBox : null}
+
 			</Dialog>
 		);
 	}
@@ -130,6 +133,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Alerts Dialog component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(AlertsModal);
+export default connect(mapStateToProps)(AlertsModal);

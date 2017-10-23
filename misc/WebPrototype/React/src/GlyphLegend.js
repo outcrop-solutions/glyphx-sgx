@@ -2,20 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import FontIcon from 'material-ui/FontIcon';
 import Rnd from 'react-rnd';
-import 'font-awesome/css/font-awesome.min.css';
 import './statisticModal.css';
 
+
+/**
+ * Draggable glyph legend
+ * @param {function(bool)} handleCorrection: hide/show an invisible div over iframe
+ */
 class GlyphLegend extends React.Component {
 
     render() {
         return (
-            <Rnd
-                default = {{
-                    x: 10,
-                    y: 10,
-                    width: 324,
-                    height: 233,
-                }}
+            <Rnd 
+                default = {{ x: 10, y: 10, width: 324, height: 233 }}
                 z = { 1000 }
                 enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
                 style = {{
@@ -35,9 +34,16 @@ class GlyphLegend extends React.Component {
                             onClick = { () => this.props.dispatch(editModalDisplay(false)) } 
                         />
                     </div>
+
                     <div style = {{ width: "320px", margin: "0 auto" }} >
-                        <img src = "./Res/Img/SampleLegend.png" style = {{ width: '320px', borderBottomRightRadius: "7px", borderBottomLeftRadius: "7px", marginTop: "-1px" }} alt = "Legend" className = "legendImage" />
+                        <img 
+                            src = "./Res/Img/SampleLegend.png" 
+                            style = {{ width: '320px', borderBottomRightRadius: "7px", borderBottomLeftRadius: "7px", marginTop: "-1px" }} 
+                            alt = "Legend" 
+                            className = "legendImage" 
+                        />
                     </div>
+
                 </div>
             </Rnd>
         );
@@ -67,6 +73,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(GlyphLegend);

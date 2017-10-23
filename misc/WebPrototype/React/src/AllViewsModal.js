@@ -1,20 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { makeServerCall } from './ServerCallHelper.js';
 import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import { makeServerCall } from './ServerCallHelper.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
-import Tooltip from 'rc-tooltip';
 import './General.css';
 
 
 /**
  * This component handles the front-end filters
  * @param type: string name of the selection made
+ * @param typeURL: URL corresponding with the type to make backend call
  */
 class allViewsModal extends React.Component {
 
@@ -29,23 +29,35 @@ class allViewsModal extends React.Component {
 		loadMask: true
 	}
 	
+
+	/**
+	 * React built-in which is called when component mounts
+	 */
 	componentDidMount() {
 		// Mouseup listener used to handle click drag selection
 		window.onmouseup = this.handleMouseUp.bind(this);
 	}
+	
 
+	/**
+	 * React built-in which is called when component unmounts
+	 */
 	componentWillUnmount() {
+		// Removing listener so it doesnt linger across the site
 		window.onmouseup = null;
 	}
 
 
 	/**
-     * Tells react if it should re-render the component
+     * React built-in which tells react if it should re-render the component
      * @param nextProps: The props the component would have after the change
      * @param nextState: The state the component would have after the change
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
+		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data || this.props.allViewsDisplay !== nextProps.allViewsDisplay);
+
+		/*
         if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
             return true;
         }
@@ -55,33 +67,47 @@ class allViewsModal extends React.Component {
 		}
 
         return false;
+		*/
     };
 
-	componentWillReceiveProps(nextProps) {
-        if (nextProps.typeURL != this.props.typeURL) {
 
+	/**
+     * React built-in which acts as a listener for when props change
+     * @param nextProps: The props the component would have after the change
+     **/
+	componentWillReceiveProps(nextProps) {
+
+		// Only care if URL changes because then new data needs to be loaded
+        if (nextProps.typeURL !== this.props.typeURL) {
+
+			// Show the window load-mask as backend call is being made
 			this.setState({ loadMask: true });
 
             var context = this;
-			
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
-			// Get the corresponding data
-			makeServerCall(window.encodeURI('/frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
-				function(responseText) { 
+			// Get the data corresponding to the URL
+			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
+				function (responseText) { 
 					var response = JSON.parse(responseText);
 					var preData = response.frontEndFilterData; 
 					var data = [];
 					var selectAll = {};
 					var keyArray = Object.keys(preData);
+
+					// Seperate and store the actual data and the selectAll boolean of each column
 					for (var i = 0; i < keyArray.length; i++) {
 						var dataCol = [keyArray[i]];
 						selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
+
 						for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
 							dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
 						}
+
 						data.push(dataCol);
 					}
+
+					// Post the new data to the state and hide the window load-mask
 					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false });
 				}
 			);
@@ -90,7 +116,7 @@ class allViewsModal extends React.Component {
 
 
 	/**
-	 * Resets the drag type on mouse up
+	 * Resets the drag state on mouse up since dragging has stopped
 	 */
 	handleMouseUp() {
 		if (this.props.allViewsDisplay) {
@@ -100,7 +126,7 @@ class allViewsModal extends React.Component {
 
 
 	/**
-	 * Closes the modal
+	 * Closes the modal through the redux store
 	 */
 	handleBackClick = () => {
 		this.props.dispatch(editModalDisplay(false));
@@ -109,8 +135,12 @@ class allViewsModal extends React.Component {
 
 	/**
 	 * Handles select all and deselect all for individual columns
+	 * @param col: [colName, val1, val2, val3, ...]
+	 * @param action: "select" / "deselect"
 	 */
 	selectDeselectCol(col, action) {
+
+		// If the selectAll value for the column allows select all or you're trying to deselect all
 		if (this.state.selectAll[col[0]] === "true" || action !== "select") {
 			var sList = this.state.selectionList.slice();
 			var index = this.checkSelected([col[0], col[1]], sList);
@@ -129,6 +159,7 @@ class allViewsModal extends React.Component {
 					sList.splice(index[0], 1);
 				}
 			}
+
 			this.setState({ selectionList: sList });
 		}
 	}
@@ -136,17 +167,20 @@ class allViewsModal extends React.Component {
 
 	/**
 	 * Handles select all and deselect all for all the columns
+	 * @param data: Array which contains arrays corresponding to each column
+	 * @param action: "select" / "deselect"
 	 */
 	selectDesectAll(data, action) {
 		if (action === "deselect") {
 			this.setState({ selectionList: [] });
 		}
+
 		else {
 			var sList = [];
 			for (var i = 0; i < data.length; i++) {
 				if (this.state.selectAll[data[i][0]] === "true") {
 					var newList = [data[i][0]];
-					
+
 					for (var j = 1; j < data[i].length; j++) {
 						newList.push(data[i][j]);
 					}
@@ -160,11 +194,14 @@ class allViewsModal extends React.Component {
 
 	/**
 	 * Handles click selection
+	 * @param selection: [colName, selectionName]
+	 * @param e: event instance which contains information about the click
 	 */
 	toggleSelection(selection, e) {
 		var sList = this.state.selectionList.slice();
 		var index = this.checkSelected(selection, sList);
 
+		// Allow multiselection so long as the selectAll is allowed for that column and the ctrl key is pressed
 		if ( !e.ctrlKey || !(this.state.selectAll[selection[0]] === "true") ) {
 			if (index !== false) {
 				sList.splice(index[0], 1);
@@ -182,24 +219,28 @@ class allViewsModal extends React.Component {
 		else {
 			if (this.state.dragState === 0) {
 				this.setState({ dragState: true, selection: selection });
+
 				if (index !== false) {
 					sList[index[0]].push(selection[1]);
 				}
-
 				else {
 					sList.push( [selection[0], selection[1]] );
 				}
 			}
 		}
+
 		this.setState({ selectionList: sList });
 	}
 
 
 	/**
 	 * Handles drag selection
+	 * @param selection: [colName, selectionName]
 	 */
 	toggleDragSelection(selection) {
+		// Only allow drag if that column allows selectAll
 		if (this.state.selectAll[selection[0]] === "true") {
+			var i, val, tempIndex;
 			var sList = this.state.selectionList.slice();
 			var index = this.checkSelected(selection, sList);
 
@@ -218,9 +259,9 @@ class allViewsModal extends React.Component {
 
 						// Remove all values between match and start of drag (incase one is missed)
 						if (newSelectionIndex[1] > oldSelectionIndex[1]) {
-							for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
-								var val = this.state.data[newSelectionIndex[0]][i];
-								var tempIndex = sList[index[0]].indexOf(val);
+							for (i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
+								val = this.state.data[newSelectionIndex[0]][i];
+								tempIndex = sList[index[0]].indexOf(val);
 								if (tempIndex !== -1) {
 									sList[index[0]].splice(tempIndex, 1)
 								}
@@ -228,9 +269,9 @@ class allViewsModal extends React.Component {
 						}
 
 						else {
-							for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
-								var val = this.state.data[newSelectionIndex[0]][i];
-								var tempIndex = sList[index[0]].indexOf(val);
+							for (i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
+								val = this.state.data[newSelectionIndex[0]][i];
+								tempIndex = sList[index[0]].indexOf(val);
 								if (tempIndex !== -1) {
 									sList[index[0]].splice(tempIndex, 1)
 								}
@@ -241,6 +282,7 @@ class allViewsModal extends React.Component {
 
 				else {
 					if (this.state.dragState === true) {
+
 						// Match not found but col exists
 						if (index !== false) {
 
@@ -249,26 +291,26 @@ class allViewsModal extends React.Component {
 							
 							// Add all values between match and start of drag (incase one is missed)
 							if (newSelectionIndex[1] > oldSelectionIndex[1]) {
-								for (var i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
-									var val = this.state.data[newSelectionIndex[0]][i];
+								for (i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
+									val = this.state.data[newSelectionIndex[0]][i];
 									if (sList[index[0]].indexOf(val) === -1) {
-										sList[index[0]].push(val)
+										sList[index[0]].push(val);
 									}
 								}
 							}
 
 							else {
-								for (var i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
-									var val = this.state.data[newSelectionIndex[0]][i];
+								for (i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
+									val = this.state.data[newSelectionIndex[0]][i];
 									if (sList[index[0]].indexOf(val) === -1) {
-										sList[index[0]].push(val)
+										sList[index[0]].push(val);
 									}
 								}
 							}
 						}
 
 						else {
-							sList.push( [selection[0], selection[1]] );
+							sList.push([selection[0], selection[1]]);
 						}
 					}
 				}
@@ -299,6 +341,7 @@ class allViewsModal extends React.Component {
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -314,28 +357,31 @@ class allViewsModal extends React.Component {
 				if (sList[i].indexOf(array[1]) !== -1) {
 					return true;
 				}
-				else {
-					return false;
-				}
+				return false;
 			}
 		}
 		return false;
 	}
 
 
+	/**
+	 * Determines if the launch button should be disabled or not
+	 */
 	shouldLaunchBeDisabled() {
+		var i;
 		var selectAll = this.state.selectAll;
 		var sList = this.state.selectionList;
 		var keys = Object.keys(selectAll);
 		var notSelectAll = [];
-		for (var i = 0; i < keys.length; i++) {
+		
+		for (i = 0; i < keys.length; i++) {
 			if (selectAll[keys[i]] === "false") {
 				notSelectAll.push(keys[i]);
 			}
 		}
 
 		if (notSelectAll.length > 0) {
-			for (var i = 0; i < notSelectAll.length; i++) {
+			for (i = 0; i < notSelectAll.length; i++) {
 				var shouldBeDisabled = true;
 				for (var j = 0; j < sList.length; j++) {
 					if (notSelectAll[i] === sList[j][0]) {
@@ -363,7 +409,7 @@ class allViewsModal extends React.Component {
      * @param id: This is the id used to identify the table and the textfield.
      */
 	onBlurMultiSearch = (context, id) => {
-		var i;
+		var i, j;
 
 		// Search box
         var input = document.getElementById("tf-" + id);
@@ -426,7 +472,7 @@ class allViewsModal extends React.Component {
 					if (seconds + 2 < seconds2) {
 
 						// Hide all records that were displayed
-						for (var j = 0; j < tr.length; j++) {
+						for (j = 0; j < tr.length; j++) {
 							tr[j].style.display = "none";
 						}
 
@@ -439,7 +485,7 @@ class allViewsModal extends React.Component {
 
 				var shouldBeVisible = false;
 				
-				for (var j = 0; j < filterValues.length; j++) {
+				for (j = 0; j < filterValues.length; j++) {
 					// If there is a space in the search term then search the full text for it
 					if (filterValues[j].includes(" ")) {
 						if (tr[i].innerHTML.toUpperCase().indexOf(filterValues[j]) !== -1) {
@@ -477,16 +523,35 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-
 	onLaunch() {
-		// Handle launch when no selections made on a column (select all unless its not allowed to select all)
+        // Handle launch when no selections made on a column (select all unless its not allowed to select all)
 
-		//set the params to the store and then goto viz page.
-		this.props.dispatch(setCurrentVizParams({ tableName: this.state.table, frontEndFilters: this.state.selectionList, filterAllowedColumnList:  this.state.filterAllowedColumnList}));
-		this.props.dispatch(editModalDisplay(false));
-		this.props.history.push('/glyph-viewer');
-	}
-	
+
+        var context = this;
+
+        makeServerCall('checkFrontEndFilterQuery',
+			function(res){
+				res = JSON.parse(res);
+
+				// Check if match flag is true means that at least one row was returned using the query.
+				if (res.match == true || res.match == "true") {
+					// Set the params to the store and then goto viz page.
+					context.props.dispatch(setCurrentVizParams({ tableName: context.state.table, query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList}));
+					context.props.dispatch(editModalDisplay(false));
+					context.props.history.push('/glyph-viewer');
+				}
+				else { 
+					// Show dialog stating that none were matched.
+					console.log('none matched!');
+				}
+            },
+            {
+                post: true, 
+                data:  { tableName: context.state.table, frontEndFilters: context.state.selectionList }
+            }
+        );
+    }
+
 	render() {
 		var data = this.state.data;
 		var context = this;
@@ -495,17 +560,16 @@ class allViewsModal extends React.Component {
 			return (
 				<Flexbox 
 					flexDirection = "column" 
-					//flexGrow = {1}
-					style = {{ 
-							width: "100%", 
-							border: "1px solid", 
-							borderLeft: (col === data[0] ? "1px solid" : "none"),
-							borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
-							borderTopLeftRadius: (col === data[0] ? "3px" : ""),
-							borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
-							borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
-					}} 
 					key = { col } 
+					style = {{ 
+						width: "100%", 
+						border: "1px solid", 
+						borderLeft: (col === data[0] ? "1px solid" : "none"),
+						borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
+						borderTopLeftRadius: (col === data[0] ? "3px" : ""),
+						borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
+						borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
+					}} 
 				>
 					<div 
 						className = "noselect" 
@@ -520,7 +584,8 @@ class allViewsModal extends React.Component {
 						<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
 							<i className = "fa fa-check" style = {{ marginRight: "3px" }} onClick = { () => context.selectDeselectCol(col, "select") } /> 
 							<i className = "fa fa-times" onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
-						</div> 
+						</div>
+
 						<div style = {{ marginTop: "-16px", paddingBottom: "4px", fontSize: "14px" }} > 
 							{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
 						</div>
@@ -544,8 +609,10 @@ class allViewsModal extends React.Component {
 					</div>
 
 					<div id = { col[0] } style = {{ overflow: "auto" }} >
-						{ (col.length > 100 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br />Count: {col.length - 1} </div> : null) }
+
+						{ (col.length > 100 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
 						<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
+
 						{col.map( function(elem) {
 							return (
 								(elem !== col[0] ? 
@@ -564,6 +631,7 @@ class allViewsModal extends React.Component {
 								)
 							)
 						})}
+
 					</div>
 				</Flexbox>
 			)
@@ -576,6 +644,8 @@ class allViewsModal extends React.Component {
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
 				actionsContainerStyle = {{ backgroundColor: "#c5c5f7" }}
 				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", fontSize: "36px", lineHeight: "16px" }}
+				modal = { true }
+				open = { this.props.allViewsDisplay }
 				actions = {
 					[
 						<FlatButton
@@ -613,8 +683,6 @@ class allViewsModal extends React.Component {
 						/>
 					]
 				}
-				modal = { true }
-				open = { this.props.allViewsDisplay }
 			>
 				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
@@ -690,17 +758,27 @@ class allViewsModal extends React.Component {
  */
 class AllViewsRow extends React.Component {
 
-	shouldComponentUpdate(newProps, newState){
-        if (this.props.selected != newProps.selected) {
+
+	/**
+     * React built-in which tells react if it should re-render the component
+     * @param nextProps: The props the component would have after the change
+     * @param nextState: The state the component would have after the change
+     * @returns: true if it should render and false if it shouldn't
+     **/
+	shouldComponentUpdate(nextProps, nextState){
+		return (this.props.selected !== nextProps.selected);
+
+		/*
+        if (this.props.selected != nextProps.selected) {
 			
             return true;
         }
         return false;
+		*/
     };
 	
 	
 	render() {
-
 		return(
 			<p
 				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
@@ -718,7 +796,6 @@ class AllViewsRow extends React.Component {
 }
 
 
-
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
@@ -727,9 +804,6 @@ export const editModalDisplay = (allViewsModal) => ({
     allViewsModal,
 });
 
-/**
- * Constants defined to make dispatching for the redux store consistent
- **/
 export const setCurrentVizParams = (vizParams) => ({
     type: 'SET_VIZ_PARAMS',
     vizParams,
@@ -749,6 +823,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Announcements Dialog component to the redux store
+ * Connects the redux store to get access to global states. withRouter allows component to change navigation route.
  **/
 export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(allViewsModal));

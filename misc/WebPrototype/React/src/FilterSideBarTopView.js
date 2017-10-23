@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { makeServerCall, setCookie, getLoginCookieName } from './ServerCallHelper.js';
+import { makeServerCall } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
@@ -11,13 +11,12 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FilterViewForm from './FilterSummaryView.js';
 import Select from 'react-select';
-import Checkbox from 'material-ui/Checkbox';
 import Snackbar from 'material-ui/Snackbar';
 import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
 
 /**
- * This is the top view of the filter side bar that you see on the right side.
+ * This is the top section which contains the overview in the filter side-bar
  * @param initParams: - ADCMT
  * @param colList: - ADCMT
  * @param showAlert: - ADCMT
@@ -30,7 +29,7 @@ class FilterSideBarTopView extends React.Component {
         // Load values into the view select dropdown.
         var viewSelectItems = this.makeList(props.initParams.viewSelectItems, "viewSelectItems");
 
-        // Store the states of all the elements inside this data structure.
+        // Store the states of all the elements
         this.state = {
             topViewVisible: true,
             hideShowButtonTextFlag: true,
@@ -43,7 +42,6 @@ class FilterSideBarTopView extends React.Component {
             statisticsModalOpen: false,
             statisticStatSelectValues: "",
             statisticColSelectValues: "",
-            allowHistoryUpdate: true,
             undoSnackbar: false,
             redoSnackbar: false
         };
@@ -51,39 +49,47 @@ class FilterSideBarTopView extends React.Component {
 
 
     /**
-	* - ADCMT
-    * @param newProps: - ADCMT
-    * @param newState: - ADCMT
-	*/
-
-
-    /*
-    shouldComponentUpdate(newProps, newState){
-        if (this.state != newState) {
+     * React built-in which tells react if it should re-render the component
+     * @param nextProps: The props the component would have after the change
+     * @param nextState: The state the component would have after the change
+     * @returns: true if it should render and false if it shouldn't
+     **/
+    shouldComponentUpdate(nextProps, nextState){
+        return (this.state != nextState || this.props.initParams != nextProps.initParams || this.props.settings != nextProps.settings || this.props.statisticDisplay != nextProps.statisticDisplay);
+        
+        /*
+        if (this.state != nextState) {
             return true;
         }
-        else if (this.props.initParams != newProps.initParams) {
+        else if (this.props.initParams != nextProps.initParams) {
             return true;
         }
-        else if (this.props.settings != newProps.settings) {
+        else if (this.props.settings != nextProps.settings) {
             return true;
         }
-        else if (this.props.statisticDisplay != newProps.statisticDisplay) {
+        else if (this.props.statisticDisplay != nextProps.statisticDisplay) {
             return true;
         }
-
         return false;
+        */
     };
 
-    */
 
-
+    /**
+	 * React built-in which is called when component mounts
+	 */
     componentDidMount() {
+        // Initialize local storage for undo redo
         window.localStorage.setItem('history', []);
-        window.localStorage.setItem('position', 0);
+        window.localStorage.setItem('position', -1);
     }
 
+
+    /**
+	 * React built-in which is called when component unmounts
+	 */
     componentWillUnmount() {
+        // Remove local storage items no longer in use
         window.localStorage.removeItem("history");
         window.localStorage.removeItem("position");
     }
@@ -96,7 +102,7 @@ class FilterSideBarTopView extends React.Component {
      * @param {string} type: any one of [viewSelectItems,tableSelectItems,appliedFiltersItems,columns]
      * @param {object} extra: An object to pass extra params.
      */
-    makeList(arrValues, type, extra){
+    makeList(arrValues, type, extra) {
         if (!Array.isArray(arrValues)) {
             return "PLEASE PROVIDE AN ARRAY";
         }
@@ -135,7 +141,8 @@ class FilterSideBarTopView extends React.Component {
             default:
                 return null;
         }
-        return objReturn != null ? objReturn : arrReturn;
+
+        return (objReturn != null ? objReturn : arrReturn);
     };
 
 	
@@ -170,7 +177,6 @@ class FilterSideBarTopView extends React.Component {
 
                 if (open) {
                     this.setState({ statisticsModalOpen: true, menu: { open: false } });
-                    console.log("linked");
                 }
                 else {
                     this.setState({ statisticsModalOpen: false });
@@ -193,34 +199,34 @@ class FilterSideBarTopView extends React.Component {
         var lbl_error = document.getElementById('lbl_saveError');
         lbl_error.hidden = true;
 
-        if( viewName == null || viewName.trim() == "" )
-        {
+        if (viewName === null || viewName.trim() === "" ) {
             // Error
             context.setState({ viewNameTextFieldError: "This textfield is required!" });
         }
+
         else {
         
             // Check if same name view already exists
-            context.state.viewSelectItems.forEach(function(element) {
-                if (element.key == viewName ) {
-                    nameAlreadyExists = true;
+            context.state.viewSelectItems.forEach(
+                function(element) {
+                    if (element.key == viewName ) {
+                        nameAlreadyExists = true;
+                    }
                 }
-            });
+            );
 
             if (nameAlreadyExists) {
                 console.log("Error! A view with the same name already exists!");
                 lbl_error.hidden = false;
             }
+
             else {
                 
                 // Save the view
                 if (context.saveView(context,viewName)) {
-					// Actually Add it to the existing list of views!
+					// Add it to the existing list of views!
 					context.state.viewSelectItems.push(context.makeList([viewName],'viewSelectItems')[0]);
-					context.setState({ viewSelectItems: context.state.viewSelectItems });
-
-					// Make it selected in the list of views
-					context.setState({ viewSelectValue: viewName });
+					context.setState({ viewSelectItems: context.state.viewSelectItems, viewSelectValue: viewName });
 
 					// Close the dialog
 					context.handleOpenClose('save', false);
@@ -229,7 +235,8 @@ class FilterSideBarTopView extends React.Component {
 					// Show the success message
 					context.props.showAlert('Success The View has been saved!');
 				}
-				else { // Didn't save due to some network error.
+				else { 
+                    // Didn't save due to some network error.
 					console.error("ERROR");
 				}
             }
@@ -260,7 +267,7 @@ class FilterSideBarTopView extends React.Component {
 		// Make the object to be sent to the server to save.
 		saveObj.filterObj = context.props.GLOBALSTORE.Filter;
 		
-		// Make the ajax call to the server to save.
+		// Make the call to the server to save.
 		
 		return true;
     };
@@ -279,23 +286,19 @@ class FilterSideBarTopView extends React.Component {
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
-				if(data && Array.isArray(data))
-				{
-					if(data.length > 1)
-					{							
-						for(var index=0;index<data.length;index++)
-						{
+				if (data && Array.isArray(data)) {
+					if (data.length > 1) {							
+						for (var index = 0; index < data.length; index++) {
 							tempRowIds.push(Object.values(data[index]).toString());
 						}
 					}
-					else{
-						//This means no data was matched.
-						//show message.
+					else {
+						// No data was matched.
 						console.log('NO MATCH');
 					}
 				}
 				
-				iframe.postMessage({action:'filter',args:tempRowIds}, '*');
+				iframe.postMessage({action: 'filter', args: tempRowIds}, '*');
             },
             {post: true, 
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
@@ -332,9 +335,7 @@ class FilterSideBarTopView extends React.Component {
     * @param value: - ADCMT
 	*/
     onSelectStatisticStatChange = (value) => {
-        this.setState({
-            statisticStatSelectValues: value
-        });
+        this.setState({ statisticStatSelectValues: value });
         console.log(value);
 
         // Load Table Columns
@@ -346,9 +347,7 @@ class FilterSideBarTopView extends React.Component {
     * @param value: - ADCMT
 	*/
     onSelectStatisticColChange = (value) => {
-        this.setState({
-            statisticColSelectValues: value
-        });
+        this.setState({ statisticColSelectValues: value });
         console.log(value);
 
         // Load Table Columns
@@ -389,6 +388,7 @@ class FilterSideBarTopView extends React.Component {
         if (this.state.hideShowButtonTextFlag) {
             // Hide the glyphs that don't match the filter critera.
         }
+
         else {
             // Show all the glyphs!
         }
@@ -402,7 +402,7 @@ class FilterSideBarTopView extends React.Component {
     onMenuNewClick  = (event) => {
         console.log("new");
 
-        // Maybe are you sure you don't want to save existing work? if filters applied.
+        // If changes were made ask the user if they would like to save their work before starting a new viz
 
         // Clear All Filters
         this.onClearAllFilters();
@@ -423,7 +423,7 @@ class FilterSideBarTopView extends React.Component {
         console.log("Save");
         
         //Save As call
-        if (this.state.viewSelectValue == null || this.state.viewSelectValue == "") {
+        if (this.state.viewSelectValue === null || this.state.viewSelectValue === "") {
             this.onMenuSaveAsClick(event);
             return;
         }
@@ -444,41 +444,47 @@ class FilterSideBarTopView extends React.Component {
         console.log("Save As");
         
         this.handleOpenClose('save', true);
-        // Close the menu
         this.handleOpenClose('menu', false, event);
     };
 
 
+    /**
+	* Functionality for Re-doing an action made by the user to the filter store
+	*/
     handleRedo() {
         var position = ( parseInt(window.localStorage.getItem('position'), 10) + 1 );
         var history = this.historyToArray();
 
         if (position < history.length) {
-            this.setState({ allowHistoryUpdate: false });
             window.localStorage.setItem('position', position);
             this.props.dispatch(updateFilterFromSnapshot(history[position]));
-            this.setState({ allowHistoryUpdate: true });
         }
         else {
             this.setState({ redoSnackbar: true });
         }
     }
 
+
+    /**
+	* Functionality for Un-doing an action made by the user to the filter store
+	*/
     handleUndo() {
         var position = ( parseInt(window.localStorage.getItem('position'), 10) - 1 );
         var history = this.historyToArray();
         
         if (position > -1) {
-            this.setState({ allowHistoryUpdate: false });
             window.localStorage.setItem('position', position);
             this.props.dispatch(updateFilterFromSnapshot(history[position])); 
-            this.setState({ allowHistoryUpdate: true });
         }
         else {
             this.setState({ undoSnackbar: true });
         }
     }
 
+
+    /**
+	* Converts the string version of the history in local storage to a usable array
+	*/
     historyToArray() {
         var history = window.localStorage.getItem('history');
         var returnHistory = [];
@@ -486,6 +492,7 @@ class FilterSideBarTopView extends React.Component {
         if (history.length > 0) {
             if (history.includes("!!")) {
                 returnHistory = history.split("!!");
+
                 for (var i = 0; i < returnHistory.length; i++) {
                     returnHistory[i] = JSON.parse(returnHistory[i]);
                 }
@@ -498,6 +505,10 @@ class FilterSideBarTopView extends React.Component {
         return returnHistory;
     }
 
+
+    /**
+	* Closes the respective snackbar
+	*/
     closeSnackbar(type) {
         if (type === "undo") {
             this.setState({ undoSnackbar: false });
@@ -509,20 +520,16 @@ class FilterSideBarTopView extends React.Component {
 
 	
 	render = () => {
+
 		// Load values into the table select dropdown.
-        var tableSelectItems = [];
-		
-		tableSelectItems = this.props.initParams.tableSelectItems.map(function(value) {
+		var tableSelectItems = this.props.initParams.tableSelectItems.map(function(value) {
 			return({ label: value, value: value });
 		});
 
-
         var statisticStatSelectItems = ["Count", "Min", "Max", "Average", "Median", "Sum", "Range", "St. Dev.", "Varience", "Skewness", "Kurtosis"];
-
         statisticStatSelectItems = statisticStatSelectItems.map(function(value) {
 			return({ label: value, value: value });
 		});
-
 
         var statisticColSelectItems = this.props.colList.map(function(value) {
 			return({ label: value, value: value });
@@ -601,7 +608,6 @@ class FilterSideBarTopView extends React.Component {
                                 lineHeight: '25px'
                             }}
                             primary = { true }
-                            //disabled = { true }
                         />
 
                         <RaisedButton
@@ -628,7 +634,6 @@ class FilterSideBarTopView extends React.Component {
                                 lineHeight: '25px'
                             }}
                             primary = { true }
-                            //disabled = { true }
                         />
 
                         <div>
@@ -672,6 +677,8 @@ class FilterSideBarTopView extends React.Component {
 
                             <Dialog
                                 title = "Save View"
+                                modal = { true }
+                                open = { this.state.saveDailogOpen }
                                 actions = {
                                     [
                                         <FlatButton
@@ -688,8 +695,6 @@ class FilterSideBarTopView extends React.Component {
                                         />
                                     ]
                                 } 
-                                modal = { true }
-                                open = { this.state.saveDailogOpen }
                             >
                                 Please enter a name for the view you are saving. <br />
                                 <TextField 
@@ -736,7 +741,8 @@ class FilterSideBarTopView extends React.Component {
 								lineHeight: '25px'
 							}}
                             onClick = { this.onClearAllFilters }
-                            primary = {true } />
+                            primary = {true } 
+                        />
                     </Flexbox>
 
                     <Flexbox style = {{ width: "5%" }} /> 
@@ -760,15 +766,11 @@ class FilterSideBarTopView extends React.Component {
 							overlayStyle = {{
 								height: '25px',
 								lineHeight: '25px'
-							}}onClick = { this.onHideFilteredData.bind(this) }
-                            primary = { true } />
+							}}
+                            onClick = { this.onHideFilteredData.bind(this) }
+                            primary = { true } 
+                        />
 
-                            {/*<Toggle
-                                label="Hide Filtered Data"
-                                style={{paddingTop:'3px'}}
-                                labelPosition="right"
-                                />
-                            */}
                     </Flexbox>
 
                     <Flexbox style = {{ width: "5%" }} /> 
@@ -803,6 +805,11 @@ class FilterSideBarTopView extends React.Component {
 
                 <Dialog
                     title = "Statistics"
+                    modal = { true }
+                    open = { this.state.statisticsModalOpen }
+                    bodyStyle = {{
+                        overflowY: "visible"
+                    }}
                     actions = {
                         [
                             <FlatButton
@@ -819,11 +826,6 @@ class FilterSideBarTopView extends React.Component {
                             />
                         ]
                     } 
-                    modal = { true }
-                    open = { this.state.statisticsModalOpen }
-                    bodyStyle = {{
-                        overflowY: "visible"
-                    }}
                 >
 
                     <b>Select which columns to monitor:</b> <br />
@@ -861,7 +863,6 @@ class FilterSideBarTopView extends React.Component {
                         options = { tableSelectItems } 
                         onChange = { this.onSelectTableChange.bind(this) } 
                     />
-
                 </Flexbox>
             </Flexbox>
 		);
@@ -869,11 +870,13 @@ class FilterSideBarTopView extends React.Component {
 }
 
 
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
 export const updateFilterFromSnapshot = (snapshot) => ({
     type: 'UPDATE_FILTER_SNAPSHOT',
     snapshot
 });
-
 
 export const updateStatistics = (colList, statList, display) => ({
     type: 'UPDATE_STATISTICS',
@@ -882,6 +885,11 @@ export const updateStatistics = (colList, statList, display) => ({
     display
 });
 
+
+/**
+ * Maps portions of the store to props of your choosing
+ * @param state: passed down through react-redux's 'connect'
+ **/
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
@@ -891,4 +899,8 @@ const mapStateToProps = function(state){
   }
 };
 
+
+/**
+ * Connects the redux store to get access to global states.
+ **/
 export default connect(mapStateToProps)(FilterSideBarTopView);

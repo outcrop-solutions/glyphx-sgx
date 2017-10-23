@@ -11,7 +11,9 @@ import Collapsible from 'react-collapsible';
 import './General.css';
 
 
-
+/**
+ * Bug reporting, FAQ, and user manual
+ */
 class HelpModal extends React.Component {
 
 	state = {
@@ -19,6 +21,11 @@ class HelpModal extends React.Component {
 		opacity: 0
 	}
 
+	
+	/**
+	 * Hides FAQ & User manual to display a text area
+	 * @param selection: bug report or feature request
+	 */
 	displayTextArea(selection) {
 		var context = this;
 		this.setState({ selection: selection });
@@ -27,6 +34,10 @@ class HelpModal extends React.Component {
 		}, 50);
 	}
 
+
+	/**
+	 * Hides test area and makes FAQ & User manual visible again
+	 */
 	hideTextArea() {
 		var context = this;
 		this.setState({ opacity: 0 });
@@ -35,10 +46,14 @@ class HelpModal extends React.Component {
 		}, 200);
 	}
 	
-	render(){
+	render() {
 		return(
 			<Dialog
 				title = { <div> <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Help </div> }
+				modal = { true }
+				open = { this.props.helpDisplay }
+				bodyStyle = {{ padding: "0px 24px 10px" }}
+				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
 				actions = {
 					[
 						<FlatButton
@@ -57,13 +72,9 @@ class HelpModal extends React.Component {
 						/>
 					]
 				}
-				modal = { true }
-				open = { this.props.helpDisplay }
-				bodyStyle = {{ padding: "0px 24px 10px" }}
-				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
-				
 			>
 				<div style = {{ textAlign: "center", margin: "20px 0px 3px", color: "#000000" }} > Send Feedback </div>
+
 				<div style = {{ marginBottom: "20px" }} >
 					<Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
 				</div>
@@ -72,10 +83,7 @@ class HelpModal extends React.Component {
 					<Flexbox style = {{ width: "50%" }} >
 						<RaisedButton 
 							label = "Report Bug"
-							style = {{
-								width: "80%",
-								margin: "10px auto",
-							}}
+							style = {{ width: "80%", margin: "10px auto" }}
 							buttonStyle = {{
 								height: '40px',
 								lineHeight: '40px',
@@ -88,22 +96,16 @@ class HelpModal extends React.Component {
 								paddingLeft: "0px",
 								paddingRight: "0px"
 							}}
-							overlayStyle = {{
-								height: '40px',
-								lineHeight: '40px',
-							}}
+							overlayStyle = {{ height: '40px', lineHeight: '40px' }}
 							onClick = { () => this.displayTextArea("Bug") }
-							primary = {true } 
+							primary = { true } 
 						/>
 					</Flexbox>
 
 					<Flexbox style = {{ width: "50%" }} >
 						<RaisedButton 
 							label = "Request Feature"
-							style = {{
-								width: "80%",
-								margin: "10px auto",
-							}}
+							style = {{ width: "80%", margin: "10px auto" }}
 							buttonStyle = {{
 								height: '40px',
 								lineHeight: '40px',
@@ -116,20 +118,14 @@ class HelpModal extends React.Component {
 								paddingLeft: "0px",
 								paddingRight: "0px"
 							}}
-							overlayStyle = {{
-								height: '40px',
-								lineHeight: '40px',
-							}}
+							overlayStyle = {{ height: '40px', lineHeight: '40px' }}
 							onClick = { () => this.displayTextArea("Feature") }
-							primary = {true } 
+							primary = { true } 
 						/>
 					</Flexbox>
 				</Flexbox>
 
-				<div
-					style = {{ width: "100%", opacity: this.state.opacity, display: (this.state.selection === "none" ? "none" : ""), padding: "15px 36px 0px" }}
-					className = "fade"
-				>
+				<div className = "fade" style = {{ width: "100%", opacity: this.state.opacity, display: (this.state.selection === "none" ? "none" : ""), padding: "15px 36px 0px" }} >
 					<div style = {{ backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
 						<TextField 
 							hintText = "Please be as descriptive as possible."
@@ -143,18 +139,12 @@ class HelpModal extends React.Component {
 							underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
 						/>
 					</div>
+
 					<div style = {{ width: "200px", margin: "0 auto" }} >
 						<RaisedButton 
 							label = { (this.state.selection === "Bug" ? "Submit Bug" : "Submit Feature") }
-							style = {{
-								width: "100%",
-								margin: "13px auto -7px"
-							}}
-							buttonStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-								backgroundColor: this.props.settings.colors.buttons.general
-							}} 
+							style = {{ width: "100%", margin: "13px auto -7px" }}
+							buttonStyle = {{ height: '35px', lineHeight: '35px', backgroundColor: this.props.settings.colors.buttons.general }} 
 							labelStyle = {{
 								fontSize: '12px',
 								textAlign: "center",
@@ -163,12 +153,9 @@ class HelpModal extends React.Component {
 								paddingLeft: "0px",
 								paddingRight: "0px"
 							}}
-							overlayStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-							}}
+							overlayStyle = {{ height: '35px', lineHeight: '35px' }}
 							onClick = { () => this.hideTextArea() }
-							primary = {true } 
+							primary = { true } 
 						/>
 					</div>
 				</div>
@@ -182,10 +169,7 @@ class HelpModal extends React.Component {
 					<div style = {{ width: "200px", margin: "0 auto" }} >
 						<RaisedButton 
 							label = "View User Manual"
-							style = {{
-								width: "100%",
-								margin: "0px auto 18px",
-							}}
+							style = {{ width: "100%", margin: "0px auto 18px" }}
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
@@ -199,12 +183,9 @@ class HelpModal extends React.Component {
 								paddingLeft: "0px",
 								paddingRight: "0px"
 							}}
-							overlayStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-							}}
+							overlayStyle = {{ height: '35px', lineHeight: '35px' }}
 							onClick = { () => this.hideTextArea() }
-							primary = {true } 
+							primary = { true } 
 						/>
 					</div>
 
@@ -348,6 +329,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Announcements Dialog component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(HelpModal);
+export default connect(mapStateToProps)(HelpModal);
