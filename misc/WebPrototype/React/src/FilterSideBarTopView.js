@@ -289,7 +289,7 @@ class FilterSideBarTopView extends React.Component {
 				if (data && Array.isArray(data)) {
 					if (data.length > 1) {							
 						for (var index = 0; index < data.length; index++) {
-							tempRowIds.push(Object.values(data[index]).toString());
+							tempRowIds.push(parseInt(Object.values(data[index]).toString()));
 						}
 					}
 					else {

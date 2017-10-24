@@ -53,10 +53,11 @@ class FilterSideBar extends React.Component {
                     res = JSON.parse(res);
                 }
                 
-                if (Array.isArray(res) && res.length > 0) {
-                    var result = context.convertToCompatibleDataObject(res);
+                if (Array.isArray(res.data) && res.data.length > 0) {
+                    var result = context.convertToCompatibleDataObject(res.data);
                     context.makeFilterStructure(result);
                     context.setState({tableData: result});
+                    context.props.updateViz(res.glyphViewerKey);
                 }
                 else {
                     // 0 records matched.

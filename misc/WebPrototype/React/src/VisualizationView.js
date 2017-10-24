@@ -25,7 +25,8 @@ class VisualizationView extends React.Component {
         glyphViewLoaded: false,
         glyphWindowWidth: 0,
         topNavBarHeight: 0,
-        showCorrection: false
+        showCorrection: false,
+        vizKey: ''
     };
 
 	/**
@@ -83,7 +84,14 @@ class VisualizationView extends React.Component {
 
     }
 
-	
+    
+    updateViz(key){
+        this.setState({
+            vizKey: key
+        })
+        console.log('state set: ' + key);
+    }
+
 	/**
 	 * This function does all the initialization that is needed.
 	 */
@@ -96,7 +104,11 @@ class VisualizationView extends React.Component {
                     clearInterval(context['timeout']);
                 }
             }, 250);
-
+        
+        this.setState({
+            vizKey: ''
+        })
+        
         var gv = document.getElementById('GlyphViewerContainer');
         var filterNav = document.getElementById("filterNav");
         var topNav = document.getElementById("TopNav");
@@ -128,8 +140,7 @@ class VisualizationView extends React.Component {
 
 
     render() {
-		var vizName = "#admissions";
-		
+        console.log('iframe render');
         return (
             <MuiThemeProvider>
                 <div style = {{ width: '100%', height: '100%' }}>
@@ -160,7 +171,7 @@ class VisualizationView extends React.Component {
                     </div>
 
                     <div id  = "filterNav" className = "sidenav" style = {{ height: "calc(100% - 56px)", marginTop: "56px" }} >
-                        <FilterSideBar/>
+                        <FilterSideBar updateViz={(key) => this.updateViz(key)} />
                     </div>
 					
 					{/* Actual Application body that you see */}
@@ -182,13 +193,13 @@ class VisualizationView extends React.Component {
 
                                 <div style = {{ height: "100vh", width: "100vw", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }} />
 
-                                <iframe 
+                                {this.state.vizKey == '' ? null : <iframe 
                                     id = "GlyphViewer" 
                                     onLoad = { this.onLoadGlyphView.bind(this) } 
                                     title = "3D rendering engine" 
                                     style = {{ width:'100%', height:'100%', border: 'none' }} 
-                                    src = {"http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html"+vizName}
-                                /> 
+                                    src = {"http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html#" + this.state.vizKey}
+                                />} 
                             </div>
                             <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 
                         </Flexbox>
@@ -207,7 +218,8 @@ class VisualizationView extends React.Component {
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
-    userInfo: state.filterState.UserInfo
+    userInfo: state.filterState.UserInfo,
+    VizParams: state.filterState.VizParams
   }
 }
 
