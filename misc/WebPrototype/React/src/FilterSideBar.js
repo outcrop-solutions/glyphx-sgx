@@ -65,7 +65,7 @@ class FilterSideBar extends React.Component {
             },
             {
                 post: true, 
-                data:  { tableName: this.props.VizParams.tableName, query: this.props.VizParams.query }
+                data:  { tableName: this.props.VizParams.tableName, query: this.props.VizParams.query, sdtPath: this.props.VizParams.sdtPath, datasourceId: this.props.VizParams.datasourceId }
             }
         )
    };

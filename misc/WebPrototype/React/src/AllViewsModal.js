@@ -108,7 +108,7 @@ class allViewsModal extends React.Component {
 					}
 
 					// Post the new data to the state and hide the window load-mask
-					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false });
+					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false, datasourceId: response.datasourceId });
 				}
 			);
         }
@@ -527,7 +527,9 @@ class allViewsModal extends React.Component {
         // Handle launch when no selections made on a column (select all unless its not allowed to select all)
 
 
-        var context = this;
+		var context = this;
+		var index = this.props.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+		var sdtPath = this.props.typeURL.substring(index + 1);
 
         makeServerCall('checkFrontEndFilterQuery',
 			function(res){
@@ -536,7 +538,7 @@ class allViewsModal extends React.Component {
 				// Check if match flag is true means that at least one row was returned using the query.
 				if (res.match == true || res.match == "true") {
 					// Set the params to the store and then goto viz page.
-					context.props.dispatch(setCurrentVizParams({ tableName: context.state.table, query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList}));
+					context.props.dispatch(setCurrentVizParams({ tableName: context.state.table, datasourceId: context.state.datasourceId ,query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList, sdtPath: sdtPath}));
 					context.props.dispatch(editModalDisplay(false));
 					context.props.history.push('/glyph-viewer');
 				}
@@ -547,7 +549,7 @@ class allViewsModal extends React.Component {
             },
             {
                 post: true, 
-                data:  { tableName: context.state.table, frontEndFilters: context.state.selectionList }
+                data:  { tableName: context.state.table, frontEndFilters: context.state.selectionList}
             }
         );
     }
