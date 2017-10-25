@@ -394,7 +394,7 @@ class Login extends React.Component {
                             <br />
 
                             <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '16px' }}>
-                                <a onClick = { this.setState({ openForgotPasswordDialog: true }) } style = {{ color: '#b3b3b3', cursor: 'pointer' }} ><u> forgot password? </u></a>
+                                <a onClick = { () => this.setState({ openForgotPasswordDialog: true }) } style = {{ color: '#b3b3b3', cursor: 'pointer' }} ><u> forgot password? </u></a>
                             </label>
 
                             <br />

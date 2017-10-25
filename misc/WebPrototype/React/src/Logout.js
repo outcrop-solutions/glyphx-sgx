@@ -1,15 +1,15 @@
 import React from 'react';
+import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
+import { hideSplashScreen } from './LoadMaskHelper.js';
 import Dialog from 'material-ui/Dialog';
-import {deleteCookie,getLoginCookieName,makeServerCall} from './ServerCallHelper.js';
-import {hideSplashScreen} from './LoadMaskHelper.js';
+
 
 /**
- * No Props
+ * Performs the logout and displays the logout page
  **/
 class Logout extends React.Component {
 
     deleteLoginCookie(){
-        //delete the cookie.
         deleteCookie(getLoginCookieName());
     }
 
@@ -17,31 +17,26 @@ class Logout extends React.Component {
         this.deleteLoginCookie();
         hideSplashScreen();
         makeServerCall("logout");
+        
         return(
             <Dialog
                 actions = {
                     [    ]
                 }
                 overlayStyle = {{ backgroundColor: 'white' }}
-                contentStyle = {{ width:'20%', maxWidth: "none" }}
+                contentStyle = {{ width:'30%', maxWidth: "none" }}
                 modal = { true }
                 open = { true }
             >   
                 <center>
-                    <label  
-                        style = {{ 
-                            height: '20px',
-                            fontSize: '18px'
-                        }}
-                    > You have been logged out.
+                    <label style = {{ height: '20px', fontSize: '18px' }} > 
+                        You have been logged out.
                     </label>
+
                     <br/>
-                    <label  
-                        style = {{ 
-                            height: '20px',
-                            fontSize: '18px'
-                        }}
-                    > Please Click here to <a href="./login">login </a>.
+
+                    <label style = {{  height: '20px', fontSize: '18px' }} > 
+                        <a href = "./login"> Click here to login </a>.
                     </label>
                 </center>  
             </Dialog>
