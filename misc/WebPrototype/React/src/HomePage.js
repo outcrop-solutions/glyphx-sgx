@@ -143,10 +143,14 @@ class HomePage extends React.Component {
 
                              <Flexbox flexDirection = "column" style = {{ width: "40%" }}>
                                 <div style = {{ backgroundColor: "#ffffff" }} >
-                                    <div style = {{ width: '100%', margin: "15px 0px -6px" }} >
-                                        <div style = {{ width: "350px", margin: "0 auto" }}>
-                                            <img src = {imgsrc} style = {{ width: 'inherit' }} alt = "University Logo" draggable = { false } className = "noselect" />
-                                        </div>
+                                    <div style = {{ height: '150px', margin: "15px 0px -6px" }} >
+                                            <img 
+                                                src = {imgsrc} 
+                                                style = {{ display: "block", margin: "0 auto", maxWidth: "95%", maxHeight: "95%" }} 
+                                                alt = "University Logo" 
+                                                draggable = { false } 
+                                                className = "noselect" 
+                                            />
                                     </div>
                                 </div>
 

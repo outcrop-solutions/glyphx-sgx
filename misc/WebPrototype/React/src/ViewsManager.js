@@ -101,15 +101,35 @@ class ViewsManager extends React.Component {
         var context = this;
         
         var funnelData = this.props.funnelData;
+        var mandrList, admList, faList, customList;
 
-        var mandrList = funnelData["Marketing and Recruiting"];
-        //mandrList = [];
-        var admList = funnelData["Admissions"];
-        //admList = [];
-        var faList = funnelData["Financial Aid"];
-        //faList = [];
-        var customList = funnelData["Custom"];
-        //customList = [];
+        if (funnelData["Marketing and Recruiting"]) {
+            mandrList = funnelData["Marketing and Recruiting"];
+        }
+        else {
+            mandrList = [];
+        }
+
+        if (funnelData["Admissions"]) {
+            admList = funnelData["Admissions"];
+        }
+        else {
+            admList = [];
+        }
+
+        if (funnelData["Financial Aid"]) {
+            faList = funnelData["Financial Aid"];
+        }
+        else {
+            faList = [];
+        }
+
+        if (funnelData["Custom"]) {
+            customList = funnelData["Custom"];
+        }
+        else {
+            customList = [];
+        }
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
