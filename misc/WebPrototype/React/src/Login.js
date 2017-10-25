@@ -9,18 +9,21 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/FontIcon';
-import 'font-awesome/css/font-awesome.min.css';
 import './General.css';
 
 class Login extends React.Component {
 
     state = {
         loginVisible: true,
-        loginButtonBottomTranslateCalc:0,
+        loginButtonBottomTranslateCalc: 0,
         openForgotPasswordDialog: false,
-        snackbar:false
+        snackbar: false
     }
 
+
+    /**
+	 * React built-in which is called when component mounts
+	 */
     componentDidMount() {
 
         // Initial stuff for positioning the login button
@@ -36,41 +39,34 @@ class Login extends React.Component {
         var context = this; 
 
         // Add event listeners for using the enter key to login
-        document.getElementById("UserText")
-            .addEventListener("keyup", function(event) {
-            event.preventDefault();
-            if (event.keyCode == 13) {
-                context.buttonClick();
-            }
-        });
-        document.getElementById("PassText")
-            .addEventListener("keyup", function(event) {
-            event.preventDefault();
-            if (event.keyCode == 13) {
-                context.buttonClick();
-            }
-        });
+        document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+        document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
     }
 
+
+    /**
+	 * React built-in which is called when component unmounts
+	 */
 	componentWillUnmount() {
         var context = this;
 
         // Remove event listeners for using the enter key to login
-        document.getElementById("UserText")
-            .removeEventListener("keyup", function(event) {
-            event.preventDefault();
-            if (event.keyCode == 13) {
-                context.buttonClick();
-            }
-        });
-        document.getElementById("PassText")
-            .removeEventListener("keyup", function(event) {
-            event.preventDefault();
-            if (event.keyCode == 13) {
-                context.buttonClick();
-            }
-        });
+        document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
+        document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
 	}
+
+
+
+    /**
+	 * Calls the code to login when the enter key is pressed
+     * @param e: event instance which contains information about what caused the event
+	 */
+    enterKeyToLogin(e) {
+        e.preventDefault();
+        if (e.keyCode == 13) {
+            this.buttonClick();
+        }
+    }
 
 
     /**
@@ -93,8 +89,8 @@ class Login extends React.Component {
 
 
     /**
-     * -ADCMT
-     * @param str: -ADCMT
+     * Redirects to a target path
+     * @param str: target path
      **/
     navigate = (str) => {
         this.props.history.push(str);
@@ -156,14 +152,17 @@ class Login extends React.Component {
             console.log(result);
             this.saveUserInfo(result.userInformation, result.funnelInfo);
         }
+
         else if (result && result.status == "failure") {
             console.log('Error');
             lblErrPass.hidden = false;
             lblErrPass.innerText = "Incorrect Username/Password";
         }
+
         else {
             this.navigate("/maintenance");
         }
+
         hideLoadMask();
     }
 
@@ -228,6 +227,7 @@ class Login extends React.Component {
         this.setState({ loginVisible: !this.state.loginVisible });
     }
 
+
     /**
      * -ADCMT
      * @param evt: -ADCMT
@@ -236,19 +236,18 @@ class Login extends React.Component {
         if (this.state.loginVisible) {
             this.authenticate(evt, this);
         }
+        
         else {
             this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc);
         }
     }
 
 
-    handleOpenForgotPassDailog = () => {
-        this.setState({ openForgotPasswordDialog: true });
-    };
-
-    
+    /**
+     * Closes the forgot password modal through the local state
+     **/
     handleCloseForgotPassDailog = () => {
-    this.setState({ openForgotPasswordDialog: false, snackbar: false });
+        this.setState({ openForgotPasswordDialog: false, snackbar: false });
     };
 
 
@@ -293,26 +292,25 @@ class Login extends React.Component {
                             
                             <div className = "loginFormOtherElements"
                                 style = {{
-                                    width:"80%",
+                                    width: "80%",
                                     borderColor: "#d9d9d9 #ccc #b3b3b3",
                                     borderRadius: '5px 5px 5px 5px',
                                     border: "1px solid #ccc",
-                                    height:"40px",
-                                    overflow:'hidden',
-                                    backgroundColor:"white"
+                                    height: "40px",
+                                    overflow: 'hidden',
+                                    backgroundColor: "white"
                                 }}
                             >
-                                
                                 <i 
                                     className = "fa fa-user" 
                                     style = {{
                                         fontSize: '2.25rem',
                                         backgroundColor: 'white',
-                                        height:'inherit',
-                                        width:'5%',
-                                        float:'left',
-                                        paddingLeft:'7px',
-                                        paddingTop:'3px'
+                                        height: 'inherit',
+                                        width: '5%',
+                                        float: 'left',
+                                        paddingLeft: '7px',
+                                        paddingTop: '3px'
                                     }}
                                 />
 
@@ -320,13 +318,13 @@ class Login extends React.Component {
                                     type = "text"
                                     id = "UserText"
                                     style = {{
-                                        border:"none",
-                                        height:'inherit',
-                                        width:'90%',
+                                        border: "none",
+                                        height: 'inherit',
+                                        width: '90%',
                                         borderLeft: '1px #b3b3b3 solid',
-                                        float:'right',
+                                        float: 'right',
                                         outlineWidth: '0',
-                                        fontSize:'23px'
+                                        fontSize: '23px'
                                     }}
                                 />
                             </div>
@@ -335,13 +333,13 @@ class Login extends React.Component {
 
                             <div className = "loginFormOtherElements"
                                 style = {{
-                                    width:"80%",
+                                    width: "80%",
                                     borderColor: "#d9d9d9 #ccc #b3b3b3",
                                     borderRadius: '5px 5px 5px 5px',
                                     border: "1px solid #ccc",
-                                    height:"40px",
-                                    overflow:'hidden',
-                                    backgroundColor:"white"
+                                    height: "40px",
+                                    overflow: 'hidden',
+                                    backgroundColor: "white"
                                 }}
                             >
                                 
@@ -350,11 +348,11 @@ class Login extends React.Component {
                                     style = {{
                                         fontSize: '2.25rem',
                                         backgroundColor: 'white',
-                                        height:'inherit',
-                                        width:'5%',
-                                        float:'left',
-                                        paddingLeft:'7px',
-                                        paddingTop:'3px'
+                                        height: 'inherit',
+                                        width: '5%',
+                                        float: 'left',
+                                        paddingLeft: '7px',
+                                        paddingTop: '3px'
                                     }}
                                 />
 
@@ -362,13 +360,13 @@ class Login extends React.Component {
                                     type = "password"
                                     id = "PassText"
                                     style = {{
-                                        border:"none",
-                                        height:'inherit',
+                                        border: "none",
+                                        height: 'inherit',
                                         borderLeft: '1px #b3b3b3 solid',
-                                        width:'90%',
-                                        float:'right',
+                                        width: '90%',
+                                        float: 'right',
                                         outlineWidth: '0',
-                                        fontSize:'23px'
+                                        fontSize: '23px'
                                     }}
                                 />
                             </div>
@@ -380,19 +378,14 @@ class Login extends React.Component {
                             <RaisedButton
                                 label = "Login"
                                 id = "loginButton"
-                                labelStyle = {{
-                                    fontSize: '20px'
-                                }}
+                                labelStyle = {{ fontSize: '20px' }}
                                 secondary = { true }
                                 onClick = { (evt) => this.buttonClick(evt, this) }
-                                buttonStyle = {{
-                                    backgroundColor : '#009688',
-                                    borderRadius: '5px',
-                                }}
+                                buttonStyle = {{ backgroundColor : '#009688',  borderRadius: '5px' }}
                                 style = {{ 
-                                    position:'relative', 
+                                    position: 'relative', 
                                     width: "65%",
-                                    display:'block',
+                                    display: 'block',
                                     borderRadius: '5px',
                                     color: this.props.settings.colors.settingsModalColor.saveButton 
                                 }}
@@ -401,14 +394,14 @@ class Login extends React.Component {
                             <br />
 
                             <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '16px' }}>
-                                <a onClick = { this.handleOpenForgotPassDailog } style = {{ color:'#b3b3b3', cursor:'pointer' }}><u> forgot password? </u></a>
+                                <a onClick = { this.setState({ openForgotPasswordDialog: true }) } style = {{ color: '#b3b3b3', cursor: 'pointer' }} ><u> forgot password? </u></a>
                             </label>
 
                             <br />
 
                             <IconButton 
                                 iconClassName = "fa fa-arrow-circle-down" 
-                                iconStyle = {{ color:'white' }}
+                                iconStyle = {{ color: 'white' }}
                                 onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
                             />
                         </ Paper>
@@ -417,6 +410,9 @@ class Login extends React.Component {
                     
                     <Dialog
                         title = "Forgot Password?"
+                        modal = { true }
+                        open = { this.state.openForgotPasswordDialog }
+                        onRequestClose = { this.handleCloseForgotPassDailog }
                         actions = {[
                             <RaisedButton
                                 label = "Submit"
@@ -430,20 +426,12 @@ class Login extends React.Component {
                                 onClick = { this.handleCloseForgotPassDailog }
                             />
                         ]}
-                        modal = { true }
-                        open = { this.state.openForgotPasswordDialog }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
                     >
                         Please Enter Your Email address associated with the account. <br/>
                         <input 
                             type = "text"
                             id = "ForgotUserText"
-                            style = {{
-                                height:'inherit',
-                                border: '1px #b3b3b3 solid',
-                                outlineWidth: '0',
-                                fontSize:'20px'
-                            }}
+                            style = {{ height: 'inherit', border: '1px #b3b3b3 solid', outlineWidth: '0', fontSize: '20px' }}
                         />
                     </Dialog>
 
@@ -482,6 +470,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Login component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(Login));

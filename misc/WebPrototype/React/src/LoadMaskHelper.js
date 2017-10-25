@@ -1,16 +1,17 @@
 var splashScreenHidden = false;
 
 export function hideSplashScreen() {
-
-    if(splashScreenHidden)
+    if (splashScreenHidden) {
         return;
+    }
 
     var lm = document.getElementById("ipl-progress-indicator");
+    
     if (lm) {
         setTimeout(() => {
-            lm ? lm.classList.add('available') : null;
+            (lm ? lm.classList.add('available') : null);
             setTimeout(() => {
-                lm ? (lm.parentElement ? lm.outerHTML = '' : null) : null;
+                (lm ? (lm.parentElement ? lm.outerHTML = '' : null) : null);
             }, 2000)
         }, 1000)
     }

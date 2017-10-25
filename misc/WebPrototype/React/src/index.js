@@ -1,10 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import VisualizationView from './VisualizationView';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
+import { calcTextSelected, calcSelectedRemoved, calcSelected } from './CalculateSelectedHelper.js';
+import ReactDOM from 'react-dom';
 import themeSettingColors from './ColorThemes.js';
-import {calcTextSelected,calcSelectedRemoved,calcSelected} from './CalculateSelectedHelper.js';
 import RedirectRouter from './Router.js';
 import './General.css';
 
@@ -28,18 +27,14 @@ const initialFilterState = {
         allViewsModal: false,
         helpModal: false,
     },
-    UserInfo: {
-    },
-    FunnelData: {
-    },
+    UserInfo: {},
+    FunnelData: {},
     isUserLoggedIn: false,
     Statistics: { 
         colList: "",
         statList: ""
     },
-	VizParams: {
-		
-	}
+	VizParams: {}
 };
 
 
@@ -529,12 +524,11 @@ const filterReducer = function(state = initialFilterState, action) {
                 };
 
 		case 'SET_VIZ_PARAMS':
-		{
 			return {
                 ...state,
                 VizParams: action.vizParams
 			}
-		}
+		
 		
         /**
          * Shouldn't reach here unless theres a typo in the action
@@ -558,5 +552,4 @@ const reducers = combineReducers({
 
 let store = createStore(reducers);
 
-
-ReactDOM.render(<Provider store={store}><RedirectRouter /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store = { store }><RedirectRouter /></Provider>, document.getElementById('root'));

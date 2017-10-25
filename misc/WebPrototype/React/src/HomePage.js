@@ -43,12 +43,11 @@ class HomePage extends React.Component {
         // Removes the spinning load mask
         hideSplashScreen();
 
-
         this.setState({ height: window.innerHeight });
 
         var style = document.getElementById('themeStyles');
 
-		if (style != null){
+		if (style != null) {
 			style.parentElement.removeChild(style);
 		}
 
@@ -111,10 +110,9 @@ class HomePage extends React.Component {
     }
 
     render() {
-        var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/"+window.encodeURIComponent(this.props.userInfo.institutionDir);
-
+        
         //var imgsrc = "./Res/Img/notredame.png"; 
-        var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/"+window.encodeURIComponent(this.props.userInfo.institutionDir);
+        var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
 
         return (
             <MuiThemeProvider style = {{ height: "100%" }} >
@@ -137,7 +135,7 @@ class HomePage extends React.Component {
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
 
-                            <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }}>
+                            <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>

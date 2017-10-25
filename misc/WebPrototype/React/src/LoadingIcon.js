@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-class LoadingIcon extends Component {
-
+class LoadingIcon extends React.Component {
 
     render() {
         return (
             <MuiThemeProvider>
                 <div 
-                    id="LoadingIconMask"  
-                    style={{ 
+                    id = "LoadingIconMask"  
+                    style = {{ 
                         position: 'absolute',    
                         width: '100%',
                         height: '100%',
@@ -19,21 +18,18 @@ class LoadingIcon extends Component {
                         opacity: 0.5,
                         textAlign: 'center',
                         display: 'table'
-                    }} >
-
-                    <CircularProgress id="innerLoadingIconMask"
-                        size={60} 
-                        style={
-                            {
-                                    display: 'table-cell',
-                                    verticalAlign: 'middle'
-                            }
-                        }
-                        thickness={7} />
-
+                    }} 
+                >
+                    <CircularProgress 
+                        id = "innerLoadingIconMask"
+                        size = { 60 } 
+                        style = {{ display: 'table-cell', verticalAlign: 'middle' }}
+                        thickness = { 7 } 
+                    />
                 </div>
             </MuiThemeProvider>
-        )};
+        )
+    };
 }
 
 

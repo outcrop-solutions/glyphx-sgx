@@ -12,6 +12,7 @@ import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import FontIcon from 'material-ui/FontIcon';
 import AllViewsModal from './AllViewsModal.js';
 import MyViews from './MyViews.js';
+import Flexbox from 'flexbox-react';
 import './ViewsManager.css';
 import './General.css';
 
@@ -102,9 +103,13 @@ class ViewsManager extends React.Component {
         var funnelData = this.props.funnelData;
 
         var mandrList = funnelData["Marketing and Recruiting"];
+        //mandrList = [];
         var admList = funnelData["Admissions"];
+        //admList = [];
         var faList = funnelData["Financial Aid"];
+        //faList = [];
         var customList = funnelData["Custom"];
+        //customList = [];
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
@@ -197,8 +202,6 @@ class ViewsManager extends React.Component {
                             }}
                         />;
 
-        var marginList = ["10px 0px", "80px 0px 80px", "63px 0px 62px", "10px 0px", "30px 0px 25px"];
-
         return(
             <div>
                 <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", borderRadius: "2px", paddingBottom: "4px" }} >
@@ -216,7 +219,7 @@ class ViewsManager extends React.Component {
                     </div>
                 </div>
 
-                <Stepper activeStep = { this.state.stepIndex } style = {{ borderRadius: "2px", height: "60px", marginBottom: "10px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
+                <Stepper activeStep = { this.state.stepIndex } style = {{ borderTopRightRadius: "3px", borderTopLeftRadius: "3px", height: "60px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
                     <Step>
                         <StepLabel
                             icon = { 
@@ -280,53 +283,51 @@ class ViewsManager extends React.Component {
                 </Stepper>
 
                     <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
-                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderRadius: "3px" }} >
-                            <div style = {{ height: "100%", borderRadius: "2px" }} >
+
+                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderBottomRightRadius: "3px", borderBottomLeftRadius: "3px" }} >
+
+                            <div style = {{ height: (this.state.type === "My Views" ? "" : "350px") }} >
                                 <div 
                                     className = "Card" 
                                     style = {{ 
                                         marginBottom: "0px", 
                                         width: "100%", 
                                         display: (this.state.stepIndex === 0 ? "" : "none"),
-                                        marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
+                                        //marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
                                 >
-                                    <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} >
+                                    <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} > 
 
-
-                                        <div onClick = { () => this.flip("MarketingAndRecruiting") } className = "C-Size-1 noselect" >
-                                            <div style = {{ margin: "-45px auto 0px", width: "216px", fontSize: '1rem', color: "#000000" }} >
-                                                MARKETING &amp; RECRUITING
-                                            </div>
+                                        <div onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } style = {{ marginTop: "20px" }} >
+                                            <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" />
                                         </div>
 
-                                        <div onClick = { () => this.flip("Admissions") } className = "C-Size-2 noselect" >
-                                            <div style = {{ margin: "-45px auto 0px", width: "100px", fontSize: '1rem', color: "#000000" }} >
-                                                ADMISSIONS
-                                            </div>
+                                        <div onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } >
+                                            <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" />
                                         </div>
 
-                                        <div onClick = { () => this.flip("FinancialAid") } className = "C-Size-3 noselect" >
-                                            <div style = {{ margin: "-45px auto 0px", width: "118px", fontSize: '1rem', color: "#000000" }} >
-                                                FINANCIAL AID
-                                            </div>
+                                        <div onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } >
+                                            <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" />
                                         </div>
 
-                                        <div onClick = { () => this.flip("Custom") } className = "C-Size-3 noselect" style = {{ width: "32%", minWidth: "140px" }} >
-                                            <div style = {{ margin: "-45px auto 0px", width: "67px", fontSize: '1rem', color: "#000000" }} >
-                                                CUSTOM
-                                            </div>
+                                        <div onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } >
+                                            <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" />
                                         </div>
 
                                     </div>
-                                    <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px" }} >
-                                            {this.state.type === "MarketingAndRecruiting" ? <div style = {{ margin: marginList[mandrList.length - 1] }} > {marketingAndRecruiting} {backButton} </div> 
-                                                : (this.state.type === "Admissions" ? <div style = {{ margin: marginList[admList.length - 1] }} > {admissions} {backButton} </div> 
-                                                    : (this.state.type === "FinancialAid" ? <div style = {{ margin: marginList[faList.length - 1] }} > {financialAid} {backButton} </div> 
-                                                        : (this.state.type === "Custom" ? <div style = {{ margin: marginList[customList.length - 1] }} > {custom} {backButton} </div> : null)))
-                                            }
-                                            
+                                    <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px", marginTop: "-320px", height: "315px" }} >
+
+                                        <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%" }}>
+                                            <Flexbox style = {{ alignItems: "center", height: "100%", margin: "0 auto" }} >
+                                                {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div> 
+                                                    : (this.state.type === "Admissions" ? <div> {admissions} {backButton} </div> 
+                                                        : (this.state.type === "FinancialAid" ? <div> {financialAid} {backButton} </div> 
+                                                            : (this.state.type === "Custom" ? <div> {custom} {backButton} </div> : null)))
+                                                }
+                                            </Flexbox>
+                                        </Flexbox>
                                     </div>
+
                                 </div>
                                     
                                     
@@ -342,15 +343,14 @@ class ViewsManager extends React.Component {
                                 />
                                 <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } />
                             </div>
-                        
 
                             {this.state.stepIndex === 0 ? 
-                                <div style = {{ margin: "0 auto", width: "82%", minWidth: "370px", padding: "0 20px" }} >
+                                <div style = {{ margin: "0 auto", width: "70%" }} >
                                     <RaisedButton 
                                         label = "My Views"
                                         style = {{
                                             width: "100%",
-                                            margin: "10px auto 20px",
+                                            marginBottom: "17px"
                                         }}
                                         buttonStyle = {{
                                             height: '50px',
@@ -369,7 +369,7 @@ class ViewsManager extends React.Component {
                                             lineHeight: '50px',
                                         }}
                                         onClick = { this.handleNext.bind(this, "My Views") }
-                                        primary = {true } 
+                                        primary = { true } 
                                     />
                                 </div>
                                 : 
