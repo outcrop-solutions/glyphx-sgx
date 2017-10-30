@@ -1,15 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import Flexbox from 'flexbox-react';
 import './General.css';
+ 
 
-
+/**
+ * This is the walkthrough tutorial for the home page
+ * @param tutorialStage: current stage of the tutorial
+ * @param updateStage(newStage): function used to update the stage
+ */
 class TutorialWindow extends React.Component {
 	
-	render(){
+	render() {
 		return(
 			<div 
                 style = {{ 
@@ -26,17 +29,26 @@ class TutorialWindow extends React.Component {
                 }} 
             >
                 <div style = {{ height: "100%", width: "100%", backgroundColor: "white", borderRadius: "5px", padding: "7px 7px 0px" }} >
-                    <div onClick = { () => this.props.updateStage("done") } style = {{ width: "100%", textAlign: "right", display: (this.props.tutorialStage === 0? "none" : "") }} > <i className = "fa fa-times" style = {{ fontSize: "18px" }} /> </div>
+                    <div 
+                        onClick = { () => this.props.updateStage("done") } 
+                        style = {{ 
+                            width: "100%", 
+                            textAlign: "right", 
+                            display: (this.props.tutorialStage === 0? "none" : "") 
+                        }} 
+                    > 
+                        <i className = "fa fa-times" style = {{ fontSize: "18px" }} /> 
+                    </div>
+
                     { this.props.tutorialStage === 0 ? 
                         <div>
                             <div style = {{ fontSize: "22px", textAlign: "center", lineHeight: "30px" }} > Would you like to take a quick walkthrough of the site? </div>
+
                             <br />
+
                             <RaisedButton 
                                 label = "Yes"
-                                style = {{
-                                    width: "100%",
-                                    margin: "10px auto",
-                                }}
+                                style = {{ width: "100%", margin: "10px auto" }}
                                 buttonStyle = {{
                                     height: '50px',
                                     lineHeight: '50px',
@@ -49,19 +61,14 @@ class TutorialWindow extends React.Component {
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
-                                overlayStyle = {{
-                                    height: '50px',
-                                    lineHeight: '50px',
-                                }}
+                                overlayStyle = {{ height: '50px', lineHeight: '50px' }}
                                 onClick = { () => this.props.updateStage(this.props.tutorialStage + 1) }
-                                primary = {true } 
+                                primary = { true } 
                             />
+
                             <RaisedButton 
                                 label = "No"
-                                style = {{
-                                    width: "100%",
-                                    margin: "0px auto -11px",
-                                }}
+                                style = {{ width: "100%", margin: "0px auto -11px" }}
                                 buttonStyle = {{
                                     height: '50px',
                                     lineHeight: '50px',
@@ -74,15 +81,14 @@ class TutorialWindow extends React.Component {
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
-                                overlayStyle = {{
-                                    height: '50px',
-                                    lineHeight: '50px',
-                                }}
+                                overlayStyle = {{ height: '50px', lineHeight: '50px' }}
                                 onClick = { () => this.props.updateStage("done") }
-                                primary = {true } 
+                                primary = { true } 
                             />
                         </div>
+
                         : 
+
                         (this.props.tutorialStage === 1 ?
                              <div style = {{ fontSize: "18px", textAlign: "center", lineHeight: "25px" }} > Here is the User Feed where you can share saved views with different teams your admin has added you to. Use the <u><i>drop down</i></u> at the top to select a team and the <u><i>cube icon</i></u> located in the chat toolbar to share a view. </div>
                              :
@@ -121,6 +127,7 @@ class TutorialWindow extends React.Component {
                     <br /> 
 
                     <Flexbox flexDirection = "row" style = {{ marginBottom: "-2px" }} >
+
                         <Flexbox style = {{ width: "50%" }} >
                             <RaisedButton 
                                 label = "Back"
@@ -130,11 +137,7 @@ class TutorialWindow extends React.Component {
                                     marginRight: "10px",
                                     display: (this.props.tutorialStage > 0 ? "" : "none")
                                 }}
-                                buttonStyle = {{
-                                    height: '50px',
-                                    lineHeight: '50px',
-                                    backgroundColor: "grey"
-                                }} 
+                                buttonStyle = {{ height: '50px', lineHeight: '50px', backgroundColor: "grey" }} 
                                 labelStyle = {{
                                     fontSize: '14px',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
@@ -142,18 +145,15 @@ class TutorialWindow extends React.Component {
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
-                                overlayStyle = {{
-                                    height: '50px',
-                                    lineHeight: '50px',
-                                }}
+                                overlayStyle = {{ height: '50px', lineHeight: '50px' }}
                                 onClick = { () => this.props.updateStage(this.props.tutorialStage - 1) }
-                                primary = {true } 
+                                primary = { true } 
                             />
                         </Flexbox>
 
                         <Flexbox style = {{ width: "50%" }} >
                             <RaisedButton 
-                                label = {this.props.tutorialStage === 9 ? "Finish" : "Next"}
+                                label = { this.props.tutorialStage === 9 ? "Finish" : "Next" }
                                 style = {{
                                     width: "100%",
                                     margin: "10px auto",
@@ -172,14 +172,12 @@ class TutorialWindow extends React.Component {
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
-                                overlayStyle = {{
-                                    height: '50px',
-                                    lineHeight: '50px',
-                                }}
+                                overlayStyle = {{ height: '50px', lineHeight: '50px' }}
                                 onClick = { () => this.props.updateStage(this.props.tutorialStage + 1) }
-                                primary = {true } 
+                                primary = { true } 
                             />
                         </Flexbox>
+
                     </Flexbox>
 
                 </div>
@@ -189,14 +187,11 @@ class TutorialWindow extends React.Component {
 }
 
 
-
-
-
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
   }
@@ -204,6 +199,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Announcements Dialog component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(TutorialWindow);
+export default connect(mapStateToProps)(TutorialWindow);

@@ -176,7 +176,22 @@ class NumberRangeRow extends React.Component {
      * Updates local state values of min and max based on text field input
      * @param e: the event instance of the text field, html element
      **/
-     onTextChange(e) {
+    onTextChange(e) {
+        var value = e.target.value;
+
+        if ( !isNaN(value) || value === "" || value === "-" ) {
+            if (e.target.name === "min") {
+                this.setState({ min: value });
+            }
+
+            else {
+                this.setState({ max: value });
+            }
+        }
+
+        /*
+        debugger;
+
         var minimum = parseFloat(this.props.minVal, 10);
         var maximum = parseFloat(this.props.maxVal, 10);
         var value = e.target.value;
@@ -233,6 +248,7 @@ class NumberRangeRow extends React.Component {
                 }
             }
         }
+        */
     };
 
 
@@ -240,16 +256,30 @@ class NumberRangeRow extends React.Component {
      * Updates the text fields if (min > max) and updates the store
      **/
     onTextBlur() {
-
+        var minimum = parseFloat(this.props.minVal, 10);
+        var maximum = parseFloat(this.props.maxVal, 10);
         var min = this.state.min;
         var max = this.state.max;
 
+        //debugger;
+
         if (min === "") {
-            min = this.props.minVal;
+            min = minimum;
         }
 
         if (max === "") {
-            max = this.props.maxVal;
+            max = maximum;
+        }
+
+        min = parseFloat(min, 10);
+        max = parseFloat(max, 10);
+
+        if (min < minimum) {
+            min = minimum;
+        }
+
+        if (max > maximum) {
+            max = maximum;
         }
 
         if (min > max) {
@@ -277,17 +307,22 @@ class NumberRangeRow extends React.Component {
             if (e.target.checked) {
                 var min = null;
                 var max = null;
+
                 if (this.state.min == "") {
                     min = this.props.minVal;
                 }
+
                 if (this.state.max == "") {
                     max = this.props.maxVal;
                 }
+
                 this.props.updateStore(this.props.range[2], min, max, true);
             }
+
             else {
                 this.props.updateStore(this.props.range[2], null, null, false);
             }
+
             this.setState({ epoch: epoch });
         }        
     }

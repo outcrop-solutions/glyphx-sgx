@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { hideSplashScreen } from './LoadMaskHelper.js';
 import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import {hideSplashScreen} from './LoadMaskHelper.js';
 import FilterSideBar from './FilterSideBar.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -12,15 +12,16 @@ import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
 import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import './topNav.css';
-import 'font-awesome/css/font-awesome.min.css';
+
 
 injectTapEventPlugin();
 
 
+/**
+ * -ADCMT
+ */
 class VisualizationView extends React.Component {
-    
 
-	// Initial state of the component.
 	state = {
         glyphViewLoaded: false,
         glyphWindowWidth: 0,
@@ -28,6 +29,7 @@ class VisualizationView extends React.Component {
         showCorrection: false,
         vizKey: ''
     };
+
 
 	/**
 	 * This function is called right after the react component is mounted.
@@ -81,33 +83,34 @@ class VisualizationView extends React.Component {
         style.sheet.insertRule('.subCollapsibleInner { background-color: ' + this.props.settings.colors.homePageColors.subBackground + '; }', 22);
 
         style.sheet.insertRule('html { overflow: hidden; }', 23);
-
     }
 
     
-    updateViz(key){
-        this.setState({
-            vizKey: key
-        })
+    /**
+	 * -ADCMT
+	 */
+    updateViz (key) {
+        this.setState({ vizKey: key })
         console.log('state set: ' + key);
     }
+
 
 	/**
 	 * This function does all the initialization that is needed.
 	 */
     init() {
         var context = this;
+
         context.timeout = window.setInterval(
-            function(){
+            function() {
                 if (context.state.glyphViewLoaded) {
                     hideSplashScreen();
                     clearInterval(context['timeout']);
                 }
-            }, 250);
+            }, 
+        250);
         
-        this.setState({
-            vizKey: ''
-        })
+        this.setState({ vizKey: '' });
         
         var gv = document.getElementById('GlyphViewerContainer');
         var filterNav = document.getElementById("filterNav");
@@ -117,6 +120,7 @@ class VisualizationView extends React.Component {
         if (!this.props.settings.sideBarOverlap) {
             gv.style.width = width + "px";
         }
+
         else {
             gv.style.width = "100%";
         }
@@ -126,14 +130,17 @@ class VisualizationView extends React.Component {
 	
 
 	/**
-	 * OnLoad of the glyphviewer (iframe) we set this to true so that the loadmask can hide.
+	 * OnLoad of the iframehide the loadmask
 	 */
     onLoadGlyphView(){
-        this.setState({
-            glyphViewLoaded: true
-        });
+        this.setState({ glyphViewLoaded: true });
     }
 
+
+    /**
+	 * Displays an invisible div over the iframe when dragging a draggable window for it to not bug out
+     * @param action: true/false indicating display of the invisible div
+	 */
     handleDraggableCorrection(action) {
         this.setState({ showCorrection: action });
     }
@@ -171,7 +178,7 @@ class VisualizationView extends React.Component {
                     </div>
 
                     <div id  = "filterNav" className = "sidenav" style = {{ height: "calc(100% - 56px)", marginTop: "56px" }} >
-                        <FilterSideBar updateViz={(key) => this.updateViz(key)} />
+                        <FilterSideBar updateViz = { (key) => this.updateViz(key) } />
                     </div>
 					
 					{/* Actual Application body that you see */}
@@ -183,28 +190,37 @@ class VisualizationView extends React.Component {
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 
-                            
-
                             <div id = "GlyphViewerContainer" style = {{ transition: '0.37s', width: '100%', height: '100%' }} >
+
+                                {/* Draggable windows */}
                                 <StatisticModal handleCorrection = { this.handleDraggableCorrection.bind(this) } />
                                 <GlyphLegend handleCorrection = { this.handleDraggableCorrection.bind(this) } />
-                                
+
                                 <UndoRedoChangeListener />
 
+                                {/* Invisible div over the iframe to allow draggable windows to not bug out */}
                                 <div style = {{ height: "100vh", width: "100vw", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }} />
 
-                                {this.state.vizKey == '' ? null : <iframe 
-                                    id = "GlyphViewer" 
-                                    onLoad = { this.onLoadGlyphView.bind(this) } 
-                                    title = "3D rendering engine" 
-                                    style = {{ width:'100%', height:'100%', border: 'none' }} 
-                                    src = {"http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html#" + this.state.vizKey}
-                                />} 
+                                {this.state.vizKey == '' ? 
+                                    null 
+                                    : 
+                                    <iframe 
+                                        id = "GlyphViewer" 
+                                        onLoad = { this.onLoadGlyphView.bind(this) } 
+                                        title = "3D rendering engine" 
+                                        style = {{ width:'100%', height:'100%', border: 'none' }} 
+                                        src = {"http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html#" + this.state.vizKey}
+                                    />
+                                } 
+
                             </div>
+
                             <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 
+
                         </Flexbox>
                     </Flexbox>
                 </div>
+
           </MuiThemeProvider>
         );
     }
@@ -225,6 +241,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(VisualizationView);

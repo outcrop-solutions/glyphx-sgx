@@ -5,6 +5,7 @@ import { calcTextSelected, calcSelectedRemoved, calcSelected } from './Calculate
 import ReactDOM from 'react-dom';
 import themeSettingColors from './ColorThemes.js';
 import RedirectRouter from './Router.js';
+import 'font-awesome/css/font-awesome.min.css';
 import './General.css';
 
 

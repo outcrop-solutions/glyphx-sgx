@@ -299,7 +299,7 @@ export const editModalDisplay = (allViewsModal) => ({
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo

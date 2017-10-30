@@ -3,13 +3,8 @@ import { connect } from 'react-redux';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
-import MenuItem from 'material-ui/MenuItem';
-import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import Collapsible from 'react-collapsible';
 import ExpandTransition from 'material-ui/internal/ExpandTransition';
-import FontIcon from 'material-ui/FontIcon';
 import AllViewsModal from './AllViewsModal.js';
 import MyViews from './MyViews.js';
 import Flexbox from 'flexbox-react';
@@ -17,6 +12,9 @@ import './ViewsManager.css';
 import './General.css';
 
 
+/**
+ * -ADCMT
+ */
 class ViewsManager extends React.Component {
 
     state = {
@@ -30,13 +28,21 @@ class ViewsManager extends React.Component {
         clicked: false
     };
 
+
+    /**
+     * Enables transition pause when navigating from regular view to my views and vice versa
+     */
     dummyAsync = (cb) => {
-        this.setState({loading: true}, () => {
-        this.asyncTimer = setTimeout(cb, 500);
+        this.setState({ loading: true }, () => {
+            this.asyncTimer = setTimeout(cb, 500);
         });
     };
 
 
+    /**
+     * -ADCMT
+     * @param type: -ADCMT
+     */
     handleNext = (type) => {
         const {stepIndex} = this.state;
         if (!this.state.loading) {
@@ -47,6 +53,7 @@ class ViewsManager extends React.Component {
                     loading: false,
                 }));
             }
+            
             else {
                 this.dummyAsync(() => {this.setState({
                     stepIndex: stepIndex + 1,
@@ -58,12 +65,18 @@ class ViewsManager extends React.Component {
         }
     };
 
+
+    /**
+     * Returns from my views to funnel view
+     */
     handlePrev = () => {
         if (this.state.flipped) {
             this.flip();
         }
+
         const {stepIndex} = this.state;
         this.setState({ type: "Funnel"});
+
         if (!this.state.loading) {
             this.dummyAsync(() => this.setState({
                 loading: false,
@@ -73,31 +86,30 @@ class ViewsManager extends React.Component {
     };
 
 
-    flip(type) {
-        this.setState({
-            flipped: !this.state.flipped,
-            clicked: true,
-        });
+    /**
+     * Toggles flip from funnel view to sub-funnels and back
+     * @param type: side that is being flipped to
+     */
+    flip (type) {
+        this.setState({ flipped: !this.state.flipped, clicked: true });
         var context = this;
         setTimeout(function () {
-            context.setState({
-                type: type
-            });
+            context.setState({ type: type });
         }, 200);
-      
     }
 
+
+    /**
+     * Toggles flip from funnel view to my view and back
+     * @param type: side that is being flipped to
+     */
     handleViewSelect = (type) => {
         this.props.dispatch(editModalDisplay(true));
-        this.setState({
-            selectionType: type[0],
-            selectionTypeURL: type[1]
-        });
+        this.setState({ selectionType: type[0], selectionTypeURL: type[1] });
     }
 
 
     render() {
-        const contentStyle = {margin: '0 16px'};
         var context = this;
         
         var funnelData = this.props.funnelData;
@@ -133,11 +145,19 @@ class ViewsManager extends React.Component {
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelTopBody }} key = { title } >
+                <Card 
+                    containerStyle = {{ padding: "0px" }} 
+                    style = {{ 
+                        width: "80%", 
+                        minWidth: "331px", 
+                        margin: "0 auto", 
+                        height: "35px", 
+                        backgroundColor: context.props.settings.colors.homePageColors.funnelTopBody 
+                    }} 
+                    key = { title } 
+                >
                     <CardText
-                        style = {{
-                            padding: "7px",
-                        }}
+                        style = {{ padding: "7px" }}
                         className = "funnel-top-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
@@ -149,11 +169,19 @@ class ViewsManager extends React.Component {
 
         var admissions = admList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelMiddleBody }} key = { title } >
+                <Card 
+                    containerStyle = {{ padding: "0px" }} 
+                    style = {{ 
+                        width: "80%", 
+                        minWidth: "331px", 
+                        margin: "0 auto", 
+                        height: "35px", 
+                        backgroundColor: context.props.settings.colors.homePageColors.funnelMiddleBody 
+                    }} 
+                    key = { title } 
+                >
                     <CardText
-                        style = {{
-                            padding: "7px",
-                        }}
+                        style = {{ padding: "7px" }}
                         className = "funnel-middle-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
@@ -165,11 +193,19 @@ class ViewsManager extends React.Component {
 
         var financialAid = faList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody }} key = { title } >
+                <Card 
+                    containerStyle = {{ padding: "0px" }} 
+                    style = {{ 
+                        width: "80%", 
+                        minWidth: "331px",
+                         margin: "0 auto", 
+                         height: "35px", 
+                         backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
+                        }} 
+                        key = { title } 
+                    >
                     <CardText
-                        style = {{
-                            padding: "7px",
-                        }}
+                        style = {{ padding: "7px" }}
                         className = "funnel-bottom-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
@@ -181,11 +217,19 @@ class ViewsManager extends React.Component {
 
         var custom = customList.map( function(title) {
             return (
-                <Card containerStyle = {{ padding: "0px" }} style = {{ width: "80%", minWidth: "331px", margin: "0 auto", height: "35px", backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody }} key = { title } >
+                <Card 
+                    containerStyle = {{ padding: "0px" }} 
+                    style = {{ 
+                        width: "80%", 
+                        minWidth: "331px", 
+                        margin: "0 auto", 
+                        height: "35px", 
+                        backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
+                    }} 
+                    key = { title } 
+                >
                     <CardText
-                        style = {{
-                            padding: "7px",
-                        }}
+                        style = {{ padding: "7px" }}
                         className = "funnel-bottom-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
@@ -198,29 +242,31 @@ class ViewsManager extends React.Component {
         var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
 
-        var backButton = <RaisedButton
-                            label = "Back"
-                            onClick = { () => this.flip("Funnel") }
-                            style = {{ 
-                                width: "80%", 
-                                minWidth: "331px", 
-                                margin: "0 auto",
-                                display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "" : "none")
-                            }}
-                            buttonStyle = {{
-                                height: '30px',
-                                lineHeight: '30px',
-                                backgroundColor: "#818181"
-                            }} 
-                            labelStyle = {{
-                                fontSize: '13px',
-                                color: "#ffffff"
-                            }}
-                            overlayStyle = {{
-                                height: '30px',
-                                lineHeight: '30px'
-                            }}
-                        />;
+        var backButton = (
+            <RaisedButton
+                label = "Back"
+                onClick = { () => this.flip("Funnel") }
+                style = {{ 
+                    width: "80%", 
+                    minWidth: "331px", 
+                    margin: "0 auto",
+                    display: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "" : "none")
+                }}
+                buttonStyle = {{
+                    height: '30px',
+                    lineHeight: '30px',
+                    backgroundColor: "#818181"
+                }} 
+                labelStyle = {{
+                    fontSize: '13px',
+                    color: "#ffffff"
+                }}
+                overlayStyle = {{
+                    height: '30px',
+                    lineHeight: '30px'
+                }}
+            />
+        );
 
         return(
             <div>
@@ -239,7 +285,15 @@ class ViewsManager extends React.Component {
                     </div>
                 </div>
 
-                <Stepper activeStep = { this.state.stepIndex } style = {{ borderTopRightRadius: "3px", borderTopLeftRadius: "3px", height: "60px", backgroundColor: this.props.settings.colors.homePageColors.subBackground }} >
+                <Stepper 
+                    activeStep = { this.state.stepIndex } 
+                    style = {{ 
+                        borderTopRightRadius: "3px", 
+                        borderTopLeftRadius: "3px", 
+                        height: "60px", 
+                        backgroundColor: this.props.settings.colors.homePageColors.subBackground 
+                    }} 
+                >
                     <Step>
                         <StepLabel
                             icon = { 
@@ -259,11 +313,7 @@ class ViewsManager extends React.Component {
                                     <span className = "fa-stack fa-lg noselect">
                                         <i 
                                             className = "fa fa-circle fa-stack-2x" 
-                                            style = {{     
-                                                fontSize: "23px",
-                                                color: "#ffffff",
-                                                margin: "6px 0px 0px 0px",
-                                            }} 
+                                            style = {{ fontSize: "23px", color: "#ffffff", margin: "6px 0px 0px 0px" }} 
                                         />
                                         <i 
                                             className = "fa fa-check-circle fa-stack-1x" 
@@ -280,6 +330,7 @@ class ViewsManager extends React.Component {
                         <label className = "noselect" style = {{ color: "#ffffff" }} > Select a Category </label>
                     </StepLabel>
                     </Step>
+
                     <Step>
                         <StepLabel
                             icon = {
@@ -342,14 +393,15 @@ class ViewsManager extends React.Component {
                                                 {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div> 
                                                     : (this.state.type === "Admissions" ? <div> {admissions} {backButton} </div> 
                                                         : (this.state.type === "FinancialAid" ? <div> {financialAid} {backButton} </div> 
-                                                            : (this.state.type === "Custom" ? <div> {custom} {backButton} </div> : null)))
+                                                            : (this.state.type === "Custom" ? <div> {custom} {backButton} </div> : null)
+                                                        )
+                                                    )
                                                 }
                                             </Flexbox>
                                         </Flexbox>
                                     </div>
 
                                 </div>
-                                    
                                     
                                 
                                 {this.state.type === "My Views" ? <MyViews /> : null}
@@ -358,9 +410,9 @@ class ViewsManager extends React.Component {
                                     label = "Back"
                                     backgroundColor = "#dcdcdc"
                                     onClick = { this.handlePrev }
-                                    style = {{ marginRight: 12 }}
-                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 0px 0px 11px", bottom: "10px" }}
+                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
                                 />
+
                                 <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } />
                             </div>
 
@@ -368,10 +420,7 @@ class ViewsManager extends React.Component {
                                 <div style = {{ margin: "0 auto", width: "70%" }} >
                                     <RaisedButton 
                                         label = "My Views"
-                                        style = {{
-                                            width: "100%",
-                                            marginBottom: "17px"
-                                        }}
+                                        style = {{ width: "100%", marginBottom: "17px" }}
                                         buttonStyle = {{
                                             height: '50px',
                                             lineHeight: '50px',
@@ -384,10 +433,7 @@ class ViewsManager extends React.Component {
                                             paddingLeft: "0px",
                                             paddingRight: "0px"
                                         }}
-                                        overlayStyle = {{
-                                            height: '50px',
-                                            lineHeight: '50px',
-                                        }}
+                                        overlayStyle = {{ height: '50px', lineHeight: '50px' }}
                                         onClick = { this.handleNext.bind(this, "My Views") }
                                         primary = { true } 
                                     />
@@ -403,6 +449,9 @@ class ViewsManager extends React.Component {
 };
 
 
+/**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
 export const editModalDisplay = (allViewsModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     allViewsModal,
@@ -413,7 +462,7 @@ export const editModalDisplay = (allViewsModal) => ({
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     funnelData: state.filterState.FunnelData
@@ -422,6 +471,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(ViewsManager);

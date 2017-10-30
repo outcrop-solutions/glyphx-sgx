@@ -21,7 +21,7 @@ class HomePage extends React.Component {
 
     // 0 for start, "done" for end
     state = {
-        tutorialStage: 0
+        tutorialStage: "done"
     }
 
 

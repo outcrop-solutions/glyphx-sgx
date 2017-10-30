@@ -2,50 +2,56 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Flexbox from 'flexbox-react';
 import { Card, CardText } from 'material-ui/Card';
-import { withRouter } from 'react-router-dom'
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import FilterSideBar from './FilterSideBar.js';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import CircularProgress from 'material-ui/CircularProgress';
-import StatisticModal from './StatisticModal.js'
-import TopNavBar from './TopNavBar.js';
-import FloatingToggleButtons from './FloatingToggleButtons.js';
-import GlyphLegend from './GlyphLegend.js';
-import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
 import Select from 'react-select';
 import ReactQuill from 'react-quill';
-import theme from 'react-quill/dist/quill.snow.css';
+import theme from 'react-quill/dist/quill.snow.css'; // Dont remove theme, although its not explicitly used, it's implicitly used by ReactQuill for the snow theme!
 import Divider from 'material-ui/Divider';
+import ComponentLoadMask from './ComponentLoadMask.js';
 import './General.css';
-import 'font-awesome/css/font-awesome.min.css';
 
 
-
-
+/**
+ * Enables messaging and sharing visualizations between instatution teams.
+ **/
 class UserFeed extends React.Component {
 
     state = {
+        loadMask: true,
         teamSelectValue: "University of Notre Dame"
     }
 
+
+    /**
+	 * React built-in which is called when component mounts
+	 */
+	componentDidMount() {
+        var context = this;
+
+        // Make server call to grab recent views
+        //makeServerCall(something here),
+        //    function (responseText) { 
+
+                // Post the new data to the state and hide the window load-mask
+                context.setState({ loadMask: false });
+        //   }
+        //);
+	}
+
+
+    /**
+     * Handles changing teams from the drop-down
+     * @param value: value of the team to change to
+     **/
     onTeamSelectChange = (value) => {
-        this.setState({
-            teamSelectValue: value
-        });
-        console.log(value);
+        this.setState({ teamSelectValue: value });
     };
     
 
     render() {
 
         var teamList = ["University of Notre Dame", "Marketing & Recruiting", "Admissions", "Financial Aid", "Custom Team 1"];
-        teamList = teamList.map(function(value){
-			return(
-                {
-                    label: value, value: value
-                }
-            );
+        teamList = teamList.map( function(value) {
+			return({ label: value, value: value });
 		});
 
         var postList = [["Mark Sloan", "./Res/Img/mark.png", "CEO", "Lunch is on me everyone!"], 
@@ -65,16 +71,20 @@ class UserFeed extends React.Component {
 
         var posts = postList.map( function(post) {
             return (
-                <Card containerStyle = {{ padding: "0px", borderRadius: "10px" }} style = {{ backgroundColor: context.props.settings.colors.general.lightBubble, borderRadius: "10px", paddingBottom: "2px", marginTop: (post === postList[0] ? "0px" : "7px") }} key = { post } >
-                    <CardText
-                        style = {{
-                            padding: "5px",
-                            borderRadius: "10px"
-                        }}
-                    >
+                <Card 
+                    containerStyle = {{ padding: "0px", borderRadius: "10px" }} 
+                    style = {{ 
+                        backgroundColor: context.props.settings.colors.general.lightBubble, 
+                        borderRadius: "10px", 
+                        paddingBottom: "2px", 
+                        marginTop: (post === postList[0] ? "0px" : "7px") 
+                    }} 
+                    key = { post } 
+                >
+                    <CardText style = {{ padding: "5px", borderRadius: "10px" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
 
-                                <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } />
+                            <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } />
  
                             <Flexbox flexDirection = "column" style = {{ width: "100%" }} >
                                 <Flexbox style = {{ height: "100%" }} > 
@@ -94,10 +104,11 @@ class UserFeed extends React.Component {
                                             - { post[0] }
                                         </div>
                                     </Flexbox>
+
                                 </Flexbox>
+
                             </Flexbox>
                         </Flexbox>
-                        
                         
                     </CardText>
                 </Card>
@@ -105,7 +116,8 @@ class UserFeed extends React.Component {
         });
 
         return (
-            <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  > 
+            <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
+
                 <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginBottom: "3px", paddingBottom: "4px" }} >
                     <div 
                         style = {{ 
@@ -120,16 +132,19 @@ class UserFeed extends React.Component {
                         User Feed
                     </div>
                 </div>
-                <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px" }}  > 
+
+                <div style = {{ height: "300px", display: (this.state.loadMask ? "" : "none") }} >
+                    <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+                </div>
+
+                <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px", display: (this.state.loadMask ? "none" : "") }}  > 
                     <Select 
                         simpleValue
                         clearable = { false }
                         value = { this.state.teamSelectValue } 
                         options = { teamList } 
                         onChange = { this.onTeamSelectChange } 
-                        style = {{
-                            margin: "0px 0px 7px 0px",
-                        }}
+                        style = {{ margin: "0px 0px 7px 0px" }}
                         className = "noselect"
                     />
                 
@@ -149,8 +164,17 @@ class UserFeed extends React.Component {
                         </div>
                     </Flexbox>
 
-                    <div id = "toolbar" style = {{ marginTop: "7px", backgroundColor: this.props.settings.colors.general.darkerBubble, borderTopRightRadius: "3px", borderTopLeftRadius: "3px" }} >
+                    <div 
+                        id = "toolbar" 
+                        style = {{ 
+                            marginTop: "7px", 
+                            backgroundColor: this.props.settings.colors.general.darkerBubble, 
+                            borderTopRightRadius: "3px", 
+                            borderTopLeftRadius: "3px" 
+                        }} 
+                    >
                         <Flexbox flexDirection = "row" >
+
                             <Flexbox style = {{ width: "100%" }} > 
                                 <button className = "ql-italic"></button>
                             </Flexbox>
@@ -190,11 +214,17 @@ class UserFeed extends React.Component {
                         </Flexbox>
                     </div>
 
-                    <ReactQuill 
-                        theme = "snow"
-                        modules = {{ toolbar: '#toolbar' }}
-                    >
-                        <div className = "my-editing-area" style = {{ height: "150px", overflow: "auto", backgroundColor: this.props.settings.colors.general.lighterBubble, borderBottomRightRadius: "3px", borderBottomLeftRadius: "3px" }} />
+                    <ReactQuill theme = "snow" modules = {{ toolbar: '#toolbar' }} >
+                        <div 
+                            className = "my-editing-area" 
+                            style = {{ 
+                                height: "150px", 
+                                overflow: "auto", 
+                                backgroundColor: this.props.settings.colors.general.lighterBubble, 
+                                borderBottomRightRadius: "3px", 
+                                borderBottomLeftRadius: "3px" 
+                            }} 
+                        />
                     </ReactQuill>
                 </Flexbox>
 
@@ -212,11 +242,12 @@ export const editModalDisplay = (allViewsModal) => ({
     allViewsModal,
 });
 
+
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo
@@ -225,6 +256,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(UserFeed);
