@@ -369,20 +369,20 @@ class ViewsManager extends React.Component {
                                 >
                                     <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} > 
 
-                                        <div onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } style = {{ marginTop: "20px" }} >
-                                            <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" />
+                                        <div onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } className = { mandrList.length > 0 ? "noselect" : "cursorDefault noselect" } style = {{ marginTop: "20px" }} >
+                                            <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" className = "nodrag" draggable = { false } />
                                         </div>
 
-                                        <div onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } >
-                                            <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" />
+                                        <div onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } className = { admList.length > 0 ? "noselect" : "cursorDefault noselect"} >
+                                            <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" className = "nodrag" draggable = { false } />
                                         </div>
 
-                                        <div onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } >
-                                            <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" />
+                                        <div onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } className = { faList.length > 0 ? "noselect" : "cursorDefault noselect"} >
+                                            <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" className = "nodrag" draggable = { false } />
                                         </div>
 
-                                        <div onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } >
-                                            <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" />
+                                        <div onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } className = { customList.length > 0 ? "noselect" : "cursorDefault noselect"} >
+                                            <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" className = "nodrag" draggable = { false } />
                                         </div>
 
                                     </div>
@@ -402,7 +402,6 @@ class ViewsManager extends React.Component {
                                     </div>
 
                                 </div>
-                                    
                                 
                                 {this.state.type === "My Views" ? <MyViews /> : null}
 

@@ -6,6 +6,9 @@ import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Select from 'react-select';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
+import './SettingsModal.css';
 
 
 /**
@@ -134,6 +137,22 @@ class SettingsModal extends React.Component {
                 </div>
 
                 <Flexbox flexDirection = "row" >
+
+                    <Tooltip
+                        placement = 'right'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlay = { 
+                            <div> 
+                                This will change the colors across the GlyphEd site.
+                            </div> 
+                        }
+                    >
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px" }} className = "fa fa-question-circle" color = '#000000' />
+                    </Tooltip>
+
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Color Theme </h4></label>
 
                     <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2001" }} >
@@ -156,6 +175,24 @@ class SettingsModal extends React.Component {
                 </div>
 
                 <Flexbox flexDirection = "row" >
+
+                    <Tooltip
+                        placement = 'right'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlayStyle = {{ marginTop: "-100px" }}
+                        overlay = { 
+                            <div> 
+                                When set to yes, the filter sidebar will 
+                                <br />overlap the glyph viewer window when open.
+                            </div> 
+                        }
+                    >
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px" }} className = "fa fa-question-circle" color = '#000000' />
+                    </Tooltip>
+
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Overlap Glyph Viewer </h4></label>
 
                     <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2002" }} >
@@ -172,6 +209,23 @@ class SettingsModal extends React.Component {
                 </Flexbox>
 
                 <Flexbox flexDirection = "row" >
+
+                    <Tooltip
+                        placement = 'right'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlay = { 
+                            <div> 
+                                When set to yes, mousing over a table that already has a scrollbar 
+                                <br />will hide the main scrollbar until the mouse exits the table.
+                            </div> 
+                        }
+                    >
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px" }} className = "fa fa-question-circle" color = '#000000' />
+                    </Tooltip>
+
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Mouse Hover Hides Scrollbar </h4></label>
 
                     <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2000" }} >

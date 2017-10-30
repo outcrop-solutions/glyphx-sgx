@@ -571,7 +571,7 @@ class FilterSideBarBottomView extends React.Component {
                         
                         <br/>
 
-                        <div style = {{ width: "100%", height: "100%", display: (this.state.loadMask ? "" : "none") }} >
+                        <div style = {{ width: "100%", height: "300px", display: (this.state.loadMask ? "" : "none") }} >
                             <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                         </div>
 

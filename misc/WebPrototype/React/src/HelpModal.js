@@ -28,7 +28,9 @@ class HelpModal extends React.Component {
 	 */
 	displayTextArea(selection) {
 		var context = this;
+
 		this.setState({ selection: selection });
+
 		setTimeout(function () {
 			context.setState({ opacity: 1 });
 		}, 50);
@@ -40,7 +42,9 @@ class HelpModal extends React.Component {
 	 */
 	hideTextArea() {
 		var context = this;
+
 		this.setState({ opacity: 0 });
+		
 		setTimeout(function () {
 			context.setState({ selection: "none" });
 		}, 200);

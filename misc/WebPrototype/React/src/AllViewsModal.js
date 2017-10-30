@@ -57,7 +57,9 @@ class allViewsModal extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data || this.props.allViewsDisplay !== nextProps.allViewsDisplay || this.state.snackbarVisible !== nextState.snackbarVisible);
+		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data 
+			|| this.props.allViewsDisplay !== nextProps.allViewsDisplay || this.state.snackbarVisible !== nextState.snackbarVisible
+		);
 
 		/*
         if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
@@ -99,13 +101,28 @@ class allViewsModal extends React.Component {
 
 					// Seperate and store the actual data and the selectAll boolean of each column
 					for (var i = 0; i < keyArray.length; i++) {
-						var dataCol = [keyArray[i]];
+						var dataCol = [];
 						selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
 
 						for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
 							dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
 						}
 
+						if (isNaN(dataCol[0])) {
+							dataCol.sort();
+						}
+
+						else {
+							dataCol.sort(
+								function (a, b) {
+									return a - b;
+								}
+							);
+						}
+
+						dataCol.unshift(keyArray[i]);
+
+						//debugger;
 						data.push(dataCol);
 					}
 
@@ -439,7 +456,7 @@ class allViewsModal extends React.Component {
 
 		// No valid search value, hide all and display filler message
 		if (filterValues.length === 0) {
-			if (tr.length > 100) {
+			if (tr.length > 500) {
 				for (i = 0; i < tr.length; i++) {
 					tr[i].style.display = "none";
 				}
@@ -608,13 +625,13 @@ class allViewsModal extends React.Component {
 							onTextFieldValueChange = { (evt) => context.onBlurMultiSearch(context, col[0]) }
 							id = { "tf-" + col[0] }
 							collapseButton = { false }
-							shouldOnBlur = { true }
+							shouldOnBlur = { col.length > 500 ? true : false }
 						/>
 					</div>
 
 					<div id = { col[0] } style = {{ overflow: "auto" }} >
 
-						{ (col.length > 100 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
+						{ (col.length > 500 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
 						<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
 
 						{col.map( function(elem) {
@@ -625,7 +642,7 @@ class allViewsModal extends React.Component {
 										onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
 										onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
 										style = {{ 
-											display: (col.length > 100 ? "none" : "")
+											display: (col.length > 500 ? "none" : "")
 										 }}
 									>
 										<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >

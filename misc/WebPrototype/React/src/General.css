@@ -1,13 +1,17 @@
 .cursorHand:Hover {
-    cursor: pointer
+    cursor: pointer;
+}
+
+.cursorDefault:Hover {
+    cursor: default;
 }
 
 .disableScroll {
-    overflow-y: hidden !important
+    overflow-y: hidden !important;
 }
 
 .enableScroll {
-    overflow-y: auto !important
+    overflow-y: auto !important;
 }
 
 .customScroll::-webkit-scrollbar
@@ -128,8 +132,18 @@ video#bgvid {
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
        -moz-user-select: none; /* Firefox */
+         -o-user-select: none;
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.nodrag {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    -ms-user-drag: none;
+    user-drag: none;
 }
 
 .pulse {

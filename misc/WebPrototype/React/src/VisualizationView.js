@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
+import { withRouter } from 'react-router';
 import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import FilterSideBar from './FilterSideBar.js';
@@ -37,6 +38,13 @@ class VisualizationView extends React.Component {
 	 * It decides whether to show the login form and calls the init().
 	 */
     componentDidMount() {
+
+        if (window.performance) {
+            if (performance.navigation.type === 1) {
+                this.props.history.push('/home');
+            }
+        }
+
         this.init();
 
         var style = document.getElementById('themeStyles');
@@ -247,6 +255,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the redux store to get access to global states.
+ * Connects the redux store to get access to global states. withRouter allows component to change navigation route.
  **/
-export default connect(mapStateToProps)(VisualizationView);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(VisualizationView));
