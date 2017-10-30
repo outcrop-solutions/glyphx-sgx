@@ -141,8 +141,8 @@ class FilterSideBarBottomView extends React.Component {
                             </span>
                         </div>
                     } 
-                    onClose = { () => this.updateTabRender('tab-' + config.internalColName, false) }
-                    onOpen = { () => this.updateTabRender('tab-' + config.internalColName, true) }
+                    //onClose = { () => this.updateTabRender('tab-' + config.internalColName, false) }
+                    //onOpen = { () => this.updateTabRender('tab-' + config.internalColName, true) }
                 >
                     <FilterTabs 
                         ref = { 'tab-' + config.internalColName } 
@@ -210,9 +210,13 @@ class FilterSideBarBottomView extends React.Component {
      */
     onCollapsibleTriggerClick = (element) => {
         var elem = this.refs[element];
+        var tabElement = "tab-"+element;
+        var oCols = this.state.openCols;
+        var action;
 
         if (elem.state.isClosed) {
             elem.openCollapsible();
+            action = true;
 
             var context = this;
             setTimeout(function () {
@@ -222,7 +226,12 @@ class FilterSideBarBottomView extends React.Component {
         }
         else {
             elem.closeCollapsible();
+            action = false;
         }
+
+        
+        oCols[tabElement] = action;
+        this.setState({openCols: oCols});
     }
 
 
