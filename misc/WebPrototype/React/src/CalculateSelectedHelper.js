@@ -63,7 +63,6 @@ export function calcSelected(rList, rangeType, data, previousRange, selectedValu
     }
 
     else if (rangeType === "Text") {
-        var foundRange = false;
         for (i = 0; i < rList.length; i++) {
             if (rList[i][3]) {
                 if (previousRange && rList[i][2] === previousRange[2] && previousRange[3] && (rList[i][0] !== previousRange[0] || rList[i][1] !== previousRange[1] || rList[i][5] !== previousRange[5]) ) {
@@ -246,7 +245,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
  * @param selectedValues: list of currently selected values
  **/
 export function calcSelectedRemoved(rList, rangeType, data, previousRange, selectedValues) {
-    var i, j, curNum, previousList, newList, index;
+    var i, curNum, previousList, newList, index;
     if (rangeType === "Number") {
         newList = calcSelectedNoPrevious(rList, rangeType, data);
         previousList = [];

@@ -72,11 +72,11 @@ class UserFeed extends React.Component {
                             borderRadius: "10px"
                         }}
                     >
-                        <Flexbox flexDirection="row" minWidth="100%" >
+                        <Flexbox flexDirection = "row" minWidth = "100%" >
 
                                 <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } />
  
-                            <Flexbox flexDirection="column" style = {{ width: "100%" }} >
+                            <Flexbox flexDirection = "column" style = {{ width: "100%" }} >
                                 <Flexbox style = {{ height: "100%" }} > 
                                     {post[3]}
                                 </Flexbox>
@@ -105,7 +105,7 @@ class UserFeed extends React.Component {
         });
 
         return (
-            <Flexbox flexDirection="column" style = {{ height: "100%", minHeight: "0" }}  > 
+            <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  > 
                 <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginBottom: "3px", paddingBottom: "4px" }} >
                     <div 
                         style = {{ 
@@ -120,7 +120,7 @@ class UserFeed extends React.Component {
                         User Feed
                     </div>
                 </div>
-                <Flexbox flexDirection="column" style = {{ height: "100%", minHeight: "0", padding: "7px" }}  > 
+                <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px" }}  > 
                     <Select 
                         simpleValue
                         clearable = { false }
@@ -150,7 +150,7 @@ class UserFeed extends React.Component {
                     </Flexbox>
 
                     <div id = "toolbar" style = {{ marginTop: "7px", backgroundColor: this.props.settings.colors.general.darkerBubble, borderTopRightRadius: "3px", borderTopLeftRadius: "3px" }} >
-                        <Flexbox flexDirection="row" >
+                        <Flexbox flexDirection = "row" >
                             <Flexbox style = {{ width: "100%" }} > 
                                 <button className = "ql-italic"></button>
                             </Flexbox>

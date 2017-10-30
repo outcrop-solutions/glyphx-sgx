@@ -1,23 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Card, CardText } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
-import { Flex } from 'react-flex-material';
 import Flexbox from 'flexbox-react';
 import Range from 'rc-slider/lib/Range';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import { Card, CardText } from 'material-ui/Card';
-import { red500, blue500 } from 'material-ui/styles/colors';
-import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
-import 'font-awesome/css/font-awesome.min.css';
 import './General.css';
+
 
 /**
  * Used to translate slider values to letters
  **/
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
 
 /**
  * @param colName: Name of the corresponding column for this RangeForm
@@ -70,15 +69,17 @@ class TextRangeTable extends React.Component {
         var rList = this.props.filterList[this.props.colName].rangeList;
 
         var range = rList.map( function(range) {
-            return (<TextRangeRow 
-                        range = { range } 
-                        onDelEvent = { onRowDel.bind(this) } 
-                        updateStore = { updateStore }
-                        key = { range[2] }
-                        minVal = { minVal }
-                        maxVal = { maxVal }
-                        settings = { settings }
-                    />)
+            return (
+                <TextRangeRow 
+                    range = { range } 
+                    onDelEvent = { onRowDel.bind(this) } 
+                    updateStore = { updateStore }
+                    key = { range[2] }
+                    minVal = { minVal }
+                    maxVal = { maxVal }
+                    settings = { settings }
+                />
+            )
         });
 
 
@@ -91,20 +92,13 @@ class TextRangeTable extends React.Component {
 
                     {/* Add range button below*/}
                     <Card containerStyle = {{ padding: "0px" }} >
-                        <CardText
-                            style = {{
-                                padding: "0px"
-                            }}
-                        >
+                        <CardText style = {{ padding: "0px" }} >
                             <Flexbox flexDirection = "row" style = {{ margin: "-4px 0px -4px 3px" }} >
                                 <FontIcon
                                     onClick = { this.handleAddEvent.bind(this) }
                                     className = "fa fa-plus cursorHand"
                                     hoverColor = { this.props.settings.colors.rangeColor.addHover }
-                                    style = {{
-                                        fontSize: "1.7rem",
-                                        margin: "12px 0px 6px 5px"
-                                    }}
+                                    style = {{ fontSize: "1.7rem", margin: "12px 0px 6px 5px" }}
                                 />
                             </Flexbox>
                         </CardText>
@@ -158,10 +152,15 @@ class TextRangeRow extends React.Component {
      * @param nextProps: The props the component would have after the change
      **/
     componentWillReceiveProps(nextProps) {
-        this.setState({ min: nextProps.range[0], max: nextProps.range[1], value: nextProps.range[4], text: nextProps.range[5], backgroundColor: (nextProps.range[3] ? "#ffffff" : "#f1f1f1") });
+        this.setState({ 
+            min: nextProps.range[0], 
+            max: nextProps.range[1], 
+            value: nextProps.range[4], 
+            text: nextProps.range[5], 
+            backgroundColor: (nextProps.range[3] ? "#ffffff" : "#f1f1f1") 
+        });
     };
     
-
 
     /**
      * Updates the local state when the slider is dragged
@@ -191,6 +190,7 @@ class TextRangeRow extends React.Component {
                  if (e.target.name == "min") {
                     this.setState({ min: "" });
                  }
+
                  else {
                      this.setState({ max: "" });
                  }
@@ -198,10 +198,12 @@ class TextRangeRow extends React.Component {
 
              var value = e.target.value.toUpperCase();
              var index = alphabet.indexOf(value);
+
              if (index != -1) {
                  if (e.target.name == "min") {
                     this.setState({ min: index });
                  }
+
                  else {
                      this.setState({ max: index });
                  }
@@ -220,6 +222,7 @@ class TextRangeRow extends React.Component {
         if (this.state.min === "") {
             min = 0;
         }
+
         if (this.state.max === "") {
             max = 25;
         }
@@ -233,6 +236,7 @@ class TextRangeRow extends React.Component {
                 max = min;
             }
         }
+
         this.props.updateStore(min, max, this.props.range[2], null, null, null, this.props.range);
     };
 
@@ -256,7 +260,7 @@ class TextRangeRow extends React.Component {
         }
 
         else if (min > max) {
-             if (this.state.latestUpdate === "MIN") {
+            if (this.state.latestUpdate === "MIN") {
                 return [max, max];
             }
 
@@ -276,7 +280,7 @@ class TextRangeRow extends React.Component {
      * @param val: "MIN" or "MAX", text field that called this
      **/
     updateLatest(val) {
-        this.setState({latestUpdate: val});
+        this.setState({ latestUpdate: val });
     }
 
 
@@ -312,17 +316,22 @@ class TextRangeRow extends React.Component {
             if (e.target.checked) {
                 var min = null;
                 var max = null;
+
                 if (this.state.min == "") {
                     min = 0;
                 }
+
                 if (this.state.max == "") {
                     max = 25;
                 }
+
                 this.props.updateStore(min, max, this.props.range[2], true, null, null);
             }
+
             else {
                 this.props.updateStore(null, null, this.props.range[2], false, null, null);
             }
+
             this.setState({ epoch: epoch });
         }        
     }
@@ -363,15 +372,11 @@ class TextRangeRow extends React.Component {
         this.props.updateStore(0, 25, this.props.range[2], false, value, "", this.props.range);
     }
 
+
     render() {
         return (
             <Card containerStyle = {{ padding: "0px" }}>
-                <CardText
-                    style = {{
-                        padding: "0px",
-                        backgroundColor: this.state.backgroundColor
-                    }}
-                >
+                <CardText style = {{ padding: "0px", backgroundColor: this.state.backgroundColor }} >
                     <Flexbox flexDirection = "row" style = {{ margin: "-4px 0px" }} >
 
                         <Flexbox style = {{ width: "10%" }} > 
@@ -379,10 +384,7 @@ class TextRangeRow extends React.Component {
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash cursorHand"
                                 hoverColor = { this.props.settings.colors.rangeColor.deleteHover }
-                                style = {{
-                                    fontSize: "1.7rem",
-                                    margin: "12px 0px 6px 8px"
-                                }}
+                                style = {{ fontSize: "1.7rem", margin: "12px 0px 6px 8px" }}
                             />
                         </Flexbox>
 
@@ -396,7 +398,6 @@ class TextRangeRow extends React.Component {
                                 underlineStyle = {{ margin: "0px 34px 0px -11px", borderColor: "#d2d2d2" }} 
                                 menuStyle = {{ width: "185px" }}
                                 listStyle = {{ paddingTop: "0px", paddingBottom: "0px" }}
-
                                 autoWidth = { false }
                             >
                                 <MenuItem value = {1} label = "Contains" primaryText = "Contains" />
@@ -410,97 +411,84 @@ class TextRangeRow extends React.Component {
 
                         <Flexbox style = {{ width: "55%", margin: "-3px 0px 2px 7px" }} >
                             {this.state.value === 5 || this.state.value === 6 ? 
-                                        <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
-                                            <Flexbox style = {{ width: "25%" }} > 
-                                                <TextField 
-                                                    type = 'text' 
-                                                    name = "min"
-                                                    ref = { input => this.inputElementMin = input }
-                                                    value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
-                                                    hintText = 'A'
-                                                    style = { styleSet.textfieldStyles }
-                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline, margin: "0px 0px 0px -6px" }}
-                                                    underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 0px -5px" }}
-                                                    onChange = {
-                                                        (e) => this.onSliderTextChange(e)
-                                                    }
-                                                    onFocus = { () => this.updateLatest("MIN") }
-                                                    onBlur = {
-                                                        () => this.onSliderTextBlur()
-                                                    }
-                                                    onKeyPress = {
-                                                        (e) => this.onKeyPressMin(e)
-                                                    }
-                                                />
-                                            </Flexbox>
-
-                                            <Flexbox style = {{ width: "45%", margin: "18px 18px 0px -19px" }} > 
-                                                <Range
-                                                    min = { 0 }
-                                                    max = { 25 }
-                                                    value = { this.arrayTextConversion(this.state.min, this.state.max) }
-                                                    defaultValue = { [0, 25] }
-                                                    allowCross = { false }
-                                                    onChange = {
-                                                        (e) => this.onSlide(e)
-                                                    }
-                                                    onAfterChange = {
-                                                        (e) => this.onAfterSlide(e)
-                                                    }
-                                                    trackStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderTrack }] }
-                                                    railStyle = {{ backgroundColor: "#d2d2d2" }}
-                                                    handleStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }, { backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }] }
-                                                />
-                                            </Flexbox>
-
-                                            <Flexbox style = {{ width: "25%" }} > 
-                                                <TextField 
-                                                    type = 'text' 
-                                                    name = "max"
-                                                    ref = { input => this.inputElementMax = input }
-                                                    value = { this.state.max === "" ? "" : alphabet[this.state.max] }
-                                                    hintText = 'Z'
-                                                    style = { styleSet.textfieldStyles }
-                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
-                                                    underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 0px -5px" }}
-                                                    onChange = {
-                                                        (e) => this.onSliderTextChange(e)
-                                                    }
-                                                    onFocus = { () => this.updateLatest("MAX") }
-                                                    onBlur = {
-                                                        () => this.onSliderTextBlur()
-                                                    }
-                                                    onKeyPress = {
-                                                        (e) => this.onKeyPressMax(e)
-                                                    }
-                                                />
-                                            </Flexbox>
-                                        </Flexbox>
-                                        
-                                        : 
-
+                                <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
+                                    <Flexbox style = {{ width: "25%" }} > 
                                         <TextField 
                                             type = 'text' 
                                             name = "min"
                                             ref = { input => this.inputElementMin = input }
-                                            value = { this.state.text } 
-                                            style = {{
-                                                width: "150px"
-                                            }}
+                                            value = { this.state.min === "" ? "" : alphabet[this.state.min] } 
+                                            hintText = 'A'
+                                            style = { styleSet.textfieldStyles }
+                                            underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline, margin: "0px 0px 0px -6px" }}
+                                            underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 0px -5px" }}
+                                            onChange = { (e) => this.onSliderTextChange(e) }
+                                            onFocus = { () => this.updateLatest("MIN") }
+                                            onBlur = { () => this.onSliderTextBlur() }
+                                            onKeyPress = { (e) => this.onKeyPressMin(e) }
+                                        />
+                                    </Flexbox>
+
+                                    <Flexbox style = {{ width: "45%", margin: "18px 18px 0px -19px" }} > 
+                                        <Range
+                                            min = { 0 }
+                                            max = { 25 }
+                                            value = { this.arrayTextConversion(this.state.min, this.state.max) }
+                                            defaultValue = { [0, 25] }
+                                            allowCross = { false }
+                                            onChange = { (e) => this.onSlide(e) }
+                                            onAfterChange = { (e) => this.onAfterSlide(e) }
+                                            trackStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderTrack }] }
+                                            railStyle = {{ backgroundColor: "#d2d2d2" }}
+                                            handleStyle = { 
+                                                [{ 
+                                                    backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, 
+                                                    borderColor: this.props.settings.colors.rangeColor.sliderCircle 
+                                                }, 
+                                                { 
+                                                    backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, 
+                                                    borderColor: this.props.settings.colors.rangeColor.sliderCircle 
+                                                }] 
+                                            }
+                                        />
+                                    </Flexbox>
+
+                                    <Flexbox style = {{ width: "25%" }} > 
+                                        <TextField 
+                                            type = 'text' 
+                                            name = "max"
+                                            ref = { input => this.inputElementMax = input }
+                                            value = { this.state.max === "" ? "" : alphabet[this.state.max] }
+                                            hintText = 'Z'
+                                            style = { styleSet.textfieldStyles }
                                             underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
-                                            underlineStyle = {{ borderColor: "#d2d2d2" }}
-                                            hintText = "Letter or Phrase"
-                                            hintStyle = {{ color: "#949494" }}
-                                            onChange = {
-                                                (e) => this.onTextChange(e)
-                                            }
-                                            onBlur = {
-                                                () => this.onTextBlur()
-                                            }
-                                            onKeyPress = {
-                                                (e) => this.onKeyPressMin(e)
-                                            }
-                                        /> 
+                                            underlineStyle = {{ borderColor: "#d2d2d2", margin: "0px 0px 0px -5px" }}
+                                            onChange = { (e) => this.onSliderTextChange(e) }
+                                            onFocus = { () => this.updateLatest("MAX") }
+                                            onBlur = { () => this.onSliderTextBlur() }
+                                            onKeyPress = { (e) => this.onKeyPressMax(e) }
+                                        />
+                                    </Flexbox>
+                                </Flexbox>
+                                
+                                : 
+
+                                <TextField 
+                                    type = 'text' 
+                                    name = "min"
+                                    ref = { input => this.inputElementMin = input }
+                                    value = { this.state.text } 
+                                    style = {{
+                                        width: "150px"
+                                    }}
+                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
+                                    underlineStyle = {{ borderColor: "#d2d2d2" }}
+                                    hintText = "Letter or Phrase"
+                                    hintStyle = {{ color: "#949494" }}
+                                    onChange = { (e) => this.onTextChange(e) }
+                                    onBlur = { () => this.onTextBlur() }
+                                    onKeyPress = { (e) => this.onKeyPressMin(e) }
+                                /> 
                             }
                         </Flexbox>
 
@@ -558,6 +546,7 @@ export const addRange = (colName, selectType, min, max, text, id, applied, range
     applied,
     rangeType
 });
+
 export const removeRange = (colName, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',
     colName,
@@ -565,6 +554,7 @@ export const removeRange = (colName, id, data, rangeType) => ({
     data,
     rangeType
 });
+
 export const updateRange = (colName, selectType, min, max, text, id, applied, data, rangeType) => ({
     type: 'UPDATE_RANGE',
     colName,
@@ -583,7 +573,7 @@ export const updateRange = (colName, selectType, min, max, text, id, applied, da
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     filterList: state.filterState.Filter,
     settings: state.filterState.Settings
@@ -592,6 +582,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the RangeForm component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(TextRangeTable);

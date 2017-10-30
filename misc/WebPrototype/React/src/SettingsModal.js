@@ -1,10 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Flexbox from 'flexbox-react';
-import MenuItem from 'material-ui/MenuItem';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Select from 'react-select';
@@ -15,10 +13,6 @@ import Select from 'react-select';
  **/
 class SettingsModal extends React.Component {
 
-
-    /**
-     * Initial state of the component.
-     **/
 	state = {
         colorThemes: ["SynGlyphX", "Gannon"],
         themeSelection: "SynGlyphX",
@@ -32,6 +26,8 @@ class SettingsModal extends React.Component {
 
     /**
      * Updates the select box to represent the selection option made
+     * @param event: -ADCMT
+     * @param index: -ADCMT
      * @param value: Value of the selected drop down option
      * @param target: String representing the select box that triggered this method
      **/
@@ -39,9 +35,11 @@ class SettingsModal extends React.Component {
         if (target === "Theme") {
             this.setState({ themeTempSelection: value });
         }
+
         else if (target === "Overlap") {
             this.setState({ overlapTempSelection: value });
         }
+
         else if (target === "HideScroll") {
             this.setState({ hideScrollTempSelection: value });
         }
@@ -53,7 +51,14 @@ class SettingsModal extends React.Component {
      **/
     onSettingsSave() {
         this.setState({ themeSelection: this.state.themeTempSelection, overlapSelection: this.state.overlapTempSelection, hideScrollSelection: this.state.hideScrollTempSelection });
-        this.props.dispatch(editSettings(this.state.colorThemes.indexOf(this.state.themeTempSelection), (this.props.homePage ? null : (this.state.overlapTempSelection === "No" ? false : true)), false, (this.props.homePage ? null : (this.state.hideScrollTempSelection === "Yes" ? true : false))));
+        this.props.dispatch(
+            editSettings(
+                this.state.colorThemes.indexOf(this.state.themeTempSelection), 
+                (this.props.homePage ? null : (this.state.overlapTempSelection === "No" ? false : true)), 
+                false, 
+                (this.props.homePage ? null : (this.state.hideScrollTempSelection === "Yes" ? true : false))
+            )
+        );
 
         if (!this.props.homePage) {
             var gv = document.getElementById('GlyphViewerContainer');
@@ -64,10 +69,12 @@ class SettingsModal extends React.Component {
                 if (filterNavOpen) {
                     gv.style.width = this.props.glyphWindowWidth + "px";
                 }
+
                 else {
                     gv.style.width = "100%";
                 }   
             }
+
             else {
                 gv.style.width = "100%";
             }
@@ -98,6 +105,10 @@ class SettingsModal extends React.Component {
             <Dialog
 				title = { <div> <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Settings </div> }
                 ref = "Settings"
+                modal = { true }
+				open = { this.props.settingsDisplay }
+				bodyStyle = {{ padding: "0px 24px 10px" }}
+				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
 				actions = {
 					[
 						<FlatButton
@@ -114,19 +125,15 @@ class SettingsModal extends React.Component {
                         />
 					]
 				}
-				modal = { true }
-				open = { this.props.settingsDisplay }
-				bodyStyle = {{ padding: "0px 24px 10px" }}
-				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
-				
 			>
 
                 <div style = {{ margin: "20px 0px 3px", color: "#000000" }} > General </div>
+
                 <div style = {{ marginBottom: "20px" }} >
                     <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
                 </div>
-                <Flexbox flexDirection = "row" >
 
+                <Flexbox flexDirection = "row" >
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Color Theme </h4></label>
 
                     <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2001" }} >
@@ -140,15 +147,17 @@ class SettingsModal extends React.Component {
                             clearable = { false }
                         />
                     </div>
-
                 </Flexbox>
 
                 <div style = {{ margin: "20px 0px 3px", color: "#000000" }} > Filter Sidebar </div>
+
                 <div style = {{ marginBottom: "20px" }} >
                     <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
                 </div>
+
                 <Flexbox flexDirection = "row" >
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Overlap Glyph Viewer </h4></label>
+
                     <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2002" }} >
                         <Select 
                             simpleValue
@@ -164,6 +173,7 @@ class SettingsModal extends React.Component {
 
                 <Flexbox flexDirection = "row" >
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Mouse Hover Hides Scrollbar </h4></label>
+
                     <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2000" }} >
                         <Select 
                             simpleValue
@@ -208,6 +218,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(SettingsModal);

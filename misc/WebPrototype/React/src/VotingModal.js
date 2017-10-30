@@ -114,14 +114,14 @@ class VotingModal extends React.Component {
 
                 <Flexbox flexDirection="row" style = {{ marginLeft: "105px", display: (this.state.voted ? "" : "none") }} >
                     <PieChart
-                        data={ [21, 45, 10, 15] }
-                        radius={ 150 }
-                        hole={ 50 }
-                        colors={ ['#43A19E', '#7B43A1', '#F2317A', '#FF9824'] }
-                        labels={ true }
-                        percent={ true }
-                        strokeWidth={ 3 }
-                        stroke={ '#fff' }
+                        data = { [21, 45, 10, 15] }
+                        radius = { 150 }
+                        hole = { 50 }
+                        colors = { ['#43A19E', '#7B43A1', '#F2317A', '#FF9824'] }
+                        labels = { true }
+                        percent = { true }
+                        strokeWidth = { 3 }
+                        stroke = { '#fff' }
                     />
     
                     <dl

@@ -1,17 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
-import RaisedButton from 'material-ui/RaisedButton';
-import MenuItem from 'material-ui/MenuItem';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import DropDownMenu from 'material-ui/DropDownMenu';
 import Collapsible from 'react-collapsible';
-import ExpandTransition from 'material-ui/internal/ExpandTransition';
-import FontIcon from 'material-ui/FontIcon';
-import './MyViews.css';
 import './General.css';
 
 
@@ -51,8 +42,8 @@ class MyViews extends React.Component {
         }
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div style = {{ padding: "10px" }} >
 
                 <div style = {{ marginBottom: "3px" }} >
@@ -62,7 +53,6 @@ class MyViews extends React.Component {
                         className = "noselect"
                         openedClassName = "noselect"
                     >
-                        
                         <SimpleTable  
                             id = "SavedViews"
                             settings = { this.props.settings }
@@ -93,15 +83,9 @@ class MyViews extends React.Component {
 
 
 /**
- * This represents the searchbox and the table that you see in the view manager views.
- * props:
- *      {
- *          id="SavedViews"
- *          settings = {this.props.settings}
- *          data = {this.state.savedViewsData} [{},{},{},...] Any column name is acceptable except "searchString" && "index".
- *      }
- * This class automatically creates the columns and maps the data to them.
- * It's SearchBox Also supports multi column search.
+ * Represents the searchbox and the table that you see in the view manager views.
+ * Automatically creates the columns and maps the data to them.
+ * Supports multi-column search.
  */
 class SimpleTable extends React.Component {
         
@@ -112,9 +96,15 @@ class SimpleTable extends React.Component {
 
     columnCount = 0;
     
+
+    /**
+     * -ADCMT
+     * @param index: -ADCMT
+     */
     isSelected = (index) => {
         return this.state.selected.indexOf(index) !== -1;
     };
+
 
       /**
      * This method searches on the data of table. Allows Multisearch using "," as a separator. 
@@ -122,7 +112,8 @@ class SimpleTable extends React.Component {
      * @param id: This is the id used to identify the table("table +id") and the textfield("tf +id").
      */
 	onKeyUpMultiSearch = (context, id) => {
-		var input, filter, tr, tdList, td, i,searchString;
+		var input, filter, tr, i,searchString;
+
         input = document.getElementById("tf-" + id);
         filter = input.value.toUpperCase();
         tr = this.fetchTableRows(this.props.id);
@@ -132,6 +123,7 @@ class SimpleTable extends React.Component {
         for (i = 0; i < this.props.data.length; i++) {
             searchString = this.state.flatData[i].searchString;
             shouldBeVisible = false;
+
             for (var k = 0; k < filterValues.length; k++) {
                 if (searchString.toUpperCase().indexOf(filterValues[k]) > -1) {
                     shouldBeVisible = true;
@@ -150,32 +142,40 @@ class SimpleTable extends React.Component {
      * @returns: array of table rows.
      */
     fetchTableRows = (id) => {
-        var table = document.getElementsByClassName(id)[1]; // The table header and table data are 2 separate tables. So we fetch the 2nd index as we want the data table.
+        // The table header and table data are 2 separate tables. So we fetch the 2nd index as we want the data table.
+        var table = document.getElementsByClassName(id)[1]; 
         var tr = table.getElementsByTagName("tr");
         return tr;
     };
 
 
-    clearSearchBox = (evt, strSearchBoxId) => {
+    /**
+     * -ADCMT
+     * @param e: -ADCMT
+     * @param strSearchBoxId: -ADCMT
+     */
+    clearSearchBox = (e, strSearchBoxId) => {
 		var sb = document.getElementById("tf-" + strSearchBoxId);
 		if (sb) {
 			sb.value = '';
 			this.onKeyUpMultiSearch(this, strSearchBoxId, this.state.indexColumnToSearch);
 		}
     }
+
     
     /**
      * This is called when the header is clicked for sorting.
-     * @param {Obj} evt: The actual event object.
+     * @param {Obj} e: The actual event object.
+     * @param columnName: -ADCMT
+     * @param type: -ADCMT
      * @return {string} columnName: id of the columnHeader.
      */
-    onSortClick = (evt, columnName, type) => {
+    onSortClick = (e, columnName, type) => {
         var columnObj = document.getElementById(this.props.id + columnName);
         var columns = document.getElementsByClassName(this.props.id + "sortableColumn");
-        var otherColumn;
         var flatData = this.state.flatData.slice();
 
-        //find the other column & remove the sort applied icon.
+        // Find the other column & remove the sort applied icon.
         for (var i = 0; i < columns.length; i++) {
             if (columns[i].id != this.props.id + columnName) {
                 columns[i].classList.remove('fa-sort-amount-desc');
@@ -184,47 +184,59 @@ class SimpleTable extends React.Component {
             }
         }
         
-        //update the sorting icon
+        // Update the sorting icon
         var sortDirection = this.updateSortIcon(columnObj);
 
-        switch(type) {
+        switch (type) {
             case "Text":
                 if (sortDirection == "asc") {
-                    flatData.sort(function(a, b) {
-                        if (a[columnName] < b[columnName]) {
-                            return -1;
+                    flatData.sort(
+                        function(a, b) {
+                            if (a[columnName] < b[columnName]) {
+                                return -1;
+                            }
+                            if (a[columnName] > b[columnName]) {
+                                return 1;
+                            }
+                            return 0;
                         }
-                        if (a[columnName] > b[columnName]) {
-                            return 1;
-                        }
-                        return 0;
-                    });
+                    );
                 }
-                else{
-                    flatData.sort(function(a,b) {
-                        if (a[columnName] < b[columnName]) {
-                            return -1;
+
+                else {
+                    flatData.sort(
+                        function(a,b) {
+                            if (a[columnName] < b[columnName]) {
+                                return -1;
+                            }
+                            if (a[columnName] > b[columnName]) {
+                                return 1;
+                            }
+                            return 0;
                         }
-                        if (a[columnName] > b[columnName]) {
-                            return 1;
-                        }
-                        return 0;
-                    }).reverse();
+                    ).reverse();
                 }
-                    
+
                 break;
+
             case "Number":
                 if (sortDirection == "asc") {
                     flatData.sort(function(a, b) { return a[columnName] - b[columnName] });
                 }
+
                 else {
                     flatData.sort(function(a, b) { return a[columnName] - b[columnName] }).reverse();
                 }
+
                 break;
+
+            default:
+                return null;
         }
         
-        this.setState({flatData: flatData});
+        this.setState({ flatData: flatData });
     }
+
     
     /**
      * This updates the sortIcon for the correspoding column header clicked.
@@ -236,40 +248,42 @@ class SimpleTable extends React.Component {
         var sortDirection = "";
         var currentState = columnObj.classList.contains('fa-sort') ? 'init' : (columnObj.classList.contains('fa-sort-amount-asc') ? 'asc' : 'desc');
         
-        switch(currentState){
+        switch (currentState) {
             case "init":
                 removeIconName = "fa-sort";
                 addIconName = "fa-sort-amount-asc";
                 sortDirection = "asc";
                 break;
+
             case "asc":
                 removeIconName = "fa-sort-amount-asc";
                 addIconName = "fa-sort-amount-desc";
                 sortDirection = "desc";
                 break;
+
             case "desc":
                 removeIconName = "fa-sort-amount-desc";
                 addIconName = "fa-sort-amount-asc";
                 sortDirection = "asc";
                 break;
+
+            default:
+                return null;
         }
         
         columnObj.classList.remove(removeIconName);
         columnObj.classList.add(addIconName);
+
         return sortDirection;
     }
 
     handleRowSelection = (selectedRows) => {
-        this.setState({
-            selected: selectedRows,
-        });
+        this.setState({ selected: selectedRows });
 
-        //open that viz.
-
+        //open the viz.
     };
     
     render() {
-        
         var colNames = [];
         var rows = [];
         var columnCount = 0;
@@ -293,7 +307,7 @@ class SimpleTable extends React.Component {
                 
                 for (var k = 0; k < columnCount; k++) {
                     let temp = keys[k];
-                    if (j == 0) {
+                    if (j === 0) {
                         colNames.push(
                             <TableHeaderColumn key = { this.props.id + temp } style = {{ height: "36px", color: "#000000", paddingLeft: "10px", paddingRight: "0px" }} > 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
@@ -309,8 +323,12 @@ class SimpleTable extends React.Component {
                 }
                 
                 // Creating a search string to help filter data.
-                this.state.flatData[j].searchString = searchString;
-                this.state.flatData[j].index = j;
+                var fData = this.state.flatData[j];
+
+                fData.searchString = searchString;
+                fData.index = j;
+
+                this.setState({ flatData: fData });
 
                 rows.push(
                     <TableRow key = {j} selected = { this.isSelected(j) } >
@@ -318,7 +336,6 @@ class SimpleTable extends React.Component {
                     </TableRow>
                 );
             }
-
         }
 
         return (
@@ -326,6 +343,8 @@ class SimpleTable extends React.Component {
                 <div style = {{ margin: "1px 4px -9px", width: "98%" }} >
                     <SearchBox 
                         ref = "SearchBox"
+                        id = { "tf-" + this.props.id }
+                        collapseButton = { false }
                         hintText = "Search for value..." 
                         settings = {{
                             SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
@@ -335,8 +354,6 @@ class SimpleTable extends React.Component {
                             tableSelectColor: this.props.settings.colors.tableSelectColor.background
                         }}
                         onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, this.props.id) }
-                        id = { "tf-" + this.props.id }
-                        collapseButton = { false }
                     />
                 </div>
 
@@ -345,42 +362,35 @@ class SimpleTable extends React.Component {
                 <Table 
                     className = { this.props.id } 
                     onRowSelection = { this.handleRowSelection } 
-                    wrapperStyle = {{
-                        maxHeight: "350px",
-                        overflow: 'hidden',
-                        borderRadius: "4px",
-                    }}
-                    bodyStyle = {{
-                        maxHeight: "314px",
-                        overflow: 'auto',
-                        width: "100%",
-                    }}
+                    wrapperStyle = {{ maxHeight: "350px", overflow: 'hidden', borderRadius: "4px", }}
+                    bodyStyle = {{ maxHeight: "314px", overflow: 'auto', width: "100%", }}
                 >
                     <TableHeader
                         adjustForCheckbox = { false }
                         displaySelectAll = { false }
                         fixedHeader = { true }
                         fixedFooter = { true }
-
                     >
-                    <TableRow style = {{ height: "36px", backgroundColor: "#dadada" }} >
-                        {colNames}
-                    </TableRow>
+                        <TableRow style = {{ height: "36px", backgroundColor: "#dadada" }} >
+                            {colNames}
+                        </TableRow>
                     </TableHeader>
+
                     <TableBody displayRowCheckbox = { false } >
                         {rows}
                     </TableBody>
                 </Table>
             </div>
         );
-      }
+    }
 }
+
 
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
   }
@@ -388,6 +398,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(MyViews);

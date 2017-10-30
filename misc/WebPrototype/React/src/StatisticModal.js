@@ -3,20 +3,15 @@ import FontIcon from 'material-ui/FontIcon';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Rnd from 'react-rnd';
 import { connect } from 'react-redux';
-import 'font-awesome/css/font-awesome.min.css';
 import './General.css';
 import './statisticModal.css';
 
 
 /**
- * No props get passed down.
+ * -ADCMT
  **/
 class StatisticModal extends React.Component {
 
-
-    /**
-     * 
-     **/
     render() {
         var columns = this.props.statistics.colList.split(',');
         var stats = this.props.statistics.statList.split(',');
@@ -28,6 +23,7 @@ class StatisticModal extends React.Component {
             >
                 <TableRow >
                     <TableHeaderColumn className = "statTableFirstCol" >Column</TableHeaderColumn>
+
                     {stats.indexOf("Count") !== -1 ? <TableHeaderColumn className = "statTableCol" >Count</TableHeaderColumn> : null}
                     {stats.indexOf("Min") !== -1 ? <TableHeaderColumn className = "statTableCol" >Min</TableHeaderColumn> : null}
                     {stats.indexOf("Max") !== -1 ? <TableHeaderColumn className = "statTableCol" >Max</TableHeaderColumn> : null}
@@ -47,6 +43,7 @@ class StatisticModal extends React.Component {
             return (
                 <TableRow key = {colName}>
                     <TableRowColumn className = "statTableFirstCol" >{colName}</TableRowColumn>
+
                     {stats.indexOf("Count") !== -1 ? <TableRowColumn className = "statTableCol" >10101010101010101010101</TableRowColumn> : null}
                     {stats.indexOf("Min") !== -1 ? <TableRowColumn className = "statTableCol" >1.0101010101010101010101</TableRowColumn> : null}
                     {stats.indexOf("Max") !== -1 ? <TableRowColumn className = "statTableCol" >1.0101010101010101010101</TableRowColumn> : null}
@@ -64,12 +61,7 @@ class StatisticModal extends React.Component {
 
         return (
             <Rnd
-                default = {{ 
-                    x: 10, 
-                    y: 10, 
-                    width: 80 * stats.length + 140, 
-                    height: 51 * columns.length + 78 
-                }}
+                default = {{ x: 10, y: 10, width: 80 * stats.length + 140, height: 51 * columns.length + 78 }}
                 z = { 1000 }
                 enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
                 style = {{ display: ( this.props.statDisplay ? "block" : "none" ) }}
@@ -88,6 +80,7 @@ class StatisticModal extends React.Component {
                         }} 
                     >
                         <label style = {{ margin: "6px 0px 0px 5px", float: "left" }} > STATISTICS </label>
+
                         <FontIcon 
                             className = "fa fa-window-close cursorHand" 
                             style = {{ color: "#ffffff",  fontSize: "21px", margin: "2px 0px 0px 0px", float: "right", paddingRight: "2px" }} 
@@ -131,6 +124,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the RangeForm component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(StatisticModal);

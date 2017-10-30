@@ -1,31 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import {hideSplashScreen,showLoadMask,hideLoadMask} from './LoadMaskHelper.js';
-import FilterSideBar from './FilterSideBar.js';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import CircularProgress from 'material-ui/CircularProgress';
-import StatisticModal from './StatisticModal.js'
-import TopNavBar from './TopNavBar.js';
-import FloatingToggleButtons from './FloatingToggleButtons.js';
-import GlyphLegend from './GlyphLegend.js';
 import { Link } from 'react-router-dom';
+import { hideSplashScreen } from './LoadMaskHelper.js';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import './NotFoundPage.css';
-import 'font-awesome/css/font-awesome.min.css';
+
 
 class NotFoundPage extends React.Component {
-    
 
-	// Initial state of the component.
 	state = {
         glyphViewLoaded: false,
         glyphWindowWidth: 0,
         topNavBarHeight: 0,
     };
 
+
 	/**
-	 * This function is called right after the react component is mounted.
-	 * It decides whether to show the login form and calls the init().
+	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
         hideSplashScreen();
@@ -35,14 +26,18 @@ class NotFoundPage extends React.Component {
     render() {
         return (
             <MuiThemeProvider>
-				<div className="error-page-wrap">
-                    <article className="error-page gradient">
-                        <hgroup>
-                            <h1>404</h1>
-                            <h2>Can you even type?</h2>
-                        </hgroup>
-                        <Link to = "/home" style = {{ color: "#ffffff" }} >Back to Home</Link>
-                    </article>
+                <div style = {{ width: "100vw", height: "100vh", backgroundColor: "#ffffff" }} >
+                    <div className = "error-page-wrap">
+                        <article className = "error-page gradient">
+                            <div style = {{ margin: "-90px 0px 0px" }} >
+                                <hgroup>
+                                    <h1>404</h1>
+                                    <h2 style = {{ color: "#ffffff" }} >Can you even type?</h2>
+                                </hgroup>
+                                <Link to = "/home" style = {{ color: "#ffffff" }} >Back to Home</Link>
+                            </div>
+                        </article>
+                    </div>
                 </div>
           </MuiThemeProvider>
         );
@@ -63,6 +58,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(NotFoundPage);

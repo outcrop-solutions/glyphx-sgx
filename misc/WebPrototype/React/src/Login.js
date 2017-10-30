@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { hideSplashScreen, showLoadMask, hideLoadMask } from './LoadMaskHelper.js';
-import { makeServerCall, setCookie, getLoginCookieName } from './ServerCallHelper.js';
+import { makeServerCall } from './ServerCallHelper.js';
 import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -30,13 +30,12 @@ class Login extends React.Component {
         hideSplashScreen();
         this.calcLoginButtonPosition();
 
-        // Open the modal so it transitions up as soon as you land
         var context = this;
+
+        // Open the modal so it transitions up as soon as you land
         setTimeout(function () {
             context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
         }, 1000);
-
-        var context = this; 
 
         // Add event listeners for using the enter key to login
         document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
@@ -48,7 +47,6 @@ class Login extends React.Component {
 	 * React built-in which is called when component unmounts
 	 */
 	componentWillUnmount() {
-        var context = this;
 
         // Remove event listeners for using the enter key to login
         document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
@@ -63,7 +61,7 @@ class Login extends React.Component {
 	 */
     enterKeyToLogin(e) {
         e.preventDefault();
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             this.buttonClick();
         }
     }
@@ -79,7 +77,7 @@ class Login extends React.Component {
         var loginButton = document.getElementById('loginButton');
         var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
         
-        var translate = 'translate(0px,' + ycalc + 'px)';
+        //var translate = 'translate(0px,' + ycalc + 'px)';
         ycalc = docHeight - loginButtonBottom - 65;
 
         this.setState({ loginButtonBottomTranslateCalc: ycalc });
@@ -216,7 +214,7 @@ class Login extends React.Component {
             
             // Show other elements
             visibility = '';
-            loginForm.style.backgroundColor = 'rgba(75, 38, 38, 0.35)';
+            loginForm.style.backgroundColor = 'rgba(97, 97, 97, 0.5)';
         }
 
         for (var index = 0; index < elements.length; index++) {
@@ -279,40 +277,37 @@ class Login extends React.Component {
                 
                 <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
-                        <Paper  id = "loginForm" style = {{ backgroundColor:'rgba(75, 38, 38, 0.50)', width: '23%', height: '45%' }} >
+
+                        <Paper  id = "loginForm" style = {{ backgroundColor: 'rgba(75, 38, 38, 0.50)', width: '310px', height: '327px', borderRadius: "3px"}} >
+
                             <div className = "loginFormOtherElements" style = {{ textAlign: 'center', paddingBottom: '0px'}} >
-                                <a href = "http://www.synglyphx.com/" target = "_blank" > <img src = "./Res/Img/synglyphx-wht-3.png"/> </a>
+                                <img src = "./Res/Img/synglyphx-wht-3.png" alt = "SynGlyphX" />
                             </div>
 
                             <br/>
-                            <label className = "loginFormOtherElements" style = {{ color: 'white', fontSize:'30px' }} > 
-                                USER LOGIN 
-                            </label>
-                            <br/><br/>
                             
-                            <div className = "loginFormOtherElements"
+                            <Flexbox 
+                                flexDirection = "row" 
+                                className = "loginFormOtherElements"
                                 style = {{
                                     width: "80%",
                                     borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                    borderRadius: '5px 5px 5px 5px',
+                                    borderRadius: '5px',
                                     border: "1px solid #ccc",
                                     height: "40px",
                                     overflow: 'hidden',
                                     backgroundColor: "white"
                                 }}
                             >
-                                <i 
-                                    className = "fa fa-user" 
-                                    style = {{
-                                        fontSize: '2.25rem',
-                                        backgroundColor: 'white',
-                                        height: 'inherit',
-                                        width: '5%',
-                                        float: 'left',
-                                        paddingLeft: '7px',
-                                        paddingTop: '3px'
-                                    }}
-                                />
+                                <div style = {{ width: "36px" }} >
+                                    <i 
+                                        className = "fa fa-user" 
+                                        style = {{
+                                            fontSize: '2.25rem',
+                                            backgroundColor: 'white',
+                                        }}
+                                    />
+                                </div>
 
                                 <input 
                                     type = "text"
@@ -324,37 +319,37 @@ class Login extends React.Component {
                                         borderLeft: '1px #b3b3b3 solid',
                                         float: 'right',
                                         outlineWidth: '0',
-                                        fontSize: '23px'
+                                        fontSize: '23px',
+                                        paddingLeft: "10px"
                                     }}
                                 />
-                            </div>
+                            </Flexbox>
 
-                            <br/> <br/>
+                            <br/>
 
-                            <div className = "loginFormOtherElements"
+                            <Flexbox 
+                                flexDirection = "row" 
+                                className = "loginFormOtherElements"
                                 style = {{
                                     width: "80%",
                                     borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                    borderRadius: '5px 5px 5px 5px',
+                                    borderRadius: '5px',
                                     border: "1px solid #ccc",
                                     height: "40px",
                                     overflow: 'hidden',
                                     backgroundColor: "white"
                                 }}
                             >
-                                
-                                <i 
-                                    className = "fa fa-lock" 
-                                    style = {{
-                                        fontSize: '2.25rem',
-                                        backgroundColor: 'white',
-                                        height: 'inherit',
-                                        width: '5%',
-                                        float: 'left',
-                                        paddingLeft: '7px',
-                                        paddingTop: '3px'
-                                    }}
-                                />
+
+                                <div style = {{ width: "36px" }} >
+                                    <i 
+                                        className = "fa fa-lock" 
+                                        style = {{
+                                            fontSize: '2.25rem',
+                                            backgroundColor: 'white',
+                                        }}
+                                    />
+                                </div>
 
                                 <input 
                                     type = "password"
@@ -366,27 +361,28 @@ class Login extends React.Component {
                                         width: '90%',
                                         float: 'right',
                                         outlineWidth: '0',
-                                        fontSize: '23px'
+                                        fontSize: '23px',
+                                        paddingLeft: "10px"
                                     }}
                                 />
-                            </div>
+                            </Flexbox>
                             
                             <label className = "loginFormOtherElements" id = "errPass" style = {{ color: 'red' }}  />
 
-                            <br/> <br/>
+                            <br/>
 
                             <RaisedButton
-                                label = "Login"
                                 id = "loginButton"
-                                labelStyle = {{ fontSize: '20px' }}
+                                label = "Login"
                                 secondary = { true }
                                 onClick = { (evt) => this.buttonClick(evt, this) }
-                                buttonStyle = {{ backgroundColor : '#009688',  borderRadius: '5px' }}
+                                buttonStyle = {{ backgroundColor: this.props.settings.colors.buttons.general }}
+                                labelStyle = {{ fontSize: '20px' }}
                                 style = {{ 
                                     position: 'relative', 
                                     width: "65%",
                                     display: 'block',
-                                    borderRadius: '5px',
+                                    borderRadius: '3px',
                                     color: this.props.settings.colors.settingsModalColor.saveButton 
                                 }}
                             />

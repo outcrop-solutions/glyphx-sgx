@@ -166,7 +166,8 @@ class FilterSideBarBottomView extends React.Component {
     updateTabRender(ref, action) {
         var oCols = this.state.openCols;
         oCols[ref] = action;
-        this.setState({openCols: oCols});
+        //debugger;
+        this.setState({ openCols: oCols });
     }
 
     
@@ -562,7 +563,7 @@ class FilterSideBarBottomView extends React.Component {
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     GLOBAL: state.filterState.Filter,
     settings: state.filterState.Settings

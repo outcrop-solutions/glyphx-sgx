@@ -1,15 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Card, CardText } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
-import { Flex } from 'react-flex-material';
 import Flexbox from 'flexbox-react';
 import Range from 'rc-slider/lib/Range'; 
-import { Card, CardText } from 'material-ui/Card';
-import { red500, blue500 } from 'material-ui/styles/colors';
-import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
-import 'font-awesome/css/font-awesome.min.css';
 import './General.css';
 
 
@@ -134,6 +131,9 @@ class NumberRangeRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
+        return (this.props.range != nextProps.range || this.props.settings != nextProps.settings || this.state.min !== nextState.min || this.state.max !== nextState.max);
+
+        /*
         if (this.props.range != nextProps.range || this.props.settings != nextProps.settings) {
             return true;
         }
@@ -141,6 +141,7 @@ class NumberRangeRow extends React.Component {
             return true;
         }
         return false;
+        */
     };
     
 
@@ -510,6 +511,7 @@ export const addRange = (colName, min, max, id, applied, rangeType) => ({
     applied,
     rangeType
 });
+
 export const removeRange = (colName, id, data, rangeType) => ({
     type: 'REMOVE_RANGE',
     colName,
@@ -517,6 +519,7 @@ export const removeRange = (colName, id, data, rangeType) => ({
     data,
     rangeType
 });
+
 export const updateRange = (colName, min, max, id, applied, data, rangeType) => ({
     type: 'UPDATE_RANGE',
     colName,
@@ -542,6 +545,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the RangeForm component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(NumberRangeTable);

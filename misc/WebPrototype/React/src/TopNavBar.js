@@ -16,30 +16,33 @@ import './General.css';
 
 
 /**
- * No Props
+ * -ADCMT
+ * @param homePage: -ADCMT
+ * @param tutorialStage: -ADCMT
+ * @param glyphWindowWidth: -ADCMT
  **/
 class TopNavBar extends React.Component {
 
-
-    /**
-     * Initial state of the component.
-     **/
 	state = {
-        userProfileMenuOpen:false,
+        userProfileMenuOpen: false,
         userInfoAnchorEl: {},
-        displayAnnouncementsCheckbox: true,
+        displayAlertsCheckbox: true,
         imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
 
     };
     
+
+    /**
+     * Performs a logout by redirecting the site to the loagout page
+     **/
     logout = () => {
-        //show logout page
         this.props.history.push("/logout");
     };
 
+
     /**
 	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
-     * wont have to be reloaded after it is "closed"
+     * Wont have to be reloaded after it is "closed"
 	 */ 
     toggleNav() {
         var filterNav = document.getElementById("filterNav");
@@ -49,13 +52,15 @@ class TopNavBar extends React.Component {
         if (!filterNavOpen) {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
-            if(!this.props.settings.sideBarOverlap) {
+            if (!this.props.settings.sideBarOverlap) {
                 gv.style.width = this.props.glyphWindowWidth + "px";
             }
+
             else {
                 gv.style.width = "100%";
             }
         }
+
         else {
             filterNav.style.transform = "translate(460px, 0px)";
             gv.style.width = "100%";
@@ -71,29 +76,24 @@ class TopNavBar extends React.Component {
         // This prevents ghost click.
         if (e && e.preventDefault) {
             e.preventDefault();
-            this.setState({
-                userProfileMenuOpen : !this.state.userProfileMenuOpen,
-                userInfoAnchorEl: e.currentTarget
-            });
+            this.setState({ userProfileMenuOpen : !this.state.userProfileMenuOpen, userInfoAnchorEl: e.currentTarget });
         }
+
         else {
-            this.setState({
-                userProfileMenuOpen : !this.state.userProfileMenuOpen
-            });
+            this.setState({ userProfileMenuOpen : !this.state.userProfileMenuOpen });
         }
     }
 
 
     /**
-	 * Displays the announcements modal
+	 * Displays the alerts modal
 	 */
-    displayAnnouncements() {
+    displayAlerts() {
         this.props.dispatch(editModalDisplay(null, true, null)); 
-        this.setState({ displayAnnouncementsCheckbox: false });
+        this.setState({ displayAlertsCheckbox: false });
     }
 
-    render(){
-
+    render() {
         return(
             <Toolbar 
                 style = {{ padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
@@ -131,7 +131,7 @@ class TopNavBar extends React.Component {
                     </IconButton>
                     
                     <IconButton  
-                        onClick = { this.displayAnnouncements.bind(this) } 
+                        onClick = { this.displayAlerts.bind(this) } 
                         style = {{ zIndex: (this.props.tutorialStage === 6 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 6 ? "pulse" : "") }
                     >
@@ -172,13 +172,13 @@ class TopNavBar extends React.Component {
 
                         <MenuItem className = "menuItemStyling" primaryText = "Help &amp; feedback" />
                         <MenuItem className = "menuItemStyling" primaryText = "Settings" />
-                        <MenuItem onClick={this.logout} className = "menuItemStyling" primaryText = "Sign out" />
+                        <MenuItem onClick = { this.logout } className = "menuItemStyling" primaryText = "Sign out" />
                     </List>
                 </Popover>
 
                 {/* Modals */}
                 <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } homePage = { this.props.homePage } />
-				<AlertsModal checkBoxDisplay = { this.state.displayAnnouncementsCheckbox } />
+				<AlertsModal checkBoxDisplay = { this.state.displayAlertsCheckbox } />
                 <HelpModal />
             </Toolbar>          
         );
@@ -201,7 +201,7 @@ export const editModalDisplay = (settingsModal, alertsModal, helpModal) => ({
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo
@@ -210,6 +210,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the TopNav component to the redux store
+ * Connects the redux store to get access to global states.
  **/
 export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(TopNavBar));

@@ -3,7 +3,7 @@ import Flexbox from 'flexbox-react';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
-import 'font-awesome/css/font-awesome.min.css';
+
 
 /**
  * @param onTextFieldValueChange: - ADCMT
@@ -14,7 +14,7 @@ import 'font-awesome/css/font-awesome.min.css';
  **/
 class SearchBox extends React.Component {
 
-    constructor(props){
+    constructor (props) {
         super(props);
         this.state = { 
             textFieldValue: ""
@@ -31,12 +31,10 @@ class SearchBox extends React.Component {
         var innerTF = tf.getInputNode();
         evt = { currentTarget: innerTF };
 
-        this.setState({
-            textFieldValue: innerTF.value
-        });
+        this.setState({ textFieldValue: innerTF.value });
 
         if (typeof this.props.onTextFieldValueChange === "function" && !this.props.shouldOnBlur) {
-            this.props.onTextFieldValueChange(evt,this.props.pinned);
+            this.props.onTextFieldValueChange(evt, this.props.pinned);
         }
     }
 
@@ -52,9 +50,7 @@ class SearchBox extends React.Component {
 
         innerTF.value = "";
 
-        this.setState({
-            textFieldValue: innerTF.value
-        });
+        this.setState({ textFieldValue: innerTF.value });
 
         return evt;
     }
@@ -69,13 +65,13 @@ class SearchBox extends React.Component {
     render() {
         return (
             <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
-
                 <Flexbox style = {{ width: "100%", borderRadius: "5px", backgroundColor: this.props.settings.tableSelectColor }} > 
+
                     <TextField
-                        id = {this.props.id}
+                        id = { this.props.id }
                         type = "search"
                         ref = "SearchTextField"
-                        value = {this.state.textFieldValue}
+                        value = { this.state.textFieldValue }
                         style = {{
                             borderColor: "#d9d9d9 #ccc #b3b3b3",
                             borderRadius: "4px",
@@ -94,19 +90,14 @@ class SearchBox extends React.Component {
                         underlineStyle = {{
                             margin: "0px 0px -8px"
                         }}
-                        onChange = {this.onChange} 
+                        onChange = { this.onChange } 
                         onKeyPress = { (e) => this.blurOnEnter(e, this.props.id) }
                         hintText = {
-                            <span 
-                                style = {{
-                                    fontSize: 'inherit',
-                                    color: 'rgba(0, 0, 0, 0.5)',
-                                }}
-                            >
+                            <span style = {{ fontSize: 'inherit', color: 'rgba(0, 0, 0, 0.5)' }} >
                                 <FontIcon
                                     className = "fa fa-search" 
                                     style = {{
-                                        padding: '0px',
+                                        padding: '0px', 
                                         width: '24px',
                                         height: '24px',
                                         fontSize: 'inherit',
@@ -143,7 +134,8 @@ class SearchBox extends React.Component {
                             onClick = { (evt) => this.props.onCollapseAllClick(evt,this.props.pinned) }
                         />
                     </Flexbox>
-                : null
+                    : 
+                    null
                 }
 
             </Flexbox>

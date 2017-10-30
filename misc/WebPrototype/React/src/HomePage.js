@@ -1,17 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { hideSplashScreen } from './LoadMaskHelper.js';
 import Flexbox from 'flexbox-react';
-import {hideSplashScreen} from './LoadMaskHelper.js';
-import { Card, CardText } from 'material-ui/Card';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import FilterSideBar from './FilterSideBar.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import CircularProgress from 'material-ui/CircularProgress';
-import StatisticModal from './StatisticModal.js'
 import TopNavBar from './TopNavBar.js';
-import FloatingToggleButtons from './FloatingToggleButtons.js';
-import GlyphLegend from './GlyphLegend.js';
 import RecentViews from './RecentViews.js';
 import ViewsManager from './ViewsManager.js';
 import UserFeed from './UserFeed.js';
@@ -20,7 +12,6 @@ import HelpChat from './HelpChat.js';
 import TutorialWindow from './TutorialWindow.js';
 import './topNav.css';
 import './General.css';
-import 'font-awesome/css/font-awesome.min.css';
 
 
 /**
@@ -141,12 +132,12 @@ class HomePage extends React.Component {
                                 </div>
                              </Flexbox>
 
-                             <Flexbox flexDirection = "column" style = {{ width: "40%" }}>
+                             <Flexbox flexDirection = "column" style = {{ width: "40%" }} >
                                 <div style = {{ backgroundColor: "#ffffff" }} >
-                                    <div style = {{ height: '150px', margin: "15px 0px -6px" }} >
+                                    <div style = {{ height: '120px', margin: "15px 0px -6px" }} >
                                             <img 
-                                                src = {imgsrc} 
-                                                style = {{ display: "block", margin: "0 auto", maxWidth: "95%", maxHeight: "95%" }} 
+                                                src = { imgsrc } 
+                                                style = {{ display: "block", margin: "0 auto", maxWidth: "90%", maxHeight: "90%" }} 
                                                 alt = "University Logo" 
                                                 draggable = { false } 
                                                 className = "noselect" 
@@ -163,7 +154,7 @@ class HomePage extends React.Component {
 
                              <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
-                                    <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}  >
+                                    <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
 
                                         <RecentViews />
 

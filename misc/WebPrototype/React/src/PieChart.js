@@ -1,9 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 
 
+/**
+ * -ADCMT
+ * @param data: -ADCMT
+ * @param radius: -ADCMT
+ * @param hole: -ADCMT
+ * @param colors: -ADCMT
+ * @param labels: -ADCMT
+ * @param percent: -ADCMT
+ * @param strokeWidth: -ADCMT
+ * @param stroke: -ADCMT
+ **/
 class PieChart extends React.Component {
 	
 	render() {
@@ -14,37 +23,42 @@ class PieChart extends React.Component {
 			radius = this.props.radius,
 			diameter = radius * 2,
 			self = this,
-			sum, startAngle, d = null;
+			sum, startAngle = null;
 
 		sum = this.props.data.reduce(function (carry, current) { return carry + current }, 0);
 		startAngle = 0;
 
 		return(
-			<svg width={ diameter } height={ diameter } viewBox={ '0 0 ' + diameter + ' ' + diameter } xmlns="http://www.w3.org/2000/svg" version="1.1">
-				{ this.props.data.map(function (slice, sliceIndex) {
-					var angle, nextAngle, percent;
+			<svg width = { diameter } height = { diameter } viewBox = { '0 0 ' + diameter + ' ' + diameter } xmlns = "http://www.w3.org/2000/svg" version = "1.1">
+				
+				{this.props.data.map(
+					function (slice, sliceIndex) {
+						var angle, nextAngle, percent;
 
-					nextAngle = startAngle;
-					angle = (slice / sum) * 360;
-					percent = (slice / sum) * 100;
-					startAngle += angle;
+						nextAngle = startAngle;
+						angle = (slice / sum) * 360;
+						percent = (slice / sum) * 100;
+						startAngle += angle;
 
-					return <PieSlice
-						key={ sliceIndex }
-						value={ slice }
-						percent={ self.props.percent }
-						percentValue={ percent.toFixed(1) }
-						startAngle={ nextAngle }
-						angle={ angle }
-						radius={ radius }
-						hole={ radius - hole }
-						trueHole={ hole }
-						showLabel= { labels }
-						fill={ colors[sliceIndex % colorsLength] }
-						stroke={ self.props.stroke }
-						strokeWidth={ self.props.strokeWidth }
-					/>
-				}) }
+						return (
+							<PieSlice
+								key = { sliceIndex }
+								value = { slice }
+								percent = { self.props.percent }
+								percentValue = { percent.toFixed(1) }
+								startAngle = { nextAngle }
+								angle = { angle }
+								radius = { radius }
+								hole = { radius - hole }
+								trueHole = { hole }
+								showLabel = { labels }
+								fill = { colors[sliceIndex % colorsLength] }
+								stroke = { self.props.stroke }
+								strokeWidth = { self.props.strokeWidth }
+							/>
+						)
+					}
+				)}
 
 			</svg>
 		);
@@ -60,21 +74,38 @@ class PieSlice extends React.Component {
         y: 0
     }
 
+
+	/**
+	 * React built-in which is called when component gets new props from parent (or redux mapStateToProps)
+	 */
     componentWillReceiveProps() {
 		this.setState({ path: '' });
 		this.draw(0);
 	}
 
+
+	/**
+	 * React built-in which is called when component mounts
+	 */
 	componentDidMount() {
         this._mounted = true;
 		this.draw(0);
 	}
 
+
+	/**
+	 * React built-in which is called when component unmounts
+	 */
     componentWillUnmount() {
         this._mounted = false;
     }
 
-	draw(s) {
+
+	/**
+	 * -ADCMT
+	 * @param s: -ADCMT
+	 */
+	draw (s) {
 		if (!this._mounted) {
 			return;
 		}
@@ -92,9 +123,9 @@ class PieSlice extends React.Component {
 		b = getAnglePoint(p.startAngle, p.startAngle + s, p.radius - p.hole, p.radius, p.radius);
 
 		path.push('M' + a.x1 + ',' + a.y1);
-		path.push('A'+ p.radius +','+ p.radius +' 0 '+ (s > 180 ? 1 : 0) +',1 '+ a.x2 + ',' + a.y2);
+		path.push('A' + p.radius + ',' + p.radius + ' 0 ' + (s > 180 ? 1 : 0) + ',1 ' + a.x2 + ',' + a.y2);
 		path.push('L' + b.x2 + ',' + b.y2);
-		path.push('A'+ (p.radius- p.hole) +','+ (p.radius- p.hole) +' 0 '+ (s > 180 ? 1 : 0) +',0 '+ b.x1 + ',' + b.y1);
+		path.push('A' + (p.radius- p.hole) + ',' + (p.radius- p.hole) + ' 0 ' + (s > 180 ? 1 : 0) + ',0 ' + b.x1 + ',' + b.y1);
 
 		// Close
 		path.push('Z');
@@ -103,30 +134,30 @@ class PieSlice extends React.Component {
 
 		if (s < p.angle) {
 			setTimeout(function () { self.draw(s + step) } , 16);
-		} else if (p.showLabel) {
+		} 
+		else if (p.showLabel) {
 			c = getAnglePoint(p.startAngle, p.startAngle + (p.angle / 2), (p.radius / 2 + p.trueHole / 2), p.radius, p.radius);
 
-			this.setState({
-				x: c.x2,
-				y: c.y2
-			});
+			this.setState({ x: c.x2, y: c.y2 });
 		}
 	}
 	
 	render() {
 		return(
-			<g overflow="hidden">
+			<g overflow = "hidden">
 				<path
-					d={ this.state.path }
-					fill={ this.props.fill }
-					stroke={ this.props.stroke }
-					strokeWidth={ this.props.strokeWidth ? this.props.strokeWidth : 3 }
-					 />
-				{ this.props.showLabel && this.props.percentValue > 5 ?
-					<text x={ this.state.x } y={ this.state.y } fill="#fff" textAnchor="middle">
+					d = { this.state.path }
+					fill = { this.props.fill }
+					stroke = { this.props.stroke }
+					strokeWidth = { this.props.strokeWidth ? this.props.strokeWidth : 3 }
+				/>
+				{this.props.showLabel && this.props.percentValue > 5 ?
+					<text x = { this.state.x } y = { this.state.y } fill = "#fff" textAnchor = "middle">
 						{ this.props.percent ? this.props.percentValue + '%' : this.props.value }
 					</text>
-				: null }
+					: 
+					null 
+				}
 			</g>
 		);
 	}
@@ -157,6 +188,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the Announcements Dialog component to the redux store
+ * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(PieChart);
+export default connect(mapStateToProps)(PieChart);
