@@ -5,6 +5,7 @@ import { makeServerCall } from './ServerCallHelper.js';
 import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
@@ -21,6 +22,7 @@ class allViewsModal extends React.Component {
 	state = {
 		selectionList: [],
 		dragState: 0,
+		snackbarVisible: false,
 		data: [],
 		table: "",
 		selection: "",
@@ -55,7 +57,7 @@ class allViewsModal extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data || this.props.allViewsDisplay !== nextProps.allViewsDisplay);
+		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data || this.props.allViewsDisplay !== nextProps.allViewsDisplay || this.state.snackbarVisible !== nextState.snackbarVisible);
 
 		/*
         if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
@@ -544,7 +546,7 @@ class allViewsModal extends React.Component {
 				}
 				else { 
 					// Show dialog stating that none were matched.
-					console.log('none matched!');
+					context.setState({snackbarVisible:true});
 				}
             },
             {
@@ -747,6 +749,14 @@ class allViewsModal extends React.Component {
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{displayData}
 					</Flexbox>
+
+					<Snackbar
+						open={this.state.snackbarVisible}
+						message="No matches for the selected values"
+						autoHideDuration={2000}
+						onRequestClose={() => this.setState({snackbarVisible:false})}
+					/>
+
 				</div>
 			</Dialog>
 		);
