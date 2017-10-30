@@ -7,6 +7,7 @@ import IconButton from 'material-ui/IconButton';
 import FilterTabs from './FilterTab.js';
 import SearchBox from './SearchBox.js';
 import PinningDialog from './FilterSideBarPinningViewsDialog.js';
+import ComponentLoadMask from './ComponentLoadMask.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
 
@@ -22,9 +23,21 @@ class FilterSideBarBottomView extends React.Component {
         // Store the states of all the elements inside this data structure.
         this.state  = {
             activeColumns: [],
-            openCols: {}
+            openCols: {},
+            loadMask: true
         };
     };
+
+    
+    /**
+     * React built-in which acts as a listener for when props change
+     * @param nextProps: The props the component would have after the change
+     **/
+	componentWillReceiveProps(nextProps) {
+        if (Object.keys(nextProps.tableData).length !== 0) {
+            this.setState({ loadMask: false });
+        }
+    }
 
 
     /**
@@ -88,7 +101,7 @@ class FilterSideBarBottomView extends React.Component {
             pinnedOptions: arrPinDialogOptions,
             pinSelected: arrPinDialogSelected
         };
-        
+
         return objReturn;
     };
 
@@ -537,7 +550,6 @@ class FilterSideBarBottomView extends React.Component {
                             </div>
                         }
                     >
-
                         <div style = {{ margin: "1px -3px -6px 1px" }} >
                             <SearchBox 
                                 settings = {{
@@ -558,6 +570,11 @@ class FilterSideBarBottomView extends React.Component {
                         </div>
                         
                         <br/>
+
+                        <div style = {{ width: "100%", height: "100%", display: (this.state.loadMask ? "" : "none") }} >
+                            <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+                        </div>
+
                         {columnsObj.columns}
 
                     </Collapsible>

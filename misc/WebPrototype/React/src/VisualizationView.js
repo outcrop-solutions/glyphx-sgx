@@ -11,6 +11,7 @@ import TopNavBar from './TopNavBar.js';
 import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
 import UndoRedoChangeListener from './UndoRedoChangeListener.js';
+import ComponentLoadMask from './ComponentLoadMask.js';
 import './topNav.css';
 
 
@@ -200,6 +201,11 @@ class VisualizationView extends React.Component {
 
                                 {/* Invisible div over the iframe to allow draggable windows to not bug out */}
                                 <div style = {{ height: "100vh", width: "100vw", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }} />
+
+
+                                <div style = {{ width: "100%", height: "100%", display: (this.state.glyphViewLoaded ? "none" : "") }} >
+                                    <ComponentLoadMask bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } />
+                                </div>
 
                                 {this.state.vizKey == '' ? 
                                     null 

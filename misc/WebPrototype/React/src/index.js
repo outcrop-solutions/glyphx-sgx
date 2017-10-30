@@ -24,7 +24,7 @@ const initialFilterState = {
         settingsModal: false,
         statisticsModal: false,
         alertsModal: false,
-        legendModal: true,
+        legendModal: false,
         allViewsModal: false,
         helpModal: false,
     },

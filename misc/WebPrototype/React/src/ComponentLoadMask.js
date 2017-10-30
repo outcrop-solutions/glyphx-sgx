@@ -6,13 +6,15 @@ import './General.css';
 
 /**
  * Load mask which takes the full size of the parent component.
+ * @param color: color of the spinner
+ * @param bgColor: color of the background
  */
 class ComponentLoadMask extends React.Component {
 
 	render() {
 		return(
 
-            <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%", backgroundColor: "white" }}>
+            <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%", backgroundColor: this.props.bgColor ? this.props.bgColor : "white" }} >
                 <Flexbox style = {{ width: "80px", margin: "0 auto", alignItems: "center", height: "100%" }} >
                     <CircularProgress size = { 80 } thickness = { 5 } color = { this.props.color } /> 
                 </Flexbox>
