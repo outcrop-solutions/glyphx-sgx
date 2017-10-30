@@ -34,7 +34,7 @@ class Logout extends React.Component {
                     </div>
 
                     <div style = {{  height: '20px', fontSize: '18px', textAlign: "center" }} >
-                        <a href = "./login"> Click here to login </a>.
+                        <a href = "/"> Click here to login </a>.
                     </div>
                 </div>  
             </Dialog>
