@@ -172,6 +172,23 @@
 
         <script>
             window.APP_MODE = window.location.href.includes('localhost') ? 'DEVELOPMENT' : 'PRODUCTION';
+            window.onbeforeunload = function() {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.withCredentials = true;
+                xmlHttp.open("GET", "./logout", false);
+                xmlHttp.send(null);
+            }
+
+            navigator.sendBeacon = navigator.sendBeacon || function (url, data) {
+                var xmlHttp = new XMLHttpRequest();
+
+                // Need to send synchronously to have the best chance of data getting
+                // through to the server
+                xmlHttp.withCredentials = true;
+                xmlHttp.open("GET", "./logout", true);
+                xmlHttp.send(null);
+            };
+
         </script>
 
     </head>
