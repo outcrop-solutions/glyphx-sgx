@@ -6,12 +6,22 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 /**
  * -ADCMT
  * @param topNavBarHeight: -ADCMT
+ * @param glyphWindowWidth: -ADCMT
  */
 class FloatingToggleButtons extends React.Component {
 
 	state = {
 		fullScreenMode: false,
+        axisVisible: true
     };
+
+
+    /**
+	 * React built-in which is called when component mounts
+	 */
+	//componentDidMount() {
+		// Check if he axis is visible and set axisVisible appropriately in the state
+	//}
     
 	
 	/**
@@ -19,8 +29,16 @@ class FloatingToggleButtons extends React.Component {
 	 */
     openCloseFloatingMenu() {
         var menuItems = document.getElementsByClassName('toggleOptionsMenuItems');
+        var floatingToggleButton = document.getElementById("floatingToggleButton");
         var len = menuItems.length;
         var translate = 70; // as the 1st menu button should be little more higher than the spacing between the buttons.
+
+        if (floatingToggleButton.style.transform == '') {
+            floatingToggleButton.style.transform = 'rotateZ(180deg)';
+        }
+        else {
+            floatingToggleButton.style.transform = '';
+        }
 
         if (this.state.menuOpen) {
             for (var i = 0; i < len; i++) {
@@ -69,9 +87,19 @@ class FloatingToggleButtons extends React.Component {
 		}
 
 		else {
-			//Update the glyphviewer
+			// Update the glyphviewer
+            if (!this.props.settings.sideBarOverlap) {
+                gv.style.width = this.props.glyphWindowWidth + "px";
+            }
+
+            else {
+                gv.style.width = "100%";
+            }
+
             topNav.style.height = this.props.topNavBarHeight + "px";
 			topNav.style.overflow = '';
+
+            filterNav.style.transform = "translate(0px, 0px)";
 
 			if (iconDiv) {
 				iconDiv.classList.add('fa-arrows-alt');
@@ -96,6 +124,14 @@ class FloatingToggleButtons extends React.Component {
         }
     }
 
+
+    toggleAxis() {
+        if (document.getElementById('GlyphViewer')) {
+            document.getElementById('GlyphViewer').contentWindow.postMessage({action: 'toggleAxis'}, '*');
+            this.state.axisVisible ? this.setState({ axisVisible: false }) : this.setState({ axisVisible: true });
+        }
+    }
+
 	
     render() {
         return (
@@ -112,7 +148,15 @@ class FloatingToggleButtons extends React.Component {
                     }} 
                     onClick = { this.openCloseFloatingMenu.bind(this) }
                 >
-                    <i className = "fa fa-pencil" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                    <i 
+                        id = "floatingToggleButton" 
+                        className = "fa fa-caret-up" 
+                        style = {{
+                            fontSize: '1.8em',
+                            color: this.props.settings.colors.collapsibleColor.mainIcon,
+                            transition: 'transform 500ms'
+                        }}
+                    /> 
                 </FloatingActionButton>
 
                 {/* Mini Floating Buttons */}
@@ -133,8 +177,30 @@ class FloatingToggleButtons extends React.Component {
                     mini = { true }
                     onClick = { this.toggleLegend.bind(this) }
                 >
-                {/*//fa-eye-slash(for the alternate toggle icon) */}
-                    <i className = "fa fa-eye" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                    <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -3px" }} >
+                        <i className = "fa fa-cube fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "11px 0px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                        <i 
+                            className = { this.props.legendDisplay ? "fa fa-search-minus fa-stack-1x" : "fa fa-search-plus fa-stack-1x" } 
+                            style = {{ fontSize: '1rem', margin: "-10px 0px 0px 8px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                        />
+                    </span>
+                </FloatingActionButton>
+
+                <FloatingActionButton 
+                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                    style = { styles.floatingMiniStyles } 
+                    className = "toggleOptionsMenuItems"
+                    mini = { true }
+                    onClick = { this.toggleAxis.bind(this) }
+                >
+                    <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -5px" }} >
+                        <i className = "fa fa-arrows-h fa-stack-3x" style = {{ fontSize: '1.2rem', margin: "14px -7px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                        <i className = "fa fa-arrows-v fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "8px -3px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                        <i 
+                            className = { this.state.axisVisible ? "fa fa-eye fa-stack-1x" : "fa fa-eye-slash fa-stack-1x" } 
+                            style = {{ fontSize: '0.8rem', margin: "-6px 0px 0px 7px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                        />
+                    </span>
                 </FloatingActionButton>
 
             </div>

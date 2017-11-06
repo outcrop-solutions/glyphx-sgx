@@ -193,7 +193,7 @@ class VisualizationView extends React.Component {
 					{/* Actual Application body that you see */}
                     <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
 
-                        <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '56px', transition: '1s' }}>
+                        <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '56px', transition: '0.37s' }}>
                             <TopNavBar glyphWindowWidth = { this.state.glyphWindowWidth } />
                         </div>
 
@@ -229,7 +229,7 @@ class VisualizationView extends React.Component {
 
                             </div>
 
-                            <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 
+                            <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } glyphWindowWidth = { this.state.glyphWindowWidth } /> 
 
                         </Flexbox>
                     </Flexbox>

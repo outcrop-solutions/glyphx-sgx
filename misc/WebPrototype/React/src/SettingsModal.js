@@ -130,7 +130,7 @@ class SettingsModal extends React.Component {
 				}
 			>
 
-                <div style = {{ margin: "20px 0px 3px", color: "#000000" }} > General </div>
+                <div style = {{ margin: "20px 0px 3px", color: "#000000", fontSize: "20px", fontWeight: "bold" }} > General </div>
 
                 <div style = {{ marginBottom: "20px" }} >
                     <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
@@ -150,12 +150,12 @@ class SettingsModal extends React.Component {
                             </div> 
                         }
                     >
-                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px" }} className = "fa fa-question-circle" color = '#000000' />
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px", color: "#535353" }} className = "fa fa-question-circle" color = '#000000' />
                     </Tooltip>
 
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Color Theme </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2001" }} >
+                    <div style = {{  margin: "0px 0px 0px 300px", position: "fixed", zIndex: "2001" }} >
                         <Select 
                             simpleValue
                             value = { this.state.themeTempSelection } 
@@ -168,7 +168,7 @@ class SettingsModal extends React.Component {
                     </div>
                 </Flexbox>
 
-                <div style = {{ margin: "20px 0px 3px", color: "#000000" }} > Filter Sidebar </div>
+                <div style = {{ margin: "20px 0px 3px", color: "#000000", fontSize: "20px",fontWeight: "bold" }} > Filter Sidebar </div>
 
                 <div style = {{ marginBottom: "20px" }} >
                     <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
@@ -190,12 +190,12 @@ class SettingsModal extends React.Component {
                             </div> 
                         }
                     >
-                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px" }} className = "fa fa-question-circle" color = '#000000' />
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px", color: "#535353" }} className = "fa fa-question-circle" />
                     </Tooltip>
 
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Overlap Glyph Viewer </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2002" }} >
+                    <div style = {{  margin: "0px 0px 0px 300px", position: "fixed", zIndex: "2002" }} >
                         <Select 
                             simpleValue
                             value = { this.state.overlapTempSelection } 
@@ -223,12 +223,12 @@ class SettingsModal extends React.Component {
                             </div> 
                         }
                     >
-                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px" }} className = "fa fa-question-circle" color = '#000000' />
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px", color: "#535353" }} className = "fa fa-question-circle" />
                     </Tooltip>
 
                     <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Mouse Hover Hides Scrollbar </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 260px", position: "fixed", zIndex: "2000" }} >
+                    <div style = {{  margin: "0px 0px 0px 300px", position: "fixed", zIndex: "2000" }} >
                         <Select 
                             simpleValue
                             value = { this.state.hideScrollTempSelection } 

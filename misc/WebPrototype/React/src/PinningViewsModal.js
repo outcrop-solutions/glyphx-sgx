@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FontIcon from 'material-ui/FontIcon';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import './FilterSideBar.css';
+import './PinningViewsModal.css';
 
 
 /**
@@ -17,7 +17,7 @@ import './FilterSideBar.css';
  * @param dispatch: - ADCMT
  * @param fullWidth: - ADCMT
  */
-class FilterSideBarPinningViewsDialog extends React.Component {
+class PinningViewsModal extends React.Component {
 
     constructor(props) {
         super(props);
@@ -126,11 +126,11 @@ class FilterSideBarPinningViewsDialog extends React.Component {
                         buttonStyle = {{
                             height: '28px',
                             lineHeight: '28px',
-                            backgroundColor: this.props.settings.overviewButtonsColor.background
+                            backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                         }} 
                         labelStyle = {{
                             fontSize: '13px',
-                            color: this.props.settings.overviewButtonsColor.text
+                            color: this.props.settings.colors.overviewButtonsColor.text
                         }}
                         overlayStyle = {{
                             height: '28px',
@@ -141,7 +141,7 @@ class FilterSideBarPinningViewsDialog extends React.Component {
                             <FontIcon
                                 className = "fa fa-plus"
                                 style = {{ 
-                                    color: this.props.settings.overviewButtonsColor.text,
+                                    color: this.props.settings.colors.overviewButtonsColor.text,
                                     fontSize: "20px",
                                     margin: "0px 0px 1px 14px"
                                 }}
@@ -151,26 +151,28 @@ class FilterSideBarPinningViewsDialog extends React.Component {
                 </div>
 
                 <Dialog
-                    title = "Pinning Views"
+                    title = { <div> <FontIcon className = "fa fa-thumb-tack fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Pin Filters </div> }
                     modal = { true }
                     open = { this.state.pinDailog.open } 
+				    titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
                     actions = {
                         [
                             <FlatButton
                                 label = "Ok"
                                 primary = { true }
                                 onClick = { () => this.onPinnedOkDailog(this) }
-                                style = {{ color: this.props.settings.pinFilterColor.okButton }}
+                                style = {{ color: this.props.settings.colors.pinFilterColor.okButton }}
                             />,
                             <FlatButton
                                 label = "Cancel"
                                 primary = { true }
-                                onClick = { () => this.handlePinDialogOpenClose(false,{'cancel':true}) }
-                                style = {{ color: this.props.settings.pinFilterColor.cancelButton }}
+                                onClick = { () => this.handlePinDialogOpenClose(false, {'cancel': true}) }
+                                style = {{ color: this.props.settings.colors.pinFilterColor.cancelButton }}
                             />
                         ]
                     }
                 >
+                    <div style = {{ margin: "20px 0px 0px" }} >
                         <DualListBox
                             canFilter
                             preserveSelectOrder 
@@ -179,10 +181,11 @@ class FilterSideBarPinningViewsDialog extends React.Component {
                             selected = { this.state.pinnedDialogSelectedValues }
                             onChange = { (selected) => { this.setState({ pinnedDialogSelectedValues: selected }); } }
                         />
+                    </div>
                 </Dialog>
             </div>
         );
     }
 }
 
-export default FilterSideBarPinningViewsDialog;
+export default PinningViewsModal;
