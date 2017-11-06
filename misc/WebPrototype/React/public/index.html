@@ -172,23 +172,15 @@
 
         <script>
             window.APP_MODE = window.location.href.includes('localhost') ? 'DEVELOPMENT' : 'PRODUCTION';
-            window.onbeforeunload = function() {
+            var logoutUrl = window.APP_MODE == 'DEVELOPMENT' ? '/logout' : 'http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/logout';
+       
+			window.onbeforeunload = function() {
                 var xmlHttp = new XMLHttpRequest();
-                xmlHttp.withCredentials = true;
-                xmlHttp.open("GET", "./logout", false);
+				console.log("onbeforeunload");
+				xmlHttp.withCredentials = true;
+                xmlHttp.open("GET", logoutUrl, false);
                 xmlHttp.send(null);
             }
-
-            navigator.sendBeacon = navigator.sendBeacon || function (url, data) {
-                var xmlHttp = new XMLHttpRequest();
-
-                // Need to send synchronously to have the best chance of data getting
-                // through to the server
-                xmlHttp.withCredentials = true;
-                xmlHttp.open("GET", "./logout", true);
-                xmlHttp.send(null);
-            };
-
         </script>
 
     </head>
