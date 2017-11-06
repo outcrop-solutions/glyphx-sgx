@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Card, CardText } from 'material-ui/Card';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
@@ -15,6 +16,14 @@ import './General.css';
  * @param onScroll: -ADCMT
  **/
 class FilterSummaryView extends React.Component {
+
+    constructor(props) {
+		super(props);
+
+		this.state = {
+			dummy: true
+		}
+	}
 
 
     /**
@@ -159,7 +168,7 @@ class FilterSummaryView extends React.Component {
                         <Divider style = {{ marginBottom: "0px", backgroundColor: "#000000" }} />
 
                         {/* Displays the mapped views*/}
-                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3> No Filters Selected </h3></div>}
+                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3 style = {{ margin: "13px 0px 12px" }} > No Filters Selected </h3></div>}
 
                     </div>
                 </CardText>
@@ -342,6 +351,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the redux store to get access to global states.
+ * Connects the redux store to get access to global states. withRouter allows component to change navigation route.
  **/
-export default connect(mapStateToProps,null,null,{withRef:true})(FilterSummaryView);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(FilterSummaryView));

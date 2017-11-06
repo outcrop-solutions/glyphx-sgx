@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { makeServerCall } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Flexbox from 'flexbox-react';
@@ -375,6 +376,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the redux store to get access to global states.
+ * Connects the redux store to get access to global states. withRouter allows component to change navigation route.
  **/
-export default connect(mapStateToProps)(FilterSideBar);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(FilterSideBar));

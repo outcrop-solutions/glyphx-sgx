@@ -6,7 +6,7 @@ import Collapsible from 'react-collapsible';
 import IconButton from 'material-ui/IconButton';
 import FilterTabs from './FilterTab.js';
 import SearchBox from './SearchBox.js';
-import PinningDialog from './FilterSideBarPinningViewsDialog.js';
+import PinningViewsModal from './PinningViewsModal.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
@@ -509,13 +509,10 @@ class FilterSideBarBottomView extends React.Component {
                     >   
                         {columnsObj.pinnnedColumns.length > 0 ? null : pinnedEmptyString}
 
-                        <PinningDialog 
+                        <PinningViewsModal 
                             ref = "PinningDialog"
                             pinnedOptions = { columnsObj.pinnedOptions }
-                            settings = {{
-                                overviewButtonsColor: this.props.settings.colors.overviewButtonsColor,
-                                pinFilterColor: this.props.settings.colors.pinFilterColor
-                            }}
+                            settings = { this.props.settings }
                             GLOBAL = { this.props.GLOBAL }
                             dispatch = { this.props.dispatch }
                             fullWidth = { columnsObj.pinnnedColumns.length > 0 ? true : false }
@@ -523,6 +520,8 @@ class FilterSideBarBottomView extends React.Component {
 
                         {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
                         {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : null}
+
+                        <div style = {{ height: "30px" }} />
 
                     </Collapsible>
                 </div>

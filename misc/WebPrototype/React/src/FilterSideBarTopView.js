@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { makeServerCall } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
@@ -281,7 +282,7 @@ class FilterSideBarTopView extends React.Component {
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         makeServerCall('applyFilters',
-            function(result,b) {
+            function(result, b) {
                 var resultJson = JSON.parse(result);
                 var data = resultJson.data;
                 var tempRowIds = [];
@@ -901,6 +902,6 @@ const mapStateToProps = function(state){
 
 
 /**
- * Connects the redux store to get access to global states.
+ * Connects the redux store to get access to global states. withRouter allows component to change navigation route.
  **/
-export default connect(mapStateToProps)(FilterSideBarTopView);
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(FilterSideBarTopView));
