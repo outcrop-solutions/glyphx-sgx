@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { Card, CardText } from 'material-ui/Card';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
@@ -353,4 +352,4 @@ const mapStateToProps = function(state){
 /**
  * Connects the redux store to get access to global states. withRouter allows component to change navigation route.
  **/
-export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(FilterSummaryView));
+export default connect(mapStateToProps,null,null,{withRef:true})(FilterSummaryView);

@@ -198,4 +198,5 @@ const mapStateToProps = function(state){
 /**
  * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps)(FilterTabs);
+export default connect(mapStateToProps,null,null,{withRef:true})(FilterTabs);
+
