@@ -27,6 +27,7 @@ class ApplicationRouter extends React.Component{
         var res = checkUserLoggedIn(this.onServerError);
         var jsonRes = JSON.parse(res);
         var loggedIn = jsonRes ? jsonRes.isUserLoggedIn : false;
+        
         if (loggedIn && jsonRes) {
             //setCookie(getLoginCookieName(),1,0.5);
             context.props.dispatch(saveUserInfo(jsonRes.userInformation,jsonRes.funnelInfo));
@@ -74,18 +75,25 @@ class ApplicationRouter extends React.Component{
       return (this.props.isUserLoggedIn || isUserLoggedIn);
   }
 
-  render() {
-      return (
-          <MuiThemeProvider>
-              <HashRouter >
-                  <Switch>
-                      <Route exact path = "/login" component = { this.LoginForm } />
-                      <Route exact path = "/" component = { this.RedirectToLogin } />
-                      <Route exact path = "/home" component = { this.HomeView } />
-                      <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
-                      <Route exact path = "/logout" component = { this.LogoutView } />
-                      <Route exact path = "/maintenance" component = { this.Maintenance } />
-                      <Route path = "*" component = { NotFoundPage } />
+    render() {
+        return (
+            <MuiThemeProvider>
+                <HashRouter >
+                    <Switch>
+                        <Route exact path = "/login" component = { this.LoginForm } />
+
+                        <Route exact path = "/" component = { this.RedirectToLogin } />
+
+                        <Route exact path = "/home" component = { this.HomeView } />
+
+                        <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
+
+
+                        <Route exact path = "/logout" component = { this.LogoutView } />
+
+                        <Route exact path = "/maintenance" component = { this.Maintenance } />
+
+                        <Route path = "*" component = { NotFoundPage } />
                   </Switch>
               </HashRouter>
           </MuiThemeProvider>

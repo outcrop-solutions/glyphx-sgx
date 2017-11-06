@@ -203,9 +203,11 @@ class allViewsModal extends React.Component {
 					for (var j = 1; j < data[i].length; j++) {
 						newList.push(data[i][j]);
 					}
+
 					sList.push(newList);
 				}
 			}
+
 			this.setState({ selectionList: sList });
 		}
 	}
@@ -281,6 +283,7 @@ class allViewsModal extends React.Component {
 							for (i = newSelectionIndex[1]; i > oldSelectionIndex[1]; i--) {
 								val = this.state.data[newSelectionIndex[0]][i];
 								tempIndex = sList[index[0]].indexOf(val);
+
 								if (tempIndex !== -1) {
 									sList[index[0]].splice(tempIndex, 1)
 								}
@@ -291,6 +294,7 @@ class allViewsModal extends React.Component {
 							for (i = newSelectionIndex[1]; i < oldSelectionIndex[1]; i++) {
 								val = this.state.data[newSelectionIndex[0]][i];
 								tempIndex = sList[index[0]].indexOf(val);
+
 								if (tempIndex !== -1) {
 									sList[index[0]].splice(tempIndex, 1)
 								}
@@ -419,6 +423,80 @@ class allViewsModal extends React.Component {
 		}
 
 		return false;
+	}
+
+
+	/**
+     * This method searches on the data of table. Allows Multisearch using "," as a separator. 
+     * @param context: the instance of this react element.
+     * @param id: This is the id used to identify the table and the textfield.
+     */
+	onKeyUpMultiSearch = (context, id) => {
+		var i, j;
+
+		// Search box
+        var input = document.getElementById("tf-" + id);
+		var filter = input.value.toUpperCase();
+
+		// Column values
+		var table = document.getElementById(id);
+        var tr = table.getElementsByTagName("div");
+
+		// Message "Search to View. Count: #"
+		var fillerText = document.getElementById("st-" + id);
+
+		// Message "Please refine the search."
+		var errorText = document.getElementById("se-" + id);
+
+		// Generate array of valid search values
+		var fVals = filter.split(',');
+		var filterValues = [];
+		for (i = 0; i < fVals.length; i++) {
+			fVals[i] = fVals[i].trim();
+			if (fVals[i] !== "") {
+				filterValues.push(fVals[i]);
+			}
+		}
+
+		// No valid search value, show all
+		if (filterValues.length === 0) {
+			for (i = 0; i < tr.length; i++) {
+				tr[i].style.display = "";
+			}
+
+			errorText.style.display = "none";
+
+			if (fillerText !== null) {
+				fillerText.style.display = "none";
+			}
+		}
+		else {
+			// Search all the records for the filter values
+			for (i = 0; i < tr.length; i++) {
+				var shouldBeVisible = false;
+				
+				for (j = 0; j < filterValues.length; j++) {
+					// If there is a space in the search term then search the full text for it
+					if (tr[i].innerHTML.toUpperCase().indexOf(filterValues[j]) !== -1) {
+						shouldBeVisible = true;
+						break;
+					}
+				}
+				
+				if (shouldBeVisible) {
+					tr[i].style.display = "";
+				}
+				else {
+					tr[i].style.display = "none";
+				}
+			}
+
+			errorText.style.display = "none";
+
+			if (fillerText !== null) {
+				fillerText.style.display = "none";
+			}
+		}
 	}
 
 
@@ -622,7 +700,7 @@ class allViewsModal extends React.Component {
 								overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
 								tableSelectColor: context.props.settings.colors.tableSelectColor.background
 							}}
-							onTextFieldValueChange = { (evt) => context.onBlurMultiSearch(context, col[0]) }
+							onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
 							id = { "tf-" + col[0] }
 							collapseButton = { false }
 							shouldOnBlur = { col.length > 500 ? true : false }

@@ -31,6 +31,8 @@ class HomePage extends React.Component {
 	 */
     componentDidMount() {
 
+        //window.location.reload();
+
         // Removes the spinning load mask
         hideSplashScreen();
 
@@ -83,6 +85,11 @@ class HomePage extends React.Component {
 
         style.sheet.insertRule('.Collapsible__contentInner { border: none; }', 25);
         style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
+
+
+        if (document.getElementById("livechat-compact-container")) {
+            document.getElementById("livechat-compact-container").style.display = "";
+        }
     }
 
 

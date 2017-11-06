@@ -92,6 +92,10 @@ class VisualizationView extends React.Component {
         style.sheet.insertRule('.subCollapsibleInner { background-color: ' + this.props.settings.colors.homePageColors.subBackground + '; }', 22);
 
         style.sheet.insertRule('html { overflow: hidden; }', 23);
+
+        if (document.getElementById("livechat-compact-container")) {
+            document.getElementById("livechat-compact-container").style.display = "none";
+        }
     }
 
     
