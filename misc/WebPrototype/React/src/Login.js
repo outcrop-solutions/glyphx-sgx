@@ -12,14 +12,6 @@ import Paper from 'material-ui/FontIcon';
 import './General.css';
 
 
-function hideHelpChat() {
-    if (document.getElementById("livechat-compact-container")) {
-        document.getElementById("livechat-compact-container").style.display = "none";
-    }
-}
-
-window.onload = hideHelpChat;
-
 class Login extends React.Component {
 
     state = {
@@ -28,7 +20,6 @@ class Login extends React.Component {
         openForgotPasswordDialog: false,
         snackbar: false
     }
-
 
     /**
 	 * React built-in which is called when component mounts
@@ -49,10 +40,6 @@ class Login extends React.Component {
         // Add event listeners for using the enter key to login
         document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
         document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
-
-        if (document.getElementById("livechat-compact-container")) {
-            document.getElementById("livechat-compact-container").style.display = "none";
-        }
     }
 
 

@@ -6,7 +6,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 /**
  * -ADCMT
  * @param topNavBarHeight: -ADCMT
- * @param glyphWindowWidth: -ADCMT
  */
 class FloatingToggleButtons extends React.Component {
 
@@ -89,7 +88,7 @@ class FloatingToggleButtons extends React.Component {
 		else {
 			// Update the glyphviewer
             if (!this.props.settings.sideBarOverlap) {
-                gv.style.width = this.props.glyphWindowWidth + "px";
+                gv.style.width = "calc(100% - 450px)";
             }
 
             else {

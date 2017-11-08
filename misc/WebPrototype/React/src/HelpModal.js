@@ -302,7 +302,7 @@ class HelpModal extends React.Component {
 						</div>
 					</div>
 
-					<div style = {{ textAlign: "center", marginTop: "15px" }} > Still can't find what youre looking for? Click here to chat with our support team. </div>
+					<div style = {{ textAlign: "center", marginTop: "15px" }} > Still can't find what youre looking for? (insert link to livechat here) {/* <div data-id="2eaf959d51" class="livechat_button"><a href="https://www.livechatinc.com/help-desk-software/?partner=lc_9235035&amp;utm_source=chat_button">help desk software</a></div> */} </div>
 				</div>
 
 			</Dialog>

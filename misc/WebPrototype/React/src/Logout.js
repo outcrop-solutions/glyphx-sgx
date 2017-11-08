@@ -9,9 +9,19 @@ import Dialog from 'material-ui/Dialog';
  **/
 class Logout extends React.Component {
 
+
+    /**
+	 * React built-in which is called when component mounts
+	 */
+    componentDidMount() {
+
+    }
+
+
     deleteLoginCookie(){
         deleteCookie(getLoginCookieName());
     }
+
 
     render() {
         this.deleteLoginCookie();

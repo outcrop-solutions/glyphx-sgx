@@ -12,7 +12,7 @@ import './SettingsModal.css';
 
 
 /**
- * @param glyphWindowWidth: width the glyph window should take when overlap setting is turned off
+ * -ADCMT
  **/
 class SettingsModal extends React.Component {
 
@@ -57,9 +57,9 @@ class SettingsModal extends React.Component {
         this.props.dispatch(
             editSettings(
                 this.state.colorThemes.indexOf(this.state.themeTempSelection), 
-                (this.props.homePage ? null : (this.state.overlapTempSelection === "No" ? false : true)), 
+                (this.state.overlapTempSelection === "No" ? false : true), 
                 false, 
-                (this.props.homePage ? null : (this.state.hideScrollTempSelection === "Yes" ? true : false))
+                (this.state.hideScrollTempSelection === "Yes" ? true : false)
             )
         );
 
@@ -70,7 +70,7 @@ class SettingsModal extends React.Component {
 
             if (this.state.overlapTempSelection === "No") {
                 if (filterNavOpen) {
-                    gv.style.width = this.props.glyphWindowWidth + "px";
+                    gv.style.width = "calc(100% - 450px)";
                 }
 
                 else {
