@@ -227,7 +227,7 @@ class VisualizationView extends React.Component {
                                         onLoad = { this.onLoadGlyphView.bind(this) } 
                                         title = "3D rendering engine" 
                                         style = {{ width:'100%', height:'100%', border: 'none' }} 
-                                        src = {"http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/viz/demo.html#" + this.state.vizKey}
+                                        src = {window.SERVER_URL+"/viz/demo.html#" + this.state.vizKey}
                                     />
                                 } 
 
