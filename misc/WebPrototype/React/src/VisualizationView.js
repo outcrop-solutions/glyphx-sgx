@@ -26,7 +26,6 @@ class VisualizationView extends React.Component {
 
 	state = {
         glyphViewLoaded: false,
-        glyphWindowWidth: 0,
         topNavBarHeight: 0,
         showCorrection: false,
         vizKey: ''
@@ -93,9 +92,6 @@ class VisualizationView extends React.Component {
 
         style.sheet.insertRule('html { overflow: hidden; }', 23);
 
-        if (document.getElementById("livechat-compact-container")) {
-            document.getElementById("livechat-compact-container").style.display = "none";
-        }
     }
 
     
@@ -128,17 +124,16 @@ class VisualizationView extends React.Component {
         var gv = document.getElementById('GlyphViewerContainer');
         var filterNav = document.getElementById("filterNav");
         var topNav = document.getElementById("TopNav");
-        var width = gv.clientWidth - filterNav.clientWidth;
 
         if (!this.props.settings.sideBarOverlap) {
-            gv.style.width = width + "px";
+            gv.style.width = "calc(100% - 450px)";
         }
 
         else {
             gv.style.width = "100%";
         }
 
-        this.setState({ glyphWindowWidth: width, topNavBarHeight: topNav.clientHeight });
+        this.setState({ topNavBarHeight: topNav.clientHeight });
     }
 	
 
@@ -198,7 +193,7 @@ class VisualizationView extends React.Component {
                     <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
 
                         <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '56px', transition: '0.37s' }}>
-                            <TopNavBar glyphWindowWidth = { this.state.glyphWindowWidth } />
+                            <TopNavBar />
                         </div>
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
@@ -233,7 +228,7 @@ class VisualizationView extends React.Component {
 
                             </div>
 
-                            <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } glyphWindowWidth = { this.state.glyphWindowWidth } /> 
+                            <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 
 
                         </Flexbox>
                     </Flexbox>

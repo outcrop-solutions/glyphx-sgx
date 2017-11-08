@@ -33,7 +33,7 @@ class FilterSideBarTopView extends React.Component {
         // Store the states of all the elements
         this.state = {
             topViewVisible: true,
-            hideShowButtonTextFlag: true,
+            hideShowButtonTextFlag: false,
             menu: { open: false },
             viewSelectValue: null,
             tableSelectValues: [],
@@ -44,7 +44,8 @@ class FilterSideBarTopView extends React.Component {
             statisticStatSelectValues: "",
             statisticColSelectValues: "",
             undoSnackbar: false,
-            redoSnackbar: false
+            redoSnackbar: false,
+            filterIDs: null
         };
 	}
 
@@ -281,6 +282,8 @@ class FilterSideBarTopView extends React.Component {
         console.log('Filter Applied');
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
+        var context = this;
+
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
@@ -299,6 +302,8 @@ class FilterSideBarTopView extends React.Component {
 					}
 				}
 				
+                context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+
 				iframe.postMessage({action: 'filter', args: tempRowIds}, '*');
             },
             {post: true, 
@@ -371,6 +376,8 @@ class FilterSideBarTopView extends React.Component {
         for (var property in columnsFilterApplied) {
             columnsFilterApplied[property].onDelEvent();
         }
+
+        this.setState({ filterIDs: null, hideShowButtonTextFlag: false });
         
     };
 
@@ -380,18 +387,20 @@ class FilterSideBarTopView extends React.Component {
     * @param event: - ADCMT
 	*/
     onHideFilteredData = (event) => {
-        console.log("Hide");
-        this.setState({ hideShowButtonTextFlag: !this.state.hideShowButtonTextFlag });
+        if (this.state.filterIDs !== null) {
+            var buttonState = !this.state.hideShowButtonTextFlag;
+            this.setState({ hideShowButtonTextFlag: buttonState });
 
-        //console.log(this.state.GLOBAL.getData()["Filter"]["Range"]);
-        
-        // If the flag true then button --> |HIDE| else button --> |SHOW|
-        if (this.state.hideShowButtonTextFlag) {
-            // Hide the glyphs that don't match the filter critera.
-        }
-
-        else {
-            // Show all the glyphs!
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            
+            // If the flag true then hide
+            if (buttonState) {
+                iframe.postMessage({action: 'filter', args: this.state.filterIDs}, '*');
+            }
+            else {
+                // Show all the glyphs
+                iframe.postMessage({action:'clear'}, '*');
+            }
         }
     };
 

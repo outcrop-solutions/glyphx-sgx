@@ -8,7 +8,6 @@ import RecentViews from './RecentViews.js';
 import ViewsManager from './ViewsManager.js';
 import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
-import HelpChat from './HelpChat.js';
 import TutorialWindow from './TutorialWindow.js';
 import './topNav.css';
 import './General.css';
@@ -87,9 +86,16 @@ class HomePage extends React.Component {
         style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
 
 
-        if (document.getElementById("livechat-compact-container")) {
-            document.getElementById("livechat-compact-container").style.display = "";
-        }
+        window.__lc = window.__lc || {};
+        window.__lc.license = 9235035;
+        window.__lc.visitor = {
+            name: this.props.userInfo.Name
+        };
+        (function() {
+            var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
+            lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+        })();
     }
 
 

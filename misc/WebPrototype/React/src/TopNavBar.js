@@ -19,7 +19,6 @@ import './General.css';
  * -ADCMT
  * @param homePage: -ADCMT
  * @param tutorialStage: -ADCMT
- * @param glyphWindowWidth: -ADCMT
  **/
 class TopNavBar extends React.Component {
 
@@ -53,7 +52,7 @@ class TopNavBar extends React.Component {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
             if (!this.props.settings.sideBarOverlap) {
-                gv.style.width = this.props.glyphWindowWidth + "px";
+                gv.style.width = "calc(100% - 450px)";
             }
 
             else {
@@ -177,7 +176,7 @@ class TopNavBar extends React.Component {
                 </Popover>
 
                 {/* Modals */}
-                <SettingsModal glyphWindowWidth = { this.props.glyphWindowWidth } homePage = { this.props.homePage } />
+                <SettingsModal homePage = { this.props.homePage } />
 				<AlertsModal checkBoxDisplay = { this.state.displayAlertsCheckbox } />
                 <HelpModal />
             </Toolbar>          

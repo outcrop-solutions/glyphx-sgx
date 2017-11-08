@@ -8,12 +8,6 @@ import './NotFoundPage.css';
 
 class NotFoundPage extends React.Component {
 
-	state = {
-        glyphViewLoaded: false,
-        glyphWindowWidth: 0,
-        topNavBarHeight: 0,
-    };
-
 
 	/**
 	 * React built-in which is called when component mounts
