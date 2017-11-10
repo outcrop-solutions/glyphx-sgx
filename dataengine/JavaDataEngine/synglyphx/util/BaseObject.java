@@ -130,6 +130,34 @@ public class BaseObject {
 		return type;
 	}
 
+	public String getBestFit() {
+		return bestfit;
+	}
+
+	public String getMargin(){
+		return margin;
+	}
+
+	public String getMapSource(){
+		return mapsource;
+	}
+
+	public double[] getImageSize(){
+		return imageSize;
+	}
+
+	public String getGrayScale(){
+		return grayscale;
+	}
+
+	public String getInvert(){
+		return invert;
+	}
+
+	public String getMapType(){
+		return maptype;
+	}
+
 	public String showGridLines(){
 		return gridLines;
 	}

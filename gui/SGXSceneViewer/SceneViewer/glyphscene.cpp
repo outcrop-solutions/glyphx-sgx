@@ -4,6 +4,7 @@
 #include <hal/debug.h>
 #include <render/model.h>
 #include "glyphgeometrydb.h"
+#include "glm/ext.hpp"
 
 namespace SynGlyphX
 {
@@ -248,6 +249,13 @@ namespace SynGlyphX
 		{
 			selection.insert( glyph );
 			selection_changed = true;
+			/*
+			hal::debug::print("lp: %s", glm::to_string(glyph->getLocalPosition()));
+			hal::debug::print("lr: %s", glm::to_string(glyph->getLocalRotation()));
+			hal::debug::print("ls: %s", glm::to_string(glyph->getLocalScale()));
+			hal::debug::print("cp: %s", glm::to_string(glyph->getCachedPosition()));
+			hal::debug::print("ct: %s", glm::to_string(glyph->getCachedTransform()));
+			*/
 		}
 	}
 

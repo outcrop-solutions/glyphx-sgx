@@ -28,6 +28,8 @@ if not exist %package%\glyph mkdir %package%\glyph
 
 if not exist %package%\io mkdir %package%\io
 
+if not exist %package%\jdbc\driver mkdir %package%\io\web
+
 if not exist %package%\jdbc mkdir %package%\jdbc
 
 if not exist %package%\jdbc\driver mkdir %package%\jdbc\driver
@@ -52,6 +54,8 @@ if not exist %package%\user mkdir %package%\user
 
 %jcmd%\javac -d %outpath% %jp%\synglyphx\io\*.java
 
+%jcmd%\javac -d %outpath% %jp%\synglyphx\io\web\*.java
+
 %jcmd%\javac -d %outpath% %jp%\synglyphx\jdbc\*.java
 
 %jcmd%\javac -d %outpath% %jp%\synglyphx\jdbc\driver\*.java
@@ -70,9 +74,9 @@ cd %outpath%
 
 
 
-%jcmd%\jar cf dataengine.jar DataEngine.class GlyphEngine.class UserAccessControls.class synglyphx\data\*.class synglyphx\glyph\*.class synglyphx\io\*.class synglyphx\util\*.class synglyphx\jdbc\*.class synglyphx\jdbc\driver\*.class synglyphx\link\*.class synglyphx\user\*.class
+%jcmd%\jar cf dataengine.jar DataEngine.class GlyphEngine.class UserAccessControls.class synglyphx\data\*.class synglyphx\glyph\*.class synglyphx\io\*.class synglyphx\io\web\*.class synglyphx\util\*.class synglyphx\jdbc\*.class synglyphx\jdbc\driver\*.class synglyphx\link\*.class synglyphx\user\*.class
 
-
+xcopy /s /y dataengine.jar D:\Users\Bryan\Desktop\WebEngine\Demo\Independent\lib\dataengine.jar
 
 if not "%~1"=="" (
 
@@ -95,3 +99,5 @@ if not "%~1"=="" (
 )
 
 cd %currdir%
+
+pause

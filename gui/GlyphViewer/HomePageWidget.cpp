@@ -511,16 +511,16 @@ void HomePageWidget::SetCustomerLogo() {
 		reqOnStartupChecked = settings.value("ReqOnStartupChecked", false).toBool();
 		settings.endGroup();
 		if (!onStartupChecked && !reqOnStartupChecked){
-			st1.setValue("LastLogo", SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico" : ":SGXGUI/Resources/sgx_x.png");
+			st1.setValue("LastLogo", /*SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/ucollege.png" :*/ ":SGXGUI/Resources/fathead-syn-inside.jpg");
 		}
 	}
 
 	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 	if (!QFileInfo::exists(upperRightLogo)) {
-		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/sgx_x.png").toString();
-		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
-			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico").toString();
-		}
+		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/fathead-syn-inside.jpg").toString();
+		/*if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/ucollege.png").toString();
+		}*/
 	}
 	else{
 		st1.setValue("LastLogo", upperRightLogo);
@@ -553,14 +553,14 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 				L"to help the Enrollment Management Office benefit from the breadth and depth of available Enrollment Management data. "
 				L"We welcome your interest and input on product direction.</p>"
 				L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@GlyphEd.co\">Support@GlyphEd.co</a></p>"
-				L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a></p>"
+				L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:sales@GlyphEd.co\">Sales@GlyphEd.co</a></p>"
 				L"<p>If you prefer to call, we can be reached at:  571.733.9469 during normal business hours, Eastern Time.</p>"));
 		}
 		else{
 			lowerRightLabel->setText(QString::fromStdWString(L"<p>Welcome to GlyphViewer. "
 				L"We welcome your interest and input on product direction.</p>"
-				//L"<p>For Help & Support, please contact us at:  <a href=\"mailto:info@synglyphx.com\">Info@SynGlyphX.com</a></p>"
-				L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a></p>"
+				L"<p>For Help & Support, please contact us at:  <a href=\"mailto:support@synglyphx.com\">Support@SynGlyphX.com</a></p>"
+				L"<p>For Sales and Product Direction, please contact us at:  <a href=\"mailto:sales@synglyphx.com\">Sales@SynGlyphX.com</a></p>"
 				L"<p>If you prefer to call, we can be reached at:  571.733.9469 during normal business hours, Eastern Time.</p>"));
 		}
 		return lowerRightLabel;
