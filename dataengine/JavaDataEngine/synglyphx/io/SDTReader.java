@@ -81,9 +81,11 @@ public class SDTReader {
 		Thread thread = new Thread(){
     		public void run(){
     			double start = System.currentTimeMillis();
-      			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
-      			writer.writeSDTInfo(timestamp);
-      			writer.writeTableIndex();
+    			if(!app.equals("Web")){
+	      			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
+	      			writer.writeSDTInfo(timestamp);
+	      			writer.writeTableIndex();
+	      		}
       			double end = System.currentTimeMillis();
       			Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
     		}
@@ -829,6 +831,8 @@ public class SDTReader {
 				Element element = (Element) object;
 
 				String type = element.getAttribute("type");
+				BaseObject bObject = new BaseObject(type);
+
 				String name = "";
 				if(element.hasAttribute("default")){
 					name = element.getAttribute("default");
@@ -836,12 +840,15 @@ public class SDTReader {
 					name = element.getAttribute("filename");
 				}
 
+				if(element.hasAttribute("height") && element.hasAttribute("width")){
+					bObject.setImageSize(new double[]{Double.parseDouble(element.getAttribute("width")),Double.parseDouble(element.getAttribute("height"))});
+				}
+
 				Element pos = (Element) element.getElementsByTagName("Position").item(0);
 				Element rot = (Element) element.getElementsByTagName("Rotation").item(0);
 				Element ws = (Element) element.getElementsByTagName("WorldSize").item(0);
 				Element gl = (Element) element.getElementsByTagName("GridLines").item(0);
 
-				BaseObject bObject = new BaseObject(type);
 				if(type.equals("Downloaded Map")){
 					name = "downloadedMap.jpg";
 					download = true;
@@ -885,6 +892,15 @@ public class SDTReader {
 			}
 		}
 		return baseImages;
+	}
+
+	public boolean hasDMBaseObject(){
+		for(int i = 0; i < base_objects.size(); i++){
+			if(base_objects.get(i).getType().equals("Downloaded Map")){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public BaseObject getDownloadedBaseObject(){
