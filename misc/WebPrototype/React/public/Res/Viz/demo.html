@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"> 
+    <meta charset="UTF-8">
+    <title>SGX Viewer Demo</title>
+    <link rel='stylesheet' href='./index.css'/>
+    <script src="https://www.babylonjs.com/hand.minified-1.2.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/oimo.js"></script>
+    <!--<script src="https://preview.babylonjs.com/babylon.js"></script>-->
+    <script src="babylon.max.js"></script>
+    <script src="babylon.gui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--<script src="test_output.js"></script>-->
+    <script src="synglyphx.max.js"></script>
+	<script src="glyphengine.js"></script>
+    <script src="demo.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        var content_address = "/vizdata/";
+        var url_address = document.location.href.split('#');
+        var json_path = null;
+        if(url_address.length == 2){
+            json_path = content_address+window.encodeURIComponent(url_address[1])+'.json';
+        }
+    </script>
+    <style>
+        table#bbcard {
+            font-size:14px;
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+        }
+        #bbcard td, #bbcard th {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 4px;
+        }
+        #bbcard tr:nth-child(even){background-color: #f2f2f2}
+        .ui-dialog-titlebar-close {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas" touch-action="none"></canvas>
+    <div id="card" title="Details"></div>
+    <div id="fps"></div>
+    <!--<div id="stats"></div>
+    <div id="status"></div>
+    <div id="controlPanel">
+        <div id="controlsZone">
+            <p>
+                <button id="enableDebug">Debug layer</button>
+            </p>
+            <p>
+                <button id="fullscreen">Fullscreen</button>
+            </p>
+        </div>
+        <div class="tag">Control panel</div>
+        <div class="tag" id="clickableTag"></div>
+    </div>
+    <div id="cameraPanel">
+        <div id="cameraControlsZone">
+            Active camera:<br>
+            <select id="camerasList"></select>
+            <p>
+                Change control method:
+                <button class="buttonControlPanel" id="touchCamera">
+                    <img src="https://d33wubrfki0l68.cloudfront.net/dcd183b9dc6674b3acb29895c9be9c241e933435/21aa7/assets/camtouchoff.png" class="buttonImg" />Touch camera
+                </button>
+                <button class="buttonControlPanel" id="deviceOrientationCamera">
+                    <img src="https://d33wubrfki0l68.cloudfront.net/b79ca59bdd1cb71dd762d9a703fd40cf1ab0cb2e/e70d2/assets/camdeviceoff.png" class="buttonImg" />VR Device orientation camera
+                </button>
+                <button class="buttonControlPanel" id="gamepadCamera">
+                    <img src="https://d33wubrfki0l68.cloudfront.net/39496e30a5783bade6a71f853eda7c4e11fff147/09f04/assets/camgamepadjoy.png" class="buttonImg" />Gamepad camera
+                </button>
+                <button class="buttonControlPanel" id="virtualJoysticksCamera">
+                    <img src="https://d33wubrfki0l68.cloudfront.net/91e4f8a450087a60aec5c3cc9bb8b3cbdb52d341/a5f13/assets/camvirtualjoy.png" class="buttonImg" />Virtual joysticks camera
+                </button>
+                <button class="buttonControlPanel" id="anaglyphCamera">
+                    <img src="https://d33wubrfki0l68.cloudfront.net/3a29c33554bd3b3723badb1507c9de8e1859064c/b0895/assets/camanagly.png" class="buttonImg" />Anaglyph camera
+                </button>
+            </p>
+            <p>
+                Post-processes:
+                <button class="smallButtonControlPanel" id="toggleFxaa">Toggle FXAA (antialiasing)</button>
+                <button class="smallButtonControlPanel" id="toggleFsaa4">Toggle FSAA 4X (antialiasing)</button>
+                <button class="smallButtonControlPanel" id="toggleBandW">Toggle Black and white</button>
+                <button class="smallButtonControlPanel" id="toggleSepia">Toggle Sepia</button>
+            </p>
+        </div>
+        <div class="cameraTag"><img src="https://d33wubrfki0l68.cloudfront.net/4be4d643f634ae7cb26ddff105477a067c434512/11f81/assets/camera.png" /></div>
+        <div class="cameraTag" id="cameraClickableTag"></div>
+    </div>-->
+    <div id="notSupported" class="hidden">Sorry but your browser does not support WebGL...</div>
+    <script src="loaderCustoms.js"></script>
+</body>
+</html>

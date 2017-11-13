@@ -156,7 +156,6 @@ class VisualizationView extends React.Component {
 
 
     render() {
-        console.log('iframe render');
         return (
             <MuiThemeProvider>
                 <div style = {{ width: '100%', height: '100%' }}>
@@ -223,7 +222,7 @@ class VisualizationView extends React.Component {
                                         onLoad = { this.onLoadGlyphView.bind(this) } 
                                         title = "3D rendering engine" 
                                         style = {{ width:'100%', height:'100%', border: 'none' }} 
-                                        src = {window.SERVER_URL+"viz/demo.html#" + this.state.vizKey}
+                                        src = {"./Res/Viz/demo.html#" + this.state.vizKey}
                                     />
                                 } 
 
