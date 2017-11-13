@@ -16,15 +16,6 @@ import './General.css';
  **/
 class FilterSummaryView extends React.Component {
 
-    constructor(props) {
-		super(props);
-
-		this.state = {
-			dummy: true
-		}
-	}
-
-
     /**
      * React built-in which tells react if it should re-render the component
      * @param nextProps: The props the component would have after the change
@@ -41,6 +32,7 @@ class FilterSummaryView extends React.Component {
         if (this.props.settings != nextProps.settings) {
             return true;
         }
+        
         
         return false;
     }

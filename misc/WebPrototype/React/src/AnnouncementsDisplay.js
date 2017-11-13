@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
 import Flexbox from 'flexbox-react';
 import VotingModal from './VotingModal.js';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './General.css';
 
@@ -23,42 +26,79 @@ class AnnouncementsDisplay extends React.Component {
 	 */
 	componentDidMount() {
 
-        var context = this;
+        if (this.props.adminEdit) {
+            this.setState({ loadMask: false, announcements: this.props.announcementList });
+        }
 
+        else {
+            var context = this;
+            // Make server call to grab announcements
+            //makeServerCall(something here),
+            //    function (responseText) { 
 
-        // Make server call to grab announcements
-        //makeServerCall(something here),
-        //    function (responseText) { 
-
-                // Post the new data to the state and hide the window load-mask
-                context.setState({ loadMask: false });
-        //   }
-        //);
+                    // Post the new data to the state and hide the window load-mask
+                    context.setState({ loadMask: false, announcements: announcementList });
+            //   }
+            //);
+        }
 	}
+
+
+    /**
+     * React built-in which acts as a listener for when props change
+     * @param nextProps: The props the component would have after the change
+     **/
+	componentWillReceiveProps(nextProps) {
+        this.setState({ announcements: nextProps.announcementList });
+    }
 
     
     render() {
         var context = this;
-        var announcementList = [["Maintenance", "We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
-                                ["Release", "Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "Click to vote on which features you would like to see first."], 
-                                ["Shout", "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."],
-                                ["Maintenance", "1 We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
-                                ["Release", "1 Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "1 Click to vote on which features you would like to see first."], 
-                                ["Shout", "1 John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."],
-                                ["Maintenance", "2 We will be performing several software updates and maintenance on our servers this Saturday, August 26th, at 9pm EST (2:00 GMT). Servers will be down for 2 hours."], 
-                                ["Release", "2 Release 1.x.x is going to be live this Saturday, August 26th! Click to view the summary on new features."],
-                                ["Poll", "2 Click to vote on which features you would like to see first."], 
-                                ["Shout", "2 John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article."]];
 
-        var announcements = announcementList.map( 
+        var announcements = this.state.announcements.map( 
             function(announcement) {
                 return (
-                    (announcement[0] === "Maintenance" ? <MaintenanceAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> : 
-                        (announcement[0] === "Release" ? <ReleaseAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
-                            (announcement[0] === "Poll" ? <PollAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
-                                (announcement[0] === "Shout" ? <ShoutAnnouncement announcement = { announcement[1] } settings = { context.props.settings } key = { announcement } first = { announcement === announcementList[0] } /> :
+                    (announcement.type === "Maintenance" ? 
+                        <MaintenanceAnnouncement 
+                            announcement = { announcement } 
+                            settings = { context.props.settings } 
+                            key = { JSON.stringify(announcement) } 
+                            tracker = { JSON.stringify(announcement) } 
+                            first = { announcement === announcementList[0] } 
+                            deleteAnnouncement = { context.props.deleteAnnouncement } 
+                            adminEdit = { context.props.adminEdit }
+                        /> : 
+                        (announcement.type === "Release" ? 
+                            <ReleaseAnnouncement 
+                                announcement = { announcement } 
+                                settings = { context.props.settings } 
+                                key = { JSON.stringify(announcement) } 
+                                tracker = { JSON.stringify(announcement) } 
+                                first = { announcement === announcementList[0] } 
+                                deleteAnnouncement = { context.props.deleteAnnouncement } 
+                                adminEdit = { context.props.adminEdit }
+                            /> :
+                            (announcement.type === "Poll" ? 
+                                <PollAnnouncement 
+                                    announcement = { announcement } 
+                                    settings = { context.props.settings } 
+                                    key = { JSON.stringify(announcement) } 
+                                    tracker = { JSON.stringify(announcement) } 
+                                    first = { announcement === announcementList[0] }
+                                    deleteAnnouncement = { context.props.deleteAnnouncement } 
+                                    adminEdit = { context.props.adminEdit }
+                                /> :
+                                (announcement.type === "Shout" ? 
+                                    <ShoutAnnouncement 
+                                        announcement = { announcement } 
+                                        settings = { context.props.settings } 
+                                        key = { JSON.stringify(announcement) } 
+                                        tracker = { JSON.stringify(announcement) } 
+                                        first = { announcement === announcementList[0] } 
+                                        deleteAnnouncement = { context.props.deleteAnnouncement } 
+                                        adminEdit = { context.props.adminEdit }
+                                    /> :
                                     "Error! Announcement Type Not Recognized!!"
                                 )
                             )
@@ -91,89 +131,200 @@ class MaintenanceAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
-                <CardText
-                    style = {{
-                        padding: "7px",
-                        marginTop: (this.props.first ? "0px" : "6px"),
-                        marginBottom: (this.props.last ? "7px" : "0px"),
-                        borderRadius: "5px"
-                    }}
-                    className = "cursorHand"
-                    //onClick = {  }
-                >
-                    <Flexbox flexDirection = "row" className = "noselect" >
-
-                        <Flexbox flexDirection = "column" alignSelf = "center" >
-                            <Flexbox style = {{ height: "50%" }} >
-                                <i 
-                                    className = "fa fa-exclamation-triangle" 
-                                    style = {{ 
-                                        fontSize: "20px",
-                                        margin: "0px 9px 0px 0px",
-                                        padding: "10px 0px 0px 9px",
-                                        backgroundColor: this.props.settings.colors.announcementColors.maintenance,
-                                        height: "40px",
-                                        width: "40px",
-                                        borderRadius: "3px"
-                                    }} 
-                                />
-                            </Flexbox>
+            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+                {this.props.adminEdit? 
+                    <Flexbox flexDirection = "column" alignSelf = "center" >
+                        <Flexbox style = {{ height: "50%" }} >
+                            <i 
+                                className = "fa fa-minus cursorHand" 
+                                style = {{ 
+                                    fontSize: "20px",
+                                    margin: "0px 9px 0px 0px",
+                                    padding: "6px 0px 0px 7px",
+                                    color: "#ffffff",
+                                    backgroundColor: "#aa0d0d",
+                                    height: "30px",
+                                    width: "30px",
+                                    borderRadius: "15px"
+                                }} 
+                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                            />
                         </Flexbox>
-
-                        <Flexbox style = {{ width: "100%" }} > 
-                            { this.props.announcement }
-                        </Flexbox>
-
                     </Flexbox>
-                </CardText>
-            </Card>
+                    :
+                    null
+                }
+
+                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                    <CardText
+                        style = {{
+                            padding: "7px",
+                            marginTop: (this.props.first ? "0px" : "6px"),
+                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            borderRadius: "5px"
+                        }}
+                        className = "cursorHand"
+                        //onClick = {  }
+                    >
+                        <Flexbox flexDirection = "row" className = "noselect" >
+
+                            <Flexbox flexDirection = "column" alignSelf = "center" >
+                                <Flexbox style = {{ height: "50%" }} >
+                                    <i 
+                                        className = "fa fa-exclamation-triangle" 
+                                        style = {{ 
+                                            fontSize: "20px",
+                                            margin: "0px 9px 0px 0px",
+                                            padding: "10px 0px 0px 9px",
+                                            backgroundColor: this.props.settings.colors.announcementColors.maintenance,
+                                            height: "40px",
+                                            width: "40px",
+                                            borderRadius: "3px"
+                                        }} 
+                                    />
+                                </Flexbox>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <div style = {{ width: "100%" }} > 
+                                    We will be performing software updates and maintenance on our servers on {this.props.announcement.content.date}, 
+                                    at {this.props.announcement.content.time} EST (UTC-5). Servers will be down for {this.props.announcement.content.length}. 
+                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                </div>
+                            </Flexbox>
+
+                        </Flexbox>
+                    </CardText>
+                </Card>
+            </Flexbox>
         );
     }
 }
 
 class ReleaseAnnouncement extends React.Component {
 
+    state = {
+        notesDisplay: false
+    }
+
     render() {
+
+        var features = this.props.announcement.content.features.map( 
+            function(feature) {
+                return (
+                    <li key = { feature } >{feature}<br /></li>
+                )
+            }
+        );
+
+        var bugfixes = this.props.announcement.content.bugfixes.map( 
+            function(bugfix) {
+                return (
+                    <li key = { bugfix } >{bugfix}<br /></li>
+                )
+            }
+        );
+
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
-                <CardText
-                    style = {{
-                        padding: "7px",
-                        marginTop: (this.props.first ? "0px" : "6px"),
-                        marginBottom: (this.props.last ? "7px" : "0px"),
-                        borderRadius: "5px"
-                    }}
-                    className = "cursorHand"
-                    //onClick = {  }
-                >
-
-                    <Flexbox flexDirection = "row" className = "noselect" >
-
-                        <Flexbox flexDirection = "column" alignSelf = "center" >
-                            <Flexbox style = {{ height: "50%" }} >
-                                <i 
-                                    className = "fa fa-code-fork" 
-                                    style = {{ 
-                                        fontSize: "29px",
-                                        margin: "0px 9px 0px 0px",
-                                        padding: "6px 0px 0px 13px",
-                                        backgroundColor: this.props.settings.colors.announcementColors.release,
-                                        height: "40px",
-                                        width: "40px",
-                                        borderRadius: "3px"
-                                    }} 
-                                />
-                            </Flexbox>
+            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+                {this.props.adminEdit? 
+                    <Flexbox flexDirection = "column" alignSelf = "center" >
+                        <Flexbox style = {{ height: "50%" }} >
+                            <i 
+                                className = "fa fa-minus cursorHand" 
+                                style = {{ 
+                                    fontSize: "20px",
+                                    margin: "0px 9px 0px 0px",
+                                    padding: "6px 0px 0px 7px",
+                                    color: "#ffffff",
+                                    backgroundColor: "#aa0d0d",
+                                    height: "30px",
+                                    width: "30px",
+                                    borderRadius: "15px"
+                                }} 
+                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                            />
                         </Flexbox>
-
-                        <Flexbox style = {{ width: "100%" }} > 
-                            { this.props.announcement }
-                        </Flexbox>
-
                     </Flexbox>
-                </CardText>
-            </Card>
+                    :
+                    null
+                }
+
+                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                    <CardText
+                        style = {{
+                            padding: "7px",
+                            marginTop: (this.props.first ? "0px" : "6px"),
+                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            borderRadius: "5px"
+                        }}
+                        className = "cursorHand"
+                        onClick = { () => this.setState({ notesDisplay: true }) }
+                    >
+                        <Dialog
+                            title = { <div style = {{ fontWeight: "bold" }} > Release Notes <Divider /></div> }
+                            modal = { true }
+                            open = { this.state.notesDisplay }
+                            actions = {
+                                [
+                                    <FlatButton
+                                        label = "Close"
+                                        primary = { true }
+                                        onClick = { () => this.setState({ notesDisplay: false }) }
+                                        style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                        labelStyle = {{ lineHeight: "40px" }}
+                                    />
+                                ]
+                            }
+                        >
+                            
+                            <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                                <Flexbox flexDirection = "column" style = {{ width: "100%", color: "#000000", paddingRight: "20px" }} >
+                                    <div style = {{ fontWeight: "bold" }} > New Features: </div>
+                                    <ul>
+                                        {features}
+                                    </ul>
+                                </Flexbox>
+
+                                <Flexbox flexDirection = "column" style = {{ width: "100%", color: "#000000", paddingRight: "20px" }} >
+                                    <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
+                                    <ul>
+                                        {bugfixes}
+                                    </ul>
+                                </Flexbox>
+                            </Flexbox>
+                        </Dialog>
+                        
+                        <Flexbox flexDirection = "row" className = "noselect" >
+
+                            <Flexbox flexDirection = "column" alignSelf = "center" >
+                                <Flexbox style = {{ height: "50%" }} >
+                                    <i 
+                                        className = "fa fa-code-fork" 
+                                        style = {{ 
+                                            fontSize: "29px",
+                                            margin: "0px 9px 0px 0px",
+                                            padding: "6px 0px 0px 13px",
+                                            backgroundColor: this.props.settings.colors.announcementColors.release,
+                                            height: "40px",
+                                            width: "40px",
+                                            borderRadius: "3px"
+                                        }} 
+                                    />
+                                </Flexbox>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} >
+                                <div style = {{ width: "100%" }} > 
+                                    Release {this.props.announcement.content.release} is now live! Click to view release notes.
+                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                </div>
+                            </Flexbox>
+
+                        </Flexbox>
+                    </CardText>
+                </Card>
+            </Flexbox>
         );
     }
 }
@@ -185,57 +336,88 @@ class PollAnnouncement extends React.Component {
     }
 
     toggleDisplay = () => {
-        if (this.state.display) {
-            this.setState({ display: false });
-        }
-        else {
-            this.setState({ display: true });
-        }
-        
+        this.setState({ display: !this.state.display });
+    }
+
+    votingClosed(date, time) {
+        return false;
     }
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
-                <CardText
-                    style = {{
-                        padding: "7px",
-                        marginTop: (this.props.first ? "0px" : "6px"),
-                        marginBottom: (this.props.last ? "7px" : "0px"),
-                        borderRadius: "5px"
-                    }}
-                    className = "cursorHand"
-                    onClick = { this.toggleDisplay }
-                >
-                    <VotingModal display = { this.state.display } toggleDisplay = { this.toggleDisplay.bind(this)} />
-
-                    <Flexbox flexDirection = "row" className = "noselect" >
-
-                        <Flexbox flexDirection = "column" alignSelf = "center" >
-                            <Flexbox style = {{ height: "50%" }} >
-                                <i 
-                                    className = "fa fa-gavel" 
-                                    style = {{ 
-                                        fontSize: "20px",
-                                        margin: "0px 9px 0px 0px",
-                                        padding: "10px 0px 0px 9px",
-                                        backgroundColor: this.props.settings.colors.announcementColors.poll,
-                                        height: "40px",
-                                        width: "40px",
-                                        borderRadius: "3px"
-                                    }} 
-                                />
-                            </Flexbox>
+            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+                {this.props.adminEdit? 
+                    <Flexbox flexDirection = "column" alignSelf = "center" >
+                        <Flexbox style = {{ height: "50%" }} >
+                            <i 
+                                className = "fa fa-minus cursorHand" 
+                                style = {{ 
+                                    fontSize: "20px",
+                                    margin: "0px 9px 0px 0px",
+                                    padding: "6px 0px 0px 7px",
+                                    color: "#ffffff",
+                                    backgroundColor: "#aa0d0d",
+                                    height: "30px",
+                                    width: "30px",
+                                    borderRadius: "15px"
+                                }} 
+                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                            />
                         </Flexbox>
-
-
-                        <Flexbox style = {{ width: "100%" }} > 
-                            { this.props.announcement }
-                        </Flexbox>
-
                     </Flexbox>
-                </CardText>
-            </Card>
+                    :
+                    null
+                }
+                
+                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                    <CardText
+                        style = {{
+                            padding: "7px",
+                            marginTop: (this.props.first ? "0px" : "6px"),
+                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            borderRadius: "5px"
+                        }}
+                        className = "cursorHand"
+                        onClick = { this.toggleDisplay }
+                    >
+                        <VotingModal display = { this.state.display } votingClosed = { this.votingClosed() } toggleDisplay = { this.toggleDisplay.bind(this)} poll = { this.props.announcement.content.poll } />
+
+                        <Flexbox flexDirection = "row" className = "noselect" >
+
+                            <Flexbox flexDirection = "column" alignSelf = "center" >
+                                <Flexbox style = {{ height: "50%" }} >
+                                    <i 
+                                        className = "fa fa-gavel" 
+                                        style = {{ 
+                                            fontSize: "20px",
+                                            margin: "0px 9px 0px 0px",
+                                            padding: "10px 0px 0px 9px",
+                                            backgroundColor: this.props.settings.colors.announcementColors.poll,
+                                            height: "40px",
+                                            width: "40px",
+                                            borderRadius: "3px"
+                                        }} 
+                                    />
+                                </Flexbox>
+                            </Flexbox>
+
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <div style = {{ width: "100%" }} >
+                                    { this.votingClosed(this.props.announcement.content.date, this.props.announcement.content.time) ? 
+                                        "Voting now closed, click to view results." 
+                                        :  
+                                        "Click to vote on which features you would like to see first. Voting will be open until " + this.props.announcement.content.date +  "."
+                                    }
+                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                </div>
+                                
+                            </Flexbox>
+
+                        </Flexbox>
+                    </CardText>
+                </Card>
+            </Flexbox>
         );
     }
 }
@@ -244,44 +426,72 @@ class ShoutAnnouncement extends React.Component {
 
     render() {
         return (
-            <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
-                <CardText
-                    style = {{
-                        padding: "7px",
-                        marginTop: (this.props.first ? "0px" : "6px"),
-                        marginBottom: (this.props.last ? "7px" : "0px"),
-                        borderRadius: "5px"
-                    }}
-                    className = "cursorHand"
-                    //onClick = {  }
-                >
-
-                    <Flexbox flexDirection = "row" className = "noselect" >
-
-                        <Flexbox flexDirection = "column" alignSelf = "center" >
-                            <Flexbox style = {{ height: "50%" }} >
-                                <i 
-                                    className = "fa fa-bullhorn" 
-                                    style = {{ 
-                                        fontSize: "20px",
-                                        margin: "0px 9px 0px 0px",
-                                        padding: "10px 0px 0px 9px",
-                                        backgroundColor: this.props.settings.colors.announcementColors.shout,
-                                        height: "40px",
-                                        width: "40px",
-                                        borderRadius: "3px"
-                                    }} 
-                                />
-                            </Flexbox>
+            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+                {this.props.adminEdit? 
+                    <Flexbox flexDirection = "column" alignSelf = "center" >
+                        <Flexbox style = {{ height: "50%" }} >
+                            <i 
+                                className = "fa fa-minus cursorHand" 
+                                style = {{ 
+                                    fontSize: "20px",
+                                    margin: "0px 9px 0px 0px",
+                                    padding: "6px 0px 0px 7px",
+                                    color: "#ffffff",
+                                    backgroundColor: "#aa0d0d",
+                                    height: "30px",
+                                    width: "30px",
+                                    borderRadius: "15px"
+                                }} 
+                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                            />
                         </Flexbox>
-
-                        <Flexbox style = {{ width: "100%" }} > 
-                            { this.props.announcement }
-                        </Flexbox>
-
                     </Flexbox>
-                </CardText>
-            </Card>
+                    :
+                    null
+                }
+
+                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                    <CardText
+                        style = {{
+                            padding: "7px",
+                            marginTop: (this.props.first ? "0px" : "6px"),
+                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            borderRadius: "5px"
+                        }}
+                        className = "cursorHand"
+                        onClick = { () => window.open(this.props.announcement.content.link) }
+                    >
+
+                        <Flexbox flexDirection = "row" className = "noselect" >
+
+                            <Flexbox flexDirection = "column" alignSelf = "center" >
+                                <Flexbox style = {{ height: "50%" }} >
+                                    <i 
+                                        className = "fa fa-bullhorn" 
+                                        style = {{ 
+                                            fontSize: "20px",
+                                            margin: "0px 9px 0px 0px",
+                                            padding: "10px 0px 0px 9px",
+                                            backgroundColor: this.props.settings.colors.announcementColors.shout,
+                                            height: "40px",
+                                            width: "40px",
+                                            borderRadius: "3px"
+                                        }} 
+                                    />
+                                </Flexbox>
+                            </Flexbox>
+
+                            <Flexbox style = {{ width: "100%" }} > 
+                                <div style = {{ width: "100%" }} > 
+                                    { this.props.announcement.content.message }
+                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                </div>
+                            </Flexbox>
+
+                        </Flexbox>
+                    </CardText>
+                </Card>
+            </Flexbox>
         );
     }
 }
@@ -311,3 +521,124 @@ const mapStateToProps = function(state) {
  * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(AnnouncementsDisplay);
+
+
+var announcementList = [
+    {
+        type: "Maintenance",
+        content: {
+            date: "August 26th, 2017",
+            time: "9pm",
+            length: "2 hours"
+        },
+        postDate: "11/8/2017"
+    },
+    {
+        type: "Release",
+        content: {
+            release: "1.0.0",
+            features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
+            bugfixes: ["yay bugfix 1", "yay bugfix 2", "yay bugfix 3" ]
+        },
+        postDate: "11/8/2017"
+    },
+    {
+        type: "Poll",
+        content: {
+            date: "August 26th, 2017",
+            poll: {
+                options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
+                shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
+                colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
+            }
+        },
+        postDate: "11/8/2017"
+    },
+    {
+        type: "Shout",
+        content: {
+            message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
+            linkType: "link",
+            link: "http://www.GlyphEd.co"
+        },
+        postDate: "11/8/2017"
+    },
+    {
+        type: "Maintenance",
+        content: {
+            date: "August 26th, 2017",
+            time: "9pm",
+            length: "2 hours"
+        },
+        postDate: "11/7/2017"
+    },
+    {
+        type: "Release",
+        content: {
+            release: "1.0.0",
+            features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
+            bugfixes: ["yay bugfix 1", "yay bugfix 2", "yay bugfix 3" ]
+        },
+        postDate: "11/7/2017"
+    },
+    {
+        type: "Poll",
+        content: {
+            date: "August 26th, 2017",
+            poll: {
+                options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
+                shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
+                colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
+            }
+        },
+        postDate: "11/7/2017"
+    },
+    {
+        type: "Shout",
+        content: {
+            message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
+            linkType: "link",
+            link: "http://www.GlyphEd.co"
+        },
+        postDate: "11/7/2017"
+    },
+    {
+        type: "Maintenance",
+        content: {
+            date: "August 26th, 2017",
+            time: "9pm",
+            length: "2 hours"
+        },
+        postDate: "11/6/2017"
+    },
+    {
+        type: "Release",
+        content: {
+            release: "1.0.0",
+            features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
+            bugfixes: ["yay bugfix 1", "yay bugfix 2", "yay bugfix 3" ]
+        },
+        postDate: "11/6/2017"
+    },
+    {
+        type: "Poll",
+        content: {
+            date: "August 26th, 2017",
+            poll: {
+                options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
+                shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
+                colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
+            }
+        },
+        postDate: "11/6/2017"
+    },
+    {
+        type: "Shout",
+        content: {
+            message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
+            linkType: "link",
+            link: "http://www.GlyphEd.co"
+        },
+        postDate: "11/6/2017"
+    }
+];

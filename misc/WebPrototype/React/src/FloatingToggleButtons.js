@@ -43,9 +43,9 @@ class FloatingToggleButtons extends React.Component {
             for (var i = 0; i < len; i++) {
                 menuItems[i].style.transform = '';
             }
+
             this.setState({ menuOpen: false });
         }
-
         else {
             for (var j = 0; j < len; j++) {
                 menuItems[j].style.transform = 'translate(0px,-' + translate + 'px)';

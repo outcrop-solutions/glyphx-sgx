@@ -12,6 +12,7 @@ import Avatar from 'material-ui/Avatar';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
+import AdminWizardModal from './AdminWizardModal.js';
 import './General.css';
 
 
@@ -37,6 +38,15 @@ class TopNavBar extends React.Component {
     logout = () => {
         this.props.history.push("/logout");
     };
+
+
+    /**
+     * Opens the Admin wizard and closes the user menu
+     **/
+    openAdminWizard() {
+        this.props.dispatch(editModalDisplay(null, null, null, true));
+        this.setState({ userProfileMenuOpen: false });
+    }
 
 
     /**
@@ -88,9 +98,15 @@ class TopNavBar extends React.Component {
 	 * Displays the alerts modal
 	 */
     displayAlerts() {
-        this.props.dispatch(editModalDisplay(null, true, null)); 
+        this.props.dispatch(editModalDisplay(null, true, null, null)); 
         this.setState({ displayAlertsCheckbox: false });
     }
+
+
+    onClickLogo() {
+        this.props.history.push('/home');
+    }
+
 
     render() {
         return(
@@ -100,7 +116,7 @@ class TopNavBar extends React.Component {
             >
                 {/* Logo */}
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
-                    <span style = {{ cursor: 'pointer' }} onClick = { () => this.props.history.push('/home') } >
+                    <span style = {{ cursor: 'pointer' }} onClick = { () => this.onClickLogo() } >
                         {this.state.imgLogoSrc}
                     </span>
                 </ToolbarGroup>
@@ -114,7 +130,7 @@ class TopNavBar extends React.Component {
                     </IconButton>
 
                     <IconButton 
-                        onClick = { () => this.props.dispatch(editModalDisplay(null, null, true)) } 
+                        onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
                         style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
@@ -122,7 +138,7 @@ class TopNavBar extends React.Component {
                     </IconButton>
 
                     <IconButton 
-                        onClick = { () => this.props.dispatch(editModalDisplay(true, null, null)) } 
+                        onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
                         style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
@@ -169,9 +185,12 @@ class TopNavBar extends React.Component {
                             primaryText = { this.props.userInfo ? this.props.userInfo.Name : ""}
                         />
 
-                        <MenuItem className = "menuItemStyling" primaryText = "Help &amp; feedback" />
-                        <MenuItem className = "menuItemStyling" primaryText = "Settings" />
+                        <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" />
+                        <MenuItem className = "menuItemStyling" primaryText = "User Settings" />
                         <MenuItem onClick = { this.logout } className = "menuItemStyling" primaryText = "Sign out" />
+                        {/* {this.props.userInfo.admin ? show : dont} */}
+                        
+                        
                     </List>
                 </Popover>
 
@@ -179,6 +198,10 @@ class TopNavBar extends React.Component {
                 <SettingsModal homePage = { this.props.homePage } />
 				<AlertsModal checkBoxDisplay = { this.state.displayAlertsCheckbox } />
                 <HelpModal />
+                
+                {/* {this.props.userInfo.admin ? render : dont} */}
+                <AdminWizardModal />
+
             </Toolbar>          
         );
     }
@@ -188,11 +211,12 @@ class TopNavBar extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (settingsModal, alertsModal, helpModal) => ({
+export const editModalDisplay = (settingsModal, alertsModal, helpModal, adminModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     settingsModal,
     alertsModal,
-    helpModal
+    helpModal,
+    adminModal
 });
 
 

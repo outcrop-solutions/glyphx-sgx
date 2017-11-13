@@ -40,6 +40,8 @@ class Login extends React.Component {
         // Add event listeners for using the enter key to login
         document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
         document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+
+        document.title = "GlyphEd - Login";
     }
 
 

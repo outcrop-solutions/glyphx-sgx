@@ -6,6 +6,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import PieChart from './PieChart.js';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
 
 
 /**
@@ -14,14 +15,88 @@ import RaisedButton from 'material-ui/RaisedButton';
 class VotingModal extends React.Component {
 
     state = {
+        snackbarVisible: false,
         voted: false,
-        value: null
+        value: null,
+        voteCount: [21, 45, 10, 15]
     }
+
+
+    /**
+	 * React built-in which is called when component mounts.
+	 */
+    componentDidMount() {
+        if (!this.props.votingClosed) {
+            // Check if user voted and set state accordingly
+
+        }
+
+        // Get vote count and set state accordingly
+    }
+
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.votingClosed) {
+            this.setState({ voted: true })
+        }
+    }
+
+
+    /**
+	 * -ADCMT
+	 */
+    onSubmit() {
+        if (this.state.value === null) {
+            this.setState({ snackbarVisible: true });
+        }
+
+        else {
+            // Send this.state.value to the backend
+            // Increment vote of voteCount[this.state.value] in the backend and frontend
+
+            // Update voted status of the user through the backend
+
+            var voteCount = this.state.voteCount;
+            voteCount[this.state.value] += 1;
+
+            this.setState({ voted: true, voteCount: voteCount });
+
+        }
+    }
+
 	
 	render() {
+        var context = this;
+
+        var options = this.props.poll.options.map( 
+            function(option) {
+                return (
+                    <RadioButton
+                        key = { option }
+                        value = { context.props.poll.options.indexOf(option) }
+                        label = { option }
+                        style = {{ marginBottom: "10px", marginTop: "14px" }}
+                        iconStyle = {{ fill: context.props.settings.colors.elasticColor.checkBox }}
+                    />
+                )
+            }
+        );
+
+        var shortOptions = this.props.poll.shortOptions.map( 
+            function(option) {
+                return (
+                    <div key = { option } >
+                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: context.props.poll.colors[context.props.poll.shortOptions.indexOf(option)] }} > &nbsp; &nbsp;  </dt>
+                        <dd style = {{ marginLeft: "15px", display: "inline" }} > {option} </dd>
+                    </div>
+                )
+            }
+        );
+
+
 		return(
 			<Dialog
-				title = "Voting is still open"
+				title = { this.props.votingClosed ? "Voting is now closed" : "Voting is still open" }
                 modal = { true }
 				open = { this.props.display }
 				actions = {
@@ -38,31 +113,9 @@ class VotingModal extends React.Component {
 			>
                 <div style = {{ display: (this.state.voted ? "none" : "") }} >
                     <RadioButtonGroup name = "votingGroup" onChange = { (event, value) => this.setState({ value : value }) } >
-                        <RadioButton
-                            value = {0}
-                            label = "Have Aditya stop playing loud music"
-                            style = {{ marginBottom: "10px", marginTop: "14px" }}
-                            iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}
-                        />
-                        <RadioButton
-                            value = {1}
-                            label = "Have Brad stop messing with peoples desks"
-                            style = {{ marginBottom: "10px" }}
-                            iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}
-                        />
-                        <RadioButton
-                            value = {2}
-                            label = "Have lunch on Mark"
-                            style = {{ marginBottom: "10px" }}
-                            iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}
-                        />
-                        <RadioButton
-                            value = {3}
-                            label = "Have the day off"
-                            style = {{ marginBottom: "10px" }}
-                            iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}
-                        />
+                        {options}
                     </RadioButtonGroup>
+
 
                     <RaisedButton 
                         label = "Submit"
@@ -80,46 +133,40 @@ class VotingModal extends React.Component {
                             paddingRight: "0px"
                         }}
                         overlayStyle = {{ height: '35px', lineHeight: '35px' }}
-                        onClick = { () => this.setState({ voted: true }) }
+                        onClick = { () => this.onSubmit() }
                         primary = { true } 
                     />
 
                 </div>
 
 
-                <Flexbox flexDirection = "row" style = {{ marginLeft: "105px", display: (this.state.voted ? "" : "none") }} >
-                    <PieChart
-                        data = { [21, 45, 10, 15] }
-                        radius = { 150 }
-                        hole = { 50 }
-                        colors = { ['#43A19E', '#7B43A1', '#F2317A', '#FF9824'] }
-                        labels = { true }
-                        percent = { true }
-                        strokeWidth = { 3 }
-                        stroke = { '#fff' }
-                    />
-    
-                    <dl style = {{ width: "200px", background: "#fff", padding: "5px 15px", marginLeft: "10px" }} >
-                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#7B43A1" }} > &nbsp; &nbsp;  </dt>
-                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Aditya Music </dd>
+                {this.state.voted ? 
+                    <Flexbox flexDirection = "row" style = {{ marginLeft: "105px" }} >
+                        <PieChart
+                            data = { this.state.voteCount }
+                            radius = { 150 }
+                            hole = { 50 }
+                            colors = { this.props.poll.colors }
+                            labels = { true }
+                            percent = { true }
+                            strokeWidth = { 3 }
+                            stroke = { '#fff' }
+                        />
+        
+                        <dl style = {{ width: "200px", background: "#fff", padding: "5px 15px", marginLeft: "10px" }} >
+                            {shortOptions}
+                        </dl>
+                    </Flexbox>
+                    :
+                    null
+                }
 
-                        <br />
-
-                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#43A19E" }} > &nbsp; &nbsp;  </dt>
-                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Brad Desk </dd>
-
-                        <br />
-
-                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#FF9824" }} > &nbsp; &nbsp;  </dt>
-                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Lunch Mark </dd>
-
-                        <br />
-
-                        <dt style = {{ borderRadius: "3px", display: "inline", backgroundColor: "#F2317A" }} > &nbsp; &nbsp;  </dt>
-                        <dd style = {{ marginLeft: "15px", display: "inline" }} > Day Off </dd>
-                    </dl>
-              
-                </Flexbox>
+                <Snackbar
+                    open = { this.state.snackbarVisible }
+                    message = "Please select an option to continue."
+                    autoHideDuration = { 2000 }
+                    onRequestClose = { () => this.setState({ snackbarVisible: false }) }
+                />
 			</Dialog>
 		);
 	}

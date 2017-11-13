@@ -92,6 +92,7 @@ class VisualizationView extends React.Component {
 
         style.sheet.insertRule('html { overflow: hidden; }', 23);
 
+        document.title = "GlyphEd - Viewer";
     }
 
     

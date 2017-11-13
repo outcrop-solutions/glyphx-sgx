@@ -90,6 +90,8 @@ class allViewsModal extends React.Component {
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
+			//debugger;
+
 			// Get the data corresponding to the URL
 			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function (responseText) { 
@@ -98,6 +100,11 @@ class allViewsModal extends React.Component {
 					var data = [];
 					var selectAll = {};
 					var keyArray = Object.keys(preData);
+					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+
+					context.props.dispatch(updateFilterFromSnapshot({}));
+
+					//debugger;
 
 					// Seperate and store the actual data and the selectAll boolean of each column
 					for (var i = 0; i < keyArray.length; i++) {
@@ -109,7 +116,7 @@ class allViewsModal extends React.Component {
 						}
 
 						if (isNaN(dataCol[0])) {
-							dataCol.sort();
+							dataCol.sort(collator.compare);
 						}
 
 						else {
@@ -476,11 +483,21 @@ class allViewsModal extends React.Component {
 				var shouldBeVisible = false;
 				
 				for (j = 0; j < filterValues.length; j++) {
-					// If there is a space in the search term then search the full text for it
-					if (tr[i].innerHTML.toUpperCase().indexOf(filterValues[j]) !== -1) {
-						shouldBeVisible = true;
-						break;
+					
+					if (tr[i].innerText !== "") {
+						if (tr[i].innerText.toUpperCase().indexOf(filterValues[j]) !== -1) {
+							shouldBeVisible = true;
+							break;
+						}
 					}
+
+					else {
+						if (tr[i].parentElement.innerText.toUpperCase().indexOf(filterValues[j]) !== -1) {
+							shouldBeVisible = true;
+							break;
+						}
+					}
+					
 				}
 				
 				if (shouldBeVisible) {
@@ -641,7 +658,7 @@ class allViewsModal extends React.Component {
 				}
 				else { 
 					// Show dialog stating that none were matched.
-					context.setState({snackbarVisible:true});
+					context.setState({ snackbarVisible: true });
 				}
             },
             {
@@ -846,10 +863,10 @@ class allViewsModal extends React.Component {
 					</Flexbox>
 
 					<Snackbar
-						open={this.state.snackbarVisible}
-						message="No matches for the selected values"
-						autoHideDuration={2000}
-						onRequestClose={() => this.setState({snackbarVisible:false})}
+						open = { this.state.snackbarVisible }
+						message = "No matches for the selected values"
+						autoHideDuration = { 2000 }
+						onRequestClose = { () => this.setState({ snackbarVisible: false }) }
 					/>
 
 				</div>
@@ -914,6 +931,11 @@ export const editModalDisplay = (allViewsModal) => ({
 export const setCurrentVizParams = (vizParams) => ({
     type: 'SET_VIZ_PARAMS',
     vizParams,
+});
+
+export const updateFilterFromSnapshot = (snapshot) => ({
+    type: 'UPDATE_FILTER_SNAPSHOT',
+    snapshot
 });
 
 

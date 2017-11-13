@@ -87,6 +87,7 @@ class FilterTable extends React.Component {
 	 */
     componentDidMount() {
         this.componentDidUpdate();
+        
         // Force update on mount for pinned columns to show the same selections before change
         this.forceUpdate();
     }

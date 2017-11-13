@@ -9,8 +9,22 @@ import ViewsManager from './ViewsManager.js';
 import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import TutorialWindow from './TutorialWindow.js';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import './topNav.css';
 import './General.css';
+
+const muiTheme = getMuiTheme({
+    datePicker: {
+        selectColor: "#272958",
+        headerColor: "#272958",
+    },
+    palette:{
+        primary1Color: "#272958"
+    },
+    timePicker: {
+        headerColor: "#272958",
+    },
+});
 
 
 /**
@@ -86,16 +100,33 @@ class HomePage extends React.Component {
         style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
 
 
+        var funnelAccess = ""
+        for (var key in this.props.funnelData) {
+            for (var i = 0; i < this.props.funnelData[key].length; i++) {
+                funnelAccess = funnelAccess + this.props.funnelData[key][i][0] + ", ";
+            }
+        }
+        funnelAccess = funnelAccess.slice(0, -2);
+        
+
         window.__lc = window.__lc || {};
         window.__lc.license = 9235035;
         window.__lc.visitor = {
-            name: this.props.userInfo.Name
+            name: this.props.userInfo.Name,
+            email: this.props.userInfo.Email
         };
+        window.__lc.params = [
+            { name: 'Institution', value: this.props.userInfo.institutionDir.split("/")[this.props.userInfo.institutionDir.split("/").length - 2] },
+            { name: 'Funnel Access', value: funnelAccess },
+        ];
         (function() {
             var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
             lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+            var s = document.getElementsByTagName('script')[0]; 
+            s.parentNode.insertBefore(lc, s);
         })();
+
+        document.title = "GlyphEd - Home";
     }
 
 
@@ -115,11 +146,11 @@ class HomePage extends React.Component {
 
     render() {
         
-        //var imgsrc = "./Res/Img/notredame.png"; 
+        //var imgsrc = "./Res/Img/notredame.png";
         var imgsrc = "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
 
         return (
-            <MuiThemeProvider style = {{ height: "100%" }} >
+            <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
 
                 <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh" }} >
                     <TopNavBar homePage = { true } tutorialStage = { this.state.tutorialStage } />
@@ -209,7 +240,8 @@ class HomePage extends React.Component {
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
-    userInfo: state.filterState.UserInfo
+    userInfo: state.filterState.UserInfo,
+    funnelData: state.filterState.FunnelData
   }
 }
 
