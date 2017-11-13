@@ -304,7 +304,7 @@ class FilterSideBarTopView extends React.Component {
 				
                 context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
 
-				iframe.postMessage({action: 'filter', args: tempRowIds}, '*');
+                iframe.filterGlyphs(tempRowIds);
             },
             {post: true, 
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
@@ -370,7 +370,8 @@ class FilterSideBarTopView extends React.Component {
         //filterSummaryView.handleRowDel('StaffAssigned');
         
 		var iframe = document.getElementById('GlyphViewer').contentWindow;
-        iframe.postMessage({action:'clear'}, '*');
+        //iframe.postMessage({action:'clear'}, '*');
+        iframe.filterGlyphs([]);
         
 		
         for (var property in columnsFilterApplied) {
@@ -395,11 +396,11 @@ class FilterSideBarTopView extends React.Component {
             
             // If the flag true then hide
             if (buttonState) {
-                iframe.postMessage({action: 'filter', args: this.state.filterIDs}, '*');
+                iframe.filterGlyphs(this.state.filterIDs);
             }
             else {
                 // Show all the glyphs
-                iframe.postMessage({action:'clear'}, '*');
+                iframe.filterGlyphs([]);
             }
         }
     };

@@ -150,8 +150,7 @@ class HomePage extends React.Component {
     }
 
     render() {
-        //var imgsrc = "./Res/Img/notredame.png"; 
-        var imgsrc = window.SERVER_URL + "/customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
+        var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
 
         return (
             <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
