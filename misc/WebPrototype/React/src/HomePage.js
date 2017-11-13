@@ -103,22 +103,27 @@ class HomePage extends React.Component {
         var funnelAccess = ""
         for (var key in this.props.funnelData) {
             for (var i = 0; i < this.props.funnelData[key].length; i++) {
-                funnelAccess = funnelAccess + this.props.funnelData[key][i][0] + ", ";
+                funnelAccess = funnelAccess + this.props.funnelData[key][i][0] + " | ";
             }
         }
-        funnelAccess = funnelAccess.slice(0, -2);
+        funnelAccess = funnelAccess.slice(0, -5);
         
 
         window.__lc = window.__lc || {};
         window.__lc.license = 9235035;
+
+        // Visitor information
         window.__lc.visitor = {
             name: this.props.userInfo.Name,
             email: this.props.userInfo.Email
         };
+
+        // Additional information presented to the agent about the user
         window.__lc.params = [
             { name: 'Institution', value: this.props.userInfo.institutionDir.split("/")[this.props.userInfo.institutionDir.split("/").length - 2] },
             { name: 'Funnel Access', value: funnelAccess },
         ];
+
         (function() {
             var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
             lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';

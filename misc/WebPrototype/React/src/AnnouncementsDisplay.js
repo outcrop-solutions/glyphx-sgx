@@ -63,8 +63,7 @@ class AnnouncementsDisplay extends React.Component {
                         <MaintenanceAnnouncement 
                             announcement = { announcement } 
                             settings = { context.props.settings } 
-                            key = { JSON.stringify(announcement) } 
-                            tracker = { JSON.stringify(announcement) } 
+                            key = { announcement.id } 
                             first = { announcement === announcementList[0] } 
                             deleteAnnouncement = { context.props.deleteAnnouncement } 
                             adminEdit = { context.props.adminEdit }
@@ -73,8 +72,7 @@ class AnnouncementsDisplay extends React.Component {
                             <ReleaseAnnouncement 
                                 announcement = { announcement } 
                                 settings = { context.props.settings } 
-                                key = { JSON.stringify(announcement) } 
-                                tracker = { JSON.stringify(announcement) } 
+                                key = { announcement.id }  
                                 first = { announcement === announcementList[0] } 
                                 deleteAnnouncement = { context.props.deleteAnnouncement } 
                                 adminEdit = { context.props.adminEdit }
@@ -83,8 +81,7 @@ class AnnouncementsDisplay extends React.Component {
                                 <PollAnnouncement 
                                     announcement = { announcement } 
                                     settings = { context.props.settings } 
-                                    key = { JSON.stringify(announcement) } 
-                                    tracker = { JSON.stringify(announcement) } 
+                                    key = { announcement.id } 
                                     first = { announcement === announcementList[0] }
                                     deleteAnnouncement = { context.props.deleteAnnouncement } 
                                     adminEdit = { context.props.adminEdit }
@@ -93,8 +90,7 @@ class AnnouncementsDisplay extends React.Component {
                                     <ShoutAnnouncement 
                                         announcement = { announcement } 
                                         settings = { context.props.settings } 
-                                        key = { JSON.stringify(announcement) } 
-                                        tracker = { JSON.stringify(announcement) } 
+                                        key = { announcement.id } 
                                         first = { announcement === announcementList[0] } 
                                         deleteAnnouncement = { context.props.deleteAnnouncement } 
                                         adminEdit = { context.props.adminEdit }
@@ -147,7 +143,7 @@ class MaintenanceAnnouncement extends React.Component {
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
-                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                                onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
                             />
                         </Flexbox>
                     </Flexbox>
@@ -212,7 +208,7 @@ class ReleaseAnnouncement extends React.Component {
         var features = this.props.announcement.content.features.map( 
             function(feature) {
                 return (
-                    <li key = { feature } >{feature}<br /></li>
+                    <li key = { feature } style = {{ wordBreak: "break-word" }} >{feature}<br /></li>
                 )
             }
         );
@@ -220,7 +216,7 @@ class ReleaseAnnouncement extends React.Component {
         var bugfixes = this.props.announcement.content.bugfixes.map( 
             function(bugfix) {
                 return (
-                    <li key = { bugfix } >{bugfix}<br /></li>
+                    <li key = { bugfix } style = {{ wordBreak: "break-word" }} >{bugfix}<br /></li>
                 )
             }
         );
@@ -242,7 +238,7 @@ class ReleaseAnnouncement extends React.Component {
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
-                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                                onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
                             />
                         </Flexbox>
                     </Flexbox>
@@ -277,21 +273,30 @@ class ReleaseAnnouncement extends React.Component {
                                 ]
                             }
                         >
-                            
                             <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
-                                <Flexbox flexDirection = "column" style = {{ width: "100%", color: "#000000", paddingRight: "20px" }} >
+                                <Flexbox 
+                                    flexDirection = "column" 
+                                    style = {{ 
+                                        width: (this.props.announcement.content.bugfixes.length > 0 ? "50%" : "100%"), 
+                                        color: "#000000", 
+                                        paddingRight: "20px" 
+                                    }} 
+                                >
                                     <div style = {{ fontWeight: "bold" }} > New Features: </div>
                                     <ul>
                                         {features}
                                     </ul>
                                 </Flexbox>
-
-                                <Flexbox flexDirection = "column" style = {{ width: "100%", color: "#000000", paddingRight: "20px" }} >
-                                    <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
-                                    <ul>
-                                        {bugfixes}
-                                    </ul>
-                                </Flexbox>
+                                {this.props.announcement.content.bugfixes.length > 0 ?
+                                    <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                        <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
+                                        <ul>
+                                            {bugfixes}
+                                        </ul>
+                                    </Flexbox>
+                                    :
+                                    null
+                                }
                             </Flexbox>
                         </Dialog>
                         
@@ -361,7 +366,7 @@ class PollAnnouncement extends React.Component {
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
-                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                                onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
                             />
                         </Flexbox>
                     </Flexbox>
@@ -442,7 +447,7 @@ class ShoutAnnouncement extends React.Component {
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
-                                onClick = { () => this.props.deleteAnnouncement(this.props.tracker) }
+                                onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
                             />
                         </Flexbox>
                     </Flexbox>
@@ -526,6 +531,7 @@ export default connect(mapStateToProps)(AnnouncementsDisplay);
 var announcementList = [
     {
         type: "Maintenance",
+        id: "a1",
         content: {
             date: "August 26th, 2017",
             time: "9pm",
@@ -535,6 +541,7 @@ var announcementList = [
     },
     {
         type: "Release",
+        id: "a12",
         content: {
             release: "1.0.0",
             features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
@@ -544,6 +551,7 @@ var announcementList = [
     },
     {
         type: "Poll",
+        id: "a13",
         content: {
             date: "August 26th, 2017",
             poll: {
@@ -556,6 +564,7 @@ var announcementList = [
     },
     {
         type: "Shout",
+        id: "a14",
         content: {
             message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
             linkType: "link",
@@ -565,6 +574,7 @@ var announcementList = [
     },
     {
         type: "Maintenance",
+        id: "a15",
         content: {
             date: "August 26th, 2017",
             time: "9pm",
@@ -574,6 +584,7 @@ var announcementList = [
     },
     {
         type: "Release",
+        id: "a16",
         content: {
             release: "1.0.0",
             features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
@@ -583,6 +594,7 @@ var announcementList = [
     },
     {
         type: "Poll",
+        id: "a17",
         content: {
             date: "August 26th, 2017",
             poll: {
@@ -595,6 +607,7 @@ var announcementList = [
     },
     {
         type: "Shout",
+        id: "a18",
         content: {
             message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
             linkType: "link",
@@ -604,6 +617,7 @@ var announcementList = [
     },
     {
         type: "Maintenance",
+        id: "a19",
         content: {
             date: "August 26th, 2017",
             time: "9pm",
@@ -613,6 +627,7 @@ var announcementList = [
     },
     {
         type: "Release",
+        id: "a2",
         content: {
             release: "1.0.0",
             features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
@@ -622,6 +637,7 @@ var announcementList = [
     },
     {
         type: "Poll",
+        id: "a22",
         content: {
             date: "August 26th, 2017",
             poll: {
@@ -634,6 +650,7 @@ var announcementList = [
     },
     {
         type: "Shout",
+        id: "a23",
         content: {
             message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
             linkType: "link",

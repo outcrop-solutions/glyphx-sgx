@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import { guidGenerator } from './GeneralFunctions.js';
 import Flexbox from 'flexbox-react';
 import VotingModal from './VotingModal.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
@@ -14,6 +15,7 @@ import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import './General.css';
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -33,12 +35,25 @@ class AdminWizardModal extends React.Component {
         maxAnnouncements: 20,
         oldFAQ: [],
         newFAQ: [],
+
         slideIndex: 0,
         announcementSelection: 0,
+
         maintenanceDuration: "",
-        versionNumber: "",
         date: null,
         time: null,
+
+        versionNumber: "",
+        featureText: "",
+        bugfixText: "",
+        features: [],
+        bugfixes: [],
+
+        question: "",
+        fullAnswer: "",
+        threeWordAnswer: "",
+        longAnswers: [],
+        shortAnswers: []
     }
 
     this.handleDatePick = this.handleDatePick.bind(this);
@@ -70,16 +85,35 @@ class AdminWizardModal extends React.Component {
 	}
 
 
-    deleteAnnouncement(toDelete) {
+    deleteAnnouncement(idToDelete) {
         var newAnnouncements = this.state.newAnnouncements;
 
         for (var i = 0; i < newAnnouncements.length; i++) {
-            if (JSON.stringify(newAnnouncements[i]) == toDelete) {
+            if (newAnnouncements[i].id == idToDelete) {
                 newAnnouncements.splice(i, 1);
             }
         }
 
         this.setState({ newAnnouncements: newAnnouncements });
+    }
+
+
+    onClickFeatureBug(type) {
+        if (type === "feature") {
+            if (this.state.featureText.trim() !== "") {
+                var features = this.state.features;
+                features.push(this.state.featureText);
+                this.setState({ features: features, featureText: "" });
+            }
+        }
+
+        else {
+            if (this.state.bugfixText.trim() !== "") {
+                var bugfixes = this.state.bugfixes;
+                bugfixes.push(this.state.bugfixText);
+                this.setState({ bugfixes: bugfixes, bugfixText: "" });
+            }
+        }
     }
 
 
@@ -94,16 +128,25 @@ class AdminWizardModal extends React.Component {
             this.setState({ maintenanceDuration: value });
         }
 
+        else if (e.target.name === "featureText") {
+            this.setState({ featureText: value });
+        }
+
+        else if (e.target.name === "bugfixText") {
+            this.setState({ bugfixText: value });
+        }
+
         else if (e.target.name === "versionNumber") {
             this.setState({ versionNumber: value });
         }
-        
     }
+
 
     handleTimePick(e, time) {
         var formatTime = time.toLocaleString().split(", ")[1];
         this.setState({ time: formatTime.slice(0, 5) + formatTime.slice(8) });
     }
+
 
     handleDatePick(e, date) {
         this.setState({ date:
@@ -113,6 +156,7 @@ class AdminWizardModal extends React.Component {
         });
     }
 
+
     formatDate(date) {
         return (
             days[date.getDay() - 1] + ", " + months[date.getMonth()] + " " + date.getDate() + 
@@ -121,8 +165,49 @@ class AdminWizardModal extends React.Component {
         );
     }
 
+
+    removeElement(type, toRemove) {
+        if (type === "feature") {
+            var features = this.state.features;
+            var index = features.indexOf(toRemove);
+
+            if (index !== -1){
+                features.splice(index, 1);
+                this.setState({ features: features });
+            }
+        }
+
+        else {
+            var bugfixes = this.state.bugfixes;
+            var index = bugfixes.indexOf(toRemove);
+
+            if (index !== -1){
+                bugfixes.splice(index, 1);
+                this.setState({ bugfixes: bugfixes });
+            }
+        }
+    }
+
+
+    blurOnEnter(e, id) {
+        if (e.which === 13) {
+            if (id === "featureText") {
+                this.onClickFeatureBug("feature");
+            }
+            else if (id === "bugfixText") {
+                this.onClickFeatureBug("bugfix");
+            }
+
+            var input = document.getElementById(id);
+            input.blur();
+        }
+    }
+
+
     onClickCreate() {
-        var newAnnouncement = {};
+        var newAnnouncement = {
+            id: guidGenerator()
+        };
 
         var pDate = new Date();
         var postDate = (pDate.getMonth() + 1) + "/" + pDate.getDate() + "/" + pDate.getFullYear();
@@ -140,14 +225,66 @@ class AdminWizardModal extends React.Component {
             newAnnouncement.content = content;
             newAnnouncement.postDate = postDate;
         }
+        
+        else if (this.state.announcementSelection === 1) {
+            var content = {};
+
+            content.release = this.state.versionNumber;
+            content.features = this.state.features;
+            content.bugfixes = this.state.bugfixes;
+
+            newAnnouncement.type = "Release";
+            newAnnouncement.content = content;
+            newAnnouncement.postDate = postDate;
+        }
 
         var newAnnouncements = this.state.newAnnouncements;
         newAnnouncements.unshift(newAnnouncement);
 
-        this.setState({ newAnnouncements: newAnnouncements });
+        this.setState({ 
+            newAnnouncements: newAnnouncements, 
+            maintenanceDuration: "", 
+            versionNumber: "",
+            date: null,
+            time: null,
+            features: [],
+            bugfixes: []
+        });
     }
+
     
     render() {
+        var context = this;
+
+        var features = this.state.features.map( 
+            function(feature) {
+                return (
+                    <li 
+                        key = { feature } 
+                        className = "redHover cursorHand" 
+                        onClick = { context.removeElement.bind(context, "feature", feature) } 
+                        style = {{ wordBreak: "break-word" }}
+                    >
+                        {feature}<br />
+                    </li>
+                )
+            }
+        );
+
+        var bugfixes = this.state.bugfixes.map( 
+            function(bugfix) {
+                return (
+                    <li 
+                        key = { bugfix } 
+                        className = "redHover cursorHand" 
+                        onClick = { context.removeElement.bind(context, "bugfix", bugfix) }
+                        style = {{ wordBreak: "break-word" }}
+                    >
+                        {bugfix}<br />
+                    </li>
+                )
+            }
+        );
 
         return (
             <Dialog
@@ -161,13 +298,7 @@ class AdminWizardModal extends React.Component {
 				actions = {
 					[
                         <FlatButton
-                            label = "Save"
-                            primary = { true }
-                            onClick = { null }
-                            style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                        />,
-                        <FlatButton
-                            label = "Cancel"
+                            label = "Close"
                             primary = { true }
                             onClick = { () => this.props.dispatch(editModalDisplay(false)) }
                             style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
@@ -277,7 +408,7 @@ class AdminWizardModal extends React.Component {
                                                 <div style = {{ margin: "16px 10px 0px 0px", fontWeight: "bold", fontSize: "16px" }} > Start date of maintenance: </div>
                                             </Flexbox>
 
-                                            <Flexbox style = {{ width: "50%" }} >
+                                            <Flexbox style = {{ width: "50%", backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
                                                 <DatePicker 
                                                     hintText = "Date"
                                                     dialogContainerStyle = {{ color: "red" }}
@@ -292,7 +423,7 @@ class AdminWizardModal extends React.Component {
                                                 <div style = {{ margin: "16px 10px 0px 0px", fontWeight: "bold", fontSize: "16px" }} > Time of maintenance (EST): </div>
                                             </Flexbox>
                                             
-                                            <Flexbox style = {{ width: "50%" }} >
+                                            <Flexbox style = {{ width: "50%", backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
                                                 <TimePicker
                                                     hintText = "Time"
                                                     minutesStep = {15}
@@ -306,13 +437,15 @@ class AdminWizardModal extends React.Component {
                                                 <div style = {{ margin: "16px 10px 0px 0px", fontWeight: "bold", fontSize: "16px" }} > Estimated downtime (Hours): </div>
                                             </Flexbox>
                                             
-                                            <Flexbox style = {{ width: "50%" }} >
+                                            <Flexbox style = {{ width: "50%", backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
                                                 <TextField 
                                                     type = 'number'
-                                                    name = "maintenanceDuration" 
+                                                    name = "maintenanceDuration"
+                                                    id = "maintenanceDuration" 
                                                     value = { this.state.maintenanceDuration }
                                                     hintText = "Duration"
                                                     onChange = { (e) => this.onTextChange(e) }
+                                                    onKeyPress = { (e) => this.blurOnEnter(e, "maintenanceDuration") }
                                                     underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
                                                     underlineStyle = {{ borderColor: "#d2d2d2" }}
                                                 />
@@ -320,92 +453,206 @@ class AdminWizardModal extends React.Component {
                                         </Flexbox>
                                     </Flexbox>
                                     :
-                                    <Flexbox flexDirection = "column" >
+                                    (this.state.announcementSelection === 1 ?
+                                        <Flexbox flexDirection = "column" style = {{ marginTop: "-20px" }} >
+                                            <Flexbox flexDirection = "row" style = {{ marginTop: "30px", paddingLeft: "30px" }} >
+                                                <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                                    <div style = {{ fontWeight: "bold" }} > New Features: </div>
+                                                    <ul>
+                                                        {features}
+                                                    </ul>
+                                                </Flexbox>
 
-                                        <Flexbox style = {{ margin: "0 auto" }} >
-                                            <TextField 
-                                                name = "versionNumber" 
-                                                value = { this.state.versionNumber }
-                                                hintText = "Version Number"
-                                                hintStyle = {{ color: "#707192", marginLeft: "6px" }}
-                                                onChange = { (e) => this.onTextChange(e) }
-                                                underlineStyle = {{ borderColor: "grey" }}
-                                                underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
-                                            />
-                                        </Flexbox>
-
-                                        <Flexbox flexDirection = "row" style = {{ padding: "0px 30px" }} >
-                                            <Flexbox flexDirection = "column" style = {{ width: "45%" }} >
-                                                <TextField 
-                                                    hintText = "Feature description"
-                                                    style = {{ width: "100%" }}
-                                                    multiLine = { true }
-                                                    rows = { 1 }
-                                                    rowsMax = { 4 }
-                                                    hintStyle = {{ color: "#707192", marginLeft: "6px" }}
-                                                    textareaStyle = {{ marginLeft: "6px", width: "98%" }}
-                                                    underlineStyle = {{ borderColor: "grey" }}
-                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
-                                                />
-
-                                                <RaisedButton 
-                                                    label = "Add Feature"
-                                                    style = {{ width: "50%", margin: "10px auto 0px" }}
-                                                    buttonStyle = {{
-                                                        height: '35px',
-                                                        lineHeight: '35px',
-                                                        backgroundColor: "#272958"
-                                                    }} 
-                                                    labelStyle = {{
-                                                        fontSize: '14px',
-                                                        color: this.props.settings.colors.overviewButtonsColor.text,
-                                                        margin: "0px 0px 0px -3px",
-                                                        paddingLeft: "0px",
-                                                        paddingRight: "0px"
-                                                    }}
-                                                    overlayStyle = {{ height: '35px', lineHeight: '35px' }}
-                                                    //onClick = { () => this.onClickCreate() }
-                                                    primary = { true } 
-                                                />
+                                                <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                                    <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
+                                                    <ul>
+                                                        {bugfixes}
+                                                    </ul>
+                                                </Flexbox>
                                             </Flexbox>
 
-                                            <Flexbox style = {{ width: "10%" }} />
+                                            <Flexbox flexDirection = "row" style = {{ padding: "0px 30px", marginTop: "20px" }} >
+                                                <Flexbox style = {{ width: "45%" }} >
+                                                    <Flexbox 
+                                                        style = {{ margin: "5px 10px 0px 0px", width: "36px", height: "36px", borderRadius: "18px", backgroundColor: "#272958" }}
+                                                        onClick = { () => this.onClickFeatureBug("feature") }
+                                                    >
+                                                        <i 
+                                                            className = "fa fa-plus" 
+                                                            style = {{
+                                                                fontSize: '1.5em',
+                                                                color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                                                margin: "6px 0px 0px 7px"
+                                                            }}
+                                                        /> 
+                                                    </Flexbox>
 
-                                            <Flexbox flexDirection = "column" style = {{ width: "45%" }} >
+                                                    <div style = {{ width: "90%", backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
+                                                        <TextField 
+                                                            hintText = "Feature description"
+                                                            name = "featureText"
+                                                            id = "featureText"
+                                                            value = { this.state.featureText }
+                                                            style = {{ width: "100%" }}
+                                                            multiLine = { true }
+                                                            rows = { 1 }
+                                                            rowsMax = { 4 }
+                                                            hintStyle = {{ marginLeft: "6px" }}
+                                                            textareaStyle = {{ marginLeft: "6px", width: "98%" }}
+                                                            underlineStyle = {{ borderColor: "grey" }}
+                                                            underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
+                                                            onChange = { (e) => this.onTextChange(e) }
+                                                            onKeyPress = { (e) => this.blurOnEnter(e, "featureText") }
+                                                        />
+                                                    </div>
+
+                                                </Flexbox>
+
+                                                <Flexbox style = {{ width: "10%" }} />
+
+                                                <Flexbox style = {{ width: "45%" }} >
+
+                                                    <div 
+                                                        style = {{ margin: "5px 10px 0px 0px", width: "36px", height: "36px", borderRadius: "18px", backgroundColor: "#272958" }}
+                                                        onClick = { () => this.onClickFeatureBug("bigfix") } 
+                                                    >
+                                                        <i 
+                                                            className = "fa fa-plus" 
+                                                            style = {{
+                                                                fontSize: '1.5em',
+                                                                color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                                                margin: "6px 0px 0px 7px"
+                                                            }}
+                                                        /> 
+                                                    </div>
+
+                                                    <div style = {{ width: "90%", backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
+                                                        <TextField 
+                                                            hintText = "Bugfix description"
+                                                            name = "bugfixText"
+                                                            id = "bugfixText"
+                                                            value = { this.state.bugfixText }
+                                                            style = {{ width: "100%" }}
+                                                            multiLine = { true }
+                                                            rows = { 1 }
+                                                            rowsMax = { 4 }
+                                                            hintStyle = {{ marginLeft: "6px" }}
+                                                            textareaStyle = {{ marginLeft: "6px", width: "98%" }}
+                                                            underlineStyle = {{ borderColor: "grey" }}
+                                                            underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
+                                                            onChange = { (e) => this.onTextChange(e) }
+                                                            onKeyPress = { (e) => this.blurOnEnter(e, "bugfixText") }
+                                                        />
+                                                    </div>
+
+                                                </Flexbox>
+                                            </Flexbox>
+
+                                            <Flexbox style = {{ margin: "35px auto -30px", backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
                                                 <TextField 
-                                                    hintText = "Bugfix description"
-                                                    style = {{ width: "100%" }}
-                                                    multiLine = { true }
-                                                    rows = { 1 }
-                                                    rowsMax = { 4 }
-                                                    hintStyle = {{ color: "#707192", marginLeft: "6px" }}
-                                                    textareaStyle = {{ marginLeft: "6px", width: "98%" }}
+                                                    name = "versionNumber"
+                                                    id = "versionNumber"
+                                                    value = { this.state.versionNumber }
+                                                    hintText = "Version Number"
+                                                    hintStyle = {{ marginLeft: "6px" }}
+                                                    onChange = { (e) => this.onTextChange(e) }
+                                                    onKeyPress = { (e) => this.blurOnEnter(e, "versionNumber") }
                                                     underlineStyle = {{ borderColor: "grey" }}
-                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
-                                                />
-
-                                                <RaisedButton 
-                                                    label = "Add Bugfix"
-                                                    style = {{ width: "50%", margin: "10px auto 0px" }}
-                                                    buttonStyle = {{
-                                                        height: '35px',
-                                                        lineHeight: '35px',
-                                                        backgroundColor: "#272958"
-                                                    }} 
-                                                    labelStyle = {{
-                                                        fontSize: '14px',
-                                                        color: this.props.settings.colors.overviewButtonsColor.text,
-                                                        margin: "0px 0px 0px -3px",
-                                                        paddingLeft: "0px",
-                                                        paddingRight: "0px"
-                                                    }}
-                                                    overlayStyle = {{ height: '35px', lineHeight: '35px' }}
-                                                    //onClick = { () => this.onClickCreate() }
-                                                    primary = { true } 
+                                                    underlineFocusStyle = {{ borderColor: this.props.settings.colors.rangeColor.textFieldUnderline }}
                                                 />
                                             </Flexbox>
                                         </Flexbox>
-                                    </Flexbox>
+                                        :
+                                        <Flexbox flexDirection = "column" >
+
+                                            <Flexbox flexDirection = "row" style = {{ padding: "0px 30px", marginTop: "20px" }} >
+                                                
+                                                <Flexbox flexGrow = { 1 } style = {{ backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
+                                                    <TextField 
+                                                        hintText = "Survey Question"
+                                                        name = "surveyQuestion"
+                                                        value = { this.state.threeWordAnswer }
+                                                        style = {{ width: "100%" }}
+                                                        hintStyle = {{ marginLeft: "6px" }}
+                                                        textareaStyle = {{ marginLeft: "6px", width: "98%" }}
+                                                        underlineStyle = {{ borderColor: "grey" }}
+                                                        underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
+                                                        onChange = { (e) => this.onTextChange(e) }
+                                                    />
+                                                </Flexbox>
+
+                                            </Flexbox>
+
+
+                                            <Flexbox flexDirection = "row" style = {{ padding: "0px 30px", marginTop: "20px" }} >
+                                                
+                                                <Flexbox style = {{ marginTop: "6px", width: "36px", height: "36px", borderRadius: "18px", backgroundColor: "#272958" }} >
+                                                    <i 
+                                                        className = "fa fa-plus" 
+                                                        style = {{
+                                                            fontSize: '1.5em',
+                                                            color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                                            margin: "6px 0px 0px 8px"
+                                                        }}
+                                                    /> 
+                                                </Flexbox>
+
+                                                <Flexbox style = {{ width: "20px" }} />
+
+                                                <Flexbox flexGrow = { 3 } style = {{ backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
+                                                    <TextField 
+                                                        hintText = "Full Answer"
+                                                        name = "fullAnswer"
+                                                        id = "fullAnswer"
+                                                        value = { this.state.fullAnswer }
+                                                        style = {{ width: "100%" }}
+                                                        multiLine = { true }
+                                                        rows = { 1 }
+                                                        rowsMax = { 4 }
+                                                        hintStyle = {{ marginLeft: "6px" }}
+                                                        textareaStyle = {{ marginLeft: "6px", width: "98%" }}
+                                                        underlineStyle = {{ borderColor: "grey" }}
+                                                        underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
+                                                        onChange = { (e) => this.onTextChange(e) }
+                                                        onKeyPress = { (e) => this.blurOnEnter(e, "fullAnswer") }
+                                                    />
+                                                </Flexbox>
+
+                                                <Flexbox style = {{ width: "20px" }} />
+
+                                                <Flexbox flexGrow = { 1 } style = {{ backgroundColor: "#e7e7ff", borderRadius: "5px" }} >
+                                                    <TextField 
+                                                        hintText = "Three Word Answer"
+                                                        name = "threeWordAnswer"
+                                                        id = "threeWordAnswer"
+                                                        value = { this.state.threeWordAnswer }
+                                                        style = {{ width: "100%" }}
+                                                        multiLine = { true }
+                                                        rows = { 1 }
+                                                        rowsMax = { 4 }
+                                                        hintStyle = {{ marginLeft: "6px" }}
+                                                        textareaStyle = {{ marginLeft: "6px", width: "98%" }}
+                                                        underlineStyle = {{ borderColor: "grey" }}
+                                                        underlineFocusStyle = {{ borderColor: this.props.settings.colors.buttons.general }}
+                                                        onChange = { (e) => this.onTextChange(e) }
+                                                        onKeyPress = { (e) => this.blurOnEnter(e, "threeWordAnswer") }
+                                                    />
+                                                </Flexbox>
+
+                                            </Flexbox>
+
+
+                                            {/*
+                                                question: "",
+                                                fullAnswer: "",
+                                                threeWordAnswer: "",
+                                                longAnswers: [],
+                                                shortAnswers: []
+                                            */}
+
+
+                                        </Flexbox>
+                                    )
                                 }
                                 
 
@@ -477,6 +724,7 @@ export default connect(mapStateToProps)(AdminWizardModal);
 var announcementList = [
     {
         type: "Maintenance",
+        id: guidGenerator(),
         content: {
             date: "August 26th, 2017",
             time: "9pm",
@@ -486,15 +734,17 @@ var announcementList = [
     },
     {
         type: "Release",
+        id: guidGenerator(),
         content: {
             release: "1.0.0",
-            features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
-            bugfixes: ["yay bugfix 1", "yay bugfix 2", "yay bugfix 3" ]
+            features: ["cool feature 1wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", "cool feature 2", "cool feature 3" ],
+            bugfixes: []
         },
         postDate: "11/8/2017"
     },
     {
         type: "Poll",
+        id: guidGenerator(),
         content: {
             date: "August 26th, 2017",
             poll: {
@@ -507,6 +757,7 @@ var announcementList = [
     },
     {
         type: "Shout",
+        id: guidGenerator(),
         content: {
             message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
             linkType: "link",
@@ -516,6 +767,7 @@ var announcementList = [
     },
     {
         type: "Maintenance",
+        id: guidGenerator(),
         content: {
             date: "August 26th, 2017",
             time: "9pm",
@@ -525,6 +777,7 @@ var announcementList = [
     },
     {
         type: "Release",
+        id: guidGenerator(),
         content: {
             release: "1.0.0",
             features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
@@ -534,6 +787,7 @@ var announcementList = [
     },
     {
         type: "Poll",
+        id: guidGenerator(),
         content: {
             date: "August 26th, 2017",
             poll: {
@@ -546,6 +800,7 @@ var announcementList = [
     },
     {
         type: "Shout",
+        id: guidGenerator(),
         content: {
             message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
             linkType: "link",
@@ -555,6 +810,7 @@ var announcementList = [
     },
     {
         type: "Maintenance",
+        id: guidGenerator(),
         content: {
             date: "August 26th, 2017",
             time: "9pm",
@@ -564,6 +820,7 @@ var announcementList = [
     },
     {
         type: "Release",
+        id: guidGenerator(),
         content: {
             release: "1.0.0",
             features: ["cool feature 1", "cool feature 2", "cool feature 3" ],
@@ -573,6 +830,7 @@ var announcementList = [
     },
     {
         type: "Poll",
+        id: guidGenerator(),
         content: {
             date: "August 26th, 2017",
             poll: {
@@ -585,6 +843,7 @@ var announcementList = [
     },
     {
         type: "Shout",
+        id: guidGenerator(),
         content: {
             message: "John Carroll University Selects GlyphEd™ Software to Support Ongoing Commitment to Student Success, click to view article.",
             linkType: "link",

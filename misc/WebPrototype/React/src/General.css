@@ -6,6 +6,10 @@
     cursor: default;
 }
 
+.redHover:Hover {
+    color: red;
+}
+
 .disableScroll {
     overflow-y: hidden !important;
 }
