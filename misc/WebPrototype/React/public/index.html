@@ -171,8 +171,9 @@
         -->
 
         <script>
+			window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001"
             window.APP_MODE = window.location.href.includes('localhost') ? 'DEVELOPMENT' : 'PRODUCTION';
-            var logoutUrl = window.APP_MODE == 'DEVELOPMENT' ? '/logout' : 'http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/logout';
+            var logoutUrl = window.APP_MODE == 'DEVELOPMENT' ? '/logout' : window.SERVER_URL+'/logout';
        
 			window.onbeforeunload = function() {
                 var xmlHttp = new XMLHttpRequest();

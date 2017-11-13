@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.Scanner;
 import synglyphx.io.SDTReader;
 import synglyphx.util.BoundingBox;
+import synglyphx.util.BaseObject;
 import synglyphx.io.ParseXY;
 import synglyphx.io.Logger;
 import synglyphx.util.ErrorHandler;
@@ -151,6 +152,15 @@ public class GlyphEngine {
 			}
 		}
 		return true;
+	}
+	//Web Viewer only atm
+	public static boolean hasDMBaseObject(){
+		return sdtReader.hasDMBaseObject();
+	}
+	//Web Viewer only atm
+	public static BaseObject getDMBaseObject(){
+		BaseObject temp = sdtReader.getDownloadedBaseObject();
+		return temp;
 	}
 
 	public static void main(String [] args){

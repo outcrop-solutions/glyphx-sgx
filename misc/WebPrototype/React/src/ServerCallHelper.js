@@ -1,5 +1,5 @@
 
-const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : "http://ec2-35-162-196-131.us-west-2.compute.amazonaws.com:5000/";
+const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : window.SERVER_URL;
 
 
 /**

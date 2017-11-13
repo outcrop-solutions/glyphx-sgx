@@ -179,7 +179,7 @@ class FilterSideBar extends React.Component {
                 range = [0, 25, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false, 1, ""];
             }
 
-            else {
+            else if(columnObj.flatValues[0] instanceof Date){
                 // Date range
             }
 
@@ -242,7 +242,7 @@ class FilterSideBar extends React.Component {
         };
 
         for (var i = 0; i < len; i++) {
-            if (arrValues[i] == '') {
+            if (arrValues[i] === '') {
                 continue;
             }
 

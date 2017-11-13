@@ -344,7 +344,11 @@ public class GlyphCreator {
 
 	public void printGlyphRepo(String[] colorStr, ArrayList<BaseObject> base_objects){
 		Logger.getInstance().add("Writing all files...");
-		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero, link_temps);
+		Map<Integer, XMLGlyphTemplate> rootTemplates = new HashMap<Integer, XMLGlyphTemplate>();
+		for(int id : rootIds){
+			rootTemplates.put(id, temps.get(id));
+		}
+		glyphRepo.writeAll(colorStr, base_objects, rootCoords, remove_scale_zero, link_temps, rootTemplates);
 	}
 
 }
