@@ -20,7 +20,8 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript">
-        var content_address = "/vizdata/";
+		var port=5001;
+        var content_address = window.parent.SERVER_URL + "vizdata/";
         var url_address = document.location.href.split('#');
         var json_path = null;
         if(url_address.length == 2){

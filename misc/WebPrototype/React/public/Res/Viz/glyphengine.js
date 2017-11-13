@@ -81,10 +81,12 @@ function enableAxisLines(enabled) {
 }
 
 function imageExists(image_url) {
+/*
     var http = new XMLHttpRequest();
     http.open('HEAD', image_url, false);
     http.send();
     return http.status != 404;
+*/
 }
 
 var createScene = function (engine) {
@@ -314,11 +316,11 @@ var createScene = function (engine) {
     }
 
     function adjustMeshScaling(g, s, isRoot) {
-        if(isRoot || g == 7){
+        if(isRoot){
             return [s[0], s[2], s[1]] //Same coordinate plane issue as with position
         }
 
-        return [s[0], s[2], s[1]]
+        return [s[0]/3, s[2]/3, s[1]/3];
     }
 
     function translateMeshRotation(g, s, r, isRoot, topo) {
@@ -346,13 +348,17 @@ var createScene = function (engine) {
 
     var unique_locations = new Map();
 
+    //console.log(json_path);
+
     $.ajax({url: json_path, success: function(data){
 
         var rootNum = 0;
-
         var bg = data.background;
-        if(imageExists(content_address+url_address[1]+"_"+bg["image"])) {
-            createBaseImage(content_address+url_address[1]+"_"+bg["image"], bg["width"], bg["height"]);
+        if(bg["image"].length >= 5) {
+            var splt = json_path.substring(json_path.lastIndexOf('%2F')+3, json_path.length);
+            var img_path = json_path.replace(splt,bg["image"]);
+            console.log(img_path);
+            createBaseImage(img_path, bg["width"], bg["height"]);
         }
         createAxisLines(bg["axis"][0], bg["axis"][1], bg["axis"][2]);
         if(bg["geo"]) {
@@ -380,6 +386,9 @@ var createScene = function (engine) {
 
                 scale = adjustMeshScaling(obj[i]["geometry"], obj[i]["scale"], obj[i]["parent_id"] == 0)
                 mesh.scaling = new BABYLON.Vector3(scale[0], scale[1], scale[2]);
+                if(obj[i]["geometry"] == 7){
+                    console.log("id: "+obj[i]["id"]+", "+obj[i]["scale"]);
+                }
 
                 rotate = translateMeshRotation(obj[i]["geometry"], obj[i]["scale"], obj[i]["rotate"], obj[i]["parent_id"] == 0, topo);
                 mesh.rotation = new BABYLON.Vector3(rotate[0], rotate[1], rotate[2]);
