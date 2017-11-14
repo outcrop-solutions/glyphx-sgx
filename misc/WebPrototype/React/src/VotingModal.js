@@ -96,7 +96,7 @@ class VotingModal extends React.Component {
 
 		return(
 			<Dialog
-				title = { this.props.votingClosed ? "Voting is now closed" : "Voting is still open" }
+				title = { this.props.poll.question }
                 modal = { true }
 				open = { this.props.display }
 				actions = {

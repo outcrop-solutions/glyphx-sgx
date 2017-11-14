@@ -106,7 +106,7 @@ class HomePage extends React.Component {
                 funnelAccess = funnelAccess + this.props.funnelData[key][i][0] + " | ";
             }
         }
-        funnelAccess = funnelAccess.slice(0, -5);
+        funnelAccess = funnelAccess.slice(0, -3);
         
 
         window.__lc = window.__lc || {};

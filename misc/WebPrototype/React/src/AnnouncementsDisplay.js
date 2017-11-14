@@ -385,7 +385,7 @@ class PollAnnouncement extends React.Component {
                         className = "cursorHand"
                         onClick = { this.toggleDisplay }
                     >
-                        <VotingModal display = { this.state.display } votingClosed = { this.votingClosed() } toggleDisplay = { this.toggleDisplay.bind(this)} poll = { this.props.announcement.content.poll } />
+                        <VotingModal display = { this.state.display } votingClosed = { this.votingClosed() } toggleDisplay = { this.toggleDisplay.bind(this)} poll = { this.props.announcement.content } />
 
                         <Flexbox flexDirection = "row" className = "noselect" >
 
@@ -410,9 +410,9 @@ class PollAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} > 
                                 <div style = {{ width: "100%" }} >
                                     { this.votingClosed(this.props.announcement.content.date, this.props.announcement.content.time) ? 
-                                        "Voting now closed, click to view results." 
+                                        this.props.announcement.content.question + " Voting now closed, click to view results." 
                                         :  
-                                        "Click to vote on which features you would like to see first. Voting will be open until " + this.props.announcement.content.date +  "."
+                                        this.props.announcement.content.question + " Click to vote, voting will be open until " + this.props.announcement.content.date +  "."
                                     }
                                     <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
                                 </div>
@@ -551,16 +551,15 @@ var announcementList = [
     },
     {
         type: "Poll",
-        id: "a13",
+        id: "artyui23",
         content: {
             date: "August 26th, 2017",
-            poll: {
-                options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
-                shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
-                colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
-            }
+            question: "Which features would you like to see first?",
+            options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
+            shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
+            colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
         },
-        postDate: "11/8/2017"
+        postDate: "11/6/2017"
     },
     {
         type: "Shout",
@@ -594,16 +593,15 @@ var announcementList = [
     },
     {
         type: "Poll",
-        id: "a17",
+        id: "a2tyuik3",
         content: {
             date: "August 26th, 2017",
-            poll: {
-                options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
-                shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
-                colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
-            }
+            question: "Which features would you like to see first?",
+            options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
+            shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
+            colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
         },
-        postDate: "11/7/2017"
+        postDate: "11/6/2017"
     },
     {
         type: "Shout",
@@ -637,14 +635,13 @@ var announcementList = [
     },
     {
         type: "Poll",
-        id: "a22",
+        id: "a23asd",
         content: {
             date: "August 26th, 2017",
-            poll: {
-                options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
-                shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
-                colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
-            }
+            question: "Which features would you like to see first?",
+            options: ["Have Aditya stop playing music.", "Have Brad stop messing with peoples desks.", "Have lunch on Mark", "Have the day off"],
+            shortOptions: ["Aditya stop music", "Brad stop desks", "Lunch on Mark", "Have day off" ],
+            colors: ['#43A19E', '#7B43A1', '#F2317A', '#FF9824']
         },
         postDate: "11/6/2017"
     },
