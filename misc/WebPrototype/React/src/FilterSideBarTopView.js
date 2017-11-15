@@ -260,19 +260,42 @@ class FilterSideBarTopView extends React.Component {
     * @param context: - ADCMT
     * @param viewName: - ADCMT
 	*/
-    saveView = (context, viewName) => {
-		var saveObj = {
-			viewName: viewName,
-			filterObj: {}
-		};
-		
-		// Make the object to be sent to the server to save.
-		saveObj.filterObj = context.props.GLOBALSTORE.Filter;
-		
-		// Make the call to the server to save.
-		
+	saveView = (context, viewName) => {
+			// Make the call to the server to save.
+			
+			makeServerCall('saveView',
+				function(res,b,c) {
+				// Hide the loadmask.
+					
+					if (typeof res == 'string') {
+						res = JSON.parse(res);
+					}
+					console.log(res);
+					
+					if(res.id){
+						this.props.VizParams.id = res.id;
+					
+						context.props.dispatch(
+							setCurrentVizParams(
+									this.props.VizParams
+						));					
+					}
+					
+				},
+				{
+					post: true, 
+					data:  { 
+						tableName: this.props.VizParams.tableName, 
+						frontEndFilterQuery: this.props.VizParams.query, 
+						filterObj: this.props.filter, 
+						vizId: this.props.VizParams.vizId,
+						originalVizName: this.props.VizParams.sdtPath.split('\\')[1].replace(".sdt",""),
+						savedVizName: viewName
+					}
+				}
+			);
 		return true;
-    };
+	};
 
     
     /**
@@ -896,6 +919,10 @@ export const updateStatistics = (colList, statList, display) => ({
     display
 });
 
+export const setCurrentVizParams = (vizParams) => ({
+    type: 'SET_VIZ_PARAMS',
+    vizParams,
+});
 
 /**
  * Maps portions of the store to props of your choosing
