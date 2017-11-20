@@ -652,7 +652,7 @@ class allViewsModal extends React.Component {
 				// Check if match flag is true means that at least one row was returned using the query.
 				if (res.match == true || res.match == "true") {
 					// Set the params to the store and then goto viz page.
-					context.props.dispatch(setCurrentVizParams({ tableName: context.state.table, datasourceId: context.state.datasourceId ,query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList, sdtPath: sdtPath}));
+					context.props.dispatch(setCurrentVizParams({originalVizName: context.props.type, tableName: context.state.table, datasourceId: context.state.datasourceId ,query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList, sdtPath: sdtPath}));
 					context.props.dispatch(editModalDisplay(false));
 					context.props.history.push('/glyph-viewer');
 				}

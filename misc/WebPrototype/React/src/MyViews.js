@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { makeServerCall } from './ServerCallHelper.js';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
 import Collapsible from 'react-collapsible';
@@ -34,7 +35,6 @@ class MyViews extends React.Component {
         console.log(originalVizName); 
         console.log(query);
 
-        /*
         var funnelData;
         var keys = Object.keys(this.props.funnelData);
         var path;
@@ -60,7 +60,7 @@ class MyViews extends React.Component {
         makeServerCall(window.encodeURI('frontEndFilterData/' + sdtPath ),
             function (responseText) {
                 var response = JSON.parse(responseText);
-    
+                
                 // Post the new data to the state and hide the window load-mask
                 context.props.dispatch(
                     setCurrentVizParams(
@@ -73,9 +73,10 @@ class MyViews extends React.Component {
                         }
                     )
                 );
+
+                context.props.history.push('/glyph-viewer');
             }
         );
-        */
     }
 
 

@@ -289,7 +289,7 @@ class FilterSideBarTopView extends React.Component {
 						frontEndFilterQuery: this.props.VizParams.query, 
 						filterObj: this.props.filter, 
 						vizId: this.props.VizParams.vizId,
-						originalVizName: this.props.VizParams.sdtPath.split('\\')[1].replace(".sdt",""),
+						originalVizName: this.props.VizParams.originalVizName,
 						savedVizName: viewName
 					}
 				}
