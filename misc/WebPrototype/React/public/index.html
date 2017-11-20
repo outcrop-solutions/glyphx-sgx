@@ -171,6 +171,14 @@
         -->
 
         <script>
+			var isIE = /*@cc_on!@*/false || !!document.documentMode;
+			
+			if(isIE){
+				String.prototype.includes = function(value){
+					return this.indexOf(value)>-1
+				}
+			}
+		
 			//window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "http://"+window.location.hostname + ":5000/";
             window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "http://"+window.location.hostname + ":5001/";
             window.APP_MODE = window.location.href.includes('localhost') ? 'DEVELOPMENT' : 'PRODUCTION';
