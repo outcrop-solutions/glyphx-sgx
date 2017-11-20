@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
 import Collapsible from 'react-collapsible';
@@ -28,9 +29,55 @@ class MyViews extends React.Component {
         //this.setState({ savedViews: this.props.storedViews.savedViews });
     }
 
-    componentWillRecieveProps(newProps) {
-        this.setState({ savedViews: newProps.storedViews.savedViews });
+    onSavedViewSelect(originalVizName, query){
+
+        console.log(originalVizName); 
+        console.log(query);
+
+        /*
+        var funnelData;
+        var keys = Object.keys(this.props.funnelData);
+        var path;
+        var context = this;
+        var flag = true;
+    
+        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
+            funnelData = this.props.funnelData[keys[keyIndex]];
+    
+            for(var index=0;index<funnelData.length;index++)
+            {
+                if(funnelData[index][0] == originalVizName){
+                    path = funnelData[index][1];
+                    flag = false;
+                    break;
+                }
+            }
+        }
+    
+        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+        var sdtPath = path.substring(index + 1);
+    
+        makeServerCall(window.encodeURI('frontEndFilterData/' + sdtPath ),
+            function (responseText) {
+                var response = JSON.parse(responseText);
+    
+                // Post the new data to the state and hide the window load-mask
+                context.props.dispatch(
+                    setCurrentVizParams(
+                        {
+                            tableName: response.tableName,
+                            datasourceId: response.datasourceId ,
+                            query: query,
+                            filterAllowedColumnList:  response.filterAllowedColumnList,
+                            sdtPath: sdtPath
+                        }
+                    )
+                );
+            }
+        );
+        */
     }
+
 
     render() {
         return (
@@ -47,6 +94,7 @@ class MyViews extends React.Component {
                             id = "SavedViews"
                             settings = { this.props.settings }
                             data = { this.state.savedViews }
+                            onClickSaved = { this.onSavedViewSelect.bind(this) }
                         />
                     </Collapsible>
                 </div>
@@ -62,6 +110,7 @@ class MyViews extends React.Component {
                             id = "SharedViews"
                             settings = { this.props.settings }
                             data = { this.state.sharedViews }
+                            onClickSaved = { this.onSavedViewSelect.bind(this) }
                         />
                     </Collapsible>
                 </div>
@@ -268,9 +317,7 @@ class SimpleTable extends React.Component {
     }
 
     handleRowSelection = (selectedRows) => {
-        this.setState({ selected: selectedRows });
-
-        //open the viz.
+        this.props.onClickSaved(this.state.flatData[selectedRows].OriginalVizName, this.state.flatData[selectedRows].QueryString);
     };
     
     render() {
@@ -392,7 +439,7 @@ class SimpleTable extends React.Component {
 
                     if (j === 0) {
                         colNames.push(
-                            <TableHeaderColumn> 
+                            <TableHeaderColumn key = { this.props.id + temp } > 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {displayTemp} &nbsp;
                                     <i id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
@@ -448,13 +495,10 @@ class SimpleTable extends React.Component {
                         className = { this.props.id }
                         fixedHeader = { true }
                         fixedFooter = { true }
-                        onRowSelection = { this.handleRowSelection } 
+                        onRowSelection = { (row) => this.handleRowSelection(row) } 
                         height = "350px"
                         wrapperStyle = {{ borderRadius: "4px" }}
-                        //wrapperStyle = {{ maxHeight: "350px", overflow: 'hidden', borderRadius: "4px", }}
-                        //bodyStyle = {{ maxHeight: "314px", overflow: 'auto', width: "100%", }}
-                        //bodyStyle = {{ overflowY: "scroll" }}
-                        onRowSelection = { () => console.log("row selected") }
+                        //onRowSelection = { () => console.log("row selected") }
                     >
                         <TableHeader
                             adjustForCheckbox = { false }
@@ -482,14 +526,21 @@ class SimpleTable extends React.Component {
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state) {
-  return {
-    settings: state.filterState.Settings,
-    storedViews: state.filterState.StoredViews
-  }
+ return {
+   settings: state.filterState.Settings,
+   storedViews: state.filterState.StoredViews,
+   funnelData: state.filterState.FunnelData
+ }
 }
+
+
+export const setCurrentVizParams = (vizParams) => ({
+   type: 'SET_VIZ_PARAMS',
+   vizParams,
+});
 
 
 /**
  * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps)(MyViews);
+export default withRouter(connect(mapStateToProps)(MyViews));
