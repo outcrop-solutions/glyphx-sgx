@@ -273,11 +273,11 @@ class FilterSideBarTopView extends React.Component {
 					console.log(res);
 					
 					if(res.id){
-						this.props.VizParams.id = res.id;
+						context.props.VizParams.id = res.id;
 					
 						context.props.dispatch(
 							setCurrentVizParams(
-									this.props.VizParams
+									context.props.VizParams
 						));					
 					}
 					

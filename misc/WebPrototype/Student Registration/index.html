@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>title</title>
+    </head>
+
+    <body>
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="/node_modules/materialize-css/dist/css/materialize.css"  media="screen,projection"/>
+
+        <!--Import index.css-->
+        <link type="text/css" rel="stylesheet" href="/index.css" />
+
+        <!-- CSS is included via this JavaScript file -->
+        <script src="/node_modules/card/dist//card.js"></script>
+
+        <div class="card" style="margin: 0 auto;width: 500px;">
+
+            <br /><br />
+
+            <div class="input-field" style="margin: 0 auto 13px;width: 350px" >
+                <input id="user_name" type="text">
+                <label for="user_name">Full Name</label>
+            </div>
+
+            <div class="input-field" style="margin: 0 auto 13px;width: 350px" >
+                <input id="user_email" type="text">
+                <label for="user_email">Email</label>
+            </div>
+
+            <div class="input-field" style="margin: 0 auto 13px;width: 350px" >
+                <input id="user_password" type="text">
+                <label for="user_password">Password</label>
+            </div>
+
+            <div class="input-field" style="margin: 0 auto 13px;width: 350px" >
+                <input id="user_confirmpassword" type="text">
+                <label for="user_confirmpassword">Confirm Password</label>
+            </div>
+
+            <br /><br />
+
+            <div class='card-wrapper'></div>
+
+            <br /><br />
+
+            <form>
+                <div class="input-field" style="margin: 0 auto 13px;width: 350px" >
+                    <input id="card_number" type="text" name="number">
+                    <label for="card_number">Number</label>
+                </div>
+
+
+                <div class="input-field" style="margin: 0 auto;width: 350px" >
+                    <input id="card_name" type="text" name="name">
+                    <label for="card_name">Name</label>
+                </div>
+                <div style="margin: 0 auto;width: 350px">
+                    <div class="input-field" style="width: 165px;float:left" >
+                        <input id="card_expiry" type="text" name="expiry">
+                        <label for="card_expiry">Expiration</label>
+                    </div>
+
+                    <div style="width:20px;float:left">&nbsp;</div>
+
+                    <div class="input-field" style="width: 165px;float:left" >
+                        <input id="card_cvc" type="text" name="cvc">
+                        <label for="card_cvc">CVC</label>
+                    </div>
+                </div>
+            </form>
+
+            <div style="margin:110px auto 0;width:350px;">
+                <button class="btn waves-effect waves-light" type="submit" name="action" style="width:350px" >
+                    Register
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+
+            <br />
+
+        </div>
+
+        <script>
+            var card = new Card({
+                form: 'form',
+                container: '.card-wrapper',
+
+                /*
+                masks: {
+                    cardNumber: '•' // optional - mask card number
+                },
+                */
+            });
+        </script>
+
+        <!--Import jquery.js-->
+        <script src="/node_modules/jquery/dist/jquery.js"></script>
+
+        <!--Import materialize.js-->
+        <script src="/node_modules/materialize-css/dist/js/materialize.js"></script>
+
+        
+
+    </body>
+</html>

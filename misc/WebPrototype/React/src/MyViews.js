@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
 import Collapsible from 'react-collapsible';
+import Flexbox from 'flexbox-react';
 import './General.css';
 
 
@@ -12,34 +13,23 @@ class MyViews extends React.Component {
         super(props);
 
         this.state = {
-            sharedViewsData: [{sharedBy:'MSloan',name:'SubViz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
-                              {sharedBy:'BLewis',name:'SubViz2',origin:'VizG',date:'7-7-2017'},
-                              {sharedBy:'BHolster',name:'Viz3',origin:'VizGA',date:'7-7-2017'},
-                              {sharedBy:'MSloan',name:'Viz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
-                              {sharedBy:'BLewis',name:'Viz2',origin:'VizG',date:'7-7-2017'},
-                              {sharedBy:'BHolster',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
-                              {sharedBy:'MSloan2',name:'SubViz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
-                              {sharedBy:'BLewis2',name:'SubViz2',origin:'VizG',date:'7-7-2017'},
-                              {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
-                              {sharedBy:'MSloan2',name:'Viz1',origin:'VizGlobalAdmissions',date:'7-7-2017'},
-                              {sharedBy:'BLewis2',name:'Viz2',origin:'VizG',date:'7-7-2017'},
-                              {sharedBy:'BHolster2',name:'SubViz3',origin:'VizGA',date:'7-7-2017'},
-                             ],
-
-            savedViewsData: [{name:'SubViz1',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'SubViz2',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'SubViz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'SubViz4',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'SubViz5',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'SubViz6',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz1',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz2',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz3',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz4',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz5',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'},
-                             {name:'Viz6',origin:'VizGlobalAdmissions',lastModified:'7-7-2017'}
-                            ]
+            savedViews: this.props.storedViews.savedViews,
+            sharedViews: 
+            [
+            ]
         }
+    }
+
+
+    /**
+	 * React built-in which is called when component mounts.
+	 */
+    componentDidMount() {
+        //this.setState({ savedViews: this.props.storedViews.savedViews });
+    }
+
+    componentWillRecieveProps(newProps) {
+        this.setState({ savedViews: newProps.storedViews.savedViews });
     }
 
     render() {
@@ -56,7 +46,7 @@ class MyViews extends React.Component {
                         <SimpleTable  
                             id = "SavedViews"
                             settings = { this.props.settings }
-                            data = { this.state.savedViewsData }
+                            data = { this.state.savedViews }
                         />
                     </Collapsible>
                 </div>
@@ -71,7 +61,7 @@ class MyViews extends React.Component {
                         <SimpleTable  
                             id = "SharedViews"
                             settings = { this.props.settings }
-                            data = { this.state.sharedViewsData }
+                            data = { this.state.sharedViews }
                         />
                     </Collapsible>
                 </div>
@@ -95,7 +85,7 @@ class SimpleTable extends React.Component {
     };
 
     columnCount = 0;
-    
+
 
     /**
      * -ADCMT
@@ -288,8 +278,85 @@ class SimpleTable extends React.Component {
         var rows = [];
         var columnCount = 0;
 
+        /*
+        debugger;
+
+        if (this.state.flatData && this.state.flatData.length > 0) {
+            var keys = Object.keys(this.state.flatData[0]);
+
+            for (var i = keys.length - 1; i > -1 ; i--) {
+                if (keys[i] === "ID" || keys[i] === "UserID" || keys[i] === "QueryString" || keys[i] === "InstitutionId" || keys[i] === "Shareable") {
+                    keys.splice(i, 1);
+                }
+            }
+
+            var columnList = keys.map( function(col) {
+                return (
+                    <TableHeaderColumn key = { col } style = {{ height: "36px", color: "#000000", paddingLeft: "10px", paddingRight: "0px" }}>
+                        {col === "OriginalVizName" ?
+                            "Origin"
+                            :
+                            (col === "CreationDate" ?
+                                "Created"
+                                :
+                                (col === "LastModifiedDate" ?
+                                    "Modified"
+                                    :
+                                    col
+                                )
+                            )
+                        }
+                    </TableHeaderColumn>
+                )
+            });
+            
+
+            //debugger;
+
+            var rows = [];
+
+            var flatData = this.state.flatData;
+
+            debugger;
+
+            for (var i = 0; i < keys.length; i++) {
+                let temp = keys[i];
+            }
+
+            for (var i = 0; i < flatData.length; i++) {
+                rows.push(
+                    <TableRow key = { flatData[i].ID } >
+                        {keys.map( function(key) {
+                            <TableRowColumn style = {{ paddingLeft: "10px", paddingRight: "0px" }} > 1 </TableRowColumn>
+                        })}
+                    </TableRow>
+                );
+            }
+
+            debugger;
+            keys;
+            flatData[0];
+            flatData[0][keys[3]];
+            rows;
+            columnList;
+        }
+
+*/
+
+
+
+
+
+
         if (this.state.flatData != null && this.state.flatData.length > 0) {
             var keys = Object.keys(this.state.flatData[0]);
+
+            for (var i = keys.length - 1; i > -1 ; i--) {
+                if (keys[i] === "ID" || keys[i] === "UserID" || keys[i] === "QueryString" || keys[i] === "InstitutionId" || keys[i] === "Shareable") {
+                    keys.splice(i, 1);
+                }
+            }
+
             columnCount = keys.length;
 
             if (keys.indexOf('searchString') > -1) {
@@ -307,11 +374,27 @@ class SimpleTable extends React.Component {
                 
                 for (var k = 0; k < columnCount; k++) {
                     let temp = keys[k];
+                    var displayTemp = (
+                        (temp === "OriginalVizName" ?
+                            "Origin"
+                            :
+                            (temp === "CreationDate" ?
+                                "Created"
+                                :
+                                (temp === "LastModifiedDate" ?
+                                    "Modified"
+                                    :
+                                    temp
+                                )
+                            )
+                        )
+                    );
+
                     if (j === 0) {
                         colNames.push(
-                            <TableHeaderColumn key = { this.props.id + temp } style = {{ height: "36px", color: "#000000", paddingLeft: "10px", paddingRight: "0px" }} > 
+                            <TableHeaderColumn> 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
-                                    {temp} &nbsp;
+                                    {displayTemp} &nbsp;
                                     <i id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
                                 </div>
                             </TableHeaderColumn>
@@ -328,7 +411,7 @@ class SimpleTable extends React.Component {
                 fData.searchString = searchString;
                 fData.index = j;
 
-                this.setState({ flatData: fData });
+                //this.setState({ flatData: fData });
 
                 rows.push(
                     <TableRow key = {j} selected = { this.isSelected(j) } >
@@ -338,9 +421,11 @@ class SimpleTable extends React.Component {
             }
         }
 
+        
+
         return (
             <div>
-                <div style = {{ margin: "1px 4px -9px", width: "98%" }} >
+                <div style = {{ margin: "1px 4px -9px", padding: "0px 8px" }} >
                     <SearchBox 
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
@@ -358,28 +443,34 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-
-                <Table 
-                    className = { this.props.id } 
-                    onRowSelection = { this.handleRowSelection } 
-                    wrapperStyle = {{ maxHeight: "350px", overflow: 'hidden', borderRadius: "4px", }}
-                    bodyStyle = {{ maxHeight: "314px", overflow: 'auto', width: "100%", }}
-                >
-                    <TableHeader
-                        adjustForCheckbox = { false }
-                        displaySelectAll = { false }
+                <Flexbox style = {{ padding: "0px 12px" }} >
+                    <Table 
+                        className = { this.props.id }
                         fixedHeader = { true }
                         fixedFooter = { true }
+                        onRowSelection = { this.handleRowSelection } 
+                        height = "350px"
+                        wrapperStyle = {{ borderRadius: "4px" }}
+                        //wrapperStyle = {{ maxHeight: "350px", overflow: 'hidden', borderRadius: "4px", }}
+                        //bodyStyle = {{ maxHeight: "314px", overflow: 'auto', width: "100%", }}
+                        //bodyStyle = {{ overflowY: "scroll" }}
+                        onRowSelection = { () => console.log("row selected") }
                     >
-                        <TableRow style = {{ height: "36px", backgroundColor: "#dadada" }} >
-                            {colNames}
-                        </TableRow>
-                    </TableHeader>
+                        <TableHeader
+                            adjustForCheckbox = { false }
+                            displaySelectAll = { false }
+                            style = {{ backgroundColor: "#dadada" }}
+                        >
+                            <TableRow style = {{ height: "36px" }} >
+                                {colNames}
+                            </TableRow>
+                        </TableHeader>
 
-                    <TableBody displayRowCheckbox = { false } >
-                        {rows}
-                    </TableBody>
-                </Table>
+                        <TableBody displayRowCheckbox = { false } >
+                            {rows}
+                        </TableBody>
+                    </Table>
+                </Flexbox>
             </div>
         );
     }
@@ -393,6 +484,7 @@ class SimpleTable extends React.Component {
 const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
+    storedViews: state.filterState.StoredViews
   }
 }
 

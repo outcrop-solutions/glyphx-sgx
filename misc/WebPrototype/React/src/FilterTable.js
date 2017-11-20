@@ -23,16 +23,6 @@ class FilterTable extends React.Component {
         super(props);
 
         this.state = {
-            fixedHeader: true,
-            fixedFooter: true,
-            stripedRows: false,
-            showRowHover: true,
-            selectable: false,
-            tableHeight: 300,
-            multiSelectable: true,
-            enableSelectAll: false,
-            deselectOnClickaway: false,
-            showCheckboxes: false,
             selectAll: false,
             prevSelectedIndex: null,
             checkboxClicked:false,
@@ -530,7 +520,7 @@ class FilterTable extends React.Component {
     render() {
         var id = this.props.id;
         var internalColName = this.props.internalColName;
-        var tableBodyHeight = (this.state.tableHeight - 32) + "px";
+        var tableBodyHeight = (300 - 32) + "px";
         var rows = this.createRows();
 
         return (
@@ -564,17 +554,17 @@ class FilterTable extends React.Component {
                             className = { "table-" + internalColName }
                             fixedHeader = { true }
                             fixedFooter = { true }
-                            selectable = { this.state.selectable }
-                            wrapperStyle = {{ maxHeight: this.state.tableHeight + "px", overflow: 'hidden', borderRadius: "4px" }}
+                            selectable = { false }
+                            wrapperStyle = {{ maxHeight: "300px", overflow: 'hidden', borderRadius: "4px" }}
                             bodyStyle = {{ maxHeight: tableBodyHeight, overflow: 'auto', width: "100%" }}
                             style = {{ backgroundColor: this.props.settings.colors.tableSelectColor.background }}
-                            multiSelectable = { this.state.multiSelectable }
+                            multiSelectable = { true }
                             onRowSelection = { (rowSelection) => this.onRowSelect(this,rowSelection) }
                         >
                             <TableHeader
                                 displaySelectAll = { false }
-                                adjustForCheckbox = { this.state.showCheckboxes }
-                                enableSelectAll = { this.state.enableSelectAll }
+                                adjustForCheckbox = { false }
+                                enableSelectAll = { false }
                                 style = {{ backgroundColor: "#b2b2b2" }}
                             >
                                 <TableRow style = {{ height:'30px' }} >
@@ -618,9 +608,9 @@ class FilterTable extends React.Component {
                             </TableHeader>
 
                             <TableBody
-                                displayRowCheckbox = { this.state.showCheckboxes }
-                                deselectOnClickaway = { this.state.deselectOnClickaway }
-                                showRowHover = { this.state.showRowHover }
+                                displayRowCheckbox = { false }
+                                deselectOnClickaway = { false }
+                                showRowHover = { true }
                                 stripedRows = { false }
                                 className = {internalColName + "-E"}
                             >

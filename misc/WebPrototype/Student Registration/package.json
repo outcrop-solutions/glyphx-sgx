@@ -1,0 +1,19 @@
+{
+  "name": "studentregistration",
+  "version": "1.0.0",
+  "dependencies": {
+  },
+  "peerDependencies": {
+  },
+  "devDependencies": {
+    "jquery": "^3.2.1",
+    "materialize-css": "^0.100.2",
+    "card": "^2.4.0",
+    "http-server": "^0.10.0",
+    "concurrently": "^3.5.0"
+  },
+  "scripts": {
+    "start": "npm run open",
+    "open": "concurrently \"http-server -a localhost -p 1234\" \"open http://localhost:1234/build\""
+ }
+}

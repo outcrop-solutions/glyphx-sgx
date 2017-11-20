@@ -36,7 +36,8 @@ const initialFilterState = {
         colList: "",
         statList: ""
     },
-	VizParams: {}
+	VizParams: {},
+    StoredViews: {}
 };
 
 
@@ -446,7 +447,11 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 UserInfo: action.userInfo,
                 isUserLoggedIn: true,
-                FunnelData: action.funnelInfo
+                FunnelData: action.funnelInfo,
+                StoredViews: {
+                    ...state.StoredViews,
+                    savedViews: action.savedViews
+                }
             }
 
         case 'UPDATE_STATISTICS':

@@ -21,6 +21,7 @@ class Login extends React.Component {
         snackbar: false
     }
 
+
     /**
 	 * React built-in which is called when component mounts
 	 */
@@ -54,7 +55,6 @@ class Login extends React.Component {
         document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
         document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
 	}
-
 
 
     /**
@@ -150,7 +150,7 @@ class Login extends React.Component {
             }
 
             console.log(result);
-            this.saveUserInfo(result.userInformation, result.funnelInfo);
+            this.saveUserInfo(result.userInformation, result.funnelInfo, result.savedViews);
         }
 
         else if (result && result.status == "failure") {
@@ -172,10 +172,10 @@ class Login extends React.Component {
      * @param userInfo: -ADCMT
      * @param funnelInfo: -ADCMT
      **/
-    saveUserInfo = (userInfo, funnelInfo) => {
+    saveUserInfo = (userInfo, funnelInfo, savedViews) => {
         console.log('Success');
         this.setState({ openPassword: false });
-        this.props.dispatch(saveUserInfo(userInfo, funnelInfo));
+        this.props.dispatch(saveUserInfo(userInfo, funnelInfo, savedViews));
 
         // Call function post login if provided.
         if (typeof this.props.doAfterLogin == 'function') {
@@ -449,10 +449,11 @@ class Login extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const saveUserInfo = (userInfo, funnelInfo) => ({
+export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
     type: 'SAVE_USER_INFO',
     userInfo,
-    funnelInfo
+    funnelInfo,
+    savedViews
 });
 
 
