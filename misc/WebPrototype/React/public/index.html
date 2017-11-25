@@ -178,6 +178,18 @@
 					return this.indexOf(value)>-1
 				}
 			}
+			
+			Array.prototype.unique = function() {
+				var a = this.concat();
+				for(var i=0; i<a.length; ++i) {
+					for(var j=i+1; j<a.length; ++j) {
+						if(a[i] === a[j])
+							a.splice(j--, 1);
+					}
+				}
+
+				return a;
+			};
 		
 			//window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "http://"+window.location.hostname + ":5000/";
             window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "http://"+window.location.hostname + ":5001/";

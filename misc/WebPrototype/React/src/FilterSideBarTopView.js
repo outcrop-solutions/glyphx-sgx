@@ -262,6 +262,46 @@ class FilterSideBarTopView extends React.Component {
 	*/
 	saveView = (context, viewName) => {
 			// Make the call to the server to save.
+			var fef = this.props.VizParams.frontEndFilters;
+			var filterObj = JSON.parse(JSON.stringify(this.props.filter));
+			var colName = "";
+			var values;
+			
+			var query = "SELECT * FROM " + this.props.VizParams.tableName + " WHERE ";
+			
+			
+			//using fef and current filters make the query string.
+			if(fef && fef.length > 0){
+				for(var i=0; i<fef.length; i++){
+					colName = fef[i][0].trim();
+					
+					if(filterObj.hasOwnProperty(colName)){
+						fef[i].shift();
+						filterObj[colName].selectedValues = filterObj[colName].selectedValues.concat(fef[i]).unique();
+					}
+				}
+			}
+			
+			
+			// { colName:{selectedValues:[]},colName:{selectedValues:[]},colName:{selectedValues:[]} }
+			//Form the query.
+			var colNames = Object.keys(filterObj);
+			var temp,flag = false;
+			for(var index=0;index<colNames.length;index++)
+			{
+				if(filterObj[colNames[index]].selectedValues.length > 0)
+				{	
+					if(flag)
+					{
+						query = query + " AND ";
+					}
+					temp = JSON.stringify(filterObj[colNames[index]].selectedValues);
+					temp = temp.replace('[','(').replace(/]$/,")");
+					query = query + colNames[index] + " IN " + temp;
+					flag = true;
+				}
+			}
+			
 			
 			makeServerCall('saveView',
 				function(res,b,c) {
@@ -284,10 +324,8 @@ class FilterSideBarTopView extends React.Component {
 				},
 				{
 					post: true, 
-					data:  { 
-						tableName: this.props.VizParams.tableName, 
-						frontEndFilterQuery: this.props.VizParams.query, 
-						filterObj: this.props.filter, 
+					data:  {
+						filterQuery: query,
 						vizId: this.props.VizParams.vizId,
 						originalVizName: this.props.VizParams.originalVizName,
 						savedVizName: viewName
