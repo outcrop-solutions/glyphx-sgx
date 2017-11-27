@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { makeServerCall } from './ServerCallHelper.js';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
 import Collapsible from 'react-collapsible';
@@ -14,10 +15,8 @@ class MyViews extends React.Component {
         super(props);
 
         this.state = {
-            savedViews: this.props.storedViews.savedViews,
-            sharedViews: 
-            [
-            ]
+            savedViews: [],//this.props.storedViews.savedViews,
+            sharedViews: []
         }
     }
 
@@ -26,6 +25,17 @@ class MyViews extends React.Component {
 	 * React built-in which is called when component mounts.
 	 */
     componentDidMount() {
+		var context = this;
+		makeServerCall("fetchSavedViews",
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                
+                // Post the new data to the state and hide the window load-mask
+                context.setState({ savedViews: response.savedViews },function(){
+					context.forceUpdate();
+				});
+            }
+        );
         //this.setState({ savedViews: this.props.storedViews.savedViews });
     }
 
@@ -34,7 +44,6 @@ class MyViews extends React.Component {
         console.log(originalVizName); 
         console.log(query);
 
-        /*
         var funnelData;
         var keys = Object.keys(this.props.funnelData);
         var path;
@@ -60,7 +69,7 @@ class MyViews extends React.Component {
         makeServerCall(window.encodeURI('frontEndFilterData/' + sdtPath ),
             function (responseText) {
                 var response = JSON.parse(responseText);
-    
+                
                 // Post the new data to the state and hide the window load-mask
                 context.props.dispatch(
                     setCurrentVizParams(
@@ -73,9 +82,10 @@ class MyViews extends React.Component {
                         }
                     )
                 );
+
+                context.props.history.push('/glyph-viewer');
             }
         );
-        */
     }
 
 
@@ -127,14 +137,21 @@ class MyViews extends React.Component {
  * Supports multi-column search.
  */
 class SimpleTable extends React.Component {
-        
-    state = {
-        selected: [],
-        flatData: this.props.data
-    };
+    
+	constructor(props){
+		super(props);
+		this.state = {
+			selected: [],
+			flatData: this.props.data
+		};
+	}
 
     columnCount = 0;
 
+	componentWillReceiveProps(nextProps) {
+		if(this.props.flatData !== nextProps.data)
+			this.setState({flatData: nextProps.data});
+	}
 
     /**
      * -ADCMT
@@ -528,7 +545,7 @@ class SimpleTable extends React.Component {
 const mapStateToProps = function(state) {
  return {
    settings: state.filterState.Settings,
-   storedViews: state.filterState.StoredViews,
+   //storedViews: state.filterState.StoredViews,
    funnelData: state.filterState.FunnelData
  }
 }
