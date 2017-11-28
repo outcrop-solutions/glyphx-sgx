@@ -27,7 +27,7 @@ $("#user_email").on("blur", function() {
 
 
 $("#user_password").on("blur", function() {
-    //$(".container").css('display', 'none');
+    $(".container").css('display', 'none');
 
     if ($("#user_password").val() !== "") {
         if ($("#user_password").val().length > 7) {

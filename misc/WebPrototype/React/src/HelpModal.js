@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import FontIcon from 'material-ui/FontIcon';
 import Collapsible from 'react-collapsible';
+import SearchBox from './SearchBox.js';
 import './General.css';
 
 
@@ -17,9 +18,50 @@ import './General.css';
 class HelpModal extends React.Component {
 
 	state = {
+		FAQs: [
+			{
+				question: "How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "1 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "2 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "3 How do I share my saved views with team members?",
+				answer: "GOON When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "4 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "5 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "6 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "7 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+			{
+				question: "8 How do I share my saved views with team members?",
+				answer: "When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar"
+			},
+		],
 		selection: "none",
 		opacity: 0
 	}
+
+
+	
 
 	
 	/**
@@ -49,8 +91,83 @@ class HelpModal extends React.Component {
 			context.setState({ selection: "none" });
 		}, 200);
 	}
+
+
+	/**
+     * This method searches on the data of table. Allows Multisearch using "," as a separator. 
+     * @param context: the instance of this react element.
+     * @param id: This is the id used to identify the table and the textfield.
+     */
+	onKeyUpMultiSearch = () => {
+		var i, j;
+
+		// Search box
+        var input = document.getElementById("faq-search");
+		var filter = input.value.toUpperCase();
+
+		// Column values
+		var table = document.getElementById("faqList");
+        var tr = table.getElementsByClassName("faqDiv");
+
+		// Generate array of valid search values
+		var fVals = filter.split(',');
+		var filterValues = [];
+		for (i = 0; i < fVals.length; i++) {
+			fVals[i] = fVals[i].trim();
+			if (fVals[i] !== "") {
+				filterValues.push(fVals[i]);
+			}
+		}
+
+		// No valid search value, show all
+		if (filterValues.length === 0) {
+			for (i = 0; i < tr.length; i++) {
+				tr[i].style.display = "";
+			}
+		}
+		else {
+			// Search all the records for the filter values
+			for (i = 0; i < tr.length; i++) {
+				var shouldBeVisible = false;
+				
+				for (j = 0; j < filterValues.length; j++) {
+					if (tr[i].children[0].children[0].innerText.toUpperCase().indexOf(filterValues[j]) !== -1 || tr[i].children[0].children[1].textContent.toUpperCase().indexOf(filterValues[j]) !== -1) {
+						shouldBeVisible = true;
+							break;
+					}			
+				}
+				
+				if (shouldBeVisible) {
+					tr[i].style.display = "";
+				}
+				else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+
 	
 	render() {
+
+		var FAQList = this.state.FAQs.map( function(faq) {
+			return(
+				<div className = "faqDiv" style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} key = { faq.question } >
+					<Collapsible
+						transitionTime = {200}
+						triggerClassName = "faqCollapse"
+						triggerOpenedClassName  = "faqCollapse"
+						trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>{faq.question}</div> }
+					>
+						<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word", color: "rgba(0, 0, 0, 0.8)" }} >
+							{faq.answer}
+						</div>
+					</Collapsible>
+				</div>
+			)
+		});
+	
+
 		return(
 			<Dialog
 				title = { <div> <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Help </div> }
@@ -193,116 +310,28 @@ class HelpModal extends React.Component {
 						/>
 					</div>
 
-					<div style = {{ backgroundColor: "#707192", padding: "10px", width: "81%", margin: "0 auto", borderRadius: "3px", height: "230px" }} >
-						<div style = {{ backgroundColor: "#707192", height: "210px", overflowY: "auto" }} >
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
+					<div style = {{ backgroundColor: "#707192", padding: "10px", width: "81%", margin: "0 auto", borderRadius: "3px", height: "40vh" }} >
+						<SearchBox 
+							ref = "SearchBox"
+							settings = {{
+								SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+								searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
+								overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
+								overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
+								tableSelectColor: this.props.settings.colors.tableSelectColor.background
+							}}
+							onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch() }
+							id = { "faq-search" }
+							collapseButton = { false }
+							shouldOnBlur = { false }
+						/>
 
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff", marginBottom: "3px", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
-							<div style = {{ backgroundColor: "#ffffff", marginRight: "5px" }} >
-								<Collapsible
-									transitionTime = {200}
-									triggerClassName = "faqCollapse"
-									triggerOpenedClassName  = "faqCollapse"
-									trigger = {<div style = {{ margin: "0 auto", fontSize: "15px", width: "378px", color: "#000000" }}>How do I share my saved views with team members?</div> }
-								>
-									<div style = {{ padding: "0px 30px", textAlign: "center", wordBreak: "break-word" }} >
-										When you enter the team room you wish to share a view with, you can link one of your saved views by pressing the cube icon located to the far right of the text editting toolbar
-									</div>
-								</Collapsible>
-							</div>
-
+						<div id = "faqList" style = {{ backgroundColor: "#707192", marginTop: "10px", height: "calc(40vh - 59px)", overflowY: "auto" }} >
+							{FAQList}
 						</div>
 					</div>
 
-					<div style = {{ textAlign: "center", marginTop: "15px" }} > Still can't find what youre looking for? (insert link to livechat here) {/* <div data-id="2eaf959d51" class="livechat_button"><a href="https://www.livechatinc.com/help-desk-software/?partner=lc_9235035&amp;utm_source=chat_button">help desk software</a></div> */} </div>
+					<div style = {{ textAlign: "center", marginTop: "15px" }} > Still can't find what youre looking for? Click the chat button. {/* <div data-id="2eaf959d51" class="livechat_button"><a href="https://www.livechatinc.com/help-desk-software/?partner=lc_9235035&amp;utm_source=chat_button">help desk software</a></div> */} </div>
 				</div>
 
 			</Dialog>
