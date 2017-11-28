@@ -398,11 +398,23 @@ class SimpleTable extends React.Component {
 
         if (this.state.flatData != null && this.state.flatData.length > 0) {
             var keys = Object.keys(this.state.flatData[0]);
+            var flatData = this.state.flatData;
 
             for (var i = keys.length - 1; i > -1 ; i--) {
-                if (keys[i] === "ID" || keys[i] === "UserID" || keys[i] === "QueryString" || keys[i] === "InstitutionId" || keys[i] === "Shareable") {
+                if (keys[i] === "ID" || keys[i] === "UserID" || keys[i] === "QueryString" || keys[i] === "InstitutionId" || keys[i] === "Shareable" || keys[i] === "frontEndFilterString") {
                     keys.splice(i, 1);
                 }
+            }
+
+            for (var i = 0; i < flatData.length; i++) {
+                var cDate = new Date(flatData[i].CreationDate);
+                var mDate = new Date(flatData[i].LastModifiedDate);
+
+                cDate = (cDate.getMonth() + 1) + '-' + cDate.getDate() + '-' + cDate.getFullYear();
+                mDate = (mDate.getMonth() + 1) + '-' + mDate.getDate() + '-' + mDate.getFullYear();
+
+                flatData[i].CreationDate = cDate;
+                flatData[i].LastModifiedDate = mDate;
             }
 
             columnCount = keys.length;
