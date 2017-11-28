@@ -28,7 +28,6 @@ class ViewsManager extends React.Component {
         clicked: false
     };
 
-
     /**
      * Enables transition pause when navigating from regular view to my views and vice versa
      */

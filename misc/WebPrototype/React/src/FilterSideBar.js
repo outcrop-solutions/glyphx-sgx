@@ -20,18 +20,11 @@ class FilterSideBar extends React.Component {
     constructor(props) {
         super(props);
         
-		//Make columns and global store structure
-        //this.makeFilterStructure(tableData);
-
-        //fetch the table names and view names.
-        
-        
+        this.loadVisualization = this.loadVisualization.bind(this);
         //Store the states of all the elements inside this data structure.
         this.state  = {
             tableData: {},//tableData,
 			topViewInitParams: {
-				viewSelectItems: ['view 0', 'view 1', 'view 4', 'view 5'],
-				tableSelectItems: ['table 0', 'table 1', 'table 4', 'table 5'],
                 scrollToElement: this.scrollToCollapsibleElement
 			},
             topViewVisible: true
@@ -45,10 +38,14 @@ class FilterSideBar extends React.Component {
             collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
         }
-        
+        this.loadVisualization();
+   };
+
+   loadVisualization() {
+        var context = this;
         makeServerCall('loadVisualization',
             function(res,b,c) {
-               // Hide the loadmask.
+            // Hide the loadmask.
                 
                 if (typeof res == 'string') {
                     res = JSON.parse(res);
@@ -67,11 +64,10 @@ class FilterSideBar extends React.Component {
             },
             {
                 post: true, 
-                data:  { tableName: this.props.VizParams.tableName, query: this.props.VizParams.query, sdtPath: this.props.VizParams.sdtPath, datasourceId: this.props.VizParams.datasourceId }
+                data:  { tableName: context.props.VizParams.tableName, query: context.props.VizParams.query, sdtPath: context.props.VizParams.sdtPath, datasourceId: context.props.VizParams.datasourceId }
             }
         )
-   };
-
+   }
 
     /**
 	* This method shows a little popup alert on the left bottom screen
@@ -321,6 +317,7 @@ class FilterSideBar extends React.Component {
                         initParams = { this.state.topViewInitParams } 
                         colList = { colList } 
                         showAlert = { (strMsg) => this.showAlert(strMsg) }
+                        refreshParent= {this.loadVisualization}
                     />
 
                 </Collapsible>
@@ -370,6 +367,7 @@ export const init = (storeFilterStruc) => ({
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
+    storedViews: state.filterState.StoredViews,
 	VizParams: state.filterState.VizParams
   }
 };

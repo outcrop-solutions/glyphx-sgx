@@ -100,8 +100,15 @@ class VisualizationView extends React.Component {
 	 * -ADCMT
 	 */
     updateViz (key) {
-        this.setState({ vizKey: key })
+        //This is to refresh the iframe.
+        this.setState({ vizKey: "" },function(){
+            this.setState({vizKey: key})
+        });
         console.log('state set: ' + key);
+        /*var iframe = document.getElementById('GlyphViewer')
+        var temp = iframe.src;
+        iframe.src = "";
+        iframe.src = temp;*/
     }
 
 

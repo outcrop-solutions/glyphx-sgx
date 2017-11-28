@@ -26,9 +26,17 @@ class FilterSideBarTopView extends React.Component {
 	
 	constructor(props) {
         super(props);
-	
+        
         // Load values into the view select dropdown.
-        var viewSelectItems = this.makeList(props.initParams.viewSelectItems, "viewSelectItems");
+        var convertedViewSelectItems = this.convertToSelectFormat(props.storedViews.savedViews);
+        var tableSelectItems = [];
+        if(typeof props.VizParams.tableName != 'array'){
+            tableSelectItems.push({ label: props.VizParams.tableName, value: props.VizParams.tableName });
+        }else{
+            /*tableSelectItems = this.props.VizParams.tableSelectItems.map(function(value) {
+                return({ label: value, value: value });
+            });*/
+        }
 
         // Store the states of all the elements
         this.state = {
@@ -37,17 +45,27 @@ class FilterSideBarTopView extends React.Component {
             menu: { open: false },
             viewSelectValue: null,
             tableSelectValues: [],
+            tableSelectItems:tableSelectItems,
             saveDailogOpen: false,
-            viewSelectItems: viewSelectItems,
+            viewSelectItems: convertedViewSelectItems,
             viewNameTextFieldError: "",
             statisticsModalOpen: false,
             statisticStatSelectValues: "",
             statisticColSelectValues: "",
             undoSnackbar: false,
             redoSnackbar: false,
-            filterIDs: null
+            filterIDs: null,
+            deleteDailogOpen: false,
+            deleteDialogLabel: 'Are you sure you want to delete ; ?'
         };
-	}
+    }
+    
+    componentWillReceiveProps(nextProps){
+        if(nextProps.storedViews.savedViews != this.props.storedViews.savedViews){
+            var convertedViewSelectItems = this.convertToSelectFormat(nextProps.storedViews.savedViews);
+            this.setState({viewSelectItems: convertedViewSelectItems, tableSelectValues: [nextProps.VizParams.tableName] });
+        }
+    }
 
 
     /**
@@ -84,6 +102,21 @@ class FilterSideBarTopView extends React.Component {
         // Initialize local storage for undo redo
         window.localStorage.setItem('history', []);
         window.localStorage.setItem('position', -1);
+
+        if(this.state.tableSelectItems.length == 1){
+            this.setState({
+                tableSelectValues: this.state.tableSelectItems[0].value
+            });
+        }
+
+        if(this.props.VizParams.savedViz){
+
+            this.setState({
+                viewSelectValue: this.props.VizParams.vizID
+            });
+        }
+
+        
     }
 
 
@@ -98,54 +131,27 @@ class FilterSideBarTopView extends React.Component {
 	
 
 	/**
-     * This function holds the templates of certain UI elements. Call this and pass a type
-     * to generate a JSX code that you can use to render that particular element.
-     * @param {array} arrValues: Single dimension array of values.
-     * @param {string} type: any one of [viewSelectItems,tableSelectItems,appliedFiltersItems,columns]
-     * @param {object} extra: An object to pass extra params.
+     * This function converts the server saved views structure into client select consumable.
+     * @param {array} obj: The object passed as prop containing the view select values;
      */
-    makeList(arrValues, type, extra) {
-        if (!Array.isArray(arrValues)) {
-            return "PLEASE PROVIDE AN ARRAY";
-        }
-
-        var len = arrValues.length;
-        var index;
+    convertToSelectFormat(arrViewSelect) {
+        var viewSelectItems=[];
         var arrReturn = [];
-        var objReturn = null;
-
-        switch (type) {
-            case 'viewSelectItems':
-                for (index = 0; index < len; index++) {
-                    arrReturn.push(
-                        {
-                            label: arrValues[index], value: arrValues[index]
-                        }
-                    );
-                }
-                break;
-
-            case 'tableSelectItems':
-                for (index = 0; index < len; index++) {
-                    arrReturn.push(
-                        <MenuItem 
-                            className = "menuItemStyling" 
-                            value = { arrValues[index] } 
-                            key = { arrValues[index] } 
-                            insetChildren = { true } 
-                            checked = { false } 
-                            primaryText = { arrValues[index] } 
-                        />
-                    );
-                }
-                break;
-                 
-            default:
-                return null;
+        //Set the Saved Views data to the store.
+        var savedViews = arrViewSelect ? arrViewSelect : [];
+        var arrReturn =[];
+        for(var index=0;index<savedViews.length;index++){
+            if(savedViews[index].OriginalVizName == this.props.VizParams.originalVizName) {
+                arrReturn.push(
+                    {
+                        label: savedViews[index].Name, value: savedViews[index].ID
+                    }
+                );
+            }
         }
 
-        return (objReturn != null ? objReturn : arrReturn);
-    };
+        return arrReturn;
+    }
 
 	
 	/**
@@ -184,6 +190,15 @@ class FilterSideBarTopView extends React.Component {
                     this.setState({ statisticsModalOpen: false });
                 }
                 break;
+
+            case 'delete':
+                if(open){
+                    this.setState({ deleteDailogOpen: true, deleteDialogLabel: evt }); 
+                }
+                else {
+                    this.setState({ deleteDailogOpen: false, deleteDialogLabel: 'Are you sure you want to delete ; ?' });
+                }
+                break;
             
             default:
                 return null;
@@ -211,7 +226,7 @@ class FilterSideBarTopView extends React.Component {
             // Check if same name view already exists
             context.state.viewSelectItems.forEach(
                 function(element) {
-                    if (element.key == viewName ) {
+                    if (element.label == viewName ) {
                         nameAlreadyExists = true;
                     }
                 }
@@ -225,26 +240,11 @@ class FilterSideBarTopView extends React.Component {
             else {
                 
                 // Save the view
-                if (context.saveView(context,viewName)) {
-					// Add it to the existing list of views!
-					context.state.viewSelectItems.push(context.makeList([viewName],'viewSelectItems')[0]);
-					context.setState({ viewSelectItems: context.state.viewSelectItems, viewSelectValue: viewName });
-
-					// Close the dialog
-					context.handleOpenClose('save', false);
-					console.log("View saved with name: " + viewName);
-
-					// Show the success message
-					context.props.showAlert('Success The View has been saved!');
-				}
-				else { 
-                    // Didn't save due to some network error.
-					console.error("ERROR");
-				}
+                var id = context.saveView(context,viewName,true);
+                
             }
         }
     };
-
 
     /**
      * - ADCMT
@@ -260,82 +260,151 @@ class FilterSideBarTopView extends React.Component {
     * @param context: - ADCMT
     * @param viewName: - ADCMT
 	*/
-	saveView = (context, viewName) => {
-			// Make the call to the server to save.
-			var fef = this.props.VizParams.frontEndFilters;
-			var filterObj = JSON.parse(JSON.stringify(this.props.filter));
-			var colName = "";
-			var values;
-			
-			var query = "SELECT * FROM " + this.props.VizParams.tableName + " WHERE ";
-			
-			
-			//using fef and current filters make the query string.
-			if(fef && fef.length > 0){
-				for(var i=0; i<fef.length; i++){
-					colName = fef[i][0].trim();
+	saveView = (context, viewName, isNewView) => {
+
+        var fef = this.props.VizParams.frontEndFilters;
+        var filterObj = JSON.parse(JSON.stringify(this.props.filter));
+        var colName = "";
+        var values;
+        var finalFilterObj={};
+        
+        var query = "SELECT * FROM " + this.props.VizParams.tableName + " WHERE ";
+
+        // Differentiate between Save and Save As.
+        // If save i.e. isNewView is false then this means that this is an already constructed subset viz that is to be saved again.
+        if(!isNewView){
+            var fefString = context.props.VizParams.frontEndFilterString; //Since view already exists its information is in VizParams.
+            try{
+                fef = JSON.parse(fefString);
+                for(var key in fef){
+                    //There is a special check for selectedvalues length as not keeping this overwrites the filtering on saved views.
+                    //For eg: subset is created using col1:[1,2,3,4] and If user then selects 1 and tries to save it
+                    //          This code would override and still send
+                    if(filterObj.hasOwnProperty(key) && filterObj[key].selectedValues.length < 1){
+                        filterObj[key].selectedValues = filterObj[key].selectedValues.concat(fef[key]).unique();
+                    }
+                }
+            }
+            catch(err){
+                console.log(err);
+            }
+            viewName = context.props.VizParams.savedVizName;
+        }
+        // If save as/save when no viewname is selected 
+        // i.e. isNewView is true then this means that this is a totally new View that has to be saved on the server.
+        else{
+            //using fef and current filters make the query string.
+            //Since view does not exist we have to build the query string from Front End Filter data.
+            var temp = [];
+            if(fef && fef.length > 0){
+                for(var i=0; i<fef.length; i++){
+                    colName = fef[i][0].trim();
+                    
+                    if(filterObj.hasOwnProperty(colName)){
+                        temp = fef[i].slice();
+                        temp.shift();
+                        filterObj[colName].selectedValues = filterObj[colName].selectedValues.concat(temp).unique();
+                    }
+                }
+            }
+        }
+
+        // { colName:{selectedValues:[]},colName:{selectedValues:[]},colName:{selectedValues:[]} }
+        //Form the query.
+        var colNames = Object.keys(filterObj);
+        var temp,flag = false;
+        for(var index=0;index<colNames.length;index++)
+        {
+            if(filterObj[colNames[index]].selectedValues.length > 0)
+            {	
+                if(flag)
+                {
+                    query = query + " AND ";
+                }
+
+                finalFilterObj[colNames[index]] = filterObj[colNames[index]].selectedValues;
+
+                temp = JSON.stringify(filterObj[colNames[index]].selectedValues);
+                temp = temp.replace('[','(').replace(/]$/,")");
+                query = query + colNames[index] + " IN " + temp;
+                flag = true;
+            }
+        }
+
+        makeServerCall('saveView',
+            function(res,b,c) {
+            // Hide the loadmask.
+                
+                if (typeof res == 'string') {
+                    res = JSON.parse(res);
+                }
+                
+                if(res.ID){
+                    context.props.VizParams.savedViz = true;
+                    context.props.VizParams.vizID = res.ID;
+                    context.props.VizParams.savedVizName = res.Name;
+                    context.props.VizParams.frontEndFilterString = JSON.stringify(finalFilterObj);
+
+                    context.props.dispatch(
+                        setCurrentVizParams(
+                                context.props.VizParams
+                    ));					
+
+					// Add it to the existing list of views!
+					if(isNewView) {
+                        context.state.viewSelectItems.push({label: viewName, value: res.ID});
+                        context.setState({ viewSelectItems: context.state.viewSelectItems, viewSelectValue: res.ID });
+                    }
+
+					// Close the dialog
+					context.handleOpenClose('save', false);
 					
-					if(filterObj.hasOwnProperty(colName)){
-						fef[i].shift();
-						filterObj[colName].selectedValues = filterObj[colName].selectedValues.concat(fef[i]).unique();
-					}
+					// Show the success message
+					context.props.showAlert('Success The View has been saved!');
 				}
-			}
-			
-			
-			// { colName:{selectedValues:[]},colName:{selectedValues:[]},colName:{selectedValues:[]} }
-			//Form the query.
-			var colNames = Object.keys(filterObj);
-			var temp,flag = false;
-			for(var index=0;index<colNames.length;index++)
-			{
-				if(filterObj[colNames[index]].selectedValues.length > 0)
-				{	
-					if(flag)
-					{
-						query = query + " AND ";
-					}
-					temp = JSON.stringify(filterObj[colNames[index]].selectedValues);
-					temp = temp.replace('[','(').replace(/]$/,")");
-					query = query + colNames[index] + " IN " + temp;
-					flag = true;
+				else { 
+                    // Didn't save due to some network error.
+					console.error("ERROR");
 				}
-			}
-			
-			
-			makeServerCall('saveView',
-				function(res,b,c) {
-				// Hide the loadmask.
-					
-					if (typeof res == 'string') {
-						res = JSON.parse(res);
-					}
-					console.log(res);
-					
-					if(res.id){
-						context.props.VizParams.id = res.id;
-					
-						context.props.dispatch(
-							setCurrentVizParams(
-									context.props.VizParams
-						));					
-					}
-					
-				},
-				{
-					post: true, 
-					data:  {
-						filterQuery: query,
-						vizId: this.props.VizParams.vizId,
-						originalVizName: this.props.VizParams.originalVizName,
-						savedVizName: viewName
-					}
-				}
-			);
+
+                
+            },
+            {
+                post: true, 
+                data:  {
+                    filterQuery: query,
+                    frontEndFilter: JSON.stringify(finalFilterObj),
+                    vizId: isNewView ? null : this.props.VizParams.vizID,
+                    originalVizName: this.props.VizParams.originalVizName,
+                    savedVizName: viewName
+                }
+            }
+        );
 		return true;
 	};
 
-    
+    deleteView = (context) => {
+        this.handleOpenClose('delete', false);
+        makeServerCall('deleteSavedViews?ID='+this.state.viewSelectValue,
+            function(result, b) {
+                // Show the success message
+                context.props.showAlert('Success The View has been deleted!');
+
+                //Delete all references of this view from the CurrentVizParams.
+
+                context.setState({
+                    deleteDailogOpen: false,
+                    deleteDialogLabel: "Success The View has been deleted!"
+                },function(){
+                    //if(context.props.VizParams)
+                      //  context.props.history.push('/home');
+                    //After delete either go back to home or load another viz.
+                })
+                
+            }
+        );
+    }
+
     /**
      * - ADCMT
      */
@@ -352,7 +421,7 @@ class FilterSideBarTopView extends React.Component {
                 var tempRowIds = [];
                 
 				if (data && Array.isArray(data)) {
-					if (data.length > 1) {							
+					if (data.length > 0) {							
 						for (var index = 0; index < data.length; index++) {
 							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
 						}
@@ -383,6 +452,67 @@ class FilterSideBarTopView extends React.Component {
         console.log(value);
 
         // Load Filters!
+        var savedVizObj;
+        this.props.storedViews.savedViews.forEach(function(v){
+            if(v.ID == value)
+                savedVizObj = v;
+        })
+
+        if(!savedVizObj){
+            return;
+        }
+
+        var originalVizName = savedVizObj.OriginalVizName; 
+        var query = savedVizObj.QueryString; 
+        var funnelData;
+        var keys = Object.keys(this.props.funnelData);
+        var path;
+        var context = this;
+        var flag = true;
+    
+        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
+            funnelData = this.props.funnelData[keys[keyIndex]];
+    
+            for(var index=0;index<funnelData.length;index++)
+            {
+                if(funnelData[index][0] == originalVizName){
+                    path = funnelData[index][1];
+                    flag = false;
+                    break;
+                }
+            }
+        }
+    
+        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+        var sdtPath = path.substring(index + 1);
+    
+        makeServerCall(window.encodeURI('frontEndFilterData/' + sdtPath ),
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                
+                // Post the new data to the state and hide the window load-mask
+                context.props.dispatch(
+                    setCurrentVizParams(
+                        {
+                            tableName: response.tableName,
+                            datasourceId: response.datasourceId ,
+                            query: query,
+                            originalVizName:originalVizName,
+                            filterAllowedColumnList:  response.filterAllowedColumnList,
+                            sdtPath: sdtPath,
+                            savedViz: true,
+                            vizID:savedVizObj.ID,
+                            savedVizName: savedVizObj.Name,
+                            frontEndFilterString: savedVizObj.frontEndFilterString
+                        }
+                    )
+                );
+
+                //context.props.history.push('/glyph-viewer');
+                context.props.refreshParent();
+            }
+        );
+
     };
 
 
@@ -501,12 +631,37 @@ class FilterSideBarTopView extends React.Component {
         }
 
         // Save
-        this.saveView(this, this.state.viewSelectValue);
+        this.saveView(this, this.state.viewSelectValue,false);
         
         // Close the menu
         this.handleOpenClose('menu', false, event);
     };
 
+     /**
+	* This method is called when the user clicks on the 'Save' inside the menu.
+    * @param event: - ADCMT
+	*/
+    onMenuDeleteClick = (event) => {
+        console.log("Delete");
+        var viewName="";
+        var context = this;
+        
+        if (this.state.viewSelectValue === null || this.state.viewSelectValue === "") {
+            return;
+        }
+
+        this.state.viewSelectItems.forEach(function(v){
+            v.value == context.state.viewSelectValue;
+            viewName = v.label;
+        })
+        
+        var deleteDialogLabel = this.state.deleteDialogLabel.replace(";",viewName);
+        
+        this.handleOpenClose('delete', true, deleteDialogLabel);
+
+        // Close the menu
+        this.handleOpenClose('menu', false, event);
+    };
 
     /**
 	* This method is called when the user clicks on the 'Save As' inside the menu.
@@ -592,12 +747,7 @@ class FilterSideBarTopView extends React.Component {
 
 	
 	render = () => {
-
-		// Load values into the table select dropdown.
-		var tableSelectItems = this.props.initParams.tableSelectItems.map(function(value) {
-			return({ label: value, value: value });
-		});
-
+        
         var statisticStatSelectItems = ["Count", "Min", "Max", "Average", "Median", "Sum", "Range", "St. Dev.", "Varience", "Skewness", "Kurtosis"];
         statisticStatSelectItems = statisticStatSelectItems.map(function(value) {
 			return({ label: value, value: value });
@@ -743,6 +893,7 @@ class FilterSideBarTopView extends React.Component {
                                     <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
                                     <MenuItem primaryText = "Save" className = "menuItemStyling" onClick = { this.onMenuSaveClick }/>
                                     <MenuItem primaryText = "Save As" className = "menuItemStyling" onClick = { this.onMenuSaveAsClick }/>
+                                    <MenuItem primaryText = "Delete" className = "menuItemStyling" onClick = { this.onMenuDeleteClick } disabled= {this.state.viewSelectValue === null || this.state.viewSelectValue === ""}/>
                                     <MenuItem primaryText = "Statistics" className = "menuItemStyling" onClick = { () => this.handleOpenClose('statistics', true) }/>
                                 </Menu>
                             </Popover>
@@ -778,6 +929,30 @@ class FilterSideBarTopView extends React.Component {
                                 /> <br />
                                 <label id = "lbl_saveError" hidden style = {{ color:'red' }}> Error! A view with the same name already exists! Please provide a different name! </label>
                             </Dialog>
+
+                            <Dialog
+                            title="Delete View"
+                            actions={
+                                    [
+                                        <FlatButton
+                                            label = "Yes"
+                                            primary = { true }
+                                            onClick = { () => this.deleteView(this) }
+                                            style = {{ color: this.props.settings.colors.saveModalColor.saveButton }}
+                                        />,
+                                        <FlatButton
+                                            label = "Cancel"
+                                            primary = { true }
+                                            onClick = { () => this.handleOpenClose('delete', false) }
+                                            style = {{ color: this.props.settings.colors.saveModalColor.cancelButton }}
+                                        />
+                                    ]
+                                }
+                            modal={true}
+                            open={this.state.deleteDailogOpen}
+                          >
+                            <label id="deleteDialogLabel"> { this.state.deleteDialogLabel }</label>
+                          </Dialog>
 
                         </div>
                     </Flexbox>
@@ -917,7 +1092,7 @@ class FilterSideBarTopView extends React.Component {
                     <Select 
                         multi 
                         simpleValue
-                        value = { this.state.statisticStatSelectValues } 
+                        value = { this.state.statisticStatSelectValues }  
                         placeholder = "Select your statistic(s)" 
                         options = { statisticStatSelectItems } 
                         onChange = { this.onSelectStatisticStatChange.bind(this) } 
@@ -931,8 +1106,9 @@ class FilterSideBarTopView extends React.Component {
                         className = "selectTableName"
                         simpleValue
                         value = { this.state.tableSelectValues } 
+                        disabled = { this.state.tableSelectItems.length == 1 } 
                         placeholder = "Select your table(s)" 
-                        options = { tableSelectItems } 
+                        options = { this.state.tableSelectItems } 
                         onChange = { this.onSelectTableChange.bind(this) } 
                     />
                 </Flexbox>
@@ -971,10 +1147,16 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     statisticDisplay: state.filterState.ModalDisplay.statisticsModal,
     filter: state.filterState.Filter,
+    funnelData: state.filterState.FunnelData,
+    storedViews: state.filterState.StoredViews,
 	VizParams: state.filterState.VizParams
   }
 };
 
+export const setCurrentSavedViews = (savedViewsList) => ({
+    type: 'UPDATE_SAVED_VIEWS',
+    savedViewsList,
+});
 
 /**
  * Connects the redux store to get access to global states. withRouter allows component to change navigation route.

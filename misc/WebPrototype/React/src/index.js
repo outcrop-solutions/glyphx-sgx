@@ -453,6 +453,15 @@ const filterReducer = function(state = initialFilterState, action) {
                     savedViews: action.savedViews
                 }
             }
+        
+        case 'UPDATE_SAVED_VIEWS':
+            return {
+                ...state,
+                StoredViews: {
+                    ...state.StoredViews,
+                    savedViews: action.savedViewsList
+                }
+            }
 
         case 'UPDATE_STATISTICS':
 

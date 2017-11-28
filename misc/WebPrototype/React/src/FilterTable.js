@@ -19,6 +19,8 @@ import './General.css'
 
 class FilterTable extends React.Component {
 
+    refresh=true;
+
     constructor(props) {
         super(props);
 
@@ -32,6 +34,12 @@ class FilterTable extends React.Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.tableData != nextProps.tableData){
+            this.setState({tableData: nextProps.tableData});
+            this.refresh=true;
+        }
+    }
 
     /**
      * React built-in which tells react if it should re-render the component
@@ -40,7 +48,11 @@ class FilterTable extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues || this.props.settings != nextProps.settings || this.state.flatData != nextState.flatData);
+        return (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues || 
+                this.props.settings != nextProps.settings || 
+                this.state.flatData != nextState.flatData ||
+                this.props.tableData != nextProps.tableData
+                );
 
         /*
         if (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues) {
@@ -443,7 +455,7 @@ class FilterTable extends React.Component {
          *          }
          * }
          */
-        if (sortedValues.length > 0) {
+        if (sortedValues.length > 0 && !this.refresh) {
             for (var i = 0; i < sortedValues.length; i++) {
                 count = sortedValues[i].count;
                 percentStr = count + " (" + ((count/totalCount) * 100).toFixed(2) + "%)";
@@ -453,6 +465,7 @@ class FilterTable extends React.Component {
         }
 
         else {
+            this.refresh=false;
             for (var property in data) {
                 count = data[property].count;
                 percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%)";

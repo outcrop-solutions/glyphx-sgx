@@ -20,30 +20,9 @@ class MyViews extends React.Component {
         }
     }
 
-
-    /**
-	 * React built-in which is called when component mounts.
-	 */
-    componentDidMount() {
-		var context = this;
-		makeServerCall("fetchSavedViews",
-            function (responseText) {
-                var response = JSON.parse(responseText);
-                
-                // Post the new data to the state and hide the window load-mask
-                context.setState({ savedViews: response.savedViews },function(){
-					context.forceUpdate();
-				});
-            }
-        );
-        //this.setState({ savedViews: this.props.storedViews.savedViews });
-    }
-
-    onSavedViewSelect(originalVizName, query){
-
-        console.log(originalVizName); 
-        console.log(query);
-
+    onSavedViewSelect(savedVizObj){
+        var originalVizName = savedVizObj.OriginalVizName; 
+        var query = savedVizObj.QueryString; 
         var funnelData;
         var keys = Object.keys(this.props.funnelData);
         var path;
@@ -77,8 +56,13 @@ class MyViews extends React.Component {
                             tableName: response.tableName,
                             datasourceId: response.datasourceId ,
                             query: query,
+                            originalVizName:originalVizName,
                             filterAllowedColumnList:  response.filterAllowedColumnList,
-                            sdtPath: sdtPath
+                            sdtPath: sdtPath,
+                            savedViz: true,
+                            vizID:savedVizObj.ID,
+                            savedVizName: savedVizObj.Name,
+                            frontEndFilterString: savedVizObj.frontEndFilterString
                         }
                     )
                 );
@@ -103,7 +87,7 @@ class MyViews extends React.Component {
                         <SimpleTable  
                             id = "SavedViews"
                             settings = { this.props.settings }
-                            data = { this.state.savedViews }
+                            data = { this.props.storedViews.savedViews }
                             onClickSaved = { this.onSavedViewSelect.bind(this) }
                         />
                     </Collapsible>
@@ -334,7 +318,7 @@ class SimpleTable extends React.Component {
     }
 
     handleRowSelection = (selectedRows) => {
-        this.props.onClickSaved(this.state.flatData[selectedRows].OriginalVizName, this.state.flatData[selectedRows].QueryString);
+        this.props.onClickSaved(this.state.flatData[selectedRows]);
     };
     
     render() {
@@ -545,7 +529,7 @@ class SimpleTable extends React.Component {
 const mapStateToProps = function(state) {
  return {
    settings: state.filterState.Settings,
-   //storedViews: state.filterState.StoredViews,
+   storedViews: state.filterState.StoredViews,
    funnelData: state.filterState.FunnelData
  }
 }

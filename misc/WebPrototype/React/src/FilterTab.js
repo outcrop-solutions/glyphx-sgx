@@ -32,6 +32,12 @@ class FilterTabs extends React.Component {
     };
 
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.data != nextProps.data){
+            this.setState({tableData: nextProps.data});
+        }
+    }
+
     /**
      * Hide the main scrollbar when hovering inside the range table while the range table has a scrollbar itself
      * Only hides if the setting is enabled

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
+import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -132,7 +133,28 @@ class HomePage extends React.Component {
         })();
 
         document.title = "GlyphEd - Home";
+
+        this.fetchSavedViews();
     }
+
+    componentDidUpdate(){
+        //debugger;
+        console.log('update!');
+    }
+
+    fetchSavedViews(){
+        var context = this;
+		makeServerCall("fetchSavedViews",
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                
+                // Post the new data to the state and hide the window load-mask
+               context.props.dispatch( setCurrentSavedViews( response.savedViews ) );
+            }
+        );
+    }
+
+ 
 
 
     /**
@@ -247,6 +269,11 @@ const mapStateToProps = function(state){
     funnelData: state.filterState.FunnelData
   }
 }
+
+export const setCurrentSavedViews = (savedViewsList) => ({
+    type: 'UPDATE_SAVED_VIEWS',
+    savedViewsList,
+ });
 
 
 /**
