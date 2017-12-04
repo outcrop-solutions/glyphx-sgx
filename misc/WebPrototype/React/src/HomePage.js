@@ -142,6 +142,10 @@ class HomePage extends React.Component {
         console.log('update!');
     }
 
+
+    /**
+     * This function is because on the homepage load we want to fetch the saved views.
+     */
     fetchSavedViews(){
         var context = this;
 		makeServerCall("fetchSavedViews",
@@ -153,9 +157,6 @@ class HomePage extends React.Component {
             }
         );
     }
-
- 
-
 
     /**
 	 * Updates tutorial stage
