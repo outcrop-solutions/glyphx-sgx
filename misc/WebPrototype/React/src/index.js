@@ -27,7 +27,8 @@ const initialFilterState = {
         legendModal: false,
         allViewsModal: false,
         helpModal: false,
-        adminModal: false
+        adminModal: false,
+        selectedFilteredModal: false
     },
     UserInfo: {},
     FunnelData: {},
@@ -501,6 +502,7 @@ const filterReducer = function(state = initialFilterState, action) {
             var allViewsDisplay = state.ModalDisplay.allViewsModal;
             var helpDisplay = state.ModalDisplay.helpModal;
             var adminDisplay = state.ModalDisplay.adminModal;
+            var selectedFilteredDisplay = state.ModalDisplay.selectedFilteredModal;
             
             if (action.settingsModal === true || action.settingsModal === false) {
                 settingsDisplay = action.settingsModal;
@@ -530,6 +532,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 adminDisplay = action.adminModal;
             }
 
+            if (action.selectedFilteredModal === true || action.selectedFilteredModal === false) {
+                selectedFilteredDisplay = action.selectedFilteredModal;
+            }
+
 
             return { 
                     ...state,
@@ -541,7 +547,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         legendModal: legendDisplay,
                         allViewsModal: allViewsDisplay,
                         helpModal: helpDisplay,
-                        adminModal: adminDisplay
+                        adminModal: adminDisplay,
+                        selectedFilteredModal: selectedFilteredDisplay
                     }
                 };
 

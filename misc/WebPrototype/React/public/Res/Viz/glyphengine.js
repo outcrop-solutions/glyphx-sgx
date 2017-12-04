@@ -5,6 +5,7 @@ var displayedTags = new Map();
 var filterManager = null;
 var axisControl = null;
 var advancedTexture = null;
+var selectedGlyphs = new Array();
 
 //put the postmessage code here..
 
@@ -28,6 +29,14 @@ function receiveMessage(event)
 	}
 }
 
+function closeSceneView(){
+    filterManager.clearSelections();
+}
+
+function getSelectedGlyphIDs() {
+    return filterManager.getSelectedIDs();
+}
+
 function filterGlyphs(glyphIDs) {
 
     if(glyphIDs.length != 0){
@@ -43,8 +52,8 @@ var createLabel = function(mesh, tag) {
     label.height = "20px";
     label.alpha = 0.5;
     label.width = (tag.length*10)+"px";
-    label.cornerRadius = 10;
-    label.thickness = 1;
+    //label.cornerRadius = 10;
+    label.thickness = 0;
     label.linkOffsetX = (tag.length*5);
     advancedTexture.addControl(label); 
     label.linkWithMesh(mesh);
@@ -110,10 +119,13 @@ var createScene = function (engine) {
     camera2.lowerRadiusLimit = 7;
     camera2.upperRadiusLimit = 7;
 
-	//var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
-    var light = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(1, -1, 0), scene);
+	//var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, -1, 0), scene);
+    var light = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(1, -1, 1), scene);
+    //var light = new BABYLON.PointLight("Dir0", new BABYLON.Vector3(0, -1, 0), scene);
+    light.specular = new BABYLON.Color3(0, 0, 0);
     // Default intensity is 1. Let's dim the light a small amount
-    light.intensity = 0.7;
+    light.intensity = 0.6;
+    light.parent = camera;
 
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("ui1");
 
@@ -234,6 +246,10 @@ var createScene = function (engine) {
 
     function createBaseImage(image, width, height) {
         
+        var base_image_light = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(0, -1, 0), scene);
+        base_image_light.specular = new BABYLON.Color3(0, 0, 0);
+        base_image_light.intensity = 1.0;
+
         var baseImage = new BABYLON.StandardMaterial("ground", scene);
         baseImage.diffuseTexture = new BABYLON.Texture(image, scene);
 
@@ -241,6 +257,8 @@ var createScene = function (engine) {
         var ground = BABYLON.Mesh.CreateGround('ground', width, height, 2, scene);
         ground.position = new BABYLON.Vector3(0, -3, 0);
         ground.material = baseImage;
+
+        base_image_light.includedOnlyMeshes.push(ground);
     }
 
     var createAxisLines = function(x, y, z) {
@@ -252,31 +270,31 @@ var createScene = function (engine) {
         displayedTags.set(z_axis_cone.id, createLabel(z_axis_cone, "Z / "+z));
     }
 
-    function createShape(geometry, root) {
+    function createShape(geometry, color, root) {
         mult = root ? 1 : 1;
         switch(geometry){
             case 1:
-                return BABYLON.Mesh.CreateBox("Cube", 1.0*mult, scene);
+                return BABYLON.Mesh.CreateBox("Cube"+color, 1.0*mult, scene);
             case 3:
-                return BABYLON.Mesh.CreateSphere('Sphere', 16, 1, scene);
+                return BABYLON.Mesh.CreateSphere("Sphere"+color, 16, 1, scene);
             case 5:
-                return BABYLON.MeshBuilder.CreateCylinder("Cone", {height: 1, diameterTop: 0, tessellation: 12}, scene);
+                return BABYLON.MeshBuilder.CreateCylinder("Cone"+color, {height: 1, diameterTop: 0, tessellation: 12}, scene);
             case 7:
-                return BABYLON.Mesh.CreateTorus("Torus", 1*mult, 0.2, 16, scene);
+                return BABYLON.Mesh.CreateTorus("Torus"+color, 1*mult, 0.2, 16, scene);
             case 9:
-                return BABYLON.MeshBuilder.CreatePolyhedron("Dodecahedron", {type: 2, size: 0.5}, scene);
+                return BABYLON.MeshBuilder.CreatePolyhedron("Dodecahedron"+color, {type: 2, size: 0.5}, scene);
             case 11:
-                return BABYLON.MeshBuilder.CreatePolyhedron("Octahedron", {type: 1, size: 0.5}, scene);
+                return BABYLON.MeshBuilder.CreatePolyhedron("Octahedron"+color, {type: 1, size: 0.5}, scene);
             case 13:
-                return BABYLON.MeshBuilder.CreatePolyhedron("Tetrahedron", {type: 0, size: 0.5}, scene);
+                return BABYLON.MeshBuilder.CreatePolyhedron("Tetrahedron"+color, {type: 0, size: 0.5}, scene);
             case 15:
-                return BABYLON.MeshBuilder.CreatePolyhedron("Icosahedron", {type: 3, size: 0.5}, scene);
+                return BABYLON.MeshBuilder.CreatePolyhedron("Icosahedron"+color, {type: 3, size: 0.5}, scene);
             case 16:
-                return BABYLON.MeshBuilder.CreateCylinder("Pin", {diameterTop: 0.5, diameterBottom: 0, tessellation: 12}, scene);
+                return BABYLON.MeshBuilder.CreateCylinder("Pin"+color, {diameterTop: 0.5, diameterBottom: 0, tessellation: 12}, scene);
             case 19:
-                return BABYLON.Mesh.CreateCylinder("Cylinder", 3, 0.25, 0.25, 12, 1, scene);
+                return BABYLON.Mesh.CreateCylinder("Cylinder"+color, 3, 0.25, 0.25, 12, 1, scene);
             default:
-                return BABYLON.Mesh.CreateBox("Cube", 1.0*mult, scene);
+                return BABYLON.Mesh.CreateBox("Cube"+color, 1.0*mult, scene);
         }
     }
 
@@ -319,7 +337,9 @@ var createScene = function (engine) {
         if(isRoot){
             return [s[0], s[2], s[1]] //Same coordinate plane issue as with position
         }
-
+        else if(g == 7){
+            return [s[0]/2, s[2]/2, s[1]/2];
+        }
         return [s[0]/3, s[2]/3, s[1]/3];
     }
 
@@ -340,7 +360,7 @@ var createScene = function (engine) {
     var materialMap = new Map();
     var allGlyphs = new Map();
     var topoIDs = new Map();
-    filterManager = new SYNGLYPHX.FilterManager();
+    filterManager = new SYNGLYPHX.FilterManager(camera);
 
     var avg_x = 0;
     var avg_y = 0;
@@ -348,10 +368,24 @@ var createScene = function (engine) {
 
     var unique_locations = new Map();
 
-    //console.log(json_path);
-
     $.ajax({url: json_path, success: function(data){
+        /*
+        // Environment Texture
+        var hdrTexture = new BABYLON.HDRCubeTexture("test.hdr", scene, 512);
 
+        // Skybox
+        var hdrSkybox = BABYLON.Mesh.CreateBox("hdrSkyBox", 1000.0, scene);
+        var hdrSkyboxMaterial = new BABYLON.PBRMaterial("skyBox", scene);
+        hdrSkyboxMaterial.backFaceCulling = false;
+        hdrSkyboxMaterial.reflectionTexture = hdrTexture.clone();
+        hdrSkyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+        hdrSkyboxMaterial.microSurface = 1.0;
+        hdrSkyboxMaterial.cameraExposure = 0.6;
+        hdrSkyboxMaterial.cameraContrast = 1.6;
+        hdrSkyboxMaterial.disableLighting = true;
+        hdrSkybox.material = hdrSkyboxMaterial;
+        hdrSkybox.infiniteDistance = true;
+        */
         var rootNum = 0;
         var bg = data.background;
         if(bg["image"].length >= 5) {
@@ -371,9 +405,13 @@ var createScene = function (engine) {
             if(obj[i]["alpha"] != 0){
                 topoIDs.set(obj[i]["id"], obj[i]["topo"]);
 
+                if(obj[i]["color"] == "#ffffff"){
+                    obj[i]["color"] = "#e5e5e5";
+                }
+
                 var mesh;
                 if(meshMap.get(obj[i]["geometry"]+obj[i]["color"]) == null){
-                    meshMap.set(obj[i]["geometry"]+obj[i]["color"], createShape(obj[i]["geometry"], obj[i]["parent_id"] == 0));
+                    meshMap.set(obj[i]["geometry"]+obj[i]["color"], createShape(obj[i]["geometry"], obj[i]["color"], obj[i]["parent_id"] == 0));
                     mesh = meshMap.get(obj[i]["geometry"]+obj[i]["color"]);
                 }
                 else{
@@ -386,10 +424,11 @@ var createScene = function (engine) {
 
                 scale = adjustMeshScaling(obj[i]["geometry"], obj[i]["scale"], obj[i]["parent_id"] == 0)
                 mesh.scaling = new BABYLON.Vector3(scale[0], scale[1], scale[2]);
+                /*
                 if(obj[i]["geometry"] == 7){
                     console.log("id: "+obj[i]["id"]+", "+obj[i]["scale"]);
                 }
-
+                */
                 rotate = translateMeshRotation(obj[i]["geometry"], obj[i]["scale"], obj[i]["rotate"], obj[i]["parent_id"] == 0, topo);
                 mesh.rotation = new BABYLON.Vector3(rotate[0], rotate[1], rotate[2]);
 
@@ -398,24 +437,33 @@ var createScene = function (engine) {
                     mesh.parent = allGlyphs.get(obj[i]["parent_id"]);
                 }
                 else{
-                    filterManager.addRootGlyph(++rootNum, mesh);
-                    avg_x += pos[0];
-                    avg_y += pos[1];
-                    avg_z += pos[2];
-                    mesh.scaling = new BABYLON.Vector3(scale[0]*2, scale[1]*2, scale[2]*2);
+                    var ignore = false;
                     if(unique_locations.get(pos[0]+""+pos[1]+""+pos[2]) == null){
                         unique_locations.set(pos[0]+""+pos[1]+""+pos[2], 1); 
                     }
                     else{
                         unique_locations.set(pos[0]+""+pos[1]+""+pos[2], unique_locations.get(pos[0]+""+pos[1]+""+pos[2])+1);
+                        ignore = true;
                     }
+                    filterManager.addRootGlyph(++rootNum, mesh, ignore);
+                    avg_x += pos[0];
+                    avg_y += pos[1];
+                    avg_z += pos[2];
+                    mesh.scaling = new BABYLON.Vector3(scale[0]*2, scale[1]*2, scale[2]*2);
+                    //mesh.actionManager = new BABYLON.ActionManager(scene);
+                    //mesh.actionManager.registerAction(action);
                 }
                 mesh.freezeWorldMatrix();
 
                 if(materialMap.get(obj[i]["color"]) == null){
                     materialMap.set(obj[i]["color"], new BABYLON.StandardMaterial("sm", scene));
                 }
-                materialMap.get(obj[i]["color"]).emissiveColor = new BABYLON.Color3.FromHexString(obj[i]["color"]);
+
+                function shadeColor(color, percent) {   
+                    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+                    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+                }
+                materialMap.get(obj[i]["color"]).emissiveColor = new BABYLON.Color3.FromHexString(shadeColor(obj[i]["color"], -0.5));
                 materialMap.get(obj[i]["color"]).diffuseColor = new BABYLON.Color3.FromHexString(obj[i]["color"]);
                 mesh.material = materialMap.get(obj[i]["color"]);
                 mesh.material.needDepthPrePass = true;
@@ -430,7 +478,34 @@ var createScene = function (engine) {
 
         console.log("Glyph Count:" + filterManager.rootCount() + ", Unique Locations:" + unique_locations.size);
 
+        var vis = 0;
+        filterManager.rootGlyphs.forEach(function(value, key, map) {
+            vis += value.isEnabled() ? 1 : 0;
+        });
+        console.log("Enabled Glyphs: " + vis);
+
     }});
+
+    var selection_box = null;
+    function createSelectionBox(start, end) {
+        function topLeftRelativeToCanvas(start, end) {
+            var centerX = canvas.width/2;
+            var centerY = canvas.height/2;
+            var x = Math.min(start[0], end[0])+(Math.abs(start[0]-end[0])/2);
+            var y = Math.min(start[1], end[1])+(Math.abs(start[1]-end[1])/2);
+            return [x-centerX, y-centerY];
+        }
+        selection_box = new BABYLON.GUI.Rectangle();
+        selection_box.width = Math.abs(start[0]-end[0])+"px";
+        selection_box.height = Math.abs(start[1]-end[1])+"px";
+        selection_box.thickness = 0;
+        selection_box.background = "gray";
+        selection_box.alpha = 0.5; 
+        var pos = topLeftRelativeToCanvas(start, end);
+        selection_box.top = pos[1];
+        selection_box.left = pos[0];
+        advancedTexture.addControl(selection_box);  
+    }
 
     function findParent(mesh){
         if(mesh.parent == null){
@@ -439,13 +514,28 @@ var createScene = function (engine) {
         return findParent(mesh.parent);
     }
 
+    var startPoint;
+    var box_selection = false;
     var lastPickedMesh = null;
     scene.onPointerDown = function (evt, pickResult) {
-        if (pickResult.hit) {
+        if (evt.shiftKey) {
+            filterManager.clearSelections();
+            //console.log("Start Point - X: " + scene._pointerX + " Y: " + scene._pointerY);
+            camera.inputs.remove(camera.inputs.attached.pointers);
+            camera2.inputs.remove(camera2.inputs.attached.pointers);
+            box_selection = true;
+            startPoint = [scene._pointerX, scene._pointerY];
+        }
+        else if (pickResult.hit) {
             if(pickResult.pickedMesh.name != 'ground' && pickResult.pickedMesh.name != 'tagplane'){
+                filterManager.clearSelections();
                 lastPickedMesh = pickResult.pickedMesh;
                 var mesh = findParent(pickResult.pickedMesh);
+                filterManager.addSingleSelection(mesh);
                 camera.setTarget(new BABYLON.Vector3(mesh.position.x, mesh.position.y, mesh.position.z));
+                camera2.alpha = camera.alpha;
+                camera2.beta = camera.beta;
+                
                 if(bbDisplayed){
                     var childMeshes = mesh.getChildMeshes();
                     var tagString = "<table id='bbcard'>";
@@ -459,6 +549,32 @@ var createScene = function (engine) {
                     //$("#card").dialog( "option", "position", { my: "right bottom", at: "right bottom", of: window } );
                 }
             }
+        }
+    };
+
+    scene.onPointerUp = function (evt) {
+        if(box_selection){
+            //console.log("End Point - X: " + scene._pointerX + " Y: " + scene._pointerY);
+            camera.inputs.addPointers();
+            camera2.inputs.addPointers();
+            box_selection = false;
+            advancedTexture.removeControl(selection_box); 
+            filterManager.setSelectedGlyphs(camera, startPoint, [scene._pointerX, scene._pointerY]);
+            if(filterManager.getSelectedIDs().length > 0){
+                //console.log(filterManager.getSelectionCenter());
+                camera.setTarget(filterManager.getSelectionCenter());
+                camera2.alpha = camera.alpha;
+                camera2.beta = camera.beta;
+            }
+        }
+    };
+
+    scene.onPointerMove = function (evt) {
+        if(box_selection){
+            if(selection_box != null){
+                advancedTexture.removeControl(selection_box); 
+            }
+            createSelectionBox(startPoint, [scene._pointerX, scene._pointerY]);
         }
     };
 
@@ -496,11 +612,8 @@ var createScene = function (engine) {
                 displayedTags.delete(lastPickedMesh.id);
             }
         }
-        else if(evt.keyCode == 65) {
-            enableAxisLines(0);
-        }
-        else if(evt.keyCode == 83) {
-            enableAxisLines(1);
+        else if(evt.keyCode == 77) {
+            console.log(camera.radius/40);
         }
     }  
 

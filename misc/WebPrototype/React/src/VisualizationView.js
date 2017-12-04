@@ -11,6 +11,7 @@ import StatisticModal from './StatisticModal.js'
 import TopNavBar from './TopNavBar.js';
 import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './topNav.css';
@@ -92,6 +93,12 @@ class VisualizationView extends React.Component {
 
         style.sheet.insertRule('html { overflow: hidden; }', 23);
 
+
+
+        var sidebarButton = document.getElementById("showSideBar");
+        sidebarButton.style.display = "none";
+
+
         document.title = "GlyphEd - Viewer";
     }
 
@@ -162,6 +169,37 @@ class VisualizationView extends React.Component {
     }
 
 
+    /**
+	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
+     * Wont have to be reloaded after it is "closed"
+	 */ 
+    toggleNav() {
+        var filterNav = document.getElementById("filterNav");
+        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
+        var gv = document.getElementById('GlyphViewerContainer');
+
+        var sidebarButton = document.getElementById("showSideBar");
+        sidebarButton.style.display = "none";
+
+        if (!filterNavOpen) {
+            //open the filterNav sidebar
+            filterNav.style.transform = "translate(0px, 0px)";
+            if (!this.props.settings.sideBarOverlap) {
+                gv.style.width = "calc(100% - 450px)";
+            }
+
+            else {
+                gv.style.width = "100%";
+            }
+        }
+
+        else {
+            filterNav.style.transform = "translate(460px, 0px)";
+            gv.style.width = "100%";
+        }
+    }
+
+
     render() {
         return (
             <MuiThemeProvider>
@@ -192,16 +230,43 @@ class VisualizationView extends React.Component {
                         />
                     </div>
 
-                    <div id  = "filterNav" className = "sidenav" style = {{ height: "calc(100% - 56px)", marginTop: "56px" }} >
-                        <FilterSideBar updateViz = { (key) => this.updateViz(key) } />
+                    <div id  = "filterNav" className = "sidenav" style = {{ height: "100%" }} >
+                        <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
+                            <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '36px', transition: '0.37s' }}>
+                                <TopNavBar />
+                            </div>
+
+                            <FilterSideBar updateViz = { (key) => this.updateViz(key) } />
+                        </Flexbox>
+                    </div>
+
+                    <div id = "showSideBar" >
+                        <FloatingActionButton 
+                            backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                            style = {{
+                                top: '10px',
+                                right: '10px',
+                                position: 'absolute',
+                                zIndex: '10'
+                            }}
+                            mini = { true }
+                            //iconStyle = {{ height: "36px", width: "36px" }}
+                            onClick = { () => this.toggleNav() }
+                        >
+                            <i 
+                                className = "fa fa-arrow-left" 
+                                style = {{
+                                    fontSize: '1.8em',
+                                    color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                }}
+                            /> 
+                        </FloatingActionButton>
                     </div>
 					
 					{/* Actual Application body that you see */}
                     <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
 
-                        <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '56px', transition: '0.37s' }}>
-                            <TopNavBar />
-                        </div>
+                        
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 

@@ -58,6 +58,9 @@ class TopNavBar extends React.Component {
         var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
         var gv = document.getElementById('GlyphViewerContainer');
 
+        var sidebarButton = document.getElementById("showSideBar");
+        sidebarButton.style.display = "";
+
         if (!filterNavOpen) {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
@@ -111,7 +114,7 @@ class TopNavBar extends React.Component {
     render() {
         return(
             <Toolbar 
-                style = {{ padding: '0px', backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
+                style = {{ padding: '0px', height: "36px", backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
                 ref = "topNavToolbar"
             >
                 {/* Logo */}
@@ -124,10 +127,6 @@ class TopNavBar extends React.Component {
                 {/* Top Right icons */}
                 <ToolbarGroup>
                     <ToolbarSeparator />
-
-                    <IconButton onClick = { this.toggleNav.bind(this) } style = {{ display: (this.props.homePage ? "none" : "") }} >
-                        <FontIcon className = "fa fa-filter fa-2x" color = '#ffffff' />
-                    </IconButton>
 
                     <IconButton 
                         onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
@@ -160,6 +159,10 @@ class TopNavBar extends React.Component {
                         className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
                     >
                         <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' />
+                    </IconButton>
+
+                    <IconButton onClick = { this.toggleNav.bind(this) } style = {{ margin: "0px 0px 0px -5px", display: (this.props.homePage ? "none" : "") }} >
+                        <FontIcon className = "fa fa-arrow-right fa-2x" color = '#ffffff' />
                     </IconButton>
                 </ToolbarGroup>
 

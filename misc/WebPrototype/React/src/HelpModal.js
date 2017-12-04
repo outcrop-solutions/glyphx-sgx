@@ -95,8 +95,6 @@ class HelpModal extends React.Component {
 
 	/**
      * This method searches on the data of table. Allows Multisearch using "," as a separator. 
-     * @param context: the instance of this react element.
-     * @param id: This is the id used to identify the table and the textfield.
      */
 	onKeyUpMultiSearch = () => {
 		var i, j;

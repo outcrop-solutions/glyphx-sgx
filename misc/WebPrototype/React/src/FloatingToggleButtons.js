@@ -18,9 +18,33 @@ class FloatingToggleButtons extends React.Component {
     /**
 	 * React built-in which is called when component mounts
 	 */
-	//componentDidMount() {
-		// Check if he axis is visible and set axisVisible appropriately in the state
-	//}
+	componentDidMount() {
+        // Check if he axis is visible and set axisVisible appropriately in the state
+        //var iframe = document.getElementById('GlyphViewer').contentWindow;
+        //this.setState({ axisVisible: iframe.isAxisVisible() });
+
+		// Mouseup listener used to handle click drag selection
+		//document.onkeydown = this.handleKeyDown.bind(this);
+	}
+	
+
+	/**
+	 * React built-in which is called when component unmounts
+	 */
+	componentWillUnmount() {
+		// Removing listener so it doesnt linger across the site
+		//document.onkeydown = null;
+	}
+
+
+    /*
+    handleKeyDown(e) {
+        if (e.keyCode === 27 || e.keyCode === 122) {
+            debugger;
+            this.setState({ fullScreenMode: false });
+        }
+    }
+    */
     
 	
 	/**
@@ -55,6 +79,7 @@ class FloatingToggleButtons extends React.Component {
             this.setState({ menuOpen: true });
         }
     }
+    
 
 
 	/**
@@ -62,31 +87,50 @@ class FloatingToggleButtons extends React.Component {
 	 * @param {object} e: event object.
 	 */
 	toggleFullScreenMode(e) {
-        var topNav = document.getElementById('TopNav');
 		var filterNav = document.getElementById("filterNav");
         var gv = document.getElementById('GlyphViewerContainer');
 		var iconDiv = e && e.currentTarget ? e.currentTarget.querySelector('.fa') : null;
-		
-		if (!this.state.fullScreenMode) {
+        var sidebarButton = document.getElementById("showSideBar");
 
-			// Hide the filterSideNav if visible
+        //debugger;
+
+        if ((document.fullScreenElement !== undefined && document.fullScreenElement === null) || 
+            (document.msFullscreenElement !== undefined && document.msFullscreenElement === null) || 
+            (document.mozFullScreen !== undefined && !document.mozFullScreen) || 
+            (document.webkitIsFullScreen !== undefined && !document.webkitIsFullScreen) ) {
+
+            // Hide the filterSideNav if visible
             filterNav.style.transform = "translate(460px, 0px)";
 			
 			// Update the glyphviewer
             gv.style.width = "100%";
-            topNav.style.height = '0px';
-			topNav.style.overflow = 'hidden';
 			
             if (iconDiv) {
 				iconDiv.classList.remove('fa-arrows-alt');
 				iconDiv.classList.add('fa-compress');
 			}
 
-			this.setState({fullScreenMode: true});
-		}
+            sidebarButton.style.display = "";
 
-		else {
-			// Update the glyphviewer
+            var elem = document.body;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } 
+            else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            } 
+            else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } 
+            else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            }
+
+            this.setState({ fullScreenMode: true });
+        }
+
+        else {
+            // Update the glyphviewer
             if (!this.props.settings.sideBarOverlap) {
                 gv.style.width = "calc(100% - 450px)";
             }
@@ -95,18 +139,30 @@ class FloatingToggleButtons extends React.Component {
                 gv.style.width = "100%";
             }
 
-            topNav.style.height = this.props.topNavBarHeight + "px";
-			topNav.style.overflow = '';
-
             filterNav.style.transform = "translate(0px, 0px)";
 
 			if (iconDiv) {
 				iconDiv.classList.add('fa-arrows-alt');
 			    iconDiv.classList.remove('fa-compress');
 			}
-			
-			this.setState({fullScreenMode: false});
-		}
+
+            sidebarButton.style.display = "none";
+
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } 
+            else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } 
+            else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } 
+            else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+
+            this.setState({ fullScreenMode: false });
+        }
     }
     
 
@@ -139,12 +195,13 @@ class FloatingToggleButtons extends React.Component {
                 <FloatingActionButton 
                     backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                     style = {{
-                        bottom: '20px',
-                        left: '20px',
+                        bottom: '25px',
+                        left: '28px',
                         position: 'absolute',
                         zIndex: '10',
                         transition: '0.5s'
                     }} 
+                    mini = { true }
                     onClick = { this.openCloseFloatingMenu.bind(this) }
                 >
                     <i 

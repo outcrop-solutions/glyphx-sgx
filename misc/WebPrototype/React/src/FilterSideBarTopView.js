@@ -13,8 +13,12 @@ import FlatButton from 'material-ui/FlatButton';
 import FilterViewForm from './FilterSummaryView.js';
 import Select from 'react-select';
 import Snackbar from 'material-ui/Snackbar';
+import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
 import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
+
+
+
 
 /**
  * This is the top section which contains the overview in the filter side-bar
@@ -42,7 +46,7 @@ class FilterSideBarTopView extends React.Component {
         this.state = {
             topViewVisible: true,
             hideShowButtonTextFlag: false,
-            menu: { open: false },
+            menu: { open: false, showOpen: false },
             viewSelectValue: null,
             tableSelectValues: [],
             tableSelectItems:tableSelectItems,
@@ -56,7 +60,8 @@ class FilterSideBarTopView extends React.Component {
             redoSnackbar: false,
             filterIDs: null,
             deleteDailogOpen: false,
-            deleteDialogLabel: 'Are you sure you want to delete ; ?'
+            deleteDialogLabel: 'Are you sure you want to delete ; ?',
+            selectedData: []
         };
     }
     
@@ -170,7 +175,17 @@ class FilterSideBarTopView extends React.Component {
                     this.setState({ saveDailogOpen: false });
                 }
                 break;
-            
+
+            case 'showMenu':
+                 if (open) {
+                    evt.preventDefault();
+                    this.setState({ menu: { showOpen: true, showAnchorEl: evt.currentTarget } });
+                }
+                else {
+                    this.setState({ menu: { showOpen: false } });
+                }
+                break;
+
             case 'menu':
                  if (open) {
                     evt.preventDefault();
@@ -663,6 +678,59 @@ class FilterSideBarTopView extends React.Component {
         this.handleOpenClose('menu', false, event);
     };
 
+
+    /**
+	* This method is called when the user clicks on the 'Save' inside the menu.
+    * @param event: - ADCMT
+	*/
+    onSelectedDataClick = (event) => {
+        //var IDs = document.getElementById("GlyphViewer").contentWindow.getSelectedGlyphIDs();
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
+
+        var context = this;
+
+        // Get the data corresponding to the URL
+        //makeServerCall(window.encodeURI(selectedGlyphsURL),
+        makeServerCall(selectedGlyphsURL,
+            function (responseText) { 
+                var response = responseText;
+                if (typeof responseText === 'string') {
+                    response = JSON.parse(response);
+                }
+                
+                if (response.data[0]) {
+                    context.setState({ selectedData: response.data });
+                    context.props.dispatch(editModalDisplay(true));
+                }
+            }
+        );
+
+        /*
+        var xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                var response = xhr.responseText;
+                if (typeof xhr.responseText === 'string') {
+                    response = JSON.parse(xhr.responseText);
+                }
+                
+                if (response.data[0]) {
+                    context.setState({ selectedData: response.data });
+                    context.props.dispatch(editModalDisplay(true));
+                }
+            }
+        }
+
+        xhr.open('GET', selectedGlyphsURL, true);
+        xhr.send(null);
+        */
+
+        this.handleOpenClose('showMenu', false);
+    };
+
+
     /**
 	* This method is called when the user clicks on the 'Save As' inside the menu.
     * @param event: - ADCMT
@@ -894,7 +962,19 @@ class FilterSideBarTopView extends React.Component {
                                     <MenuItem primaryText = "Save" className = "menuItemStyling" onClick = { this.onMenuSaveClick }/>
                                     <MenuItem primaryText = "Save As" className = "menuItemStyling" onClick = { this.onMenuSaveAsClick }/>
                                     <MenuItem primaryText = "Delete" className = "menuItemStyling" onClick = { this.onMenuDeleteClick } disabled= {this.state.viewSelectValue === null || this.state.viewSelectValue === ""}/>
+                                </Menu>
+                            </Popover>
+
+                            <Popover
+                                open = { this.state.menu.showOpen }
+                                anchorEl = { this.state.menu.showAnchorEl }
+                                onRequestClose = { (evt) => this.handleOpenClose('showMenu', false, evt) }
+                                style = {{ fontSize: '13px' }}
+                            >
+                                <Menu>
                                     <MenuItem primaryText = "Statistics" className = "menuItemStyling" onClick = { () => this.handleOpenClose('statistics', true) }/>
+                                    <MenuItem primaryText = "Selected Data" className = "menuItemStyling" onClick = { this.onSelectedDataClick.bind(this) }/>
+                                    <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" onClick = { null }/>
                                 </Menu>
                             </Popover>
 
@@ -965,11 +1045,12 @@ class FilterSideBarTopView extends React.Component {
                 
                 {/* Row 3 */}
                 <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: "10px 0px 8px" }} >
-                    <Flexbox style = {{ width: "30%" }} > 
+                    <Flexbox style = {{ width: "22%" }} > 
                         <RaisedButton 
-                            label = "Clear All"
+                            label = "Clear"
                             style = {{
-                                width: "100%"
+                                width: "100%",
+                                minWidth: "0px"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -992,14 +1073,15 @@ class FilterSideBarTopView extends React.Component {
                         />
                     </Flexbox>
 
-                    <Flexbox style = {{ width: "5%" }} /> 
+                    <Flexbox style = {{ width: "4%" }} /> 
 
-                    <Flexbox style = {{ width: "30%" }} > 
+                    <Flexbox style = {{ width: "22%" }} > 
                         <RaisedButton 
                             label = { this.state.hideShowButtonTextFlag ? "Hide" : "Show" }
                             id = "buttonHideShow"
                             style = {{
-                                width: "100%"
+                                width: "100%",
+                                minWidth: "0px"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -1008,7 +1090,10 @@ class FilterSideBarTopView extends React.Component {
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
-								color: this.props.settings.colors.overviewButtonsColor.text
+								color: this.props.settings.colors.overviewButtonsColor.text,
+                                paddingLeft: "0px",
+                                paddingRight: "0px"
+
 							}}
 							overlayStyle = {{
 								height: '25px',
@@ -1020,15 +1105,44 @@ class FilterSideBarTopView extends React.Component {
 
                     </Flexbox>
 
-                    <Flexbox style = {{ width: "5%" }} /> 
+                    <Flexbox style = {{ width: "4%" }} /> 
 
-                    <Flexbox style = {{ width: "30%" }} > 
+                    <Flexbox style = {{ width: "22%" }} > 
+                        <RaisedButton
+                            onClick = { (evt) => this.handleOpenClose('showMenu', true, evt) }
+                            label = "View"
+                            style = {{
+                                width: "100%",
+                                minWidth: "0px"
+                            }}
+                            buttonStyle = {{
+                                height: '25px',
+                                lineHeight: '25px',
+                                backgroundColor: this.props.settings.colors.overviewButtonsColor.background
+                            }} 
+                            labelStyle = {{
+                                fontSize: '12px',
+                                color: this.props.settings.colors.overviewButtonsColor.text,
+                                paddingLeft: "0px",
+                                paddingRight: "0px"
+                            }}
+                            overlayStyle = {{
+                                height: '25px',
+                                lineHeight: '25px'
+                            }}
+                        />
+                    </Flexbox>
+
+                    <Flexbox style = {{ width: "4%" }} /> 
+
+                    <Flexbox style = {{ width: "22%" }} > 
                         <RaisedButton 
                             primary = { true } 
-                            label = "Apply Filters" 
+                            label = "Apply" 
                             onClick = { this.applyFilter.bind(this) }
                             style = {{
-                                width: "100%"
+                                width: "100%",
+                                minWidth: "0px"
                             }}
                             buttonStyle = {{
 								height: '25px',
@@ -1045,10 +1159,12 @@ class FilterSideBarTopView extends React.Component {
 								height: '25px',
 								lineHeight: '25px'
 							}}
-					/>
+					    />
                     </Flexbox>
                     
                 </Flexbox>
+                
+                <SelectedAndFilteredDisplay data = { this.state.selectedData } />
 
                 <Dialog
                     title = "Statistics"
@@ -1121,6 +1237,11 @@ class FilterSideBarTopView extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
+export const editModalDisplay = (selectedFilteredModal) => ({
+    type: 'EDIT_MODAL_DISPLAY',
+    selectedFilteredModal,
+});
+
 export const updateFilterFromSnapshot = (snapshot) => ({
     type: 'UPDATE_FILTER_SNAPSHOT',
     snapshot
