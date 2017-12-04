@@ -64,7 +64,7 @@ class ApplicationRouter extends React.Component{
   );
 
   Maintenance = () => (
-      (maintenance ? <Redirect to = "/maintenance" /> : <Redirect to = "/login" /> )
+      (maintenance ? <Maintenance /> : <Redirect to = "/login" /> )
   );
 
 

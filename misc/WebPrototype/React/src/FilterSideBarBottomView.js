@@ -163,6 +163,7 @@ class FilterSideBarBottomView extends React.Component {
                         id = { config.globalStoreName } 
                         displayName = { config.displayName } 
                         data = { config.data } 
+                        refreshTableDataOnRowSelection={(colName,selections) => this.props.refreshTableDataOnRowSelection(colName,selections)}
                         open = { config.data.flatValues.length < 20 || this.state.openCols['tab-' + config.internalColName] ? true : false }
                     />
                 </Collapsible>

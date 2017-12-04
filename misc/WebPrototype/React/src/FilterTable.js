@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Checkbox from 'material-ui/Checkbox';
+import Promise from 'bluebird';
 import ScrollIntoView from 'scroll-into-view-if-needed';
 import SearchBox from './SearchBox.js';
-import './General.css'
-
+import './General.css';
 
 /**
  * Elastic Tables
@@ -48,6 +48,7 @@ class FilterTable extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
+
         return (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues || 
                 this.props.settings != nextProps.settings || 
                 this.state.flatData != nextState.flatData ||
@@ -77,6 +78,7 @@ class FilterTable extends React.Component {
     componentDidUpdate() {
         if (this.props.tableState[this.props.id].selectedValues.length === this.state.flatData.length) {
             this.setState({ selectAll: true });
+            
         }
         else {
             this.setState({ selectAll: false });
@@ -91,7 +93,7 @@ class FilterTable extends React.Component {
         this.componentDidUpdate();
         
         // Force update on mount for pinned columns to show the same selections before change
-        this.forceUpdate();
+        //this.forceUpdate();
     }
 
 
@@ -180,7 +182,16 @@ class FilterTable extends React.Component {
                 data: context.props.tableData.flatValues
             }
 
-            context.props.dispatch(addRemoveElastic(filterStructure));        
+            
+            
+
+            let pom = new Promise(function (resolve, reject) {
+                    context.props.dispatch(addRemoveElastic(filterStructure))
+                    resolve('done');
+            });
+
+            pom.then(() => this.props.refreshTableDataOnRowSelection());
+            
     };
     
 
@@ -469,7 +480,7 @@ class FilterTable extends React.Component {
             for (var property in data) {
                 count = data[property].count;
                 percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%)";
-                rows.push(this.generateRowHTML(property,data[property].value, count, percentStr, (selectedValues.indexOf(data[property]) !== -1), index, true));
+                rows.push(this.generateRowHTML(property,data[property].value, count, percentStr, (selectedValues.indexOf(data[property].value) !== -1), index, true));
                 index++;
             }   
         }
@@ -659,7 +670,7 @@ class FilterRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.checked !== nextProps.checked || this.props.settings != nextProps.settings);
+        return (this.props.checked !== nextProps.checked || this.props.settings != nextProps.settings || this.props.value != nextProps.value || this.props.percentStr != nextProps.percentStr);
     }
 
 

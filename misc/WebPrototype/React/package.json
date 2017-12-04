@@ -32,7 +32,8 @@
     "react-quill": "^1.1.0",
     "react-table-drag-select": "^0.3.1",
     "react-visibility-sensor": "^3.11.0",
-    "react-html-table-to-excel": "^2.0.0"
+    "react-html-table-to-excel": "^2.0.0",
+    "bluebird":"3.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
