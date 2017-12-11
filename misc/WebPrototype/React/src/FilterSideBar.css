@@ -94,7 +94,7 @@
     content: "\f107";
     position: absolute;
     right: 15px;
-    top: 18px;
+    top: 14px;
     display: block;
     font-size: 1rem;
     transition: transform 300ms;
@@ -124,7 +124,7 @@
 
 .columnNameHeader.Collapsible__trigger:after {
     right: 15px;
-     top: 13px;
+     top: 8px;
      color: var(--collapsible-text-color-sub);
 }
 

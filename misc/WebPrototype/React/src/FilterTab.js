@@ -113,19 +113,31 @@ class FilterTabs extends React.Component {
         return (
             <div>
                 {this.props.open ? 
-                <div>
+                <div style = {{ margin: "-5px 0px -4px" }} >
                     <Tabs onChange = { (value) => this.handleChange(value, this) } value = { this.state.slideIndex } >
                         <Tab 
-                            label = "Elastic" 
+                            label = { 
+                                <div style =  {{ width: "100%", overflow: "hidden", margin: "1px 0px 0px" }} >
+                                    <div style = {{ width: "88px", margin: "0 auto" }} >
+                                        <FontIcon style = {{ width: "20px", float: "left", fontSize: "20px", margin: "-1px 0px 0px", color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className = "fa fa-list-ul" ></FontIcon> 
+                                        <div style = {{ marginleft: "50px" }} >Elastic</div>
+                                    </div>
+                                </div>
+                            }
                             value = { 0 }
-                            icon = { <FontIcon style = {{ color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className = "fa fa-list-ul" ></FontIcon> }
-                            buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 0 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
+                            buttonStyle = { {height: "35px", backgroundColor: (this.state.slideIndex === 0 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 0 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
                         />
                         <Tab 
-                            label = "Range" 
+                            label = { 
+                                <div style =  {{ width: "100%", overflow: "hidden" }} >
+                                    <div style = {{ width: "80px", margin: "0 auto" }} >
+                                        <FontIcon style = {{ width: "20px", float: "left", fontSize: "20px", margin: "-2px 0px 0px", color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className = "fa fa-sliders" ></FontIcon> 
+                                        <div style = {{ marginleft: "50px" }} >Range</div>
+                                    </div>
+                                </div>
+                            }
                             value = { 1 }
-                            icon = { <FontIcon style = {{ color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") }} className="fa fa-sliders"></FontIcon> }
-                            buttonStyle = { {height: "49px", backgroundColor: (this.state.slideIndex === 1 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
+                            buttonStyle = { {height: "35px", backgroundColor: (this.state.slideIndex === 1 ? "#353657" : this.props.settings.colors.filterTabColor.tabBackground), color: (this.state.slideIndex === 1 ? this.props.settings.colors.filterTabColor.titleText : "#adadad") } }
                         />
                     </Tabs>
 

@@ -305,7 +305,7 @@ class FilterSideBar extends React.Component {
                     transitionTime = {200} 
                     open = { true }
                     triggerDisabled = { true }
-                    contentInnerClassName  = "Flex__layout-column"
+                    contentInnerClassName  = "Flex__layout-column topViewContent"
                     ref = 'topCollapisble'
                     triggerClassName = 'noHeaderTrigger cursorNormal'
                     triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
@@ -317,7 +317,8 @@ class FilterSideBar extends React.Component {
                         initParams = { this.state.topViewInitParams } 
                         colList = { colList } 
                         showAlert = { (strMsg) => this.showAlert(strMsg) }
-                        refreshParent= {this.loadVisualization}
+                        refreshParent = { this.loadVisualization }
+                        showHideLoadingMask = { this.props.showHideLoadingMask }
                     />
 
                 </Collapsible>

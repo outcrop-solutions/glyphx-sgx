@@ -15,8 +15,17 @@ class ComponentLoadMask extends React.Component {
 		return(
 
             <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%", backgroundColor: this.props.bgColor ? this.props.bgColor : "white" }} >
-                <Flexbox style = {{ width: "80px", margin: "0 auto", alignItems: "center", height: "100%" }} >
-                    <CircularProgress size = { 80 } thickness = { 5 } color = { this.props.color } /> 
+                <Flexbox style = {{ width: this.props.imgLink ? "300px" : "80px", margin: "0 auto", alignItems: "center", height: "100%" }} >
+                    <Flexbox flexDirection = "column" >
+                        {this.props.imgLink ?
+                            <img src = { this.props.imgLink } style = {{ width: '300px', margin: "0 auto" }} alt = "GlyphEd" className = "noselect" draggable = { false } />
+                            :
+                            null
+                        }
+                        <div style = {{ margin: "0 auto" }} >
+                            <CircularProgress size = { 80 } thickness = { 5 } color = { this.props.color } /> 
+                        </div>
+                    </Flexbox>
                 </Flexbox>
             </Flexbox>
 

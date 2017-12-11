@@ -53,14 +53,21 @@ class FloatingToggleButtons extends React.Component {
     openCloseFloatingMenu() {
         var menuItems = document.getElementsByClassName('toggleOptionsMenuItems');
         var floatingToggleButton = document.getElementById("floatingToggleButton");
+        var buttonElement = document.getElementById("collapsibleFloatingButton");
         var len = menuItems.length;
-        var translate = 70; // as the 1st menu button should be little more higher than the spacing between the buttons.
+        var translate = 50; // as the 1st menu button should be little more higher than the spacing between the buttons.
 
-        if (floatingToggleButton.style.transform == '') {
-            floatingToggleButton.style.transform = 'rotateZ(180deg)';
+        if (floatingToggleButton.classList.contains('fa-caret-up')) {
+            floatingToggleButton.classList.remove('fa-caret-up');
+            floatingToggleButton.classList.add('fa-caret-down');
+            floatingToggleButton.style.margin = "2px 0px 0px 0px";
+            buttonElement.style.backgroundColor = this.props.settings.colors.overviewButtonsColor.background;
         }
         else {
-            floatingToggleButton.style.transform = '';
+            floatingToggleButton.classList.remove('fa-caret-down');
+            floatingToggleButton.classList.add('fa-caret-up');
+            floatingToggleButton.style.margin = "-2px 0px 0px 0px";
+            buttonElement.style.backgroundColor = this.props.settings.colors.overviewButtonsColor.altBackground;
         }
 
         if (this.state.menuOpen) {
@@ -72,7 +79,7 @@ class FloatingToggleButtons extends React.Component {
         }
         else {
             for (var j = 0; j < len; j++) {
-                menuItems[j].style.transform = 'translate(0px,-' + translate + 'px)';
+                menuItems[j].style.transform = 'translate(0px,' + translate + 'px)';
                 translate = translate + 50;
             }
 
@@ -193,24 +200,25 @@ class FloatingToggleButtons extends React.Component {
             <div>
                 {/* Main Floating Button */}
                 <FloatingActionButton 
+                    id = "collapsibleFloatingButton"
                     backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                     style = {{
-                        bottom: '25px',
-                        left: '28px',
+                        top: '56px',
+                        left: '5px',
                         position: 'absolute',
                         zIndex: '10',
-                        transition: '0.5s'
                     }} 
                     mini = { true }
                     onClick = { this.openCloseFloatingMenu.bind(this) }
                 >
                     <i 
                         id = "floatingToggleButton" 
-                        className = "fa fa-caret-up" 
+                        className = "fa fa-caret-down" 
                         style = {{
                             fontSize: '1.8em',
                             color: this.props.settings.colors.collapsibleColor.mainIcon,
-                            transition: 'transform 500ms'
+                            //transform: 'rotateZ(90deg)',
+                            margin: "2px 0px 0px 0px"
                         }}
                     /> 
                 </FloatingActionButton>
@@ -270,11 +278,11 @@ class FloatingToggleButtons extends React.Component {
  **/
 const styles = {
 	floatingMiniStyles: {
-		bottom: '25px',
-		left: "28px",
+		top: '56px',
+		left: "5px",
 		position: 'absolute',
 		zIndex: '5',
-		transition: '0.5s'
+        transition: '0.5s'
 	}
 };
 

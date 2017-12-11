@@ -105,6 +105,7 @@ var createScene = function (engine) {
 
 	var camera = new BABYLON.ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 3, 50, BABYLON.Vector3.Zero(), scene);
     camera.lowerRadiusLimit = 3;
+    //camera.wheelPrecision = 5;
 	camera.attachControl(canvas, true);
     scene.activeCameras.push(camera);
     camera.viewport = new BABYLON.Viewport(0, 0, 1.0, 1.0);
@@ -240,8 +241,8 @@ var createScene = function (engine) {
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
     image.paddingTop = "10px";
-    image.width = 0.2;
-    image.height = "50px";
+    image.width = 0.16;
+    image.height = "40px";
     advancedTexture.addControl(image); 
 
     function createBaseImage(image, width, height) {
@@ -354,6 +355,31 @@ var createScene = function (engine) {
             return [x, y, Math.PI/2];
         }
         return [x, y, z];
+    }
+
+    function createSuperimposedGlyphIndicator(mesh){
+        //Sphere
+        var white = new BABYLON.StandardMaterial("sm", scene);
+        white.emissiveColor = new BABYLON.Color3.White();
+        white.diffuseColor = new BABYLON.Color3.White();
+        white.alpha = 0.1;
+        var sphere = BABYLON.Mesh.CreateSphere("Sphere", 16, 1, scene);
+        sphere.material = white;
+        sphere.position = mesh.position;
+        var scale = Math.max(mesh.scaling.x, Math.max(mesh.scaling.y, mesh.scaling.z))*2;
+        sphere.scaling = new BABYLON.Vector3(scale, scale, scale);
+        //Button
+        var button = BABYLON.GUI.Button.CreateImageOnlyButton("but", "expand-64.png");
+        button.width = "30px";
+        button.height = "30px";
+        button.thickness = 0;
+        button.cornerRadius = 0;
+        button.onPointerUpObservable.add(function() {
+            console.alert("Show superimposed glyphs");
+        });
+        advancedTexture.addControl(button);
+        button.linkWithMesh(mesh);
+        button.linkOffsetY = 10;
     }
 
     var meshMap = new Map();
@@ -535,7 +561,11 @@ var createScene = function (engine) {
                 camera.setTarget(new BABYLON.Vector3(mesh.position.x, mesh.position.y, mesh.position.z));
                 camera2.alpha = camera.alpha;
                 camera2.beta = camera.beta;
-                
+                /*
+                if(unique_locations.get(mesh.position.x+""+mesh.position.y+""+mesh.position.z) > 1){
+                    createSuperimposedGlyphIndicator(mesh);
+                } 
+                */
                 if(bbDisplayed){
                     var childMeshes = mesh.getChildMeshes();
                     var tagString = "<table id='bbcard'>";

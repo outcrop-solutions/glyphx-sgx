@@ -11,11 +11,13 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FilterViewForm from './FilterSummaryView.js';
-import Select from 'react-select';
+import OldSelect from 'react-select';
+import Select from 'react-styled-select'
 import Snackbar from 'material-ui/Snackbar';
 import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
 import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
+import './General.css';
 
 
 
@@ -61,7 +63,8 @@ class FilterSideBarTopView extends React.Component {
             filterIDs: null,
             deleteDailogOpen: false,
             deleteDialogLabel: 'Are you sure you want to delete ; ?',
-            selectedData: []
+            selectedData: [],
+            multiTable: false
         };
     }
     
@@ -432,6 +435,7 @@ class FilterSideBarTopView extends React.Component {
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
+                debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -500,6 +504,9 @@ class FilterSideBarTopView extends React.Component {
     
         var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
         var sdtPath = path.substring(index + 1);
+
+        // Show mask
+        this.props.showHideLoadingMask(true);
     
         makeServerCall(window.encodeURI('frontEndFilterData/' + sdtPath ),
             function (responseText) {
@@ -525,6 +532,9 @@ class FilterSideBarTopView extends React.Component {
 
                 //context.props.history.push('/glyph-viewer');
                 context.props.refreshParent();
+
+                // Hide mask
+                context.props.showHideLoadingMask(false);
             }
         );
 
@@ -844,10 +854,10 @@ class FilterSideBarTopView extends React.Component {
                 />
 
                 {/* Row 1 */}
-                <Flexbox flexDirection = "row" style = {{ margin: "-2px 0px 3px 0px" }} >
-                    <Flexbox style = {{ width: "55%", margin: "9px 10px 0px 0px" }} > 
+                <Flexbox flexDirection = "row" style = {{ margin: "-9px 0px -2px -1px" }} >
+                    <Flexbox style = {{ width: "55%", margin: "1px 6px 0px 0px" }} > 
                         <Select 
-                            className = "selectViewName"
+                            className = "selectViewName dark-theme"
                             simpleValue
                             value = { this.state.viewSelectValue } 
                             placeholder = "Select a view" 
@@ -1044,7 +1054,7 @@ class FilterSideBarTopView extends React.Component {
                 </Flexbox>
                 
                 {/* Row 3 */}
-                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: "10px 0px 8px" }} >
+                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: this.state. multiTable ? "5px 0px" : "5px 0px -4px" }} >
                     <Flexbox style = {{ width: "22%" }} > 
                         <RaisedButton 
                             label = "Clear"
@@ -1216,10 +1226,10 @@ class FilterSideBarTopView extends React.Component {
                 </Dialog>
                 
                 {/* Row 4 */}
-                <Flexbox flexDirection = "row" >
-                    <Select 
+                <Flexbox flexDirection = "row" style = {{ height: "31px", display: this.state.multiTable ? "" : "none" }} >
+                    <OldSelect 
                         multi 
-                        className = "selectTableName"
+                        className = "selectTableName dark-theme"
                         simpleValue
                         value = { this.state.tableSelectValues } 
                         disabled = { this.state.tableSelectItems.length == 1 } 

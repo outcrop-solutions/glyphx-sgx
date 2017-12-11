@@ -146,7 +146,7 @@ class FilterSideBarBottomView extends React.Component {
                             <span 
                                 style = {{
                                     paddingLeft: '10px',
-                                    fontSize: '1.1rem',
+                                    fontSize: '0.9rem',
                                     color: this.props.settings.colors.collapsibleColor.subText
                                 }}
                             >
@@ -485,7 +485,7 @@ class FilterSideBarBottomView extends React.Component {
                 id = "BottomView"
                 className = "sidenavbar"
             >
-                <div id = 'pinnedCollapisble' style = {{ marginBottom: "3px" }} >
+                <div id = 'pinnedCollapisble' style = {{ margin: "-4px 0px 3px 0px" }} >
                     <Collapsible 
                         transitionTime = {200} 
                         ref = 'pinnedCollapisble'
@@ -549,7 +549,7 @@ class FilterSideBarBottomView extends React.Component {
                             </div>
                         }
                     >
-                        <div style = {{ margin: "1px -3px -6px 1px" }} >
+                        <div style = {{ margin: "-2px -3px -9px 1px" }} >
                             <SearchBox 
                                 settings = {{
                                     SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 

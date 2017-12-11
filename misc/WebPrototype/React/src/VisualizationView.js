@@ -15,6 +15,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './topNav.css';
+import './General.css';
 
 
 injectTapEventPlugin();
@@ -63,23 +64,23 @@ class VisualizationView extends React.Component {
 		// Add the <style> element to the page
 		document.head.appendChild(style);
 		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; text-decoration: none; color: #333333; position: relative; border: none; padding: 15px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; text-decoration: none; color: #333333; position: relative; border: none; padding: 8px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
 		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
 		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
 		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
 		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
-		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 10px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
+		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 4px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
 		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; }', 6);
 		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
 		
 		// For the selectboxes  
 		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
 		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 9);
-        style.sheet.insertRule('.Select-control { background-color: ' + this.props.settings.colors.tableSelectColor.background + '!important; }', 10);
+        style.sheet.insertRule('.Select-control { background-color: ' + "#ffffff" + '!important; }', 10);
 		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
 		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
 		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 13);
-        style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.colors.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px;}', 14);
+        style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.colors.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px; height: 28px}', 14);
 		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.colors.tableSelectColor.deleteHover + ' !important; padding: 0px 3px 0px 3px; margin: 1px 0px 0px 0px; font-size: 18px;}', 15);
         style.sheet.insertRule('.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus { color: ' + this.props.settings.colors.tableSelectColor.deleteHover + '!important; }', 16);
 
@@ -200,6 +201,11 @@ class VisualizationView extends React.Component {
     }
 
 
+    showHideLoadingMask(state) {
+        this.setState({ glyphViewLoaded: state });
+    }
+
+
     render() {
         return (
             <MuiThemeProvider>
@@ -236,7 +242,7 @@ class VisualizationView extends React.Component {
                                 <TopNavBar />
                             </div>
 
-                            <FilterSideBar updateViz = { (key) => this.updateViz(key) } />
+                            <FilterSideBar updateViz = { (key) => this.updateViz(key) } showHideLoadingMask = { this.showHideLoadingMask.bind(this) } />
                         </Flexbox>
                     </div>
 
@@ -244,8 +250,8 @@ class VisualizationView extends React.Component {
                         <FloatingActionButton 
                             backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                             style = {{
-                                top: '10px',
-                                right: '10px',
+                                top: '5px',
+                                right: '5px',
                                 position: 'absolute',
                                 zIndex: '10'
                             }}
@@ -254,19 +260,40 @@ class VisualizationView extends React.Component {
                             onClick = { () => this.toggleNav() }
                         >
                             <i 
-                                className = "fa fa-arrow-left" 
+                                className = "fa fa-caret-down" 
+                                style = {{
+                                    fontSize: '1.8em',
+                                    color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                    transform: 'rotateZ(90deg)',
+                                    margin: "0px 0px 0px -2px"
+                                }}
+                            /> 
+                        </FloatingActionButton>
+                    </div>
+
+                    <FloatingActionButton 
+                            backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                            style = {{
+                                top: '5px',
+                                left: '5px',
+                                position: 'absolute',
+                                zIndex: '10'
+                            }}
+                            mini = { true }
+                            //iconStyle = {{ height: "36px", width: "36px" }}
+                            onClick = { () => this.props.history.push('/home') }
+                        >
+                            <i 
+                                className = "fa fa-home"
                                 style = {{
                                     fontSize: '1.8em',
                                     color: this.props.settings.colors.collapsibleColor.mainIcon,
                                 }}
                             /> 
                         </FloatingActionButton>
-                    </div>
 					
 					{/* Actual Application body that you see */}
                     <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
-
-                        
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 
@@ -283,7 +310,7 @@ class VisualizationView extends React.Component {
 
 
                                 <div style = {{ width: "100%", height: "100%", display: (this.state.glyphViewLoaded ? "none" : "") }} >
-                                    <ComponentLoadMask bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } />
+                                    <ComponentLoadMask bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } imgLink = "./Res/Img/GlyphED.png" />
                                 </div>
 
                                 {this.state.vizKey == '' ? 
@@ -300,7 +327,7 @@ class VisualizationView extends React.Component {
 
                             </div>
 
-                            <FloatingToggleButtons topNavBarHeight = { this.state.topNavBarHeight } /> 
+                            <FloatingToggleButtons iframeLoaded = { this.state.glyphViewLoaded } topNavBarHeight = { this.state.topNavBarHeight } /> 
 
                         </Flexbox>
                     </Flexbox>

@@ -538,10 +538,10 @@ class FilterTable extends React.Component {
 
         return (
 
-            <div style = {{ height:"inherit" }} >
+            <div style = {{ height: "inherit" }} >
                 <br/>
 
-                <div style = {{ margin: "-2px 15px -5px 15px" }} >
+                <div style = {{ margin: "-11px 15px -12px" }} >
                     <SearchBox 
                         ref = "pinnedCollapisbleSearchBox"
                         id = { "tf-" + internalColName }
@@ -674,7 +674,7 @@ class FilterRow extends React.Component {
 
     render() {
         return(
-            <TableRow key = { this.props.index } style = {{ height:'30px' }} selected = { this.props.checked } onClick = { this.onClickRow } >
+            <TableRow key = { this.props.index } style = {{ height:'24px' }} selected = { this.props.checked } onClick = { this.onClickRow } >
                 <TableRowColumn style = {{ height:'inherit', width:'25px' }}> {/*REMOVED FOR PERFORMANCE <Checkbox checked = { this.props.checked } iconStyle = {{ fill: this.props.settings.colors.elasticColor.checkBox }}/> */} </TableRowColumn>
                 <TableRowColumn style = {{ paddingLeft:'7px', paddingRight: '0px', height:'inherit' }}>{this.props.value}</TableRowColumn>
                 <TableRowColumn style = {{ height:'inherit' }}>{this.props.percentStr}</TableRowColumn>

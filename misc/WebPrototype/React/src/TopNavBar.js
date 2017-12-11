@@ -120,7 +120,18 @@ class TopNavBar extends React.Component {
                 {/* Logo */}
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
                     <span style = {{ cursor: 'pointer' }} onClick = { () => this.onClickLogo() } >
-                        {this.state.imgLogoSrc}
+                        {this.props.homePage ? 
+                            this.state.imgLogoSrc
+                            :
+                            <i 
+                                className = "fa fa-home"
+                                style = {{
+                                    fontSize: '1.8em',
+                                    color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                    margin: "0px 0px 1px 8px"
+                                }}
+                            /> 
+                        }
                     </span>
                 </ToolbarGroup>
                 
@@ -161,9 +172,20 @@ class TopNavBar extends React.Component {
                         <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' />
                     </IconButton>
 
-                    <IconButton onClick = { this.toggleNav.bind(this) } style = {{ margin: "0px 0px 0px -5px", display: (this.props.homePage ? "none" : "") }} >
-                        <FontIcon className = "fa fa-arrow-right fa-2x" color = '#ffffff' />
-                    </IconButton>
+                    {/*<IconButton onClick = { this.toggleNav.bind(this) } style = {{ margin: "0px 0px 0px -5px", display: (this.props.homePage ? "none" : "") }} >*/}
+                        {/*<FontIcon className = "fa fa-caret-up fa-2x" color = '#ffffff' style = {{ transform: 'rotateZ(90deg)', margin: "0px 0px 0px 4px" }} />*/}
+                        <i 
+                            className = "fa fa-caret-up cursorHand" 
+                            style = {{
+                                fontSize: '2.3em',
+                                color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                transform: 'rotateZ(90deg)',
+                                margin: "0px 0px 0px 4px",
+                                display: (this.props.homePage ? "none" : "")
+                            }}
+                            onClick = { this.toggleNav.bind(this) }
+                        /> 
+                    {/*</IconButton>*/}
                 </ToolbarGroup>
 
                 {/* User Icon Popover */}

@@ -9,7 +9,6 @@ import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
-import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import { guidGenerator } from './GeneralFunctions.js';
 import './General.css';
 
@@ -37,6 +36,8 @@ class SelectedAndFilteredDisplay extends React.Component {
 	 */
 	componentDidMount() {
 
+		
+
 	}
 	
 
@@ -57,6 +58,45 @@ class SelectedAndFilteredDisplay extends React.Component {
 	
     }
 
+	onClickDownload() {
+		// Generate our CSV string from out HTML Table
+		var csv = this.tableToCSV( document.querySelector( "#dataTable" ) );
+
+		// Create a CSV Blob
+		var blob = new Blob( [ csv ], { type: "text/csv"} );
+
+		// Determine which approach to take for the download
+		if ( navigator.msSaveOrOpenBlob ) {
+			// Works for Internet Explorer and Microsoft Edge
+			navigator.msSaveOrOpenBlob( blob, this.props.VizParams.tableName + ".csv" );
+		}
+
+		else {
+			// Attempt to use an alternative method
+			var anchor = document.body.appendChild(
+				document.createElement( "a" )
+			);
+
+			// If the [download] attribute is supported, try to use it
+			if ( "download" in anchor ) {
+				anchor.download = this.props.VizParams.tableName + ".csv";
+				anchor.href = URL.createObjectURL( blob );
+				anchor.click();
+			}
+		}
+	}
+
+	tableToCSV (table) {
+		// We'll be co-opting `slice` to create arrays
+		var slice = Array.prototype.slice;
+
+		return slice.call( table.rows ).map(function ( row ) {
+			return slice.call( row.cells ).map(function ( cell ) {
+				return '"t"'.replace( "t", cell.textContent );
+			}).join( "," );
+		}).join( "\r\n" );
+	}
+
 
 	render() {
 		var data = this.props.data;
@@ -68,7 +108,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 
             var displayKeys = dataKeys.map( function(key) {
                 return (
-                    <th key = {key} style = {{ paddingRight: "20px" }} >{key}</th>
+                    <th key = {key} >{key}</th>
                 )
             });
 
@@ -80,7 +120,7 @@ class SelectedAndFilteredDisplay extends React.Component {
             var dataRow = [];
 
             for (var j = 0; j < dataKeys.length; j++) {
-                dataRow.push(<td style = {{ paddingRight: "20px" }} key = { guidGenerator() } >{data[i][dataKeys[j]] ? data[i][dataKeys[j]] : "-"}</td>)
+                dataRow.push(<td key = { guidGenerator() } style = {{ whiteSpace: "nowrap" }} >{data[i][dataKeys[j]] ? data[i][dataKeys[j]] : "-"}</td>)
             }
 
             displayData.push(<tr key = { guidGenerator() } >{dataRow}</tr>);
@@ -90,7 +130,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 		return(
 			<Dialog
 				title = { null }
-				contentStyle = {{ width: "95%", maxWidth: "none" }}
+				contentStyle = {{ width: "93%", maxWidth: "none" }}
 				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", fontSize: "36px", lineHeight: "16px" }}
 				modal = { true }
 				open = { this.props.selectedFilteredModal }
@@ -102,24 +142,43 @@ class SelectedAndFilteredDisplay extends React.Component {
 							onClick = { () => this.props.dispatch(editModalDisplay(false)) }
 							style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
 						/>,
-                        <ReactHTMLTableToExcel
-                            id = "test-table-xls-button"
-                            className = "download-table-xls-button"
-                            table = "table-to-xls"
-                            filename = "tablexls"
-                            sheet = "tablexls"
-                            buttonText = "Download as XLS"
-                        />
+                        <RaisedButton 
+							label = { "Download" }
+							style = {{
+								width: "112px",
+								margin: "0px 10px 9px 0px"
+							}}
+							buttonStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+								backgroundColor: this.props.settings.colors.buttons.general
+							}} 
+							labelStyle = {{
+								fontSize: '12px',
+								textAlign: "center",
+								color: this.props.settings.colors.overviewButtonsColor.text,
+								margin: "0px 0px 0px -3px",
+								paddingLeft: "0px",
+								paddingRight: "0px"
+							}}
+							overlayStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+							}}
+							onClick = { () => this.onClickDownload() }
+							primary = {true } 
+						/>
 					]
 				}
 			>
-                <div>
-                    <table id="table-to-xls" >
-                        <tbody>
-                            <tr>
+                <div id = "tableContainer" style = {{ width: "100%", height: "50vh", overflow: "auto" }} >
+                    <table id = "dataTable" className = "blueTable" >
+						<thead>
+							<tr>
                                 {displayKeys}
                             </tr>
-
+						</thead>
+                        <tbody>
                             {displayData}
                         </tbody>
                     </table>
@@ -146,6 +205,7 @@ export const editModalDisplay = (selectedFilteredModal) => ({
 const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
+	VizParams: state.filterState.VizParams,
 	selectedFilteredModal: state.filterState.ModalDisplay.selectedFilteredModal,
   }
 }
