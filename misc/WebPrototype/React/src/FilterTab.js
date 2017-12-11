@@ -156,6 +156,7 @@ class FilterTabs extends React.Component {
                                 tableData = { this.state.tableData } 
                                 id = { this.props.id } 
                                 selectedRows = { this.state.FilterTableSelectedRows } 
+                                refreshTableDataOnRowSelection = { (colName, selections) => this.props.refreshTableDataOnRowSelection(colName, selections) }
                                 tableID = { this.state.tableID }
                             />
                         </div>
@@ -166,7 +167,7 @@ class FilterTabs extends React.Component {
                             onMouseEnter = { this.mouseIn }
                             onMouseLeave = { this.mouseOut }
                             style = {{
-                                maxHeight: "355px",
+                                maxHeight: "0px",
                                 overflowX: "hidden",
                                 marginTop: "17px"
                             }}
@@ -176,12 +177,14 @@ class FilterTabs extends React.Component {
                                     colName = { this.props.id } 
                                     data = { this.state.tableData.flatValues } 
                                     minVal = { this.props.filterList[this.props.id].bounds[0] } 
+                                    refreshTableDataOnRowSelection = { (colName, selections) => this.props.refreshTableDataOnRowSelection(colName, selections) }
                                     maxVal = { this.props.filterList[this.props.id].bounds[1] }
                                 /> 
                                 : 
                                 (this.props.filterList[this.props.id].type === "Text" ? 
                                     <TextRangeTable 
                                         colName = { this.props.id } 
+                                        refreshTableDataOnRowSelection = { (colName, selections) => this.props.refreshTableDataOnRowSelection(colName, selections) }
                                         data = { this.state.tableData.flatValues } 
                                     /> 
                                     :  

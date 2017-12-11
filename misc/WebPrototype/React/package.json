@@ -30,7 +30,8 @@
     "react-rnd": "^5.0.9",
     "react-router-dom": "^4.1.2",
     "react-quill": "^1.1.0",
-    "react-styled-select": "^2.2.3-beta"
+    "react-styled-select": "^2.2.3-beta",
+    "bluebird":"3.5.1"
   },
   "scripts": {
     "start": "react-scripts start",

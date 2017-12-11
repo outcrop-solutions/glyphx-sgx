@@ -415,7 +415,7 @@ class FilterSideBarTopView extends React.Component {
                     deleteDialogLabel: "Success The View has been deleted!"
                 },function(){
                     //if(context.props.VizParams)
-                      //  context.props.history.push('/home');
+                    context.props.history.push('/home');
                     //After delete either go back to home or load another viz.
                 })
                 
@@ -676,8 +676,8 @@ class FilterSideBarTopView extends React.Component {
         }
 
         this.state.viewSelectItems.forEach(function(v){
-            v.value == context.state.viewSelectValue;
-            viewName = v.label;
+            if(v.value == context.state.viewSelectValue)
+                viewName = v.label;
         })
         
         var deleteDialogLabel = this.state.deleteDialogLabel.replace(";",viewName);

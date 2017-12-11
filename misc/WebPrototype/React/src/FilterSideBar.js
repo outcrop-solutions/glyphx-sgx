@@ -21,10 +21,11 @@ class FilterSideBar extends React.Component {
         super(props);
         
         this.loadVisualization = this.loadVisualization.bind(this);
+        this.refreshTableDataOnRowSelection = this.refreshTableDataOnRowSelection.bind(this);
         //Store the states of all the elements inside this data structure.
         this.state  = {
             tableData: {},//tableData,
-			topViewInitParams: {
+         	topViewInitParams: {
                 scrollToElement: this.scrollToCollapsibleElement
 			},
             topViewVisible: true
@@ -64,9 +65,63 @@ class FilterSideBar extends React.Component {
             },
             {
                 post: true, 
-                data:  { tableName: context.props.VizParams.tableName, query: context.props.VizParams.query, sdtPath: context.props.VizParams.sdtPath, datasourceId: context.props.VizParams.datasourceId }
+                data:  { 
+                    tableName: context.props.VizParams.tableName, 
+                    query: context.props.VizParams.query, 
+                    sdtPath: context.props.VizParams.sdtPath, 
+                    datasourceId: context.props.VizParams.datasourceId ,
+                    filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
+                }
             }
         )
+   }
+
+   
+   refreshTableDataOnRowSelection = (colName,selections) =>{
+
+        var fcolList = this.props.VizParams.filterAllowedColumnList.toString();
+        var query = "SELECT rowid,"+fcolList + " from " + this.props.VizParams.tableName;
+        
+    
+        var context = this;
+        var temp ="";
+        var flag = false;
+        //Create the query to pass
+        var filterObj = this.props.filterObj;
+
+        for(var column in filterObj){
+            if(filterObj[column].selectedValues.length > 0){
+                if(flag)
+                {
+                    query = query + " AND ";
+                }else{
+                    query = query + " WHERE ";
+                }
+                temp = JSON.stringify(filterObj[column].selectedValues);
+                temp = temp.replace('[','(').replace(/]$/,")");
+                query += column + " IN " + temp;
+                flag = true;
+            }
+        }
+
+
+
+        var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
+        // Get the data corresponding to the URL
+        makeServerCall(URL,
+            function (responseText) { 
+                var response = responseText;
+                if (typeof responseText === 'string') {
+                    response = JSON.parse(response);
+                }
+                
+                if(response.data.length > 1){
+                    var result = context.convertToCompatibleDataObject(response.data);
+                    context.setState({ tableData: result });
+                }
+                
+            }
+        );
    }
 
     /**
@@ -141,7 +196,7 @@ class FilterSideBar extends React.Component {
                     columnObj.values[value] = {
                         value: value,
                         count: 1,
-                        recId: recIndex
+                        recId: record.rowid
                     };
                 }
             }
@@ -344,7 +399,7 @@ class FilterSideBar extends React.Component {
 
                 {/* BOTTOM SECTION */}
                 
-                <FilterSideBarBottomView ref = "bottom" tableData = { this.state.tableData } />
+                <FilterSideBarBottomView ref = "bottom" tableData = { this.state.tableData } refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} />
 
             </Flexbox>
         );
@@ -369,7 +424,8 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
     storedViews: state.filterState.StoredViews,
-	VizParams: state.filterState.VizParams
+    VizParams: state.filterState.VizParams,
+    filterObj: state.filterState.Filter
   }
 };
 
