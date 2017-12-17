@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 import { Card, CardText } from 'material-ui/Card';
+import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './General.css';
@@ -14,8 +15,9 @@ class RecentViews extends React.Component {
 
     state = {
         loadMask: true,
-        recents:    [["Unsaved Session", "2:19pm", "8/15/2017"], ["Some View", "1:15pm", "8/15/2017"], ["Glyph 123", "1:01pm", "8/15/2017"], 
-                    ["Look At Me", "11:19am", "8/15/2017"], ["Test Glyph", "11:59am", "8/15/2017"], ["Who Am I", "10:30am", "8/15/2017"]]
+		recents: []
+        /*recents:    [["Unsaved Session", "2:19pm", "8/15/2017"], ["Some View", "1:15pm", "8/15/2017"], ["Glyph 123", "1:01pm", "8/15/2017"], 
+                    ["Look At Me", "11:19am", "8/15/2017"], ["Test Glyph", "11:59am", "8/15/2017"], ["Who Am I", "10:30am", "8/15/2017"]]*/
     }
 
 
@@ -28,13 +30,20 @@ class RecentViews extends React.Component {
 
 
         // Make server call to grab recent views
-        //makeServerCall(something here),
-        //    function (responseText) { 
-
-                // Post the new data to the state and hide the window load-mask
-                context.setState({ loadMask: false });
-        //   }
-        //);
+        makeServerCall("fetchRecentViews",
+            function (responseText) { 
+				if(typeof responseText == 'string' && responseText != null && responseText != ""){
+					responseText = JSON.parse(responseText);
+					// Post the new data to the state and hide the window load-mask
+					context.setState({ loadMask: false, recents: responseText.reverse()});
+				}
+				else{
+					context.setState({ loadMask: false });
+				}
+				
+                
+           }
+        );
 	}
     
 
@@ -42,6 +51,18 @@ class RecentViews extends React.Component {
         var context = this;
 
         var recentViews = this.state.recents.map( function(view) {
+			if(typeof view[1] == 'string' && !isNaN(view[1])){
+				view[1] = parseInt(view[1]);
+			}
+				
+			var viewTimeStamp = new Date(view[1]);
+			var viewDate =  viewTimeStamp.getDate()+"/"+(viewTimeStamp.getMonth()+1)+"/"+viewTimeStamp.getFullYear();
+			var viewTime;
+			if(viewTimeStamp.getHours() > 12)
+				viewTime =  viewTimeStamp.getHours()-12+":"+(viewTimeStamp.getMinutes() < 10 ? '0'+viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes())+'pm';
+			else
+				viewTime = viewTimeStamp.getHours()+":"+(viewTimeStamp.getMinutes() < 10 ? '0'+viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes())+'am';
+			
             return (
                 <Card 
                     className = "inherit-hover noselect" 
@@ -57,7 +78,7 @@ class RecentViews extends React.Component {
                 >
                     <CardText
                         style = {{ padding: "7px", borderRadius: "5px", width: "100%" }}
-                        //onClick = { () => context.props.history.push("/glyph-viewer") }
+                        onClick = { () => context.props.loadRecentView(view) }
                     >
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >
@@ -66,11 +87,11 @@ class RecentViews extends React.Component {
                             </Flexbox>
 
                             <Flexbox style = {{ width: "60%" }} > 
-                                { view[1] }
+                                { viewTime }
                             </Flexbox>
 
                             <Flexbox style = {{ width: "60%" }} > 
-                                { view[2] }
+                                { viewDate }
                             </Flexbox>  
                         </Flexbox>
 

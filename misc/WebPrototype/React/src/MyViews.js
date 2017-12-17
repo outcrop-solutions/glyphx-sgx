@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { makeServerCall } from './ServerCallHelper.js';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
@@ -13,65 +13,21 @@ class MyViews extends React.Component {
 
     constructor(props){
         super(props);
-
+		this.goToVizView = this.goToVizView.bind(this);
+		this.onClickSaved = this.onClickSaved.bind(this);
         this.state = {
             savedViews: [],//this.props.storedViews.savedViews,
             sharedViews: []
         }
     }
-
-    onSavedViewSelect(savedVizObj){
-        var originalVizName = savedVizObj.OriginalVizName; 
-        var query = savedVizObj.QueryString; 
-        var funnelData;
-        var keys = Object.keys(this.props.funnelData);
-        var path;
-        var context = this;
-        var flag = true;
-    
-        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
-            funnelData = this.props.funnelData[keys[keyIndex]];
-    
-            for(var index=0;index<funnelData.length;index++)
-            {
-                if(funnelData[index][0] == originalVizName){
-                    path = funnelData[index][1];
-                    flag = false;
-                    break;
-                }
-            }
-        }
-    
-        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
-        var sdtPath = path.substring(index + 1);
-    
-        makeServerCall(window.encodeURI('frontEndFilterData/' + sdtPath ),
-            function (responseText) {
-                var response = JSON.parse(responseText);
-                
-                // Post the new data to the state and hide the window load-mask
-                context.props.dispatch(
-                    setCurrentVizParams(
-                        {
-                            tableName: response.tableName,
-                            datasourceId: response.datasourceId ,
-                            query: query,
-                            originalVizName:originalVizName,
-                            filterAllowedColumnList:  response.filterAllowedColumnList,
-                            sdtPath: sdtPath,
-                            savedViz: true,
-                            vizID:savedVizObj.ID,
-                            savedVizName: savedVizObj.Name,
-                            frontEndFilterString: savedVizObj.frontEndFilterString
-                        }
-                    )
-                );
-
-                context.props.history.push('/glyph-viewer');
-            }
-        );
-    }
-
+	
+	goToVizView(){
+		this.props.history.push('/glyph-viewer');
+	}
+	
+	onClickSaved(data){
+		this.props.onSavedViewSelect(data,this.goToVizView);
+	}
 
     render() {
         return (
@@ -88,7 +44,7 @@ class MyViews extends React.Component {
                             id = "SavedViews"
                             settings = { this.props.settings }
                             data = { this.props.storedViews.savedViews }
-                            onClickSaved = { this.onSavedViewSelect.bind(this) }
+                            onClickSaved = { this.onClickSaved }
                         />
                     </Collapsible>
                 </div>
@@ -104,7 +60,7 @@ class MyViews extends React.Component {
                             id = "SharedViews"
                             settings = { this.props.settings }
                             data = { this.state.sharedViews }
-                            onClickSaved = { this.onSavedViewSelect.bind(this) }
+                            onClickSaved = { this.onClickSaved }
                         />
                     </Collapsible>
                 </div>
@@ -556,4 +512,4 @@ export const setCurrentVizParams = (vizParams) => ({
 /**
  * Connects the redux store to get access to global states.
  **/
-export default withRouter(connect(mapStateToProps)(MyViews));
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(MyViews));

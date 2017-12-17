@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 import { Card, CardText } from 'material-ui/Card';
+import { makeServerCall } from './ServerCallHelper.js';
+import { withRouter } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import ExpandTransition from 'material-ui/internal/ExpandTransition';
@@ -16,17 +18,21 @@ import './General.css';
  * -ADCMT
  */
 class ViewsManager extends React.Component {
-
-    state = {
-        loading: false,
-        launchReady: false,
-        stepIndex: 0,
-        type: "Funnel",
-        selectionType: "",
-        selectionTypeURL: "",
-        flipped: false,
-        clicked: false
-    };
+	
+	constructor(props){
+		super(props);
+		this.onLaunch =  this.onLaunch.bind(this);
+		this.state = {
+			loading: false,
+			launchReady: false,
+			stepIndex: 0,
+			type: "Funnel",
+			selectionType: "",
+			selectionTypeURL: "",
+			flipped: false,
+			clicked: false
+		}
+	}
 
     /**
      * Enables transition pause when navigating from regular view to my views and vice versa
@@ -36,8 +42,144 @@ class ViewsManager extends React.Component {
             this.asyncTimer = setTimeout(cb, 500);
         });
     };
+	
+	//Moving this here instead of MyViews.js due to refs problem
+	onSavedViewSelect(savedVizObj,callback,recentViewClick){
+        var originalVizName = savedVizObj.OriginalVizName; 
+        var query = savedVizObj.QueryString; 
+        var funnelData;
+        var keys = Object.keys(this.props.funnelData);
+        var path;
+        var context = this;
+        var flag = true;
+    
+        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
+            funnelData = this.props.funnelData[keys[keyIndex]];
+    
+            for(var index=0;index<funnelData.length;index++)
+            {
+                if(funnelData[index][0] == originalVizName){
+                    path = funnelData[index][1];
+                    flag = false;
+                    break;
+                }
+            }
+        }
+    
+        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+        var currentDate = new Date();
+		var sdtPath = path.substring(index + 1);
+		
+		if(recentViewClick){
+			//dosomething
+		}
+	
+		var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
+        makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                
+                // Post the new data to the state and hide the window load-mask
+                context.props.dispatch(
+                    setCurrentVizParams(
+                        {
+                            tableName: response.tableName,
+                            datasourceId: response.datasourceId ,
+                            query: query,
+                            originalVizName:originalVizName,
+                            filterAllowedColumnList:  response.filterAllowedColumnList,
+                            sdtPath: sdtPath,
+                            savedViz: true,
+                            vizID:savedVizObj.ID,
+                            savedVizName: savedVizObj.Name,
+                            frontEndFilterString: savedVizObj.frontEndFilterString
+                        }
+                    )
+                );
 
+                if(typeof callback == 'function'){
+					callback(true);
+					//context.props.history.push('/glyph-viewer');
+				}
+				
+            }
+        );
+    }
+	
+	//Moving this here instead of AllViewsModal.js due to refs problem
+	onLaunch(extra,callback) {
+        // Handle launch when no selections made on a column (select all unless its not allowed to select all)
+		var context = this;
+		var tableName;
+		var frontEndFilters;
+		var originalVizName;
+		var datasourceId;
+		var filterAllowedColumnList;
+		var sdtPath;
+		var index;
+		
+		if(Array.isArray(extra)){ 
+		//[.originalVizName,.time,.date,.frontEndFilters,.datasourceId,.filterAllowedColumnList,sdtPath,tableName]
+			sdtPath = extra[6];
+			tableName= extra[7];
+			frontEndFilters= extra[3];
+			originalVizName= extra[0];
+			datasourceId= extra[4];
+			filterAllowedColumnList= extra[5];
+		}
+		else {
+			index = this.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+			sdtPath = this.state.selectionTypeURL.substring(index + 1);
+			tableName= extra.tableName;
+			frontEndFilters= extra.frontEndFilters;
+			originalVizName= extra.originalVizName;
+			datasourceId= extra.datasourceId;
+			filterAllowedColumnList= extra.filterAllowedColumnList;
+		}
+		
+		
+		
+		
+		var currentDate = new Date(); //If you dont want it to update on 
+		makeServerCall('checkFrontEndFilterQuery',
+			function(res){
+				res = JSON.parse(res);
 
+				// Check if match flag is true means that at least one row was returned using the query.
+				if (res.match == true || res.match == "true") {
+					// Set the params to the store and then goto viz page.
+					context.props.dispatch(setCurrentVizParams({
+							originalVizName: originalVizName, 
+							tableName: tableName,
+							datasourceId: datasourceId ,
+							query: res.query, 
+							filterAllowedColumnList:  filterAllowedColumnList, 
+							sdtPath: sdtPath, 
+							frontEndFilters: frontEndFilters
+						}));
+					context.props.dispatch(editModalDisplay(false));
+					//
+				}
+				
+				if(typeof callback == 'function')
+					callback(res.match);
+            },
+            {
+                post: true, 
+                data:  { 
+					tableName: tableName,
+					time:currentDate.getTime(),
+					date:currentDate.getTime(), 
+					frontEndFilters: frontEndFilters, 
+					originalVizName: originalVizName, 
+					datasourceId: datasourceId, 
+					filterAllowedColumnList:  filterAllowedColumnList, 
+					sdtPath: sdtPath 
+				}
+            }
+        );
+    }
+	
     /**
      * -ADCMT
      * @param type: -ADCMT
@@ -402,7 +544,7 @@ class ViewsManager extends React.Component {
 
                                 </div>
                                 
-                                {this.state.type === "My Views" ? <MyViews /> : null}
+                                {this.state.type === "My Views" ? <MyViews onSavedViewSelect={(savedViewObj,callback) => this.onSavedViewSelect(savedViewObj,callback)}/> : null}
 
                                 <FlatButton
                                     label = "Back"
@@ -411,7 +553,7 @@ class ViewsManager extends React.Component {
                                     style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
                                 />
 
-                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } />
+                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } onLaunch={(extra,callback) => this.onLaunch(extra,callback) }/>
                             </div>
 
                             {this.state.stepIndex === 0 ? 
@@ -463,12 +605,18 @@ export const editModalDisplay = (allViewsModal) => ({
 const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
-    funnelData: state.filterState.FunnelData
+    funnelData: state.filterState.FunnelData,
+    storedViews: state.filterState.StoredViews
   }
 }
+
+export const setCurrentVizParams = (vizParams) => ({
+   type: 'SET_VIZ_PARAMS',
+   vizParams,
+});
 
 
 /**
  * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps)(ViewsManager);
+export default connect(mapStateToProps,null,null,{withRef:true})(ViewsManager);

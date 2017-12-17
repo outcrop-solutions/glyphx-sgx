@@ -348,7 +348,8 @@ class FilterSideBarTopView extends React.Component {
                 flag = true;
             }
         }
-
+		
+		var currentDate = new Date();
         makeServerCall('saveView',
             function(res,b,c) {
             // Hide the loadmask.
@@ -394,7 +395,9 @@ class FilterSideBarTopView extends React.Component {
                     frontEndFilter: JSON.stringify(finalFilterObj),
                     vizId: isNewView ? null : this.props.VizParams.vizID,
                     originalVizName: this.props.VizParams.originalVizName,
-                    savedVizName: viewName
+                    savedVizName: viewName,
+					time:currentDate.getTime(),
+					date:currentDate.getTime(),
                 }
             }
         );
