@@ -169,7 +169,7 @@ class FilterTabs extends React.Component {
                             style = {{
                                 maxHeight: "0px",
                                 overflowX: "hidden",
-                                marginTop: "17px"
+                                marginTop: "5px"
                             }}
                         >
                             {this.props.filterList[this.props.id].type === "Number" ? 

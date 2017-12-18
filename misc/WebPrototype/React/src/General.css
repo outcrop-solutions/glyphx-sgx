@@ -240,6 +240,11 @@ table.blueTable thead th {
     height: 26px;
 }
 
+.Select-menu-outer{
+    top: auto; 
+    bottom: 100%
+}
+
 
 .dark-theme {
   --styled-select-placeholder__color: #eee;
@@ -248,6 +253,7 @@ table.blueTable thead th {
   --styled-select__border-color: black;
   --styled-select__border-width: 3px;
   --styled-select__border-radius: 5px;
+  border: none !important;
 
   --styled-select-control__min-height: 22px;
   --styled-select-input__height: 22px;

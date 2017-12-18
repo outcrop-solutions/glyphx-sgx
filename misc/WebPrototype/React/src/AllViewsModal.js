@@ -155,7 +155,7 @@ class allViewsModal extends React.Component {
 	 * Closes the modal through the redux store
 	 */
 	handleBackClick = () => {
-		this.props.dispatch(editModalDisplay(false));
+		this.props.dispatch(editModalDisplay(false, null));
 	}
 
 
@@ -653,7 +653,7 @@ class allViewsModal extends React.Component {
 				if (res.match == true || res.match == "true") {
 					// Set the params to the store and then goto viz page.
 					context.props.dispatch(setCurrentVizParams({originalVizName: context.props.type, tableName: context.state.table, datasourceId: context.state.datasourceId ,query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList, sdtPath: sdtPath, frontEndFilters: context.state.selectionList}));
-					context.props.dispatch(editModalDisplay(false));
+					context.props.dispatch(editModalDisplay(false, false));
 					context.props.history.push('/glyph-viewer');
 				}
 				else { 
@@ -923,9 +923,10 @@ class AllViewsRow extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (allViewsModal) => ({
+export const editModalDisplay = (allViewsModal, selectedFilteredModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     allViewsModal,
+	selectedFilteredModal
 });
 
 export const setCurrentVizParams = (vizParams) => ({
