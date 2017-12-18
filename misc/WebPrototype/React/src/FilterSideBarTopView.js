@@ -598,7 +598,7 @@ class FilterSideBarTopView extends React.Component {
         }
 
         this.setState({ filterIDs: null, hideShowButtonTextFlag: false });
-        
+        this.props.refreshParent();
     };
 
 
