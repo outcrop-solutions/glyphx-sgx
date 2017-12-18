@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
+import { withRouter } from 'react-router-dom';
 import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -32,12 +33,22 @@ const muiTheme = getMuiTheme({
  * Main wrapper for the home page, gets placed by the router
  */
 class HomePage extends React.Component {
-
+	
+	constructor(props){
+		super(props);
+		this.loadRecentView = this.loadRecentView.bind(this);
+		this.goToVizView = this.goToVizView.bind(this);
+	}
+	
     // 0 for start, "done" for end
     state = {
         tutorialStage: "done"
     }
-
+	
+	goToVizView(success){
+		if(success)this.props.history.push('/glyph-viewer');
+		else console.log("SOMETHING WENT WRONG!");
+	}
 
     /**
 	 * React built-in which is called when component mounts.
@@ -157,6 +168,33 @@ class HomePage extends React.Component {
             }
         );
     }
+	
+	
+	//[]
+	loadRecentView(rowArray){
+		console.log("recentViewloaded");
+		console.log(rowArray);
+		var ref=this.refs.viewsManager.getWrappedInstance();
+		
+		//This means that this is a funnel view click
+		if(rowArray.length > 4){
+			//todo work out something for funnel click.
+			ref.onLaunch(rowArray,this.goToVizView);
+		}
+		else{ //This means that this is a saved view click
+			var savedViewObj;
+			
+			this.props.storedViews.savedViews.forEach(function(savedView){
+				if(rowArray[3] == savedView.ID)
+					savedViewObj = savedView
+			});
+			
+			if(savedViewObj)
+			{
+				ref.onSavedViewSelect(savedViewObj,this.goToVizView,true);
+			}
+		}
+	}
 
     /**
 	 * Updates tutorial stage
@@ -174,7 +212,7 @@ class HomePage extends React.Component {
 
     render() {
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
-
+		var context = this;
         return (
             <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
 
@@ -217,7 +255,7 @@ class HomePage extends React.Component {
 
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
                                    <div style = {{ padding: "5px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
-                                        <ViewsManager />
+                                        <ViewsManager ref="viewsManager"/>
                                     </div>
                                 </Flexbox>
                              </Flexbox> 
@@ -226,7 +264,7 @@ class HomePage extends React.Component {
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
 
-                                        <RecentViews />
+                                        <RecentViews loadRecentView={(rowObj) => this.loadRecentView(rowObj)}/>
 
                                         <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
                                             <div 
@@ -267,6 +305,7 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo,
+	storedViews: state.filterState.StoredViews,
     funnelData: state.filterState.FunnelData
   }
 }
@@ -280,4 +319,4 @@ export const setCurrentSavedViews = (savedViewsList) => ({
 /**
  * Connects the redux store to get access to global states.
  **/
-export default connect(mapStateToProps)(HomePage);
+export default withRouter(connect(mapStateToProps)(HomePage));

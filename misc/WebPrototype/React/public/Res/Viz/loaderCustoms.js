@@ -26,7 +26,7 @@ var sceneChecked;
 var sceneLocation = "../../Scenes/";
 
 // Babylon
-var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support:true });
 var scene;
 
 var previousPickedMesh;
@@ -71,7 +71,7 @@ var loadCustomScene = function (demoConstructor, then) {
 // Render loop
 var renderFunction = function () {
     // Fps
-    divFps.innerHTML = engine.getFps().toFixed() + " fps";
+    //divFps.innerHTML = engine.getFps().toFixed() + " fps";
 
     // Render scene
     if (scene) {

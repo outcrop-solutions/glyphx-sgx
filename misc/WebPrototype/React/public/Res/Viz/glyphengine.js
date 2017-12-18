@@ -241,8 +241,8 @@ var createScene = function (engine) {
     image.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     image.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
     image.paddingTop = "10px";
-    image.width = 0.2;
-    image.height = "50px";
+    image.width = 0.16;
+    image.height = "40px";
     advancedTexture.addControl(image); 
 
     function createBaseImage(image, width, height) {
@@ -301,13 +301,13 @@ var createScene = function (engine) {
 
     /*
     Topologies:
-            Cube = 1, PRIORITY 5
-            Sphere = 2, DONE
-            Torus = 3, PRIORITY 1
-            Cylinder = 4, CONSOLIDATE 3
-            Pin = 5, PRIORITY 4
-            Rod = 6, CONSOLIDATE 2
-            Point = 7, UNUSED
+            Cube = 1,
+            Sphere = 2,
+            Torus = 3,
+            Cylinder = 4,
+            Pin = 5,
+            Rod = 6,
+            Point = 7
     */
 
     Math.radians = function(degrees) {

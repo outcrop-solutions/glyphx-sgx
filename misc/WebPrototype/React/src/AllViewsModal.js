@@ -30,7 +30,10 @@ class allViewsModal extends React.Component {
 		selectAll: [],
 		loadMask: true
 	}
-	
+	constructor(props){
+		super(props);
+		this.onLaunchResultCallback = this.onLaunchResultCallback.bind(this);
+	}
 
 	/**
 	 * React built-in which is called when component mounts
@@ -637,36 +640,14 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	onLaunch() {
-        // Handle launch when no selections made on a column (select all unless its not allowed to select all)
-
-
-		var context = this;
-		var index = this.props.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
-		var sdtPath = this.props.typeURL.substring(index + 1);
-
-        makeServerCall('checkFrontEndFilterQuery',
-			function(res){
-				res = JSON.parse(res);
-
-				// Check if match flag is true means that at least one row was returned using the query.
-				if (res.match == true || res.match == "true") {
-					// Set the params to the store and then goto viz page.
-					context.props.dispatch(setCurrentVizParams({originalVizName: context.props.type, tableName: context.state.table, datasourceId: context.state.datasourceId ,query: res.query, filterAllowedColumnList:  context.state.filterAllowedColumnList, sdtPath: sdtPath, frontEndFilters: context.state.selectionList}));
-					context.props.dispatch(editModalDisplay(false, false));
-					context.props.history.push('/glyph-viewer');
-				}
-				else { 
-					// Show dialog stating that none were matched.
-					context.setState({ snackbarVisible: true });
-				}
-            },
-            {
-                post: true, 
-                data:  { tableName: context.state.table, frontEndFilters: context.state.selectionList}
-            }
-        );
-    }
+	onLaunchResultCallback(success){
+		if(success){
+			this.props.history.push('/glyph-viewer');
+		}
+		else{
+			this.setState({ snackbarVisible: true });
+		}
+	}
 
 	render() {
 		var data = this.state.data;
@@ -794,7 +775,13 @@ class allViewsModal extends React.Component {
 								lineHeight: '35px',
 							}}
 							disabled = { this.shouldLaunchBeDisabled() }
-							onClick = { () => this.onLaunch() }
+							onClick = { () => this.props.onLaunch({
+								tableName:this.state.table,
+								frontEndFilters: this.state.selectionList,
+								originalVizName: this.props.type,
+								datasourceId: this.state.datasourceId,
+								filterAllowedColumnList: this.state.filterAllowedColumnList,
+							},this.onLaunchResultCallback) }
 							primary = {true } 
 						/>
 					]
