@@ -108,14 +108,15 @@ class FilterSideBar extends React.Component {
 
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
         // Get the data corresponding to the URL
+        debugger;
         makeServerCall(URL,
             function (responseText) { 
                 var response = responseText;
                 if (typeof responseText === 'string') {
                     response = JSON.parse(response);
                 }
-                
-                if(response.data.length > 1){
+                debugger;
+                if(response.data.length > 0){
                     var result = context.convertToCompatibleDataObject(response.data);
                     context.setState({ tableData: result });
                 }
@@ -372,7 +373,8 @@ class FilterSideBar extends React.Component {
                         initParams = { this.state.topViewInitParams } 
                         colList = { colList } 
                         showAlert = { (strMsg) => this.showAlert(strMsg) }
-                        refreshParent = { this.loadVisualization }
+                        reloadParent = { this.loadVisualization }
+                        refreshParent = { this.refreshTableDataOnRowSelection }
                         showHideLoadingMask = { this.props.showHideLoadingMask }
                     />
 

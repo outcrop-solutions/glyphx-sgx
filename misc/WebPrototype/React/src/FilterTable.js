@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { guidGenerator } from './GeneralFunctions.js';
 import Checkbox from 'material-ui/Checkbox';
 import Promise from 'bluebird';
 import ScrollIntoView from 'scroll-into-view-if-needed';
@@ -36,7 +37,7 @@ class FilterTable extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if(this.props.tableData != nextProps.tableData){
-            this.setState({tableData: nextProps.tableData});
+            this.setState({tableData: nextProps.tableData,flatData:[]});
             this.refresh=true;
         }
     }
@@ -506,8 +507,8 @@ class FilterTable extends React.Component {
         row = (
             <FilterRow 
                 onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this, rowSelection, null, evt, checked) } 
-                key = { property } 
-                index = { index } 
+                key = { guidGenerator() } 
+                index = { guidGenerator() } 
                 checked = { checked } 
                 value = { value } 
                 percentStr = { percentStr }
