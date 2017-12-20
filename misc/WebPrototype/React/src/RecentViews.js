@@ -50,7 +50,9 @@ class RecentViews extends React.Component {
     render() {
         var context = this;
 
-        var recentViews = this.state.recents.map( function(view) {
+        var newList = this.state.recents.slice(0, 9);
+
+        var recentViews = newList.map( function(view) {
 			if(typeof view[1] == 'string' && !isNaN(view[1])){
 				view[1] = parseInt(view[1]);
 			}
@@ -72,7 +74,7 @@ class RecentViews extends React.Component {
                         height: "35px", 
                         width: "100%", 
                         borderRadius: "5px", 
-                        marginTop: (view === context.state.recents[0] ? "0px" : "5px") 
+                        marginTop: (view === newList[0] ? "0px" : "5px") 
                     }} 
                     key = { view } 
                 >

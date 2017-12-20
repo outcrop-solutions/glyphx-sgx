@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<% include header %>
+
+    <body bgcolor="#111e8f">
+        <div style="width: 100%; position: fixed;">
+            <div style="width:500px; height: 200px; margin: 0 auto;">
+                <img src="img/synglyphx-wht-1.png" alt="SynGlyphX" width="500">
+            </div>
+        </div>
+
+        <div class="outer">
+            <div class="middle">
+                <div class="inner">
+
+                    <form action="/pay" method="post" id="submitForm">
+                        <div style="width: 900px; margin: 0 auto; overflow: hidden;" >
+                            <div class="cardBox" style="width: 440px; float: left; background-color: white; height: 500px;"> 
+                                <div style="margin: 0 auto 10px; font-size: 30px; width: 300px; padding-top: 25px;" > User Account Creation </div>
+                                <hr style="margin-bottom: 40px;" ></hr>
+
+                                
+
+                                    <div class="input-field" style="margin: 60px auto 50px; width: 350px" >
+                                        <input id="user_name" type="text" class="validate" name="user[name]">
+                                        <label for="user_name" data-error="Please use first and last name">Full Name</label>
+                                    </div>
+
+                                    <div class="input-field" >
+                                        <input id="user_email" type="email" class="validate" name="user[email]">
+                                        <label for="user_email" data-error="Please use a valid email" >Email</label>
+                                    </div>
+
+                                    <div class="input-field" >
+                                        <input id="user_password" type="password" class="validate" name="user[password]">
+                                        <label for="user_password" data-error="Input is either less than 8 characters or too weak" >Password</label>
+                                    </div>
+
+                                    <div class="container" style="display: none;" >
+                                        <input type="radio" class="radio hideBehind" name="progress" value="five" id="five" checked>
+                                        <label for="five" class="label hideBehind">5%</label>
+
+                                        <input type="radio" class="radio hideBehind" name="progress" value="twentyfive" id="twentyfive">
+                                        <label for="twentyfive" class="label hideBehind">25%</label>
+
+                                        <input type="radio" class="radio hideBehind" name="progress" value="fifty" id="fifty">
+                                        <label for="fifty" class="label hideBehind">50%</label>
+
+                                        <input type="radio" class="radio hideBehind" name="progress" value="seventyfive" id="seventyfive">
+                                        <label for="seventyfive" class="label hideBehind">75%</label>
+
+                                        <input type="radio" class="radio hideBehind" name="progress" value="onehundred" id="onehundred">
+                                        <label for="onehundred" class="label hideBehind">100%</label>
+
+                                        <div class="progress" style="margin: -60px 0px 0px -25px !important;">
+                                            <div class="progress-bar"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-field"  >
+                                        <input id="user_confirmpassword" type="password" class="validate">
+                                        <label for="user_confirmpassword" data-error="Passwords do not match" >Confirm Password</label>
+                                    </div>
+
+                                    
+                                
+                            </div>
+
+
+
+                            <div class="cardBox" style="margin-left: 460px; background-color: white; height: 500px;" >
+                                <div style="width:200px; margin: 16px auto -4px">
+                                    <img src="img/GlyphIT-1.png" alt="SynGlyphX" width="200">
+                                </div>
+
+                                <hr style="margin-bottom: 40px;" ></hr>
+
+                                <div style="padding: 0px 25px;">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td style="padding: 15px 5px 0px;">GlyphIT&reg; Suite</td>
+                                            <td id="itemPrice" style="padding: 15px 5px 0px;">$3,525</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0px 5px;"> &nbsp;&nbsp;&nbsp;&nbsp;- GlyphBUILDER&trade;</td>
+                                            <td style="padding: 0px 5px;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0px 5px;"> &nbsp;&nbsp;&nbsp;&nbsp;- GlyphVIEWER&trade;</td>
+                                            <td style="padding: 0px 5px;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 50px 5px 15px;">
+                                                <div class="promo-code"  >
+                                                    <input id="user_PROMO" type="text" placeholder="PROMO" name="user[PROMO]" onblur="this.value=this.value.toUpperCase()" style="width: 90px !important; height: 28px !important;">
+                                                </div>
+                                            </td>
+                                            <td style="color: red; padding: 50px 5px 15px;">
+                                                <div id="itemDiscount" ></div>
+
+                                                 <div id="promoLoader" class="preloader-wrapper small active" style="display: none;" >
+                                                    <div class="spinner-layer spinner-green-only" style="border-color: #111e8f !important;" >
+                                                        <div class="circle-clipper left">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                        <div class="gap-patch">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                        <div class="circle-clipper right">
+                                                            <div class="circle"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td> 
+                                        </tr>
+                                        <tr style="border-top: 1px solid;">
+                                            <td>Total</td>
+                                            <td><div id="itemTotal" style="color:green;"> $3,525 </div></td> 
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div id="buyNowDiv" style="margin: 60px auto 0; width: 130px;">
+                                    <button id="buyNow" class="btn waves-effect waves-light" type="submit" name="action" style="width: 130px; background-color: #2d3091" >Buy Now</button>
+                                </div>
+
+                                <div id="createButtonDiv" style="margin: 60px auto 0; width: 130px; display:none">
+                                    <button id="createButton" type="button" class="btn waves-effect waves-light" style="width: 130px; background-color: #2d3091" >Create</button>
+                                </div>
+
+                                <div id="disabledMessage" style="margin:0 auto; width: 168px; color: red;" > User creation incomplete </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Placed at the end of the document so the pages load faster -->
+        <!-- jQuery (necessary for Materialize's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery.js"></script>
+
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+        <script src="/js/script.js"></script>
+    </body>
+</html>
