@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { makeServerCall } from './ServerCallHelper.js';
+import Promise from 'bluebird';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
@@ -534,7 +535,7 @@ class FilterSideBarTopView extends React.Component {
                 );
 
                 //context.props.history.push('/glyph-viewer');
-                context.props.refreshParent();
+                context.props.reloadParent();
 
                 // Hide mask
                 context.props.showHideLoadingMask(false);
@@ -593,12 +594,19 @@ class FilterSideBarTopView extends React.Component {
         iframe.filterGlyphs([]);
         
 		
-        for (var property in columnsFilterApplied) {
-            columnsFilterApplied[property].onDelEvent();
-        }
+        
 
         this.setState({ filterIDs: null, hideShowButtonTextFlag: false });
-        this.props.refreshParent();
+
+        let pom = new Promise(function (resolve, reject) {
+            for (var property in columnsFilterApplied) {
+                columnsFilterApplied[property].onDelEvent();
+            }
+            resolve('done');
+        });
+
+        pom.then(() => this.props.refreshParent());
+
     };
 
 
