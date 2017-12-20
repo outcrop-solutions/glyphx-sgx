@@ -147,6 +147,7 @@ class HomePage extends React.Component {
 
         this.fetchSavedViews();
         this.fetchAnnouncements();
+        this.fetchSaveUserSettings();
     }
 
     componentDidUpdate(){
@@ -169,10 +170,34 @@ class HomePage extends React.Component {
             }
         );
     }
+
+    fetchSaveUserSettings(){
+            /*makeServerCall("fetchUserSettings",
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                debugger;
+            //do-stuff
+            }
+        );
+
+        makeServerCall("saveUserSettings",
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                debugger;
+            //do-stuff
+            },
+            {
+                post:true,
+                data: { 
+                    userSettings: {a:'b','c':'d'}//{the actual object you want to be stored in the file}
+                }
+            }
+        );*/
+    }
     
     fetchAnnouncements(){
         var context = this;
-        
+
         /*
         
         //Fetch Announcements.
