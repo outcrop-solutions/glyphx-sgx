@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const session = require('express-session');
 const mysql = require('sync-mysql');
 const util = require('util');
+const crypto = require('crypto');
 
 mySqlConnection = new mysql({
     host     : 'sgxinstance.cqu1pnqua5at.us-west-2.rds.amazonaws.com',
@@ -136,8 +137,8 @@ app.post('/pay', (req, res) => {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:3000/success",
-            "cancel_url": "http://localhost:3000"
+            "return_url": "http://ec2-52-11-58-74.us-west-2.compute.amazonaws.com:5000/success",
+            "cancel_url": "http://ec2-52-11-58-74.us-west-2.compute.amazonaws.com:5000/"
         },
         "transactions": [{
             "item_list": {
@@ -202,6 +203,7 @@ app.get('/success', (req, res) => {
                     console.log(JSON.stringify(payment));
 
                     try {
+		
                         var selectResult = mySqlConnection.query("Select ID from Institutions Where Name='Web Registered'");
                         var Institution = selectResult[0].ID;
                         //console.log("Institution:" + Institution );
@@ -216,10 +218,23 @@ app.get('/success', (req, res) => {
                         var lastInsertedRow = mySqlConnection.query("Select * from UserAccounts Where ID=(SELECT LAST_INSERT_ID() as id)");
                         var userID = lastInsertedRow[0].ID;
                         //console.log("userID:" + userID );
+						
+						var ts = Math.trunc((((new Date().getTime()/1000)/86400)+365)*86400);
+
+						var text = userID.toString().valueOf() + "1".valueOf() + ts.toString().valueOf();
+						var hashCode = crypto.createHash('md5').update(text).digest("hex");
+
+						timeCode = ts.toString(16);
+
+						var key = "";
+						key += hashCode.substring(0, 8) + "-";
+						key += hashCode.substring(8, 16) + "-";
+						key += hashCode.substring(16, 24) + "-";
+						key += hashCode.substring(24, 32) + "-";
+						key += timeCode;
 
                         //Insert the new user in UsageLicenses.
-                        var licensesKeys = mySqlConnection.query("Select ul.Key from UsageLicenses ul Where Duration=365");
-                        var insertLicenseValues = userID + ",1,365,'"+ licensesKeys[0].Key + "'";
+                        var insertLicenseValues = userID + ",1,365,'"+ key + "'";
                         mySqlConnection.query("Insert into UsageLicenses Values ("+insertLicenseValues+")");
 
                         mySqlConnection.query("INSERT into User_Promo values ("+lastInsertedRow[0].ID+",'"+ req.session.user.PROMO +"','"+req.session.user.total+"')");
@@ -292,7 +307,7 @@ app.get('/freePromoCode', (req, res) => {
         console.log(err);
     }
 
-    try {
+    try {				
         var selectResult = mySqlConnection.query("Select ID from Institutions Where Name='Web Registered'");
         var Institution = selectResult[0].ID;
         //console.log("Institution:" + Institution );
@@ -307,14 +322,27 @@ app.get('/freePromoCode', (req, res) => {
         var lastInsertedRow = mySqlConnection.query("Select * from UserAccounts Where ID=(SELECT LAST_INSERT_ID() as id)");
         var userID = lastInsertedRow[0].ID;
         //console.log("userID:" + userID );
+		
+		var ts = Math.trunc((((new Date().getTime()/1000)/86400)+365)*86400);
+
+		var text = userID.toString().valueOf() + "1".valueOf() + ts.toString().valueOf();
+		var hashCode = crypto.createHash('md5').update(text).digest("hex");
+
+		timeCode = ts.toString(16);
+
+		var key = "";
+		key += hashCode.substring(0, 8) + "-";
+		key += hashCode.substring(8, 16) + "-";
+		key += hashCode.substring(16, 24) + "-";
+		key += hashCode.substring(24, 32) + "-";
+		key += timeCode;
 
         //Insert the new user in UsageLicenses.
-        var licensesKeys = mySqlConnection.query("Select ul.Key from UsageLicenses ul Where Duration=365");
-        var insertLicenseValues = userID + ",1,365,'"+ licensesKeys[0].Key + "'";
+        var insertLicenseValues = userID + ",1,365,'"+ key + "'";
         mySqlConnection.query("Insert into UsageLicenses Values ("+insertLicenseValues+")");
 
         mySqlConnection.query("INSERT into User_Promo values ("+lastInsertedRow[0].ID+",'"+ uInfo.PROMO +"','"+uTotal+"')");
-        res.send('/download');
+        res.send('download');
     }
     catch(err) {
         console.log(err);
@@ -330,4 +358,4 @@ app.get('/download', function(req, res) {
 app.get('/cancel', (req, res) => res.render('cancel'));
 
 
-app.listen(3000, () => console.log('Server Started'));
+app.listen(5000, () => console.log('Server Started'));

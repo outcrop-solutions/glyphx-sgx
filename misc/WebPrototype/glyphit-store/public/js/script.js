@@ -57,7 +57,7 @@ $("#user_email").on("blur", function() {
                         $("#promoLoader").css('display', 'none');
 
                         if ($("#user_email").val() != "") {
-                            var re = new RegExp(response.emailRegEx, "g");
+                            var re = new RegExp(response.emailRegEx, "gi");
                             var reMatch = $("#user_email").val().match(re);
                             if (reMatch == null) {
                                 $("#itemDiscount").text("-$0");
@@ -205,7 +205,7 @@ $("#user_PROMO").on("blur", function() {
 
                     var response = JSON.parse(this.responseText);
                     if ($("#user_email").val() != "") {
-                        var re = new RegExp(response.emailRegEx, "g");
+                        var re = new RegExp(response.emailRegEx, "gi");
                         var reMatch = $("#user_email").val().match(re);
                         if (reMatch == null) {
                             $("#itemDiscount").text("-$0");
