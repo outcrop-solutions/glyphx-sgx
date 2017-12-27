@@ -146,6 +146,8 @@ class HomePage extends React.Component {
         document.title = "GlyphEd - Home";
 
         this.fetchSavedViews();
+        this.fetchAnnouncements();
+        this.fetchSaveUserSettings();
     }
 
     componentDidUpdate(){
@@ -168,7 +170,118 @@ class HomePage extends React.Component {
             }
         );
     }
-	
+
+    fetchSaveUserSettings(){
+            /*makeServerCall("fetchUserSettings",
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                debugger;
+            //do-stuff
+            }
+        );
+
+        makeServerCall("saveUserSettings",
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                debugger;
+            //do-stuff
+            },
+            {
+                post:true,
+                data: { 
+                    userSettings: {a:'b','c':'d'}//{the actual object you want to be stored in the file}
+                }
+            }
+        );*/
+    }
+    
+    fetchAnnouncements(){
+        var context = this;
+
+        /*
+        
+        //Fetch Announcements.
+        makeServerCall("manageAnnouncements",
+                    function (responseText) {
+                        var response = JSON.parse(responseText);
+                        debugger;
+                    //do-stuff
+                    },
+                    {
+                        post:true,
+                        data: { 
+                            operation:'fetch', //create/delete/fetch/pollResult
+                            config:{
+                                //type: MultiPoll/SinglePoll/Release/Maintenance/Shout
+                                //content: {whatever to put in the description}
+                                //AnnouncementId: (if delete/pollResult request)
+                                //options:["",""...] options for poll
+                                //selectedOptionIds:[]
+                            } 
+                        }
+                    }
+                );
+
+
+        //Poll Creation.
+        makeServerCall("manageAnnouncements",
+                    function (responseText) {
+                        var response = JSON.parse(responseText);
+                        debugger;
+                    //do-stuff
+                    },
+                    {
+                        post:true,
+                        data: { 
+                            operation:'create',
+                            config:{
+                                type: 'SinglePoll',
+                                content: "Question1",
+                                options:["asdbc","asdfcv"]
+                            } 
+                        }
+                    }
+                );
+
+        //delete
+        makeServerCall("manageAnnouncements",
+                    function (responseText) {
+                        var response = JSON.parse(responseText);
+                        debugger;
+                    //do-stuff
+                    },
+                    {
+                        post:true,
+                        data: { 
+                            operation:'delete',
+                            config:{
+                                AnnouncementId:'13'
+                            } 
+                        }
+                    }
+                );
+
+        //pollresult with save of user selection.
+        makeServerCall("manageAnnouncements",
+                    function (responseText) {
+                        var response = JSON.parse(responseText);
+                        debugger;
+                    //do-stuff
+                    },
+                    {
+                        post:true,
+                        data: { 
+                            operation:'pollResult',
+                            config:{
+                                AnnouncementId:'12',
+                                selectedOptionIds:[4]
+                            } 
+                        }
+                    }
+                );
+        
+        */
+    }
 	
 	//[]
 	loadRecentView(rowArray){
