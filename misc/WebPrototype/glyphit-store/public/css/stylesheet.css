@@ -67,12 +67,12 @@
 
 .centerCard{
     width: 300px !important;
-    height: 200px !important;
+    height: 250px !important;
     position: absolute !important;
     left: 50% !important;
     top: 50% !important;
     float: left !important;
-    margin: -100px 0 0 -150px !important;
+    margin: -125px 0 0 -150px !important;
     border-radius: 10px !important;
     -moz-box-shadow: 0 0 5px 5px #2a2b47 !important;
     -webkit-box-shadow: 0 0 5px 5px#2a2b47 !important;

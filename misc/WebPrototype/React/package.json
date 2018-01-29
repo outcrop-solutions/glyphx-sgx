@@ -7,7 +7,8 @@
     "bluebird": "^3.5.0",
     "flexbox-react": "^4.4.0",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-virtualized": "^9.18.0"
   },
   "peerDependencies": {
     "prop-types": "^15.5.7"
@@ -31,7 +32,7 @@
     "react-router-dom": "^4.1.2",
     "react-quill": "^1.1.0",
     "react-styled-select": "^2.2.3-beta",
-    "bluebird":"3.5.1"
+    "bluebird": "3.5.1"
   },
   "scripts": {
     "start": "react-scripts start",

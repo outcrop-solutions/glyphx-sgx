@@ -38,6 +38,7 @@ class FilterTabs extends React.Component {
         }
     }
 
+
     /**
      * Hide the main scrollbar when hovering inside the range table while the range table has a scrollbar itself
      * Only hides if the setting is enabled
@@ -112,7 +113,6 @@ class FilterTabs extends React.Component {
     render() {
         return (
             <div>
-                {this.props.open ? 
                 <div style = {{ margin: "-5px 0px -4px" }} >
                     <Tabs onChange = { (value) => this.handleChange(value, this) } value = { this.state.slideIndex } >
                         <Tab 
@@ -158,6 +158,8 @@ class FilterTabs extends React.Component {
                                 selectedRows = { this.state.FilterTableSelectedRows } 
                                 refreshTableDataOnRowSelection = { (colName, selections) => this.props.refreshTableDataOnRowSelection(colName, selections) }
                                 tableID = { this.state.tableID }
+                                setFilterIDs = { this.props.setFilterIDs }
+                                fullTableData = { this.props.fullTableData }
                             />
                         </div>
 
@@ -179,6 +181,9 @@ class FilterTabs extends React.Component {
                                     minVal = { this.props.filterList[this.props.id].bounds[0] } 
                                     refreshTableDataOnRowSelection = { (colName, selections) => this.props.refreshTableDataOnRowSelection(colName, selections) }
                                     maxVal = { this.props.filterList[this.props.id].bounds[1] }
+                                    fullTableData = { this.props.fullTableData }
+                                    setFilterIDs = { this.props.setFilterIDs }
+                                    setTableData = { this.props.setTableData }
                                 /> 
                                 : 
                                 (this.props.filterList[this.props.id].type === "Text" ? 
@@ -186,6 +191,9 @@ class FilterTabs extends React.Component {
                                         colName = { this.props.id } 
                                         refreshTableDataOnRowSelection = { (colName, selections) => this.props.refreshTableDataOnRowSelection(colName, selections) }
                                         data = { this.state.tableData.flatValues } 
+                                        fullTableData = { this.props.fullTableData }
+                                        setFilterIDs = { this.props.setFilterIDs }
+                                        setTableData = { this.props.setTableData }
                                     /> 
                                     :  
                                     "TODO: Add Date Range Here"
@@ -195,9 +203,6 @@ class FilterTabs extends React.Component {
                         </div>
                     </SwipeableViews>
                 </div>
-                :
-                ""
-                }
             </div>
         );
     }

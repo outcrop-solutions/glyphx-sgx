@@ -18,12 +18,31 @@ mySqlConnection = new mysql({
             
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'mungooyum3@gmail.com',
-    pass: '112233meme'
-  }
+    /*
+    //service: 'Godaddy',
+    //service: "Godaddy",
+    host: 'smtp.office365.com',
+    port: '587',
+    secureConnection: false,
+    tls: { ciphers: 'SSLv3' },
+    //host: "smtp.office365.com",
+    //host: "smtpout.secureserver.net",
+    //port: 25,         
+    //secure: false,
+    auth: {
+        user: 'marwane@synglyphx.com',
+        pass: 'SGX2013!'
+    }
+    */
+    host: 'smtp.office365.com',
+    port: '587',
+    secureConnection: false,
+    auth: {
+        user: 'marwane@synglyphx.com',
+        pass: 'SGX2013!'
+    }
 });
+
 
 
 paypal.configure({
@@ -110,26 +129,7 @@ app.post('/pay', (req, res) => {
     catch(err) {
         console.log(err);
     }
-
-
-    /*
-    var mailOptions = {
-        from: 'mungooyum3@gmail.com',
-        to: req.body.user.email,
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
-    };
-
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n MAIL ERROR ----------------------------------");
-            console.log(error);
-        } else {
-            console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n MAIL SENT ----------------------------------");
-            console.log('Email sent: ' + info.response);
-        }
-    });
-    */
+    
 
     const create_payment_json = {
         "intent": "sale",
@@ -221,6 +221,10 @@ app.get('/success', (req, res) => {
 						
 						var ts = Math.trunc((((new Date().getTime()/1000)/86400)+365)*86400);
 
+                        if (req.session.user.PROMO == "ND40120VERMA") {
+                            ts = Math.trunc((((new Date().getTime()/1000)/86400)+182)*86400);
+                        }
+
 						var text = userID.toString().valueOf() + "1".valueOf() + ts.toString().valueOf();
 						var hashCode = crypto.createHash('md5').update(text).digest("hex");
 
@@ -235,9 +239,49 @@ app.get('/success', (req, res) => {
 
                         //Insert the new user in UsageLicenses.
                         var insertLicenseValues = userID + ",1,365,'"+ key + "'";
+
+                        if (req.session.user.PROMO == "ND40120VERMA") {
+                            insertLicenseValues = userID + ",1,182,'"+ key + "'";
+                        }
+
                         mySqlConnection.query("Insert into UsageLicenses Values ("+insertLicenseValues+")");
 
                         mySqlConnection.query("INSERT into User_Promo values ("+lastInsertedRow[0].ID+",'"+ req.session.user.PROMO +"','"+req.session.user.total+"')");
+
+
+                        var mailOptions = {
+                            from: 'marwane@synglyphx.com',
+                            to: req.body.user.email,
+                            subject: 'Weclome to SynGlyphX',
+                            text:   ("Hello,\n\nThank you for purchasing the GlyphIT® suite of software. We are very excited to have you as a part of the SynGlyphX® community."
+                                    + "\n\nAttached you'll find the installation instructions to get you started using our software. \n\nIf you run into any issues you can reach us at: support@synglyphx.com"
+                                    + "\nTo learn more about SynGlyphX and what we do, please visit us at our website: http://www.synglyphx.com/ \n\nBest, \nThe SynGlyphX Team"),
+                            attachments: [{
+                                filename: 'GlyphIT Installation Instructions.pdf',
+                                path: 'public/res/GlyphIT Installation Instructions.pdf',
+                                contentType: 'application/pdf'
+                            }], function (err, info) {
+                                if(err){
+                                    console.log("EMAIL WOOP ERROR");
+                                    console.error(err);
+                                    //res.send(err);
+                                }
+                                else{
+                                    console.log(info);
+                                    //res.send(info);
+                                }
+                            }
+                        };
+
+                        transporter.sendMail(mailOptions, function(error, info){
+                            if (error) {
+                                console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n MAIL ERROR ----------------------------------");
+                                console.log(error);
+                            } else {
+                                console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n MAIL SENT ----------------------------------");
+                                console.log('Email sent: ' + info.response);
+                            }
+                        });
                     }
                     catch(err) {
                         console.log(err);
@@ -325,6 +369,10 @@ app.get('/freePromoCode', (req, res) => {
 		
 		var ts = Math.trunc((((new Date().getTime()/1000)/86400)+365)*86400);
 
+        if (uInfo.PROMO == "ND40120VERMA") {
+            ts = Math.trunc((((new Date().getTime()/1000)/86400)+182)*86400);
+        }
+
 		var text = userID.toString().valueOf() + "1".valueOf() + ts.toString().valueOf();
 		var hashCode = crypto.createHash('md5').update(text).digest("hex");
 
@@ -339,9 +387,49 @@ app.get('/freePromoCode', (req, res) => {
 
         //Insert the new user in UsageLicenses.
         var insertLicenseValues = userID + ",1,365,'"+ key + "'";
+
+        if (uInfo.PROMO == "ND40120VERMA") {
+            insertLicenseValues = userID + ",1,182,'"+ key + "'";
+        }
+
         mySqlConnection.query("Insert into UsageLicenses Values ("+insertLicenseValues+")");
 
         mySqlConnection.query("INSERT into User_Promo values ("+lastInsertedRow[0].ID+",'"+ uInfo.PROMO +"','"+uTotal+"')");
+
+        var mailOptions = {
+            from: 'marwane@synglyphx.com',
+            to: uInfo.email,
+            subject: 'Weclome to SynGlyphX',
+            text:   ("Hello,\n\nThank you for purchasing the GlyphIT® suite of software.  We are very excited to have you as a part of the SynGlyphX® community."
+                    + "\n\nAttached you'll find the installation instructions to get you started using our software. \n\nIf you run into any issues you can reach us at: support@synglyphx.com"
+                    + "\nTo learn more about SynGlyphX and what we do, please visit us at our website: http://www.synglyphx.com/ \n\nBest, \nThe SynGlyphX Team"),
+            attachments: [{
+                filename: 'GlyphIT Installation Instructions.pdf',
+                path: 'public/res/GlyphIT Installation Instructions.pdf',
+                contentType: 'application/pdf'
+            }], function (err, info) {
+                if(err){
+                    console.log("EMAIL WOOP ERROR");
+                    console.error(err);
+                    //res.send(err);
+                }
+                else{
+                    console.log(info);
+                    //res.send(info);
+                }
+            }
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n MAIL ERROR ----------------------------------");
+                console.log(error);
+            } else {
+                console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n MAIL SENT ----------------------------------");
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
         res.send('download');
     }
     catch(err) {

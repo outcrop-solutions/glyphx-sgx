@@ -66,6 +66,10 @@ var createLabel = function(mesh, tag) {
     return label;
 }  
 
+function setHideGlyphs(hide){
+    filterManager.setHideGlyphs(hide);
+}
+
 function isAxisVisible() {
     return axisControl.isEnabled();
 }
@@ -141,7 +145,7 @@ var createScene = function (engine) {
     var xcone2 = xcone1.createInstance("xcone2");
     xcone2.position.x = 1.5;
     xcone2.rotation = new BABYLON.Vector3(0, 0, -1.57);
-    var red = new BABYLON.StandardMaterial("sm", scene);
+    var red = new BABYLON.StandardMaterial("axis_red", scene);
     red.emissiveColor = new BABYLON.Color3(1,0,0);
     red.diffuseColor = new BABYLON.Color3(1,0,0);
     x.material = red;
@@ -161,7 +165,7 @@ var createScene = function (engine) {
     var ycone2 = ycone1.createInstance("ycone2");
     ycone2.position.z = 1.5;
     ycone2.rotation = new BABYLON.Vector3(1.57, 0, 0);
-    var green = new BABYLON.StandardMaterial("sm", scene);
+    var green = new BABYLON.StandardMaterial("axis_green", scene);
     green.emissiveColor = new BABYLON.Color3(0,1,0);
     green.diffuseColor = new BABYLON.Color3(0,1,0);
     y.material = green;
@@ -181,7 +185,7 @@ var createScene = function (engine) {
     var zcone2 = BABYLON.MeshBuilder.CreateCylinder("Cone", {height: 0.5, diameterTop: 0, diameterBottom: 0.25, tessellation: 12}, scene);
     zcone2.position.y = 1.5;
     zcone2.rotation = new BABYLON.Vector3(0, 1.57, 0);
-    var blue = new BABYLON.StandardMaterial("sm", scene);
+    var blue = new BABYLON.StandardMaterial("axis_blue", scene);
     blue.emissiveColor = new BABYLON.Color3(0,0,1);
     blue.diffuseColor = new BABYLON.Color3(0,0,1);
     z.material = blue;
@@ -301,13 +305,13 @@ var createScene = function (engine) {
 
     /*
     Topologies:
-            Cube = 1,
-            Sphere = 2,
-            Torus = 3,
-            Cylinder = 4,
-            Pin = 5,
-            Rod = 6,
-            Point = 7
+            Cube = 1, PRIORITY 5
+            Sphere = 2, DONE
+            Torus = 3, PRIORITY 1
+            Cylinder = 4, CONSOLIDATE 3
+            Pin = 5, PRIORITY 4
+            Rod = 6, CONSOLIDATE 2
+            Point = 7, UNUSED
     */
 
     Math.radians = function(degrees) {
@@ -356,43 +360,89 @@ var createScene = function (engine) {
         }
         return [x, y, z];
     }
+    /*
+    BABYLON.Effect.ShadersStore["fadePixelShader"] =
+            "precision highp float;" +
+            "varying vec2 vUV;" +
+            "uniform sampler2D textureSampler; " +
+            "uniform float fadeLevel; " +
+            "void main(void){" +
+            "vec4 baseColor = texture2D(textureSampler, vUV) * fadeLevel;" +
+            "baseColor.a = 1.0;" +
+            "gl_FragColor = baseColor;" +
+    "}";
 
+    var fadeLevel = 1.0;
+    var postProcess = new BABYLON.PostProcess("Fade", "fade", ["fadeLevel"], null, 1.0, camera);
+    postProcess.onApply = (effect) => {
+        effect.setFloat("fadeLevel", fadeLevel);
+    };  
+    */
+    var unique_locations = new Map();
+
+    var si_control = false;
+    var si_button = null;
+    var expandImage = new BABYLON.GUI.Image("expand_icon", "expand-64.png");
+    expandImage.stretch = BABYLON.GUI.Image.STRETCH_FILL;
+    expandImage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    var compressImage = new BABYLON.GUI.Image("compress_icon", "compress-64.png");
+    compressImage.stretch = BABYLON.GUI.Image.STRETCH_FILL;
+    compressImage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    var si_pressed = false;
+    var currentSiGroup = null;
     function createSuperimposedGlyphIndicator(mesh){
         //Sphere
-        var white = new BABYLON.StandardMaterial("sm", scene);
-        white.emissiveColor = new BABYLON.Color3.White();
-        white.diffuseColor = new BABYLON.Color3.White();
-        white.alpha = 0.1;
-        var sphere = BABYLON.Mesh.CreateSphere("Sphere", 16, 1, scene);
-        sphere.material = white;
-        sphere.position = mesh.position;
-        var scale = Math.max(mesh.scaling.x, Math.max(mesh.scaling.y, mesh.scaling.z))*2;
-        sphere.scaling = new BABYLON.Vector3(scale, scale, scale);
-        //Button
-        var button = BABYLON.GUI.Button.CreateImageOnlyButton("but", "expand-64.png");
-        button.width = "30px";
-        button.height = "30px";
-        button.thickness = 0;
-        button.cornerRadius = 0;
-        button.onPointerUpObservable.add(function() {
-            console.alert("Show superimposed glyphs");
+        var sphere = filterManager.selectionManager.superImposedIndicator(mesh);
+
+        si_button = new BABYLON.GUI.Button("si_button");
+        // Adding image
+        si_button.addControl(expandImage);
+
+        //si_button = BABYLON.GUI.Button.CreateImageOnlyButton("but", "expand-64.png");
+        si_button.width = "30px";
+        si_button.height = "30px";
+        si_button.thickness = 0;
+        si_button.cornerRadius = 0;
+        //console.log(unique_locations.get(mesh.position.x+""+mesh.position.y+""+mesh.position.z));
+
+        si_button.onPointerUpObservable.add(function() {
+            //console.alert("Show superimposed glyphs");
+            if(si_pressed){
+                console.log("add expanded image");
+                filterManager.clearSelections();
+                si_button.removeControl(compressImage);
+                si_button.addControl(expandImage);
+                currentSiGroup = null;
+                filterManager.fadeGlyphs(mesh, currentSiGroup);
+                si_pressed = false;
+                filterManager.addSingleSelection(mesh);
+            }
+            else{
+                console.log("add compressed image");
+                si_button.removeControl(expandImage);
+                si_button.addControl(compressImage);
+                currentSiGroup = unique_locations.get(mesh.position.x+""+mesh.position.y+""+mesh.position.z);
+                filterManager.fadeGlyphs(mesh, currentSiGroup);
+                si_pressed = true;
+                filterManager.clearSelections();
+            }
         });
-        advancedTexture.addControl(button);
-        button.linkWithMesh(mesh);
-        button.linkOffsetY = 10;
+        advancedTexture.addControl(si_button);
+        si_button.linkWithMesh(sphere);
+        si_button.linkOffsetY = 10;
+        si_control = true;
     }
 
     var meshMap = new Map();
     var materialMap = new Map();
     var allGlyphs = new Map();
+    var transGlyphs = new Map();
     var topoIDs = new Map();
     filterManager = new SYNGLYPHX.FilterManager(camera);
 
     var avg_x = 0;
     var avg_y = 0;
     var avg_z = 0;
-
-    var unique_locations = new Map();
 
     $.ajax({url: json_path, success: function(data){
         /*
@@ -436,20 +486,26 @@ var createScene = function (engine) {
                 }
 
                 var mesh;
+                var tmesh;
                 if(meshMap.get(obj[i]["geometry"]+obj[i]["color"]) == null){
                     meshMap.set(obj[i]["geometry"]+obj[i]["color"], createShape(obj[i]["geometry"], obj[i]["color"], obj[i]["parent_id"] == 0));
+                    meshMap.set("t"+obj[i]["geometry"]+obj[i]["color"], createShape(obj[i]["geometry"], obj[i]["color"], obj[i]["parent_id"] == 0));
                     mesh = meshMap.get(obj[i]["geometry"]+obj[i]["color"]);
+                    tmesh = meshMap.get("t"+obj[i]["geometry"]+obj[i]["color"]);
                 }
                 else{
                     mesh = meshMap.get(obj[i]["geometry"]+obj[i]["color"]).createInstance("mesh"+i);
+                    tmesh = meshMap.get("t"+obj[i]["geometry"]+obj[i]["color"]).createInstance("tmesh"+i);
                 }
 
                 var topo = obj[i]["parent_id"] != 0 ? topoIDs.get(obj[i]["parent_id"]) : 0; 
                 pos = translateMeshPosition(0.7, obj[i]["pos"], obj[i]["parent_id"] == 0, topo)
                 mesh.position = new BABYLON.Vector3(pos[0], pos[1], pos[2]);
+                tmesh.position = new BABYLON.Vector3(pos[0], pos[1], pos[2]);
 
                 scale = adjustMeshScaling(obj[i]["geometry"], obj[i]["scale"], obj[i]["parent_id"] == 0)
                 mesh.scaling = new BABYLON.Vector3(scale[0], scale[1], scale[2]);
+                tmesh.scaling = new BABYLON.Vector3(scale[0], scale[1], scale[2]);
                 /*
                 if(obj[i]["geometry"] == 7){
                     console.log("id: "+obj[i]["id"]+", "+obj[i]["scale"]);
@@ -457,32 +513,38 @@ var createScene = function (engine) {
                 */
                 rotate = translateMeshRotation(obj[i]["geometry"], obj[i]["scale"], obj[i]["rotate"], obj[i]["parent_id"] == 0, topo);
                 mesh.rotation = new BABYLON.Vector3(rotate[0], rotate[1], rotate[2]);
+                tmesh.rotation = new BABYLON.Vector3(rotate[0], rotate[1], rotate[2]);
 
                 allGlyphs.set(obj[i]["id"], mesh);
+                transGlyphs.set(obj[i]["id"], tmesh);
                 if(obj[i]["parent_id"] != 0){
                     mesh.parent = allGlyphs.get(obj[i]["parent_id"]);
+                    tmesh.parent = transGlyphs.get(obj[i]["parent_id"]);
                 }
                 else{
                     var ignore = false;
                     if(unique_locations.get(pos[0]+""+pos[1]+""+pos[2]) == null){
-                        unique_locations.set(pos[0]+""+pos[1]+""+pos[2], 1); 
+                        unique_locations.set(pos[0]+""+pos[1]+""+pos[2], new Array()); 
                     }
                     else{
-                        unique_locations.set(pos[0]+""+pos[1]+""+pos[2], unique_locations.get(pos[0]+""+pos[1]+""+pos[2])+1);
                         ignore = true;
                     }
-                    filterManager.addRootGlyph(++rootNum, mesh, ignore);
+                    filterManager.addRootGlyph(++rootNum, mesh, tmesh, ignore);
+                    unique_locations.get(pos[0]+""+pos[1]+""+pos[2]).push(rootNum);
                     avg_x += pos[0];
                     avg_y += pos[1];
                     avg_z += pos[2];
                     mesh.scaling = new BABYLON.Vector3(scale[0]*2, scale[1]*2, scale[2]*2);
+                    tmesh.scaling = new BABYLON.Vector3(scale[0]*2, scale[1]*2, scale[2]*2);
                     //mesh.actionManager = new BABYLON.ActionManager(scene);
                     //mesh.actionManager.registerAction(action);
                 }
                 mesh.freezeWorldMatrix();
+                tmesh.freezeWorldMatrix();
 
                 if(materialMap.get(obj[i]["color"]) == null){
                     materialMap.set(obj[i]["color"], new BABYLON.StandardMaterial("sm", scene));
+                    materialMap.set("t"+obj[i]["color"], new BABYLON.StandardMaterial("tsm", scene));
                 }
 
                 function shadeColor(color, percent) {   
@@ -491,8 +553,13 @@ var createScene = function (engine) {
                 }
                 materialMap.get(obj[i]["color"]).emissiveColor = new BABYLON.Color3.FromHexString(shadeColor(obj[i]["color"], -0.5));
                 materialMap.get(obj[i]["color"]).diffuseColor = new BABYLON.Color3.FromHexString(obj[i]["color"]);
+                materialMap.get("t"+obj[i]["color"]).emissiveColor = new BABYLON.Color3.FromHexString(shadeColor(obj[i]["color"], -0.5));
+                materialMap.get("t"+obj[i]["color"]).diffuseColor = new BABYLON.Color3.FromHexString(obj[i]["color"]);
                 mesh.material = materialMap.get(obj[i]["color"]);
                 mesh.material.needDepthPrePass = true;
+                tmesh.material = materialMap.get("t"+obj[i]["color"]);
+                tmesh.material.needDepthPrePass = true;
+                tmesh.visibility = 0.05;
                 tags.set(mesh.id, obj[i]["tag"]);
             }
         }
@@ -553,30 +620,47 @@ var createScene = function (engine) {
             startPoint = [scene._pointerX, scene._pointerY];
         }
         else if (pickResult.hit) {
-            if(pickResult.pickedMesh.name != 'ground' && pickResult.pickedMesh.name != 'tagplane'){
-                filterManager.clearSelections();
+            var ignoredMats = ['tsm','sim','sgm','axis_red','axis_green','axis_blue'];
+            if(pickResult.pickedMesh.name != 'ground' && pickResult.pickedMesh.name != 'tagplane' && !ignoredMats.includes(pickResult.pickedMesh.material.name)){
                 lastPickedMesh = pickResult.pickedMesh;
                 var mesh = findParent(pickResult.pickedMesh);
-                filterManager.addSingleSelection(mesh);
-                camera.setTarget(new BABYLON.Vector3(mesh.position.x, mesh.position.y, mesh.position.z));
-                camera2.alpha = camera.alpha;
-                camera2.beta = camera.beta;
-                /*
-                if(unique_locations.get(mesh.position.x+""+mesh.position.y+""+mesh.position.z) > 1){
-                    createSuperimposedGlyphIndicator(mesh);
-                } 
-                */
-                if(bbDisplayed){
-                    var childMeshes = mesh.getChildMeshes();
-                    var tagString = "<table id='bbcard'>";
-                    for(var i = 0; i < childMeshes.length; i++){
-                        if(tags.get(childMeshes[i].id) != "No Tag"){
-                            tagString += "<tr><td>" + tags.get(childMeshes[i].id) + "</td></tr>";
+                console.log(currentSiGroup+", "+filterManager.getIdFromMesh(mesh));
+                console.log(si_control);
+                if(si_control && si_button && !currentSiGroup){
+                    console.log("removing si_button");
+                    si_button.removeControl(si_pressed? compressImage : expandImage);
+                    advancedTexture.removeControl(si_button);
+                    si_button = null;
+                    si_control = false;
+                }
+                if(!currentSiGroup || currentSiGroup.includes(filterManager.getIdFromMesh(mesh))){
+                    filterManager.clearSelections();
+                    filterManager.addSingleSelection(mesh);
+                    camera.setTarget(new BABYLON.Vector3(mesh.position.x, mesh.position.y, mesh.position.z));
+                    camera2.alpha = camera.alpha;
+                    camera2.beta = camera.beta;
+                    if(!currentSiGroup){
+                        filterManager.selectionManager.superImposedIndicator(mesh).setEnabled(0);
+                        //console.log("ul: "+unique_locations.get(mesh.position.x+""+mesh.position.y+""+mesh.position.z));
+                        if(unique_locations.get(mesh.position.x+""+mesh.position.y+""+mesh.position.z).length > 1){
+                            console.log("creating si glyph");
+                            createSuperimposedGlyphIndicator(mesh);
+                            filterManager.selectionManager.superImposedIndicator(mesh).setEnabled(1);
                         }
                     }
-                    tagString += "</table>";
-                    $("#card").html(tagString);
-                    //$("#card").dialog( "option", "position", { my: "right bottom", at: "right bottom", of: window } );
+                    
+                    if(bbDisplayed){
+                        var childMeshes = mesh.getChildMeshes();
+                        var tagString = "<table id='bbcard'>";
+                        for(var i = 0; i < childMeshes.length; i++){
+                            if(tags.get(childMeshes[i].id) != "No Tag"){
+                                tagString += "<tr><td>" + tags.get(childMeshes[i].id) + "</td></tr>";
+                            }
+                        }
+                        tagString += "</table>";
+                        $("#card").html(tagString);
+                        //$("#card").dialog( "option", "position", { my: "right bottom", at: "right bottom", of: window } );
+                    }
                 }
             }
         }
@@ -596,15 +680,6 @@ var createScene = function (engine) {
                 camera2.alpha = camera.alpha;
                 camera2.beta = camera.beta;
             }
-        }
-    };
-
-    scene.onPointerMove = function (evt) {
-        if(box_selection){
-            if(selection_box != null){
-                advancedTexture.removeControl(selection_box); 
-            }
-            createSelectionBox(startPoint, [scene._pointerX, scene._pointerY]);
         }
     };
 
@@ -646,6 +721,15 @@ var createScene = function (engine) {
             console.log(camera.radius/40);
         }
     }  
+
+    scene.onPointerMove = function (evt) {
+        if(box_selection){
+            if(selection_box != null){
+                advancedTexture.removeControl(selection_box); 
+            }
+            createSelectionBox(startPoint, [scene._pointerX, scene._pointerY]);
+        }
+    };
 
 	return scene;
 };

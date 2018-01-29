@@ -12,7 +12,6 @@ import TopNavBar from './TopNavBar.js';
 import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './topNav.css';
 import './General.css';
@@ -302,8 +301,6 @@ class VisualizationView extends React.Component {
                                 {/* Draggable windows */}
                                 <StatisticModal handleCorrection = { this.handleDraggableCorrection.bind(this) } />
                                 <GlyphLegend handleCorrection = { this.handleDraggableCorrection.bind(this) } />
-
-                                <UndoRedoChangeListener />
 
                                 {/* Invisible div over the iframe to allow draggable windows to not bug out */}
                                 <div style = {{ height: "100vh", width: "100vw", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }} />

@@ -36,6 +36,13 @@ class FilterSideBarBottomView extends React.Component {
 	componentWillReceiveProps(nextProps) {
         if (Object.keys(nextProps.tableData).length !== 0) {
             this.setState({ loadMask: false });
+
+            if (this.props.UndoRedoHistory && this.props.UndoRedoHistory.history.length == 0) {
+                this.props.dispatch(editUndoRedoHistory({
+                    history: [{filterList: this.props.GLOBAL, tableData: nextProps.tableData}],
+                    position: 0
+                }));
+            }
         }
     }
 
@@ -164,7 +171,9 @@ class FilterSideBarBottomView extends React.Component {
                         displayName = { config.displayName } 
                         data = { config.data } 
                         refreshTableDataOnRowSelection={(colName,selections) => this.props.refreshTableDataOnRowSelection(colName,selections)}
-                        open = { config.data.flatValues.length < 20 || this.state.openCols['tab-' + config.internalColName] ? true : false }
+                        setFilterIDs = { this.props.setFilterIDs }
+                        fullTableData = { this.props.tableData }
+                        setTableData = { this.props.setTableData }
                     />
                 </Collapsible>
             </div>
@@ -586,13 +595,23 @@ class FilterSideBarBottomView extends React.Component {
 
 
 /**
+ * Constants defined to make dispatching for the redux store consistent
+ **/
+export const editUndoRedoHistory = (undoRedoHistory) => ({
+  type: 'UPDATE_HISTORY',
+  undoRedoHistory
+});
+
+
+/**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state) {
   return {
     GLOBAL: state.filterState.Filter,
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    UndoRedoHistory: state.filterState.UndoRedoHistory
   }
 };
 

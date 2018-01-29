@@ -39,7 +39,10 @@ class UndoRedoChangeListener extends React.Component {
      **/
     handleHistoryUpdate(oldList, filterList) {
         var history = this.state.history;
-        var jString = JSON.stringify(filterList);
+        var newElement = {filterList: filterList, tableData: this.props.tableData};
+        var jString = JSON.stringify(newElement);
+
+        debugger;
 
         if (history[history.length - 1] != jString && jString !== "{}") {
 

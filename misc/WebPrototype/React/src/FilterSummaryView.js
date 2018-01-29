@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
+import { makeServerCall } from './ServerCallHelper.js';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Badge from 'material-ui/Badge';
 import Flexbox from 'flexbox-react';
 import Tooltip from 'rc-tooltip';
+import Promise from 'bluebird';
 import 'rc-tooltip/assets/bootstrap.css';
 import './General.css';
 
@@ -28,8 +30,7 @@ class FilterSummaryView extends React.Component {
                 return true;
             }
         }
-
-        if (this.props.settings != nextProps.settings) {
+        if (this.props.settings != nextProps.settings || this.props.tableData != nextProps.tableData) {
             return true;
         }
         
@@ -43,12 +44,97 @@ class FilterSummaryView extends React.Component {
      * @param colName: name of the corresponding column to be deleted
      **/
     handleRowDel(colName) {
+        //this.props.dispatch(removeFilterView(colName));
+        
+        var context = this;
+
+        // let pom = new Promise(function (resolve, reject) {
+        //     context.props.dispatch(removeFilterView(colName));
+        //     resolve('done');
+        // });
+
+        // pom.then(() => this.props.refreshParent()).then(() => this.applyFilter());
+
+        let pom = new Promise(function (resolve, reject) {
+                context.props.dispatch(removeFilterView(colName));
+                resolve('done');
+        });
+
+        pom.then(() => context.props.refreshParent()).then(() => context.applyFilter()).then(() => context.addToHistory());
+    };
+
+
+    /**
+     * Unselects all ranges and removes all elastic selections from a column through a redux dispatch
+     * @param colName: name of the corresponding column to be deleted
+     **/
+    handleRowDelForClearAll(colName) {
         this.props.dispatch(removeFilterView(colName));
+    };
+
+
+    addToHistory() {
+        var undoRedoHistory = {
+            history: this.props.UndoRedoHistory.history.slice(0),
+            position: this.props.UndoRedoHistory.position
+        }
+
+        debugger;
+
+        if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
+            undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
+        }
+
+        undoRedoHistory.history.push({filterList: this.props.filterList, tableData: this.props.tableData});
+        undoRedoHistory.position = undoRedoHistory.position + 1;
+
+        this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
+    }
+
+
+    /**
+     * - ADCMT
+     */
+    applyFilter = () => {
+        console.log('Filter Applied');
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+
+        //var context = this;
+
+        makeServerCall('applyFilters',
+            function(result, b) {
+                var resultJson = JSON.parse(result);
+                debugger;
+                var data = resultJson.data;
+                var tempRowIds = [];
+                
+				if (data && Array.isArray(data)) {
+					if (data.length > 0) {							
+						for (var index = 0; index < data.length; index++) {
+							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+						}
+					}
+					else {
+						// No data was matched.
+						console.log('NO MATCH');
+					}
+				}
+				
+                // Change this to be located in the store
+                //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+
+                iframe.filterGlyphs(tempRowIds);
+            },
+            {post: true, 
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+            }
+        );
     };
 
 
     render() {
         var rowDel = this.handleRowDel.bind(this);
+        var rowDelForClearAll = this.handleRowDelForClearAll.bind(this);
         var filterList = this.props.filterList;
         var viewList = [];
 
@@ -128,6 +214,7 @@ class FilterSummaryView extends React.Component {
                 <FilterViewRow 
                     view = { view } 
                     onDelEvent = { rowDel.bind(this) } 
+                    onDelEventForClearAll = { rowDelForClearAll.bind(this) }
                     key = { view[0] }
                     ref = { view[0] }
                     settings = { context.props.settings }
@@ -180,6 +267,10 @@ class FilterViewRow extends React.Component {
      **/
     onDelEvent() {
         this.props.onDelEvent(this.props.view[6]);
+    }
+
+    onDelEventForClearAll() {
+        this.props.onDelEventForClearAll(this.props.view[6]);
     }
 
 
@@ -307,7 +398,7 @@ class FilterViewRow extends React.Component {
                         trigger = { Object.keys( {hover: 1} ) }
                         overlay = { <div> {this.props.view[3]} </div> }
                     >
-                        <span style = {{  wordWrap: "break-word" }} >
+                        <span style = {{  wordWrap: "break-word" }} onClick = { () => console.log(this.props) } >
                             {max}
                         </span>
                     </Tooltip>
@@ -328,6 +419,11 @@ export const removeFilterView = (colName) => ({
     colName
 });
 
+export const editUndoRedoHistory = (undoRedoHistory) => ({
+  type: 'UPDATE_HISTORY',
+  undoRedoHistory
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -336,7 +432,9 @@ export const removeFilterView = (colName) => ({
 const mapStateToProps = function(state){
   return {
     filterList: state.filterState.Filter,
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    VizParams: state.filterState.VizParams,
+    UndoRedoHistory: state.filterState.UndoRedoHistory
   }
 }
 

@@ -261,15 +261,15 @@ table.blueTable thead th {
   --styled-select-placeholder__line-height: 22px;
   --styled-select-value__line-height: 22px;
  
-  --styled-select-menu-outer__margin: 10px 0 0 0;
+  --styled-select-menu-outer__margin: -5px 0 0 0;
   --styled-select-menu-outer__padding: 0;
   --styled-select-menu-outer__background-color: #555;
   --styled-select-menu-outer__border-color: black;
   --styled-select-menu-outer__border-style: solid;
   --styled-select-menu-outer__border-width: 3px;
  
-  --styled-select-option__background-color: #444;
- 
+  --styled-select-option__background-color: #fff;
+
   --styled-select-option__color--focused: #eee;
   --styled-select-option__background-color--focused: #333;
  
@@ -279,4 +279,12 @@ table.blueTable thead th {
 
 .topViewContent {
     background-color: #ededff;
+}
+
+
+.ReactVirtualized__Table__headerRow {
+    background-color: #b5b5b5;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    text-transform: capitalize !important;
 }

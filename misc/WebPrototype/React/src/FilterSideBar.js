@@ -8,6 +8,7 @@ import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
+import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
 
@@ -24,11 +25,12 @@ class FilterSideBar extends React.Component {
         this.refreshTableDataOnRowSelection = this.refreshTableDataOnRowSelection.bind(this);
         //Store the states of all the elements inside this data structure.
         this.state  = {
-            tableData: {},//tableData,
+            tableData: {},
          	topViewInitParams: {
                 scrollToElement: this.scrollToCollapsibleElement
 			},
-            topViewVisible: true
+            topViewVisible: true,
+            filterIDs: null
         };
     };
 
@@ -77,52 +79,53 @@ class FilterSideBar extends React.Component {
    }
 
    
-   refreshTableDataOnRowSelection = (colName,selections) =>{
-
+   refreshTableDataOnRowSelection = (colName, selections) => {
         var fcolList = this.props.VizParams.filterAllowedColumnList.toString();
-        var query = "SELECT rowid,"+fcolList + " from " + this.props.VizParams.tableName;
+        var query = "SELECT rowid," + fcolList + " from " + this.props.VizParams.tableName;
         
-    
         var context = this;
-        var temp ="";
+        var temp = "";
         var flag = false;
-        //Create the query to pass
-        var filterObj = this.props.filterObj;
 
-        for(var column in filterObj){
-            if(filterObj[column].selectedValues.length > 0){
-                if(flag)
-                {
+        // Create the query to pass
+        var filterObj = this.props.filterObj;
+        for (var column in filterObj) {
+            if (filterObj[column].selectedValues.length > 0) {
+                if (flag) {
                     query = query + " AND ";
-                }else{
+                }
+                else {
                     query = query + " WHERE ";
                 }
                 temp = JSON.stringify(filterObj[column].selectedValues);
-                temp = temp.replace('[','(').replace(/]$/,")");
+                temp = temp.replace('[', '(').replace(/]$/, ")");
                 query += column + " IN " + temp;
                 flag = true;
             }
         }
 
-
-
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
-        // Get the data corresponding to the URL
         debugger;
-        makeServerCall(URL,
-            function (responseText) { 
-                var response = responseText;
-                if (typeof responseText === 'string') {
-                    response = JSON.parse(response);
+
+        return new Promise(function(resolve, reject) {
+            var result = 'A is done'        
+
+            // Get the data corresponding to the URL
+            makeServerCall(URL,
+                function (responseText) { 
+                    var response = responseText;
+                    if (typeof responseText === 'string') {
+                        response = JSON.parse(response);
+                    }
+                    debugger;
+                    if (response.data.length > 0) {
+                        var result = context.convertToCompatibleDataObject(response.data);
+                        context.setState({ tableData: result }, () => resolve(result));
+                    }
+                    
                 }
-                debugger;
-                if(response.data.length > 0){
-                    var result = context.convertToCompatibleDataObject(response.data);
-                    context.setState({ tableData: result });
-                }
-                
-            }
-        );
+            );
+        });
    }
 
     /**
@@ -339,6 +342,15 @@ class FilterSideBar extends React.Component {
 		}
     };
 
+
+    setFilterIDs(filterIDs) {
+        this.setState({ filterIDs: filterIDs });
+    }
+
+    setTableData(tableData) {
+        this.setState({ tableData: tableData });
+    }
+
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
@@ -356,6 +368,8 @@ class FilterSideBar extends React.Component {
                 <div>
                     <AlertContainer ref = { a => this.msg = a } />
                 </div>
+
+                {/*<UndoRedoChangeListener tableData = { this.state.tableData } /> */}
 
                 <Collapsible
                     transitionTime = {200} 
@@ -376,6 +390,10 @@ class FilterSideBar extends React.Component {
                         reloadParent = { this.loadVisualization }
                         refreshParent = { this.refreshTableDataOnRowSelection }
                         showHideLoadingMask = { this.props.showHideLoadingMask }
+                        filterIDs = { this.state.filterIDs }
+                        setFilterIDs = { this.setFilterIDs.bind(this) }
+                        tableData = { this.state.tableData } 
+                        setTableData = { this.setTableData.bind(this) }
                     />
 
                 </Collapsible>
@@ -401,7 +419,13 @@ class FilterSideBar extends React.Component {
 
                 {/* BOTTOM SECTION */}
                 
-                <FilterSideBarBottomView ref = "bottom" tableData = { this.state.tableData } refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} />
+                <FilterSideBarBottomView 
+                    ref = "bottom" 
+                    tableData = { this.state.tableData } 
+                    refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} 
+                    setFilterIDs = { this.setFilterIDs.bind(this) }
+                    setTableData = { this.setTableData.bind(this) }
+                />
 
             </Flexbox>
         );

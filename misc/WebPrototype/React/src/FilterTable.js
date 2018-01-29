@@ -1,12 +1,83 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { Column, Table } from 'react-virtualized';
+//import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+import { TableRow, TableRowColumn } from 'material-ui/Table';
 import { guidGenerator } from './GeneralFunctions.js';
+import { makeServerCall } from './ServerCallHelper.js';
 import Checkbox from 'material-ui/Checkbox';
 import Promise from 'bluebird';
 import ScrollIntoView from 'scroll-into-view-if-needed';
 import SearchBox from './SearchBox.js';
+import Flexbox from 'flexbox-react';
+import FontIcon from 'material-ui/FontIcon';
+import TextField from 'material-ui/TextField';
 import './General.css';
+import 'react-virtualized/styles.css';
+
+
+
+/**
+ * Default row renderer for Table.
+ */
+function CustomRowRendererComponent({
+    className,
+    columns,
+    index,
+    key,
+    onRowClick,
+    onRowDoubleClick,
+    onRowMouseOut,
+    onRowMouseOver,
+    onRowRightClick,
+    rowData,
+    style,
+    selectedData,
+    searchTerm
+}) {
+    const a11yProps = {};
+
+    if ( onRowClick || onRowDoubleClick || onRowMouseOut || onRowMouseOver || onRowRightClick ) {
+        a11yProps['aria-label'] = 'row';
+        a11yProps.tabIndex = 0;
+
+        if (onRowClick) {
+            a11yProps.onClick = event => onRowClick({event, index, rowData});
+        }
+        if (onRowDoubleClick) {
+            a11yProps.onDoubleClick = event =>
+            onRowDoubleClick({event, index, rowData});
+        }
+        if (onRowMouseOut) {
+            a11yProps.onMouseOut = event => onRowMouseOut({event, index, rowData});
+        }
+        if (onRowMouseOver) {
+            a11yProps.onMouseOver = event => onRowMouseOver({event, index, rowData});
+        }
+        if (onRowRightClick) {
+            a11yProps.onContextMenu = event =>
+            onRowRightClick({event, index, rowData});
+        }
+    }
+
+    if (selectedData.indexOf(rowData.value) != -1) {
+        style.backgroundColor = "#e0e0e0";
+    }
+
+    return (
+        <div
+            {...a11yProps}
+            className = { className }
+            key = { key }
+            role = "row"
+            style = { style }
+            >
+            {columns}
+        </div>
+    );
+}
+
+
 
 /**
  * Elastic Tables
@@ -20,25 +91,25 @@ import './General.css';
 
 class FilterTable extends React.Component {
 
-    refresh=true;
+    refresh = true;
 
     constructor(props) {
         super(props);
 
         this.state = {
             selectAll: false,
-            prevSelectedIndex: null,
             checkboxClicked:false,
             tableData: props.tableData,
             flatData: [],
             indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
+            searchTerm: ""
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.tableData != nextProps.tableData){
-            this.setState({tableData: nextProps.tableData,flatData:[]});
-            this.refresh=true;
+        if (this.props.tableData != nextProps.tableData) {
+            this.setState({ tableData: nextProps.tableData, flatData: [] });
+            this.refresh = true;
         }
     }
 
@@ -51,8 +122,9 @@ class FilterTable extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
 
         return (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues || 
-                this.props.settings != nextProps.settings || 
+                this.props.settings != nextProps.settings ||
                 this.state.flatData != nextState.flatData ||
+                this.state.searchTerm != nextState.searchTerm ||
                 this.props.tableData != nextProps.tableData
                 );
 
@@ -92,6 +164,13 @@ class FilterTable extends React.Component {
 	 */
     componentDidMount() {
         this.componentDidUpdate();
+
+        var undoRedoHistory = {
+            history: [{filterList: this.props.tableState, tableData: this.props.fullTableData}],
+            position: 0
+        }
+
+        //this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
         
         // Force update on mount for pinned columns to show the same selections before change
         //this.forceUpdate();
@@ -122,78 +201,125 @@ class FilterTable extends React.Component {
 
 
     /**
+     * - ADCMT
+     */
+    applyFilter = () => {
+        console.log('Filter Applied');
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+
+        var context = this;
+
+        makeServerCall('applyFilters',
+            function(result, b) {
+                var resultJson = JSON.parse(result);
+                debugger;
+                var data = resultJson.data;
+                var tempRowIds = [];
+                
+				if (data && Array.isArray(data)) {
+					if (data.length > 0) {							
+						for (var index = 0; index < data.length; index++) {
+							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+						}
+					}
+					else {
+						// No data was matched.
+						console.log('NO MATCH');
+					}
+				}
+				
+                context.props.setFilterIDs(tempRowIds);
+                iframe.filterGlyphs(tempRowIds);
+            },
+            {post: true, 
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState } 
+            }
+        );
+    };
+
+
+    /**
      * This method is called on selection of the row in the table. 
      * @param context: This is the actual instance of the FilterTable. Mainly used to access the state and store.
      * @param rowSelection: This is an array that has index(according to the table rows) of all the rows selected.
      * @param all: boolean value stating whether or not select all is clicked.
      * @param evt: -ADCMT
-     * @param checked: -ADCMT
+     * @param checked: -ADCM
      */
-    onRowSelect = (context, rowSelection, all, evt, checked) => {
-            var index, len = context.state.flatData.length;
-            var selectedValues;
+    onRowSelect = (e) => {
+        var selectedValues = this.props.tableState[this.props.id].selectedValues.slice();
 
-            if (this.state.prevSelectedIndex == null) {
-                this.setState({ prevSelectedIndex : rowSelection });
-            }
+        
 
-            if (evt && evt.shiftKey) {
-                // Implementation for shift key selection!
-            }
+        var checked = false;
 
-            if (all) {
-                this.setState({ selectAll: true });
-                selectedValues = [];
-
-                for (index = 0; index < len; index++) {
-                    selectedValues.push(context.state.flatData[index].value);
-                }
+        for (var i = 0; i < selectedValues.length; i++) {
+            if (selectedValues[i] == e.rowData.value) {
                 checked = true;
             }
+        }
 
-            else if (false === all) {
+
+        debugger;
+        
+
+        if (!checked) {
+            selectedValues.push(e.rowData.value);
+            if (selectedValues.length === this.state.flatData.length) {
+                this.setState({ selectAll: true });
+            }
+        }
+
+        else {
+            if (this.state.selectAll === true) {
                 this.setState({ selectAll: false });
-                selectedValues = [];
-                checked = false;
             }
+            selectedValues.splice(selectedValues.indexOf(e.rowData.value), 1);
+        }
+        
+        
 
-            else {
-                selectedValues = context.props.tableState[context.props.id].selectedValues.slice();
-                if (checked) {
-                    selectedValues.push(context.state.flatData[rowSelection].value);
-                    if (selectedValues.length === len) {
-                        this.setState({ selectAll: true });
-                    }
-                }
+        var filterStructure = {
+            colName : this.props.id,
+            selectedValues: selectedValues,
+            //value: (this.state.flatData[rowSelection] ? this.state.flatData[rowSelection].value : null),
+            value: e.rowData.value,
+            checked: checked,
+            type: this.props.tableState[this.props.id].type,
+            data: this.props.tableData.flatValues
+        }
 
-                else {
-                    if (this.state.selectAll === true) {
-                        this.setState({ selectAll: false });
-                    }
-                    selectedValues.splice(selectedValues.indexOf(context.state.flatData[rowSelection].value), 1);
-                }
-            }
+        
+        var context = this;
 
-            var filterStructure = {
-                colName : context.props.id,
-                selectedValues: selectedValues,
-                value: (context.state.flatData[rowSelection] ? context.state.flatData[rowSelection].value : null),
-                checked: checked,
-                type: context.props.tableState[context.props.id].type,
-                data: context.props.tableData.flatValues
-            }
+        let pom = new Promise(function (resolve, reject) {
+                context.props.dispatch(addRemoveElastic(filterStructure));
+                resolve('done');
+        });
 
-            
-            
+        pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.addToHistory()).then(() => context.applyFilter());
+        
 
-            let pom = new Promise(function (resolve, reject) {
-                    context.props.dispatch(addRemoveElastic(filterStructure))
-                    resolve('done');
-            });
-
-            pom.then(() => this.props.refreshTableDataOnRowSelection());
-            
     };
+
+
+    addToHistory() {
+        var undoRedoHistory = {
+            history: this.props.UndoRedoHistory.history.slice(0),
+            position: this.props.UndoRedoHistory.position
+        }
+
+        debugger;
+
+        if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
+            undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
+        }
+
+        undoRedoHistory.history.push({filterList: this.props.tableState, tableData: this.props.fullTableData});
+        undoRedoHistory.position = undoRedoHistory.position + 1;
+
+        this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
+    }
     
 
     /**
@@ -443,85 +569,28 @@ class FilterTable extends React.Component {
 
 
     /**
-     * This creates the rows based on the sort property.
-     * Initially the sortedvalues property is [] so fetches from data.
+     * This creates data for the table.
      */
     createRows = () => {
-        
-        var id = this.props.id;
-        var data = this.state.tableData.values;
-        var totalCount = this.state.tableData.totalCount;
-        var selectedValues = this.props.tableState[id].selectedValues;
         var rows = [];
-        var count; 
-        var index = 0;
-        var percentStr;
-        var sortedValues = this.state.flatData;
 
-        /**
-         * structure of data is:
-         * {
-         *      abc/num: {
-         *          value: 'abc' or num,
-         *          count: num
-         *          }
-         * }
-         */
-        if (sortedValues.length > 0 && !this.refresh) {
-            for (var i = 0; i < sortedValues.length; i++) {
-                count = sortedValues[i].count;
-                percentStr = count + " (" + ((count/totalCount) * 100).toFixed(2) + "%)";
-                rows.push(this.generateRowHTML(sortedValues[i].value, sortedValues[i].value, count, percentStr, (selectedValues.indexOf(sortedValues[i].value) !== -1), index));
-                index++;
+        var sTerm = this.state.searchTerm.trim();
+
+        for (var i in this.state.tableData.values) {
+
+            if (sTerm != "") {
+                if (this.state.tableData.values[i].value.toString().toLowerCase().indexOf(sTerm.toLowerCase()) != -1) {
+                    rows.push({ value: this.state.tableData.values[i].value, count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
+                }
             }
-        }
-
-        else {
-            this.refresh=false;
-            for (var property in data) {
-                count = data[property].count;
-                percentStr = count + " (" + ((count/totalCount)*100).toFixed(2) + "%)";
-                rows.push(this.generateRowHTML(property,data[property].value, count, percentStr, (selectedValues.indexOf(data[property].value) !== -1), index, true));
-                index++;
-            }   
+            else {
+                rows.push({ value: this.state.tableData.values[i].value, count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
+            }
         }
 
         return rows;
     }
 
-
-    /**
-     * This generates the HTML markup.
-     * @param {string} property: this is the "key" of the object
-     * @param {string} value: this is the value of the object.
-     * @param {int} count: this is the count of that value.
-     * @param {string} percentStr: this is the percentage of the count.
-     * @param {bool} checked: selected or not.
-     * @param {int} index: reference index for the flatdata that is updated.
-     * @param {bool} initialRowCreate: true if the table is loaded the 1st time.
-     */
-    generateRowHTML = (property, value, count, percentStr, checked, index, initialRowCreate) =>{
-        var row;
-        var context = this;
-        
-        row = (
-            <FilterRow 
-                onRowSelect = { (evt,rowSelection,checked) => this.onRowSelect(this, rowSelection, null, evt, checked) } 
-                key = { guidGenerator() } 
-                index = { guidGenerator() } 
-                checked = { checked } 
-                value = { value } 
-                percentStr = { percentStr }
-                settings = { context.props.settings }
-            />
-        );
-
-        if (initialRowCreate) {
-            this.state.flatData.push({ value: value, count: count, index: index });
-        }
-            
-        return row;
-    }
 
 
     /**
@@ -542,6 +611,17 @@ class FilterTable extends React.Component {
         }
     }
 
+
+    onSearchChange(e) {
+        this.setState({ searchTerm: e.target.value });
+    }
+
+
+    getRowRenderer = (props) => {
+        return <CustomRowRendererComponent searchTerm = { this.state.searchTerm } selectedData = { this.props.tableState[this.props.id].selectedValues } {...props } />;
+    }
+
+
     render() {
         var id = this.props.id;
         var internalColName = this.props.internalColName;
@@ -554,27 +634,95 @@ class FilterTable extends React.Component {
                 <br/>
 
                 <div style = {{ margin: "-11px 15px -12px" }} >
-                    <SearchBox 
-                        ref = "pinnedCollapisbleSearchBox"
-                        id = { "tf-" + internalColName }
-                        hintText = "Search for value..." 
-                        pinned = { false }
-                        collapseButton = { false }
-                        settings = {{
-                            SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
-                            searchBoxUnderline: this.props.settings.colors.pinFilterColor.searchBoxUnderline,
-                            overviewButtonsColorBg: this.props.settings.colors.overviewButtonsColor.background,
-                            overviewButtonsColorText: this.props.settings.colors.overviewButtonsColor.text,
-                            tableSelectColor: this.props.settings.colors.tableSelectColor.background
-                        }}
-                        onTextFieldValueChange = { (evt) => this.onKeyUpMultiSearch(this, internalColName, this.state.indexColumnToSearch) }
-                    />
+
+                    <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
+                        <Flexbox style = {{ width: "100%", borderRadius: "5px", backgroundColor: this.props.settings.colors.tableSelectColor.background }} > 
+
+                            <TextField
+                                type = "search"
+                                ref = "SearchTextField"
+                                value = { this.state.searchTerm }
+                                style = {{
+                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ccc",
+                                    width: "100%",
+                                    height: "30px"
+                                }}
+                                inputStyle = {{
+                                    paddingLeft:"5px",
+                                    paddingRight:"5px"
+                                }}
+                                hintStyle = {{
+                                    paddingLeft:"7px",
+                                    bottom: "-1px"
+                                }}
+                                underlineStyle = {{
+                                    margin: "0px 0px -8px"
+                                }}
+                                onChange = { (e) => this.onSearchChange(e) } 
+                                hintText = {
+                                    <span style = {{ fontSize: 'inherit', color: 'rgba(0, 0, 0, 0.5)' }} >
+                                        <FontIcon
+                                            className = "fa fa-search" 
+                                            style = {{
+                                                padding: '0px', 
+                                                width: '24px',
+                                                height: '24px',
+                                                fontSize: 'inherit',
+                                                color: 'inherit'
+                                            }}
+                                        />
+                                        Search for value...
+                                    </span>
+                                }
+                                underlineFocusStyle = {{ borderColor: this.props.settings.colors.pinFilterColor.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
+                            /> 
+                        </Flexbox>
+
+                    </Flexbox>
                 </div>
 
 				<br/>
 				
                 <div style = {{ padding: "0px 15px" }} >
-                    <div onMouseEnter = { this.mouseIn } onMouseLeave = { this.mouseOut } >
+                    <div 
+                        style = {{ 
+                            borderBottomRightRadius: "5px",
+                            borderBottomLeftRadius: "5px", 
+                            overflow: "hidden" ,
+                            height: (24 * (rows.length + 1) > 350 ? 350 : 24 * (rows.length + 1))
+                        }} 
+                        onMouseEnter = { this.mouseIn } 
+                        onMouseLeave = { this.mouseOut } >
+                        
+
+                        <Table
+                            width = { 365 }
+                            height = { 24 * (rows.length + 1) > 350 ? 350 : 24 * (rows.length + 1) }
+                            headerHeight = { 24 }
+                            rowHeight = { 24 }
+                            gridStyle = {{ backgroundColor: "white", color: "black", marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > 350 ? "0" : "-10px" }}
+                            headerStyle = {{ color: "black" }}
+                            rowStyle = {{ borderBottom: "solid 1px #d3d3d3" }}
+                            rowCount = { rows.length }
+                            rowGetter = { ({ index }) => rows[index] }
+                            rowRenderer = { this.getRowRenderer }
+                            onRowClick = { (e) => this.onRowSelect(e) }
+                        >
+                            <Column
+                                label = 'Value'
+                                dataKey ='value'
+                                width = { 250 }
+                            />
+                            <Column
+                                width = { 100 }
+                                label = 'Count'
+                                dataKey = 'count'
+                            />
+                        </Table>,
+
+                        {/*
                         <Table
                             className = { "table-" + internalColName }
                             fixedHeader = { true }
@@ -594,7 +742,6 @@ class FilterTable extends React.Component {
                             >
                                 <TableRow style = {{ height:'30px' }} >
                                     
-                                    {/*Header Checkbox*/}
                                     <TableHeaderColumn style = {{ height:'inherit', width:'25px' }} >
                                         <Checkbox 
                                             id = { "cb-" + internalColName }
@@ -604,7 +751,6 @@ class FilterTable extends React.Component {
                                         />
                                     </TableHeaderColumn>
                                     
-                                    {/*Value Column header*/}
                                     <TableHeaderColumn 
                                         style = {{ 
                                             paddingLeft: '7px', 
@@ -620,7 +766,6 @@ class FilterTable extends React.Component {
                                         </div> 
                                     </TableHeaderColumn>
                                     
-                                    {/*Count Column Header*/}
                                     <TableHeaderColumn style = {{ height:'inherit', userSelect: 'none', color: "#000000" }} >
                                         <div  onClick = { (evt) => this.onSortClick(evt,"countColumnHeader" + internalColName) } >
                                             Count(%) &nbsp;
@@ -642,6 +787,11 @@ class FilterTable extends React.Component {
                                 {rows}
                             </TableBody>
                         </Table>
+
+                        */}
+
+
+
                     </div>
                 </div>
             </div>
@@ -704,6 +854,11 @@ export const addRemoveElastic = (filter) => ({
   filter
 });
 
+export const editUndoRedoHistory = (undoRedoHistory) => ({
+  type: 'UPDATE_HISTORY',
+  undoRedoHistory
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -712,7 +867,9 @@ export const addRemoveElastic = (filter) => ({
 const mapStateToProps = function(state){
   return {
     tableState: state.filterState.Filter,
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    VizParams: state.filterState.VizParams,
+    UndoRedoHistory: state.filterState.UndoRedoHistory
   }
 };
 

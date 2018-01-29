@@ -11,7 +11,7 @@ import Flexbox from 'flexbox-react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import FilterViewForm from './FilterSummaryView.js';
+import FilterSummaryView from './FilterSummaryView.js';
 import OldSelect from 'react-select';
 import Select from 'react-styled-select'
 import Snackbar from 'material-ui/Snackbar';
@@ -48,7 +48,7 @@ class FilterSideBarTopView extends React.Component {
         // Store the states of all the elements
         this.state = {
             topViewVisible: true,
-            hideShowButtonTextFlag: false,
+            hideShowButtonTextFlag: true,
             menu: { open: false, showOpen: false },
             viewSelectValue: null,
             tableSelectValues: [],
@@ -61,7 +61,6 @@ class FilterSideBarTopView extends React.Component {
             statisticColSelectValues: "",
             undoSnackbar: false,
             redoSnackbar: false,
-            filterIDs: null,
             deleteDailogOpen: false,
             deleteDialogLabel: 'Are you sure you want to delete ; ?',
             selectedData: [],
@@ -84,7 +83,7 @@ class FilterSideBarTopView extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState){
-        return (this.state != nextState || this.props.initParams != nextProps.initParams || this.props.settings != nextProps.settings || this.props.statisticDisplay != nextProps.statisticDisplay);
+        return (this.state != nextState || this.props.initParams != nextProps.initParams || this.props.settings != nextProps.settings || this.props.filterIDs != nextProps.filterIDs || this.props.tableData != nextProps.tableData || this.props.statisticDisplay != nextProps.statisticDisplay);
         
         /*
         if (this.state != nextState) {
@@ -108,24 +107,18 @@ class FilterSideBarTopView extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
-        // Initialize local storage for undo redo
-        window.localStorage.setItem('history', []);
-        window.localStorage.setItem('position', -1);
 
-        if(this.state.tableSelectItems.length == 1){
+        if (this.state.tableSelectItems.length == 1) {
             this.setState({
                 tableSelectValues: this.state.tableSelectItems[0].value
             });
         }
 
-        if(this.props.VizParams.savedViz){
-
+        if (this.props.VizParams.savedViz) {
             this.setState({
                 viewSelectValue: this.props.VizParams.vizID
             });
         }
-
-        
     }
 
 
@@ -454,16 +447,39 @@ class FilterSideBarTopView extends React.Component {
 						console.log('NO MATCH');
 					}
 				}
-				
-                context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+
+                context.props.setFilterIDs(tempRowIds);
 
                 iframe.filterGlyphs(tempRowIds);
             },
-            {post: true, 
+            {
+                post: true, 
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
             }
         );
     };
+
+
+    addToHistory() {
+        var undoRedoHistory = {
+            history: this.props.UndoRedoHistory.history.slice(0),
+            position: this.props.UndoRedoHistory.position
+        }
+
+        debugger;
+
+        if (!(JSON.stringify(undoRedoHistory.history[undoRedoHistory.history.length - 1]) == JSON.stringify({filterList: this.props.filter, tableData: this.props.tableData})) ) {
+
+            if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
+                undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
+            }
+
+            undoRedoHistory.history.push({filterList: this.props.filter, tableData: this.props.tableData});
+            undoRedoHistory.position = undoRedoHistory.position + 1;
+
+            this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
+        }
+    }
   
 
     /**
@@ -585,6 +601,7 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onClearAllFilters = (event) => {
         console.log("clear all");
+        var context = this;
         var filterSummaryView = this.refs.filterSummaryView.getWrappedInstance();
         var columnsFilterApplied = filterSummaryView.refs;
         //filterSummaryView.handleRowDel('StaffAssigned');
@@ -592,20 +609,27 @@ class FilterSideBarTopView extends React.Component {
 		var iframe = document.getElementById('GlyphViewer').contentWindow;
         //iframe.postMessage({action:'clear'}, '*');
         iframe.filterGlyphs([]);
-        
-		
-        
 
-        this.setState({ filterIDs: null, hideShowButtonTextFlag: false });
+
+        // let pom = new Promise(function (resolve, reject) {
+        //     for (var property in columnsFilterApplied) {
+        //         columnsFilterApplied[property].onDelEvent();
+        //     }
+        //     resolve('done');
+        // });
+
+        // pom.then(() => this.props.refreshParent());
+
+        debugger;
 
         let pom = new Promise(function (resolve, reject) {
-            for (var property in columnsFilterApplied) {
-                columnsFilterApplied[property].onDelEvent();
-            }
-            resolve('done');
+                for (var property in columnsFilterApplied) {
+                    columnsFilterApplied[property].onDelEventForClearAll();
+                }
+                resolve('done');
         });
 
-        pom.then(() => this.props.refreshParent());
+        pom.then(() => context.props.refreshParent()).then(() => context.applyFilter()).then(() => context.addToHistory());
 
     };
 
@@ -615,7 +639,8 @@ class FilterSideBarTopView extends React.Component {
     * @param event: - ADCMT
 	*/
     onHideFilteredData = (event) => {
-        if (this.state.filterIDs !== null) {
+        debugger;
+        if (this.props.filterIDs !== null) {
             var buttonState = !this.state.hideShowButtonTextFlag;
             this.setState({ hideShowButtonTextFlag: buttonState });
 
@@ -623,7 +648,7 @@ class FilterSideBarTopView extends React.Component {
             
             // If the flag true then hide
             if (buttonState) {
-                iframe.filterGlyphs(this.state.filterIDs);
+                iframe.filterGlyphs(this.props.filterIDs);
             }
             else {
                 // Show all the glyphs
@@ -768,12 +793,26 @@ class FilterSideBarTopView extends React.Component {
 	* Functionality for Re-doing an action made by the user to the filter store
 	*/
     handleRedo() {
-        var position = ( parseInt(window.localStorage.getItem('position'), 10) + 1 );
-        var history = this.historyToArray();
 
-        if (position < history.length) {
-            window.localStorage.setItem('position', position);
-            this.props.dispatch(updateFilterFromSnapshot(history[position]));
+        var newHistory = {
+            history: this.props.UndoRedoHistory.history.slice(0),
+            position: this.props.UndoRedoHistory.position + 1,
+        };
+
+        debugger;
+        var context = this;
+        
+        if (newHistory.position < newHistory.history.length) {
+            this.props.setTableData(newHistory.history[newHistory.position].tableData);
+
+            let pom = new Promise(function (resolve, reject) {
+                context.props.dispatch(updateFilterFromSnapshot(newHistory.history[newHistory.position].filterList)); 
+                resolve('done');
+            });
+
+            pom.then(() => context.applyFilter());
+
+            this.props.dispatch(editUndoRedoHistory(newHistory));
         }
         else {
             this.setState({ redoSnackbar: true });
@@ -785,12 +824,26 @@ class FilterSideBarTopView extends React.Component {
 	* Functionality for Un-doing an action made by the user to the filter store
 	*/
     handleUndo() {
-        var position = ( parseInt(window.localStorage.getItem('position'), 10) - 1 );
-        var history = this.historyToArray();
+
+        var newHistory = {
+            history: this.props.UndoRedoHistory.history.slice(0),
+            position: this.props.UndoRedoHistory.position - 1,
+        };
+
+        debugger;
+        var context = this;
         
-        if (position > -1) {
-            window.localStorage.setItem('position', position);
-            this.props.dispatch(updateFilterFromSnapshot(history[position])); 
+        if (newHistory.position > -1) {
+            this.props.setTableData(newHistory.history[newHistory.position].tableData);
+
+            let pom = new Promise(function (resolve, reject) {
+                context.props.dispatch(updateFilterFromSnapshot(newHistory.history[newHistory.position].filterList)); 
+                resolve('done');
+            });
+
+            pom.then(() => context.applyFilter());
+
+            this.props.dispatch(editUndoRedoHistory(newHistory));
         }
         else {
             this.setState({ undoSnackbar: true });
@@ -976,7 +1029,7 @@ class FilterSideBarTopView extends React.Component {
                                 open = { this.state.menu.open }
                                 anchorEl = { this.state.menu.anchorEl }
                                 onRequestClose = { (evt) => this.handleOpenClose('menu', false, evt) }
-                                style = {{ fontSize: '13px' }}
+                                style = {{ fontSize: '13px', width: "112px" }}
                             >
                                 <Menu>
                                     <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
@@ -1061,7 +1114,12 @@ class FilterSideBarTopView extends React.Component {
                                 
                 {/* Row 2 */}
                 <Flexbox flexDirection = "row" >
-                    <FilterViewForm ref = 'filterSummaryView' onScroll = { (element, elastic) => this.props.initParams.scrollToElement(element, elastic) }/> 
+                    <FilterSummaryView
+                        ref = 'filterSummaryView'
+                        tableData = { this.props.tableData }
+                        onScroll = { (element, elastic) => this.props.initParams.scrollToElement(element, elastic) }
+                        refreshParent = { this.props.refreshParent }
+                    /> 
                 </Flexbox>
                 
                 {/* Row 3 */}
@@ -1090,7 +1148,7 @@ class FilterSideBarTopView extends React.Component {
 								lineHeight: '25px'
 							}}
                             onClick = { this.onClearAllFilters }
-                            primary = {true } 
+                            primary = { true } 
                         />
                     </Flexbox>
 
@@ -1280,6 +1338,12 @@ export const setCurrentVizParams = (vizParams) => ({
     vizParams,
 });
 
+export const editUndoRedoHistory = (undoRedoHistory) => ({
+  type: 'UPDATE_HISTORY',
+  undoRedoHistory
+});
+
+
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
@@ -1291,7 +1355,8 @@ const mapStateToProps = function(state){
     filter: state.filterState.Filter,
     funnelData: state.filterState.FunnelData,
     storedViews: state.filterState.StoredViews,
-	VizParams: state.filterState.VizParams
+	VizParams: state.filterState.VizParams,
+    UndoRedoHistory: state.filterState.UndoRedoHistory
   }
 };
 

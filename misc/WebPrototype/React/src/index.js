@@ -38,7 +38,11 @@ const initialFilterState = {
         statList: ""
     },
 	VizParams: {},
-    StoredViews: {}
+    StoredViews: {},
+    UndoRedoHistory: {
+        position: -1,
+        history: []
+    }
 };
 
 
@@ -71,6 +75,18 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 Filter: action.snapshot,
                 LatestFilterChange: "snapshot"
+            }
+
+
+        /**
+         * Stores info needed for undo redo
+         * @param action.history: new history
+         * 
+         **/
+        case 'UPDATE_HISTORY':
+            return {
+                ...state,
+                UndoRedoHistory: action.undoRedoHistory,
             }
 
 

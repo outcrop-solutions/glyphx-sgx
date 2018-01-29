@@ -58,7 +58,7 @@ class RecentViews extends React.Component {
 			}
 				
 			var viewTimeStamp = new Date(view[1]);
-			var viewDate =  viewTimeStamp.getDate()+"/"+(viewTimeStamp.getMonth()+1)+"/"+viewTimeStamp.getFullYear();
+			var viewDate =  (viewTimeStamp.getMonth()+1)+"/"+viewTimeStamp.getDate()+"/"+viewTimeStamp.getFullYear();
 			var viewTime;
 			if(viewTimeStamp.getHours() > 12)
 				viewTime =  viewTimeStamp.getHours()-12+":"+(viewTimeStamp.getMinutes() < 10 ? '0'+viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes())+'pm';

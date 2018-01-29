@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
+import { makeServerCall } from './ServerCallHelper.js';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
@@ -35,6 +36,65 @@ class NumberRangeTable extends React.Component {
         this.props.dispatch(addRange(this.props.colName, this.props.minVal, this.props.maxVal, ( + new Date() + Math.floor( Math.random() * 999999 ) ).toString(36), false, "Number"));
     }
 
+    handleHistory() {
+        var undoRedoHistory = {
+            history: this.props.UndoRedoHistory.history.slice(0),
+            position: this.props.UndoRedoHistory.position
+        }
+
+        debugger;
+
+        if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
+            undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
+        }
+
+        undoRedoHistory.history.push({filterList: this.props.rangeList, tableData: this.props.fullTableData});
+        undoRedoHistory.position = undoRedoHistory.position + 1;
+
+        this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
+    }
+
+
+    /**
+     * - ADCMT
+     */
+    applyFilter = () => {
+        console.log('Filter Applied');
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+
+        var context = this;
+        this.props.rangeList;
+        debugger;
+
+        makeServerCall('applyFilters',
+            function(result, b) {
+                var resultJson = JSON.parse(result);
+                debugger;
+                var data = resultJson.data;
+                var tempRowIds = [];
+                
+				if (data && Array.isArray(data)) {
+					if (data.length > 0) {							
+						for (var index = 0; index < data.length; index++) {
+							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+						}
+					}
+					else {
+						// No data was matched.
+						console.log('NO MATCH');
+					}
+				}
+				
+                context.props.setFilterIDs(tempRowIds);
+                iframe.filterGlyphs(tempRowIds);
+            },
+            {
+                post: true, 
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.rangeList } 
+            }
+        );
+    };
+
 
     /**
      * Updates a range row in the store (null values may be passed to min, max, or applied to peform no update on that field)
@@ -54,21 +114,40 @@ class NumberRangeTable extends React.Component {
     render() {
         var onRowDel = this.handleRowDel.bind(this);
         var updateStore = this.handleStoreUpdate.bind(this);
+        var addToHistory = this.handleHistory.bind(this);
         var minVal = this.props.minVal;
         var maxVal = this.props.maxVal;
         var rList = this.props.rangeList[this.props.colName].rangeList;
         var settings = this.props.settings;
+        var refreshTableDataOnRowSelection = this.props.refreshTableDataOnRowSelection;
+        var fullTableData = this.props.fullTableData;
+        var filterList = this.props.rangeList;
+        var setFilterIDs = this.props.setFilterIDs;
+        var UndoRedoHistory = this.props.UndoRedoHistory;
+        var setTableData = this.props.setTableData;
+        var applyFilter = this.applyFilter.bind(this);
 
         var range = rList.map( function(range) {
-            return (<NumberRangeRow 
-                        range = { range } 
-                        onDelEvent = { onRowDel.bind(this) } 
-                        updateStore = { updateStore }
-                        key = { range[2] }
-                        minVal = { minVal }
-                        maxVal = { maxVal }
-                        settings = { settings }
-                    />)
+            return (
+                <NumberRangeRow 
+                    range = { range } 
+                    onDelEvent = { onRowDel.bind(this) } 
+                    updateStore = { updateStore }
+                    addToHistory = { addToHistory }
+                    key = { range[2] }
+                    minVal = { minVal }
+                    maxVal = { maxVal }
+                    settings = { settings }
+                    refreshTableDataOnRowSelection = { refreshTableDataOnRowSelection }
+                    tableData = { fullTableData }
+                    filterList = { filterList }
+                    setFilterIDs = { setFilterIDs }
+                    UndoRedoHistory = { UndoRedoHistory }
+                    setTableData = { setTableData }
+                    applyFilter = { applyFilter }
+                    
+                />
+            )
         });
 
         return (
@@ -168,7 +247,27 @@ class NumberRangeRow extends React.Component {
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onAfterSlide(e) {
-        this.props.updateStore(this.props.range[2], e[0], e[1], null, this.props.range);
+        if (this.props.range[3]) {
+            var context = this;
+            let pom = new Promise(function (resolve, reject) {
+                debugger;
+                context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
+                resolve('done');
+            });
+
+            pom.then(
+                () => context.props.updateStore(context.props.range[2], e[0], e[1], null, context.props.range)
+            ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
+                () => context.props.applyFilter()
+            ).then(
+                () => context.props.addToHistory()
+            );
+        }
+        else {
+            this.props.updateStore(this.props.range[2], e[0], e[1], null, this.props.range);
+        }
     };
 
 
@@ -292,7 +391,29 @@ class NumberRangeRow extends React.Component {
             }
         }
 
-        this.props.updateStore(this.props.range[2], min, max, null, this.props.range);
+        //this.props.updateStore(this.props.range[2], min, max, null, this.props.range);
+
+        if (this.props.range[3]) {
+            var context = this;
+            let pom = new Promise(function (resolve, reject) {
+                debugger;
+                context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
+                resolve('done');
+            });
+
+            pom.then(
+                () => context.props.updateStore(context.props.range[2], min, max, null, context.props.range)
+            ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
+                () => context.props.applyFilter()
+            ).then(
+                () => context.props.addToHistory()
+            );
+        }
+        else {
+            this.props.updateStore(this.props.range[2], min, max, null, this.props.range);
+        }
     };
 
 
@@ -316,11 +437,43 @@ class NumberRangeRow extends React.Component {
                     max = this.props.maxVal;
                 }
 
-                this.props.updateStore(this.props.range[2], min, max, true);
+                //this.props.updateStore(this.props.range[2], min, max, true);
+
+                var context = this;
+                let pom = new Promise(function (resolve, reject) {
+                    context.props.updateStore(context.props.range[2], min, max, true);
+                    resolve('done');
+                });
+
+                //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
+
+                pom.then(
+                    () => context.props.refreshTableDataOnRowSelection()
+                ).then(
+                    () => context.props.applyFilter()
+                ).then(
+                    () => context.props.addToHistory()
+                );
             }
 
             else {
-                this.props.updateStore(this.props.range[2], null, null, false);
+                //this.props.updateStore(this.props.range[2], null, null, false);
+
+                var context = this;
+                let pom = new Promise(function (resolve, reject) {
+                    context.props.updateStore(context.props.range[2], null, null, false);
+                    resolve('done');
+                });
+
+                //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
+
+                pom.then(
+                    () => context.props.refreshTableDataOnRowSelection()
+                ).then(
+                    () => context.props.applyFilter()
+                ).then(
+                    () => context.props.addToHistory()
+                );
             }
 
             this.setState({ epoch: epoch });
@@ -332,7 +485,28 @@ class NumberRangeRow extends React.Component {
      * Deletes a row from the range table
      **/
     onDelEvent() {
-        this.props.onDelEvent(this.props.range[2]);
+        //this.props.onDelEvent(this.props.range[2]);
+
+        if (this.props.range[3]) {
+            var context = this;
+            let pom = new Promise(function (resolve, reject) {
+                context.props.onDelEvent(context.props.range[2]);
+                resolve('done');
+            });
+
+            //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
+
+            pom.then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
+                () => context.props.addToHistory()
+            ).then(
+                () => context.props.applyFilter()
+            );
+        }
+        else {
+            this.props.onDelEvent(this.props.range[2]);
+        }
     }
 
 
@@ -566,6 +740,11 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType) => 
     rangeType,
 });
 
+export const editUndoRedoHistory = (undoRedoHistory) => ({
+  type: 'UPDATE_HISTORY',
+  undoRedoHistory
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -574,7 +753,9 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType) => 
 const mapStateToProps = function(state){
   return {
     rangeList: state.filterState.Filter,
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    VizParams: state.filterState.VizParams,
+    UndoRedoHistory: state.filterState.UndoRedoHistory
   }
 }
 
