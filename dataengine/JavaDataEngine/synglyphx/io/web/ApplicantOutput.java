@@ -112,27 +112,27 @@ public class ApplicantOutput implements WebOutput {
 		}
 		else if(((index-1)%27) == 15){//TOP TORUS
 			pos = new double[]{0.0,0.0,85.0};
-			scale = new double[]{1.1,1.1,1.0};
+			scale = new double[]{0.73,0.73,0.73};
 		}
 		else if(((index-1)%27) == 5){//SIDE TORUS 1
 			pos = new double[]{0.0,0.0,105.0};
-			scale = new double[]{0.7,0.7,0.65};
+			scale = new double[]{0.47,0.47,0.43};
 		}
 		else if(((index-1)%27) == 6){//SIDE TORUS 2
 			pos = new double[]{0.0,0.0,90.0};
-			scale = new double[]{0.7,0.7,0.65};
+			scale = new double[]{0.47,0.47,0.43};
 		}
 		else if(((index-1)%27) == 7){//SIDE TORUS 3
 			pos = new double[]{0.0,0.0,75.0};
-			scale = new double[]{0.7,0.7,0.65};
+			scale = new double[]{0.47,0.47,0.43};
 		}
 		else if(((index-1)%27) == 8){//SIDE TORUS 4
 			pos = new double[]{0.0,0.0,120.0};
-			scale = new double[]{0.7,0.7,0.65};
+			scale = new double[]{0.47,0.47,0.43};
 		}
 		else if(((index-1)%27) == 9){//SIDE TORUS 5
 			pos = new double[]{0.0,0.0,135.0};
-			scale = new double[]{0.7,0.7,0.65};
+			scale = new double[]{0.47,0.47,0.43};
 		}
 		else if(((index-1)%27) == 2){//SIDE CUBE 1
 			pos = new double[]{0.0,0.0,-85.0};
