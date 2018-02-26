@@ -79,6 +79,12 @@ namespace DataEngine
 				}
 			}
 		}
+		if (valid == 0){
+			QSettings settings;
+			settings.beginGroup("LoggedInUser");
+			settings.setValue("StayLogged", false);
+			settings.endGroup();
+		}
 		return valid;
 	}
 

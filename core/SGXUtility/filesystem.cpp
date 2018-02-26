@@ -97,10 +97,12 @@ namespace SynGlyphX {
 	std::wstring Filesystem::IsFileInDirectory(const std::wstring& filename, const std::wstring& directory) {
 
 		boost::filesystem::path path(directory);
+		std::wstring rPath = directory, directory2, tempFileName = filename;
 
 		if (boost::filesystem::is_directory(path)) {
 
 			boost::filesystem::path match = boost::filesystem::absolute(boost::filesystem::path(filename).filename(), path);
+
 			if (boost::filesystem::exists(match)) {
 
 				//return boost::filesystem::canonical(match).wstring();
@@ -108,6 +110,45 @@ namespace SynGlyphX {
                 return StringConvert::ToStdWString(match.native());
 #else
 				return match.native();
+#endif
+			}
+
+		}
+
+		//for the subset visualization- look into the "filename_data/" directory.
+		int counter = 0;
+		size_t index;
+
+		for (index = filename.length()-1; index > 0; index--)
+		{
+			if (filename.at(index) == '/'){
+				counter++;
+			}
+
+			if (counter == 2){
+				break;
+			}
+		}
+
+		rPath.append(tempFileName.substr(index));
+
+		tempFileName = rPath;
+
+		std::wstring::size_type found = tempFileName.rfind(L"/");
+		if (found != std::string::npos)
+			directory2 = tempFileName.substr(0, found);
+
+		boost::filesystem::path path2(directory2);
+
+		if (boost::filesystem::is_directory(path2)) {
+			boost::filesystem::path match2 = boost::filesystem::absolute(boost::filesystem::path(rPath).filename(), path2);
+
+			if (boost::filesystem::exists(match2)) {
+
+#ifndef WIN32
+				return StringConvert::ToStdWString(match.native());
+#else
+				return match2.native();
 #endif
 			}
 
