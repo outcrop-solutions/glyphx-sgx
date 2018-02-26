@@ -58,6 +58,7 @@ class FilterSideBar extends React.Component {
                     var result = context.convertToCompatibleDataObject(res.data);
                     context.makeFilterStructure(result);
                     context.setState({ tableData: result });
+                    context.props.dispatch(setStatData(result));
                     context.props.updateViz(res.glyphViewerKey);
                 }
                 else {
@@ -121,6 +122,7 @@ class FilterSideBar extends React.Component {
                     if (response.data.length > 0) {
                         var result = context.convertToCompatibleDataObject(response.data);
                         context.setState({ tableData: result }, () => resolve(result));
+                        context.props.dispatch(setStatData(result));
                     }
                     
                 }
@@ -439,6 +441,11 @@ class FilterSideBar extends React.Component {
 export const init = (storeFilterStruc) => ({
   type: 'INIT',
   storeFilterStruc
+});
+
+export const setStatData = (statData) => ({
+    type: 'SET_STATISTICS_DATA',
+    statData,
 });
 
 

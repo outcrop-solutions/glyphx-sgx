@@ -39,6 +39,7 @@ class VisualizationView extends React.Component {
 	 */
     componentDidMount() {
 
+        debugger;
         if (window.performance) {
             if (performance.navigation.type === 1) {
                 this.props.history.push('/home');

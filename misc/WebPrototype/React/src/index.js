@@ -15,6 +15,7 @@ import './General.css';
 const initialFilterState = {
     Filter: {},
     LatestFilterChange: "none",
+    StatisticsData: {},
     Settings: { 
         colors: themeSettingColors[0],
         sideBarOverlap: false,
@@ -28,7 +29,8 @@ const initialFilterState = {
         allViewsModal: false,
         helpModal: false,
         adminModal: false,
-        selectedFilteredModal: false
+        selectedFilteredModal: false,
+        XYZModal: false
     },
     UserInfo: {},
     FunnelData: {},
@@ -38,6 +40,7 @@ const initialFilterState = {
         statList: ""
     },
 	VizParams: {},
+    TempVizParams: {},
     StoredViews: {},
     UndoRedoHistory: {
         position: -1,
@@ -519,6 +522,9 @@ const filterReducer = function(state = initialFilterState, action) {
             var helpDisplay = state.ModalDisplay.helpModal;
             var adminDisplay = state.ModalDisplay.adminModal;
             var selectedFilteredDisplay = state.ModalDisplay.selectedFilteredModal;
+            var XYZDisplay = state.ModalDisplay.XYZModal;
+
+            
             
             if (action.settingsModal === true || action.settingsModal === false) {
                 settingsDisplay = action.settingsModal;
@@ -552,6 +558,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 selectedFilteredDisplay = action.selectedFilteredModal;
             }
 
+            if (action.XYZModal === true || action.XYZModal === false) {
+                XYZDisplay = action.XYZModal;
+            }
+
 
             return { 
                     ...state,
@@ -564,7 +574,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         allViewsModal: allViewsDisplay,
                         helpModal: helpDisplay,
                         adminModal: adminDisplay,
-                        selectedFilteredModal: selectedFilteredDisplay
+                        selectedFilteredModal: selectedFilteredDisplay,
+                        XYZModal: XYZDisplay
                     }
                 };
 
@@ -574,6 +585,17 @@ const filterReducer = function(state = initialFilterState, action) {
                 VizParams: action.vizParams
 			}
 		
+        case 'SET_TEMP_VIZ_PARAMS':
+            return {
+                ...state,
+                TempVizParams: action.vizParams
+			}
+
+        case 'SET_STATISTICS_DATA':
+            return {
+                ...state,
+                StatisticsData: action.statData
+			}
 		
         /**
          * Shouldn't reach here unless theres a typo in the action

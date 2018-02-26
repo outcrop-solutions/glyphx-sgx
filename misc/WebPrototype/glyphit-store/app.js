@@ -244,9 +244,11 @@ app.get('/success', (req, res) => {
                             insertLicenseValues = userID + ",1,182,'"+ key + "'";
                         }
 
-                        mySqlConnection.query("Insert into UsageLicenses Values ("+insertLicenseValues+")");
+                        mySqlConnection.query("Insert into UsageLicenses Values (" + insertLicenseValues + ")");
 
-                        mySqlConnection.query("INSERT into User_Promo values ("+lastInsertedRow[0].ID+",'"+ req.session.user.PROMO +"','"+req.session.user.total+"')");
+                        mySqlConnection.query("INSERT into User_Promo values (" + lastInsertedRow[0].ID + ",'" + req.session.user.PROMO + "','" + req.session.user.total + "')");
+
+                        mySqlConnection.query("INSERT into AvailableGroups values (" + lastInsertedRow[0].ID + "," + 9 + ")");
 
 
                         var mailOptions = {
@@ -392,9 +394,11 @@ app.get('/freePromoCode', (req, res) => {
             insertLicenseValues = userID + ",1,182,'"+ key + "'";
         }
 
-        mySqlConnection.query("Insert into UsageLicenses Values ("+insertLicenseValues+")");
+        mySqlConnection.query("Insert into UsageLicenses Values (" + insertLicenseValues + ")");
 
-        mySqlConnection.query("INSERT into User_Promo values ("+lastInsertedRow[0].ID+",'"+ uInfo.PROMO +"','"+uTotal+"')");
+        mySqlConnection.query("INSERT into User_Promo values (" + lastInsertedRow[0].ID + ",'" + uInfo.PROMO + "','" + uTotal + "')");
+
+        mySqlConnection.query("INSERT into AvailableGroups values (" + lastInsertedRow[0].ID + "," + 9 + ")");
 
         var mailOptions = {
             from: 'marwane@synglyphx.com',

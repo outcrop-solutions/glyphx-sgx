@@ -28,6 +28,11 @@ class FilterSideBarBottomView extends React.Component {
         };
     };
 
+
+    componentDidMount() {
+        this.onCollapsibleTriggerClick('filterCollapisble');
+    }
+
     
     /**
      * React built-in which acts as a listener for when props change

@@ -253,6 +253,8 @@ table.blueTable thead th {
   --styled-select__border-color: black;
   --styled-select__border-width: 3px;
   --styled-select__border-radius: 5px;
+  --styled-select-control__border-color--focused: black;
+
   border: none !important;
 
   --styled-select-control__min-height: 22px;
@@ -275,6 +277,12 @@ table.blueTable thead th {
  
   --styled-select-option__color--selected: #eee;
   --styled-select-option__background-color--selected: #444;
+}
+
+.selectXYZ {
+    width:30%;
+    z-index: 100;
+    font-size: 13px;
 }
 
 .topViewContent {

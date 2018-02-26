@@ -29,6 +29,20 @@ function receiveMessage(event)
 	}
 }
 
+function updateXYZCoordinates(data, x, y, z) {
+    console.log("updateXYZCoordinates was called");
+    tags.set(axisControl.getX().id, "X / "+x);
+    tags.set(axisControl.getY().id, "Y / "+y);
+    tags.set(axisControl.getZ().id, "Z / "+z);
+    advancedTexture.removeControl(displayedTags.get(axisControl.getX().id));
+    advancedTexture.removeControl(displayedTags.get(axisControl.getY().id));
+    advancedTexture.removeControl(displayedTags.get(axisControl.getZ().id));
+    displayedTags.set(axisControl.getX().id, createLabel(axisControl.getX(), "X / "+x));
+    displayedTags.set(axisControl.getY().id, createLabel(axisControl.getY(), "Y / "+y));
+    displayedTags.set(axisControl.getZ().id, createLabel(axisControl.getZ(), "Z / "+z));
+    filterManager.updateXYZCoordinates(data);
+}
+
 function closeSceneView(){
     filterManager.clearSelections();
 }

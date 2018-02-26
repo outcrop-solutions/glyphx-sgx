@@ -10,7 +10,7 @@ var loadingMessages = [
     {text: "The bar chart was invented in 1781...", textShadow: ""},
     {text: "Say GlyphEd 3 times fast...", textShadow: ""},
     {text: "We’re just waiting on your computer...", textShadow: ""},
-    {text: "Imagine doing this in Excel...", textShadow: ""},
+    {text: "Imagine doing this in spreadsheets...", textShadow: ""},
     {text: "PUT ON YOUR 3D GOGGLES NOW...", textShadow: "-0.12em 0 red, 0.12em 0 cyan"},
     {text: "Thank you for deleting your data! Just kidding...", textShadow: ""},
     {text: "This isn't exactly easy...", textShadow: ""},
@@ -35,12 +35,12 @@ var loadingMessages = [
 class ComponentLoadMask extends React.Component {
 
     state = {
-        position: 0
+        position: 0,
     }
 
 
     componentDidMount() {
-        if ( this.props.imgLink ) {
+        if (this.props.imgLink) {
             for (let i = loadingMessages.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [loadingMessages[i], loadingMessages[j]] = [loadingMessages[j], loadingMessages[i]];
@@ -54,7 +54,7 @@ class ComponentLoadMask extends React.Component {
                     currentPosition = -1;
                 }
                 context.setState({ position: ++currentPosition });
-            }, 5000);
+            }, 8000);
         }
     }
 

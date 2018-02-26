@@ -16,6 +16,7 @@ import OldSelect from 'react-select';
 import Select from 'react-styled-select'
 import Snackbar from 'material-ui/Snackbar';
 import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
+import XYZRemapModal from './XYZRemapModal.js';
 import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
 import './General.css';
@@ -49,7 +50,7 @@ class FilterSideBarTopView extends React.Component {
         this.state = {
             topViewVisible: true,
             hideShowButtonTextFlag: true,
-            menu: { open: false, showOpen: false },
+            menu: { open: false, showOpen: false, actionOpen: false },
             viewSelectValue: null,
             tableSelectValues: [],
             tableSelectItems:tableSelectItems,
@@ -83,7 +84,7 @@ class FilterSideBarTopView extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState){
-        return (this.state != nextState || this.props.initParams != nextProps.initParams || this.props.settings != nextProps.settings || this.props.filterIDs != nextProps.filterIDs || this.props.tableData != nextProps.tableData || this.props.statisticDisplay != nextProps.statisticDisplay);
+        return (this.state != nextState || this.props.initParams != nextProps.initParams || this.props.settings != nextProps.settings || this.props.filterIDs != nextProps.filterIDs || this.props.tableData != nextProps.tableData || this.props.statData != nextProps.statData || this.props.statisticDisplay != nextProps.statisticDisplay);
         
         /*
         if (this.state != nextState) {
@@ -183,6 +184,16 @@ class FilterSideBarTopView extends React.Component {
                 }
                 break;
 
+            case 'actionMenu':
+                 if (open) {
+                    evt.preventDefault();
+                    this.setState({ menu: { actionOpen: true, actionAnchorEl: evt.currentTarget } });
+                }
+                else {
+                    this.setState({ menu: { actionOpen: false } });
+                }
+                break;
+
             case 'menu':
                  if (open) {
                     evt.preventDefault();
@@ -193,8 +204,12 @@ class FilterSideBarTopView extends React.Component {
                 }
                 break;
 
-            case 'statistics':
+            case 'XYZ':
+                this.setState({ menu: { actionOpen: false } });
+                this.props.dispatch(editModalDisplay(null, true));
+                break;
 
+            case 'statistics':
                 if (open) {
                     this.setState({ statisticsModalOpen: true, menu: { open: false } });
                 }
@@ -390,8 +405,8 @@ class FilterSideBarTopView extends React.Component {
                     vizId: isNewView ? null : this.props.VizParams.vizID,
                     originalVizName: this.props.VizParams.originalVizName,
                     savedVizName: viewName,
-					time:currentDate.getTime(),
-					date:currentDate.getTime(),
+					time: currentDate.getTime(),
+					date: currentDate.getTime(),
                 }
             }
         );
@@ -545,7 +560,10 @@ class FilterSideBarTopView extends React.Component {
                             savedViz: true,
                             vizID:savedVizObj.ID,
                             savedVizName: savedVizObj.Name,
-                            frontEndFilterString: savedVizObj.frontEndFilterString
+                            frontEndFilterString: savedVizObj.frontEndFilterString,
+                            initialX: response.initialX,
+                            initialY: response.initialY,
+                            initialZ: response.initialZ,
                         }
                     )
                 );
@@ -747,7 +765,7 @@ class FilterSideBarTopView extends React.Component {
                 
                 if (response.data[0]) {
                     context.setState({ selectedData: response.data });
-                    context.props.dispatch(editModalDisplay(true));
+                    context.props.dispatch(editModalDisplay(true, null));
                 }
             }
         );
@@ -890,7 +908,8 @@ class FilterSideBarTopView extends React.Component {
 	
 	render = () => {
         
-        var statisticStatSelectItems = ["Count", "Min", "Max", "Average", "Median", "Sum", "Range", "St. Dev.", "Varience", "Skewness", "Kurtosis"];
+        //var statisticStatSelectItems = ["Count", "Min", "Max", "Mean", "Median", "Mode", "Sum", "Range", "St. Dev.", "Variance", "Skewness", "Kurtosis"];
+        var statisticStatSelectItems = ["Min", "Max", "Mean", "Median", "Mode", "Sum", "Range", "St. Dev.", "Variance"];
         statisticStatSelectItems = statisticStatSelectItems.map(function(value) {
 			return({ label: value, value: value });
 		});
@@ -898,9 +917,23 @@ class FilterSideBarTopView extends React.Component {
         var statisticColSelectItems = this.props.colList.map(function(value) {
 			return({ label: value, value: value });
 		});
+
+        debugger;
+
+        if (Object.keys(this.props.statData).length != 0) {
+            for (var i = statisticColSelectItems.length -1; i > -1; i--) {
+                var colKeys = Object.keys(this.props.statData[statisticColSelectItems[i].value].values)
+                if (isNaN(this.props.statData[statisticColSelectItems[i].value].values[colKeys[0]].value)) {
+                    statisticColSelectItems.splice(i, 1);
+                }
+            }
+        }
+        
 		
 		return(
             <Flexbox flexDirection = "column" id = "TopView" style = {{ height: "100%" }}>
+
+                <XYZRemapModal />
 
                 <Snackbar
                     open = { this.state.undoSnackbar }
@@ -1049,6 +1082,17 @@ class FilterSideBarTopView extends React.Component {
                                     <MenuItem primaryText = "Statistics" className = "menuItemStyling" onClick = { () => this.handleOpenClose('statistics', true) }/>
                                     <MenuItem primaryText = "Selected Data" className = "menuItemStyling" onClick = { this.onSelectedDataClick.bind(this) }/>
                                     <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" onClick = { null }/>
+                                </Menu>
+                            </Popover>
+
+                            <Popover
+                                open = { this.state.menu.actionOpen }
+                                anchorEl = { this.state.menu.actionAnchorEl }
+                                onRequestClose = { (evt) => this.handleOpenClose('actionMenu', false, evt) }
+                                style = {{ fontSize: '13px' }}
+                            >
+                                <Menu>
+                                    <MenuItem primaryText = "Change Axes" className = "menuItemStyling" onClick = { () => this.handleOpenClose('XYZ', true) }/>
                                 </Menu>
                             </Popover>
 
@@ -1217,8 +1261,8 @@ class FilterSideBarTopView extends React.Component {
                     <Flexbox style = {{ width: "22%" }} > 
                         <RaisedButton 
                             primary = { true } 
-                            label = "Apply" 
-                            onClick = { this.applyFilter.bind(this) }
+                            label = "Actions" 
+                            onClick = { (evt) => this.handleOpenClose('actionMenu', true, evt) }
                             style = {{
                                 width: "100%",
                                 minWidth: "0px"
@@ -1271,7 +1315,7 @@ class FilterSideBarTopView extends React.Component {
                 >
 
                     <b>Select which columns to monitor:</b> <br />
-                    <Select 
+                    <OldSelect 
                         multi 
                         simpleValue
                         value = { this.state.statisticColSelectValues } 
@@ -1284,7 +1328,7 @@ class FilterSideBarTopView extends React.Component {
                     <br />
 
                     <b>Select which statistics to apply:</b> <br />
-                    <Select 
+                    <OldSelect 
                         multi 
                         simpleValue
                         value = { this.state.statisticStatSelectValues }  
@@ -1316,9 +1360,10 @@ class FilterSideBarTopView extends React.Component {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (selectedFilteredModal) => ({
+export const editModalDisplay = (selectedFilteredModal, XYZModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     selectedFilteredModal,
+    XYZModal
 });
 
 export const updateFilterFromSnapshot = (snapshot) => ({
@@ -1338,6 +1383,7 @@ export const setCurrentVizParams = (vizParams) => ({
     vizParams,
 });
 
+
 export const editUndoRedoHistory = (undoRedoHistory) => ({
   type: 'UPDATE_HISTORY',
   undoRedoHistory
@@ -1356,7 +1402,8 @@ const mapStateToProps = function(state){
     funnelData: state.filterState.FunnelData,
     storedViews: state.filterState.StoredViews,
 	VizParams: state.filterState.VizParams,
-    UndoRedoHistory: state.filterState.UndoRedoHistory
+    UndoRedoHistory: state.filterState.UndoRedoHistory,
+    statData: state.filterState.StatisticsData
   }
 };
 

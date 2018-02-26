@@ -92,7 +92,10 @@ class ViewsManager extends React.Component {
                             savedViz: true,
                             vizID:savedVizObj.ID,
                             savedVizName: savedVizObj.Name,
-                            frontEndFilterString: savedVizObj.frontEndFilterString
+                            frontEndFilterString: savedVizObj.frontEndFilterString,
+                            initialX: response.initialX,
+                            initialY: response.initialY,
+                            initialZ: response.initialZ
                         }
                     )
                 );
@@ -155,7 +158,10 @@ class ViewsManager extends React.Component {
 							query: res.query, 
 							filterAllowedColumnList:  filterAllowedColumnList, 
 							sdtPath: sdtPath, 
-							frontEndFilters: frontEndFilters
+							frontEndFilters: frontEndFilters,
+                            initialX: context.props.tempVizParams.initialX,
+                            initialY: context.props.tempVizParams.initialY,
+                            initialZ: context.props.tempVizParams.initialZ
 						}));
 					context.props.dispatch(editModalDisplay(false));
 					//
@@ -606,7 +612,8 @@ const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     funnelData: state.filterState.FunnelData,
-    storedViews: state.filterState.StoredViews
+    storedViews: state.filterState.StoredViews,
+    tempVizParams: state.filterState.TempVizParams
   }
 }
 

@@ -55,6 +55,7 @@ var SYNGLYPHX;
             this.ignoredGlyphs = new Array();
             this.selectionManager = new SYNGLYPHX.SelectionManager(camera);
             this.superImposedGlyphs = new SYNGLYPHX.SuperImposedGlyphs();
+            this.currentGlyphs = null;
             this.hideGlyphs = true;
         }
         FilterManager.prototype.getClassName = function () {
@@ -91,17 +92,18 @@ var SYNGLYPHX;
                     }
                 }
             });
+            this.currentGlyphs = glyphIDs;
             return this;
         };
         FilterManager.prototype.clearFilters = function () {
             var that = this;
-            //console.log(this.ignoredGlyphs.length);
             this.rootGlyphs.forEach(function(value, key, map) {
                 if(!that.ignoredGlyphs.includes(key)){
                     value.setEnabled(1);
                     that.transparentGlyphs.get(key).setEnabled(0);
                 }
             });
+            this.currentGlyphs = null;
             return this;
         };
         FilterManager.prototype.getSelectedIDs = function () {
@@ -186,11 +188,19 @@ var SYNGLYPHX;
                         that.superImposedGlyphs.addMesh(key, value);
                     }else{
                         value.setEnabled(0);
-                        that.transparentGlyphs.get(key).setEnabled(1);
+                        if(that.currentGlyphs != null){
+                            that.transparentGlyphs.get(key).setEnabled(that.currentGlyphs.includes(key) ? 1 : 0);
+                        }else{
+                            that.transparentGlyphs.get(key).setEnabled(1);
+                        }
                     }
                 }else{
                     if(!that.ignoredGlyphs.includes(key)){
-                        value.setEnabled(1);
+                        if(that.currentGlyphs != null){
+                            value.setEnabled(that.currentGlyphs.includes(key) ? 1 : 0);
+                        }else{
+                            value.setEnabled(1);
+                        }
                     }
                     else{
                         value.setEnabled(0);
@@ -198,6 +208,35 @@ var SYNGLYPHX;
                     that.transparentGlyphs.get(key).setEnabled(0);
                 }
             });
+            return this;
+        };
+        FilterManager.prototype.updateXYZCoordinates = function (data) {
+            for(var i = 0; i < data.length; i++){
+                var root = this.rootGlyphs.get(data[i]["rowID"]);
+                var troot = this.transparentGlyphs.get(data[i]["rowID"]);
+                this.unfreezeMeshMatrix(root);
+                this.unfreezeMeshMatrix(troot);
+                root.position = new BABYLON.Vector3(data[i]["X"], data[i]["Z"], data[i]["Y"]);
+                troot.position = new BABYLON.Vector3(data[i]["X"], data[i]["Z"], data[i]["Y"]);
+                this.freezeMeshMatrix(root);
+                this.freezeMeshMatrix(troot);
+            }
+            return this;
+        };
+        FilterManager.prototype.freezeMeshMatrix = function (mesh) {
+            mesh.freezeWorldMatrix();
+            var children = mesh.getChildren();
+            for(var i = 0; i < children.length; i++){
+                this.freezeMeshMatrix(children[i]);
+            }
+            return this;
+        };
+        FilterManager.prototype.unfreezeMeshMatrix = function (mesh) {
+            mesh.unfreezeWorldMatrix();
+            var children = mesh.getChildren();
+            for(var i = 0; i < children.length; i++){
+                this.unfreezeMeshMatrix(children[i]);
+            }
             return this;
         };
         return FilterManager;

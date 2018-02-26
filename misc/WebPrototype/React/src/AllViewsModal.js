@@ -107,6 +107,7 @@ class allViewsModal extends React.Component {
 
 					context.props.dispatch(updateFilterFromSnapshot({}));
 
+					context.props.dispatch(setCurrentVizParams({ initialX: response.initialX, initialY: response.initialY, initialZ: response.initialZ }));
 					//debugger;
 
 					// Seperate and store the actual data and the selectAll boolean of each column
@@ -917,7 +918,7 @@ export const editModalDisplay = (allViewsModal, selectedFilteredModal) => ({
 });
 
 export const setCurrentVizParams = (vizParams) => ({
-    type: 'SET_VIZ_PARAMS',
+    type: 'SET_TEMP_VIZ_PARAMS',
     vizParams,
 });
 

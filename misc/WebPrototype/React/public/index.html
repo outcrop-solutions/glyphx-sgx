@@ -196,6 +196,7 @@
             window.APP_MODE = window.location.href.includes('localhost') ? 'DEVELOPMENT' : 'PRODUCTION';
             var logoutUrl = window.APP_MODE == 'DEVELOPMENT' ? '/logout' : window.SERVER_URL+'logout';
        
+            /*
 			window.onbeforeunload = function() {
                 var xmlHttp = new XMLHttpRequest();
 				console.log("onbeforeunload");
@@ -203,6 +204,7 @@
                 xmlHttp.open("GET", logoutUrl, false);
                 xmlHttp.send(null);
             }
+            */
         </script>
 
     </head>
