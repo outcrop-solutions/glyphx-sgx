@@ -97,7 +97,7 @@ namespace SynGlyphX {
 	std::wstring Filesystem::IsFileInDirectory(const std::wstring& filename, const std::wstring& directory) {
 
 		boost::filesystem::path path(directory);
-		std::wstring rPath = directory, directory2, tempFileName = filename;
+		//std::wstring rPath = directory, directory2, tempFileName = filename;
 
 		if (boost::filesystem::is_directory(path)) {
 
@@ -116,7 +116,7 @@ namespace SynGlyphX {
 		}
 
 		//for the subset visualization- look into the "filename_data/" directory.
-		int counter = 0;
+		/*int counter = 0;
 		size_t index;
 
 		for (index = filename.length()-1; index > 0; index--)
@@ -152,7 +152,7 @@ namespace SynGlyphX {
 #endif
 			}
 
-		}
+		}*/
 
 		return L"";
 	}
