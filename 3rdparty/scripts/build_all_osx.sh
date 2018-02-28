@@ -21,9 +21,9 @@ done
 
 # Build the three apps. Note we're only passing -c (clean build directories) for the first one,
 # since doing it every time would be redundant and would make the build take forever.
-./setup_osx.sh -g$opts_first
-./setup_osx.sh -m$opts
-./setup_osx.sh -v$opts
+#./setup_osx.sh -g$opts_first
+#./setup_osx.sh -m$opts
+#./setup_osx.sh -v$opts
 
 # Build an app package from the three packages we built.
 echo Building GlyphIt app package...
@@ -49,7 +49,7 @@ productbuild --distribution distribution_glyphviewer.xml --package-path . --reso
 # Build GlyphEd package.
 echo Building GlyphEd package...
 cd ../../../3rdparty/scripts
-./setup_osx.sh -ebirj8
+#./setup_osx.sh -ebirj8
 cd ../../bin/OSX64/Release
 cp ../../../misc/osx_resources/distribution_glyphed.xml .
 cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement_glyphed.rtf LICENSE.rtf
