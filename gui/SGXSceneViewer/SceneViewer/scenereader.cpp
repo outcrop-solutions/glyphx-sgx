@@ -13,6 +13,8 @@
 #include "baseimagerenderer.h"
 #include "legacyglyphplacement.h"
 #include "glyphscene.h"
+//#include "glm/ext.hpp"
+//#include <hal/debug.h>
 
 namespace SynGlyphX
 {
@@ -241,6 +243,9 @@ namespace SynGlyphX
 		data.topo = read_byte();
 		data.ratio = read_float();
 		data.rotation_rates = read_vec3();
+
+		//hal::debug::print("id: %d", data.id);
+		//hal::debug::print("id: %d, parent_id: %d, position: %f, %f, %f, topo: %d", data.id, data.parent_id, data.pos.x, data.pos.y, data.pos.z, data.topo);
 
 		std::string tag = read_string();
 		std::string url = read_string();
