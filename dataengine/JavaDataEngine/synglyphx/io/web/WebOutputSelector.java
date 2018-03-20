@@ -10,6 +10,9 @@ public class WebOutputSelector {
 		if(isApplicantGlyph(allNodes)){
 			return new ApplicantOutput(allNodes);
 		}
+		else if(isProspectHighSchoolGlyph(allNodes)){
+			return new ProspectHighSchoolOutput(allNodes);
+		}
 		else if(isHighSchoolGlyph(allNodes)){
 			return new HighSchoolOutput(allNodes);
 		}
@@ -32,6 +35,18 @@ public class WebOutputSelector {
 
 		if(allNodes.size() >= 52){
 			if(matchNodeScale(allNodes.get(1), 7.5, 7.5, 2.0) && matchNodeScale(allNodes.get(2), 1.0, 1.0, 0.3) &&
+				matchNodeScale(allNodes.get(10), 1.0, 1.0, 0.2) && matchNodeScale(allNodes.get(14), 1.0, 1.0, 0.3) &&
+				matchNodeScale(allNodes.get(19), 0.2, 0.04, 1.0) && matchNodeScale(allNodes.get(45), 1.0, 1.0, 0.275)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isProspectHighSchoolGlyph(Map<Integer,Node> allNodes){
+
+		if(allNodes.size() >= 52 && allNodes.size() % 52 != 0){
+			if(matchNodeScale(allNodes.get(1), 5.0, 5.0, 1.0) && matchNodeScale(allNodes.get(2), 1.0, 1.0, 0.3) &&
 				matchNodeScale(allNodes.get(10), 1.0, 1.0, 0.2) && matchNodeScale(allNodes.get(14), 1.0, 1.0, 0.3) &&
 				matchNodeScale(allNodes.get(19), 0.2, 0.04, 1.0) && matchNodeScale(allNodes.get(45), 1.0, 1.0, 0.275)){
 				return true;
