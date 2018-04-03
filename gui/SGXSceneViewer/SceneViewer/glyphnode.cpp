@@ -8,8 +8,8 @@
 #include <stack>
 #include "placementpolicy.h"
 #include "glyphgeometrydb.h"
-#include "glm/ext.hpp"
-#include <hal/debug.h>
+//#include "glm/ext.hpp"
+//#include <hal/debug.h>
 
 namespace SynGlyphX
 {
@@ -41,7 +41,7 @@ namespace SynGlyphX
 		{
 			c->updateCachedTransforms( db );
 			combined_bound = render::combine_bounds( combined_bound, c->combined_bound );
-			hal::debug::print("cp: %s", glm::to_string(c->getCachedPosition()));
+			//hal::debug::print("cp: %s", glm::to_string(c->getCachedPosition()));
 		}
 	}
 

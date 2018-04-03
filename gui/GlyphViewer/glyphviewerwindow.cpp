@@ -523,7 +523,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 
 			try {
 
-				/*SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
+				SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 				mapping->ReadFromFile(openFile.toStdString());
 
 				ValidateDataMappingFile(mapping, openFile);
@@ -538,9 +538,10 @@ void GlyphViewerWindow::OpenVisualisation() {
 						return;
 					}
 					filters = loadingFilterDialog.GetFilterValues();
-				}*/
+				}
 
-				LoadNewVisualization(openFile);
+				//LoadNewVisualization(openFile);
+				LoadNewVisualization(openFile, filters, filters.size() > 0);
 			}
 			catch (const std::exception& e) {
 
@@ -854,7 +855,9 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 
 	if (extension == "sdt") {
 
-		try {
+		LoadDataTransform(filename, filters);
+
+		/*try {
 
 			SynGlyphX::DataTransformMapping::SharedPtr mapping = std::make_shared<SynGlyphX::DataTransformMapping>();
 			mapping->ReadFromFile(filename.toStdString());
@@ -878,7 +881,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 		catch (const std::exception& e) {
 
 			QMessageBox::critical(this, tr("Visualization failed to load"), tr("Visualization failed to load: ") + e.what());
-		}
+		}*/
 	}
 
 	if (m_legendsWidget->HasLegends()) {
