@@ -49,6 +49,8 @@ class MyViews extends React.Component {
                     </Collapsible>
                 </div>
 
+                {/*
+
                 <div style = {{ marginBottom: "3px" }} >
                     <Collapsible
                         transitionTime = {200} 
@@ -64,6 +66,7 @@ class MyViews extends React.Component {
                         />
                     </Collapsible>
                 </div>
+                */}
                 
             </div>       
         );

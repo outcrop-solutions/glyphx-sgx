@@ -66,7 +66,7 @@ class TextRangeTable extends React.Component {
      * - ADCMT
      */
     applyFilter = () => {
-        console.log('Filter Applied');
+        //console.log('Filter Applied');
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
@@ -94,6 +94,8 @@ class TextRangeTable extends React.Component {
 				
                 context.props.setFilterIDs(tempRowIds);
                 iframe.filterGlyphs(tempRowIds);
+
+                context.props.dispatch( setTimer(new Date().getTime()) );
             },
             {
                 post: true, 
@@ -134,6 +136,7 @@ class TextRangeTable extends React.Component {
         var UndoRedoHistory = this.props.UndoRedoHistory;
         var setTableData = this.props.setTableData;
         var applyFilter = this.applyFilter.bind(this);
+        var setFilterBusy = this.props.setFilterBusy;
 
         var rList = this.props.filterList[this.props.colName].rangeList;
 
@@ -155,6 +158,7 @@ class TextRangeTable extends React.Component {
                     UndoRedoHistory = { UndoRedoHistory }
                     setTableData = { setTableData }
                     applyFilter = { applyFilter }
+                    setFilterBusy = { setFilterBusy }
                 />
             )
         });
@@ -253,10 +257,10 @@ class TextRangeRow extends React.Component {
      * @param e: the event instance of the slider: array of [min, max]
      **/
     onAfterSlide(e) {
-        this.props.updateStore(e[0], e[1], this.props.range[2], null, null, null, this.props.range);
-
-        /*
         if (this.props.range[3]) {
+
+            this.props.setFilterBusy(true);
+
             var context = this;
             let pom = new Promise(function (resolve, reject) {
                 debugger;
@@ -267,17 +271,19 @@ class TextRangeRow extends React.Component {
             pom.then(
                 () => context.props.updateStore(e[0], e[1], context.props.range[2], null, null, null, context.props.range)
             ).then(
-                () => context.props.refreshTableDataOnRowSelection()
-            ).then(
                 () => context.props.applyFilter()
             ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
                 () => context.props.addToHistory()
+            ).then (
+                () => context.props.setFilterBusy(false)
             );
         }
         else {
             this.props.updateStore(e[0], e[1], this.props.range[2], null, null, null, this.props.range);
         }
-        */
+        
     };
 
 
@@ -338,7 +344,34 @@ class TextRangeRow extends React.Component {
             }
         }
 
-        this.props.updateStore(min, max, this.props.range[2], null, null, null, this.props.range);
+        if (this.props.range[3]) {
+
+            this.props.setFilterBusy(true);
+
+            var context = this;
+            let pom = new Promise(function (resolve, reject) {
+                debugger;
+                context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
+                resolve('done');
+            });
+
+            pom.then(
+                () => context.props.updateStore(min, max, this.props.range[2], null, null, null, this.props.range)
+            ).then(
+                () => context.props.applyFilter()
+            ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
+                () => context.props.addToHistory()
+            ).then (
+                () => context.props.setFilterBusy(false)
+            );
+        }
+        else {
+            this.props.updateStore(min, max, this.props.range[2], null, null, null, this.props.range);
+        }
+
+        
     };
 
 
@@ -428,23 +461,33 @@ class TextRangeRow extends React.Component {
 
                 //this.props.updateStore(min, max, this.props.range[2], true, null, null);
 
+                this.props.setFilterBusy(true);
+
                 var context = this;
                 let pom = new Promise(function (resolve, reject) {
-                    context.props.updateStore(min, max, context.props.range[2], true, null, null);
+                    debugger;
+                    context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                     resolve('done');
                 });
 
                 pom.then(
-                    () => context.props.refreshTableDataOnRowSelection()
+                    () => context.props.updateStore(min, max, context.props.range[2], true, null, null)
                 ).then(
                     () => context.props.applyFilter()
                 ).then(
+                    () => context.props.refreshTableDataOnRowSelection()
+                ).then(
                     () => context.props.addToHistory()
+                ).then (
+                    () => context.props.setFilterBusy(false)
                 );
+
             }
 
             else {
                 //this.props.updateStore(null, null, this.props.range[2], false, null, null);
+
+                this.props.setFilterBusy(true);
 
                 var context = this;
                 let pom = new Promise(function (resolve, reject) {
@@ -455,12 +498,15 @@ class TextRangeRow extends React.Component {
                 //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
 
                 pom.then(
-                    () => context.props.refreshTableDataOnRowSelection()
-                ).then(
                     () => context.props.applyFilter()
                 ).then(
+                    () => context.props.refreshTableDataOnRowSelection()
+                ).then(
                     () => context.props.addToHistory()
+                ).then (
+                    () => context.props.setFilterBusy(false)
                 );
+
             }
 
             this.setState({ epoch: epoch });
@@ -475,18 +521,25 @@ class TextRangeRow extends React.Component {
         //this.props.onDelEvent(this.props.range[2]);
 
         if (this.props.range[3]) {
+
+            this.props.setFilterBusy(true);
+            
             var context = this;
             let pom = new Promise(function (resolve, reject) {
                 context.props.onDelEvent(context.props.range[2]);
                 resolve('done');
             });
 
+            //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
+
             pom.then(
+                () => context.props.applyFilter()
+            ).then(
                 () => context.props.refreshTableDataOnRowSelection()
             ).then(
                 () => context.props.addToHistory()
-            ).then(
-                () => context.props.applyFilter()
+            ).then (
+                () => context.props.setFilterBusy(false)
             );
         }
         else {
@@ -509,9 +562,12 @@ class TextRangeRow extends React.Component {
      **/
     onTextBlur() {
         // [min, max, id, applied, selectType, text]
-        //this.props.updateStore(null, null, this.props.range[2], null, null, this.state.text, this.props.range);
-        
+
+        this.props.updateStore(null, null, this.props.range[2], null, null, this.state.text, this.props.range);
+
         if (this.props.range[3]) {
+            this.props.setFilterBusy(true);
+
             var context = this;
             let pom = new Promise(function (resolve, reject) {
                 debugger;
@@ -522,11 +578,13 @@ class TextRangeRow extends React.Component {
             pom.then(
                 () => context.props.updateStore(null, null, context.props.range[2], null, null, context.state.text, context.props.range)
             ).then(
-                () => context.props.refreshTableDataOnRowSelection()
-            ).then(
                 () => context.props.applyFilter()
             ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
                 () => context.props.addToHistory()
+            ).then (
+                () => context.props.setFilterBusy(false)
             );
         }
         else {
@@ -744,6 +802,11 @@ export const updateRange = (colName, selectType, min, max, text, id, applied, da
 export const editUndoRedoHistory = (undoRedoHistory) => ({
   type: 'UPDATE_HISTORY',
   undoRedoHistory
+});
+
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
 });
 
 

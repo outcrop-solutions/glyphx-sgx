@@ -96,6 +96,7 @@ class allViewsModal extends React.Component {
 			//debugger;
 
 			// Get the data corresponding to the URL
+			debugger;
 			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function (responseText) { 
 					var response = JSON.parse(responseText);
@@ -105,10 +106,11 @@ class allViewsModal extends React.Component {
 					var keyArray = Object.keys(preData);
 					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
-					context.props.dispatch(updateFilterFromSnapshot({}));
+					debugger;
 
-					context.props.dispatch(setCurrentVizParams({ initialX: response.initialX, initialY: response.initialY, initialZ: response.initialZ }));
-					//debugger;
+					//console.log(response);
+
+					context.props.dispatch(updateFilterFromSnapshot({}));
 
 					// Seperate and store the actual data and the selectAll boolean of each column
 					for (var i = 0; i < keyArray.length; i++) {
@@ -137,8 +139,11 @@ class allViewsModal extends React.Component {
 						data.push(dataCol);
 					}
 
+					debugger;
+
 					// Post the new data to the state and hide the window load-mask
 					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false, datasourceId: response.datasourceId });
+					context.props.dispatch( setTimer(new Date().getTime()) );
 				}
 			);
         }
@@ -641,11 +646,11 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	onLaunchResultCallback(success){
-		if(success){
+	onLaunchResultCallback(success) {
+		if (success) {
 			this.props.history.push('/glyph-viewer');
 		}
-		else{
+		else {
 			this.setState({ snackbarVisible: true });
 		}
 	}
@@ -917,14 +922,14 @@ export const editModalDisplay = (allViewsModal, selectedFilteredModal) => ({
 	selectedFilteredModal
 });
 
-export const setCurrentVizParams = (vizParams) => ({
-    type: 'SET_TEMP_VIZ_PARAMS',
-    vizParams,
-});
-
 export const updateFilterFromSnapshot = (snapshot) => ({
     type: 'UPDATE_FILTER_SNAPSHOT',
     snapshot
+});
+
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
 });
 
 

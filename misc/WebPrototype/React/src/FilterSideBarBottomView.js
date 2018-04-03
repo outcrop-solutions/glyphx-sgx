@@ -7,7 +7,6 @@ import IconButton from 'material-ui/IconButton';
 import FilterTabs from './FilterTab.js';
 import SearchBox from './SearchBox.js';
 import PinningViewsModal from './PinningViewsModal.js';
-import ComponentLoadMask from './ComponentLoadMask.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './FilterSideBar.css';
 
@@ -24,7 +23,7 @@ class FilterSideBarBottomView extends React.Component {
         this.state  = {
             activeColumns: [],
             openCols: {},
-            loadMask: true
+            filterBusy: false
         };
     };
 
@@ -40,8 +39,6 @@ class FilterSideBarBottomView extends React.Component {
      **/
 	componentWillReceiveProps(nextProps) {
         if (Object.keys(nextProps.tableData).length !== 0) {
-            this.setState({ loadMask: false });
-
             if (this.props.UndoRedoHistory && this.props.UndoRedoHistory.history.length == 0) {
                 this.props.dispatch(editUndoRedoHistory({
                     history: [{filterList: this.props.GLOBAL, tableData: nextProps.tableData}],
@@ -49,6 +46,10 @@ class FilterSideBarBottomView extends React.Component {
                 }));
             }
         }
+    }
+
+    setFilterBusy(bool) {
+        this.setState({ filterBusy: bool });
     }
 
 
@@ -179,6 +180,8 @@ class FilterSideBarBottomView extends React.Component {
                         setFilterIDs = { this.props.setFilterIDs }
                         fullTableData = { this.props.tableData }
                         setTableData = { this.props.setTableData }
+                        setFilterBusy = { this.setFilterBusy.bind(this) }
+                        filterBusy = { this.state.filterBusy }
                     />
                 </Collapsible>
             </div>
@@ -391,7 +394,7 @@ class FilterSideBarBottomView extends React.Component {
             ref = this.refs[divList[i].getAttribute('id')] 
             
             if (ref && (extra ? !extra.filterViewClick : true) ) {
-                ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
+                ref.state.isClosed ? null : ref.closeCollapsible();
             }
 			
             shouldBeVisible = false;
@@ -422,7 +425,7 @@ class FilterSideBarBottomView extends React.Component {
             ref = this.refs[divList[i].getAttribute('id')];
             
             if (ref) {
-                ref.state.isClosed ? console.log('closed') : ref.closeCollapsible();
+                ref.state.isClosed ? null : ref.closeCollapsible();
             }
 		}
     }
@@ -584,10 +587,6 @@ class FilterSideBarBottomView extends React.Component {
                         </div>
                         
                         <br/>
-
-                        <div style = {{ width: "100%", height: "300px", display: (this.state.loadMask ? "" : "none") }} >
-                            <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-                        </div>
 
                         {columnsObj.columns}
 

@@ -24,6 +24,8 @@ class SettingsModal extends React.Component {
         overlapTempSelection: "No",
         hideScrollSelection: "No",
         hideScrollTempSelection: "No",
+        axesVisibilitySelection: "Visible",
+        axesVisibilityTempSelection: "Visible",
     };
 
 
@@ -53,7 +55,20 @@ class SettingsModal extends React.Component {
      * When settings are saved, updates the redux store and local state to reflect the changes
      **/
     onSettingsSave() {
-        this.setState({ themeSelection: this.state.themeTempSelection, overlapSelection: this.state.overlapTempSelection, hideScrollSelection: this.state.hideScrollTempSelection });
+
+        if (this.state.axesVisibilityTempSelection != this.state.axesVisibilitySelection) {
+            if (document.getElementById('GlyphViewer')) {
+                document.getElementById('GlyphViewer').contentWindow.postMessage({action: 'toggleAxis'}, '*');
+                this.state.axisVisible ? this.setState({ axisVisible: false }) : this.setState({ axisVisible: true });
+            }
+        }
+        this.setState({ 
+            themeSelection: this.state.themeTempSelection, 
+            overlapSelection: this.state.overlapTempSelection, 
+            hideScrollSelection: this.state.hideScrollTempSelection,
+            axesVisibilitySelection: this.state.axesVisibilityTempSelection,
+        });
+
         this.props.dispatch(
             editSettings(
                 this.state.colorThemes.indexOf(this.state.themeTempSelection), 
@@ -100,6 +115,11 @@ class SettingsModal extends React.Component {
 			return({ label: value, value: value });
 		});
 
+        var axesSelectItems = ["Visible", "Hidden"];
+        axesSelectItems = axesSelectItems.map(function(value) {
+			return({ label: value, value: value });
+		});
+
         var colorThemes = this.state.colorThemes.map(function(value) {
 			return({ label: value, value: value });
 		});
@@ -136,6 +156,7 @@ class SettingsModal extends React.Component {
                     <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
                 </div>
 
+                {/*
                 <Flexbox flexDirection = "row" >
 
                     <Tooltip
@@ -167,6 +188,39 @@ class SettingsModal extends React.Component {
                         />
                     </div>
                 </Flexbox>
+                */}
+
+                <Flexbox flexDirection = "row" >
+
+                    <Tooltip
+                        placement = 'right'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlay = { 
+                            <div> 
+                                This will change the visibility setting of the Axes within the visualization
+                            </div> 
+                        }
+                    >
+                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px", color: "#535353" }} className = "fa fa-question-circle" color = '#000000' />
+                    </Tooltip>
+
+                    <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Axes Visibility </h4></label>
+
+                    <div style = {{  margin: "0px 0px 0px 300px", position: "fixed", zIndex: "2001" }} >
+                        <Select 
+                            simpleValue
+                            value = { this.state.axesVisibilityTempSelection } 
+                            placeholder = "Select" 
+                            options = { axesSelectItems } 
+                            onChange = { (value) => this.setState({ axesVisibilityTempSelection: value }) } 
+                            style = {{  width: "150px" }}
+                            clearable = { false }
+                        />
+                    </div>
+                </Flexbox>
 
                 <div style = {{ margin: "20px 0px 3px", color: "#000000", fontSize: "20px",fontWeight: "bold" }} > Filter Sidebar </div>
 
@@ -186,7 +240,7 @@ class SettingsModal extends React.Component {
                         overlay = { 
                             <div> 
                                 When set to yes, the filter sidebar will 
-                                <br />overlap the glyph viewer window when open.
+                                <br />overlap the glyph viewer window when open
                             </div> 
                         }
                     >
@@ -208,6 +262,7 @@ class SettingsModal extends React.Component {
                     </div>
                 </Flexbox>
 
+                {/*
                 <Flexbox flexDirection = "row" >
 
                     <Tooltip
@@ -240,6 +295,7 @@ class SettingsModal extends React.Component {
                         />
                     </div>
                 </Flexbox>
+                */}
                 
             </Dialog>             
         );

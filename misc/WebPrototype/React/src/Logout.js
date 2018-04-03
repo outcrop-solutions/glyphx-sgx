@@ -26,28 +26,15 @@ class Logout extends React.Component {
     render() {
         this.deleteLoginCookie();
         hideSplashScreen();
-        makeServerCall("logout");
+        makeServerCall("logout",
+            function (responseText) { 
+                window.location.assign("/");
+            }
+        );
+        //makeServerCall("logout");
 
         return(
-            <Dialog
-                actions = {
-                    [    ]
-                }
-                overlayStyle = {{ backgroundColor: 'white' }}
-                contentStyle = {{ width:'30%', maxWidth: "none" }}
-                modal = { true }
-                open = { true }
-            >   
-                <div>
-                    <div style = {{ height: '20px', fontSize: '18px', textAlign: "center" }} >
-                        You have been logged out.
-                    </div>
-
-                    <div style = {{  height: '20px', fontSize: '18px', textAlign: "center" }} >
-                        <a href = "/"> Click here to login </a>.
-                    </div>
-                </div>  
-            </Dialog>
+            <div style = {{ height: "100vh", width: "100vw", backgroundColor: "#fff" }} />
         );
     }
 }

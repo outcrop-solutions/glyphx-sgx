@@ -103,6 +103,7 @@ var path = require("path");
 var fs = require('fs');
 var util = require('util');
 
+
 //Sql and promise settings
 var Promise = require('bluebird');
 var sqlite = require('sqlite');
@@ -115,6 +116,23 @@ var shell = require('shelljs');
 var parse = require('xml-parser');
 var xpath = require('xpath');
 var dom = require('xmldom').DOMParser;
+
+// Twilio configuration
+let twilio = require("twilio");
+
+const accountSid = "ACf8bdf11b425c1a2b4dc32fd8e269d030";
+const authToken = "c943d8e261b1a814c75ca2cd7319798a";
+//const accountSid = "AC4ac45e4fe73943f85369e6d6b90074cd";
+//const authToken = "0628a5b87c40ba6b576d049bc66c9a11";
+const serviceSid = "ISf8431dd8f893479cac16a5bcca564c1a";
+const apiSid = "SKac248c8e57613ec7645dd6ad40cb97a0";
+const apiSecret = "W33ki0JguPHEnl8IWrnrziblhFsO3zAb";
+
+const AccessToken = twilio.jwt.AccessToken;
+const ChatGrant = AccessToken.ChatGrant;
+const client = require('twilio')(accountSid, authToken);
+const service = client.chat.services(serviceSid);
+
 
 
 /*
@@ -164,6 +182,33 @@ app.use(session(
 app.use(express.static(path.join(__dirname, '.')));
 
 /**
+ * TWILIO SERVER ACTIONS
+ */
+app.get("/token", function(req, res) {
+	let userInfo = req.query.userInfo;
+	//console.log("username is: ", username);
+
+	let token = new AccessToken(
+		accountSid,
+		apiSid,
+		apiSecret,
+		{
+			identity: userInfo,
+			ttl: 40000
+		}
+	);
+
+	let grant = new ChatGrant({ serviceSid: serviceSid });
+
+	token.addGrant(grant);
+
+	const tokenJwt = token.toJwt();
+	console.log("token: " + tokenJwt);
+
+	res.send(tokenJwt);
+});
+
+/**
  * Get Institution IMG for the home page
  */
 app.get('/customerImg/:instName', function (req, res) {
@@ -180,6 +225,44 @@ app.get('/customerImg/:instName', function (req, res) {
 		res.sendFile(path.resolve(tempPath));
 	}
 });
+
+app.get('/getLegendImg/:legendURL', function (req, res) {
+	var tempPath = "./Resources/Institutions/devtest/customer.png";
+	console.log(req.params.legendURL);
+	
+	res.setHeader('Cache-Control', 'public, max-age=' + (250000));
+	
+	//check if file exists.
+	if (fs.existsSync(path.resolve(req.params.legendURL))) {
+		res.sendFile(path.resolve(req.params.legendURL));
+	}
+	else {
+		res.sendFile(path.resolve(tempPath));
+	}
+});
+
+
+app.get('/getLegendURL/:sdtFile', async (req, res, next) => {
+	if (!req.params.sdtFile) {
+		return res.sendStatus(400);
+	} 
+
+	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+	
+	var sess = req.session;
+	var sdtPath = req.params.sdtFile;
+
+	if (req.params.sdtFile.indexOf("&&&") > -1) {
+		sdtPath = req.params.sdtFile.split("&&&")[0];
+		savedVizData = req.params.sdtFile.split("&&&")[1];
+	}
+	
+	var returnObj = getLegendInfo(sess.user.institutionDir + sdtPath.replace(/\\/g, '/') + '');
+
+	res.send(returnObj);
+	
+});
+
 
 app.get('/vizdata/:key', function (req, res) {
 	var tempPath = req.params.key;
@@ -215,10 +298,22 @@ function authenticateUser(data) {
 	// Check the userAccounts table for such user.
 	var loginQuery = "SELECT * FROM UserAccounts WHERE UserAccounts.Email= '" + data.username + "'";
 	const UserAccountsResult = mySqlConnection.query(loginQuery);
+
+	var licenseQuery = "SELECT * FROM UsageLicenses WHERE UsageLicenses.UserID= '" + UserAccountsResult[0].ID + "'";
+	const LicenseResult = mySqlConnection.query(licenseQuery);
+
 	var hash = sha256(data.password);
+
+	var licensePortions = LicenseResult[0].Key.split("-");
+	var days = (parseInt(licensePortions[4], 16)) / 86400;
+	var currentDay = Math.round((new Date()).getTime() / 86400000);
+
+	if (days - currentDay <= 0) {
+		returnObj.loginResult.status = "expired";
+	}
 	
 	// Check whether the passwords match
-	if (UserAccountsResult && UserAccountsResult != "" && UserAccountsResult != null && (hash == UserAccountsResult[0].Password || data.password == UserAccountsResult[0].Password)) {
+	if (days - currentDay >= 0 && UserAccountsResult && UserAccountsResult != "" && UserAccountsResult != null && (hash == UserAccountsResult[0].Password || data.password == UserAccountsResult[0].Password)) {
 		var vizAccessPathList = [];
 
 		// Update the user login count and last login timestamp.
@@ -406,6 +501,24 @@ function insertIntoMySqlDB(insertQuery) {
 	}
 }
 
+function getLegendInfo(filename) {
+	var fileData = fs.readFileSync(filename, "utf8");
+	
+	var returnObj = { }
+	
+	try {
+		var doc = new dom().parseFromString(fileData);
+		console.log('refering file ' + filename);
+		returnObj = xpath.select("//Legends/Legend", doc)[0].firstChild.data;
+	}
+	catch(err) {
+		console.log(err);
+		returnObj = null;
+	}
+	
+	return returnObj;
+}
+
 function getFrontEndFilterInfo(filename) {
 	var fileData = fs.readFileSync(filename, "utf8");
 	
@@ -414,17 +527,18 @@ function getFrontEndFilterInfo(filename) {
 		fieldList: [],
 		selectAll: [],
 		filterAllowedColumnList: [],
+		allTablesList: [],
 		datasourceId: '',
 		initialX: '',
 		initialY: '',
-		initialZ: ''
+		initialZ: '',
+		legendPath: ''
 	}
 	
 	try {
 		var doc = new dom().parseFromString(fileData);
 		console.log('refering file ' + filename);
 
-		//returnObj.tableName = xpath.select("//FrontEnd/Filter/FilterField/@table", doc).value;
 		returnObj.tableName = xpath.select1("//FrontEnd/Filter/FilterField/@table", doc).value;
 		var fieldNames = xpath.select("//FrontEnd/Filter/FilterField/@field", doc);
 		var datasourceId = xpath.select("//Datasources/Datasource/@id", doc);
@@ -433,6 +547,19 @@ function getFrontEndFilterInfo(filename) {
 		var initialX = xpath.select("//Glyphs/Glyph/Position/X/Binding/@fieldId", doc);
 		var initialY = xpath.select("//Glyphs/Glyph/Position/Y/Binding/@fieldId", doc);
 		var initialZ = xpath.select("//Glyphs/Glyph/Position/Z/Binding/@fieldId", doc);
+		returnObj.legendPath = xpath.select("//Legends/Legend", doc)[0].data;
+
+		var allTables = xpath.select("//FrontEnd/Filter/FilterField/@table", doc);
+		var allTablesList = [];
+
+		for (var i = 0; i < allTables.length; i++) {
+			if (allTablesList.indexOf(allTables[i].value) == -1) {
+				allTablesList.push(allTables[i].value);
+			}
+		}
+
+		returnObj.allTablesList = allTablesList;
+
 
 		var inputFieldIDs = xpath.select("//InputFields/InputField/@name", doc);
 		var inputFieldNames = xpath.select("//InputFields/InputField/@field", doc);
@@ -606,7 +733,7 @@ function checkUser(req, res, next) {
   if (req.session.user &&  req.session.user.isUserLoggedIn) {
 	next();
   }
-  else {
+  else {``
 	console.log("Request for :" + req.path + ' , But user is not logged in');
 	res.send({ isUserLoggedIn: false });
   }
@@ -1064,24 +1191,6 @@ app.get('/getXYZData', async (req, res, next) => {
 	}
 });
 
-app.post('/getInitialXYZ', async (req, res, next) => {
-	if (!req.body || (req.body && !req.body.query)) {
-		return res.sendStatus(400);
-	} 
-	
-	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); 
-	
-	var start = now();
-	var end;
-	
-	var sdtPath = req.session.user.institutionDir + req.body.sdtPath.replace(/\\/g, '/') + '';
-
-	var frontEndFilterObj = getFrontEndFilterInfo(sess.user.institutionDir + sdtPath.replace(/\\/g, '/') + '');
-
-	res.send(frontEndFilterObj);
-	
-});
-
 app.post('/applyFilters', async (req, res, next) => {
 	if (!req.body) {
 		return res.sendStatus(400);
@@ -1222,9 +1331,8 @@ app.get('/frontEndFilterData/:sdtFile', async (req, res, next) => {
 	if (!req.params.sdtFile) {
 		return res.sendStatus(400);
 	} 
-	
-	// Set to 2 hours.
-	res.setHeader('Cache-Control', 'public, max-age=' + (7200)); 
+
+	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 	
 	var sess = req.session;
 	var sdtPath = req.params.sdtFile;
@@ -1245,7 +1353,8 @@ app.get('/frontEndFilterData/:sdtFile', async (req, res, next) => {
 		initialY: '',
 		initialZ: '',
 		inputIDs: [],
-		inputNames: []
+		inputNames: [],
+		legendPath: ''
 	};
 	
 	var frontEndFilterObj = getFrontEndFilterInfo(sess.user.institutionDir + sdtPath.replace(/\\/g, '/') + '');
@@ -1284,7 +1393,7 @@ app.get('/frontEndFilterData/:sdtFile', async (req, res, next) => {
 
 		returnObj.initialX = frontEndFilterObj.initialX;
 		returnObj.initialY = frontEndFilterObj.initialY;
-		returnObj.initialZ = frontEndFilterObj.initialZ;		
+		returnObj.initialZ = frontEndFilterObj.initialZ;
 	}
 	
 	if (savedVizData != '') {
@@ -1304,6 +1413,7 @@ app.get('/frontEndFilterData/:sdtFile', async (req, res, next) => {
 	
 	res.send(returnObj);
 });
+
 
 app.get('/isUserLoggedIn', async (req, res, next) => {
 	if (!req.body) {

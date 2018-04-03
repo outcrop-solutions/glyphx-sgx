@@ -12,6 +12,7 @@ import SearchBox from './SearchBox.js';
 import Flexbox from 'flexbox-react';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 import './General.css';
 import 'react-virtualized/styles.css';
 
@@ -125,7 +126,8 @@ class FilterTable extends React.Component {
                 this.props.settings != nextProps.settings ||
                 this.state.flatData != nextState.flatData ||
                 this.state.searchTerm != nextState.searchTerm ||
-                this.props.tableData != nextProps.tableData
+                this.props.tableData != nextProps.tableData ||
+                this.props.ShowAllTables != nextProps.ShowAllTables
                 );
 
         /*
@@ -204,7 +206,7 @@ class FilterTable extends React.Component {
      * - ADCMT
      */
     applyFilter = () => {
-        console.log('Filter Applied');
+        //console.log('Filter Applied');
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
@@ -230,6 +232,13 @@ class FilterTable extends React.Component {
 				
                 context.props.setFilterIDs(tempRowIds);
                 iframe.filterGlyphs(tempRowIds);
+
+                debugger;
+                
+                context.props.setFilterBusy(false);
+
+
+                context.props.dispatch( setTimer(new Date().getTime()) );
             },
             {post: true, 
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState } 
@@ -289,6 +298,7 @@ class FilterTable extends React.Component {
             data: this.props.tableData.flatValues
         }
 
+        this.props.setFilterBusy(true);
         
         var context = this;
 
@@ -621,6 +631,25 @@ class FilterTable extends React.Component {
         return <CustomRowRendererComponent searchTerm = { this.state.searchTerm } selectedData = { this.props.tableState[this.props.id].selectedValues } {...props } />;
     }
 
+    updateCheck(col) {
+        var list = this.props.ShowAllTables.slice(0);
+
+        var index = list.indexOf(col);
+
+        if (index == -1) {
+            list.push(col);
+            var tableData = this.props.fullTableData;
+            tableData[col] = this.props.UndoRedoHistory.history[0].tableData[col];
+            this.props.setTableData(tableData);
+        }
+        else {
+            list.splice(index, 1);
+            this.props.refreshTableDataOnRowSelection();
+        }
+
+        this.props.dispatch(setShowAllTables(list));
+    }
+
 
     render() {
         var id = this.props.id;
@@ -662,7 +691,7 @@ class FilterTable extends React.Component {
                                 }}
                                 onChange = { (e) => this.onSearchChange(e) } 
                                 hintText = {
-                                    <span style = {{ fontSize: 'inherit', color: 'rgba(0, 0, 0, 0.5)' }} >
+                                    <span style = {{ fontSize: 'inherit', color: 'rgba(0, 0, 0, 0.6)' }} >
                                         <FontIcon
                                             className = "fa fa-search" 
                                             style = {{
@@ -678,6 +707,27 @@ class FilterTable extends React.Component {
                                 }
                                 underlineFocusStyle = {{ borderColor: this.props.settings.colors.pinFilterColor.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
                             /> 
+                        </Flexbox>
+
+                        <Flexbox style = {{ width: "35%" }} >
+                            <div 
+                                style = {{ 
+                                    backgroundColor: this.props.settings.colors.tableSelectColor.background, 
+                                    margin: "0px 0px 0px 12px", 
+                                    //borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                    borderRadius: "4px",
+                                    //border: "1px solid #ccc", 
+                                }} 
+                            >
+                                <Checkbox
+                                    label = "Show All"
+                                    checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) != -1 ? true : false }
+                                    onCheck = { () => this.updateCheck(this.props.internalColName.replace("_pinned", "")) }
+                                    iconStyle = {{ fill: 'rgba(0, 0, 0, 0.6)', margin: "2px 2px 0px 0px" }}
+                                    labelStyle = {{ width: "100%", margin: "5px 5px 0px 0px", color: 'rgba(0, 0, 0, 0.6)' }}
+                                />
+                            </div>
+                           
                         </Flexbox>
 
                     </Flexbox>
@@ -859,6 +909,16 @@ export const editUndoRedoHistory = (undoRedoHistory) => ({
   undoRedoHistory
 });
 
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
+});
+
+export const setShowAllTables = (showAllTables) => ({
+    type: 'SET_SHOW_ALL_TABLES',
+    showAllTables,
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -869,7 +929,8 @@ const mapStateToProps = function(state){
     tableState: state.filterState.Filter,
     settings: state.filterState.Settings,
     VizParams: state.filterState.VizParams,
-    UndoRedoHistory: state.filterState.UndoRedoHistory
+    UndoRedoHistory: state.filterState.UndoRedoHistory,
+    ShowAllTables: state.filterState.ShowAllTables
   }
 };
 

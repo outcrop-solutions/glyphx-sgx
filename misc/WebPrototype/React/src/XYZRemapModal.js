@@ -16,19 +16,21 @@ import Select from 'react-styled-select'
 class XYZRemapModal extends React.Component {
 
 	state = {
-        XYZValues: [],
+        XValues: [],
         XValue: null,
         XTemp: null,
         XLowerRange: -180,
         XUpperRange: 180,
+        YValues: [],
         YValue: null,
         YTemp: null,
         YLowerRange: -180,
         YUpperRange: 180,
+        ZValues: [],
         ZValue: null,
         ZTemp: null,
-        ZLowerRange: -180,
-        ZUpperRange: 180,
+        ZLowerRange: 0,
+        ZUpperRange: 360,
     };
 
 
@@ -46,49 +48,67 @@ class XYZRemapModal extends React.Component {
         if (shouldExec) {
 
             debugger;
-			//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-            this.setState({ 
-                XValue: this.props.VizParams.initialX,
-                XTemp: this.props.VizParams.initialX, 
-                YValue: this.props.VizParams.initialY,
-                YTemp: this.props.VizParams.initialY,
-                ZValue: this.props.VizParams.initialZ,
-                ZTemp: this.props.VizParams.initialZ 
-            });
 
             var list = this.props.VizParams.filterAllowedColumnList;
-            var XYZVals = [];
+            var XVals = [];
+            var YVals = [];
+            var ZVals = [];
 
-            for (var i = 0; i < list.length; i++) {
-                XYZVals.push({ label: list[i], value: list[i] });
+            for (var i = 0; i < this.props.VizParams.filterAllowedColumnList.length; i++) {
+                if (this.props.VizParams.filterAllowedColumnList[i].toLowerCase().indexOf("geo") != -1) {
+                    XVals.push({ label: "longitude", value: "longitude" });
+                    YVals.push({ label: "latitude", value: "latitude" });
+                    break;
+                }
             }
 
-            this.setState({ XYZValues: XYZVals });
+            for (var i = 0; i < list.length; i++) {
+                XVals.push({ label: list[i], value: list[i] });
+                YVals.push({ label: list[i], value: list[i] });
+                ZVals.push({ label: list[i], value: list[i] });
+            }
 
+            /*
+            console.log("X");
+            console.log(XVals);
+            console.log("Y");
+            console.log(YVals);
+            console.log("Z");
+            console.log(ZVals);
+            */
+            
+            this.setState({ 
+                XVals: XVals,
+                YVals: YVals,
+                ZVals: ZVals
+            });
+        
+        }
+    }
+
+    /**
+     * React built-in which acts as a listener for when props change
+     * @param nextProps: The props the component would have after the change
+     **/
+	componentWillReceiveProps(nextProps) {
+
+        //if (this.props.XYZDisplay != nextProps.XYZDisplay && (this.state.XTemp == null || this.state.YTemp == null || this.state.ZTemp == null) ) {
+        if (this.props.initialX != nextProps.initialX || this.props.initialY != nextProps.initialY || this.props.initialZ != nextProps.initialZ) {
+            this.setState({ 
+                XValue: nextProps.initialX,
+                XTemp: nextProps.initialX, 
+                YValue: nextProps.initialY,
+                YTemp: nextProps.initialY,
+                ZValue: nextProps.initialZ,
+                ZTemp: nextProps.initialZ
+            });
+        }
+        else {
             var context = this;
 
-            makeServerCall('getInitialXYZ',
-                function(res, b, c) {
-
-                    if (typeof res == 'string') {
-                        res = JSON.parse(res);
-                    }
-                    
-                debugger
-                },
-                {
-                    post: true, 
-                    data:  { 
-                        tableName: context.props.VizParams.tableName, 
-                        query: context.props.VizParams.query, 
-                        sdtPath: context.props.VizParams.sdtPath, 
-                        datasourceId: context.props.VizParams.datasourceId ,
-                        filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
-                    }
-                }
-            );
-
+            setTimeout(function () {
+                context.setState(context.state);
+            }, 500);
         }
     }
 
@@ -111,6 +131,20 @@ class XYZRemapModal extends React.Component {
 
         else if (target === "Z") {
             this.setState({ ZTemp: e });
+        }
+    }
+
+    linearInterpolation (x1, x2, y1, y2, x) {
+        if (x2 - x1 == 0) {
+            if (x >= y1 && x <= y2) {
+                return x;
+            }
+            else {
+                return y2;
+            }
+        }
+        else {
+            return (((x - x1) * (y2 - y1)) / (x2 - x1)) + y1;
         }
     }
 
@@ -301,24 +335,25 @@ class XYZRemapModal extends React.Component {
                         var XYZDataStructure = [];
 
                         for (var i = 0; i < response.data.length; i++) {
+
                             var node = { rowID: response.data[i].rowid };
 
                             if (responseDetails.Xtype == "INT") {
-                                node.X = (parseInt(response.data[i][responseDetails.X], 10) - responseDetails.XMin) * (context.state.XUpperRange - context.state.XLowerRange) / (responseDetails.XMax - responseDetails.XMin) + context.state.XLowerRange
+                                node.X = context.linearInterpolation(responseDetails.XMin, responseDetails.XMax, context.state.XLowerRange, context.state.XUpperRange, parseInt(response.data[i][responseDetails.X], 10));
                             }
                             else {
                                 node.X = (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) + 1) * (context.state.XUpperRange - context.state.XLowerRange) / (responseDetails.XUnique.length) + context.state.XLowerRange
                             }
 
                             if (responseDetails.Ytype == "INT") {
-                                node.Y = (parseInt(response.data[i][responseDetails.Y], 10) - responseDetails.YMin) * (context.state.YUpperRange - context.state.YLowerRange) / (responseDetails.YMax - responseDetails.YMin) + context.state.YLowerRange
+                                node.Y = context.linearInterpolation(responseDetails.YMin, responseDetails.YMax, context.state.YLowerRange, context.state.YUpperRange, parseInt(response.data[i][responseDetails.Y], 10));
                             }
                             else {
                                 node.Y = (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) + 1) * (context.state.YUpperRange - context.state.YLowerRange) / (responseDetails.YUnique.length) + context.state.YLowerRange
                             }
 
                             if (responseDetails.Ztype == "INT") {
-                                node.Z = (parseInt(response.data[i][responseDetails.Z], 10) - responseDetails.ZMin) * (context.state.ZUpperRange - context.state.ZLowerRange) / (responseDetails.ZMax - responseDetails.ZMin) + context.state.ZLowerRange
+                                node.Z = context.linearInterpolation(responseDetails.ZMin, responseDetails.ZMax, context.state.ZLowerRange, context.state.ZUpperRange, parseInt(response.data[i][responseDetails.Z], 10));
                             }
                             else {
                                 node.Z = (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) + 1) * (context.state.ZUpperRange - context.state.ZLowerRange) / (responseDetails.ZUnique.length) + context.state.ZLowerRange
@@ -332,8 +367,12 @@ class XYZRemapModal extends React.Component {
                         var iframe = document.getElementById('GlyphViewer').contentWindow;
                         iframe.updateXYZCoordinates(XYZDataStructure, responseDetails.X, responseDetails.Y, responseDetails.Z);
 
-                        console.log(XYZDataStructure);
+                        //console.log(XYZDataStructure);
                         debugger;
+
+                        context.props.dispatch( setTimer(new Date().getTime()) );
+
+                        
                     }
                 );
             });
@@ -401,7 +440,7 @@ class XYZRemapModal extends React.Component {
                             simpleValue
                             value = { this.state.XTemp } 
                             placeholder = "Select a new X Axis" 
-                            options = { this.state.XYZValues } 
+                            options = { this.state.XVals } 
                             onChange = { (e) => this.onSelectChange(e, "X") } 
                             style = {{
                                 margin: "-11px 0px 0px 0px",
@@ -412,7 +451,7 @@ class XYZRemapModal extends React.Component {
 
                         <RaisedButton
                             onClick = { () => this.setState({ XLowerRange: (this.state.XLowerRange == -180 ? 180 : -180), XUpperRange: (this.state.XUpperRange == -180 ? 180 : -180)  }) }
-                            label = { <i className = { this.state.XLowerRange == -180 ? "fa fa-sort-alpha-desc" : "fa fa-sort-alpha-asc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
+                            label = { <i className = { this.state.XLowerRange == -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
                                 margin: "2px 12px 0px 3px",
                                 minWidth: "37px",
@@ -441,7 +480,7 @@ class XYZRemapModal extends React.Component {
                             simpleValue
                             value = { this.state.YTemp } 
                             placeholder = "Select a new Y Axis" 
-                            options = { this.state.XYZValues } 
+                            options = { this.state.YVals } 
                             onChange = { (e) => this.onSelectChange(e, "Y") } 
                             style = {{
                                 margin: "-11px 0px 0px 0px",
@@ -451,7 +490,7 @@ class XYZRemapModal extends React.Component {
 
                         <RaisedButton
                             onClick = { () => this.setState({ YLowerRange: (this.state.YLowerRange == -180 ? 180 : -180), YUpperRange: (this.state.YUpperRange == -180 ? 180 : -180)  }) }
-                            label = { <i className = { this.state.YLowerRange == -180 ? "fa fa-sort-alpha-desc" : "fa fa-sort-alpha-asc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
+                            label = { <i className = { this.state.YLowerRange == -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
                                 margin: "2px 12px 0px 3px",
                                 minWidth: "37px",
@@ -480,7 +519,7 @@ class XYZRemapModal extends React.Component {
                             simpleValue
                             value = { this.state.ZTemp } 
                             placeholder = "Select a new Z Axis" 
-                            options = { this.state.XYZValues } 
+                            options = { this.state.ZVals } 
                             onChange = { (e) => this.onSelectChange(e, "Z") } 
                             style = {{
                                 margin: "-11px 0px 0px 0px",
@@ -489,8 +528,8 @@ class XYZRemapModal extends React.Component {
                         />
 
                         <RaisedButton
-                            onClick = { () => this.setState({ ZLowerRange: (this.state.ZLowerRange == -180 ? 180 : -180), ZUpperRange: (this.state.ZUpperRange == -180 ? 180 : -180)  }) }
-                            label = { <i className = { this.state.ZLowerRange == -180 ? "fa fa-sort-alpha-desc" : "fa fa-sort-alpha-asc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
+                            onClick = { () => this.setState({ ZLowerRange: (this.state.ZLowerRange == 0 ? 360 : 0), ZUpperRange: (this.state.ZUpperRange == 360 ? 0 : 360)  }) }
+                            label = { <i className = { this.state.ZLowerRange == 0 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
                                 margin: "2px 12px 0px 3px",
                                 minWidth: "37px",
@@ -544,6 +583,11 @@ class XYZRemapModal extends React.Component {
 export const editModalDisplay = (XYZModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     XYZModal,
+});
+
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
 });
 
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { makeServerCall } from './ServerCallHelper.js';
+import { guidGenerator } from './GeneralFunctions.js';
 import Flexbox from 'flexbox-react';
 import { Card, CardText } from 'material-ui/Card';
 import Select from 'react-select';
-import ReactQuill from 'react-quill';
-import theme from 'react-quill/dist/quill.snow.css'; // Dont remove theme, although its not explicitly used, it's implicitly used by ReactQuill for the snow theme!
 import Divider from 'material-ui/Divider';
 import ComponentLoadMask from './ComponentLoadMask.js';
+import Twilio from 'twilio-chat';
 import './General.css';
 
 
@@ -17,7 +18,14 @@ class UserFeed extends React.Component {
 
     state = {
         loadMask: true,
-        teamSelectValue: "University of Notre Dame"
+        token: null,
+        chatClient: null,
+        channelClient: null,
+        chatReady: false,
+        messages: [],
+        //teamSelectValue: "University of Notre Dame",
+        channelName: "TestingChannel",
+        messageBody: ""
     }
 
 
@@ -25,17 +33,115 @@ class UserFeed extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
 	componentDidMount() {
+
+        var institution = this.props.userInfo.institutionDir.split("/");
+        
+        if (institution.length > 1) {
+            this.setState({ channelName: institution[institution.length -2] });
+        }
+        else {
+            this.setState({ channelName: "Institution" + this.props.userInfo.Institution });
+        }
+
         var context = this;
 
-        // Make server call to grab recent views
-        //makeServerCall(something here),
-        //    function (responseText) { 
+        makeServerCall("token?userInfo=" + context.props.userInfo.Name + "|SPLITTER|" + context.props.userInfo.Email,
+            function (responseText) { 
+                var chat = new Twilio(responseText);
 
-                // Post the new data to the state and hide the window load-mask
-                context.setState({ loadMask: false });
-        //   }
-        //);
+                debugger;
+
+                chat.initialize().then(context.clientInitiated.bind(context));
+                
+                context.setState({ token: responseText, chatClient: chat });
+            }
+        );
 	}
+
+    clientInitiated = () => {
+        this.setState({ chatReady: true }, () => {
+        this.state.chatClient.getChannelByUniqueName(this.state.channelName)
+            .then(channel => {
+                debugger;
+                if (channel) {
+                    this.setState({ channelClient: channel });
+                    return channel;
+                }
+            })
+            .catch(err => {
+                debugger;
+                if (err.body.code === 50300) {
+                    return this.state.chatClient.createChannel({
+                        uniqueName: this.state.channelName
+                    });
+                }
+            })
+            .then(channel => {
+                //console.log("\n\n\n\n\nMEMBERS:");
+                //channel.getMembers().then(members => { console.log(members) });
+                debugger;
+                this.setState({ channelClient: channel });
+                channel.getMembers()
+                .then(members => {
+                    debugger;
+                    var shouldJoin = true;
+                    for (var i = 0; i < members.length; i++) {
+                        if (members[i].state.identity == (this.props.userInfo.Name + "|SPLITTER|" + this.props.userInfo.Email)) {
+                            shouldJoin = false;
+                        }
+                    }
+
+                    if (shouldJoin) {
+                        return channel.join();
+                    }
+                })
+            })
+            .then(() => {
+                debugger;
+                this.state.channelClient.getMessages().then(this.messagesLoaded);
+                this.state.channelClient.on('messageAdded', this.messageAdded);
+            });
+        });
+    };
+
+
+    scrollToBottomChat() {
+        var objDiv = document.getElementById("chatArea");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
+    
+
+    messagesLoaded = messagePage => {
+        debugger;
+        var messages = messagePage.items;
+        /*
+        if (messages.length > 100) {
+            messages = messages.slice(messages.length - 100);
+        }
+        */
+        this.setState({ messages: messages, loadMask: false }, () => this.scrollToBottomChat());
+        //console.log("MESSAGES:");
+        //console.log(messages);
+    };
+
+    messageAdded = message => {
+        debugger;
+        this.setState((prevState, props) => ({
+            messages: [...prevState.messages, message]
+        }), () => this.scrollToBottomChat());
+    };
+
+    checkEnter(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+
+            debugger;
+            
+            this.state.channelClient.sendMessage(this.state.messageBody);
+
+            this.setState({ messageBody: "" });
+        }
+    }
 
 
     /**
@@ -54,22 +160,9 @@ class UserFeed extends React.Component {
 			return({ label: value, value: value });
 		});
 
-        var postList = [["Mark Sloan", "./Res/Img/mark.png", "CEO", "Lunch is on me everyone!"], 
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "Marwane & Aditya are the best! Sorry for messing with your desks!"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "I think the office is haunted, the 'Ed' keeping moving by itself..."],
-                        ["Mark Sloan", "./Res/Img/mark.png", "CEO", "I need to make a care package for my son, daily pictures of my dog to make sure he doesnt forget."],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "Day 56, still waiting for a day to pass without someone making awkward eye contact through the window."],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "1"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "2"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "3"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "4"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "5"],
-                        ["Bradley Lewis", "./Res/Img/brad.png", "3D Dev", "6"],
-                        ];
-
         var context = this;
 
-        var posts = postList.map( function(post) {
+        var posts = this.state.messages.map( function(post) {
             return (
                 <Card 
                     containerStyle = {{ padding: "0px", borderRadius: "10px" }} 
@@ -77,31 +170,40 @@ class UserFeed extends React.Component {
                         backgroundColor: context.props.settings.colors.general.lightBubble, 
                         borderRadius: "10px", 
                         paddingBottom: "2px", 
-                        marginTop: (post === postList[0] ? "0px" : "7px") 
+                        marginBottom: "7px"
                     }} 
-                    key = { post } 
+                    key = { guidGenerator() } 
                 >
                     <CardText style = {{ padding: "5px", borderRadius: "10px" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
 
-                            <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } />
+                            {/* <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } /> */}
  
                             <Flexbox flexDirection = "column" style = {{ width: "100%" }} >
                                 <Flexbox style = {{ height: "100%" }} > 
-                                    {post[3]}
+                                    <div style = {{ wordBreak: "break-word" }} ><span style = {{ fontWeight: "bold" }} >{post.state.author.split("|SPLITTER|")[0]}:</span> &nbsp; {post.state.body}</div>
                                 </Flexbox>
 
-                                <Divider style = {{ marginBottom: "5px" }} />
+                                <Divider style = {{ marginBottom: "3px", backgroundColor: "#b9b9b9" }} />
 
-                                <Flexbox flexDirection = "row" minWidth = "100%" className = "noselect" >
+                                <Flexbox flexDirection = "row" minWidth = "100%" className = "noselect" style = {{ margin: "-2px 0px -1px 0px" }} >
 
-                                        <i className = "fa fa-comments" style = {{ fontSize: "17px", marginRight: "15px" }} />
-                                        <i className = "fa fa-thumbs-up" style = {{ fontSize: "17px",marginRight: "25px" }} />
-                                        <div> 9/5/2017 </div>
+                                    {/* <i className = "fa fa-comments" style = {{ fontSize: "17px", marginRight: "15px" }} /> */}
+                                    {/* <i className = "fa fa-thumbs-up" style = {{ fontSize: "17px",marginRight: "25px" }} /> */}
+                                    <div style = {{ margin: "0px 15px 0px 0px" }} > {(post.state.dateUpdated.getMonth() + 1) + "/" + post.state.dateUpdated.getDate() + "/" + post.state.dateUpdated.getFullYear()} </div>
 
                                     <Flexbox style = {{ width: "100%" }} > 
                                         <div style = {{ width: "100%", textAlign: "right" }} > 
-                                            - { post[0] }
+                                            {post.state.dateUpdated.getHours() > 12 ? 
+                                                (post.state.dateUpdated.getHours() - 12) + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'pm'
+                                                :
+                                                (post.state.dateUpdated.getHours() == 12 ? 
+                                                    12 + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'pm'
+                                                    :
+                                                    post.state.dateUpdated.getHours() + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'am'
+                                                )
+                                            }
+
                                         </div>
                                     </Flexbox>
 
@@ -133,11 +235,13 @@ class UserFeed extends React.Component {
                     </div>
                 </div>
 
-                <div style = {{ height: "300px", display: (this.state.loadMask ? "" : "none") }} >
+                <div style = {{ height: "80%", display: (this.state.loadMask ? "" : "none") }} >
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
                 <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px", display: (this.state.loadMask ? "none" : "") }}  > 
+
+                    {/*
                     <Select 
                         simpleValue
                         clearable = { false }
@@ -147,6 +251,7 @@ class UserFeed extends React.Component {
                         style = {{ margin: "0px 0px 7px 0px" }}
                         className = "noselect"
                     />
+                    */}
                 
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
                         <div
@@ -155,77 +260,26 @@ class UserFeed extends React.Component {
                                 height: "100%",
                                 width: "100%",
                                 borderRadius: "2px",
-                                overflowY: "auto",
+                                overflowY: "scroll",
                             }}
                             className = "customScroll"
+                            id = "chatArea"
                         >
                             {posts}
 
                         </div>
                     </Flexbox>
 
-                    <div 
-                        id = "toolbar" 
-                        style = {{ 
-                            marginTop: "7px", 
-                            backgroundColor: this.props.settings.colors.general.darkerBubble, 
-                            borderTopRightRadius: "3px", 
-                            borderTopLeftRadius: "3px" 
-                        }} 
-                    >
-                        <Flexbox flexDirection = "row" >
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-italic"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-underline"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-strike"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-list" value = "bullet"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-align"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-align" value = "center"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-align" value = "right"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "ql-link"></button>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "100%" }} > 
-                                <button className = "fa fa-cube" onClick = { () => console.log("custom clicked") } ></button>
-                            </Flexbox>
-
-                        </Flexbox>
-                    </div>
-
-                    <ReactQuill theme = "snow" modules = {{ toolbar: '#toolbar' }} >
-                        <div 
-                            className = "my-editing-area" 
-                            style = {{ 
-                                height: "150px", 
-                                overflow: "auto", 
-                                backgroundColor: this.props.settings.colors.general.lighterBubble, 
-                                borderBottomRightRadius: "3px", 
-                                borderBottomLeftRadius: "3px" 
-                            }} 
-                        />
-                    </ReactQuill>
+                    <textarea 
+                        id = "messageBodyHolder" 
+                        placeholder = "Type your message" 
+                        rows = "5" 
+                        value = { this.state.messageBody } 
+                        onKeyDown = { (e) => this.checkEnter(e) } 
+                        onChange = { (e) => this.setState({ messageBody: e.target.value}) } 
+                        style = {{ borderRadius: "5px", padding: "10px", marginTop: "10px", backgroundColor: "#e7e7fd" }} 
+                    ></textarea>
+                    
                 </Flexbox>
 
             </Flexbox>

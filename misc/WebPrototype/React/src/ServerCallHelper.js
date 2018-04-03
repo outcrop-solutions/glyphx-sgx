@@ -99,7 +99,7 @@ export function checkUserLoggedIn(onServerError) {
     xmlHttp.send(null);
 
     if (xmlHttp.status === 200) {
-        console.log(xmlHttp.responseText);
+        //console.log(xmlHttp.responseText);
         return xmlHttp.responseText;
     }
 

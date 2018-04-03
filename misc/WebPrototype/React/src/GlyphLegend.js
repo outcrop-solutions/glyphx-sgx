@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { makeServerCall } from './ServerCallHelper.js';
 import FontIcon from 'material-ui/FontIcon';
 import Rnd from 'react-rnd';
 import './statisticModal.css';
@@ -11,17 +12,68 @@ import './statisticModal.css';
  */
 class GlyphLegend extends React.Component {
 
+    state = {
+        width: 300,
+        height: 200,
+        imgPath: ''
+    }
+
+    componentDidMount() {
+        var context = this;
+
+        debugger;
+        
+        makeServerCall(window.encodeURI('getLegendURL/' + this.props.VizParams.sdtPath ),
+            function (responseText) { 
+
+                debugger;
+                //console.log("RESPONSE TEXT");
+                //console.log(responseText);
+
+                //var imgPath = "../" + responseText.split("/WebViewer/")[1];
+
+                //console.log(imgPath);
+
+                context.setState({ imgPath: responseText });
+            }
+        );
+        
+        
+    }
+
     render() {
+
+        //var imgsrc = window.SERVER_URL + "getLegendImg/" + this.props.VizParams.sdtPath;
+        //var imgsrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.props.VizParams.sdtPath);
+
+        var imgsrc = '';
+
+        if (this.state.imgPath != '') {
+            imgsrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.state.imgPath);
+        }
+
+        debugger;
+
         return (
             <Rnd 
-                default = {{ x: 10, y: 10, width: 324, height: 233 }}
+                default = {{ x: 60, y: 10, width: this.state.width, height: this.state.height }}
+                minWidth = { 150 }
+                minHeight = { 100 }
                 z = { 1000 }
-                enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+                enableResizing = {{ top: false, right: false, bottom: false, left: false, topRight: false, bottomRight: true, bottomLeft: true, topLeft: false }}
                 style = {{
                     display: ( this.props.legendDisplay ? "block" : "none" )
                 }}
                 onDragStart = { () => this.props.handleCorrection(true) }
                 onDragStop = { () => this.props.handleCorrection(false) }
+                onResizeStart = { () => this.props.handleCorrection(true) }
+                onResizeStop = { () => this.props.handleCorrection(false) }
+                onResize = {(e, direction, ref, delta, position) => {
+                    this.setState({
+                        width: (ref.offsetHeight * 1.5),
+                        height: ref.offsetHeight
+                    });
+                }}
                 bounds = "parent"
             >
                 <div className = "statisticsBox" style = {{ height: "inherit", borderRadius: "7px" }} >
@@ -35,12 +87,15 @@ class GlyphLegend extends React.Component {
                         />
                     </div>
 
-                    <div style = {{ width: "320px", margin: "0 auto" }} >
+                    <div style = {{ width: "100%", height: "100%", padding: "3px" }} >
+                        
                         <img 
-                            src = "./Res/Img/SampleLegend.png" 
-                            style = {{ width: '320px', borderBottomRightRadius: "7px", borderBottomLeftRadius: "7px", marginTop: "-1px" }} 
+                            //src = { this.state.imgPath } 
+                            src = { imgsrc } 
+                            style = {{ width: '100%', height: "calc(100% - 26px)", borderRadius: "3px" }} 
                             alt = "Legend" 
-                            className = "legendImage" 
+                            className = "legendImage noselect" 
+                            draggable = { false } 
                         />
                     </div>
 
@@ -68,6 +123,8 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
     legendDisplay: state.filterState.ModalDisplay.legendModal,
+    VizParams: state.filterState.VizParams,
+    userInfo: state.filterState.UserInfo,
   }
 }
 

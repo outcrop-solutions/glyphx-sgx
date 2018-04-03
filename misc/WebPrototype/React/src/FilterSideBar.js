@@ -30,7 +30,10 @@ class FilterSideBar extends React.Component {
                 scrollToElement: this.scrollToCollapsibleElement
 			},
             topViewVisible: true,
-            filterIDs: null
+            filterIDs: null,
+            initialX: '',
+            initialY: '',
+            initialZ: ''
         };
     };
 
@@ -41,11 +44,15 @@ class FilterSideBar extends React.Component {
             collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
         }
+
         this.loadVisualization();
    };
 
    loadVisualization() {
         var context = this;
+
+        debugger;
+
         makeServerCall('loadVisualization',
             function(res,b,c) {
             // Hide the loadmask.
@@ -60,6 +67,21 @@ class FilterSideBar extends React.Component {
                     context.setState({ tableData: result });
                     context.props.dispatch(setStatData(result));
                     context.props.updateViz(res.glyphViewerKey);
+
+                    makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
+                        function (responseText) { 
+                            var response = JSON.parse(responseText);
+
+                            debugger;
+
+                            context.setState({ 
+                                initialX: response.initialX,
+                                initialY: response.initialY, 
+                                initialZ: response.initialZ,
+                            });
+                        }
+                    );
+                    
                 }
                 else {
                     // 0 records matched.
@@ -121,10 +143,17 @@ class FilterSideBar extends React.Component {
                     debugger;
                     if (response.data.length > 0) {
                         var result = context.convertToCompatibleDataObject(response.data);
+
+                        for (var i = 0; i < context.props.ShowAllTables.length; i++) {
+                            result[context.props.ShowAllTables[i]] = context.props.UndoRedoHistory.history[0].tableData[context.props.ShowAllTables[i]];
+                        }
+
                         context.setState({ tableData: result }, () => resolve(result));
                         context.props.dispatch(setStatData(result));
                     }
-                    
+                    else {
+                        resolve(response);
+                    }
                 }
             );
         });
@@ -396,6 +425,10 @@ class FilterSideBar extends React.Component {
                         setFilterIDs = { this.setFilterIDs.bind(this) }
                         tableData = { this.state.tableData } 
                         setTableData = { this.setTableData.bind(this) }
+                        handleDraggableCorrection = { this.props.handleDraggableCorrection }
+                        initialX = { this.state.initialX }
+                        initialY = { this.state.initialY }
+                        initialZ = { this.state.initialZ }
                     />
 
                 </Collapsible>
@@ -458,7 +491,9 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     storedViews: state.filterState.StoredViews,
     VizParams: state.filterState.VizParams,
-    filterObj: state.filterState.Filter
+    filterObj: state.filterState.Filter,
+    UndoRedoHistory: state.filterState.UndoRedoHistory,
+    ShowAllTables: state.filterState.ShowAllTables
   }
 };
 

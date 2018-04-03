@@ -1,6 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import { Card, CardText } from 'material-ui/Card';
+import Flexbox from 'flexbox-react';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Toggle from 'material-ui/Toggle';
+import Tooltip from 'rc-tooltip';
+import Slider from 'rc-slider/lib/Slider'; 
+import 'rc-slider/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
 
 
 /**
@@ -11,20 +18,20 @@ class FloatingToggleButtons extends React.Component {
 
 	state = {
 		fullScreenMode: false,
-        axisVisible: true
+        axisVisible: true,
+        smallObjectWindow: false,
+        smallObjectToggle: true,
+        smallObjectValue: 200
     };
+
+    
 
 
     /**
 	 * React built-in which is called when component mounts
 	 */
 	componentDidMount() {
-        // Check if he axis is visible and set axisVisible appropriately in the state
-        //var iframe = document.getElementById('GlyphViewer').contentWindow;
-        //this.setState({ axisVisible: iframe.isAxisVisible() });
-
-		// Mouseup listener used to handle click drag selection
-		//document.onkeydown = this.handleKeyDown.bind(this);
+        
 	}
 	
 
@@ -35,6 +42,13 @@ class FloatingToggleButtons extends React.Component {
 		// Removing listener so it doesnt linger across the site
 		//document.onkeydown = null;
 	}
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.iframeLoaded) {
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            iframe.setSuperImposed(this.state.smallObjectToggle, this.state.smallObjectValue);
+        }
+    }
 
 
     /*
@@ -62,6 +76,7 @@ class FloatingToggleButtons extends React.Component {
             floatingToggleButton.classList.add('fa-caret-down');
             floatingToggleButton.style.margin = "2px 0px 0px 0px";
             buttonElement.style.backgroundColor = this.props.settings.colors.overviewButtonsColor.background;
+            this.setState({ smallObjectWindow: false });
         }
         else {
             floatingToggleButton.classList.remove('fa-caret-down');
@@ -178,94 +193,231 @@ class FloatingToggleButtons extends React.Component {
 	 */
     toggleLegend() {
 		if (this.props.legendDisplay) {
-            this.props.dispatch(editModalDisplay(false));
+            this.props.dispatch(editModalDisplay(false, null));
         }
 
         else {
-            this.props.dispatch(editModalDisplay(true));
+            this.props.dispatch(editModalDisplay(true, null));
         }
     }
 
+    onSmallObjectToggle() {
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        iframe.setSuperImposed(!this.state.smallObjectToggle, this.state.smallObjectValue);
 
-    toggleAxis() {
-        if (document.getElementById('GlyphViewer')) {
-            document.getElementById('GlyphViewer').contentWindow.postMessage({action: 'toggleAxis'}, '*');
-            this.state.axisVisible ? this.setState({ axisVisible: false }) : this.setState({ axisVisible: true });
-        }
+        this.setState({ smallObjectToggle: !this.state.smallObjectToggle });
     }
 
-	
+    onAfterSlide() {
+        this.props.handleDraggableCorrection(false);
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        iframe.setSuperImposed(this.state.smallObjectToggle, this.state.smallObjectValue);
+    }
+
+
     render() {
         return (
             <div>
                 {/* Main Floating Button */}
-                <FloatingActionButton 
-                    id = "collapsibleFloatingButton"
-                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                    style = {{
-                        top: '56px',
-                        left: '5px',
-                        position: 'absolute',
-                        zIndex: '10',
+
+                <Card 
+                    style = {{ 
+                        display: (this.state.smallObjectWindow ? "" : "none"),
+                        position: "absolute", 
+                        backgroundColor: "#fff", 
+                        width: "175px", 
+                        height: "38px", 
+                        top: "257px", 
+                        left: "55px", 
+                        borderRadius: "5px" 
                     }} 
-                    mini = { true }
-                    onClick = { this.openCloseFloatingMenu.bind(this) }
+                    containerStyle = {{ padding: "0px", borderRadius: "5px" }}
                 >
-                    <i 
-                        id = "floatingToggleButton" 
-                        className = "fa fa-caret-down" 
+                    <CardText style = {{ padding: "3px 8px", borderRadius: "5px" }} >
+                        <div>
+                            <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
+                                <Flexbox style = {{ width: "40%", margin: "4px 0px 0px -9px" }} >
+                                    <Toggle 
+                                        toggled = { this.state.smallObjectToggle } 
+                                        onToggle = { () => this.onSmallObjectToggle() }
+                                        trackStyle = {{ height: "12px", marginTop: "2px", width: "84%" }}
+                                        trackSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleTrack }}
+                                        thumbStyle = {{ height: "17px", width: "17px", top: "3px" }}
+                                        thumbSwitchedStyle = {{ backgroundColor: this.props.settings.colors.rangeColor.toggleCircle, left: "40%" }}
+                                    />
+                                </Flexbox>
+
+                                <Flexbox style = {{ width: "30%", margin: "5px 0px 0px" }} >
+                                    <div style = {{ fontWeight: "bold", fontSize: "18px", textAlign: "center" }} > {this.state.smallObjectValue} </div>
+                                </Flexbox>
+
+                                <Flexbox style = {{ width: "60%", margin: "7px 7px 0px 0px" }} >
+                                    <Slider
+                                        min = { 25 }
+                                        max = { 350 }
+                                        step = { 1 }
+                                        value = { this.state.smallObjectValue }
+                                        onChange = { (e) => this.setState({ smallObjectValue: e }) }
+                                        onBeforeChange = { () => this.props.handleDraggableCorrection(true) }
+                                        onAfterChange = { () => this.onAfterSlide() }
+                                        railStyle = {{ backgroundColor: "#d2d2d2" }}
+                                        trackStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderTrack }] }
+                                        handleStyle = { [{ backgroundColor: this.props.settings.colors.rangeColor.sliderCircle, borderColor: this.props.settings.colors.rangeColor.sliderCircle }] }
+                                    />
+                                </Flexbox>
+                            </Flexbox>
+                        </div>
+                    </CardText>
+                </Card>
+
+                <Tooltip
+                    placement = 'right'
+                    mouseEnterDelay = { 0.5 }
+                    mouseLeaveDelay = { 0.15 }
+                    destroyTooltipOnHide = { false }
+                    trigger = { Object.keys( {hover: 1} ) }
+                    overlay = { 
+                        <div> 
+                            Expand Toolbar Options
+                        </div> 
+                    }
+                >
+                    <FloatingActionButton 
+                        id = "collapsibleFloatingButton"
+                        backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                         style = {{
-                            fontSize: '1.8em',
-                            color: this.props.settings.colors.collapsibleColor.mainIcon,
-                            //transform: 'rotateZ(90deg)',
-                            margin: "2px 0px 0px 0px"
-                        }}
-                    /> 
-                </FloatingActionButton>
+                            top: '56px',
+                            left: '5px',
+                            position: 'absolute',
+                            zIndex: '10',
+                        }} 
+                        mini = { true }
+                        onClick = { this.openCloseFloatingMenu.bind(this) }
+                    >
+                        <i 
+                            id = "floatingToggleButton" 
+                            className = "fa fa-caret-down" 
+                            style = {{
+                                fontSize: '1.8em',
+                                color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                //transform: 'rotateZ(90deg)',
+                                margin: "2px 0px 0px 0px"
+                            }}
+                        /> 
+                    </FloatingActionButton>
+                </Tooltip>
 
                 {/* Mini Floating Buttons */}
-                <FloatingActionButton 
-                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                    style = { styles.floatingMiniStyles } 
-                    className = "toggleOptionsMenuItems"
-                    mini = { true }
-                    onClick = { this.toggleFullScreenMode.bind(this) }
+                <Tooltip
+                    placement = 'right'
+                    mouseEnterDelay = { 0.5 }
+                    mouseLeaveDelay = { 0.15 }
+                    destroyTooltipOnHide = { false }
+                    trigger = { Object.keys( {hover: 1} ) }
+                    overlay = { 
+                        <div> 
+                            Fullscreen Mode
+                        </div> 
+                    }
                 >
-                    <i className = "fa fa-arrows-alt" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
-                </FloatingActionButton>
+                    <FloatingActionButton 
+                        backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                        style = { styles.floatingMiniStyles } 
+                        className = "toggleOptionsMenuItems"
+                        mini = { true }
+                        onClick = { this.toggleFullScreenMode.bind(this) }
+                    >
+                        <i className = "fa fa-arrows-alt" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                    </FloatingActionButton>
+                </Tooltip>
 
-                <FloatingActionButton 
-                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                    style = { styles.floatingMiniStyles } 
-                    className = "toggleOptionsMenuItems"
-                    mini = { true }
-                    onClick = { this.toggleLegend.bind(this) }
+                <Tooltip
+                    placement = 'right'
+                    mouseEnterDelay = { 0.5 }
+                    mouseLeaveDelay = { 0.15 }
+                    destroyTooltipOnHide = { false }
+                    trigger = { Object.keys( {hover: 1} ) }
+                    overlay = { 
+                        <div> 
+                            View Legend
+                        </div> 
+                    }
                 >
-                    <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -3px" }} >
-                        <i className = "fa fa-cube fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "11px 0px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
-                        <i 
-                            className = { this.props.legendDisplay ? "fa fa-search-minus fa-stack-1x" : "fa fa-search-plus fa-stack-1x" } 
-                            style = {{ fontSize: '1rem', margin: "-10px 0px 0px 8px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
-                        />
-                    </span>
-                </FloatingActionButton>
+                    <FloatingActionButton 
+                        backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                        style = { styles.floatingMiniStyles } 
+                        className = "toggleOptionsMenuItems"
+                        mini = { true }
+                        onClick = { this.toggleLegend.bind(this) }
+                    >
+                        <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -3px" }} >
+                            <i className = "fa fa-cube fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "11px 0px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                            <i 
+                                className = { this.props.legendDisplay ? "fa fa-search-minus fa-stack-1x" : "fa fa-search-plus fa-stack-1x" } 
+                                style = {{ fontSize: '1rem', margin: "-10px 0px 0px 8px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                            />
+                        </span>
+                    </FloatingActionButton>
+                </Tooltip>
 
-                <FloatingActionButton 
-                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                    style = { styles.floatingMiniStyles } 
-                    className = "toggleOptionsMenuItems"
-                    mini = { true }
-                    onClick = { this.toggleAxis.bind(this) }
+                <Tooltip
+                    placement = 'right'
+                    mouseEnterDelay = { 0.5 }
+                    mouseLeaveDelay = { 0.15 }
+                    destroyTooltipOnHide = { false }
+                    trigger = { Object.keys( {hover: 1} ) }
+                    overlay = { 
+                        <div> 
+                            Change Axes
+                        </div> 
+                    }
                 >
-                    <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -5px" }} >
-                        <i className = "fa fa-arrows-h fa-stack-3x" style = {{ fontSize: '1.2rem', margin: "14px -7px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
-                        <i className = "fa fa-arrows-v fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "8px -3px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
-                        <i 
-                            className = { this.state.axisVisible ? "fa fa-eye fa-stack-1x" : "fa fa-eye-slash fa-stack-1x" } 
-                            style = {{ fontSize: '0.8rem', margin: "-6px 0px 0px 7px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
-                        />
-                    </span>
-                </FloatingActionButton>
+                    <FloatingActionButton 
+                        backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                        style = { styles.floatingMiniStyles } 
+                        className = "toggleOptionsMenuItems"
+                        mini = { true }
+                        onClick = { () => this.props.dispatch(editModalDisplay(null, true)) }
+                    >
+                        <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -5px" }} >
+                            <i className = "fa fa-arrows-h fa-stack-3x" style = {{ fontSize: '1.2rem', margin: "14px -7px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                            <i className = "fa fa-arrows-v fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "8px -3px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                            <i 
+                                className = { "fa fa-map fa-stack-1x" } 
+                                style = {{ fontSize: '0.7rem', margin: "-8px 0px 0px 8px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                            />
+                        </span>
+                    </FloatingActionButton>
+                </Tooltip>
+
+                <Tooltip
+                    placement = 'right'
+                    mouseEnterDelay = { 0.5 }
+                    mouseLeaveDelay = { 0.15 }
+                    destroyTooltipOnHide = { false }
+                    trigger = { Object.keys( {hover: 1} ) }
+                    overlay = { 
+                        <div> 
+                            Small Object Culling
+                        </div> 
+                    }
+                >
+                    <FloatingActionButton 
+                        backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                        style = { styles.floatingMiniStyles } 
+                        className = "toggleOptionsMenuItems"
+                        mini = { true }
+                        onClick = { () => this.setState({ smallObjectWindow: !this.state.smallObjectWindow }) }
+                    >
+                        <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -3px" }} >
+                            <i className = "fa fa-cubes fa-stack-2x" style = {{ fontSize: '1rem', margin: "9px 0px 0px -2px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                            <i 
+                                className = "fa fa-arrows-v fa-stack-1x"
+                                style = {{ fontSize: '1rem', margin: "-3px 0px 0px 12px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                            />
+                        </span>
+                    </FloatingActionButton>
+                </Tooltip>
 
             </div>
         );
@@ -290,9 +442,10 @@ const styles = {
 /**
  * Constants defined to make dispatching for the redux store consistent
  **/
-export const editModalDisplay = (legendModal) => ({
+export const editModalDisplay = (legendModal, XYZModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     legendModal,
+    XYZModal
 });
 
 

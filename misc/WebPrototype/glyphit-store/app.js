@@ -7,6 +7,13 @@ const session = require('express-session');
 const mysql = require('sync-mysql');
 const util = require('util');
 const crypto = require('crypto');
+const https = require('https');
+const fs = require('fs');
+
+var options = {
+    key: fs.readFileSync('/home/ec2-user/glyphit-store/privateKey.key'),
+    cert: fs.readFileSync('/home/ec2-user/glyphit-store/certificate.crt')
+};
 
 mySqlConnection = new mysql({
     host     : 'sgxinstance.cqu1pnqua5at.us-west-2.rds.amazonaws.com',
@@ -225,6 +232,10 @@ app.get('/success', (req, res) => {
                             ts = Math.trunc((((new Date().getTime()/1000)/86400)+182)*86400);
                         }
 
+                        if (req.session.user.PROMO == "3MONTH1079854678") {
+                            ts = Math.trunc((((new Date().getTime()/1000)/86400)+92)*86400);
+                        }
+
 						var text = userID.toString().valueOf() + "1".valueOf() + ts.toString().valueOf();
 						var hashCode = crypto.createHash('md5').update(text).digest("hex");
 
@@ -242,6 +253,10 @@ app.get('/success', (req, res) => {
 
                         if (req.session.user.PROMO == "ND40120VERMA") {
                             insertLicenseValues = userID + ",1,182,'"+ key + "'";
+                        }
+
+                        if (req.session.user.PROMO == "3MONTH1079854678") {
+                            insertLicenseValues = userID + ",1,92,'"+ key + "'";
                         }
 
                         mySqlConnection.query("Insert into UsageLicenses Values (" + insertLicenseValues + ")");
@@ -375,6 +390,10 @@ app.get('/freePromoCode', (req, res) => {
             ts = Math.trunc((((new Date().getTime()/1000)/86400)+182)*86400);
         }
 
+        if (uInfo.PROMO == "3MONTH1079854678") {
+            ts = Math.trunc((((new Date().getTime()/1000)/86400)+92)*86400);
+        }
+
 		var text = userID.toString().valueOf() + "1".valueOf() + ts.toString().valueOf();
 		var hashCode = crypto.createHash('md5').update(text).digest("hex");
 
@@ -392,6 +411,10 @@ app.get('/freePromoCode', (req, res) => {
 
         if (uInfo.PROMO == "ND40120VERMA") {
             insertLicenseValues = userID + ",1,182,'"+ key + "'";
+        }
+
+        if (uInfo.PROMO == "3MONTH1079854678") {
+            insertLicenseValues = userID + ",1,92,'"+ key + "'";
         }
 
         mySqlConnection.query("Insert into UsageLicenses Values (" + insertLicenseValues + ")");
@@ -450,4 +473,12 @@ app.get('/download', function(req, res) {
 app.get('/cancel', (req, res) => res.render('cancel'));
 
 
-app.listen(5000, () => console.log('Server Started'));
+//app.listen(5000, () => console.log('Server Started'));
+
+https.createServer(options, app).listen(443);
+
+/*
+var server = https.createServer(options, app).listen(5000, function(){
+    console.log("server started");
+});
+*/

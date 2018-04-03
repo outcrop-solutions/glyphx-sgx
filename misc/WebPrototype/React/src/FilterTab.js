@@ -114,7 +114,7 @@ class FilterTabs extends React.Component {
         return (
             <div>
                 <div style = {{ margin: "-5px 0px -4px" }} >
-                    <Tabs onChange = { (value) => this.handleChange(value, this) } value = { this.state.slideIndex } >
+                    <Tabs onChange = { (value) => this.handleChange(value, this) } value = { this.state.slideIndex } inkBarStyle = {{ display: "none" }} >
                         <Tab 
                             label = { 
                                 <div style =  {{ width: "100%", overflow: "hidden", margin: "1px 0px 0px" }} >
@@ -150,6 +150,16 @@ class FilterTabs extends React.Component {
                         }}           
                     >
                         <div id = { this.state.tableID } style = {{ maxHeight: "393px", overflow: "hidden" }} >
+                            <div 
+                                style = {{ 
+                                    backgroundColor: "rgba(128, 128, 128, 0.36)", 
+                                    height: "100%", 
+                                    position: "absolute", 
+                                    width: "100%", 
+                                    zIndex: "10", 
+                                    display: (this.props.filterBusy ? "" : "none") 
+                                }} 
+                            ></div>
                             <FilterTable 
                                 internalColName = { this.props.internalColName } 
                                 displayName = { this.props.displayName } 
@@ -160,6 +170,8 @@ class FilterTabs extends React.Component {
                                 tableID = { this.state.tableID }
                                 setFilterIDs = { this.props.setFilterIDs }
                                 fullTableData = { this.props.fullTableData }
+                                setTableData = { this.props.setTableData }
+                                setFilterBusy = { this.props.setFilterBusy }
                             />
                         </div>
 
@@ -174,6 +186,16 @@ class FilterTabs extends React.Component {
                                 marginTop: "5px"
                             }}
                         >
+                            <div 
+                                style = {{ 
+                                    backgroundColor: "rgba(128, 128, 128, 0.36)", 
+                                    height: "100%", 
+                                    position: "absolute", 
+                                    width: "100%", 
+                                    zIndex: "10", 
+                                    display: (this.props.filterBusy ? "" : "none") 
+                                }} 
+                            ></div>
                             {this.props.filterList[this.props.id].type === "Number" ? 
                                 <NumberRangeTable 
                                     colName = { this.props.id } 
@@ -184,6 +206,7 @@ class FilterTabs extends React.Component {
                                     fullTableData = { this.props.fullTableData }
                                     setFilterIDs = { this.props.setFilterIDs }
                                     setTableData = { this.props.setTableData }
+                                    setFilterBusy = { this.props.setFilterBusy }
                                 /> 
                                 : 
                                 (this.props.filterList[this.props.id].type === "Text" ? 
@@ -194,6 +217,7 @@ class FilterTabs extends React.Component {
                                         fullTableData = { this.props.fullTableData }
                                         setFilterIDs = { this.props.setFilterIDs }
                                         setTableData = { this.props.setTableData }
+                                        setFilterBusy = { this.props.setFilterBusy }
                                     /> 
                                     :  
                                     "TODO: Add Date Range Here"

@@ -1,0 +1,209 @@
+
+.funnel {
+    -webkit-transition: -webkit-transform .5s ease-in-out;
+       -moz-transition:    -moz-transform .5s ease-in-out;
+         -o-transition:      -o-transform .5s ease-in-out;
+        -ms-transition:     -ms-transform .5s ease-in-out;
+            transition:         transform .5s ease-in-out;
+}
+
+.frontSide {
+    transform: rotateY(0deg);
+}
+
+.backSide {
+    transform: rotateY(180deg);
+}
+
+.Card {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.Card .Card-Front, .Card .Card-Back {
+  text-align: center;
+}
+
+.Card .Card-Front {
+  position: relative;
+  z-index: 1;
+}
+
+.Card .Card-Front.Card-Back-Flip {
+  -webkit-animation:  back-flip-1 0.5s 1 forwards;
+  animation:          back-flip-1 0.5s 1 forwards;
+}
+
+@-webkit-keyframes back-flip-1 {
+  0% {
+    -webkit-transform:  rotateY(0deg);
+    transform:          rotateY(0deg);
+    z-index: 1;
+  }
+  50% {
+    -webkit-transform:  rotateY(90deg) perspective(15rem);
+    transform:          rotateY(90deg) perspective(15rem);
+    z-index: 1;
+  }
+  100% {
+    -webkit-transform:  rotateY(90deg);
+    transform:          rotateY(90deg);
+    z-index: -1;
+  }
+}
+
+@keyframes back-flip-1 {
+  0% {
+    -webkit-transform:  rotateY(0deg);
+    transform:          rotateY(0deg);
+    z-index: 1;
+  }
+  50% {
+    -webkit-transform:  rotateY(90deg) perspective(15rem);
+    transform:          rotateY(90deg) perspective(15rem);
+    z-index: 1;
+  }
+  100% {
+    -webkit-transform:  rotateY(90deg);
+    transform:          rotateY(90deg);
+    z-index: -1;
+  }
+}
+
+.Card .Card-Front.Card-Front-Flip {
+  -webkit-animation:  front-flip-1 0.5s 1 forwards;
+  animation:          front-flip-1 0.5s 1 forwards;
+}
+
+@-webkit-keyframes front-flip-1 {
+  0% {
+    -webkit-transform:  rotateY(-90deg);
+    transform:          rotateY(-90deg);
+    z-index: -1;
+  }
+  50% {
+    -webkit-transform:  rotateY(-90deg) perspective(15rem);
+    transform:          rotateY(-90deg) perspective(15rem);
+    z-index: -1;
+  }
+  100% {
+    -webkit-transform:  rotateY(0deg);
+    transform:          rotateY(0deg);
+    z-index: 1;
+  }
+}
+
+@keyframes front-flip-1 {
+  0% {
+    -webkit-transform:  rotateY(-90deg);
+    transform:          rotateY(-90deg);
+    z-index: -1;
+  }
+  50% {
+    -webkit-transform:  rotateY(-90deg) perspective(15rem);
+    transform:          rotateY(-90deg) perspective(15rem);
+    z-index: -1;
+  }
+  100% {
+    -webkit-transform:  rotateY(0deg);
+    transform:          rotateY(0deg);
+    z-index: 1;
+  }
+}
+
+.Card .Card-Back {
+  font-size: 0.9rem;
+  position: relative;
+  z-index: -1;
+  -webkit-transform:  rotateY(-90deg);
+  transform:          rotateY(-90deg);
+}
+
+.Card .Card-Back.Card-Back-Flip {
+  -webkit-animation:  back-flip-2 0.5s 1 forwards;
+  animation:          back-flip-2 0.5s 1 forwards;
+}
+
+@-webkit-keyframes back-flip-2 {
+  0% {
+    z-index: -1;
+  }
+  50% {
+    -webkit-transform:  rotateY(-90deg) perspective(15rem);
+    transform:          rotateY(-90deg) perspective(15rem);
+    z-index: -1;
+  }
+  100% {
+    -webkit-transform:  rotate(0deg);
+    transform:          rotate(0deg);
+    z-index: 1;
+  }
+}
+
+@keyframes back-flip-2 {
+  0% {
+    z-index: -1;
+  }
+  50% {
+    -webkit-transform:  rotateY(-90deg) perspective(15rem);
+    transform:          rotateY(-90deg) perspective(15rem);
+    z-index: -1;
+  }
+  100% {
+    -webkit-transform:  rotate(0deg);
+    transform:          rotate(0deg);
+    z-index: 1;
+  }
+}
+
+.Card .Card-Back.Card-Front-Flip {
+  -webkit-animation:  front-flip-2 0.5s 1 forwards;
+  animation:          front-flip-2 0.5s 1 forwards;
+}
+
+@-webkit-keyframes front-flip-2 {
+  0% {
+    -webkit-transform:  rotate(0deg);
+    transform:          rotate(0deg);
+    z-index: 1;
+  }
+  50% {
+    -webkit-transform:  rotateY(90deg) perspective(15rem);
+    transform:          rotateY(90deg) perspective(15rem);
+    z-index: 1;
+  }
+  100% {
+    -webkit-transform:  rotateY(90deg);
+    transform:          rotateY(90deg);
+    z-index: -1;
+  }
+}
+
+@keyframes front-flip-2 {
+  0% {
+    -webkit-transform:  rotate(0deg);
+    transform:          rotate(0deg);
+    z-index: 1;
+  }
+  50% {
+    -webkit-transform:  rotateY(90deg) perspective(15rem);
+    transform:          rotateY(90deg) perspective(15rem);
+    z-index: 1;
+  }
+  100% {
+    -webkit-transform:  rotateY(90deg);
+    transform:          rotateY(90deg);
+    z-index: -1;
+  }
+}
+
+.Cards {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}

@@ -26,6 +26,7 @@ class FilterSummaryView extends React.Component {
      **/
     shouldComponentUpdate(nextProps, nextState) {
         for (var colName in this.props.filterList) {
+            debugger;
             if (this.props.filterList[colName].selectedValues != nextProps.filterList[colName].selectedValues || this.props.filterList[colName].rangeList != nextProps.filterList[colName].rangeList) {
                 return true;
             }
@@ -96,10 +97,10 @@ class FilterSummaryView extends React.Component {
      * - ADCMT
      */
     applyFilter = () => {
-        console.log('Filter Applied');
+        //console.log('Filter Applied');
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
-        //var context = this;
+        var context = this;
 
         makeServerCall('applyFilters',
             function(result, b) {
@@ -124,6 +125,8 @@ class FilterSummaryView extends React.Component {
                 //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
 
                 iframe.filterGlyphs(tempRowIds);
+
+                context.props.dispatch( setTimer(new Date().getTime()) );
             },
             {post: true, 
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
@@ -188,7 +191,7 @@ class FilterSummaryView extends React.Component {
             }
 
             else if (filterType === "Date") {
-                console.log("Not implemented yet...");
+                //console.log("Not implemented yet...");
                 break;
             }
 
@@ -398,7 +401,7 @@ class FilterViewRow extends React.Component {
                         trigger = { Object.keys( {hover: 1} ) }
                         overlay = { <div> {this.props.view[3]} </div> }
                     >
-                        <span style = {{  wordWrap: "break-word" }} onClick = { () => console.log(this.props) } >
+                        <span style = {{  wordWrap: "break-word" }} >
                             {max}
                         </span>
                     </Tooltip>
@@ -422,6 +425,11 @@ export const removeFilterView = (colName) => ({
 export const editUndoRedoHistory = (undoRedoHistory) => ({
   type: 'UPDATE_HISTORY',
   undoRedoHistory
+});
+
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
 });
 
 

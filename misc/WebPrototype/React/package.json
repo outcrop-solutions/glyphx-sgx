@@ -8,7 +8,9 @@
     "flexbox-react": "^4.4.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-virtualized": "^9.18.0"
+    "react-virtualized": "^9.18.0",
+    "twilio": "^3.13.0",
+    "twilio-chat": "^2.1.0"
   },
   "peerDependencies": {
     "prop-types": "^15.5.7"
@@ -16,23 +18,21 @@
   "devDependencies": {
     "react-scripts": "^1.0.7",
     "font-awesome": "^4.7.0",
-    "material-ui": "^0.18.3",
+    "material-ui": "^0.20.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-alert": "^2.1.1",
     "rc-slider": "^8.1.2",
-    "react-collapsible": "^1.4.0",
+    "react-collapsible": "^2.0.4",
     "react-swipeable-views": "^0.12.3",
     "redux": "^3.7.0",
     "react-redux": "^5.0.5",
     "react-dual-listbox": "^1.1.0",
     "rc-tooltip": "^3.4.6",
-    "react-select": "^1.0.0-rc.5",
+    "react-select": "^1.2.1",
     "scroll-into-view-if-needed": "^1.1.0",
     "react-rnd": "^5.0.9",
     "react-router-dom": "^4.1.2",
-    "react-quill": "^1.1.0",
-    "react-styled-select": "^2.2.3-beta",
-    "bluebird": "3.5.1"
+    "react-styled-select": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

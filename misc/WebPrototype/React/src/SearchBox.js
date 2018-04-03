@@ -3,6 +3,8 @@ import Flexbox from 'flexbox-react';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
 
 
 /**
@@ -115,24 +117,37 @@ class SearchBox extends React.Component {
                 {/* Conditionally renders the collapse button */}
                 {this.props.collapseButton ? 
                     <Flexbox style = {{ width: "25%", margin: "0px 4px 0px 9px" }} > 
-                        <RaisedButton 
-                            label = "Collapse" 
-                            primary = { true } 
-                            buttonStyle = {{
-                                height: '30px',
-                                lineHeight: '30px',
-                                backgroundColor: this.props.settings.overviewButtonsColorBg,
-                            }} 
-                            labelStyle = {{
-                                fontSize: '13px',
-                                color: this.props.settings.overviewButtonsColorText
-                            }}
-                            overlayStyle = {{
-                                height: '30px',
-                                lineHeight: '30px',
-                            }}
-                            onClick = { (evt) => this.props.onCollapseAllClick(evt,this.props.pinned) }
-                        />
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Close all open columns
+                                </div> 
+                            }
+                        >
+                            <RaisedButton 
+                                label = "Collapse" 
+                                primary = { true } 
+                                buttonStyle = {{
+                                    height: '30px',
+                                    lineHeight: '30px',
+                                    backgroundColor: this.props.settings.overviewButtonsColorBg,
+                                }} 
+                                labelStyle = {{
+                                    fontSize: '13px',
+                                    color: this.props.settings.overviewButtonsColorText
+                                }}
+                                overlayStyle = {{
+                                    height: '30px',
+                                    lineHeight: '30px',
+                                }}
+                                onClick = { (evt) => this.props.onCollapseAllClick(evt,this.props.pinned) }
+                            />
+                        </Tooltip>
                     </Flexbox>
                     : 
                     null

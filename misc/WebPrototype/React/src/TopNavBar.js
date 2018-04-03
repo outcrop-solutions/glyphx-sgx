@@ -13,6 +13,8 @@ import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
 import AdminWizardModal from './AdminWizardModal.js';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
 import './General.css';
 
 
@@ -105,9 +107,13 @@ class TopNavBar extends React.Component {
         this.setState({ displayAlertsCheckbox: false });
     }
 
-
-    onClickLogo() {
-        this.props.history.push('/home');
+    returnHome() {
+        if (document.getElementById('GlyphViewer')) {
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            iframe.closeSceneView();
+        }
+        
+        this.props.history.push('/home')
     }
 
 
@@ -119,18 +125,31 @@ class TopNavBar extends React.Component {
             >
                 {/* Logo */}
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
-                    <span style = {{ cursor: 'pointer' }} onClick = { () => this.onClickLogo() } >
+                    <span style = {{ cursor: 'pointer' }} onClick = { () => this.returnHome() } >
                         {this.props.homePage ? 
                             this.state.imgLogoSrc
                             :
-                            <i 
-                                className = "fa fa-home"
-                                style = {{
-                                    fontSize: '1.8em',
-                                    color: this.props.settings.colors.collapsibleColor.mainIcon,
-                                    margin: "0px 0px 1px 8px"
-                                }}
-                            /> 
+                            <Tooltip
+                                placement = 'left'
+                                mouseEnterDelay = { 0.5 }
+                                mouseLeaveDelay = { 0.15 }
+                                destroyTooltipOnHide = { false }
+                                trigger = { Object.keys( {hover: 1} ) }
+                                overlay = { 
+                                    <div> 
+                                        Return to Home Page
+                                    </div> 
+                                }
+                            >
+                                <i 
+                                    className = "fa fa-home"
+                                    style = {{
+                                        fontSize: '1.8em',
+                                        color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                        margin: "0px 0px 1px 8px"
+                                    }}
+                                /> 
+                            </Tooltip>
                         }
                     </span>
                 </ToolbarGroup>
@@ -140,11 +159,25 @@ class TopNavBar extends React.Component {
                     <ToolbarSeparator />
 
                     <IconButton 
-                        onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
+                        //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
+                        onClick = { () => window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank') }
                         style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
-                        <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Help
+                                </div> 
+                            }
+                        >
+                            <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
+                        </Tooltip>
                     </IconButton>
 
                     <IconButton 
@@ -152,9 +185,24 @@ class TopNavBar extends React.Component {
                         style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
-                        <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' />
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Settings
+                                </div> 
+                            }
+                        >
+                            <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' />
+                        </Tooltip>
                     </IconButton>
                     
+
+                    {/*
                     <IconButton  
                         onClick = { this.displayAlerts.bind(this) } 
                         style = {{ zIndex: (this.props.tutorialStage === 6 ? "300" : "5") }}
@@ -163,28 +211,55 @@ class TopNavBar extends React.Component {
                         <FontIcon className = "fa fa-bell fa-2x" color = '#ffffff' /> 
                         <FontIcon id = "notificationBadge" className = "fa fa-exclamation-circle fa-1x notificationBadge" />
                     </IconButton>
+                    */}
                     
                     <IconButton 
                         onClick = { (event) => this.ToggleUserInfoMenu(event) } 
                         style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
                     >
-                        <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' />
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Profile
+                                </div> 
+                            }
+                        >
+                            <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' />
+                        </Tooltip>
                     </IconButton>
 
                     {/*<IconButton onClick = { this.toggleNav.bind(this) } style = {{ margin: "0px 0px 0px -5px", display: (this.props.homePage ? "none" : "") }} >*/}
                         {/*<FontIcon className = "fa fa-caret-up fa-2x" color = '#ffffff' style = {{ transform: 'rotateZ(90deg)', margin: "0px 0px 0px 4px" }} />*/}
-                        <i 
-                            className = "fa fa-caret-up cursorHand" 
-                            style = {{
-                                fontSize: '2.3em',
-                                color: this.props.settings.colors.collapsibleColor.mainIcon,
-                                transform: 'rotateZ(90deg)',
-                                margin: "0px 0px 0px 4px",
-                                display: (this.props.homePage ? "none" : "")
-                            }}
-                            onClick = { this.toggleNav.bind(this) }
-                        /> 
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Hide Filter Side Bar
+                                </div> 
+                            }
+                        >
+                            <i 
+                                className = "fa fa-caret-up cursorHand" 
+                                style = {{
+                                    fontSize: '2.3em',
+                                    color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                    transform: 'rotateZ(90deg)',
+                                    margin: "0px 0px 0px 4px",
+                                    display: (this.props.homePage ? "none" : "")
+                                }}
+                                onClick = { this.toggleNav.bind(this) }
+                            /> 
+                        </Tooltip>
                     {/*</IconButton>*/}
                 </ToolbarGroup>
 
@@ -210,10 +285,11 @@ class TopNavBar extends React.Component {
                             primaryText = { this.props.userInfo ? this.props.userInfo.Name : ""}
                         />
 
-                        <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" />
-                        <MenuItem className = "menuItemStyling" primaryText = "User Settings" />
-                        <MenuItem onClick = { this.logout } className = "menuItemStyling" primaryText = "Sign out" />
+                        {/* <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" /> */}
                         {/* {this.props.userInfo.admin ? show : dont} */}
+                        {/* <MenuItem className = "menuItemStyling" primaryText = "User Settings" /> */}
+                        <MenuItem onClick = { this.logout } className = "menuItemStyling" primaryText = "Sign out" />
+                        
                         
                         
                     </List>
@@ -225,7 +301,7 @@ class TopNavBar extends React.Component {
                 <HelpModal />
                 
                 {/* {this.props.userInfo.admin ? render : dont} */}
-                <AdminWizardModal />
+                {/* <AdminWizardModal /> */}
 
             </Toolbar>          
         );

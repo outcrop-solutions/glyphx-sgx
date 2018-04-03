@@ -109,8 +109,8 @@ class ViewsManager extends React.Component {
         );
     }
 	
-	//Moving this here instead of AllViewsModal.js due to refs problem
-	onLaunch(extra,callback) {
+	// Moving this here instead of AllViewsModal.js due to refs problem
+	onLaunch(extra, callback) {
         // Handle launch when no selections made on a column (select all unless its not allowed to select all)
 		var context = this;
 		var tableName;
@@ -121,23 +121,23 @@ class ViewsManager extends React.Component {
 		var sdtPath;
 		var index;
 		
-		if(Array.isArray(extra)){ 
+		if (Array.isArray(extra)) { 
 		//[.originalVizName,.time,.date,.frontEndFilters,.datasourceId,.filterAllowedColumnList,sdtPath,tableName]
 			sdtPath = extra[6];
-			tableName= extra[7];
-			frontEndFilters= extra[3];
-			originalVizName= extra[0];
-			datasourceId= extra[4];
-			filterAllowedColumnList= extra[5];
+			tableName = extra[7];
+			frontEndFilters = extra[3];
+			originalVizName = extra[0];
+			datasourceId = extra[4];
+			filterAllowedColumnList = extra[5];
 		}
 		else {
 			index = this.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 			sdtPath = this.state.selectionTypeURL.substring(index + 1);
-			tableName= extra.tableName;
-			frontEndFilters= extra.frontEndFilters;
-			originalVizName= extra.originalVizName;
-			datasourceId= extra.datasourceId;
-			filterAllowedColumnList= extra.filterAllowedColumnList;
+			tableName = extra.tableName;
+			frontEndFilters = extra.frontEndFilters;
+			originalVizName = extra.originalVizName;
+			datasourceId = extra.datasourceId;
+			filterAllowedColumnList = extra.filterAllowedColumnList;
 		}
 		
 		
@@ -156,30 +156,28 @@ class ViewsManager extends React.Component {
 							tableName: tableName,
 							datasourceId: datasourceId ,
 							query: res.query, 
-							filterAllowedColumnList:  filterAllowedColumnList, 
+							filterAllowedColumnList: filterAllowedColumnList, 
 							sdtPath: sdtPath, 
-							frontEndFilters: frontEndFilters,
-                            initialX: context.props.tempVizParams.initialX,
-                            initialY: context.props.tempVizParams.initialY,
-                            initialZ: context.props.tempVizParams.initialZ
+							frontEndFilters: frontEndFilters
 						}));
 					context.props.dispatch(editModalDisplay(false));
 					//
 				}
 				
-				if(typeof callback == 'function')
+				if (typeof callback == 'function') {
 					callback(res.match);
+                }
             },
             {
                 post: true, 
                 data:  { 
 					tableName: tableName,
-					time:currentDate.getTime(),
-					date:currentDate.getTime(), 
+					time: currentDate.getTime(),
+					date: currentDate.getTime(), 
 					frontEndFilters: frontEndFilters, 
 					originalVizName: originalVizName, 
 					datasourceId: datasourceId, 
-					filterAllowedColumnList:  filterAllowedColumnList, 
+					filterAllowedColumnList: filterAllowedColumnList, 
 					sdtPath: sdtPath 
 				}
             }
@@ -193,7 +191,7 @@ class ViewsManager extends React.Component {
     handleNext = (type) => {
         const {stepIndex} = this.state;
         if (!this.state.loading) {
-            console.log(type);
+            //console.log(type);
             if ( stepIndex >= 1 ) {
                 this.dummyAsync(() => this.setState({
                     stepIndex: 0,
@@ -289,6 +287,48 @@ class ViewsManager extends React.Component {
         else {
             customList = [];
         }
+
+        /*
+        console.log(mandrList);
+
+        console.log(admList);
+
+        console.log(faList);
+
+        console.log(customList);
+        */
+
+
+        for (var i = mandrList.length - 1; i > -1; i--) {
+            if (mandrList[i][0] != "Prospects" && mandrList[i][0] != "High School Profiles") {
+                mandrList.splice(i, 1);
+            }
+        }
+        console.log(mandrList);
+        for (var i = admList.length - 1; i > -1; i--) {
+            if (admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants") {
+                admList.splice(i, 1);
+            }
+        }
+        console.log(admList);
+
+        faList = [];
+        customList = [];
+
+        /*
+        for (var i = faList.length - 1; i > -1; i--) {
+            if (faList[i][0] != "" && faList[i][0] != "" && faList[i][0] != "") {
+                faList.splice(i, 1);
+            }
+        }
+        console.log(faList);
+        for (var i = customList.length - 1; i > -1; i--) {
+            if (customList[i][0] != "" && customList[i][0] != "" && customList[i][0] != "") {
+                customList.splice(i, 1);
+            }
+        }
+        console.log(customList);
+        */
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
@@ -612,8 +652,7 @@ const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     funnelData: state.filterState.FunnelData,
-    storedViews: state.filterState.StoredViews,
-    tempVizParams: state.filterState.TempVizParams
+    storedViews: state.filterState.StoredViews
   }
 }
 

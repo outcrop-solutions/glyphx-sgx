@@ -1,0 +1,175 @@
+
+:root {
+    --collapsible-text-color-main:  white; /* the default */
+    --collapsible-text-color-sub:   white; /* the default */
+}
+
+.Collapsible__contentInner {
+    padding: 8px !important;
+}
+
+.animate-close {
+    overflow: hidden;
+    -webkit-transition: height 0.3s ease-in;
+    -moz-transition:    height 0.3s ease-in;
+    -o-transition:      height 0.3s ease-in;
+    -ms-transition:     height 0.3s ease-in;
+    transition:         height 0.3s ease-in;
+}
+
+.menuItemStyling {
+    font-size:      13px !important;
+    min-height:     0px !important;
+    height:         25px !important;
+    line-height:    30px !important;
+}
+
+.cancelIconStyle {
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.hideTopView {
+    -webkit-transform:  translate(0px, -300px);
+    -moz-transform:     translate(0px, -300px);
+    -ms-transform:      translate(0px, -300px);
+    -o-transform:       translate(0px, -300px);
+    transform:          translate(0px, -300px);
+    -webkit-transition: 1s;
+    transition:         1s;
+}
+
+.collapsibleHeader {
+    padding: 16px;
+    box-sizing: border-box;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+    color: white; 
+    display: block; 
+    font-size: 15px;
+}
+
+.trig {
+    width: 100%;
+    padding-bottom: 13px;
+}
+
+.collapsibleBody {
+    background-color: white;
+}
+
+.Collapsible {
+    cursor: pointer;
+}
+
+.Collapsible__contentInner {
+    padding: 10px;
+    border: 1px solid #ebebeb;
+    border-top: 0; 
+}
+  
+.Collapsible__contentInner p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px; 
+}
+    
+.Collapsible__contentInner p:last-child {
+    margin-bottom: 0; 
+}
+
+.Collapsible__trigger {
+    display: block;
+    text-decoration: none;
+    position: relative;
+    border: 1px solid white;
+    padding: 15px;
+    color: white; 
+    font-size: 1rem;
+}
+
+.Collapsible__trigger:after {
+    font-family: "FontAwesome";
+    content: "\f107";
+    position: absolute;
+    right: 15px;
+    top: 14px;
+    display: block;
+    font-size: 1rem;
+    transition: transform 300ms;
+    color: var(--collapsible-text-color-main);
+}
+
+
+  
+.Collapsible__trigger.is-open:after {
+    transform: rotateZ(180deg); 
+}
+  
+.Collapsible__trigger.is-disabled {
+    opacity: 0.5;
+    background-color: grey; 
+}
+
+.CustomTriggerCSS {
+    background-color: lightcoral;
+    transition: background-color 200ms ease; 
+}
+
+.CustomTriggerCSS--open {
+    background-color: darkslateblue; 
+}
+
+
+.columnNameHeader.Collapsible__trigger:after {
+    right: 15px;
+     top: 8px;
+     color: var(--collapsible-text-color-sub);
+}
+
+.noHeaderTrigger{
+	background-color: white !important;
+	font-size: 0rem !important;
+    padding: 0px !important;
+}
+.centerText {
+    display: block;
+    text-align: center;
+    cursor: normal;
+}
+
+.cursorNormal {
+    cursor: default;
+}
+
+.selectViewName {
+    width:100%;
+    z-index: 3;
+    font-size: 13px;
+}
+
+.selectTableName {
+    width:100%;
+    z-index: 2;
+    font-size: 13px;
+}
+
+.cursorHand:Hover {
+    cursor: pointer
+}
+
+.Select-menu-outer {
+    z-index: 2;
+}
+
+.notificationBadge {
+	color: red !important;
+    font-size: 18px !important;
+    top: -28px;
+    left: 9px;
+}
+
+.Select-menu-outer {
+    z-index: 2 !important;
+}

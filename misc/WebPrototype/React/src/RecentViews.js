@@ -5,6 +5,8 @@ import { Card, CardText } from 'material-ui/Card';
 import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import ComponentLoadMask from './ComponentLoadMask.js';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
 import './General.css';
 
 
@@ -16,8 +18,6 @@ class RecentViews extends React.Component {
     state = {
         loadMask: true,
 		recents: []
-        /*recents:    [["Unsaved Session", "2:19pm", "8/15/2017"], ["Some View", "1:15pm", "8/15/2017"], ["Glyph 123", "1:01pm", "8/15/2017"], 
-                    ["Look At Me", "11:19am", "8/15/2017"], ["Test Glyph", "11:59am", "8/15/2017"], ["Who Am I", "10:30am", "8/15/2017"]]*/
     }
 
 
@@ -32,15 +32,16 @@ class RecentViews extends React.Component {
         // Make server call to grab recent views
         makeServerCall("fetchRecentViews",
             function (responseText) { 
-				if(typeof responseText == 'string' && responseText != null && responseText != ""){
+				if (typeof responseText == 'string' && responseText != null && responseText != "") {
 					responseText = JSON.parse(responseText);
 					// Post the new data to the state and hide the window load-mask
 					context.setState({ loadMask: false, recents: responseText.reverse()});
 				}
-				else{
+				else {
 					context.setState({ loadMask: false });
 				}
-				
+                
+				context.props.dispatch( setTimer(new Date().getTime()) );
                 
            }
         );
@@ -50,20 +51,27 @@ class RecentViews extends React.Component {
     render() {
         var context = this;
 
-        var newList = this.state.recents.slice(0, 9);
+        var newList = this.state.recents.slice(0, 8);
 
         var recentViews = newList.map( function(view) {
-			if(typeof view[1] == 'string' && !isNaN(view[1])){
+			if (typeof view[1] == 'string' && !isNaN(view[1])) {
 				view[1] = parseInt(view[1]);
 			}
 				
 			var viewTimeStamp = new Date(view[1]);
-			var viewDate =  (viewTimeStamp.getMonth()+1)+"/"+viewTimeStamp.getDate()+"/"+viewTimeStamp.getFullYear();
+
+			var viewDate =  (viewTimeStamp.getMonth() + 1) + "/" + viewTimeStamp.getDate() + "/" + viewTimeStamp.getFullYear();
+
 			var viewTime;
-			if(viewTimeStamp.getHours() > 12)
-				viewTime =  viewTimeStamp.getHours()-12+":"+(viewTimeStamp.getMinutes() < 10 ? '0'+viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes())+'pm';
-			else
-				viewTime = viewTimeStamp.getHours()+":"+(viewTimeStamp.getMinutes() < 10 ? '0'+viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes())+'am';
+			if (viewTimeStamp.getHours() > 12) {
+				viewTime =  viewTimeStamp.getHours() - 12 + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'pm';
+            }
+            else if (viewTimeStamp.getHours() == 12) {
+				viewTime =  12 + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'pm';
+            }
+			else {
+				viewTime = viewTimeStamp.getHours() + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'am';
+            }
 			
             return (
                 <Card 
@@ -84,16 +92,35 @@ class RecentViews extends React.Component {
                     >
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >
-                            <Flexbox style = {{ width: "100%" }} > 
-                                { view[0] }
+                            <Flexbox style = {{ width: "100%", whiteSpace: "nowrap", overflow: "hidden" }} > 
+                                <Tooltip
+                                    placement = 'left'
+                                    mouseEnterDelay = { 0.5 }
+                                    mouseLeaveDelay = { 0.15 }
+                                    destroyTooltipOnHide = { false }
+                                    trigger = { Object.keys( {hover: 1} ) }
+                                    overlay = { 
+                                        <div> 
+                                            { view[0] }
+                                        </div> 
+                                    }
+                                >
+                                    <div> 
+                                        { view[0] }
+                                    </div> 
+                                </Tooltip>
                             </Flexbox>
 
-                            <Flexbox style = {{ width: "60%" }} > 
-                                { viewTime }
+                            <Flexbox style = {{ width: "40%" }} > 
+                                <div style = {{ width: "100%", textAlign: "right" }} >
+                                    { viewTime }
+                                </div>
                             </Flexbox>
 
-                            <Flexbox style = {{ width: "60%" }} > 
-                                { viewDate }
+                            <Flexbox style = {{ width: "40%" }} > 
+                                <div style = {{ width: "100%", textAlign: "right", margin: "0px 1px 0px" }} >
+                                    { viewDate }
+                                </div>
                             </Flexbox>  
                         </Flexbox>
 
@@ -124,7 +151,7 @@ class RecentViews extends React.Component {
                 </div>
 
                 <div style = {{ padding: "7px", display: (this.state.loadMask ? "none" : "") }} >
-                    {recentViews}
+                    {this.state.recents.length == 0 ? <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> : recentViews}
                 </div>
             </div>
         );
@@ -140,12 +167,17 @@ export const editModalDisplay = (allViewsModal) => ({
     allViewsModal,
 });
 
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
-const mapStateToProps = function(state){
+const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo

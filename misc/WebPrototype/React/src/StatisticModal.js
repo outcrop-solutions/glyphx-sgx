@@ -176,7 +176,7 @@ class StatisticModal extends React.Component {
 
         debugger;
 
-        console.log(this.props.statData);
+        //console.log(this.props.statData);
 
         var header = (
             <TableHeader

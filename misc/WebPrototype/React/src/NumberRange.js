@@ -59,7 +59,7 @@ class NumberRangeTable extends React.Component {
      * - ADCMT
      */
     applyFilter = () => {
-        console.log('Filter Applied');
+        //console.log('Filter Applied');
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
@@ -87,6 +87,8 @@ class NumberRangeTable extends React.Component {
 				
                 context.props.setFilterIDs(tempRowIds);
                 iframe.filterGlyphs(tempRowIds);
+
+                context.props.dispatch( setTimer(new Date().getTime()) );
             },
             {
                 post: true, 
@@ -126,9 +128,11 @@ class NumberRangeTable extends React.Component {
         var UndoRedoHistory = this.props.UndoRedoHistory;
         var setTableData = this.props.setTableData;
         var applyFilter = this.applyFilter.bind(this);
+        var setFilterBusy = this.props.setFilterBusy;
 
         var range = rList.map( function(range) {
             return (
+                minVal != null ?
                 <NumberRangeRow 
                     range = { range } 
                     onDelEvent = { onRowDel.bind(this) } 
@@ -145,8 +149,11 @@ class NumberRangeTable extends React.Component {
                     UndoRedoHistory = { UndoRedoHistory }
                     setTableData = { setTableData }
                     applyFilter = { applyFilter }
+                    setFilterBusy = { setFilterBusy }
                     
                 />
+                :
+                null
             )
         });
 
@@ -248,6 +255,8 @@ class NumberRangeRow extends React.Component {
      **/
     onAfterSlide(e) {
         if (this.props.range[3]) {
+            this.props.setFilterBusy(true);
+
             var context = this;
             let pom = new Promise(function (resolve, reject) {
                 debugger;
@@ -258,11 +267,13 @@ class NumberRangeRow extends React.Component {
             pom.then(
                 () => context.props.updateStore(context.props.range[2], e[0], e[1], null, context.props.range)
             ).then(
-                () => context.props.refreshTableDataOnRowSelection()
-            ).then(
                 () => context.props.applyFilter()
             ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
                 () => context.props.addToHistory()
+            ).then (
+                () => context.props.setFilterBusy(false)
             );
         }
         else {
@@ -394,6 +405,8 @@ class NumberRangeRow extends React.Component {
         //this.props.updateStore(this.props.range[2], min, max, null, this.props.range);
 
         if (this.props.range[3]) {
+            this.props.setFilterBusy(true);
+
             var context = this;
             let pom = new Promise(function (resolve, reject) {
                 debugger;
@@ -404,11 +417,13 @@ class NumberRangeRow extends React.Component {
             pom.then(
                 () => context.props.updateStore(context.props.range[2], min, max, null, context.props.range)
             ).then(
-                () => context.props.refreshTableDataOnRowSelection()
-            ).then(
                 () => context.props.applyFilter()
             ).then(
+                () => context.props.refreshTableDataOnRowSelection()
+            ).then(
                 () => context.props.addToHistory()
+            ).then (
+                () => context.props.setFilterBusy(false)
             );
         }
         else {
@@ -439,25 +454,33 @@ class NumberRangeRow extends React.Component {
 
                 //this.props.updateStore(this.props.range[2], min, max, true);
 
+                this.props.setFilterBusy(true);
+
                 var context = this;
                 let pom = new Promise(function (resolve, reject) {
-                    context.props.updateStore(context.props.range[2], min, max, true);
+                    debugger;
+                    context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                     resolve('done');
                 });
 
-                //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
-
                 pom.then(
-                    () => context.props.refreshTableDataOnRowSelection()
+                    () => context.props.updateStore(context.props.range[2], min, max, true)
                 ).then(
                     () => context.props.applyFilter()
                 ).then(
+                    () => context.props.refreshTableDataOnRowSelection()
+                ).then(
                     () => context.props.addToHistory()
+                ).then (
+                    () => context.props.setFilterBusy(false)
                 );
+
             }
 
             else {
                 //this.props.updateStore(this.props.range[2], null, null, false);
+
+                this.props.setFilterBusy(true);
 
                 var context = this;
                 let pom = new Promise(function (resolve, reject) {
@@ -468,11 +491,13 @@ class NumberRangeRow extends React.Component {
                 //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
 
                 pom.then(
-                    () => context.props.refreshTableDataOnRowSelection()
-                ).then(
                     () => context.props.applyFilter()
                 ).then(
+                    () => context.props.refreshTableDataOnRowSelection()
+                ).then(
                     () => context.props.addToHistory()
+                ).then (
+                    () => context.props.setFilterBusy(false)
                 );
             }
 
@@ -488,6 +513,8 @@ class NumberRangeRow extends React.Component {
         //this.props.onDelEvent(this.props.range[2]);
 
         if (this.props.range[3]) {
+            this.props.setFilterBusy(true);
+
             var context = this;
             let pom = new Promise(function (resolve, reject) {
                 context.props.onDelEvent(context.props.range[2]);
@@ -497,11 +524,13 @@ class NumberRangeRow extends React.Component {
             //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
 
             pom.then(
+                () => context.props.applyFilter()
+            ).then(
                 () => context.props.refreshTableDataOnRowSelection()
             ).then(
                 () => context.props.addToHistory()
-            ).then(
-                () => context.props.applyFilter()
+            ).then (
+                () => context.props.setFilterBusy(false)
             );
         }
         else {
@@ -743,6 +772,11 @@ export const updateRange = (colName, min, max, id, applied, data, rangeType) => 
 export const editUndoRedoHistory = (undoRedoHistory) => ({
   type: 'UPDATE_HISTORY',
   undoRedoHistory
+});
+
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
 });
 
 

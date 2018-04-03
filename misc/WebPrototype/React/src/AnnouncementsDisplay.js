@@ -26,21 +26,23 @@ class AnnouncementsDisplay extends React.Component {
 	 */
 	componentDidMount() {
 
-        if (this.props.adminEdit) {
-            this.setState({ loadMask: false, announcements: this.props.announcementList });
-        }
+        //if (this.props.adminEdit) {
+            //this.setState({ loadMask: false, announcements: this.props.announcementList });
+        //}
 
-        else {
-            var context = this;
+        //else {
+            //var context = this;
             // Make server call to grab announcements
             //makeServerCall(something here),
             //    function (responseText) { 
 
                     // Post the new data to the state and hide the window load-mask
-                    context.setState({ loadMask: false, announcements: announcementList });
+                    this.setState({ loadMask: false, announcements: announcementList });
+                    //context.props.dispatch( setTimer(new Date().getTime()) );
+                    
             //   }
             //);
-        }
+        //}
 	}
 
 
@@ -56,7 +58,7 @@ class AnnouncementsDisplay extends React.Component {
     render() {
         var context = this;
 
-        var announcements = this.state.announcements.map( 
+        var announcements = announcementList.map( 
             function(announcement) {
                 return (
                     (announcement.type === "Maintenance" ? 
@@ -185,7 +187,7 @@ class MaintenanceAnnouncement extends React.Component {
                                 <div style = {{ width: "100%" }} > 
                                     We will be performing software updates and maintenance on our servers on {this.props.announcement.content.date}, 
                                     at {this.props.announcement.content.time} EST (UTC-5). Servers will be down for {this.props.announcement.content.length}. 
-                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -322,7 +324,7 @@ class ReleaseAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} >
                                 <div style = {{ width: "100%" }} > 
                                     Release {this.props.announcement.content.release} is now live! Click to view release notes.
-                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -414,7 +416,7 @@ class PollAnnouncement extends React.Component {
                                         :  
                                         this.props.announcement.content.question + " Click to vote, voting will be open until " + this.props.announcement.content.date +  "."
                                     }
-                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
                                 </div>
                                 
                             </Flexbox>
@@ -464,7 +466,7 @@ class ShoutAnnouncement extends React.Component {
                             borderRadius: "5px"
                         }}
                         className = "cursorHand"
-                        onClick = { () => window.open(this.props.announcement.content.link) }
+                        onClick = { () => this.props.announcement.content.linkType == "link" ? window.open(this.props.announcement.content.link) : null }
                     >
 
                         <Flexbox flexDirection = "row" className = "noselect" >
@@ -489,7 +491,7 @@ class ShoutAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} > 
                                 <div style = {{ width: "100%" }} > 
                                     { this.props.announcement.content.message }
-                                    <div style = {{ textAlign: "right" }} >-{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -510,6 +512,11 @@ export const editModalDisplay = (allViewsModal) => ({
     allViewsModal,
 });
 
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
+});
+
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
@@ -528,6 +535,67 @@ const mapStateToProps = function(state) {
 export default connect(mapStateToProps)(AnnouncementsDisplay);
 
 
+var announcementList = [
+    {
+        type: "Release",
+        id: "a1",
+        content: {
+            release: "1.0.0",
+            features: [
+                    "New 'Filter Overview' section located in the top of the filter side panel allows for easy monitoring and clearing of applied filters per column. You can also quickly navigate to an applied filter by clicking on the elastic or range icons.",
+                    "Small objects on glyphs are hidden depending on the zoom level, the distance can be adjusted from floating toolbar.",
+                    "Statistics can now be monitored per numeric column and will update each time a filter is applied.",
+                    "Undo and Redo filter functionality.",
+                    "Ranges can be disabled without being deleted allowing to toggle quickly between different ranges.",
+                    "More than one range per column can be applied.",
+                    "Text ranges have a variety of types to choose from.",
+                    "Ability to pin filter columns and view separately.",
+                    "Changes made to a visualization can be saved and loaded from the View Manager on the Home Page, or the view drop-down from within a visualization.",
+                    "Change axes has been remodeled and now takes about one second without having to reload the visualization.",
+                    "Userfeed section has been added to the Home Page allowing for communication within your institution.",
+                    "Announcements section added to Home Page to keep users up to date on our progress.",
+                    "More options available for front-end filters such as select all and deselect all."
+                    ],
+            bugfixes: []
+        },
+        postDate: "4/9/2018"
+    },
+    {
+        type: "Shout",
+        id: "a2",
+        content: {
+            message: "GlyphEd has been selected to speak with John Carroll University at Ruffalo Noel Levitz National Conference this summer.",
+            linkType: "text",
+            link: ""
+        },
+        postDate: "3/20/2018"
+    },
+    {
+        type: "Shout",
+        id: "a3",
+        content: {
+            message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd; click to learn more.",
+            linkType: "link",
+            link: "https://s3.amazonaws.com/sgxshared/gannon-case-study.pdf"
+        },
+        postDate: "1/12/2018"
+    },
+    {
+        type: "Shout",
+        id: "a4",
+        content: {
+            message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept; click to learn more.",
+            linkType: "link",
+            link: "http://www.globenewswire.com/news-release/2017/10/03/1140109/0/en/Kent-State-University-to-use-GlyphEd-to-Discover-Insights-in-Freshman-Student-Data.html"
+        },
+        postDate: "10/3/2017"
+    }
+
+
+    
+];
+
+/*
 var announcementList = [
     {
         type: "Maintenance",
@@ -656,3 +724,4 @@ var announcementList = [
         postDate: "11/6/2017"
     }
 ];
+*/

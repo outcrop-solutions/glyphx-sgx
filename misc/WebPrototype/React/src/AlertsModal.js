@@ -61,11 +61,11 @@ class AlertsModal extends React.Component {
 	 */
 	onOkAlerts = () => {
 		var notificationBadge = document.getElementById('notificationBadge');
-		console.log('Alerts seen');
+		//console.log('Alerts seen');
 		
 		if (this.refs['dontDisplayAgain'] && this.refs.dontDisplayAgain.isChecked()) {
 			//send server call to notify that this message is seen by the user.
-			console.log('Alerts not to show again');
+			//console.log('Alerts not to show again');
 		}
 		
 		if (notificationBadge) {

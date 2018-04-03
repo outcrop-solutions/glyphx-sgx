@@ -13,6 +13,9 @@ import FloatingToggleButtons from './FloatingToggleButtons.js';
 import GlyphLegend from './GlyphLegend.js';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ComponentLoadMask from './ComponentLoadMask.js';
+import Tooltip from 'rc-tooltip';
+import TimeoutAlert from './TimeoutAlert.js';
+import 'rc-tooltip/assets/bootstrap.css';
 import './topNav.css';
 import './General.css';
 
@@ -29,6 +32,8 @@ class VisualizationView extends React.Component {
         glyphViewLoaded: false,
         topNavBarHeight: 0,
         showCorrection: false,
+        hideOnClick: false,
+        setTimer: false,
         vizKey: ''
     };
 
@@ -46,13 +51,25 @@ class VisualizationView extends React.Component {
             }
         }
 
+        if (this.state.setTimer == false) {
+
+            this.setState({ setTimer: true });
+
+            var context = this;
+            
+            var x = setInterval(function() {
+                context.setState(context.state);
+            }, 60000);
+
+        }
+
         this.init();
 
         var style = document.getElementById('themeStyles');
 		
 		if (style != null) {
 			style.parentElement.removeChild(style);
-			console.log('deleting old rules');
+			//console.log('deleting old rules');
 		}
 		
 		style = document.createElement("style");
@@ -103,16 +120,40 @@ class VisualizationView extends React.Component {
         document.title = "GlyphEd - Viewer";
     }
 
+    componentDidUpdate(){
+        //debugger;
+        //console.log('update!');
+
+        var now = new Date().getTime();
+        var distance = now - this.props.timeoutTimer;
+
+        //console.log("VIZ-SESSION: " + this.props.timeoutTimer);
+
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        //console.log("VIZ-MINUTES: " + minutes);
+
+        if (minutes == 23) {
+            this.props.dispatch(editModalDisplay(true));
+        }
+
+        else if (minutes > 27) {
+            this.props.history.push("/logout");
+            alert("Your session has expired due to inactivity.");
+        }
+        
+    }
+
     
     /**
 	 * -ADCMT
 	 */
     updateViz (key) {
         //This is to refresh the iframe.
-        this.setState({ vizKey: "" },function(){
+        this.setState({ vizKey: "" }, function() {
             this.setState({vizKey: key})
         });
-        console.log('state set: ' + key);
+        //console.log('state set: ' + key);
         /*var iframe = document.getElementById('GlyphViewer')
         var temp = iframe.src;
         iframe.src = "";
@@ -165,8 +206,13 @@ class VisualizationView extends React.Component {
 	 * Displays an invisible div over the iframe when dragging a draggable window for it to not bug out
      * @param action: true/false indicating display of the invisible div
 	 */
-    handleDraggableCorrection(action) {
-        this.setState({ showCorrection: action });
+    handleDraggableCorrection(action, onClick) {
+        if (onClick) {
+            this.setState({ showCorrection: action, hideOnClick: onClick });
+        }
+        else {
+            this.setState({ showCorrection: action });
+        }
     }
 
 
@@ -204,6 +250,15 @@ class VisualizationView extends React.Component {
     showHideLoadingMask(state) {
         this.setState({ glyphViewLoaded: state });
     }
+    
+    returnHome() {
+        if (document.getElementById('GlyphViewer')) {
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            iframe.closeSceneView();
+        }
+        
+        this.props.history.push('/home')
+    }
 
 
     render() {
@@ -236,42 +291,73 @@ class VisualizationView extends React.Component {
                         />
                     </div>
 
+                    <TimeoutAlert />
+
                     <div id  = "filterNav" className = "sidenav" style = {{ height: "100%" }} >
                         <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
                             <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '36px', transition: '0.37s' }}>
                                 <TopNavBar />
                             </div>
 
-                            <FilterSideBar updateViz = { (key) => this.updateViz(key) } showHideLoadingMask = { this.showHideLoadingMask.bind(this) } />
+                            <FilterSideBar 
+                                updateViz = { (key) => this.updateViz(key) } 
+                                showHideLoadingMask = { this.showHideLoadingMask.bind(this) } 
+                                handleDraggableCorrection = { this.handleDraggableCorrection.bind(this) } 
+                            />
                         </Flexbox>
                     </div>
 
                     <div id = "showSideBar" >
-                        <FloatingActionButton 
-                            backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
-                            style = {{
-                                top: '5px',
-                                right: '5px',
-                                position: 'absolute',
-                                zIndex: '10'
-                            }}
-                            mini = { true }
-                            //iconStyle = {{ height: "36px", width: "36px" }}
-                            onClick = { () => this.toggleNav() }
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Display Filter Side Bar
+                                </div> 
+                            }
                         >
-                            <i 
-                                className = "fa fa-caret-down" 
+                            <FloatingActionButton 
+                                backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                                 style = {{
-                                    fontSize: '1.8em',
-                                    color: this.props.settings.colors.collapsibleColor.mainIcon,
-                                    transform: 'rotateZ(90deg)',
-                                    margin: "0px 0px 0px -2px"
+                                    top: '5px',
+                                    right: '5px',
+                                    position: 'absolute',
+                                    zIndex: '10'
                                 }}
-                            /> 
-                        </FloatingActionButton>
+                                mini = { true }
+                                //iconStyle = {{ height: "36px", width: "36px" }}
+                                onClick = { () => this.toggleNav() }
+                            >
+                                <i 
+                                    className = "fa fa-caret-down" 
+                                    style = {{
+                                        fontSize: '1.8em',
+                                        color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                        transform: 'rotateZ(90deg)',
+                                        margin: "0px 0px 0px -2px"
+                                    }}
+                                /> 
+                            </FloatingActionButton>
+                        </Tooltip>
                     </div>
 
-                    <FloatingActionButton 
+                    <Tooltip
+                        placement = 'right'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlay = { 
+                            <div> 
+                                Return to Home Page
+                            </div> 
+                        }
+                    >
+                        <FloatingActionButton 
                             backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                             style = {{
                                 top: '5px',
@@ -281,7 +367,7 @@ class VisualizationView extends React.Component {
                             }}
                             mini = { true }
                             //iconStyle = {{ height: "36px", width: "36px" }}
-                            onClick = { () => this.props.history.push('/home') }
+                            onClick = { () => this.returnHome() }
                         >
                             <i 
                                 className = "fa fa-home"
@@ -291,6 +377,7 @@ class VisualizationView extends React.Component {
                                 }}
                             /> 
                         </FloatingActionButton>
+                    </Tooltip>
 					
 					{/* Actual Application body that you see */}
                     <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
@@ -304,11 +391,14 @@ class VisualizationView extends React.Component {
                                 <GlyphLegend handleCorrection = { this.handleDraggableCorrection.bind(this) } />
 
                                 {/* Invisible div over the iframe to allow draggable windows to not bug out */}
-                                <div style = {{ height: "100vh", width: "100vw", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }} />
+                                <div 
+                                    style = {{ height: "100vh", width: "calc(100vw - 450px)", zIndex: "500", position: "fixed", display: (this.state.showCorrection ? "" : "none") }}
+                                    onClick = { () => this.state.hideOnClick ? this.setState({ showCorrection: false, hideOnClick: false  }) : null }
+                                />
 
 
                                 <div style = {{ width: "100%", height: "100%", display: (this.state.glyphViewLoaded ? "none" : "") }} >
-                                    <ComponentLoadMask bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } imgLink = "./Res/Img/GlyphED.png" />
+                                    <ComponentLoadMask stopLoop = {this.state.glyphViewLoaded ? true : false} bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } imgLink = "./Res/Img/GlyphED.png" />
                                 </div>
 
                                 {this.state.vizKey == '' ? 
@@ -325,7 +415,11 @@ class VisualizationView extends React.Component {
 
                             </div>
 
-                            <FloatingToggleButtons iframeLoaded = { this.state.glyphViewLoaded } topNavBarHeight = { this.state.topNavBarHeight } /> 
+                            <FloatingToggleButtons 
+                                iframeLoaded = { this.state.glyphViewLoaded } 
+                                topNavBarHeight = { this.state.topNavBarHeight } 
+                                handleDraggableCorrection = { this.handleDraggableCorrection.bind(this) } 
+                            /> 
 
                         </Flexbox>
                     </Flexbox>
@@ -337,6 +431,12 @@ class VisualizationView extends React.Component {
 }
 
 
+export const editModalDisplay = (timeoutModal) => ({
+    type: 'EDIT_MODAL_DISPLAY',
+    timeoutModal,
+});
+
+
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
@@ -345,7 +445,8 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo,
-    VizParams: state.filterState.VizParams
+    VizParams: state.filterState.VizParams,
+    timeoutTimer: state.filterState.TimeoutTimer
   }
 }
 

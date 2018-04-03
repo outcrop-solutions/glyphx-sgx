@@ -30,7 +30,8 @@ const initialFilterState = {
         helpModal: false,
         adminModal: false,
         selectedFilteredModal: false,
-        XYZModal: false
+        XYZModal: false,
+        timeoutModal: false
     },
     UserInfo: {},
     FunnelData: {},
@@ -40,12 +41,14 @@ const initialFilterState = {
         statList: ""
     },
 	VizParams: {},
-    TempVizParams: {},
     StoredViews: {},
     UndoRedoHistory: {
         position: -1,
         history: []
-    }
+    },
+    TimeoutTimer: null,
+    ShowAllTables: [],
+    RecentVizDropdown: null
 };
 
 
@@ -523,6 +526,7 @@ const filterReducer = function(state = initialFilterState, action) {
             var adminDisplay = state.ModalDisplay.adminModal;
             var selectedFilteredDisplay = state.ModalDisplay.selectedFilteredModal;
             var XYZDisplay = state.ModalDisplay.XYZModal;
+            var timeoutDisplay = state.ModalDisplay.timeoutModal;
 
             
             
@@ -562,6 +566,10 @@ const filterReducer = function(state = initialFilterState, action) {
                 XYZDisplay = action.XYZModal;
             }
 
+            if (action.timeoutModal === true || action.timeoutModal === false) {
+                timeoutDisplay = action.timeoutModal;
+            }
+
 
             return { 
                     ...state,
@@ -575,7 +583,8 @@ const filterReducer = function(state = initialFilterState, action) {
                         helpModal: helpDisplay,
                         adminModal: adminDisplay,
                         selectedFilteredModal: selectedFilteredDisplay,
-                        XYZModal: XYZDisplay
+                        XYZModal: XYZDisplay,
+                        timeoutModal: timeoutDisplay
                     }
                 };
 
@@ -584,24 +593,37 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 VizParams: action.vizParams
 			}
-		
-        case 'SET_TEMP_VIZ_PARAMS':
-            return {
-                ...state,
-                TempVizParams: action.vizParams
-			}
 
         case 'SET_STATISTICS_DATA':
             return {
                 ...state,
                 StatisticsData: action.statData
 			}
+        
+        case 'SET_TIMEOUT_TIMER':
+            return {
+                ...state,
+                TimeoutTimer: action.timeoutTimer
+			}
+
+        case 'SET_RECENT_VIZ_DROPDOWN':
+            return {
+                ...state,
+                RecentVizDropdown: action.recentVizDropdown
+            }
+
+        case 'SET_SHOW_ALL_TABLES':
+            return {
+                ...state,
+                ShowAllTables: action.showAllTables
+            }
+
 		
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/
         default:
-            console.log("TYPO IN ACTION: " + action.type);
+            //console.log("TYPO IN ACTION: " + action.type);
             //debugger;
             return state;
     }

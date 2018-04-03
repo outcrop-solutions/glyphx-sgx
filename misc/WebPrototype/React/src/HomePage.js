@@ -12,6 +12,7 @@ import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import TutorialWindow from './TutorialWindow.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import TimeoutAlert from './TimeoutAlert.js';
 import './topNav.css';
 import './General.css';
 
@@ -45,9 +46,14 @@ class HomePage extends React.Component {
         tutorialStage: "done"
     }
 	
-	goToVizView(success){
-		if(success)this.props.history.push('/glyph-viewer');
-		else console.log("SOMETHING WENT WRONG!");
+	goToVizView(success) {
+		if (success) {
+            this.props.dispatch( setTimer(new Date().getTime()) );
+            this.props.history.push('/glyph-viewer');
+        }
+		else {
+            console.log("SOMETHING WENT WRONG!");
+        }
 	}
 
     /**
@@ -61,7 +67,23 @@ class HomePage extends React.Component {
         // Removes the spinning load mask
         hideSplashScreen();
 
+        this.props.dispatch( setRecentVizDropdown( null ));
+
         this.setState({ height: window.innerHeight });
+
+        //console.log("REAL: " + this.props.timeoutTimer);
+
+        if (this.props.timeoutTimer == null) {
+
+            this.props.dispatch( setTimer(new Date().getTime()) );
+
+            var context = this;
+            
+            var x = setInterval(function() {
+                context.setState(context.state);
+            }, 60000);
+
+        }
 
         var style = document.getElementById('themeStyles');
 
@@ -112,6 +134,8 @@ class HomePage extends React.Component {
         style.sheet.insertRule('.inherit-hover:Hover { background-color: ' + this.props.settings.colors.homePageColors.hoverBackground + ' !important; }', 26);
 
 
+
+        /*
         var funnelAccess = ""
         for (var key in this.props.funnelData) {
             for (var i = 0; i < this.props.funnelData[key].length; i++) {
@@ -142,6 +166,7 @@ class HomePage extends React.Component {
             var s = document.getElementsByTagName('script')[0]; 
             s.parentNode.insertBefore(lc, s);
         })();
+        */
 
         document.title = "GlyphEd - Home";
 
@@ -152,7 +177,26 @@ class HomePage extends React.Component {
 
     componentDidUpdate(){
         //debugger;
-        console.log('update!');
+        //console.log('update!');
+
+        var now = new Date().getTime();
+        var distance = now - this.props.timeoutTimer;
+
+        //console.log("HOME-SESSION: " + this.props.timeoutTimer);
+
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        //console.log("HOME-MINUTES: " + minutes);
+
+        if (minutes == 23) {
+            this.props.dispatch(editModalDisplay(true));
+        }
+
+        else if (minutes > 27) {
+            this.props.history.push("/logout");
+            alert("Your session has expired due to inactivity.");
+        }
+        
     }
 
 
@@ -184,7 +228,9 @@ class HomePage extends React.Component {
             function (responseText) {
                 var response = JSON.parse(responseText);
                 debugger;
-            //do-stuff
+                //do-stuff
+
+                context.props.dispatch( setTimer(new Date().getTime()) );
             },
             {
                 post:true,
@@ -205,7 +251,8 @@ class HomePage extends React.Component {
                     function (responseText) {
                         var response = JSON.parse(responseText);
                         debugger;
-                    //do-stuff
+                        //do-stuff
+                        context.props.dispatch( setTimer(new Date().getTime()) );
                     },
                     {
                         post:true,
@@ -228,7 +275,8 @@ class HomePage extends React.Component {
                     function (responseText) {
                         var response = JSON.parse(responseText);
                         debugger;
-                    //do-stuff
+                        //do-stuff
+                        context.props.dispatch( setTimer(new Date().getTime()) );
                     },
                     {
                         post:true,
@@ -248,7 +296,8 @@ class HomePage extends React.Component {
                     function (responseText) {
                         var response = JSON.parse(responseText);
                         debugger;
-                    //do-stuff
+                        //do-stuff
+                        context.props.dispatch( setTimer(new Date().getTime()) );
                     },
                     {
                         post:true,
@@ -266,7 +315,8 @@ class HomePage extends React.Component {
                     function (responseText) {
                         var response = JSON.parse(responseText);
                         debugger;
-                    //do-stuff
+                        //do-stuff
+                        context.props.dispatch( setTimer(new Date().getTime()) );
                     },
                     {
                         post:true,
@@ -284,27 +334,27 @@ class HomePage extends React.Component {
     }
 	
 	//[]
-	loadRecentView(rowArray){
-		console.log("recentViewloaded");
-		console.log(rowArray);
-		var ref=this.refs.viewsManager.getWrappedInstance();
+	loadRecentView(rowArray) {
+		//console.log("recentViewloaded");
+		//console.log(rowArray);
+		var ref = this.refs.viewsManager.getWrappedInstance();
 		
-		//This means that this is a funnel view click
-		if(rowArray.length > 4){
+		// This means that this is a funnel view click
+		if (rowArray.length > 4) {
 			//todo work out something for funnel click.
 			ref.onLaunch(rowArray,this.goToVizView);
 		}
-		else{ //This means that this is a saved view click
+		else { // This means that this is a saved view click
 			var savedViewObj;
 			
-			this.props.storedViews.savedViews.forEach(function(savedView){
-				if(rowArray[3] == savedView.ID)
+			this.props.storedViews.savedViews.forEach(function(savedView) {
+				if (rowArray[3] == savedView.ID) {
 					savedViewObj = savedView
+                }
 			});
 			
-			if(savedViewObj)
-			{
-				ref.onSavedViewSelect(savedViewObj,this.goToVizView,true);
+			if (savedViewObj) {
+				ref.onSavedViewSelect(savedViewObj, this.goToVizView, true);
 			}
 		}
 	}
@@ -325,12 +375,15 @@ class HomePage extends React.Component {
 
     render() {
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
+
 		var context = this;
         return (
             <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
 
                 <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh" }} >
                     <TopNavBar homePage = { true } tutorialStage = { this.state.tutorialStage } />
+
+                    <TimeoutAlert />
 
                     {this.state.tutorialStage !== "done" ?
                         <div style = {{ height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.6)", zIndex: "100", position: "fixed" }} />
@@ -419,7 +472,8 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo,
 	storedViews: state.filterState.StoredViews,
-    funnelData: state.filterState.FunnelData
+    funnelData: state.filterState.FunnelData,
+    timeoutTimer: state.filterState.TimeoutTimer
   }
 }
 
@@ -428,8 +482,23 @@ export const setCurrentSavedViews = (savedViewsList) => ({
     savedViewsList,
  });
 
+export const setTimer = (timeoutTimer) => ({
+    type: 'SET_TIMEOUT_TIMER',
+    timeoutTimer,
+});
+
+export const setRecentVizDropdown = (recentVizDropdown) => ({
+    type: 'SET_RECENT_VIZ_DROPDOWN',
+    recentVizDropdown,
+});
+
+export const editModalDisplay = (timeoutModal) => ({
+    type: 'EDIT_MODAL_DISPLAY',
+    timeoutModal,
+});
+
 
 /**
  * Connects the redux store to get access to global states.
  **/
-export default withRouter(connect(mapStateToProps)(HomePage));
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(HomePage));

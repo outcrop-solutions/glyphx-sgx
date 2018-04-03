@@ -102,7 +102,7 @@ export function calcSelected(rList, rangeType, data, previousRange, selectedValu
         // TODO: Add Date Range here
     }
 
-    console.log(selectedValues);
+    //console.log(selectedValues);
     return selectedValues;
 }
 
@@ -231,7 +231,7 @@ function calcSelectedNoPrevious(rList, rangeType, data) {
         // TODO: Add Date Range here
     }
 
-    console.log(selectedValues);
+    //console.log(selectedValues);
     return selectedValues;
 }
 
@@ -281,6 +281,6 @@ export function calcSelectedRemoved(rList, rangeType, data, previousRange, selec
         // TODO: Add Date Range here
     }
 
-    console.log(selectedValues);
+    //console.log(selectedValues);
     return selectedValues;
 }
