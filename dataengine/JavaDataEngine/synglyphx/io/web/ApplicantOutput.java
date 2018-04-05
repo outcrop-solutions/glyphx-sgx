@@ -18,6 +18,7 @@ public class ApplicantOutput implements WebOutput {
 	private int topo;
 	private int alpha;
 	private String tag;
+	private String url;
 	private Map<Integer,Node> allNodes;
 
 	public ApplicantOutput(Map<Integer,Node> allNodes){
@@ -41,6 +42,7 @@ public class ApplicantOutput implements WebOutput {
 		this.topo = node.getTopo();
 		this.alpha = node.getAlpha();
 		this.tag = node.getTag();
+		this.url = node.getURL();
 		adjustValues();
 	}
 
@@ -84,11 +86,16 @@ public class ApplicantOutput implements WebOutput {
 		return tag;
 	}
 
+	public String url(){
+		return url;
+	}
+
 	private void adjustValues(){
 
 		if(((index-1)%27) == 0){//ROOT CUBE
 			scale = new double[]{1.2,1.2,1.2};
 			rotate = new double[]{0.0,-90.0,0.0};
+			geometry = allNodes.get(index+12).getGeo();
 			color = String.format("#%02x%02x%02x", allNodes.get(index+12).getCR(), allNodes.get(index+12).getCG(), allNodes.get(index+12).getCB());
 		}
 		else if(((index-1)%27) == 1){//CENTRAL CYLINDER 1

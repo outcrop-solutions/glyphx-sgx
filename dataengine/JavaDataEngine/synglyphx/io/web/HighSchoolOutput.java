@@ -18,6 +18,7 @@ public class HighSchoolOutput implements WebOutput {
 	private int topo;
 	private int alpha;
 	private String tag;
+	private String url;
 	private Map<Integer,Node> allNodes;
 
 	public HighSchoolOutput(Map<Integer,Node> allNodes){
@@ -41,6 +42,7 @@ public class HighSchoolOutput implements WebOutput {
 		this.topo = node.getTopo();
 		this.alpha = node.getAlpha();
 		this.tag = node.getTag();
+		this.url = node.getURL();
 		adjustValues();
 	}
 
@@ -82,6 +84,10 @@ public class HighSchoolOutput implements WebOutput {
 
 	public String tag(){
 		return tag;
+	}
+
+	public String url(){
+		return url;
 	}
 
 	private void adjustValues(){
