@@ -101,6 +101,7 @@ public class JsonWriter {
 	        //ArrayList<Double> ys = new ArrayList<Double>();
 
 	        ArrayList<String> json_nodes = new ArrayList<String>();
+	        ArrayList<String> json_urls = new ArrayList<String>();
 	        excluded = new ArrayList<Integer>();
 	        int i;
 	        for(i = 1; i < nodeCount; i++){
@@ -125,6 +126,10 @@ public class JsonWriter {
 	        		"\"tag\": \""+webOuput.tag()+"\"}";
 	        		json_nodes.add(json_node);
 
+	        		if(!webOuput.url().equals("nourl.html")){
+	        			json_urls.add("\""+webOuput.id()+"\": \""+webOuput.url()+"\"");
+	        		}
+
 			    }else{
 			    	excluded.add(i);
 			    }
@@ -132,7 +137,8 @@ public class JsonWriter {
 	        //System.out.println("Done adding json nodes");
 	        //System.out.println(String.valueOf(json_nodes.size()) +" json nodes to add");
 
-	        final_json += "{"+bg+","+"\"nodes\":"+json_nodes.toString()+"}";
+	        String url_dict = json_urls.toString().replace("[","{").replace("]","}");
+	        final_json += "{"+bg+","+"\"nodes\":"+json_nodes.toString()+","+"\"urls\":"+url_dict+"}";
 
 	        FileWriter file = new FileWriter(outDir+"/data.json");
 			BufferedWriter bf = new BufferedWriter(file);

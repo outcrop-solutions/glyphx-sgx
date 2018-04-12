@@ -16,5 +16,6 @@ public interface WebOutput {
 	public String topology();
 	public String alpha();
 	public String tag();
+	public String url();
 	
 }

@@ -16,6 +16,7 @@ public class StandardOutput implements WebOutput {
 	private int topo;
 	private int alpha;
 	private String tag;
+	private String url;
 	private Map<Integer,Node> allNodes;
 
 	public StandardOutput(Map<Integer,Node> allNodes){
@@ -38,6 +39,7 @@ public class StandardOutput implements WebOutput {
 		this.topo = node.getTopo();
 		this.alpha = node.getAlpha();
 		this.tag = node.getTag();
+		this.url = node.getURL();
 	}
 
 	public String position(){
@@ -78,6 +80,10 @@ public class StandardOutput implements WebOutput {
 
 	public String tag(){
 		return tag;
+	}
+
+	public String url(){
+		return url;
 	}
 
 }

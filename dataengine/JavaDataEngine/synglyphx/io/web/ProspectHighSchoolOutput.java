@@ -18,6 +18,7 @@ public class ProspectHighSchoolOutput implements WebOutput {
 	private int topo;
 	private int alpha;
 	private String tag;
+	private String url;
 	private Map<Integer,Node> allNodes;
 	private boolean finished;
 
@@ -43,6 +44,7 @@ public class ProspectHighSchoolOutput implements WebOutput {
 		this.topo = node.getTopo();
 		this.alpha = node.getAlpha();
 		this.tag = node.getTag();
+		this.url = node.getURL();
 		if(!finished){
 			if(scale[0] == 1 && scale[1] == 1 && scale[2] == 1){
 				finished = true;
@@ -90,6 +92,10 @@ public class ProspectHighSchoolOutput implements WebOutput {
 
 	public String tag(){
 		return tag;
+	}
+
+	public String url(){
+		return url;
 	}
 
 	private void adjustValues(){
