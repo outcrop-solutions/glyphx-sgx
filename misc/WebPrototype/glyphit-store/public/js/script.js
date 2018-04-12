@@ -1,4 +1,11 @@
 $( document ).ready(function() {
+
+    console.log(window.location.href);
+
+    if (window.location.href.indexOf("http://") != -1) {
+        window.location.href = window.location.href.replace("http://", "https://");
+    }
+
     $("#buyNow").addClass("disabled");
     $("#createButton").addClass("disabled");
 });

@@ -119,7 +119,9 @@ class ViewsManager extends React.Component {
 		var datasourceId;
 		var filterAllowedColumnList;
 		var sdtPath;
-		var index;
+        var index;
+        
+        console.log("-----------------------Stage 1 reached");
 		
 		if (Array.isArray(extra)) { 
 		//[.originalVizName,.time,.date,.frontEndFilters,.datasourceId,.filterAllowedColumnList,sdtPath,tableName]
@@ -138,15 +140,16 @@ class ViewsManager extends React.Component {
 			originalVizName = extra.originalVizName;
 			datasourceId = extra.datasourceId;
 			filterAllowedColumnList = extra.filterAllowedColumnList;
-		}
-		
-		
-		
+        }
+
+        console.log("-----------------------Stage 2 reached");
 		
 		var currentDate = new Date(); //If you dont want it to update on 
 		makeServerCall('checkFrontEndFilterQuery',
 			function(res){
-				res = JSON.parse(res);
+                res = JSON.parse(res);
+                
+                console.log("-----------------------Stage 3 reached");
 
 				// Check if match flag is true means that at least one row was returned using the query.
 				if (res.match == true || res.match == "true") {
@@ -306,14 +309,13 @@ class ViewsManager extends React.Component {
         }
         console.log(mandrList);
         for (var i = admList.length - 1; i > -1; i--) {
-            if (admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants") {
+            if (admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants" && admList[i][0] != "Applicants by High School" && admList[i][0] != "Review Committee") {
                 admList.splice(i, 1);
             }
         }
         console.log(admList);
 
         faList = [];
-        customList = [];
 
         /*
         for (var i = faList.length - 1; i > -1; i--) {
@@ -321,14 +323,18 @@ class ViewsManager extends React.Component {
                 faList.splice(i, 1);
             }
         }
+
+        
+
         console.log(faList);
+        */
+
         for (var i = customList.length - 1; i > -1; i--) {
-            if (customList[i][0] != "" && customList[i][0] != "" && customList[i][0] != "") {
+            if (customList[i][0] != "Applicants" && customList[i][0] != "Pre-College" && customList[i][0] != "Adversity" && customList[i][0] != "First Source") {
                 customList.splice(i, 1);
             }
         }
         console.log(customList);
-        */
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (

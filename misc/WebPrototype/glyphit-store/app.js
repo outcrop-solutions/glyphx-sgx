@@ -7,13 +7,10 @@ const session = require('express-session');
 const mysql = require('sync-mysql');
 const util = require('util');
 const crypto = require('crypto');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
-var options = {
-    key: fs.readFileSync('/home/ec2-user/glyphit-store/privateKey.key'),
-    cert: fs.readFileSync('/home/ec2-user/glyphit-store/certificate.crt')
-};
 
 mySqlConnection = new mysql({
     host     : 'sgxinstance.cqu1pnqua5at.us-west-2.rds.amazonaws.com',
@@ -144,8 +141,8 @@ app.post('/pay', (req, res) => {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://ec2-52-11-58-74.us-west-2.compute.amazonaws.com:5000/success",
-            "cancel_url": "http://ec2-52-11-58-74.us-west-2.compute.amazonaws.com:5000/"
+            "return_url": "https://glyphit.com/success",
+            "cancel_url": "https://glyphit.com/"
         },
         "transactions": [{
             "item_list": {
@@ -475,7 +472,33 @@ app.get('/cancel', (req, res) => res.render('cancel'));
 
 //app.listen(5000, () => console.log('Server Started'));
 
-https.createServer(options, app).listen(443);
+
+var options = {
+    key: fs.readFileSync('/home/ec2-user/glyphit-store/server.key'),
+    cert: fs.readFileSync('/home/ec2-user/glyphit-store/f292bd2f5f412daf.crt'),
+    ca: [
+        fs.readFileSync('/home/ec2-user/glyphit-store/gd_bundle-g1.crt'),
+        fs.readFileSync('/home/ec2-user/glyphit-store/gd_bundle-g2.crt'),
+        fs.readFileSync('/home/ec2-user/glyphit-store/gd_bundle-g3.crt')
+    ],
+};
+
+
+
+/*
+var options = {
+    key: fs.readFileSync('/home/ec2-user/glyphit-store/key.pem'),
+    cert: fs.readFileSync('/home/ec2-user/glyphit-store/cert.pem'),
+    ca: fs.readFileSync('/home/ec2-user/glyphit-store/gdBundle.pem'),
+};
+*/
+
+
+//var httpServer = http.createServer(app);
+var httpsServer = https.createServer(options, app);
+
+app.listen(80);
+httpsServer.listen(443);
 
 /*
 var server = https.createServer(options, app).listen(5000, function(){

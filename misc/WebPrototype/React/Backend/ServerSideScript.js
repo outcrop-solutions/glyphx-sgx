@@ -102,6 +102,7 @@ var now = require('performance-now');
 var path = require("path");
 var fs = require('fs');
 var util = require('util');
+const https = require('https');
 
 
 //Sql and promise settings
@@ -122,8 +123,6 @@ let twilio = require("twilio");
 
 const accountSid = "ACf8bdf11b425c1a2b4dc32fd8e269d030";
 const authToken = "c943d8e261b1a814c75ca2cd7319798a";
-//const accountSid = "AC4ac45e4fe73943f85369e6d6b90074cd";
-//const authToken = "0628a5b87c40ba6b576d049bc66c9a11";
 const serviceSid = "ISf8431dd8f893479cac16a5bcca564c1a";
 const apiSid = "SKac248c8e57613ec7645dd6ad40cb97a0";
 const apiSecret = "W33ki0JguPHEnl8IWrnrziblhFsO3zAb";
@@ -180,6 +179,13 @@ app.use(session(
  * For serving the application via this server.
  */
 app.use(express.static(path.join(__dirname, '.')));
+
+/*
+app.get('/*', (req, res) => {
+	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); 
+	res.sendFile('/home/ec2-user/WebViewer/build/index.html');
+});
+*/
 
 /**
  * TWILIO SERVER ACTIONS
@@ -384,7 +390,7 @@ function generateTableSchema(data) {
 	
 	for (var index = 0; index < keys.length; index++) {
 		type = isNaN(data[keys[index]]) ? "TEXT" : "INT";
-		query = query + " " + keys[index] + " " + type;
+		query = query + " `" + keys[index] + "` " + type;
 		
 		if (index != keys.length-1) {
 			query = query + ",";
@@ -1257,7 +1263,12 @@ app.post('/loadVisualization', async (req, res, next) => {
 	
 	// Update the query to only bring in filter allowed column list.
 	try {
-		filterAllowedColumnsQuery = query.replace("*", "rowid," + filterAllowedColumnList.toString());
+		if (filterAllowedColumnList.length > 0) {
+			filterAllowedColumnsQuery = query.replace("*", "rowid," + filterAllowedColumnList.toString());
+		}
+		else {
+			filterAllowedColumnsQuery = query.replace("*", "rowid, *");
+		}
 		filterAllowedColumnsQuery = filterAllowedColumnsQuery ? filterAllowedColumnsQuery.split("WHERE")[0] : query;
 		console.log(filterAllowedColumnsQuery);
 	}
@@ -1287,12 +1298,16 @@ app.post('/loadVisualization', async (req, res, next) => {
 			// Create the Create query for ther user db.
 			var createQuery = generateTableSchema(parentTableDataRows[0]);
 			createQuery = createQuery.replace('?', tableName);
+
+			console.log("\n\n\n\nCREATE QUERY");
+			console.log(createQuery);
 			
 			// Create the table inside the user db.
 			try {
 				await usersDb.run(createQuery)
 			}
 			catch(err) {
+				console.log("THIS AWAIT DOESNT WORK");
 				console.log(err);
 			}
 			
@@ -1459,6 +1474,18 @@ app.get('/logout', function(req, res) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 */
 
+var options = {
+    key: fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/server.key'),
+    cert: fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/f292bd2f5f412daf.crt'),
+    ca: [
+        fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/gd_bundle-g1.crt'),
+        fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/gd_bundle-g2.crt'),
+        fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/gd_bundle-g3.crt')
+    ],
+};
+
+var httpsServer = https.createServer(options, app);
+
 Promise.resolve()
   // First, try connect to the login database
   .then(() => mySqlConnection = new mysql({
@@ -1469,6 +1496,8 @@ Promise.resolve()
 				port: '3306'
 			})
 	)
-  .then(() => app.listen(port))
+  .then(() => httpsServer.listen(5001))
   .then(() => console.log('Server is up and running!'))
   .catch(err => console.error(err.stack));
+
+  //.then(() => httpsServer.listen(443))

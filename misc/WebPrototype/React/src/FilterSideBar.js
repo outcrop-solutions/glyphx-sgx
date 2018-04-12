@@ -51,6 +51,8 @@ class FilterSideBar extends React.Component {
    loadVisualization() {
         var context = this;
 
+        this.props.VizParams;
+
         debugger;
 
         makeServerCall('loadVisualization',
@@ -60,6 +62,8 @@ class FilterSideBar extends React.Component {
                 if (typeof res == 'string') {
                     res = JSON.parse(res);
                 }
+
+                debugger;
                 
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
@@ -199,7 +203,20 @@ class FilterSideBar extends React.Component {
         var record = null;
         var value = "";
         var keys = Object.keys(resObj[0]);
-        var allowedColumns = this.props.VizParams.filterAllowedColumnList ? this.props.VizParams.filterAllowedColumnList : null;
+
+        debugger;
+
+        var allowedColumns;
+        
+        if (this.props.VizParams.filterAllowedColumnList && this.props.VizParams.filterAllowedColumnList.length > 0) {
+            allowedColumns = this.props.VizParams.filterAllowedColumnList;
+        }
+        else {
+            var allowedColumns = keys;
+            var rowidIndex = keys.indexOf("rowid");
+
+            allowedColumns.splice(rowidIndex, 1);
+        }
 
         keys.forEach(
             function(val) {

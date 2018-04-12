@@ -27,6 +27,10 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
+        
+        if (window.location.href.indexOf("http://") != -1 && window.location.href.indexOf("localhost") == -1 && window.location.href.indexOf("ec2-34-215-50-82") == -1) {
+            window.location.href = window.location.href.replace("http://", "https://");
+        }
 
         // Initial stuff for positioning the login button
         hideSplashScreen();
@@ -375,6 +379,12 @@ class Login extends React.Component {
                                     }}
                                 />
                             </Flexbox>
+
+                            <div style = {{ margin: "-4px 0px -16px 0px" }} >
+                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
+                                    <a onClick = { () => window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank') } style = {{ cursor: 'pointer' }} >Forgot password?</a>
+                                </label>
+                            </div>
                             
                             <label className = "loginFormOtherElements" id = "errPass" style = {{ color: 'red' }}  />
 

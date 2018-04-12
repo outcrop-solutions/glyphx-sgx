@@ -239,7 +239,7 @@ class allViewsModal extends React.Component {
 		var index = this.checkSelected(selection, sList);
 
 		// Allow multiselection so long as the selectAll is allowed for that column and the ctrl key is pressed
-		if ( !e.ctrlKey || !(this.state.selectAll[selection[0]] === "true") ) {
+		if ( (!e.ctrlKey && !e.shiftKey && !e.altKey) || !(this.state.selectAll[selection[0]] === "true") ) {
 			if (index !== false) {
 				sList.splice(index[0], 1);
 				index = false;
@@ -647,6 +647,8 @@ class allViewsModal extends React.Component {
 	}
 
 	onLaunchResultCallback(success) {
+		console.log("-----------------------Stage 4 reached");
+
 		if (success) {
 			this.props.history.push('/glyph-viewer');
 		}
