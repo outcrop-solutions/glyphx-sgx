@@ -71,7 +71,7 @@ var loadCustomScene = function (demoConstructor, then) {
 // Render loop
 var renderFunction = function () {
     // Fps
-    divFps.innerHTML = engine.getFps().toFixed() + " fps";
+    //divFps.innerHTML = engine.getFps().toFixed() + " fps";
 
     // Render scene
     if (scene) {

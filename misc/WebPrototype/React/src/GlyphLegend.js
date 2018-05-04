@@ -82,8 +82,13 @@ class GlyphLegend extends React.Component {
                         <label style = {{ margin: "6px 0px 0px 5px", float: "left" }} > LEGEND </label>
                         <FontIcon 
                             className = "fa fa-window-close cursorHand" 
-                            style = {{ color: "#ffffff",  fontSize: "27px", margin: "0px -2px 0px 0px", float: "right", paddingRight: "2px" }} 
+                            style = {{ color: "#ffffff",  fontSize: "25px", margin: "1px 0px 0px 0px", float: "right", paddingRight: "2px" }} 
                             onClick = { () => this.props.dispatch(editModalDisplay(false)) } 
+                        />
+                        <FontIcon 
+                            className = "fa fa-external-link cursorHand" 
+                            style = {{ color: "#ffffff",  fontSize: "24px", margin: "2px 3px 0px 0px", float: "right", paddingRight: "2px" }} 
+                            onClick = { () => window.open(window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.state.imgPath)) } 
                         />
                     </div>
 

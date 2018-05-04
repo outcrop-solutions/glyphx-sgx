@@ -75,7 +75,7 @@ class FilterTabs extends React.Component {
                 if (value === 0) {
                     if (document.getElementById(this.state.tableID)) {
                         document.getElementById(this.state.rangeID).style.maxHeight = "0px";
-                        document.getElementById(this.state.tableID).style.maxHeight = "393px";
+                        document.getElementById(this.state.tableID).style.maxHeight = "1000px";
                         this.scroll(this.state.tableID);
                     }
                 }
@@ -149,7 +149,7 @@ class FilterTabs extends React.Component {
                             padding: "0px"
                         }}           
                     >
-                        <div id = { this.state.tableID } style = {{ maxHeight: "393px", overflow: "hidden" }} >
+                        <div id = { this.state.tableID } style = {{ maxHeight: "1000px", overflow: "hidden" }} >
                             <div 
                                 style = {{ 
                                     backgroundColor: "rgba(128, 128, 128, 0.36)", 

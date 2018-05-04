@@ -123,7 +123,9 @@ let twilio = require("twilio");
 
 const accountSid = "ACf8bdf11b425c1a2b4dc32fd8e269d030";
 const authToken = "c943d8e261b1a814c75ca2cd7319798a";
-const serviceSid = "ISf8431dd8f893479cac16a5bcca564c1a";
+//testing chatid
+//const serviceSid = "ISf8431dd8f893479cac16a5bcca564c1a";
+const serviceSid = "ISf753cb11ffdd4d06b71ff9d57e97aedf";
 const apiSid = "SKac248c8e57613ec7645dd6ad40cb97a0";
 const apiSecret = "W33ki0JguPHEnl8IWrnrziblhFsO3zAb";
 

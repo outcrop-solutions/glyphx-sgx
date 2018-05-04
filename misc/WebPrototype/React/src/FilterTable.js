@@ -103,7 +103,8 @@ class FilterTable extends React.Component {
             tableData: props.tableData,
             flatData: [],
             indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
-            searchTerm: ""
+            searchTerm: "",
+            height: 350
         };
     }
 
@@ -127,7 +128,8 @@ class FilterTable extends React.Component {
                 this.state.flatData != nextState.flatData ||
                 this.state.searchTerm != nextState.searchTerm ||
                 this.props.tableData != nextProps.tableData ||
-                this.props.ShowAllTables != nextProps.ShowAllTables
+                this.props.ShowAllTables != nextProps.ShowAllTables ||
+                this.state.height != nextState.height
                 );
 
         /*
@@ -738,10 +740,10 @@ class FilterTable extends React.Component {
                 <div style = {{ padding: "0px 15px" }} >
                     <div 
                         style = {{ 
-                            borderBottomRightRadius: "5px",
-                            borderBottomLeftRadius: "5px", 
+                            //borderBottomRightRadius: "5px",
+                            //borderBottomLeftRadius: "5px", 
                             overflow: "hidden" ,
-                            height: (24 * (rows.length + 1) > 350 ? 350 : 24 * (rows.length + 1))
+                            height: (24 * (rows.length + 1) > this.state.height ? this.state.height + 16 : 24 * (rows.length + 1))
                         }} 
                         onMouseEnter = { this.mouseIn } 
                         onMouseLeave = { this.mouseOut } >
@@ -749,10 +751,10 @@ class FilterTable extends React.Component {
 
                         <Table
                             width = { 365 }
-                            height = { 24 * (rows.length + 1) > 350 ? 350 : 24 * (rows.length + 1) }
+                            height = { 24 * (rows.length + 1) > this.state.height ? this.state.height : 24 * (rows.length + 1) }
                             headerHeight = { 24 }
                             rowHeight = { 24 }
-                            gridStyle = {{ backgroundColor: "white", color: "black", marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > 350 ? "0" : "-10px" }}
+                            gridStyle = {{ backgroundColor: "white", color: "black", marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > this.state.height ? "0" : "-10px" }}
                             headerStyle = {{ color: "black" }}
                             rowStyle = {{ borderBottom: "solid 1px #d3d3d3" }}
                             rowCount = { rows.length }
@@ -770,7 +772,23 @@ class FilterTable extends React.Component {
                                 label = 'Count'
                                 dataKey = 'count'
                             />
-                        </Table>,
+                        </Table>
+
+                        <RaisedButton 
+                            primary = { true } 
+                            onClick = { () => this.setState({ height: this.state.height == 350 ? 600 : 350 }) }
+                            buttonStyle = {{ backgroundColor: "#b6b6b5", width: "364px" }}
+                            style = {{ height: '16px', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
+                        >
+                            <i 
+                                className = { this.state.height == 350 ? "fa fa-caret-down" : "fa fa-caret-up" }
+                                style = {{
+                                    fontSize: '1.6em',
+                                    margin: "-2px 0px 0px 0px",
+                                    color: "#000",
+                                }}
+                            /> 
+                        </RaisedButton>
 
                         {/*
                         <Table

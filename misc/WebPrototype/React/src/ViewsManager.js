@@ -309,7 +309,7 @@ class ViewsManager extends React.Component {
         }
         console.log(mandrList);
         for (var i = admList.length - 1; i > -1; i--) {
-            if (admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants" && admList[i][0] != "Applicants by High School" && admList[i][0] != "Review Committee") {
+            if (admList[i][0] != "Current Year RC with Prior Year Admits" && admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants" && admList[i][0] != "Applicants by High School" && admList[i][0] != "Review Committee") {
                 admList.splice(i, 1);
             }
         }
