@@ -1,11 +1,12 @@
 INDEX: 
-1. File Dictionary
-2. 1-to-1 chat
-3. How to add a new viz to allowed list
-4. How to make a new build and push to server
-5. How to hook up announcements to backend
-6. Implementation ideas for creating standalone vizs without a login
-7. Process to change the views manager funnel for viewer.synglyphx.com
+1) File Dictionary
+2) 1-to-1 chat
+3) How to add a new viz to allowed list
+4) How to make a new build and push to server
+5) How to hook up announcements to backend
+6) Implementation ideas for creating standalone vizs without a login
+7) Process to change the views manager funnel for viewer.synglyphx.com
+
 
 
 1. FILE DICTIONARY (Each file will have more documentation in the form of comments)
