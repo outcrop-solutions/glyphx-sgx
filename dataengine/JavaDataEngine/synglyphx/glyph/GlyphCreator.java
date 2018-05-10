@@ -130,8 +130,8 @@ public class GlyphCreator {
 				double y1;
 				double y3;
 				if(download && nodeTemp.getChildOf() == 0 && (fieldNames.get(i).equals("PositionX") || fieldNames.get(i).equals("PositionY"))){
-					y1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
-					y3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
+					y1 = Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
+					y3 = Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}else{
 					y1 = ranges.get(fieldNames.get(i)).get(0);
 					y3 = ranges.get(fieldNames.get(i)).get(1);
@@ -142,17 +142,17 @@ public class GlyphCreator {
 					x1 = nodeTemp.getMinMaxField(input.get(fieldNames.get(i))).get(0);
 					x3 = nodeTemp.getMinMaxField(input.get(fieldNames.get(i))).get(1);
 				}else{
-					x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
-					x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
+					x1 = Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
+					x3 = Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 				}
-				double x2 = Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))); //returns exact value in this row
+				double x2 = Functions.parseDouble(cursor.get(input.get(fieldNames.get(i)))); //returns exact value in this row
 				if(x3 > x1){
-					if(x3 < Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
-						x3 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
+					if(x3 < Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1))){
+						x3 = Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1));
 						nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
 					}
-					if(x1 > Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
-						x1 = Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
+					if(x1 > Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0))){
+						x1 = Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(0));
 						nodeTemp.updateMinMaxField(input.get(fieldNames.get(i)), x1, x3);
 					}
 				}
@@ -189,16 +189,16 @@ public class GlyphCreator {
 				setValues.put(fieldNames.get(i), csvData.get(currData).getGrid().getPointValue(fieldNames.get(i), y1, y3, cursor.getCurrentIndex()));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Numeric Field To Value")){
-				setValues.put(fieldNames.get(i), Functions.numericToValue(Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.numericToValue(Functions.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Text Field To Value")){
 				setValues.put(fieldNames.get(i), Functions.textToValue(cursor.get(input.get(fieldNames.get(i))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("Range To Value")){
-				setValues.put(fieldNames.get(i), Functions.rangeToValue(Double.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
+				setValues.put(fieldNames.get(i), Functions.rangeToValue(Functions.parseDouble(cursor.get(input.get(fieldNames.get(i)))),nodeTemp.getKeyValueMap().get(fieldNames.get(i))));
 			}
 			else if(functions.get(fieldNames.get(i)).equals("None")){
-				setValues.put(fieldNames.get(i), Double.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
+				setValues.put(fieldNames.get(i), Functions.parseDouble(csvData.get(currData).getDataFrame().getMinMaxTable().get(input.get(fieldNames.get(i))).get(1)));
 			}
 		}
 

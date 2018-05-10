@@ -7,7 +7,10 @@ public class WebOutputSelector {
 
 	public static WebOutput getWebOutput(Map<Integer,Node> allNodes){
 
-		if(isFirstSourceGlyph(allNodes)){
+		if(isCurrentYearRCGlyph(allNodes)){
+			return new CurrentYearRCOutput(allNodes);
+		}
+		else if(isFirstSourceGlyph(allNodes)){
 			return new FirstSourceOutput(allNodes);
 		}
 		else if(isAdversityGlyph(allNodes)){
@@ -46,6 +49,18 @@ public class WebOutputSelector {
 			if(matchNodeScale(allNodes.get(2), 0.3, 0.3, 0.3) && matchNodeScale(allNodes.get(5), 0.3, 0.3, 0.35) &&
 				matchNodeScale(allNodes.get(11), 0.3, 0.3, 0.25) && matchNodeScale(allNodes.get(14), 0.15, 0.15, 0.225) &&
 				matchNodeScale(allNodes.get(17), 0.3, 0.3, 0.35) && matchNodeScale(allNodes.get(25), 1.0, 1.0, 0.3)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isCurrentYearRCGlyph(Map<Integer,Node> allNodes){
+
+		if(allNodes.size() >= 30){
+			if(matchNodeScale(allNodes.get(2), 0.3, 0.3, 0.3) && matchNodeScale(allNodes.get(5), 0.3, 0.3, 0.35) &&
+				matchNodeScale(allNodes.get(11), 0.3, 0.3, 0.25) && matchNodeScale(allNodes.get(14), 0.15, 0.15, 0.225) &&
+				matchNodeScale(allNodes.get(17), 0.3, 0.3, 0.35) && matchNodeScale(allNodes.get(26), 0.5, 0.5, 0.15)){
 				return true;
 			}
 		}

@@ -148,6 +148,10 @@ public class Functions {
 		}
 		return output;
 	}
+
+	public static Double parseDouble(String num){
+		return isNumeric(num) ? Double.parseDouble(num) : 0.0;
+	}
 /*
 	public static void main(String[] args){
 
