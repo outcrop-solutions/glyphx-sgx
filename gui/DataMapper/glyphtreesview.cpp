@@ -12,6 +12,7 @@
 #include "datatransformmapping.h"
 #include "DMGlobal.h"
 #include "GlyphTreesViewMementoBase.h"
+#include <QtWidgets/QMessageBox>
 
 using namespace SynGlyphX;
 class GlyphTreesViewMementoImpl : public GlyphTreesViewMemento {
@@ -223,6 +224,9 @@ void GlyphTreesView::ExportGlyphToFile() {
 		return;
 	}
 
+	QMessageBox::StandardButton result = QMessageBox::warning(this, tr("Keep Properties"), tr("Do you wish to retain glyph properties?"), QMessageBox::Yes | QMessageBox::No);
+	bool keepProperties = result == QMessageBox::Yes ? true : false;
+
 	QSettings settings;
 	settings.beginGroup("ExportGlyphFile");
 	QString glyphFilename = QFileDialog::getSaveFileName(this, tr("Export Glyph To File"), settings.value("LastDir", QDir::currentPath()).toString(), "SynGlyphX Glyph Template Files (*.sgt *.csv)");
@@ -232,6 +236,9 @@ void GlyphTreesView::ExportGlyphToFile() {
 
 		SynGlyphX::DataMappingGlyphGraph::SharedPtr glyphGraph = std::make_shared<SynGlyphX::DataMappingGlyphGraph>(m_sourceModel->GetSubgraph(filterModel->mapToSource(selectedItems.front()), true));
 		glyphGraph->ClearAllInputBindings();
+		if (!keepProperties){
+			glyphGraph->ResetAllFunctions();
+		}
 
 		if (glyphFilename.endsWith(".sgt")) {
 

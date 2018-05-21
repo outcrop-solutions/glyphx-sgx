@@ -371,6 +371,25 @@ namespace SynGlyphX {
 		}
 	}
 
+	void DataMappingGlyph::ResetAllFunctions() {
+
+		m_position[0].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_position[1].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_position[2].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_rotation[0].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_rotation[1].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_rotation[2].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_scale[0].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_scale[1].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_scale[2].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_color.SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_transparency.SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_rotationRate[0].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_rotationRate[1].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		m_rotationRate[2].SetMappingFunctionData(std::make_shared<MappingFunctionData>(MappingFunctionData::Function::LinearInterpolation));
+		
+	}
+
 	const InputBinding& DataMappingGlyph::GetInputBinding(MappableField field) const {
 
 		if (field == MappableField::PositionX) {

@@ -195,6 +195,19 @@ namespace SynGlyphX {
 		ClearAllInputBindings(*this, GetRoot());
 	}
 
+	void DataMappingGlyphGraph::ResetAllFunctions() {
+		
+		ResetAllFunctions(*this, GetRoot());
+	}
+
+	void DataMappingGlyphGraph::ResetAllFunctions(DataMappingGlyphGraph& graph, const GlyphIterator& vertex) {
+		auto node = vertex.constify();
+		node.deconstify()->second.ResetAllFunctions();
+		for (unsigned int i = 0; i < graph.children(vertex); ++i) {
+			ResetAllFunctions(graph, graph.child(vertex, i));
+		}
+	}
+
 	void DataMappingGlyphGraph::ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex) {
         auto cvertex = vertex.constify();
 		ClearAllInputBindings(cvertex);

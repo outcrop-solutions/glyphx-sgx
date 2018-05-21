@@ -78,6 +78,7 @@ namespace SynGlyphX {
 
 		MappingFunctionData::ConstSharedPtr GetMappingFunctionData(MappableField field) const;
 		void ClearFieldGroup(const std::wstring& fieldGroupName);
+		void ResetAllFunctions();
 
 		bool IsPositionXYBoundToInputFields() const;
 		bool IsAnInputFieldBoundToAPosition() const;

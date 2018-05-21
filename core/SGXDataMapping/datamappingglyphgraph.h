@@ -68,6 +68,7 @@ namespace SynGlyphX {
 		void ClearAllInputBindings(DataMappingGlyphGraph::ConstGlyphIterator& node);
 		void ClearInputFieldBindings(const std::wstring& inputfield);
 		void ClearAllInputBindings();
+		void ResetAllFunctions();
 
 		//const InputFieldMap& GetInputFields() const;
 
@@ -102,6 +103,7 @@ namespace SynGlyphX {
 		void ClearAllInputBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
 		void ClearInputFieldBindings(DataMappingGlyphGraph& graph, const GlyphIterator& vertex, const std::wstring& inputfield);
 		void ClearFieldGroup(const std::wstring& fieldGroupName, const GlyphIterator& vertex);
+		void ResetAllFunctions(DataMappingGlyphGraph& graph, const GlyphIterator& vertex);
 
 		void ExportChildrenToPropertyTree(const DataMappingGlyphGraph::ConstGlyphIterator& parent, boost::property_tree::wptree& propertyTreeParent) const;
 		void ProcessPropertyTreeChildren(const DataMappingGlyphGraph::GlyphIterator& parent, const boost::property_tree::wptree& propertyTree);
