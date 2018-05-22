@@ -164,10 +164,14 @@ public class Node {
 
 	public void setNumChildren(int i){
 		this.numChildren = i;
+		if(i > 0 && scale_x == 0 && scale_y == 0 && scale_z == 0){
+			setSX(0.01);
+			setSY(0.01);
+			setSZ(0.01);
+		}
 	}
 
-	public void setLabel(int l)
-	{
+	public void setLabel(int l){
 		label = l;
 	}
 //END SETTERS
