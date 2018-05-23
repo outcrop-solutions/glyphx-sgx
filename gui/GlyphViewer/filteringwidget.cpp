@@ -235,8 +235,11 @@ void FilteringWidget::OnSubsetVisualizationCreated(const QString& subsetVisualiz
 	if (m_loadSubsetVisualization) {
 
 		if (m_loadSubsetVisualizationInNewInstance) {
-
+#ifdef WIN32
 			QProcess::startDetached(QCoreApplication::applicationFilePath(), QStringList() << subsetVisualizationFilename);
+#elif __APPLE__
+			emit LoadSubsetVisualization(subsetVisualizationFilename);
+#endif
 		}
 		else {
 

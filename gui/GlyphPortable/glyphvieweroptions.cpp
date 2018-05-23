@@ -11,7 +11,7 @@ GlyphViewerOptions::GlyphViewerOptions() :
 	m_showSceneAxisObject(true),
     m_hideUnselectedGlyphTrees(false),
 	m_loadSubsetVisualization(true),
-	m_loadSubsetVisualizationInNewInstance(true),
+	m_loadSubsetVisualizationInNewInstance(false),
 	m_FilteredGlyphOpacity(0.5f),
     m_showMessageWhenImagesDidNotDownload(true),
     m_showHomePage(true),
