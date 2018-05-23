@@ -15,7 +15,7 @@ namespace SynGlyphX {
 			addItem(defaultBaseMap.second, defaultBaseMap.first);
 		}
 
-		SetDefaultBaseImage(DefaultBaseImageProperties::Type::World);
+		SetDefaultBaseImage(DefaultBaseImageProperties::Type::Clear);
 	}
 
 	DefaultBaseImagesComboBox::~DefaultBaseImagesComboBox()

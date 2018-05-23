@@ -449,7 +449,7 @@ void GlyphDesignerWindow::ReadSettings(){
 
 		m_showAnimation->toggle();
 	}
-	m_3dView->SetBaseImage(SynGlyphX::DefaultBaseImageProperties::s_typeStrings.right.at(settings.value("baseImage", "World").toString().toStdWString()));
+	m_3dView->SetBaseImage(SynGlyphX::DefaultBaseImageProperties::s_typeStrings.right.at(settings.value("baseImage", "Clear").toString().toStdWString()));
 	settings.endGroup();
 }
 

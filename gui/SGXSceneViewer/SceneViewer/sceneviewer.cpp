@@ -271,7 +271,7 @@ namespace SynGlyphX
 		tex_effect = hal::device::load_effect("shaders/texture.vert", nullptr, "shaders/texture.frag");
 		drag_effect = hal::device::load_effect("shaders/drag_select.vert", nullptr, "shaders/drag_select.frag");
 
-		default_base_texture = hal::device::load_texture("DefaultBaseImages/World.png");
+		default_base_texture = hal::device::load_texture("DefaultBaseImages/Clear.png");
 
 		float square[]
 		{
