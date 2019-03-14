@@ -28,6 +28,9 @@ public class WebOutputSelector {
 		else if(isReviewCommitteeGlyph(allNodes)){
 			return new ReviewCommitteeOutput(allNodes);
 		}
+		else if(isRetentionGlyph(allNodes)){
+			return new RetentionOutput(allNodes);
+		}
 		return new StandardOutput(allNodes);
 	}
 
@@ -109,6 +112,18 @@ public class WebOutputSelector {
 			if(matchNodeScale(allNodes.get(1), 1.0, 1.0, 0.4) && matchNodeScale(allNodes.get(2), 1.0, 1.0, 2.5) &&
 				matchNodeScale(allNodes.get(17), 1.0, 1.0, 1.0) && matchNodeScale(allNodes.get(22), 1.0, 1.0, 0.8) &&
 				matchNodeScale(allNodes.get(31), 1.0, 1.0, 0.8) && matchNodeScale(allNodes.get(35), 1.0, 1.0, 0.8)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean isRetentionGlyph(Map<Integer,Node> allNodes){
+
+		if(allNodes.size() >= 18){
+			if(matchNodeScale(allNodes.get(2), 3.0, 3.0, 1.0) && matchNodeScale(allNodes.get(6), 0.7, 0.7, 2.0) &&
+				matchNodeScale(allNodes.get(11), 0.5, 0.5, 1.0) && matchNodeScale(allNodes.get(13), 1.0, 1.0, 1.5) &&
+				matchNodeScale(allNodes.get(14), 2.5, 2.5, 0.25) && matchNodeScale(allNodes.get(16), 1.2, 1.2, 1.2)){
 				return true;
 			}
 		}

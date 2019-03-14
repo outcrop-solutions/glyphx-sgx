@@ -261,7 +261,7 @@ class ViewsManager extends React.Component {
         var context = this;
         
         var funnelData = this.props.funnelData;
-        var mandrList, admList, faList, customList;
+        var mandrList, admList, faList, customList, retentionList;
 
         if (funnelData["Marketing and Recruiting"]) {
             mandrList = funnelData["Marketing and Recruiting"];
@@ -330,11 +330,17 @@ class ViewsManager extends React.Component {
         */
 
         for (var i = customList.length - 1; i > -1; i--) {
-            if (customList[i][0] != "Applicants" && customList[i][0] != "Pre-College" && customList[i][0] != "Adversity" && customList[i][0] != "First Source") {
+            if (customList[i][0] != "Applicants" && customList[i][0] != "Pre-College" && customList[i][0] != "Adversity" && customList[i][0] != "First Source" && customList[i][0] != "Retention Geo" && customList[i][0] != "Retention Non Geo") {
                 customList.splice(i, 1);
             }
         }
         console.log(customList);
+
+        for (var i = mandrList.length - 1; i > -1; i--) {
+            if (mandrList[i][0] != "Prospects" && mandrList[i][0] != "High School Profiles") {
+                mandrList.splice(i, 1);
+            }
+        }
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (

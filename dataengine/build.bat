@@ -77,6 +77,8 @@ cd %outpath%
 %jcmd%\jar cf dataengine.jar DataEngine.class GlyphEngine.class UserAccessControls.class synglyphx\data\*.class synglyphx\glyph\*.class synglyphx\io\*.class synglyphx\io\web\*.class synglyphx\util\*.class synglyphx\jdbc\*.class synglyphx\jdbc\driver\*.class synglyphx\link\*.class synglyphx\user\*.class
 
 xcopy /s /y dataengine.jar D:\Users\Bryan\Desktop\WebEngine\Demo\Independent\lib\dataengine.jar
+xcopy /s /y dataengine.jar D:\Documents\GitHub\sgx\bin\Win64\Release\dataengine.jar
+xcopy /s /y dataengine.jar D:\Documents\GitHub\sgx\bin\Win64\Debug\dataengine.jar
 
 if not "%~1"=="" (
 

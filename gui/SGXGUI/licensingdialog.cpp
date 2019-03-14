@@ -118,7 +118,7 @@ namespace SynGlyphX {
 
 		if (licenseStatus == 0) {
 
-			if (numberOfDaysLeft == 0) {
+			if (numberOfDaysLeft > 10950) {
 
 				return tr("Permanent license");
 			}

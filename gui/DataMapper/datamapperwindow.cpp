@@ -508,7 +508,7 @@ bool DataMapperWindow::IsUserLoggedIn() {
 		return true;
 	}
 	else{
-		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+		//m_dataEngineConnection->UserAccessControls()->InitializeConnection();
 		if (logged){
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
 			if (valid == 1 || valid == 2){
@@ -521,6 +521,7 @@ bool DataMapperWindow::IsUserLoggedIn() {
 
 void DataMapperWindow::Login(){
 
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	if (loginWidget->Login()){
 		MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		UpdateUserMenu();
@@ -540,6 +541,7 @@ void DataMapperWindow::Login(){
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 	}
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void DataMapperWindow::UpdateUserMenu(){

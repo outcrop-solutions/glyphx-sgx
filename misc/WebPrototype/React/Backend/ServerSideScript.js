@@ -1478,7 +1478,7 @@ app.get('/logout', function(req, res) {
 
 var options = {
     key: fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/server.key'),
-    cert: fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/f292bd2f5f412daf.crt'),
+    cert: fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/ca04d53072c1ea68.crt'),
     ca: [
         fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/gd_bundle-g1.crt'),
         fs.readFileSync('/home/ec2-user/WebViewer/WebViewerServerSide/gd_bundle-g2.crt'),

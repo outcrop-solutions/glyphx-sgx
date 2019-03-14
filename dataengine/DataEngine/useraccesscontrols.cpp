@@ -73,7 +73,7 @@ namespace DataEngine
 				jstring vn = jniEnv->NewStringUTF(appVersion.toStdString().c_str());
 				valid = jniEnv->CallStaticIntMethod(jcls, methodId, un, pw, vn);
 
-				if (jniEnv->ExceptionCheck()) {
+				if (jniEnv->ExceptionOccurred()) {
 					jniEnv->ExceptionDescribe();
 					jniEnv->ExceptionClear();
 				}
@@ -84,6 +84,9 @@ namespace DataEngine
 			settings.beginGroup("LoggedInUser");
 			settings.setValue("StayLogged", false);
 			settings.endGroup();
+		}
+		else if (valid == 1){
+			validConnection = true;
 		}
 		return valid;
 	}

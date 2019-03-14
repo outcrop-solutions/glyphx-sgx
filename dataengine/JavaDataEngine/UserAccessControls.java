@@ -2,9 +2,11 @@
 import java.sql.*;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.io.File;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
+import synglyphx.user.SGXAuthAPI;
 import synglyphx.user.User;
 import synglyphx.user.Syncer;
 import synglyphx.user.UserFile;
@@ -12,6 +14,7 @@ import synglyphx.user.SecurityGroup;
 import synglyphx.user.PathBuilder;
 import synglyphx.user.FilterSetup;
 import synglyphx.user.ConnectionSpawner;
+import synglyphx.user.AWSCredentials;
 import synglyphx.io.Logger;
 import java.util.concurrent.TimeUnit;
 
@@ -20,20 +23,29 @@ public class UserAccessControls {
 	private static User loggedInUser = null;
 	private static Connection conn = null;
 	private static Syncer syncer = null;
-
+	/*
 	public static boolean initConnection(){
 		
 		conn = ConnectionSpawner.spawnConnection();
 		return conn != null;
 	}
-	
+	*/
 	public static int validateCredentials(String username, String password, String appVersion){
 
 		if(username.contains(" ")){
 			return 0;
 		}
+
+		String response = SGXAuthAPI.sendPost(username, password, appVersion);
+		HashMap<String, String> user_data = SGXAuthAPI.parseJson(response);
+		//System.out.println(response + "\n");
+
+		if(conn == null){
+			conn = ConnectionSpawner.spawnConnection();
+		}
 		
 		try{
+			/*
 		    String query = "SELECT * FROM ";
 		    query += "(UserAccounts INNER JOIN Institutions ON (UserAccounts.Institution=Institutions.ID)) ";
 		    query += "WHERE UserAccounts.Email='"+username+"';";
@@ -55,6 +67,11 @@ public class UserAccessControls {
 			}
 			rs.close();
 			pstmt.close();
+			*/
+			if(user_data.size() == 5){
+				loggedInUser = new User(Integer.parseInt(user_data.get("user_id")),user_data.get("user_name"),Timestamp.valueOf(user_data.get("last_login")));
+				loggedInUser.setInstitution(Integer.parseInt(user_data.get("inst_id")),user_data.get("inst_name"));
+			}
 
 			if(loggedInUser == null){
 				return 0;
@@ -264,11 +281,15 @@ public class UserAccessControls {
 
 	public static void main(String [] args){
 
-		System.out.println(UserAccessControls.initConnection());
-		System.out.println(UserAccessControls.validateCredentials("bholster","bholster",""));
+		//System.out.println(UserAccessControls.initConnection());
+		System.out.println(UserAccessControls.validateCredentials("bholster","bholster","1.2.02"));
+		System.out.println(UserAccessControls.getUserID());
 		System.out.println(UserAccessControls.nameOfUser());
+		System.out.println(UserAccessControls.lastModified());
+		System.out.println(UserAccessControls.institutionID());
 		System.out.println(UserAccessControls.nameOfInstitution());
 
+		/*
 		String os = System.getProperty("os.name").toLowerCase();
 		String default_path = "C:/ProgramData/SynGlyphX/Content";
 		if(os.contains("mac")){
@@ -303,6 +324,7 @@ public class UserAccessControls {
 		}
 
 		System.out.println("Done with the second one...");
+		*/
 /*
 		System.out.println("");
 		String[] vizNames = UserAccessControls.visualizationNames();

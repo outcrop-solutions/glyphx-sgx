@@ -19,25 +19,32 @@ import java.util.HashMap;
 import java.io.File;
 import java.util.Date;
 import synglyphx.user.UnzipUtility;
+import synglyphx.io.Logger;
 
 public class Syncer {
-
+	/*
 	private static String AWS_S3_ACCESS_KEY = "AKIAJ34ZO27XXF4KRB4A";
 	private static String AWS_S3_SECRET_ACCESS_KEY = "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";
 	private static String BUCKET_NAME = "visualizationdata";
+	*/
 	private static AmazonS3 s3 = null;
 	private ArrayList<String> files_to_sync = null;
 	private HashMap<String,Long> server_timestamps = null;
 	private ArrayList<UserFile> userFiles = null;
 	private String key_prefix;
 	private String dir_path;
+	private String bucket_name;
 	private long bytes_to_sync;
 	private int visualizations_to_sync;
 	private volatile long bytes_synced;
 	private volatile boolean complete;
 
 	public Syncer(String key, String dir, ArrayList<UserFile> ufs) {
-		s3 = new AmazonS3Client(new BasicAWSCredentials(AWS_S3_ACCESS_KEY, AWS_S3_SECRET_ACCESS_KEY));
+		AWSCredentials cred = AWSCredentials.getInstance();
+		//s3 = new AmazonS3Client(new BasicAWSCredentials(AWS_S3_ACCESS_KEY, AWS_S3_SECRET_ACCESS_KEY));
+		s3 = new AmazonS3Client(new BasicAWSCredentials(cred.getS3AccessKey(), cred.getS3SecretAccessKey()));
+		//this.bucket_name = cred.getS3BucketName();
+		this.bucket_name = "viz-group-"+key.replace("_", "-");
 		this.key_prefix = key;
 		this.dir_path = dir;
 		userFiles = ufs;
@@ -49,11 +56,14 @@ public class Syncer {
 
 	public boolean isSyncingNeeded(ArrayList<String> filesToSync){
 
+		for(int i = 0; i < filesToSync.size(); i++){
+			Logger.getInstance().add(filesToSync.get(i));
+		}
 		files_to_sync = new ArrayList<String>();
 		server_timestamps = new HashMap<String,Long>();
 		new File(dir_path).mkdir();
-		new File(dir_path,key_prefix).mkdir();
-		List<S3ObjectSummary> objs = s3.listObjects(BUCKET_NAME, key_prefix).getObjectSummaries();
+		new File(dir_path, key_prefix).mkdir();
+		List<S3ObjectSummary> objs = s3.listObjects(bucket_name, key_prefix).getObjectSummaries();
 		for(S3ObjectSummary o : objs) {
 			if(filesToSync.contains(o.getKey()) || !getExtension(o.getKey()).equals("zip") || o.getKey().contains("data.zip")){
 				File dl = findCorrespondingFile(dir_path, o.getKey());
@@ -114,14 +124,20 @@ public class Syncer {
 
 	public void downloadFiles(){
 
+		Logger.getInstance().add("Directory path: "+dir_path);
+		Logger.getInstance().add("Key prefix: "+key_prefix);
+		for(int i = 0; i < files_to_sync.size(); i++){
+			Logger.getInstance().add(files_to_sync.get(i));
+		}
+
 		Thread thread = new Thread(){
     		public void run(){
     			TransferManager xfer_mgr = TransferManagerBuilder.standard().withS3Client(s3).build();
 				try {
 					for(int i = 0; i < files_to_sync.size(); i++){
 						File toAdd = new File(dir_path,files_to_sync.get(i));
-					    Download xfer = xfer_mgr.download(
-					            BUCKET_NAME, files_to_sync.get(i), toAdd);
+						Download xfer = xfer_mgr.download(
+					            bucket_name, files_to_sync.get(i), toAdd);
 					    long last_amount = 0;
 					    do {
 						    try {

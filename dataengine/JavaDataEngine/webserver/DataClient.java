@@ -28,9 +28,10 @@ public class DataClient {
          "\"sdt\": \"C:/ProgramData/SynGlyphX/Content/glyphed_demo/Prospect and Segmentation/Prospects Only.sdt\", " +
          "\"query\": [\"1663ee8e-e7f8-445c-963b-79e8f45d8ee8\",\"ProspectsOnlyView\",\"SELECT * FROM ProspectsOnlyView WHERE HSstate IN ('TX')\"]}";*/
          String runStr = "{\"output\":\"D:/Users/Bryan/Desktop/WebEngine/Demo/Independent\", " +
-         "\"sdt\":\"C:/ProgramData/SynGlyphX/Content/web_demo/Global Admissions/Prospects and High Schools (Geospatial).sdt\", " +
-         "\"query\":[[\"1663ee8e-e7f8-445c-963b-79e8f45d8ee8\",\"HS_Prospect_View\",\"SELECT * FROM HS_Prospect_View WHERE hs_geo_market IN ('VA-06 Richmond');\"], " +
-         "[\"1663ee8e-e7f8-445c-963b-79e8f45d8ee8\",\"ProspectsOnlyView\",\"SELECT * FROM ProspectsOnlyView WHERE HSGeomarket IN ('VA-06 Richmond');\"]]}";
+         "\"sdt\":\"C:/ProgramData/SynGlyphX/Content/gannon/Retention/Retention Non Geo.sdt\", " +
+         "\"query\":[\"9502b3d4-6376-42fc-a406-7077357e8eca\",\"RetentionNonGeo\",\"SELECT * FROM RetentionNonGeo WHERE PermState IN ('AL');\"]}";
+         /*"\"query\":[[\"1663ee8e-e7f8-445c-963b-79e8f45d8ee8\",\"HS_Prospect_View\",\"SELECT * FROM HS_Prospect_View WHERE hs_geo_market IN ('VA-06 Richmond');\"], " +
+         "[\"1663ee8e-e7f8-445c-963b-79e8f45d8ee8\",\"ProspectsOnlyView\",\"SELECT * FROM ProspectsOnlyView WHERE HSGeomarket IN ('VA-06 Richmond');\"]]}";*/
          //"\"query\":[\"1663ee8e-e7f8-445c-963b-79e8f45d8ee8\",\"HS_Prospect_View\",\"SELECT * FROM HS_Prospect_View WHERE HSName IN ('Paul VI Catholic High School');\"]}";
          out.writeUTF(runStr);
          InputStream inFromServer = client.getInputStream();

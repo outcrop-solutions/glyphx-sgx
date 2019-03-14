@@ -558,7 +558,7 @@ var announcementList = [
                     ],
             bugfixes: []
         },
-        postDate: "4/9/2018"
+        postDate: "5/15/2018"
     },
     {
         type: "Shout",

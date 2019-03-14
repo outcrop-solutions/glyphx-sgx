@@ -501,7 +501,7 @@ bool GlyphDesignerWindow::IsUserLoggedIn() {
 	}
 	else{
         qDebug() << "Invalid Connection";
-		m_dataEngineConnection->UserAccessControls()->InitializeConnection();
+		//m_dataEngineConnection->UserAccessControls()->InitializeConnection();
         qDebug() << "Connection Initialized";
 		if (logged){
 			int valid = m_dataEngineConnection->UserAccessControls()->ValidateCredentials(user, pass);
@@ -517,7 +517,7 @@ bool GlyphDesignerWindow::IsUserLoggedIn() {
 void GlyphDesignerWindow::Login(){
 
     qDebug() << "Enter Login";
-    
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	if (loginWidget->Login()){
         qDebug() << "Inside Login If";
 		MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
@@ -542,6 +542,7 @@ void GlyphDesignerWindow::Login(){
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 	}
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphDesignerWindow::UpdateUserMenu(){

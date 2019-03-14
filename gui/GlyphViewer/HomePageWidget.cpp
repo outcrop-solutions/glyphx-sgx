@@ -586,6 +586,7 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 
 void HomePageWidget::Login(){
 
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
@@ -601,6 +602,7 @@ void HomePageWidget::Login(){
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
 	}
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void HomePageWidget::ContinueWithLogin(){
