@@ -92,7 +92,12 @@ public class UserAccessControls {
 	}
 
 	public static boolean generateLicenseKey(String location){
+
 		try{
+			if(conn.isClosed()){
+				conn = ConnectionSpawner.spawnConnection();
+			}
+
 			ResultSet rs = conn.prepareStatement("SELECT * FROM UsageLicenses WHERE `UserID` = "+String.valueOf(loggedInUser.getID())).executeQuery();
 			if(rs.next()){
 				loggedInUser.setLicenseType(rs.getInt("Type"));
