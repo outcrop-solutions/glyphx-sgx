@@ -22,11 +22,7 @@ import synglyphx.user.UnzipUtility;
 import synglyphx.io.Logger;
 
 public class Syncer {
-	/*
-	private static String AWS_S3_ACCESS_KEY = "AKIAJ34ZO27XXF4KRB4A";
-	private static String AWS_S3_SECRET_ACCESS_KEY = "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";
-	private static String BUCKET_NAME = "visualizationdata";
-	*/
+
 	private static AmazonS3 s3 = null;
 	private ArrayList<String> files_to_sync = null;
 	private HashMap<String,Long> server_timestamps = null;
@@ -40,10 +36,9 @@ public class Syncer {
 	private volatile boolean complete;
 
 	public Syncer(String key, String dir, ArrayList<UserFile> ufs) {
+		
 		AWSCredentials cred = AWSCredentials.getInstance();
-		//s3 = new AmazonS3Client(new BasicAWSCredentials(AWS_S3_ACCESS_KEY, AWS_S3_SECRET_ACCESS_KEY));
 		s3 = new AmazonS3Client(new BasicAWSCredentials(cred.getS3AccessKey(), cred.getS3SecretAccessKey()));
-		//this.bucket_name = cred.getS3BucketName();
 		this.bucket_name = "viz-group-"+key.replace("_", "-");
 		this.key_prefix = key;
 		this.dir_path = dir;
