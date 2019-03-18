@@ -46,7 +46,6 @@
         <file>Resources/GlyphEd/glyphed_splash.png</file>
         <file>Resources/GlyphEd/glyphed_logo_white_border.png</file>
         <file>Resources/GlyphEd/glyphed_logo_no_border.png</file>
-        <file>Resources/GlyphEd/synglyphx_x_ED.ico</file>
         <file>Resources/GlyphEd/glyphed_logo_homepage.png</file>
         <file>Resources/GlyphEd/glyphed_logo_large.png</file>
         <file>Resources/left_arrow.png</file>
@@ -59,6 +58,7 @@
         <file>Resources/sgx_x.png</file>
         <file>Resources/GlyphEd/ucollege.png</file>
         <file>Resources/fathead-syn-inside.jpg</file>
+        <file>Resources/GlyphEd/synglyphx_x_ED.ico</file>
     </qresource>
     <qresource prefix="/qt/etc">
         <file alias="qt.conf">Resources/qt.conf</file>
