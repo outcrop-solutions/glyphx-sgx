@@ -62,7 +62,7 @@ class HomePage extends React.Component {
 	 */
     componentDidMount() {
 
-        if (window.location.href.indexOf("http://") != -1 && window.location.href.indexOf("localhost") == -1 && window.location.href.indexOf("ec2-34-215-50-82") == -1) {
+        if (window.location.href.indexOf("http://") != -1 && window.location.href.indexOf("localhost") == -1 && window.location.href.indexOf("ec2-34-215-50-82") == -1 && window.location.href.indexOf("ec2-34-221-39-241") == -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
         

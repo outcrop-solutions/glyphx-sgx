@@ -349,7 +349,7 @@ var createScene = function (engine) {
     }
 
     function createShape(geometry, color, root) {
-        mult = root ? 1 : 1;
+        mult = root && geometry == 7 ? 3 : 1;
         switch(geometry){
             case 1:
                 return BABYLON.Mesh.CreateBox("Cube"+color, 1.0*mult, scene);

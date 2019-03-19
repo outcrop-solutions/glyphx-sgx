@@ -192,7 +192,16 @@
 			};
 		
 			//window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "http://"+window.location.hostname + ":5000/";
-            window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "https://"+window.location.hostname + ":5001/";
+            if(window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82')){
+              window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/";
+            }
+            else if(window.location.hostname.includes('ec2-34-221-39-241')){
+              window.SERVER_URL = "http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001/";
+            }
+            else{
+              window.SERVER_URL = "https://"+window.location.hostname + ":5001/";
+            }
+
             window.APP_MODE = window.location.href.includes('localhost') ? 'DEVELOPMENT' : 'PRODUCTION';
             var logoutUrl = window.APP_MODE == 'DEVELOPMENT' ? '/logout' : window.SERVER_URL+'logout';
        
