@@ -192,10 +192,10 @@
 			};
 		
 			//window.SERVER_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82') ? "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/" : "http://"+window.location.hostname + ":5000/";
-            if(window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-215-50-82')){
+            if(window.location.hostname.includes('ec2-34-215-50-82')){
               window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/";
             }
-            else if(window.location.hostname.includes('ec2-34-221-39-241')){
+            else if(window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-221-39-241')){
               window.SERVER_URL = "http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001/";
             }
             else{
