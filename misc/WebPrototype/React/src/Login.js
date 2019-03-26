@@ -137,7 +137,6 @@ class Login extends React.Component {
      **/
     onServerResponse = (response, options) => {
         var result; 
-        
         try {
             result = JSON.parse(response);
         }

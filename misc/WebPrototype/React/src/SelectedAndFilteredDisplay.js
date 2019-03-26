@@ -59,29 +59,31 @@ class SelectedAndFilteredDisplay extends React.Component {
     }
 
 	onClickDownload() {
-		// Generate our CSV string from out HTML Table
-		var csv = this.tableToCSV( document.querySelector( "#dataTable" ) );
+		if(this.props.userInfo.Admin === 1){
+			// Generate our CSV string from out HTML Table
+			var csv = this.tableToCSV( document.querySelector( "#dataTable" ) );
 
-		// Create a CSV Blob
-		var blob = new Blob( [ csv ], { type: "text/csv"} );
+			// Create a CSV Blob
+			var blob = new Blob( [ csv ], { type: "text/csv"} );
 
-		// Determine which approach to take for the download
-		if ( navigator.msSaveOrOpenBlob ) {
-			// Works for Internet Explorer and Microsoft Edge
-			navigator.msSaveOrOpenBlob( blob, this.props.VizParams.tableName + ".csv" );
-		}
+			// Determine which approach to take for the download
+			if ( navigator.msSaveOrOpenBlob ) {
+				// Works for Internet Explorer and Microsoft Edge
+				navigator.msSaveOrOpenBlob( blob, this.props.VizParams.tableName + ".csv" );
+			}
 
-		else {
-			// Attempt to use an alternative method
-			var anchor = document.body.appendChild(
-				document.createElement( "a" )
-			);
+			else {
+				// Attempt to use an alternative method
+				var anchor = document.body.appendChild(
+					document.createElement( "a" )
+				);
 
-			// If the [download] attribute is supported, try to use it
-			if ( "download" in anchor ) {
-				anchor.download = this.props.VizParams.tableName + ".csv";
-				anchor.href = URL.createObjectURL( blob );
-				anchor.click();
+				// If the [download] attribute is supported, try to use it
+				if ( "download" in anchor ) {
+					anchor.download = this.props.VizParams.tableName + ".csv";
+					anchor.href = URL.createObjectURL( blob );
+					anchor.click();
+				}
 			}
 		}
 	}
@@ -97,11 +99,14 @@ class SelectedAndFilteredDisplay extends React.Component {
 		}).join( "\r\n" );
 	}
 
-
 	render() {
 		var data = this.props.data;
 		var context = this;
-        var dataKeys;
+		var dataKeys;
+		let adminYes = false;
+
+		if(this.props.userInfo.Admin === 1) adminYes = true;
+
 
         if (data[0]) {
             dataKeys = Object.keys(data[0]);
@@ -151,7 +156,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
-								backgroundColor: this.props.settings.colors.buttons.general
+								backgroundColor: adminYes ? this.props.settings.colors.buttons.general : 'grey',
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
@@ -207,6 +212,7 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
 	VizParams: state.filterState.VizParams,
 	selectedFilteredModal: state.filterState.ModalDisplay.selectedFilteredModal,
+	userInfo: state.filterState.UserInfo
   }
 }
 

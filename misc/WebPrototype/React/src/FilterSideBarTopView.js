@@ -1107,9 +1107,9 @@ class FilterSideBarTopView extends React.Component {
                             placeholder = "Select a view" 
                             options = { this.state.viewSelectItems } 
                             onChange = { this.onSelectViewChange } 
-                            style = {{
+                           /*  style = {{
                                 margin: "-11px 0px 0px 0px"
-                            }}
+                            }} */
                             onOpen = { () => this.props.handleDraggableCorrection(true, true) }
                         />
                     </Flexbox>
