@@ -112,8 +112,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 		let adminYes = false;
 
 		if(this.props.userInfo.Admin === 1) adminYes = true;
-
-
+		
         if (data[0]) {
             dataKeys = Object.keys(data[0]);
 
