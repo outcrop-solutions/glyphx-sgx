@@ -21,7 +21,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 	state = {
 		selectionList: [],
 		dragState: 0,
-		snackbarVisible: false,
+		snackbar: false,
 		data: [],
 		table: "",
 		selection: "",
@@ -99,6 +99,12 @@ class SelectedAndFilteredDisplay extends React.Component {
 		}).join( "\r\n" );
 	}
 
+	handleOpenAdminDownload = (adminYes) => {
+		if(adminYes === false){
+		this.setState({snackbar: true});
+		}
+	}
+
 	render() {
 		var data = this.props.data;
 		var context = this;
@@ -133,6 +139,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 
 
 		return(
+			<div>
 			<Dialog
 				title = { null }
 				contentStyle = {{ width: "93%", maxWidth: "none" }}
@@ -170,7 +177,8 @@ class SelectedAndFilteredDisplay extends React.Component {
 								height: '35px',
 								lineHeight: '35px',
 							}}
-							onClick = { () => this.onClickDownload() }
+							onClick = { () => {this.onClickDownload();
+										this.handleOpenAdminDownload(adminYes); }  }
 							primary = {true } 
 						/>
 					]
@@ -189,6 +197,13 @@ class SelectedAndFilteredDisplay extends React.Component {
                     </table>
                 </div>
 			</Dialog>
+			<Snackbar
+			open = {this.state.snackbar ? true : false}
+			message = "Only Administrators can download data."
+			autoHideDuration = { 5000 }
+			/* onRequestClose = { this.handleCloseAdminDownload } */
+		/>
+		</div>
 		);
 	}
 }
