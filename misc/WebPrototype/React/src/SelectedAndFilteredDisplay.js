@@ -111,7 +111,6 @@ class SelectedAndFilteredDisplay extends React.Component {
 		var dataKeys;
 		let adminYes = false;
 
-		
 		if(this.props.userInfo.Admin === 1) adminYes = true;
 
 
