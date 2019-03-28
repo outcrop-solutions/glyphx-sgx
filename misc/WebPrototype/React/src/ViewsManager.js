@@ -45,6 +45,7 @@ class ViewsManager extends React.Component {
 	
 	//Moving this here instead of MyViews.js due to refs problem
 	onSavedViewSelect(savedVizObj,callback,recentViewClick){
+        console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
         var originalVizName = savedVizObj.OriginalVizName; 
         var query = savedVizObj.QueryString; 
         var funnelData;
@@ -604,7 +605,9 @@ class ViewsManager extends React.Component {
 
                                 </div>
                                 
-                                {this.state.type === "My Views" ? <MyViews onSavedViewSelect={(savedViewObj,callback) => this.onSavedViewSelect(savedViewObj,callback)}/> : null}
+                                    {/*being passed as a prop after ran through a function into MyViews component */}                               
+                                    {/* {this.state.type === "My Views" ? <MyViews 
+                                    onSavedViewSelect={(savedViewObj,callback) => this.onSavedViewSelect(savedViewObj,callback)}/> : null} */}
 
                                 <FlatButton
                                     label = "Back"
@@ -613,9 +616,10 @@ class ViewsManager extends React.Component {
                                     style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
                                 />
 
-                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } onLaunch={(extra,callback) => this.onLaunch(extra,callback) }/>
+                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
+                                onLaunch={(extra,callback) => {this.onLaunch(extra,callback), console.log('here?')} }/>
                             </div>
-
+{/* 
                             {this.state.stepIndex === 0 ? 
                                 <div style = {{ margin: "0 auto", width: "70%" }} >
                                     <RaisedButton 
@@ -634,13 +638,13 @@ class ViewsManager extends React.Component {
                                             paddingRight: "0px"
                                         }}
                                         overlayStyle = {{ height: '50px', lineHeight: '50px' }}
-                                        onClick = { this.handleNext.bind(this, "My Views") }
+                                        onClick = {this.handleNext.bind(this, "My Views")}
                                         primary = { true } 
                                     />
                                 </div>
                                 : 
                                 null
-                            }
+                            } */}
                         </div>
                     </ExpandTransition>
             </div>

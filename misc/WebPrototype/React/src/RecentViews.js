@@ -6,6 +6,7 @@ import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
+import MyViews from './MyViews.js';
 import 'rc-tooltip/assets/bootstrap.css';
 import './General.css';
 import './Views.css';
@@ -75,7 +76,7 @@ class RecentViews extends React.Component {
       
         // Show the current tab, and add an "active" class to the button that opened the tab
         document.getElementById(viewType).style.display = "block";
-        console.log('checking', document.getElementById(viewType).display);
+        // console.log('checking', document.getElementById(viewType).display);
         e.currentTarget.className += " active";
       }
     
@@ -217,8 +218,7 @@ class RecentViews extends React.Component {
                 </div>
                 {/* Saved Views Tab */}
                 <div id="Saved" className="tabcontent">
-                <h3>Saved</h3>
-                <p>Saved Views Loading...</p> 
+                    <MyViews/> 
                 </div>
                 
             </div>
