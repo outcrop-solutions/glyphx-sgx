@@ -480,8 +480,9 @@ class HomePage extends React.Component {
                              <Flexbox style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
                                 <div style = {{padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
-
+                                        
                                         <RecentViews loadRecentView={(rowObj) => this.loadRecentView(rowObj)}/>
+                                        
                                         <div style = {{height: "33.33%"}}>
                                             <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
                                             marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>

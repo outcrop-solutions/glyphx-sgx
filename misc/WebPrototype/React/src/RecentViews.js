@@ -8,6 +8,7 @@ import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import './General.css';
+import './Views.css';
 
 
 /**
@@ -17,7 +18,7 @@ class RecentViews extends React.Component {
 
     state = {
         loadMask: true,
-		recents: []
+        recents: [],
     }
 
 
@@ -45,7 +46,38 @@ class RecentViews extends React.Component {
                 
            }
         );
-	}
+        //On component mount, open Recent Views Tab
+        document.getElementById("tab-defaultOpen").click();
+    }
+
+    /**
+	 * Updates tutorial stage
+     * @param e: current target event
+     * @param viewType: tab class to switch to
+	 */
+    
+    openViewsTab(e, viewType) {
+        // Declare all variables
+        let i, tabcontent, tablinks;
+      
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+      
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace("active", "");
+        }
+      
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(viewType).style.display = "block";
+        console.log('checking', document.getElementById(viewType).display);
+        e.currentTarget.className += " active";
+      }
     
 
     render() {
@@ -131,8 +163,12 @@ class RecentViews extends React.Component {
         });
 
         return (
-            <div>
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px" }} >
+            <div style = {{overflow: "auto", height: "33.33%"}}>
+                <div style = {{ 
+                    backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
+                    marginBottom: "3px", 
+                    paddingBottom: "4px", 
+                    borderRadius: "2px" }} >
                     <div 
                         className = "noselect"
                         style = {{ 
@@ -149,15 +185,42 @@ class RecentViews extends React.Component {
                     </div>
                 </div>
 
-                <div style = {{ height: "250px", display: (this.state.loadMask ? "" : "none") }} >
+                <div style = {{ 
+                    height: "250px", 
+                    display: (this.state.loadMask ? "" : "none") }} >
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <div style = {{ padding: "7px", marginBottom: "5px", display: (this.state.loadMask ? "none" : "") }} >
-                    {this.state.recents.length == 0 ? 
-                    <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
-                    : recentViews}
+                {/* tab content */}
+                <div className="tab">
+                    
+                    <button className="tablinks" id="tab-defaultOpen" 
+                    onClick= {(e) => this.openViewsTab(e,'Recent')}
+                    style = {{padding: "10px 52.3320px 10px 52.3320px"}}>
+                        Recent
+                    </button>
+                    
+                    <button className="tablinks"
+                    onClick= {(e) =>  this.openViewsTab(e, 'Saved')}
+                    style = {{padding: "10px 52.3320px 10px 52.3320px"}}>
+                        Saved
+                    </button>
+
                 </div>
+                {/* Recent Views Tab */}
+                <div id="Recent" className="tabcontent">
+                    <div style = {{ padding: "7px", marginBottom: "5px", display: (this.state.loadMask ? "none" : "") }} >
+                        {this.state.recents.length == 0 ? 
+                        <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
+                        : recentViews}
+                    </div>
+                </div>
+                {/* Saved Views Tab */}
+                <div id="Saved" className="tabcontent">
+                <h3>Saved</h3>
+                <p>Saved Views Loading...</p> 
+                </div>
+                
             </div>
         );
     }
