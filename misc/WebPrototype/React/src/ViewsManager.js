@@ -474,9 +474,11 @@ class ViewsManager extends React.Component {
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "128px", 
-                            paddingTop: "4px",
-                            fontSize: "18px"
+                            width: "220.9px", 
+                            padding: "14px 0 12px 0",
+                            fontSize: "21px",
+                            letterSpacing: "0.23em",
+                            textTransform: "uppercase"
                         }}
                         className = "noselect"
                     > 

@@ -404,14 +404,56 @@ class HomePage extends React.Component {
                     
                     <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
+                        
+                            {/* Left Column */}
+                            <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
 
-                            <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
-                                <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                <div style = {{padding: "12px 6px 12px 12px", height: "50%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}}>
+                                    <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
+                                        marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
+                                            <div 
+                                                className = "noselect"
+                                                style = {{ 
+                                                    color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                    margin: "0 auto",
+                                                    width: "286px", 
+                                                    paddingTop: "4px",
+                                                    fontSize: "19px",
+                                                    letterSpacing: "0.23em",
+                                                    textTransform: "uppercase"
+                                                }}
+                                            > 
+                                                Visualization Glyph
+                                            </div>
+                                        
+                                            <Flexbox flexGrow = {1} style = {{ height: "50%", minHeight: "0" }} >
+                                                {/* <div
+                                                    style = {{
+                                                        padding: "7px 7px 0px 5px",
+                                                        height: "100%",
+                                                        width: "100%",
+                                                        borderRadius: "2px",
+                                                    }}
+                                                    className = "customScroll"
+                                                    id = "chatArea"
+                                                >
+        
+                                                </div> */}
+                                               <div style = {{height: "50%"}}></div>
+                                            </Flexbox>
+
+                                    </div>
+                                    
+                                </div>
+                                <div style = {{ padding: "12px 6px 12px 12px", height: "50%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
                              </Flexbox>
-
-                             <Flexbox flexDirection = "column" style = {{ width: "40%" }} >
+                            
+                            {/* Middle column */}  
+                             <Flexbox flexDirection = "column" style = {{ width: "58%" }} >
+                                
+                                {/* Uni Logo */}
                                 <div style = {{ backgroundColor: "#ffffff" }} >
                                     <div style = {{ height: '120px', margin: "15px 0px -6px" }} >
                                             <img 
@@ -424,27 +466,70 @@ class HomePage extends React.Component {
                                     </div>
                                 </div>
 
+                                <div className = "line-break" style = {{borderTop: "2px solid black", paddingBottom: "15px", backgroundColor: "#ffffff"}}></div>
+                            
+                                {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
-                                   <div style = {{ padding: "5px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                   <div style = {{ padding: "5px 6px", height: "100%", width: "110%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                         <ViewsManager ref="viewsManager"/>
                                     </div>
                                 </Flexbox>
                              </Flexbox> 
 
-                             <Flexbox style = {{ width: "30%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
-                                <div style = {{ padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                             {/* Right Column */}
+                             <Flexbox style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
+                                <div style = {{padding: "12px 6px 12px 12px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
 
                                         <RecentViews loadRecentView={(rowObj) => this.loadRecentView(rowObj)}/>
+                                        <div style = {{height: "33.33%"}}>
+                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
+                                            marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
+                                                <div 
+                                                    className = "noselect"
+                                                    style = {{ 
+                                                        color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                        margin: "0 auto",
+                                                        width: "111px", 
+                                                        paddingTop: "4px",
+                                                        fontSize: "19px",
+                                                        letterSpacing: "0.23em",
+                                                        textTransform: "uppercase"
+                                                    }}
+                                                > 
+                                                    Training
+                                                </div>
+                                                <div style = {{height: "33.33%"}}>
+                                                    <Flexbox flexGrow = {1} style = {{ height: "33.33%", minHeight: "0" }} >
+                                                        {/* <div
+                                                            style = {{
+                                                                padding: "7px 7px 0px 5px",
+                                                                height: "100%",
+                                                                width: "100%",
+                                                                borderRadius: "2px",
+                                                            }}
+                                                            className = "customScroll"
+                                                            id = "chatArea"
+                                                        >
+                
+                                                        </div> */}
+                                                    {/* <div style = {{height: "33.33%"}}></div> */}
+                                                    </Flexbox>
+                                                </div>
 
+                                            </div>
+                                    </div>
+                                    <div style = {{height: "33.33%"}}> 
                                         <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
                                             <div 
                                                 style = {{ 
                                                     color: this.props.settings.colors.overviewButtonsColor.text, 
                                                     margin: "0 auto",
-                                                    width: "138px", 
+                                                    width: "204px", 
                                                     paddingTop: "4px",
-                                                    fontSize: "18px"
+                                                    fontSize: "19px",
+                                                    letterSpacing: "0.23em",
+                                                    textTransform: "uppercase"
                                                 }}
                                                 className = "noselect"
                                             > 
@@ -453,7 +538,7 @@ class HomePage extends React.Component {
                                         </div>
 
                                         <AnnouncementsDisplay />
-            
+                                    </div>       
                                     </Flexbox>
                                 </div>
                              </Flexbox>   

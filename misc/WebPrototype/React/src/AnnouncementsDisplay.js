@@ -227,7 +227,7 @@ class ReleaseAnnouncement extends React.Component {
             <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
-                        <Flexbox style = {{ height: "50%" }} >
+                        <Flexbox style = {{ height: "33.33%" }} >
                             <i 
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 

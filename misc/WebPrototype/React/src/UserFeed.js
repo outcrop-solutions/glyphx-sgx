@@ -225,9 +225,11 @@ class UserFeed extends React.Component {
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "85px",
+                            width: "137px",
                             paddingTop: "4px",
-                            fontSize: "18px"
+                            fontSize: "19px",
+                            letterSpacing: "0.23em",
+                            textTransform: "uppercase"
                         }}
                         className = "noselect"
                     > 

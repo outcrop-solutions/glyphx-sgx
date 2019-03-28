@@ -51,7 +51,7 @@ class RecentViews extends React.Component {
     render() {
         var context = this;
 
-        var newList = this.state.recents.slice(0, 8);
+        var newList = this.state.recents.slice(0, 5);
 
         var recentViews = newList.map( function(view) {
 			if (typeof view[1] == 'string' && !isNaN(view[1])) {
@@ -92,7 +92,8 @@ class RecentViews extends React.Component {
                     >
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >
-                            <Flexbox style = {{ width: "100%", whiteSpace: "nowrap", overflow: "hidden" }} > 
+                            <Flexbox style = {{ width: "100%", whiteSpace: "nowrap", overflow: "hidden", 
+                            fontSize: "16px", letterSpacing: "0.05em" }} > 
                                 <Tooltip
                                     placement = 'left'
                                     mouseEnterDelay = { 0.5 }
@@ -137,12 +138,14 @@ class RecentViews extends React.Component {
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "111px", 
+                            width: "70px", 
                             paddingTop: "4px",
-                            fontSize: "18px"
+                            fontSize: "19px",
+                            letterSpacing: "0.23em",
+                            textTransform: "uppercase"
                         }}
                     > 
-                        Recent Views
+                        Views
                     </div>
                 </div>
 
@@ -150,8 +153,10 @@ class RecentViews extends React.Component {
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <div style = {{ padding: "7px", display: (this.state.loadMask ? "none" : "") }} >
-                    {this.state.recents.length == 0 ? <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> : recentViews}
+                <div style = {{ padding: "7px", marginBottom: "5px", display: (this.state.loadMask ? "none" : "") }} >
+                    {this.state.recents.length == 0 ? 
+                    <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
+                    : recentViews}
                 </div>
             </div>
         );
