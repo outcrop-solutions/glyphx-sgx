@@ -482,7 +482,10 @@ class SimpleTable extends React.Component {
 
                     if (j === 0) {
                         colNames.push(
-                            <TableHeaderColumn key = { this.props.id + temp } style = {{fontSize: "16px", padding: "10px", color: "black"}}> 
+                            <TableHeaderColumn 
+                            key = { this.props.id + temp } 
+                            style = {{fontSize: "16px", padding: "10px", color: "black"}}
+                            > 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {displayTemp} &nbsp;
                                     <i /* style = {{fontSize: "16px"}} */ id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
@@ -491,7 +494,9 @@ class SimpleTable extends React.Component {
                         );
                     }
     
-                    data.push(<TableRowColumn key = { dataRowObject[temp] } style = {{ paddingLeft: "5px", paddingRight: "0px", fontSize: "14px"}} > {dataRowObject[temp]} </TableRowColumn>);
+                    data.push(<TableRowColumn key = { dataRowObject[temp] } 
+                        style = {{ paddingLeft: "5px", paddingRight: "0px", fontSize: "14px"}} > {dataRowObject[temp]} 
+                        </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
                 
@@ -555,14 +560,14 @@ class SimpleTable extends React.Component {
                                 {colNames}
                             </TableRow>
                         </TableHeader>
-
                         <TableBody 
-                        displayRowCheckbox = { false } 
+                        displayRowCheckbox = { false }
                         onMouseEnter = {() => {this.hoverSelection(this.state.hover)}}
                         onMouseLeave = {() => {this.hoverSelection(this.state.hover)}}
                         style = {{/* border: "1px solid black",  */
-                        cursor: "pointer",
-                        backgroundColor: hoverColor/* , fontSize: "14px" */ }} >
+                            cursor: "pointer",
+                            backgroundColor: hoverColor/* , fontSize: "14px" */ 
+                        }} >
                             {rows}
                         </TableBody>
                     </Table>

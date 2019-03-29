@@ -224,6 +224,7 @@ class ReleaseAnnouncement extends React.Component {
         );
 
         return (
+            <div style = {{height: "33.33%"}}>
             <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
@@ -332,6 +333,7 @@ class ReleaseAnnouncement extends React.Component {
                     </CardText>
                 </Card>
             </Flexbox>
+            </div>
         );
     }
 }
