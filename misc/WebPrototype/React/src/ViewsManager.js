@@ -44,71 +44,71 @@ class ViewsManager extends React.Component {
     };
 	
 	//Moving this here instead of MyViews.js due to refs problem
-	onSavedViewSelect(savedVizObj,callback,recentViewClick){
-        console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
-        var originalVizName = savedVizObj.OriginalVizName; 
-        var query = savedVizObj.QueryString; 
-        var funnelData;
-        var keys = Object.keys(this.props.funnelData);
-        var path;
-        var context = this;
-        var flag = true;
+	// onSavedViewSelect(savedVizObj,callback,recentViewClick){
+    //     console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
+    //     var originalVizName = savedVizObj.OriginalVizName; 
+    //     var query = savedVizObj.QueryString; 
+    //     var funnelData;
+    //     var keys = Object.keys(this.props.funnelData);
+    //     var path;
+    //     var context = this;
+    //     var flag = true;
     
-        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
-            funnelData = this.props.funnelData[keys[keyIndex]];
+    //     for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
+    //         funnelData = this.props.funnelData[keys[keyIndex]];
     
-            for(var index=0;index<funnelData.length;index++)
-            {
-                if(funnelData[index][0] == originalVizName){
-                    path = funnelData[index][1];
-                    flag = false;
-                    break;
-                }
-            }
-        }
+    //         for(var index=0;index<funnelData.length;index++)
+    //         {
+    //             if(funnelData[index][0] == originalVizName){
+    //                 path = funnelData[index][1];
+    //                 flag = false;
+    //                 break;
+    //             }
+    //         }
+    //     }
     
-        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
-        var currentDate = new Date();
-		var sdtPath = path.substring(index + 1);
+    //     var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+    //     var currentDate = new Date();
+	// 	var sdtPath = path.substring(index + 1);
 		
-		if(recentViewClick){
-			//dosomething
-		}
+	// 	if(recentViewClick){
+	// 		//dosomething
+	// 	}
 	
-		var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
-        makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
-            function (responseText) {
-                var response = JSON.parse(responseText);
+	// 	var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
+    //     makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
+    //         function (responseText) {
+    //             var response = JSON.parse(responseText);
                 
-                // Post the new data to the state and hide the window load-mask
-                context.props.dispatch(
-                    setCurrentVizParams(
-                        {
-                            tableName: response.tableName,
-                            datasourceId: response.datasourceId ,
-                            query: query,
-                            originalVizName:originalVizName,
-                            filterAllowedColumnList:  response.filterAllowedColumnList,
-                            sdtPath: sdtPath,
-                            savedViz: true,
-                            vizID:savedVizObj.ID,
-                            savedVizName: savedVizObj.Name,
-                            frontEndFilterString: savedVizObj.frontEndFilterString,
-                            initialX: response.initialX,
-                            initialY: response.initialY,
-                            initialZ: response.initialZ
-                        }
-                    )
-                );
+    //             // Post the new data to the state and hide the window load-mask
+    //             context.props.dispatch(
+    //                 setCurrentVizParams(
+    //                     {
+    //                         tableName: response.tableName,
+    //                         datasourceId: response.datasourceId ,
+    //                         query: query,
+    //                         originalVizName:originalVizName,
+    //                         filterAllowedColumnList:  response.filterAllowedColumnList,
+    //                         sdtPath: sdtPath,
+    //                         savedViz: true,
+    //                         vizID:savedVizObj.ID,
+    //                         savedVizName: savedVizObj.Name,
+    //                         frontEndFilterString: savedVizObj.frontEndFilterString,
+    //                         initialX: response.initialX,
+    //                         initialY: response.initialY,
+    //                         initialZ: response.initialZ
+    //                     }
+    //                 )
+    //             );
 
-                if(typeof callback == 'function'){
-					callback(true);
-					//context.props.history.push('/glyph-viewer');
-				}
+    //             if(typeof callback == 'function'){
+	// 				callback(true);
+	// 				//context.props.history.push('/glyph-viewer');
+	// 			}
 				
-            }
-        );
-    }
+    //         }
+    //     );
+    // }
 	
 	// Moving this here instead of AllViewsModal.js due to refs problem
 	onLaunch(extra, callback) {

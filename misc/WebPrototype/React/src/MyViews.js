@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { makeServerCall } from './ServerCallHelper.js';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import SearchBox from './SearchBox.js';
-import Collapsible from 'react-collapsible';
+// import Collapsible from 'react-collapsible';
 import Flexbox from 'flexbox-react';
 import './General.css';
 
@@ -20,33 +20,100 @@ class MyViews extends React.Component {
             sharedViews: []
         }
     }
+
+    onSavedViewSelect(savedVizObj,callback,recentViewClick){
+        // console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
+        var originalVizName = savedVizObj.OriginalVizName; 
+        var query = savedVizObj.QueryString; 
+        var funnelData;
+        var keys = Object.keys(this.props.funnelData);
+        var path;
+        var context = this;
+        var flag = true;
+    
+        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
+            funnelData = this.props.funnelData[keys[keyIndex]];
+    
+            for(var index=0;index<funnelData.length;index++)
+            {
+                if(funnelData[index][0] == originalVizName){
+                    path = funnelData[index][1];
+                    flag = false;
+                    break;
+                }
+            }
+        }
+    
+        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+        var currentDate = new Date();
+		var sdtPath = path.substring(index + 1);
+		
+		if(recentViewClick){
+			//dosomething
+		}
+	
+		var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
+        makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                
+                // Post the new data to the state and hide the window load-mask
+                context.props.dispatch(
+                    setCurrentVizParams(
+                        {
+                            tableName: response.tableName,
+                            datasourceId: response.datasourceId ,
+                            query: query,
+                            originalVizName:originalVizName,
+                            filterAllowedColumnList:  response.filterAllowedColumnList,
+                            sdtPath: sdtPath,
+                            savedViz: true,
+                            vizID:savedVizObj.ID,
+                            savedVizName: savedVizObj.Name,
+                            frontEndFilterString: savedVizObj.frontEndFilterString,
+                            initialX: response.initialX,
+                            initialY: response.initialY,
+                            initialZ: response.initialZ
+                        }
+                    )
+                );
+
+                if(typeof callback == 'function'){
+					callback(true);
+					//context.props.history.push('/glyph-viewer');
+				}
+				
+            }
+        );
+    }
 	
 	goToVizView(){
 		this.props.history.push('/glyph-viewer');
 	}
 	
 	onClickSaved(data){
-		this.props.onSavedViewSelect(data,this.goToVizView);
+		this.onSavedViewSelect(data,this.goToVizView);
 	}
 
     render() {
         return (
-            <div style = {{ padding: "10px" }} >
+            <div style = {{ padding: "10px 2px 0px 2px" }} >
 
                 <div style = {{ marginBottom: "3px" }} >
-                    <Collapsible
+                {/*outdated collapside bar that was implemented on ViewsManager. Working code.*/}
+                    {/* <Collapsible
                         transitionTime = {200} 
                         trigger = "Saved Views"
                         className = "noselect"
                         openedClassName = "noselect"
-                    >
+                    > */}
                         <SimpleTable  
                             id = "SavedViews"
                             settings = { this.props.settings }
                             data = { this.props.storedViews.savedViews }
                             onClickSaved = { this.onClickSaved }
                         />
-                    </Collapsible>
+                   {/*  </Collapsible> */}
                 </div>
 
                 {/*
@@ -85,7 +152,8 @@ class SimpleTable extends React.Component {
 		super(props);
 		this.state = {
 			selected: [],
-			flatData: this.props.data
+            flatData: this.props.data,
+            hover: false
 		};
 	}
 
@@ -279,11 +347,19 @@ class SimpleTable extends React.Component {
     handleRowSelection = (selectedRows) => {
         this.props.onClickSaved(this.state.flatData[selectedRows]);
     };
+
+    hoverSelection(hover) {
+        this.setState({hover: !this.state.hover});
+    };
     
     render() {
         var colNames = [];
         var rows = [];
         var columnCount = 0;
+        let hoverColor;
+        if(this.state.hover === true){
+            hoverColor = "#dadada";
+        }
 
         /*
         debugger;
@@ -349,11 +425,6 @@ class SimpleTable extends React.Component {
         }
 
 */
-
-
-
-
-
 
         if (this.state.flatData != null && this.state.flatData.length > 0) {
             var keys = Object.keys(this.state.flatData[0]);
@@ -433,18 +504,16 @@ class SimpleTable extends React.Component {
                 //this.setState({ flatData: fData });
 
                 rows.push(
-                    <TableRow key = {j} selected = { this.isSelected(j) } >
+                    <TableRow key = {j} selected = { this.isSelected(j) }>
                         {data}
                     </TableRow>
                 );
             }
         }
 
-        
-
         return (
             <div>
-                <div style = {{ margin: "1px 4px -9px", padding: "0px 8px" }} >
+                <div style = {{ margin: "1px 4px -9px"/* , padding: "0px 8px"*/}}  >
                     <SearchBox 
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
@@ -462,27 +531,38 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox style = {{ padding: "0px 12px" }} >
+                <Flexbox /* style = {{ padding: "0px 12px" }} */ >
                     <Table 
                         className = { this.props.id }
                         fixedHeader = { true }
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
-                        height = "350px"
-                        wrapperStyle = {{ borderRadius: "4px" }}
+                        height = "100%"
+                        wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" */ }}
+                        style = {{border: "1px solid black", fontSize: "14px"}}
                         //onRowSelection = { () => console.log("row selected") }
                     >
                         <TableHeader
                             adjustForCheckbox = { false }
                             displaySelectAll = { false }
-                            style = {{ backgroundColor: "#dadada" }}
+                            style = {{ /* backgroundColor: "#dadada" *//*, border: "1px solid black" ,*/ fontSize: "14px"  }}
                         >
-                            <TableRow style = {{ height: "36px" }} >
+                            <TableRow
+                            style = {{ 
+                                height: "36px", 
+                                cursor: "pointer", 
+                                /* , fontSize: "14px" */ }} >
                                 {colNames}
                             </TableRow>
                         </TableHeader>
 
-                        <TableBody displayRowCheckbox = { false } >
+                        <TableBody 
+                        displayRowCheckbox = { false } 
+                        onMouseEnter = {() => {this.hoverSelection(this.state.hover)}}
+                        onMouseLeave = {() => {this.hoverSelection(this.state.hover)}}
+                        style = {{/* border: "1px solid black",  */
+                        cursor: "pointer",
+                        backgroundColor: hoverColor/* , fontSize: "14px" */ }} >
                             {rows}
                         </TableBody>
                     </Table>
