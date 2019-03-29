@@ -49,7 +49,7 @@ class TextRangeTable extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -71,12 +71,12 @@ class TextRangeTable extends React.Component {
 
         var context = this;
         this.props.rangeList;
-        debugger;
+        // debugger;
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -263,7 +263,7 @@ class TextRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });
@@ -350,7 +350,7 @@ class TextRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });
@@ -465,7 +465,7 @@ class TextRangeRow extends React.Component {
 
                 var context = this;
                 let pom = new Promise(function (resolve, reject) {
-                    debugger;
+                    // debugger;
                     context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                     resolve('done');
                 });
@@ -570,7 +570,7 @@ class TextRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });

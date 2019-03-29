@@ -216,7 +216,7 @@ class FilterTable extends React.Component {
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -235,7 +235,7 @@ class FilterTable extends React.Component {
                 context.props.setFilterIDs(tempRowIds);
                 iframe.filterGlyphs(tempRowIds);
 
-                debugger;
+                // debugger;
                 
                 context.props.setFilterBusy(false);
 
@@ -271,7 +271,7 @@ class FilterTable extends React.Component {
         }
 
 
-        debugger;
+        // debugger;
         
 
         if (!checked) {
@@ -321,7 +321,7 @@ class FilterTable extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);

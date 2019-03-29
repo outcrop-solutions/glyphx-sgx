@@ -97,7 +97,7 @@ class MyViews extends React.Component {
 
     render() {
         return (
-            <div style = {{ padding: "10px 2px 0px 2px" }} >
+            <div style = {{ padding: "10px 0px 0px 0px" }} >
 
                 <div style = {{ marginBottom: "3px" }} >
                 {/*outdated collapside bar that was implemented on ViewsManager. Working code.*/}
@@ -482,16 +482,16 @@ class SimpleTable extends React.Component {
 
                     if (j === 0) {
                         colNames.push(
-                            <TableHeaderColumn key = { this.props.id + temp } > 
+                            <TableHeaderColumn key = { this.props.id + temp } style = {{fontSize: "16px", padding: "10px", color: "black"}}> 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {displayTemp} &nbsp;
-                                    <i id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
+                                    <i /* style = {{fontSize: "16px"}} */ id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
                                 </div>
                             </TableHeaderColumn>
                         );
                     }
     
-                    data.push(<TableRowColumn key = { dataRowObject[temp] } style = {{ paddingLeft: "10px", paddingRight: "0px" }} > {dataRowObject[temp]} </TableRowColumn>);
+                    data.push(<TableRowColumn key = { dataRowObject[temp] } style = {{ paddingLeft: "5px", paddingRight: "0px", fontSize: "14px"}} > {dataRowObject[temp]} </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
                 
@@ -538,14 +538,14 @@ class SimpleTable extends React.Component {
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
                         height = "100%"
-                        wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" */ }}
-                        style = {{border: "1px solid black", fontSize: "14px"}}
+                        width = "100%"
+                        /* wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" }}*/
                         //onRowSelection = { () => console.log("row selected") }
                     >
                         <TableHeader
                             adjustForCheckbox = { false }
                             displaySelectAll = { false }
-                            style = {{ /* backgroundColor: "#dadada" *//*, border: "1px solid black" ,*/ fontSize: "14px"  }}
+                            style = {{ backgroundColor: "#018cbb", /*, border: "1px solid black" ,*/ fontSize: "14px"  }}
                         >
                             <TableRow
                             style = {{ 

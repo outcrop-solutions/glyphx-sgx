@@ -296,7 +296,7 @@ class AdminAnnouncementEditor extends React.Component {
         var pDate = new Date();
         var postDate = (pDate.getMonth() + 1) + "/" + pDate.getDate() + "/" + pDate.getFullYear();
 
-        debugger;
+        // debugger;
 
         if (this.state.announcementSelection === 0) {
             var content = {};

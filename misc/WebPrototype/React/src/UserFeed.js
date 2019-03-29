@@ -49,7 +49,7 @@ class UserFeed extends React.Component {
             function (responseText) { 
                 var chat = new Twilio(responseText);
 
-                debugger;
+                // debugger;
 
                 chat.initialize().then(context.clientInitiated.bind(context));
                 
@@ -62,14 +62,14 @@ class UserFeed extends React.Component {
         this.setState({ chatReady: true }, () => {
         this.state.chatClient.getChannelByUniqueName(this.state.channelName)
             .then(channel => {
-                debugger;
+                // debugger;
                 if (channel) {
                     this.setState({ channelClient: channel });
                     return channel;
                 }
             })
             .catch(err => {
-                debugger;
+                // debugger;
                 if (err.body.code === 50300) {
                     return this.state.chatClient.createChannel({
                         uniqueName: this.state.channelName
@@ -79,11 +79,11 @@ class UserFeed extends React.Component {
             .then(channel => {
                 //console.log("\n\n\n\n\nMEMBERS:");
                 //channel.getMembers().then(members => { console.log(members) });
-                debugger;
+                // debugger;
                 this.setState({ channelClient: channel });
                 channel.getMembers()
                 .then(members => {
-                    debugger;
+                    // debugger;
                     var shouldJoin = true;
                     for (var i = 0; i < members.length; i++) {
                         if (members[i].state.identity == (this.props.userInfo.Name + "|SPLITTER|" + this.props.userInfo.Email)) {
@@ -97,7 +97,7 @@ class UserFeed extends React.Component {
                 })
             })
             .then(() => {
-                debugger;
+                // debugger;
                 this.state.channelClient.getMessages().then(this.messagesLoaded);
                 this.state.channelClient.on('messageAdded', this.messageAdded);
             });
@@ -112,7 +112,7 @@ class UserFeed extends React.Component {
     
 
     messagesLoaded = messagePage => {
-        debugger;
+        // debugger;
         var messages = messagePage.items;
         /*
         if (messages.length > 100) {
@@ -125,7 +125,7 @@ class UserFeed extends React.Component {
     };
 
     messageAdded = message => {
-        debugger;
+        // debugger;
         this.setState((prevState, props) => ({
             messages: [...prevState.messages, message]
         }), () => this.scrollToBottomChat());
@@ -135,7 +135,7 @@ class UserFeed extends React.Component {
         if (event.keyCode == 13) {
             event.preventDefault();
 
-            debugger;
+            // debugger;
             
             this.state.channelClient.sendMessage(this.state.messageBody);
 

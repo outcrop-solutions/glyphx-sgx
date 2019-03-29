@@ -47,7 +47,7 @@ class XYZRemapModal extends React.Component {
 
         if (shouldExec) {
 
-            debugger;
+            // debugger;
 
             var list = this.props.VizParams.filterAllowedColumnList;
             var XVals = [];
@@ -176,7 +176,7 @@ class XYZRemapModal extends React.Component {
             //var query = "SELECT rowid, * FROM " + this.props.VizParams.tableName;
 
             var URL = "getXYZData?searchQuery=" + query; 
-            debugger;
+            // debugger;
 
             var context = this;
         
@@ -198,7 +198,7 @@ class XYZRemapModal extends React.Component {
                             Z: context.state.ZTemp
                         }
 
-                        debugger;
+                        // debugger;
 
                         if (responseDetails.X != null) {
                             if (isNaN(response.data[0][responseDetails.X])) {
@@ -329,7 +329,7 @@ class XYZRemapModal extends React.Component {
                         }
 
                         responseDetails;
-                        debugger;
+                        // debugger;
 
                         
                         var XYZDataStructure = [];
@@ -368,7 +368,7 @@ class XYZRemapModal extends React.Component {
                         iframe.updateXYZCoordinates(XYZDataStructure, responseDetails.X, responseDetails.Y, responseDetails.Z);
 
                         //console.log(XYZDataStructure);
-                        debugger;
+                        // debugger;
 
                         context.props.dispatch( setTimer(new Date().getTime()) );
 

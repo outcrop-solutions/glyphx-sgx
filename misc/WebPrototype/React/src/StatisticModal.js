@@ -174,7 +174,7 @@ class StatisticModal extends React.Component {
         var columns = this.props.statistics.colList.split(',');
         var stats = this.props.statistics.statList.split(',');
 
-        debugger;
+        // debugger;
 
         //console.log(this.props.statData);
 

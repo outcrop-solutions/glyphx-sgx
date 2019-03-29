@@ -42,7 +42,7 @@ class NumberRangeTable extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -64,12 +64,12 @@ class NumberRangeTable extends React.Component {
 
         var context = this;
         this.props.rangeList;
-        debugger;
+        // debugger;
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -259,7 +259,7 @@ class NumberRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });
@@ -300,7 +300,7 @@ class NumberRangeRow extends React.Component {
         }
 
         /*
-        debugger;
+        // debugger;
 
         var minimum = parseFloat(this.props.minVal, 10);
         var maximum = parseFloat(this.props.maxVal, 10);
@@ -371,7 +371,7 @@ class NumberRangeRow extends React.Component {
         var min = this.state.min;
         var max = this.state.max;
 
-        //debugger;
+        debugger;
 
         if (min === "") {
             min = minimum;
@@ -409,7 +409,7 @@ class NumberRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });
@@ -458,7 +458,7 @@ class NumberRangeRow extends React.Component {
 
                 var context = this;
                 let pom = new Promise(function (resolve, reject) {
-                    debugger;
+                    // debugger;
                     context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                     resolve('done');
                 });

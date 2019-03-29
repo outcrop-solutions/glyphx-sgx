@@ -26,7 +26,7 @@ class FilterSummaryView extends React.Component {
      **/
     shouldComponentUpdate(nextProps, nextState) {
         for (var colName in this.props.filterList) {
-            debugger;
+            // debugger;
             if (this.props.filterList[colName].selectedValues != nextProps.filterList[colName].selectedValues || this.props.filterList[colName].rangeList != nextProps.filterList[colName].rangeList) {
                 return true;
             }
@@ -80,7 +80,7 @@ class FilterSummaryView extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -105,7 +105,7 @@ class FilterSummaryView extends React.Component {
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 

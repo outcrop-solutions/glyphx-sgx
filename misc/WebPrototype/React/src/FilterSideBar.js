@@ -53,7 +53,7 @@ class FilterSideBar extends React.Component {
 
         this.props.VizParams;
 
-        debugger;
+        // debugger;
 
         makeServerCall('loadVisualization',
             function(res,b,c) {
@@ -63,7 +63,7 @@ class FilterSideBar extends React.Component {
                     res = JSON.parse(res);
                 }
 
-                debugger;
+                // debugger;
                 
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
@@ -76,7 +76,7 @@ class FilterSideBar extends React.Component {
                         function (responseText) { 
                             var response = JSON.parse(responseText);
 
-                            debugger;
+                            // debugger;
 
                             context.setState({ 
                                 initialX: response.initialX,
@@ -132,7 +132,7 @@ class FilterSideBar extends React.Component {
         }
 
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
-        debugger;
+        // debugger;
 
         return new Promise(function(resolve, reject) {
             var result = 'A is done'        
@@ -144,7 +144,7 @@ class FilterSideBar extends React.Component {
                     if (typeof responseText === 'string') {
                         response = JSON.parse(response);
                     }
-                    debugger;
+                    // debugger;
                     if (response.data.length > 0) {
                         var result = context.convertToCompatibleDataObject(response.data);
 
@@ -204,7 +204,7 @@ class FilterSideBar extends React.Component {
         var value = "";
         var keys = Object.keys(resObj[0]);
 
-        debugger;
+        // debugger;
 
         var allowedColumns;
         
