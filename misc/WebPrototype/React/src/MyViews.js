@@ -13,7 +13,7 @@ class MyViews extends React.Component {
 
     constructor(props){
         super(props);
-		this.goToVizView = this.goToVizView.bind(this);
+		// this.goToVizView = this.goToVizView.bind(this);
 		this.onClickSaved = this.onClickSaved.bind(this);
         this.state = {
             savedViews: [],//this.props.storedViews.savedViews,
@@ -92,7 +92,7 @@ class MyViews extends React.Component {
 	}
 	
 	onClickSaved(data){
-		this.onSavedViewSelect(data,this.goToVizView);
+		this.onSavedViewSelect(data,() => this.goToVizView());
 	}
 
     render() {
@@ -111,7 +111,7 @@ class MyViews extends React.Component {
                             id = "SavedViews"
                             settings = { this.props.settings }
                             data = { this.props.storedViews.savedViews }
-                            onClickSaved = { this.onClickSaved }
+                            onClickSaved = {this.onClickSaved}
                         />
                    {/*  </Collapsible> */}
                 </div>

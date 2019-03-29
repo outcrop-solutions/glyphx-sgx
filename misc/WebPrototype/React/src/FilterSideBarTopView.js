@@ -71,7 +71,7 @@ class FilterSideBarTopView extends React.Component {
     }
     
     componentWillReceiveProps(nextProps) {
-        debugger;
+        // debugger;
         if (nextProps.storedViews.savedViews != this.props.storedViews.savedViews || nextProps.VizParams.query != nextProps.RecentVizDropdown.query || this.props.RecentVizDropdown != nextProps.RecentVizDropdown) {
             var convertedViewSelectItems = this.convertToSelectFormat(nextProps.storedViews.savedViews, nextProps.RecentVizDropdown);
             this.setState({ viewSelectItems: convertedViewSelectItems, tableSelectValues: [nextProps.VizParams.tableName] });
@@ -122,7 +122,7 @@ class FilterSideBarTopView extends React.Component {
 	 */
     componentDidMount() {
 
-        debugger;
+        // debugger;
 
         if (this.props.RecentVizDropdown == null || this.props.RecentVizDropdown == undefined) {
             this.props.dispatch( setRecentVizDropdown( this.props.VizParams ));
@@ -165,16 +165,16 @@ class FilterSideBarTopView extends React.Component {
         var viewSelectItems = [];
         var arrReturn = [];
 
-        debugger;
+        // debugger;
 
         if (this.props.RecentVizDropdown != this.props.VizParams && (this.props.RecentVizDropdown != null || this.props.RecentVizDropdown != undefined)) {
             if (recentVizDropdown != null) {
                 arrReturn.push({label: "RECENT: " + recentVizDropdown.originalVizName, value: "RECENT_VIZ_DROPDOWN" });
-                debugger;
+                // debugger;
             }
             else {
                 arrReturn.push({label: "RECENT: " + this.props.RecentVizDropdown.originalVizName, value: "RECENT_VIZ_DROPDOWN" });
-                debugger;
+                // debugger;
             }
         }
 
@@ -482,7 +482,7 @@ class FilterSideBarTopView extends React.Component {
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -518,7 +518,7 @@ class FilterSideBarTopView extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (!(JSON.stringify(undoRedoHistory.history[undoRedoHistory.history.length - 1]) == JSON.stringify({filterList: this.props.filter, tableData: this.props.tableData})) ) {
 
@@ -540,7 +540,7 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onSelectViewChange = (value) => {
 
-        debugger;
+        // debugger;
 
         this.setState({ viewSelectValue: value });
         //console.log(value);
@@ -569,7 +569,7 @@ class FilterSideBarTopView extends React.Component {
             var context = this;
             var flag = true;
 
-            debugger;
+            // debugger;
         
             for (var keyIndex = 0; keyIndex < keys.length && flag;keyIndex++) {
                 funnelData = this.props.funnelData[keys[keyIndex]];
@@ -714,7 +714,7 @@ class FilterSideBarTopView extends React.Component {
 
         // pom.then(() => this.props.refreshParent());
 
-        debugger;
+        // debugger;
 
         let pom = new Promise(function (resolve, reject) {
                 for (var property in columnsFilterApplied) {
@@ -733,7 +733,7 @@ class FilterSideBarTopView extends React.Component {
     * @param event: - ADCMT
 	*/
     onHideFilteredData = (event) => {
-        debugger;
+        // debugger;
         if (this.props.filterIDs !== null) {
             var buttonState = !this.state.hideShowButtonTextFlag;
             this.setState({ hideShowButtonTextFlag: buttonState });
@@ -866,7 +866,7 @@ class FilterSideBarTopView extends React.Component {
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -884,7 +884,7 @@ class FilterSideBarTopView extends React.Component {
 
                 var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + context.props.VizParams.tableName + "&rowIds=[" + tempRowIds.toString() + "]";
 
-                debugger;
+                // debugger;
 
                 //makeServerCall(window.encodeURI(selectedGlyphsURL),
                 makeServerCall(selectedGlyphsURL,
@@ -940,7 +940,7 @@ class FilterSideBarTopView extends React.Component {
             position: this.props.UndoRedoHistory.position + 1,
         };
 
-        debugger;
+        // debugger;
         var context = this;
         
         if (newHistory.position < newHistory.history.length) {
@@ -971,7 +971,7 @@ class FilterSideBarTopView extends React.Component {
             position: this.props.UndoRedoHistory.position - 1,
         };
 
-        debugger;
+        // debugger;
         var context = this;
         
         if (newHistory.position > -1) {
@@ -1049,7 +1049,7 @@ class FilterSideBarTopView extends React.Component {
 			return({ label: value, value: value });
 		});
 
-        debugger;
+        // debugger;
 
         var statDataKeys = Object.keys(this.props.statData);
         var sameList = true;
@@ -1067,7 +1067,7 @@ class FilterSideBarTopView extends React.Component {
         }
 
         if (statDataKeys.length != 0 && sameList) {
-            debugger; //WOOOOOOOOOOOOOOOOO
+            // debugger; //WOOOOOOOOOOOOOOOOO
             for (var i = statisticColSelectItems.length -1; i > -1; i--) {
                 var colKeys = Object.keys(this.props.statData[statisticColSelectItems[i].value].values)
                 if (isNaN(this.props.statData[statisticColSelectItems[i].value].values[colKeys[0]].value)) {
@@ -1107,9 +1107,9 @@ class FilterSideBarTopView extends React.Component {
                             placeholder = "Select a view" 
                             options = { this.state.viewSelectItems } 
                             onChange = { this.onSelectViewChange } 
-                            style = {{
+                            /* style = {{
                                 margin: "-11px 0px 0px 0px"
-                            }}
+                            }} */
                             onOpen = { () => this.props.handleDraggableCorrection(true, true) }
                         />
                     </Flexbox>

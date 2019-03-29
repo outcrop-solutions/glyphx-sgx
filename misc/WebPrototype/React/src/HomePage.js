@@ -466,7 +466,7 @@ class HomePage extends React.Component {
                                     </div>
                                 </div>
 
-                                <div className = "line-break" style = {{borderTop: "2px solid black", paddingBottom: "15px", backgroundColor: "#ffffff"}}></div>
+                                <div className = "line-break" style = {{borderTop: "2px solid black", paddingBottom: "9px", backgroundColor: "#ffffff"}}></div>
                             
                                 {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
