@@ -113,7 +113,7 @@ class AnnouncementsDisplay extends React.Component {
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <div style = {{ padding: "7px", display: (this.state.loadMask ? "none" : "") }} >
+                <div style = {{ padding: "7px", paddingBottom: "12px", display: (this.state.loadMask ? "none" : "") }} >
                     <div style = {{ height: "100%", overflowY: "scroll", borderRadius: "3px" }} className = "customScroll" >
                         {announcements}
                     </div>

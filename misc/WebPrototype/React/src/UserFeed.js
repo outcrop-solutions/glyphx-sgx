@@ -241,7 +241,7 @@ class UserFeed extends React.Component {
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px", display: (this.state.loadMask ? "none" : "") }}  > 
+                <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px 7px 0px 7px", display: (this.state.loadMask ? "none" : "") }}  > 
 
                     {/*
                     <Select 
