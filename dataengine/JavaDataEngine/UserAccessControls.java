@@ -26,7 +26,7 @@ public class UserAccessControls {
 	/*
 	public static boolean initConnection(){
 		
-		conn = ConnectionSpawner.spawnConnection();
+		conn = ConnectionSpawner.instance().spawnConnection();
 		return conn != null;
 	}
 	*/
@@ -40,7 +40,7 @@ public class UserAccessControls {
 		HashMap<String, String> user_data = SGXAuthAPI.parseJson(response);
 		//System.out.println(response + "\n");
 
-		conn = ConnectionSpawner.spawnConnection();
+		conn = ConnectionSpawner.instance().spawnConnection();
 		
 		try{
 			/*
@@ -91,7 +91,7 @@ public class UserAccessControls {
 
 	public static boolean generateLicenseKey(String location){
 
-		conn = ConnectionSpawner.spawnConnection();
+		conn = ConnectionSpawner.instance().spawnConnection();
 		try{
 			ResultSet rs = conn.prepareStatement("SELECT * FROM UsageLicenses WHERE `UserID` = "+String.valueOf(loggedInUser.getID())).executeQuery();
 			if(rs.next()){
@@ -162,7 +162,7 @@ public class UserAccessControls {
 
 		try{
 
-			conn = ConnectionSpawner.spawnConnection();
+			conn = ConnectionSpawner.instance().spawnConnection();
 
 			String query = "SELECT VisualizationGroups.Group, Visualizations.Name, Visualizations.Path FROM ";
 			query += "(VisualizationGroups INNER JOIN Visualizations ON (VisualizationGroups.VizID=Visualizations.ID)) ";
