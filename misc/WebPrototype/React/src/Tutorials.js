@@ -30,7 +30,7 @@ class Tutorials extends React.Component {
 
         return (
             <div height='85%'>
-               <video id={id} width='100%' height='100%' /* poster={posterStr} */ controls>
+               <video id={id} width='100%' height='100%' poster={posterStr} controls>
                 <source src={'https://s3.amazonaws.com/synglyphx/tutorials/'+ srcVid} type='video/mp4'>
                 </source>
             </video>
