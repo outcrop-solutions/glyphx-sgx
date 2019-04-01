@@ -37,12 +37,12 @@ INDEX:
     - Login.js - Login page Master Component.
     - Logout.js - Envokes a logout.
     - Maintenance.js - Maintenance page gets displayed if the node server goes down but the webviewer remains online.
-    - MyViews.js - Saved views + shared views (shared views hidden since they were not implemented yet)
+    - SavedViews.js - Saved views + shared views (shared views hidden since they were not implemented yet)
     - NotFoundPage.js - Displayed when someone manually enters a url that doesnt exist
     - NumberRange.js - Handles number ranges.
     - PieChart.js - Defines the pie chart thats used in poll announcements.
     - PinningViewsModal.js - Pop up that allows you to select views to be pinned.
-    - RecentViews.js - Displays the recent views on the home page.
+    - ViewsTab.js - Displays the recent views on the home page.
     - Router.js - React router which handles what master component to display based on the url.
     - SearchBox.js - Reusable seachbox which can be configured to apply on keypress or onblur.
     - SelectedAndFilteredDisplay.js - Pop up for Selected Data and Filtered Data which displays a table and allows for download at csv.

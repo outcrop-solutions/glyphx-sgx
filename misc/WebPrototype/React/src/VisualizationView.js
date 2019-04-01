@@ -51,17 +51,17 @@ class VisualizationView extends React.Component {
             }
         }
 
-        if (this.state.setTimer == false) {
+        // if (this.state.setTimer == false) {
 
-            this.setState({ setTimer: true });
+        //     this.setState({ setTimer: true });
 
-            var context = this;
+        //     var context = this;
             
-            var x = setInterval(function() {
-                context.setState(context.state);
-            }, 60000);
+        //     var x = setInterval(function() {
+        //         context.setState(context.state);
+        //     }, 60000);
 
-        }
+        // }
 
         this.init();
 
@@ -256,7 +256,7 @@ class VisualizationView extends React.Component {
             var iframe = document.getElementById('GlyphViewer').contentWindow;
             iframe.closeSceneView();
         }
-        
+        this.props.dispatch(clearFilterOptions());
         this.props.history.push('/home')
     }
 
@@ -434,6 +434,11 @@ class VisualizationView extends React.Component {
 export const editModalDisplay = (timeoutModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     timeoutModal,
+});
+
+export const clearFilterOptions = () => ({
+    type: 'CLEAR_FILTER',
+    
 });
 
 

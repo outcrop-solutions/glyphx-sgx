@@ -59,7 +59,7 @@ const initialFilterState = {
  **/
 const filterReducer = function(state = initialFilterState, action) {
     var stateVal, previousRange, selected, display, i;
-    
+    console.log(state);
     switch (action.type) {
         /**
          * Initializes the Filter structure
@@ -69,6 +69,13 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 Filter: action.storeFilterStruc,
+            }
+
+        case 'CLEAR_FILTER':
+
+            return {
+                Filter: {},
+                LatestFilterChange: "none",
             }
 
 
@@ -592,7 +599,7 @@ const filterReducer = function(state = initialFilterState, action) {
 			return {
                 ...state,
                 VizParams: action.vizParams
-			}
+            }
 
         case 'SET_STATISTICS_DATA':
             return {
@@ -639,6 +646,8 @@ const reducers = combineReducers({
   dummyState: dummyReducer
 });
 
-let store = createStore(reducers);
+let store = createStore(reducers, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
 
 ReactDOM.render(<Provider store = { store }><RedirectRouter /></Provider>, document.getElementById('root'));

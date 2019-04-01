@@ -9,7 +9,7 @@ import Flexbox from 'flexbox-react';
 import './General.css';
 
 
-class MyViews extends React.Component {
+class SavedViews extends React.Component {
 
     constructor(props){
         super(props);
@@ -600,4 +600,4 @@ export const setCurrentVizParams = (vizParams) => ({
 /**
  * Connects the redux store to get access to global states.
  **/
-export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(MyViews));
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(SavedViews));

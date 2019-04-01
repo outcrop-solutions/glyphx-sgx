@@ -6,7 +6,7 @@ import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
-import RecentViews from './RecentViews.js';
+import ViewsTab from './ViewsTab.js';
 import ViewsManager from './ViewsManager.js';
 import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
@@ -74,7 +74,7 @@ class HomePage extends React.Component {
 
         this.props.dispatch( setRecentVizDropdown( null ));
 
-        this.setState({ height: window.innerHeight });
+        // this.setState({ height: window.innerHeight });
 
         //console.log("REAL: " + this.props.timeoutTimer);
 
@@ -85,7 +85,8 @@ class HomePage extends React.Component {
             var context = this;
             
             var x = setInterval(function() {
-                context.setState(context.state);
+                // console.log(context.state, 'what is this?!?!');
+                // context.setState(context.state);
             }, 60000);
 
         }
@@ -368,15 +369,15 @@ class HomePage extends React.Component {
 	 * Updates tutorial stage
      * @param stage: stage to change to
 	 */
-    updateStage(stage) {
-        if (stage === 10) {
-            this.setState({ tutorialStage: "done" });
-        }
+    // updateStage(stage) {
+    //     if (stage === 10) {
+    //         this.setState({ tutorialStage: "done" });
+    //     }
 
-        else {
-            this.setState({ tutorialStage: stage });
-        }
-    }
+    //     else {
+    //         this.setState({ tutorialStage: stage });
+    //     }
+    // }
 
     render() {
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
@@ -481,7 +482,7 @@ class HomePage extends React.Component {
                                 <div style = {{padding: "12px 12px 12px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
                                         
-                                        <RecentViews loadRecentView={(rowObj) => this.loadRecentView(rowObj)}/>
+                                        <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
                                         
                                         <div style = {{height: "29.33%", minHeight: "0"}}>
                                             <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,

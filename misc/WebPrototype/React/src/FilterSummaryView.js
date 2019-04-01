@@ -24,20 +24,26 @@ class FilterSummaryView extends React.Component {
      * @param nextState: The state the component would have after the change
      * @returns: true if it should render and false if it shouldn't
      **/
-    shouldComponentUpdate(nextProps, nextState) {
-        for (var colName in this.props.filterList) {
-            // debugger;
-            if (this.props.filterList[colName].selectedValues != nextProps.filterList[colName].selectedValues || this.props.filterList[colName].rangeList != nextProps.filterList[colName].rangeList) {
-                return true;
-            }
-        }
-        if (this.props.settings != nextProps.settings || this.props.tableData != nextProps.tableData) {
-            return true;
-        }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     for (var colName in this.props.filterList) {
+    //         console.log(nextProps.filterList[colName],'filter list in filterSummaryView', colName, 
+    //         'filter list in filterSummaryView',nextProps.filterList[colName].selectedValues,
+    //              'filter list in filterSummaryView');
+    //         // debugger;
+    //             if ((this.props.filterList[colName].selectedValues) != 
+    //             (nextProps.filterList[colName].selectedValues) 
+    //             || (this.props.filterList[colName].rangeList) != 
+    //             (nextProps.filterList[colName].rangeList)) {
+    //                 return true;
+    //             }
+    //     }
+    //     if (this.props.settings != nextProps.settings || this.props.tableData != nextProps.tableData) {
+    //         return true;
+    //     }
         
         
-        return false;
-    }
+    //     return false;
+    // }
 
 
     /**

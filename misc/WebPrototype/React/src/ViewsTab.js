@@ -6,7 +6,7 @@ import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
-import MyViews from './MyViews.js';
+import SavedViews from './SavedViews.js';
 import 'rc-tooltip/assets/bootstrap.css';
 import './General.css';
 import './Views.css';
@@ -15,7 +15,7 @@ import './Views.css';
 /**
 * -ADCMT
 */
-class RecentViews extends React.Component {
+class ViewsTab extends React.Component {
 
     state = {
         loadMask: true,
@@ -47,7 +47,7 @@ class RecentViews extends React.Component {
                 
            }
         );
-        //On component mount, open Recent Views Tab
+        //On component mount, open Views Tab
         document.getElementById("tab-defaultOpen").click();
     }
 
@@ -218,7 +218,7 @@ class RecentViews extends React.Component {
                 </div>
                 {/* Saved Views Tab */}
                 <div id="Saved" className="tabcontent">
-                    <MyViews/> 
+                    <SavedViews/> 
                 </div>
                 
             </div>
@@ -256,4 +256,4 @@ const mapStateToProps = function(state) {
 /**
  * Connects the redux store to get access to global states.
  **/
-export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(RecentViews));
+export default withRouter(connect(mapStateToProps,null,null,{withRef:true})(ViewsTab));

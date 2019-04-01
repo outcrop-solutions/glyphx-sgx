@@ -41,6 +41,7 @@ class ComponentLoadMask extends React.Component {
 
     componentDidMount() {
         if (this.props.imgLink) {
+            // console.log(this.props.imgLink, 'imgLink props');
             for (let i = loadingMessages.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [loadingMessages[i], loadingMessages[j]] = [loadingMessages[j], loadingMessages[i]];
@@ -48,20 +49,20 @@ class ComponentLoadMask extends React.Component {
 
             var context = this;
 
-            var loopVar = setInterval(function() {
-                if (context.props.stopLoop) {
-                    clearInterval(loopVar);
-                }
-                else {
-                    var currentPosition = context.state.position;
-                    if (currentPosition + 1 > loadingMessages.length - 1) {
-                        currentPosition = -1;
-                    }
+            // var loopVar = setInterval(function() {
+            //     if (context.props.stopLoop) {
+            //         clearInterval(loopVar);
+            //     }
+            //     else {
+            //         var currentPosition = context.state.position;
+            //         if (currentPosition + 1 > loadingMessages.length - 1) {
+            //             currentPosition = -1;
+            //         }
                     
-                    context.setState({ position: ++currentPosition });
-                }
+            //         context.setState({ position: ++currentPosition });
+            //     }
                 
-            }, 8000);
+            // }, 8000);
         }
     }
 
