@@ -13,6 +13,7 @@ import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import TutorialWindow from './TutorialWindow.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TimeoutAlert from './TimeoutAlert.js';
+import Tutorials from './Tutorials';
 import './topNav.css';
 import './General.css';
 
@@ -484,7 +485,7 @@ class HomePage extends React.Component {
                                         
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
                                         
-                                        <div style = {{height: "29.33%", minHeight: "0"}}>
+                                        <div style = {{/* height: "29.33%", */ minHeight: "0", paddingBottom: '0px',}}>
                                             <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
                                             marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
                                                 <div 
@@ -501,25 +502,8 @@ class HomePage extends React.Component {
                                                 > 
                                                     Training
                                                 </div>
-                                                {/* <div style = {{height: "10.33%"}}>
-                                                    <Flexbox flexGrow = {1} style = {{ height: "33.33%", minHeight: "0" }} >
-                                                        <div
-                                                            style = {{
-                                                                padding: "7px 7px 0px 5px",
-                                                                height: "100%",
-                                                                width: "100%",
-                                                                borderRadius: "2px",
-                                                            }}
-                                                            className = "customScroll"
-                                                            id = "chatArea"
-                                                        >
-                
-                                                        </div>
-                                                    <div style = {{height: "33.33%"}}></div> 
-                                                    </Flexbox>
-                                                </div> */}
-
                                             </div>
+                                            <Tutorials/>
                                     </div>
                                     <div style = {{height: "33.33%"}}> 
                                         <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
