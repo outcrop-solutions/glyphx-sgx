@@ -74,6 +74,7 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'CLEAR_FILTER':
 
             return {
+                ...state,
                 Filter: {},
                 LatestFilterChange: "none",
             }
