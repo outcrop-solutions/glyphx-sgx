@@ -348,18 +348,18 @@ class SimpleTable extends React.Component {
         this.props.onClickSaved(this.state.flatData[selectedRows]);
     };
 
-    hoverSelection(hover) {
-        this.setState({hover: !this.state.hover});
-    };
+    // hoverSelection(hover) {
+    //     this.setState({hover: !this.state.hover});
+    // };
     
     render() {
         var colNames = [];
         var rows = [];
         var columnCount = 0;
         let hoverColor;
-        if(this.state.hover === true){
-            hoverColor = "#dadada";
-        }
+        // if(this.state.hover === true){
+        //     hoverColor = "#dadada";
+        // }
 
         /*
         debugger;
@@ -509,7 +509,11 @@ class SimpleTable extends React.Component {
                 //this.setState({ flatData: fData });
 
                 rows.push(
-                    <TableRow key = {j} selected = { this.isSelected(j) }>
+                    <TableRow 
+                    className='hover-saved-row-select'
+                    key = {j} 
+                    selected = { this.isSelected(j) } 
+                    >
                         {data}
                     </TableRow>
                 );
@@ -562,8 +566,6 @@ class SimpleTable extends React.Component {
                         </TableHeader>
                         <TableBody 
                         displayRowCheckbox = { false }
-                        onMouseEnter = {() => {this.hoverSelection(this.state.hover)}}
-                        onMouseLeave = {() => {this.hoverSelection(this.state.hover)}}
                         style = {{/* border: "1px solid black",  */
                             cursor: "pointer",
                             backgroundColor: hoverColor/* , fontSize: "14px" */ 

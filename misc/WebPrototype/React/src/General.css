@@ -301,3 +301,15 @@ table.blueTable thead th {
 textarea {
     resize: none;
 }
+
+.tutorial-div:hover{
+  cursor: pointer;
+}
+
+.hover-saved-row-select:hover{
+  background-color: #dadada;
+}
+
+.training-hover{
+  cursor: pointer;
+}

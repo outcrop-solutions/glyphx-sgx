@@ -470,15 +470,19 @@ class ViewsManager extends React.Component {
 
         return(
             <div>
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", borderRadius: "2px", paddingBottom: "4px" }} >
+                <div style = {{ 
+                    backgroundColor: '#0446a0',/* this.props.settings.colors.homePageColors.headerBackground, */ 
+                    marginBottom: "3px", 
+                    borderRadius: "2px", 
+                    paddingBottom: "4px" }} >
                     <div 
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "220.9px", 
+                            width: "349.2px", 
                             padding: "14px 0 12px 0",
                             fontSize: "21px",
-                            letterSpacing: "0.23em",
+                            letterSpacing: "0.70em",
                             textTransform: "uppercase"
                         }}
                         className = "noselect"

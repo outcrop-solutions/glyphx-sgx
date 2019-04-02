@@ -220,16 +220,20 @@ class UserFeed extends React.Component {
         return (
             <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
 
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginBottom: "3px", paddingBottom: "4px" }} >
+                <div style = {{ 
+                    backgroundColor: '#018cbb' /* this.props.settings.colors.homePageColors.headerBackground */, 
+                    borderRadius: "2px",
+                    marginBottom: "3px", 
+                    paddingBottom: "4px" }} >
                     <div 
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "137px",
+                            width: "212px",
                             paddingTop: "4px",
                             fontSize: "19px",
-                            letterSpacing: "0.23em",
-                            textTransform: "uppercase"
+                            letterSpacing: "0.70em",
+                            textTransform: "uppercase",                   
                         }}
                         className = "noselect"
                     > 

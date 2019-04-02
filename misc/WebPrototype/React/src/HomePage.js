@@ -44,7 +44,8 @@ class HomePage extends React.Component {
 	
     // 0 for start, "done" for end
     state = {
-        tutorialStage: "done"
+        tutorialStage: "done",
+        trainingHover: false
     }
 	
 	goToVizView(success) {
@@ -382,7 +383,7 @@ class HomePage extends React.Component {
 
     render() {
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
-
+        // console.log(this.props.settings.colors.homePageColors.headerBackground)
 		var context = this;
         return (
             <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
@@ -411,21 +412,21 @@ class HomePage extends React.Component {
                             <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
 
                                 <div style = {{padding: "12px 6px 12px 12px", height: "50%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}}>
-                                    <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
+                                    <div style = {{ backgroundColor: /* this.props.settings.colors.homePageColors.headerBackground */'#000000',
                                         marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
                                             <div 
                                                 className = "noselect"
                                                 style = {{ 
                                                     color: this.props.settings.colors.overviewButtonsColor.text, 
                                                     margin: "0 auto",
-                                                    width: "286px", 
+                                                    width: "267px", 
                                                     paddingTop: "4px",
                                                     fontSize: "19px",
-                                                    letterSpacing: "0.23em",
+                                                    letterSpacing: "0.70em",
                                                     textTransform: "uppercase"
                                                 }}
                                             > 
-                                                Visualization Glyph
+                                                Glyph Model
                                             </div>
                                         
                                             <Flexbox flexGrow = {1} style = {{ height: "50%", minHeight: "0" }} >
@@ -485,36 +486,54 @@ class HomePage extends React.Component {
                                         
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
                                         
-                                        <div style = {{/* height: "29.33%", */ minHeight: "0", paddingBottom: '0px',}}>
-                                            <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
-                                            marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
+                                        <div style = {{/* height: "29.33%", */ minHeight: "0", paddingBottom: '0px',}} className="training-hover">
+                                            <div
+                                            onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
+                                            onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
+                                            style = {{ 
+                                                backgroundColor: /* this.props.settings.colors.homePageColors.headerBackground */ '#000',
+                                                marginBottom: "3px", 
+                                                paddingBottom: "4px", 
+                                                borderRadius: "2px",
+                                                minHeight: "0"}}>
+                                                <a 
+                                                href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
+                                                style={{textDecoration: "none"}} 
+                                                target="_blank"
+                                                title="Go to Tutorial Main Page">
                                                 <div 
                                                     className = "noselect"
                                                     style = {{ 
-                                                        color: this.props.settings.colors.overviewButtonsColor.text, 
+                                                        color: this.state.trainingHover ? '#00c4d9' : 
+                                                            this.props.settings.colors.overviewButtonsColor.text, 
                                                         margin: "0 auto",
-                                                        width: "111px", 
+                                                        width: "165px", 
                                                         paddingTop: "4px",
                                                         fontSize: "19px",
-                                                        letterSpacing: "0.23em",
+                                                        letterSpacing: "0.70em",
                                                         textTransform: "uppercase"
                                                     }}
                                                 > 
                                                     Training
-                                                </div>
+                                                </div></a>
                                             </div>
                                             <Tutorials/>
                                     </div>
                                     <div style = {{height: "33.33%"}}> 
-                                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, borderRadius: "2px", marginTop: "15px", marginBottom: "3px", paddingBottom: "4px" }} >
+                                        <div style = {{ 
+                                            backgroundColor: '#018cbb'/*  this.props.settings.colors.homePageColors.headerBackground */, 
+                                            borderRadius: "2px", 
+                                            marginTop: "15px", 
+                                            marginBottom: "3px", 
+                                            paddingBottom: "4px" }} >
                                             <div 
                                                 style = {{ 
                                                     color: this.props.settings.colors.overviewButtonsColor.text, 
                                                     margin: "0 auto",
-                                                    width: "204px", 
+                                                    width: "309px", 
                                                     paddingTop: "4px",
                                                     fontSize: "19px",
-                                                    letterSpacing: "0.23em",
+                                                    letterSpacing: "0.70em",
                                                     textTransform: "uppercase"
                                                 }}
                                                 className = "noselect"

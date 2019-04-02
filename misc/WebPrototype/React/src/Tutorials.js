@@ -20,39 +20,29 @@ class Tutorials extends React.Component {
             "videos/05%20Rotation%20and%20Zoom%20Using%20In%20Scene%20Click%20Controls.mp4",
             "videos/06%20Accessing%20the%20Legend.mp4",
         ];
-        const id = Math.floor(Math.random()*videoArr.length); 
-        let srcVid = videoArr[id];
-        console.log(id);
-              
-
-        let posterStr = 'https://s3.amazonaws.com/synglyphx/tutorials/videos/thumbnails/video' + id +'.png';
-        console.log(id, posterStr, srcVid);
+        let id = 0;
+        const hostName = 'https://s3.amazonaws.com/synglyphx/tutorials/';
+        const hostNameThumbnail = 'https://s3.amazonaws.com/synglyphx/tutorials/videos/thumbnails/video';
+        const srcVid = hostName + videoArr[id]; 
+        const posterStr =  hostNameThumbnail + id +'.png';
 
         return (
-            <div height='85%'>
-               <video id={id} width='100%' height='100%' poster={posterStr} controls>
-                <source src={'https://s3.amazonaws.com/synglyphx/tutorials/'+ srcVid} type='video/mp4'>
-                </source>
+            <div className='tutorial-div' height='85%'>
+               <video 
+               width='100%' height='100%' poster={posterStr} 
+                onEnded={(e) => {               
+                        id++;
+                        if(id < videoArr.length){
+                            e.target.src = hostName + videoArr[id];
+                            e.target.poster = hostNameThumbnail + id + '.png';
+                        }
+                }} controls
+                >
+                <source id='tutorial-video' src={srcVid} type='video/mp4' />
             </video>
             </div>
         );
     }
 }
 
-/**
- * Maps portions of the store to props of your choosing
- * @param state: passed down through react-redux's 'connect'
- **/
-// const mapStateToProps = function(state) {
-//  return {
-//    settings: state.filterState.Settings,
-//    storedViews: state.filterState.StoredViews,
-//    funnelData: state.filterState.FunnelData
-//  }
-// }
-
-
-/**
- * Connects the redux store to get access to global states.
- **/
-export default Tutorials;
+export default (Tutorials);

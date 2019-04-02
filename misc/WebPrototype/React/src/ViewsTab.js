@@ -120,6 +120,7 @@ class ViewsTab extends React.Component {
                     key = { view } 
                 >
                     <CardText
+                        className="hover-recent-select"
                         style = {{ padding: "7px", borderRadius: "5px", width: "100%" }}
                         onClick = { () => context.props.loadRecentView(view) }
                     >
@@ -166,7 +167,7 @@ class ViewsTab extends React.Component {
         return (
             <div style = {{overflow: "auto", height: "33.33%"}}>
                 <div style = {{ 
-                    backgroundColor: this.props.settings.colors.homePageColors.headerBackground,
+                    backgroundColor: '#018cbb' /* this.props.settings.colors.homePageColors.headerBackground */,
                     marginBottom: "3px", 
                     paddingBottom: "4px", 
                     borderRadius: "2px" }} >
@@ -175,10 +176,10 @@ class ViewsTab extends React.Component {
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
-                            width: "70px", 
+                            width: "103px", 
                             paddingTop: "4px",
                             fontSize: "19px",
-                            letterSpacing: "0.23em",
+                            letterSpacing: "0.70em",
                             textTransform: "uppercase"
                         }}
                     > 
