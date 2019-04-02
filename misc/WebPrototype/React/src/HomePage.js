@@ -428,25 +428,14 @@ class HomePage extends React.Component {
                                             > 
                                                 Glyph Model
                                             </div>
-                                        
-                                            <Flexbox flexGrow = {1} style = {{ height: "50%", minHeight: "0" }} >
-                                                {/* <div
-                                                    style = {{
-                                                        padding: "7px 7px 0px 5px",
-                                                        height: "100%",
-                                                        width: "100%",
-                                                        borderRadius: "2px",
-                                                    }}
-                                                    className = "customScroll"
-                                                    id = "chatArea"
-                                                >
-        
-                                                </div> */}
-                                               <div style = {{height: "50%"}}></div>
-                                            </Flexbox>
-
                                     </div>
-                                    
+                                    <div >
+                                        {/*Glyph Model Example*/}
+                                        <img src= "./Res/Img/GlyphExample.png"
+                                            alt='Glyph Model Example' 
+                                            title='Glyph Model for California Prospects'
+                                            style={{height: '100%', width: '100%', margin: 'auto', padding: '7px' }}/>
+                                    </div>
                                 </div>
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "50%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
