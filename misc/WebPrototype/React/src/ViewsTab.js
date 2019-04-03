@@ -165,9 +165,9 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{overflow: "auto", height: "33.33%"}}>
-                <div style = {{ 
-                    backgroundColor: '#018cbb' /* this.props.settings.colors.homePageColors.headerBackground */,
+            <div style = {{overflow: "auto", height: "33.33%", marginBottom: "4px"}}>
+                <div>
+                    {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
                     paddingBottom: "4px", 
                     borderRadius: "2px" }} >
@@ -179,12 +179,27 @@ class ViewsTab extends React.Component {
                             width: "103px", 
                             paddingTop: "4px",
                             fontSize: "19px",
-                            letterSpacing: "0.70em",
+                            letterSpacing: "0.23em",
                             textTransform: "uppercase"
                         }}
                     > 
                         Views
-                    </div>
+                    </div> */}
+                    <h2
+                        className='noselect'
+                        style={{
+                            color: this.props.settings.colors.overviewButtonsColor.text,
+                            backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
+                            borderRadius: "2px", 
+                            paddingBottom: "4px", 
+                            margin: "auto auto 4px auto", 
+                            paddingTop: "4px",
+                            fontSize: "19px",
+                            letterSpacing: "0.14em",
+                            textTransform: "uppercase",
+                            textAlign: "center"}}
+                        >Views
+                    </h2>
                 </div>
 
                 <div style = {{ 

@@ -220,8 +220,8 @@ class UserFeed extends React.Component {
         return (
             <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
 
-                <div style = {{ 
-                    backgroundColor: '#018cbb' /* this.props.settings.colors.homePageColors.headerBackground */, 
+               {/*  <div style = {{ 
+                    backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground, 
                     borderRadius: "2px",
                     marginBottom: "3px", 
                     paddingBottom: "4px" }} >
@@ -232,13 +232,32 @@ class UserFeed extends React.Component {
                             width: "212px",
                             paddingTop: "4px",
                             fontSize: "19px",
-                            letterSpacing: "0.70em",
+                            letterSpacing: "0.23em",
                             textTransform: "uppercase",                   
                         }}
                         className = "noselect"
                     > 
                         User Feed
                     </div>
+                </div> */}
+                <div>
+                    <h2
+                        className='noselect'
+                        style={{
+                            color: this.props.settings.colors.overviewButtonsColor.text,
+                            backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
+                            borderRadius: "2px", 
+                           /*  marginTop: "15px", 
+                            marginBottom: "3px", */ 
+                            paddingBottom: "4px", 
+                            margin: "0 auto", 
+                            paddingTop: "4px",
+                            fontSize: "19px",
+                            letterSpacing: "0.14em",
+                            textTransform: "uppercase",
+                            textAlign: "center"}}
+                        >User Feed
+                    </h2>
                 </div>
 
                 <div style = {{ height: "80%", display: (this.state.loadMask ? "" : "none") }} >

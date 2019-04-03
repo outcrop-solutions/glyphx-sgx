@@ -470,25 +470,40 @@ class ViewsManager extends React.Component {
 
         return(
             <div>
-                <div style = {{ 
-                    backgroundColor: '#0446a0',/* this.props.settings.colors.homePageColors.headerBackground, */ 
+                <div /* style = {{ 
+                    backgroundColor: '#0446a0', this.props.settings.colors.homePageColors.headerBackground, 
                     marginBottom: "3px", 
                     borderRadius: "2px", 
-                    paddingBottom: "4px" }} >
-                    <div 
+                    paddingBottom: "4px" }} */ >
+                   {/*  <div 
                         style = {{ 
                             color: this.props.settings.colors.overviewButtonsColor.text, 
                             margin: "0 auto",
                             width: "349.2px", 
                             padding: "14px 0 12px 0",
                             fontSize: "21px",
-                            letterSpacing: "0.70em",
+                            letterSpacing: "0.23em",
                             textTransform: "uppercase"
                         }}
                         className = "noselect"
                     > 
-                        Views Manager
-                    </div>
+                        Views Library
+                    </div> */}
+                    <h2
+                        className='noselect'
+                        style={{
+                            color: this.props.settings.colors.overviewButtonsColor.text,
+                            backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
+                            borderRadius: "2px", 
+                            paddingBottom: "4px", 
+                            margin: "auto auto 4px auto", 
+                            padding: "14px 0 12px 0",
+                            fontSize: "19px",
+                            letterSpacing: "0.14em",
+                            textTransform: "uppercase",
+                            textAlign: "center"}}
+                        >Views Library
+                    </h2>
                 </div>
 
                 <Stepper 
