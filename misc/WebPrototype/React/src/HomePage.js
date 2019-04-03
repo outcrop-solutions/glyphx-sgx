@@ -480,70 +480,72 @@ class HomePage extends React.Component {
 
                              {/* Right Column */}
                              <Flexbox style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
-                                <div style = {{padding: "12px 12px 12px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
+                                <div style = {{padding: "8px 10px 12px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
                                         
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
-                                        
-                                        <div style = {{/* height: "29.33%", */ minHeight: "0", paddingBottom: '0px',}} className="training-hover">
-                                            {/* <div
-                                            onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
-                                            onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
-                                            style = {{ 
-                                                backgroundColor: this.props.settings.colors.homePageColors.headerBackground '#000',
-                                                marginBottom: "3px", 
-                                                paddingBottom: "4px", 
-                                                borderRadius: "2px",
-                                                minHeight: "0"}}>
-                                                <a 
+                                        <Flexbox style={{marginBottom: "6px"}}>
+                                            <div style = {{height: "29.33%", minHeight: "0", paddingBottom: '0px',}} className="training-hover">
+                                                {/* <div
+                                                onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
+                                                onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
+                                                style = {{ 
+                                                    backgroundColor: this.props.settings.colors.homePageColors.headerBackground '#000',
+                                                    marginBottom: "3px", 
+                                                    paddingBottom: "4px", 
+                                                    borderRadius: "2px",
+                                                    minHeight: "0"}}>
+                                                    <a 
+                                                    href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
+                                                    style={{textDecoration: "none"}} 
+                                                    target="_blank"
+                                                    title="Go to Tutorial Main Page">
+                                                    <div 
+                                                        className = "noselect"
+                                                        style = {{ 
+                                                            color: this.state.trainingHover ? '#00c4d9' : 
+                                                                this.props.settings.colors.overviewButtonsColor.text, 
+                                                            margin: "0 auto",
+                                                            width: "165px", 
+                                                            paddingTop: "4px",
+                                                            fontSize: "19px",
+                                                            letterSpacing: "0.23em",
+                                                            textTransform: "uppercase"
+                                                        }}
+                                                    > 
+                                                        Training
+                                                    </div></a>
+                                                </div> */}
+                                                <a
                                                 href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
                                                 style={{textDecoration: "none"}} 
                                                 target="_blank"
                                                 title="Go to Tutorial Main Page">
-                                                <div 
-                                                    className = "noselect"
-                                                    style = {{ 
-                                                        color: this.state.trainingHover ? '#00c4d9' : 
-                                                            this.props.settings.colors.overviewButtonsColor.text, 
-                                                        margin: "0 auto",
-                                                        width: "165px", 
-                                                        paddingTop: "4px",
-                                                        fontSize: "19px",
-                                                        letterSpacing: "0.23em",
-                                                        textTransform: "uppercase"
-                                                    }}
-                                                > 
-                                                    Training
-                                                </div></a>
-                                            </div> */}
-                                            <a
-                                             href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
-                                             style={{textDecoration: "none"}} 
-                                             target="_blank"
-                                             title="Go to Tutorial Main Page">
-                                                <h2
-                                                    className='training-hover'
-                                                    onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
-                                                    onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
-                                                    style={{
-                                                        color: this.state.trainingHover ? '#00c4d9' : 
-                                                            this.props.settings.colors.overviewButtonsColor.text,
-                                                        backgroundColor: '#000'/* this.props.settings.colors.homePageColors.headerBackground  */, 
-                                                        borderRadius: "2px", 
-                                                        /* marginTop: "15px", 
-                                                        marginBottom: "3px",  */
-                                                        paddingBottom: "4px", 
-                                                        margin: "0 auto 6px", 
-                                                        paddingTop: "4px",
-                                                        fontSize: "19px",
-                                                        letterSpacing: "0.14em",
-                                                        textTransform: "uppercase",
-                                                        textAlign: "center"}}
-                                                    >Training
-                                                </h2>
-                                            </a>
-                                            <Tutorials/>
-                                    </div>
+                                                    <h2
+                                                        className='training-hover'
+                                                        onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
+                                                        onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
+                                                        style={{
+                                                            color: this.state.trainingHover ? '#00c4d9' : 
+                                                                this.props.settings.colors.overviewButtonsColor.text,
+                                                            backgroundColor: '#000'/* this.props.settings.colors.homePageColors.headerBackground  */, 
+                                                            borderRadius: "2px", 
+                                                            /* marginTop: "15px", 
+                                                            marginBottom: "3px",  */
+                                                            paddingBottom: "4px", 
+                                                            margin: "0 auto 6px", 
+                                                            paddingTop: "4px",
+                                                            fontSize: "19px",
+                                                            letterSpacing: "0.14em",
+                                                            textTransform: "uppercase",
+                                                            textAlign: "center"}}
+                                                        >Training
+                                                    </h2>
+                                                </a>
+                                                <Tutorials/>
+                                            
+                                        </div> 
+                                    </Flexbox>
                                     <div style = {{height: "33.33%"}}> 
                                         {/* <div style = {{ 
                                             backgroundColor: '#018cbb'this.props.settings.colors.homePageColors.headerBackground , 
