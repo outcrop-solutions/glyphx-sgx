@@ -495,7 +495,7 @@ class SimpleTable extends React.Component {
                     }
     
                     data.push(<TableRowColumn key = { dataRowObject[temp] } 
-                        style = {{ paddingLeft: "5px", paddingRight: "0px", fontSize: "14px"}} > {dataRowObject[temp]} 
+                        style = {{ padding: "0px 0px 0px 3px", fontSize: "14px"}} > {dataRowObject[temp]} 
                         </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
@@ -540,9 +540,9 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox /* style = {{ padding: "0px 12px" }} */ >
+                <Flexbox /* style = {{ padding: "0px 12px" }} */>
                     <Table 
-                        className = { this.props.id }
+                        className = {this.props.id}
                         fixedHeader = { true }
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 

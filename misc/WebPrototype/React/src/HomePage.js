@@ -429,13 +429,15 @@ class HomePage extends React.Component {
                                                 Glyph Model
                                             </div>
                                     </div>
-                                    <div >
-                                        {/*Glyph Model Example*/}
-                                        <img src= "./Res/Img/GlyphExample.png"
-                                            alt='Glyph Model Example' 
-                                            title='Glyph Model for California Prospects'
-                                            style={{height: '100%', width: '100%', margin: 'auto', padding: '7px' }}/>
-                                    </div>
+                                    <Flexbox>
+                                        <div >
+                                            {/*Glyph Model Example*/}
+                                            <img src= "./Res/Img/GlyphExample.png"
+                                                alt='Glyph Model Example' 
+                                                title='Glyph Model for California Prospects'
+                                                style={{height: '100%', width: '100%', margin: 'auto', padding: '11px' }}/>
+                                        </div>
+                                    </Flexbox>
                                 </div>
                                 <div style = {{ padding: "12px 6px 12px 12px", height: "50%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
