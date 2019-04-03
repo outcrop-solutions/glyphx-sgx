@@ -262,8 +262,10 @@ class ViewsManager extends React.Component {
         var context = this;
         
         var funnelData = this.props.funnelData;
+        console.log(funnelData);
         var mandrList, admList, faList, customList, retentionList;
 
+        //checking to see if its there and if it is, copy and put it in a new array
         if (funnelData["Marketing and Recruiting"]) {
             mandrList = funnelData["Marketing and Recruiting"];
         }
@@ -292,7 +294,7 @@ class ViewsManager extends React.Component {
             customList = [];
         }
 
-        /*
+        
         console.log(mandrList);
 
         console.log(admList);
@@ -300,21 +302,21 @@ class ViewsManager extends React.Component {
         console.log(faList);
 
         console.log(customList);
-        */
+       
 
-
+        //splicing out things that aren't supposed to be in there. to double check
         for (var i = mandrList.length - 1; i > -1; i--) {
             if (mandrList[i][0] != "Prospects" && mandrList[i][0] != "High School Profiles") {
                 mandrList.splice(i, 1);
             }
         }
-        console.log(mandrList);
+        // console.log(mandrList);
         for (var i = admList.length - 1; i > -1; i--) {
             if (admList[i][0] != "Current Year RC with Prior Year Admits" && admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants" && admList[i][0] != "Applicants by High School" && admList[i][0] != "Review Committee") {
                 admList.splice(i, 1);
             }
         }
-        console.log(admList);
+        // console.log(admList);
 
         faList = [];
 
@@ -335,7 +337,7 @@ class ViewsManager extends React.Component {
                 customList.splice(i, 1);
             }
         }
-        console.log(customList);
+        // console.log(customList);
 
         for (var i = mandrList.length - 1; i > -1; i--) {
             if (mandrList[i][0] != "Prospects" && mandrList[i][0] != "High School Profiles") {
@@ -383,7 +385,7 @@ class ViewsManager extends React.Component {
                     <CardText
                         style = {{ padding: "7px" }}
                         className = "funnel-middle-body noselect"
-                        onClick = { context.handleViewSelect.bind(context, title) }
+                        onClick = {() =>  {context.handleViewSelect.bind(context, title); console.log('haha!');} }
                     >
                         {title[0]}
                     </CardText>
@@ -502,11 +504,11 @@ class ViewsManager extends React.Component {
                             letterSpacing: "0.14em",
                             textTransform: "uppercase",
                             textAlign: "center"}}
-                        >Views Library
+                        >Visualization Manager
                     </h2>
                 </div>
 
-                <Stepper 
+               {/*  <Stepper 
                     activeStep = { this.state.stepIndex } 
                     style = {{ 
                         borderTopRightRadius: "3px", 
@@ -572,7 +574,7 @@ class ViewsManager extends React.Component {
                             <label className = "noselect" style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ) }} > Select a View </label>
                         </StepLabel>
                     </Step>
-                </Stepper>
+                </Stepper> */}
 
                     <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
 
@@ -607,6 +609,7 @@ class ViewsManager extends React.Component {
                                         </div>
 
                                     </div>
+                                    {/*this is where the 2nd modal pops up after initial selection */}
                                     <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px", marginTop: "-320px", height: "315px" }} >
 
                                         <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%" }}>
@@ -635,6 +638,7 @@ class ViewsManager extends React.Component {
                                     style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
                                 />
 
+                                {/* this is where the 3rd modal pops up after 2nd modal selection - the pop-out modal to filter*/}
                                 <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
                                 onLaunch={(extra,callback) => {this.onLaunch(extra,callback), console.log('here?')} }/>
                             </div>
