@@ -743,8 +743,8 @@ class allViewsModal extends React.Component {
 		});
 
 		return(
-			<Dialog
-				title = { this.props.type }
+			<div
+				/* title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
 				actionsContainerStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -793,66 +793,13 @@ class allViewsModal extends React.Component {
 							primary = {true } 
 						/>
 					]
-				}
+				} */
 			>
-				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
+				{/* <div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-				</div>
+				</div> */}
 
 				<div style = {{ height: "60vh", paddingBottom: "30px", display: (this.state.loadMask ? "none" : "") }} >
-					<RaisedButton 
-						label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
-						style = {{
-							width: "121px",
-							margin: "8px 10px 9px 0px"
-						}}
-						buttonStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-							backgroundColor: this.props.settings.colors.buttons.general
-						}} 
-						labelStyle = {{
-							fontSize: '12px',
-							textAlign: "center",
-							color: this.props.settings.colors.overviewButtonsColor.text,
-							margin: "0px 0px 0px -3px",
-							paddingLeft: "0px",
-							paddingRight: "0px"
-						}}
-						overlayStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-						}}
-						onClick = { () => this.selectDesectAll(data, "select") }
-						primary = { true } 
-					/>
-
-					<RaisedButton 
-						label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
-						style = {{
-							width: "135px"
-						}}
-						buttonStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-							backgroundColor: this.props.settings.colors.buttons.general
-						}} 
-						labelStyle = {{
-							fontSize: '12px',
-							textAlign: "center",
-							color: this.props.settings.colors.overviewButtonsColor.text,
-							margin: "0px 0px 0px -3px",
-							paddingLeft: "0px",
-							paddingRight: "0px"
-						}}
-						overlayStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-						}}
-						onClick = { () => this.selectDesectAll(data, "deselect") }
-						primary = { true } 
-					/>
-
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{displayData}
 					</Flexbox>
@@ -863,9 +810,107 @@ class allViewsModal extends React.Component {
 						autoHideDuration = { 2000 }
 						onRequestClose = { () => this.setState({ snackbarVisible: false }) }
 					/>
+					<div>
+						<div style={{float: 'left'}}>
+							<RaisedButton 
+								label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
+								style = {{
+									width: "121px",
+									margin: "8px 10px 9px 0px"
+								}}
+								buttonStyle = {{
+									height: '35px',
+									lineHeight: '35px',
+									backgroundColor: this.props.settings.colors.buttons.general
+								}} 
+								labelStyle = {{
+									fontSize: '12px',
+									textAlign: "center",
+									color: this.props.settings.colors.overviewButtonsColor.text,
+									margin: "0px 0px 0px -3px",
+									paddingLeft: "0px",
+									paddingRight: "0px"
+								}}
+								overlayStyle = {{
+									height: '35px',
+									lineHeight: '35px',
+								}}
+								onClick = { () => this.selectDesectAll(data, "select") }
+								primary = { true } 
+							/>
 
+							<RaisedButton 
+								label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
+								style = {{
+									width: "135px"
+								}}
+								buttonStyle = {{
+									height: '35px',
+									lineHeight: '35px',
+									backgroundColor: this.props.settings.colors.buttons.general
+								}} 
+								labelStyle = {{
+									fontSize: '12px',
+									textAlign: "center",
+									color: this.props.settings.colors.overviewButtonsColor.text,
+									margin: "0px 0px 0px -3px",
+									paddingLeft: "0px",
+									paddingRight: "0px"
+								}}
+								overlayStyle = {{
+									height: '35px',
+									lineHeight: '35px',
+								}}
+								onClick = { () => this.selectDesectAll(data, "deselect") }
+								primary = { true } 
+							/>
+						</div>
+						<div style={{float: "right", padding: "8px"}}>
+							<FlatButton
+								label = "Back"
+								primary = { true }
+								onClick = { this.handleBackClick }
+								style = {{ color: /* this.props.settings.colors.settingsModalColor.cancelButton */"black", backgroundColor: "#efefef" }}
+							/>
+							<RaisedButton 
+								label = { "Launch" }
+								style = {{
+									width: "112px",
+									margin: "0px 10px 9px 0px"
+								}}
+								buttonStyle = {{
+									height: '35px',
+									lineHeight: '35px',
+									/* shouldLaunchBeDisabled() not working */
+									backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : /*this.props.settings.colors.buttons.general) */"#000")
+								}} 
+								labelStyle = {{
+									fontSize: '12px',
+									textAlign: "center",
+									color: this.props.settings.colors.overviewButtonsColor.text,
+									margin: "0px 0px 0px -3px",
+									paddingLeft: "0px",
+									paddingRight: "0px"
+								}}
+								overlayStyle = {{
+									height: '35px',
+									lineHeight: '35px',
+								}}
+								disabled = { this.shouldLaunchBeDisabled() }
+								onClick = { () => this.props.onLaunch({
+									tableName:this.state.table,
+									frontEndFilters: this.state.selectionList,
+									originalVizName: this.props.type,
+									datasourceId: this.state.datasourceId,
+									filterAllowedColumnList: this.state.filterAllowedColumnList,
+								},this.onLaunchResultCallback) }
+								primary = {true } 
+							/>
+						</div>
+					</div>
 				</div>
-			</Dialog>
+				
+			</div>
 		);
 	}
 }

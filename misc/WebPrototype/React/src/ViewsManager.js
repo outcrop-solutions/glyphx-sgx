@@ -112,6 +112,7 @@ class ViewsManager extends React.Component {
 	
 	// Moving this here instead of AllViewsModal.js due to refs problem
 	onLaunch(extra, callback) {
+        console.log(extra);
         // Handle launch when no selections made on a column (select all unless its not allowed to select all)
 		var context = this;
 		var tableName;
@@ -242,9 +243,9 @@ class ViewsManager extends React.Component {
     flip (type) {
         this.setState({ flipped: !this.state.flipped, clicked: true });
         var context = this;
-        setTimeout(function () {
-            context.setState({ type: type });
-        }, 200);
+    
+        context.setState({ type: type });
+        
     }
 
 
@@ -254,6 +255,7 @@ class ViewsManager extends React.Component {
      */
     handleViewSelect = (type) => {
         this.props.dispatch(editModalDisplay(true));
+        console.log(type[0], type[1]);
         this.setState({ selectionType: type[0], selectionTypeURL: type[1] });
     }
 
@@ -347,8 +349,8 @@ class ViewsManager extends React.Component {
 
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
+                <div
+                    // containerStyle = {{ padding: "0px" }} 
                     style = {{ 
                         width: "80%", 
                         minWidth: "331px", 
@@ -358,21 +360,21 @@ class ViewsManager extends React.Component {
                     }} 
                     key = { title } 
                 >
-                    <CardText
+                    <div
                         style = {{ padding: "7px" }}
                         className = "funnel-top-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
-                    </CardText>
-                </Card>
+                    </div>
+                </div>
             )
         });
 
         var admissions = admList.map( function(title) {
             return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
+                <div
+                    // containerStyle = {{ padding: "0px" }} 
                     style = {{ 
                         width: "80%", 
                         minWidth: "331px", 
@@ -382,21 +384,21 @@ class ViewsManager extends React.Component {
                     }} 
                     key = { title } 
                 >
-                    <CardText
+                    <div
                         style = {{ padding: "7px" }}
                         className = "funnel-middle-body noselect"
-                        onClick = {() =>  {context.handleViewSelect.bind(context, title); console.log('haha!');} }
+                        onClick = {context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
-                    </CardText>
-                </Card>
+                    </div>
+                </div>
             )
         });
 
         var financialAid = faList.map( function(title) {
             return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
+                <div
+                    // containerStyle = {{ padding: "0px" }} 
                     style = {{ 
                         width: "80%", 
                         minWidth: "331px",
@@ -406,21 +408,21 @@ class ViewsManager extends React.Component {
                         }} 
                         key = { title } 
                     >
-                    <CardText
+                    <div
                         style = {{ padding: "7px" }}
                         className = "funnel-bottom-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
-                    </CardText>
-                </Card>
+                    </div>
+                </div>
             )
         });
 
         var custom = customList.map( function(title) {
             return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
+                <div
+                    // containerStyle = {{ padding: "0px" }} 
                     style = {{ 
                         width: "80%", 
                         minWidth: "331px", 
@@ -430,18 +432,39 @@ class ViewsManager extends React.Component {
                     }} 
                     key = { title } 
                 >
-                    <CardText
+                    <div
                         style = {{ padding: "7px" }}
                         className = "funnel-bottom-body noselect"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
-                    </CardText>
-                </Card>
+                    </div>
+                </div>
             )
         });
 
-        var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
+        let emptyDiv = function(){
+            return(
+                <div
+                // containerStyle = {{ padding: "0px" }} 
+                style = {{ 
+                    width: "80%", 
+                    minWidth: "331px", 
+                    margin: "0 auto", 
+                    height: "35px", 
+                    backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
+                }} 
+            >
+                <div
+                    style = {{ padding: "7px" }}
+                    className = "funnel-bottom-body noselect"
+                >
+                </div>
+            </div>
+            );
+        }
+
+       /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
 
         var backButton = (
@@ -468,10 +491,10 @@ class ViewsManager extends React.Component {
                     lineHeight: '30px'
                 }}
             />
-        );
+        ); */
 
         return(
-            <div>
+            <div style={{height:"100%"}}>
                 <div /* style = {{ 
                     backgroundColor: '#0446a0', this.props.settings.colors.homePageColors.headerBackground, 
                     marginBottom: "3px", 
@@ -576,41 +599,78 @@ class ViewsManager extends React.Component {
                     </Step>
                 </Stepper> */}
 
-                    <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
+                    {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
 
-                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderBottomRightRadius: "3px", borderBottomLeftRadius: "3px" }} >
+                        <div style = {{ 
+                            display: "table",
+                            backgroundColor: this.props.settings.colors.homePageColors.subBackground, 
+                            borderBottomRightRadius: "3px", 
+                            borderBottomLeftRadius: "3px",
+                            height: "25%",
+                            width: "70%"}} >
 
-                            <div style = {{ height: (this.state.type === "My Views" ? "" : "350px") }} >
-                                <div 
-                                    className = "Card" 
+                            <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
+                               {/*  <div 
+                                    className = "Card column-left" 
                                     style = {{ 
                                         marginBottom: "0px", 
-                                        width: "100%", 
                                         display: (this.state.stepIndex === 0 ? "" : "none"),
                                         //marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
-                                >
-                                    <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} > 
+                                > */}
+                                    <div /* className = { "Card-Front" + flippedCSS }  */style = {{ width: "50%",
+                                        height: "100%", float: "left", borderRight: "2px solid black" }} > 
 
-                                        <div onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } className = { mandrList.length > 0 ? "noselect" : "cursorDefault noselect" } style = {{ marginTop: "20px" }} >
-                                            <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" className = "nodrag" draggable = { false } />
-                                        </div>
+                                        <div 
+                                        onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } 
+                                        className = { mandrList.length > 0 ? "noselect" : "cursorDefault noselect" } 
+                                        style = {{ /* marginTop: "20px", */ fontSize:"18px" }} >
+                                        MarketingAndRecruiting
+{/*                                             <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" className = "nodrag" draggable = { false } />
+ */}                                        </div>
 
-                                        <div onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } className = { admList.length > 0 ? "noselect" : "cursorDefault noselect"} >
-                                            <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" className = "nodrag" draggable = { false } />
-                                        </div>
+                                        <div 
+                                        onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } 
+                                        className = { admList.length > 0 ? "noselect" : "cursorDefault noselect"}
+                                        style={{fontSize:"18px"}} >
+                                        Admissions
+{/*                                             <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" className = "nodrag" draggable = { false } />
+ */}                                        </div>
 
-                                        <div onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } className = { faList.length > 0 ? "noselect" : "cursorDefault noselect"} >
-                                            <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" className = "nodrag" draggable = { false } />
-                                        </div>
+                                        <div 
+                                        onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } 
+                                        className = { faList.length > 0 ? "noselect" : "cursorDefault noselect"}
+                                        style={{fontSize:"18px"}}  >
+                                        FinancialAid
+{/*                                             <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" className = "nodrag" draggable = { false } />
+ */}                                        </div>
 
-                                        <div onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } className = { customList.length > 0 ? "noselect" : "cursorDefault noselect"} >
-                                            <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" className = "nodrag" draggable = { false } />
-                                        </div>
+                                        <div 
+                                        onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } 
+                                        className = { customList.length > 0 ? "noselect" : "cursorDefault noselect"}
+                                        style={{fontSize:"18px"}}  >
+                                        Custom
+{/*                                             <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" className = "nodrag" draggable = { false } />
+ */}                                        </div>
 
                                     </div>
                                     {/*this is where the 2nd modal pops up after initial selection */}
-                                    <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px", marginTop: "-320px", height: "315px" }} >
+                                    <div>
+                                    <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "50%", display: "block" }}>
+                                            <Flexbox style = {{ alignItems: "center", height: "100%", margin: "0 auto" }} >
+                                            {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} </div>
+                                                /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
+                                                    : (this.state.type === "Admissions" ? <div> {admissions} </div> 
+                                                        : (this.state.type === "FinancialAid" ? <div> {financialAid} </div> 
+                                                            : (this.state.type === "Custom" ? <div> {custom} </div> : null)
+                                                        )
+                                                    )
+                                                }
+                                            </Flexbox>
+                                        </Flexbox>
+                                    </div>
+                                    {/*this is where the 2nd modal pops up after initial selection */}
+                                   {/*  <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px", marginTop: "-320px", height: "315px" }} >
 
                                         <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%" }}>
                                             <Flexbox style = {{ alignItems: "center", height: "100%", margin: "0 auto" }} >
@@ -623,25 +683,25 @@ class ViewsManager extends React.Component {
                                                 }
                                             </Flexbox>
                                         </Flexbox>
-                                    </div>
+                                    </div> */}
 
-                                </div>
+                                {/* </div> */}
                                 
                                     {/*being passed as a prop after ran through a function into MyViews component */}                               
                                     {/* {this.state.type === "Saved Views" ? <SavedViews 
                                     onSavedViewSelect={(savedViewObj,callback) => this.onSavedViewSelect(savedViewObj,callback)}/> : null} */}
 
-                                <FlatButton
+                                {/* <FlatButton
                                     label = "Back"
                                     backgroundColor = "#dcdcdc"
                                     onClick = { this.handlePrev }
                                     style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
-                                />
+                                /> */}
 
                                 {/* this is where the 3rd modal pops up after 2nd modal selection - the pop-out modal to filter*/}
-                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
-                                onLaunch={(extra,callback) => {this.onLaunch(extra,callback), console.log('here?')} }/>
+                                
                             </div>
+                            
 {/* 
                             {this.state.stepIndex === 0 ? 
                                 <div style = {{ margin: "0 auto", width: "70%" }} >
@@ -669,7 +729,9 @@ class ViewsManager extends React.Component {
                                 null
                             } */}
                         </div>
-                    </ExpandTransition>
+                        <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
+                                onLaunch={(extra,callback) => {this.onLaunch(extra,callback), console.log('here?')} }/>
+                    {/* </ExpandTransition> */}
             </div>
         );
     }
