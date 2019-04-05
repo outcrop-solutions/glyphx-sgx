@@ -143,7 +143,8 @@ class allViewsModal extends React.Component {
 					debugger;
 
 					// Post the new data to the state and hide the window load-mask
-					context.setState({ 
+					setTimeout(function() {
+						context.setState({ 
 						data: data, 
 						table: response.tableName, 
 						selectAll: selectAll, 
@@ -152,7 +153,9 @@ class allViewsModal extends React.Component {
 						loadMask: false,
 						loadDone: true, 
 						datasourceId: response.datasourceId });
+					}, 2000);
 					context.props.dispatch( setTimer(new Date().getTime()) );
+						
 				}
 			);
         }

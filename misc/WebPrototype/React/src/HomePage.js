@@ -382,6 +382,7 @@ class HomePage extends React.Component {
     // }
 
     render() {
+        console.log(this)
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
 		var context = this;
@@ -546,7 +547,7 @@ class HomePage extends React.Component {
                                             
                                         </div> 
                                     </Flexbox>
-                                    <div style = {{height: "33.33%"}}> 
+                                    <div style = {{height: "33%"}}> 
                                         {/* <div style = {{ 
                                             backgroundColor: '#018cbb'this.props.settings.colors.homePageColors.headerBackground , 
                                             borderRadius: "2px", 

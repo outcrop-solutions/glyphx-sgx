@@ -115,7 +115,7 @@ class ViewsTab extends React.Component {
                         height: "35px", 
                         width: "100%", 
                         borderRadius: "5px", 
-                        marginTop: (view === newList[0] ? "0px" : "5px") 
+                        marginTop: (view === newList[0] ? "0px" : "5px"),
                     }} 
                     key = { view } 
                 >
@@ -153,7 +153,7 @@ class ViewsTab extends React.Component {
                             </Flexbox>
 
                             <Flexbox style = {{ width: "40%" }} > 
-                                <div style = {{ width: "100%", textAlign: "right", margin: "0px 1px 0px" }} >
+                                <div style = {{ width: "100%", textAlign: "right", /* margin: "0px 1px 0px" */ }} >
                                     { viewDate }
                                 </div>
                             </Flexbox>  
@@ -165,7 +165,7 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{overflow: "auto", height: "33.33%", marginBottom: "4px"}}>
+            <div style = {{overflow: "auto", height: "33%", marginBottom: "4px"}}>
                 <div>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
@@ -202,12 +202,6 @@ class ViewsTab extends React.Component {
                     </h2>
                 </div>
 
-                <div style = {{ 
-                    height: "250px", 
-                    display: (this.state.loadMask ? "" : "none") }} >
-                    <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-                </div>
-
                 {/* tab content */}
                 <div className="tab">
                     
@@ -222,8 +216,14 @@ class ViewsTab extends React.Component {
                     style = {{padding: "10px 52.3320px 10px 52.3320px"}}>
                         Saved
                     </button>
-
                 </div>
+
+                <div style = {{ 
+                    height: "250px", 
+                    display: (this.state.loadMask ? "" : "none") }} >
+                    <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+                </div>
+
                 {/* Recent Views Tab */}
                 <div id="Recent" className="tabcontent">
                     <div style = {{ padding: "7px", marginBottom: "5px", display: (this.state.loadMask ? "none" : "") }} >
