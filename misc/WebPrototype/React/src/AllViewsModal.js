@@ -28,7 +28,8 @@ class allViewsModal extends React.Component {
 		selection: "",
 		mouseup: true,
 		selectAll: [],
-		loadMask: true
+		loadMask: false,
+		loadDone: false
 	}
 	constructor(props){
 		super(props);
@@ -142,7 +143,15 @@ class allViewsModal extends React.Component {
 					debugger;
 
 					// Post the new data to the state and hide the window load-mask
-					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false, datasourceId: response.datasourceId });
+					context.setState({ 
+						data: data, 
+						table: response.tableName, 
+						selectAll: selectAll, 
+						filterAllowedColumnList: response.filterAllowedColumnList, 
+						selectionList: [], 
+						loadMask: false,
+						loadDone: true, 
+						datasourceId: response.datasourceId });
 					context.props.dispatch( setTimer(new Date().getTime()) );
 				}
 			);
@@ -744,6 +753,7 @@ class allViewsModal extends React.Component {
 
 		return(
 			<div
+				style={{paddingTop: "10px"}}
 				/* title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -795,11 +805,11 @@ class allViewsModal extends React.Component {
 					]
 				} */
 			>
-				{/* <div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
+				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-				</div> */}
+				</div> 
 
-				<div style = {{ height: "60vh", paddingBottom: "30px", display: (this.state.loadMask ? "none" : "") }} >
+				<div style = {{ height: "60vh", paddingBottom: "30px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none") }} >
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{displayData}
 					</Flexbox>
@@ -811,7 +821,7 @@ class allViewsModal extends React.Component {
 						onRequestClose = { () => this.setState({ snackbarVisible: false }) }
 					/>
 					<div>
-						<div style={{float: 'left'}}>
+						<div style={{float: 'left', display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							<RaisedButton 
 								label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
 								style = {{
@@ -865,13 +875,13 @@ class allViewsModal extends React.Component {
 								primary = { true } 
 							/>
 						</div>
-						<div style={{float: "right", padding: "8px"}}>
-							<FlatButton
+						<div style={{float: "right", padding: "8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+							{/* <FlatButton
 								label = "Back"
 								primary = { true }
 								onClick = { this.handleBackClick }
-								style = {{ color: /* this.props.settings.colors.settingsModalColor.cancelButton */"black", backgroundColor: "#efefef" }}
-							/>
+								style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton"black", backgroundColor: "#efefef" }}
+							/> */}
 							<RaisedButton 
 								label = { "Launch" }
 								style = {{

@@ -347,22 +347,32 @@ class ViewsManager extends React.Component {
             }
         }
 
+        
+
+        const styleForFirstViewSelect = {
+            fontSize:"18px", 
+            padding: "7px"
+        };
+
+        const styleForSecViewSelect = {
+            width: "100%", 
+            minWidth: "331px", 
+            margin: "0 auto", 
+            height: "35px",
+            fontSize: "18px" 
+            /* backgroundColor: context.props.settings.colors.homePageColors.funnelTopBody  */
+        };
+
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
                 <div
                     // containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px", 
-                        margin: "0 auto", 
-                        height: "35px", 
-                        backgroundColor: context.props.settings.colors.homePageColors.funnelTopBody 
-                    }} 
+                    style = {styleForSecViewSelect} 
                     key = { title } 
                 >
                     <div
                         style = {{ padding: "7px" }}
-                        className = "funnel-top-body noselect"
+                        className = "funnel-top-body noselect second-view-selection"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
@@ -375,18 +385,12 @@ class ViewsManager extends React.Component {
             return (
                 <div
                     // containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px", 
-                        margin: "0 auto", 
-                        height: "35px", 
-                        backgroundColor: context.props.settings.colors.homePageColors.funnelMiddleBody 
-                    }} 
+                    style = {styleForSecViewSelect} 
                     key = { title } 
                 >
                     <div
                         style = {{ padding: "7px" }}
-                        className = "funnel-middle-body noselect"
+                        className = "funnel-middle-body noselect second-view-selection"
                         onClick = {context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
@@ -399,18 +403,12 @@ class ViewsManager extends React.Component {
             return (
                 <div
                     // containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px",
-                         margin: "0 auto", 
-                         height: "35px", 
-                         backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
-                        }} 
-                        key = { title } 
+                    style = {styleForSecViewSelect} 
+                    key = { title } 
                     >
                     <div
                         style = {{ padding: "7px" }}
-                        className = "funnel-bottom-body noselect"
+                        className = "funnel-bottom-body noselect second-view-selection"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
@@ -423,18 +421,12 @@ class ViewsManager extends React.Component {
             return (
                 <div
                     // containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px", 
-                        margin: "0 auto", 
-                        height: "35px", 
-                        backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
-                    }} 
+                    style = {styleForSecViewSelect} 
                     key = { title } 
                 >
                     <div
                         style = {{ padding: "7px" }}
-                        className = "funnel-bottom-body noselect"
+                        className = "funnel-bottom-body noselect second-view-selection"
                         onClick = { context.handleViewSelect.bind(context, title) }
                     >
                         {title[0]}
@@ -443,7 +435,7 @@ class ViewsManager extends React.Component {
             )
         });
 
-        let emptyDiv = function(){
+        /* let emptyDiv = function(){
             return(
                 <div
                 // containerStyle = {{ padding: "0px" }} 
@@ -452,7 +444,7 @@ class ViewsManager extends React.Component {
                     minWidth: "331px", 
                     margin: "0 auto", 
                     height: "35px", 
-                    backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
+                    backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody  
                 }} 
             >
                 <div
@@ -462,7 +454,7 @@ class ViewsManager extends React.Component {
                 </div>
             </div>
             );
-        }
+        } */
 
        /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
@@ -531,83 +523,16 @@ class ViewsManager extends React.Component {
                     </h2>
                 </div>
 
-               {/*  <Stepper 
-                    activeStep = { this.state.stepIndex } 
-                    style = {{ 
-                        borderTopRightRadius: "3px", 
-                        borderTopLeftRadius: "3px", 
-                        height: "60px", 
-                        backgroundColor: this.props.settings.colors.homePageColors.subBackground 
-                    }} 
-                >
-                    <Step>
-                        <StepLabel
-                            icon = { 
-                                (this.state.stepIndex === 0 ?
-                                    <span className = "fa-stack fa-lg noselect">
-                                        <i 
-                                            className = "fa fa-circle fa-stack-2x" 
-                                            style = {{     
-                                                fontSize: "26px",
-                                                color: this.props.settings.colors.overviewButtonsColor.background,
-                                                margin: "5px 0px 0px 0px"
-                                            }} 
-                                        />
-                                        <div className = "fa-stack-1x" style = {{ fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
-                                    </span> 
-                                :
-                                    <span className = "fa-stack fa-lg noselect">
-                                        <i 
-                                            className = "fa fa-circle fa-stack-2x" 
-                                            style = {{ fontSize: "23px", color: "#ffffff", margin: "6px 0px 0px 0px" }} 
-                                        />
-                                        <i 
-                                            className = "fa fa-check-circle fa-stack-1x" 
-                                            style = {{     
-                                                fontSize: "27px",
-                                                color: this.props.settings.colors.overviewButtonsColor.background,
-                                                margin: "-1px 7px 0px 0px"
-                                            }} 
-                                        />
-                                    </span>
-                                )
-                            } 
-                    >
-                        <label className = "noselect" style = {{ color: "#ffffff" }} > Select a Category </label>
-                    </StepLabel>
-                    </Step>
-
-                    <Step>
-                        <StepLabel
-                            icon = {
-                                <span className = "fa-stack fa-lg noselect">
-                                    <i 
-                                        className = "fa fa-circle fa-stack-2x" 
-                                        style = {{     
-                                            fontSize: "26px",
-                                            color: (this.state.stepIndex === 1 ? this.props.settings.colors.overviewButtonsColor.background : "grey" ),
-                                            margin: "5px 0px 0px 0px",
-                                        }} 
-                                    />
-                                    <div className = "fa-stack-1x" style = {{ fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-1px 0px 0px" }} > 2 </div>
-                                </span> 
-                            }
-                            style = {{ marginRight: "8px" }}
-                        >
-                            <label className = "noselect" style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ) }} > Select a View </label>
-                        </StepLabel>
-                    </Step>
-                </Stepper> */}
-
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
 
                         <div style = {{ 
                             display: "table",
                             backgroundColor: this.props.settings.colors.homePageColors.subBackground, 
-                            borderBottomRightRadius: "3px", 
-                            borderBottomLeftRadius: "3px",
+                            /* borderBottomRightRadius: "3px", 
+                            borderBottomLeftRadius: "3px", */
+                            border: "2px solid black",
                             height: "25%",
-                            width: "70%"}} >
+                            width: "68%"}} >
 
                             <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
                                {/*  <div 
@@ -618,74 +543,58 @@ class ViewsManager extends React.Component {
                                         //marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
                                 > */}
-                                    <div /* className = { "Card-Front" + flippedCSS }  */style = {{ width: "50%",
-                                        height: "100%", float: "left", borderRight: "2px solid black" }} > 
+                                    <div /*className = { "Card-Front" + flippedCSS }  */style = {{ 
+                                        width: "50%",
+                                        height: "100%", 
+                                        float: "left", 
+                                        borderRight: "2px solid black" }} > 
 
-                                        <div 
+                                        <div
                                         onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } 
-                                        className = { mandrList.length > 0 ? "noselect" : "cursorDefault noselect" } 
-                                        style = {{ /* marginTop: "20px", */ fontSize:"18px" }} >
+                                        className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select` } 
+                                        style = {styleForFirstViewSelect} >
                                         MarketingAndRecruiting
-{/*                                             <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" className = "nodrag" draggable = { false } />
- */}                                        </div>
+                                        </div>
 
-                                        <div 
+                                        <div className = "main-category-select"
                                         onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } 
-                                        className = { admList.length > 0 ? "noselect" : "cursorDefault noselect"}
-                                        style={{fontSize:"18px"}} >
+                                        className = { `${(admList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select`}
+                                        style={styleForFirstViewSelect} >
                                         Admissions
-{/*                                             <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" className = "nodrag" draggable = { false } />
- */}                                        </div>
+                                       </div>
 
-                                        <div 
+                                        <div className = "main-category-select"
                                         onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } 
-                                        className = { faList.length > 0 ? "noselect" : "cursorDefault noselect"}
-                                        style={{fontSize:"18px"}}  >
+                                        className = { `${(faList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select`}
+                                        style={styleForFirstViewSelect} >
                                         FinancialAid
-{/*                                             <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" className = "nodrag" draggable = { false } />
- */}                                        </div>
+                                        </div>
 
-                                        <div 
+                                        <div className = "main-category-select"
                                         onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } 
-                                        className = { customList.length > 0 ? "noselect" : "cursorDefault noselect"}
-                                        style={{fontSize:"18px"}}  >
+                                        className = { `${(customList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select`}
+                                        style={styleForFirstViewSelect} >
                                         Custom
-{/*                                             <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" className = "nodrag" draggable = { false } />
- */}                                        </div>
+                                        </div>
 
                                     </div>
+
                                     {/*this is where the 2nd modal pops up after initial selection */}
-                                    <div>
-                                    <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "50%", display: "block" }}>
-                                            <Flexbox style = {{ alignItems: "center", height: "100%", margin: "0 auto" }} >
-                                            {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} </div>
-                                                /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
-                                                    : (this.state.type === "Admissions" ? <div> {admissions} </div> 
-                                                        : (this.state.type === "FinancialAid" ? <div> {financialAid} </div> 
-                                                            : (this.state.type === "Custom" ? <div> {custom} </div> : null)
-                                                        )
+                                    <div style = {{ 
+                                        height: "100%", 
+                                        width: "50%", 
+                                        float: "right" }}>
+                                        <Flexbox style = {{ /* alignItems: "center",  */height: "100%" }} >
+                                        {this.state.type === "MarketingAndRecruiting" ? <div style={{width:"100%"}}> {marketingAndRecruiting} </div>
+                                            /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
+                                                : (this.state.type === "Admissions" ? <div style={{width:"100%"}}> {admissions} </div> 
+                                                    : (this.state.type === "FinancialAid" ? <div style={{width:"100%"}}> {financialAid} </div> 
+                                                        : (this.state.type === "Custom" ? <div style={{width:"100%"}}> {custom} </div> : null)
                                                     )
-                                                }
-                                            </Flexbox>
+                                                )
+                                            }
                                         </Flexbox>
                                     </div>
-                                    {/*this is where the 2nd modal pops up after initial selection */}
-                                   {/*  <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px", marginTop: "-320px", height: "315px" }} >
-
-                                        <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%" }}>
-                                            <Flexbox style = {{ alignItems: "center", height: "100%", margin: "0 auto" }} >
-                                                {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div> 
-                                                    : (this.state.type === "Admissions" ? <div> {admissions} {backButton} </div> 
-                                                        : (this.state.type === "FinancialAid" ? <div> {financialAid} {backButton} </div> 
-                                                            : (this.state.type === "Custom" ? <div> {custom} {backButton} </div> : null)
-                                                        )
-                                                    )
-                                                }
-                                            </Flexbox>
-                                        </Flexbox>
-                                    </div> */}
-
-                                {/* </div> */}
                                 
                                     {/*being passed as a prop after ran through a function into MyViews component */}                               
                                     {/* {this.state.type === "Saved Views" ? <SavedViews 

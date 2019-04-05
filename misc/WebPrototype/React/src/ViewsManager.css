@@ -207,3 +207,8 @@
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
 }
+
+.main-category-select:hover, .second-view-selection:hover{
+  cursor: pointer;
+  background-color: white;
+}
