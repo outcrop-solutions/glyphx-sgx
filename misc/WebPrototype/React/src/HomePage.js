@@ -14,7 +14,7 @@ import TutorialWindow from './TutorialWindow.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TimeoutAlert from './TimeoutAlert.js';
 import Tutorials from './Tutorials';
-import './css/topNav.css';
+import './css/TopNav.css';
 import './css/General.css';
 
 const muiTheme = getMuiTheme({

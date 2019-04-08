@@ -4,7 +4,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import Rnd from 'react-rnd';
 import { connect } from 'react-redux';
 import './css/General.css';
-import './css/statisticModal.css';
+import './css/StatisticModal.css';
 
 
 /**
