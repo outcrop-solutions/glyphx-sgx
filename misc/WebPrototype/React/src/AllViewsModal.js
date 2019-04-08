@@ -175,9 +175,9 @@ class allViewsModal extends React.Component {
 	/**
 	 * Closes the modal through the redux store
 	 */
-	handleBackClick = () => {
-		this.props.dispatch(editModalDisplay(false, null));
-	}
+	// handleBackClick = () => {
+	// 	this.props.dispatch(editModalDisplay(false, null));
+	// }
 
 
 	/**
@@ -906,7 +906,7 @@ class allViewsModal extends React.Component {
 								primary = { true } 
 							/>
 						</div>
-						<div style={{float: "right", padding: "8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<div style={{float: "right", padding: "8px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							{/* <FlatButton
 								label = "Back"
 								primary = { true }
@@ -917,7 +917,7 @@ class allViewsModal extends React.Component {
 								label = { "Launch" }
 								style = {{
 									width: "112px",
-									margin: "0px 10px 9px 0px"
+									/* margin: "0px 10px 9px 0px" */
 								}}
 								buttonStyle = {{
 									height: '35px',
