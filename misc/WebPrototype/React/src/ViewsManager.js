@@ -433,12 +433,12 @@ class ViewsManager extends React.Component {
         };
 
         const h3TableHeader = {
-            fontSize: "20px", 
+            fontSize: "22px", 
             borderBottom: "1px solid black", 
-            paddingTop: "20px",
+            padding: "13px 0 0 3px",
             margin: "0px",
             /* backgroundColor: "white", */
-            paddingLeft: "8px"
+            fontWeight: "300"
         };
 
         var marketingAndRecruiting = mandrList.map( function(title) {
@@ -620,7 +620,7 @@ class ViewsManager extends React.Component {
                                         height: "100%", 
                                         float: "left", 
                                         borderRight: "2px solid black" }} > 
-                                        <h3 style={h3TableHeader}>1. Select a Topic</h3>
+                                        <h3 style={h3TableHeader}>① Select a Topic</h3>
 
                                         <div
                                         onClick = { (e) => {
@@ -677,7 +677,7 @@ class ViewsManager extends React.Component {
                                         height: "100%", 
                                         width: "50%", 
                                         float: "right" }}>
-                                        <h3 style={h3TableHeader}>2. Select an Inquiry</h3>
+                                        <h3 style={h3TableHeader}>② Select an Inquiry</h3>
                                         <Flexbox style = {{ /* alignItems: "center",  */height: "100%" }} >
                                         {this.state.type === "MarketingAndRecruiting" ? 
                                         <div style={{width:"100%"}}> {marketingAndRecruiting} </div>

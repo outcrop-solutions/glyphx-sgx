@@ -889,11 +889,12 @@ class allViewsModal extends React.Component {
 							/> */}
 							<Flexbox>
 								<h3 style={{ 
-								fontSize: "20px", 
+								fontSize: "22px", 
 								/* border: "1px solid black", */ 
 								paddingTop: "10px",
+								fontWeight: "300",
 								margin: "0px",
-            					padding: "8px 31px 0 0"}}>3. Select Filter(s) and Launch.</h3>
+            					padding: "8px 31px 0 0"}}>③ Select Filter(s) and Launch.</h3>
 
 								<RaisedButton 
 									label = { "Launch" }
