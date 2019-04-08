@@ -1,7 +1,7 @@
 import React from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import Flexbox from 'flexbox-react';
-import './General.css';
+import './css/General.css';
 
 var loadingMessages = [
     {text: "Hang on... We're beaming your data back down to earth...", textShadow: ""},

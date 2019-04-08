@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import ComponentLoadMask from './ComponentLoadMask.js';
-import './General.css';
+import './css/General.css';
 
 
 /**

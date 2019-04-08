@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { makeServerCall } from './ServerCallHelper.js';
 import FontIcon from 'material-ui/FontIcon';
 import Rnd from 'react-rnd';
-import './statisticModal.css';
+import './css/statisticModal.css';
 
 
 /**

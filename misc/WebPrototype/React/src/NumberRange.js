@@ -8,7 +8,7 @@ import FontIcon from 'material-ui/FontIcon';
 import Flexbox from 'flexbox-react';
 import Range from 'rc-slider/lib/Range'; 
 import 'rc-slider/assets/index.css';
-import './General.css';
+import './css/General.css';
 
 
 /**

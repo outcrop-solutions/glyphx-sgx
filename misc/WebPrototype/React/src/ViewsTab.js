@@ -8,8 +8,8 @@ import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
 import SavedViews from './SavedViews.js';
 import 'rc-tooltip/assets/bootstrap.css';
-import './General.css';
-import './Views.css';
+import './css/General.css';
+import './css/Views.css';
 
 
 /**

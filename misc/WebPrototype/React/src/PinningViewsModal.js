@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FontIcon from 'material-ui/FontIcon';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import './PinningViewsModal.css';
+import './css/PinningViewsModal.css';
 
 
 /**

@@ -8,7 +8,7 @@ import FilterTabs from './FilterTab.js';
 import SearchBox from './SearchBox.js';
 import PinningViewsModal from './PinningViewsModal.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import './FilterSideBar.css';
+import './css/FilterSideBar.css';
 
 /**
  * This is the bottom view of the side bar that you see on the right side of the screen.

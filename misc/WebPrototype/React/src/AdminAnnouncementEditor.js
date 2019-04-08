@@ -16,7 +16,7 @@ import TimePicker from 'material-ui/TimePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import PieChart from './PieChart.js';
-import './General.css';
+import './css/General.css';
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const months = ["January", "February", "March", "April", "May", "August", "June", "July", "September", "October", "November", "December"];

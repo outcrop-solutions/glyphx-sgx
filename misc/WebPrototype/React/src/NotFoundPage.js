@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import './NotFoundPage.css';
+import './css/NotFoundPage.css';
 
 
 class NotFoundPage extends React.Component {

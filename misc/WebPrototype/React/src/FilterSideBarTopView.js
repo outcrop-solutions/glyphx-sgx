@@ -19,9 +19,9 @@ import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
 import XYZRemapModal from './XYZRemapModal.js';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
-import './General.css';
+import './css/FilterSideBar.css';
+import './css/General.css';
 
 
 

@@ -9,7 +9,7 @@ import Flexbox from 'flexbox-react';
 import Tooltip from 'rc-tooltip';
 import Promise from 'bluebird';
 import 'rc-tooltip/assets/bootstrap.css';
-import './General.css';
+import './css/General.css';
 
 
 /**

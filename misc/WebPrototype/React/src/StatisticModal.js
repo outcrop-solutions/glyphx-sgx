@@ -3,8 +3,8 @@ import FontIcon from 'material-ui/FontIcon';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Rnd from 'react-rnd';
 import { connect } from 'react-redux';
-import './General.css';
-import './statisticModal.css';
+import './css/General.css';
+import './css/statisticModal.css';
 
 
 /**

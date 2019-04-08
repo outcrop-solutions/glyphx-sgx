@@ -13,7 +13,7 @@ import Flexbox from 'flexbox-react';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import './General.css';
+import './css/General.css';
 import 'react-virtualized/styles.css';
 
 

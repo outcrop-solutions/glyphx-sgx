@@ -15,7 +15,7 @@ import HelpModal from './HelpModal.js';
 import AdminWizardModal from './AdminWizardModal.js';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import './General.css';
+import './css/General.css';
 
 
 /**

@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
-import './General.css';
+import './css/General.css';
 
 
 /**

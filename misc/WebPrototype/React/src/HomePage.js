@@ -14,8 +14,8 @@ import TutorialWindow from './TutorialWindow.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TimeoutAlert from './TimeoutAlert.js';
 import Tutorials from './Tutorials';
-import './topNav.css';
-import './General.css';
+import './css/topNav.css';
+import './css/General.css';
 
 const muiTheme = getMuiTheme({
     datePicker: {

@@ -8,7 +8,7 @@ import Divider from 'material-ui/Divider';
 import Select from 'react-select';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import './SettingsModal.css';
+import './css/SettingsModal.css';
 
 
 /**

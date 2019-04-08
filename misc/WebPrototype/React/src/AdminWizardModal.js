@@ -17,7 +17,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import PieChart from './PieChart.js';
 import AdminAnnouncementEditor from './AdminAnnouncementEditor.js';
-import './General.css';
+import './css/General.css';
 
 
 /**

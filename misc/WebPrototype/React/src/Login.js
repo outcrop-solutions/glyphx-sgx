@@ -9,7 +9,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/FontIcon';
-import './General.css';
+import './css/General.css';
 
 
 class Login extends React.Component {

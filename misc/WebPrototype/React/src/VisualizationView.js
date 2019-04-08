@@ -16,8 +16,8 @@ import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
 import TimeoutAlert from './TimeoutAlert.js';
 import 'rc-tooltip/assets/bootstrap.css';
-import './topNav.css';
-import './General.css';
+import './css/topNav.css';
+import './css/General.css';
 
 
 injectTapEventPlugin();

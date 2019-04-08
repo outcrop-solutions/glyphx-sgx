@@ -10,7 +10,7 @@ import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
 import UndoRedoChangeListener from './UndoRedoChangeListener.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import './FilterSideBar.css';
+import './css/FilterSideBar.css';
 
 
 /**

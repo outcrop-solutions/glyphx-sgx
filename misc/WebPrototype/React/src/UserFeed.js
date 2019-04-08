@@ -8,7 +8,7 @@ import Select from 'react-select';
 import Divider from 'material-ui/Divider';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import Twilio from 'twilio-chat';
-import './General.css';
+import './css/General.css';
 
 
 /**

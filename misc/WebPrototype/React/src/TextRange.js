@@ -10,7 +10,7 @@ import Range from 'rc-slider/lib/Range';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import 'rc-slider/assets/index.css';
-import './General.css';
+import './css/General.css';
 
 
 /**

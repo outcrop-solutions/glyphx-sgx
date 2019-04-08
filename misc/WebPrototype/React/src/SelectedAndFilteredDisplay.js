@@ -10,7 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import { guidGenerator } from './GeneralFunctions.js';
-import './General.css';
+import './css/General.css';
 
 
 /**

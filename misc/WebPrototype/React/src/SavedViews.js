@@ -6,7 +6,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import SearchBox from './SearchBox.js';
 // import Collapsible from 'react-collapsible';
 import Flexbox from 'flexbox-react';
-import './General.css';
+import './css/General.css';
 
 
 class SavedViews extends React.Component {

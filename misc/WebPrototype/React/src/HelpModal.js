@@ -9,7 +9,7 @@ import Divider from 'material-ui/Divider';
 import FontIcon from 'material-ui/FontIcon';
 import Collapsible from 'react-collapsible';
 import SearchBox from './SearchBox.js';
-import './General.css';
+import './css/General.css';
 
 
 /**

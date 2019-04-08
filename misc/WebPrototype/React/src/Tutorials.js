@@ -6,7 +6,7 @@ import React from 'react';
 // import SearchBox from './SearchBox.js';
 // import Collapsible from 'react-collapsible';
 // import Flexbox from 'flexbox-react';
-import './General.css';
+import './css/General.css';
 
 
 class Tutorials extends React.Component {

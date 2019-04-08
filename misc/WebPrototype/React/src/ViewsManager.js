@@ -10,8 +10,8 @@ import { makeServerCall } from './ServerCallHelper.js';
 import AllViewsModal from './AllViewsModal.js';
 // import SavedViews from './SavedViews.js';
 import Flexbox from 'flexbox-react';
-import './ViewsManager.css';
-import './General.css';
+import './css/ViewsManager.css';
+import './css/General.css';
 
 
 /**
