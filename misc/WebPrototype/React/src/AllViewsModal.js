@@ -759,7 +759,7 @@ class allViewsModal extends React.Component {
 		return(
 			<div
 				style={{paddingTop: "10px"}}
-				/* title = { this.props.type }
+				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
 				actionsContainerStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -887,40 +887,49 @@ class allViewsModal extends React.Component {
 								onClick = { this.handleBackClick }
 								style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton"black", backgroundColor: "#efefef" }}
 							/> */}
-							<RaisedButton 
-								label = { "Launch" }
-								style = {{
-									width: "112px",
-									/* margin: "0px 10px 9px 0px" */
-								}}
-								buttonStyle = {{
-									height: '35px',
-									lineHeight: '35px',
-									/* shouldLaunchBeDisabled() not working */
-									backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : /*this.props.settings.colors.buttons.general) */"#000")
-								}} 
-								labelStyle = {{
-									fontSize: '12px',
-									textAlign: "center",
-									color: this.props.settings.colors.overviewButtonsColor.text,
-									margin: "0px 0px 0px -3px",
-									paddingLeft: "0px",
-									paddingRight: "0px"
-								}}
-								overlayStyle = {{
-									height: '35px',
-									lineHeight: '35px',
-								}}
-								disabled = { this.shouldLaunchBeDisabled() }
-								onClick = { () => this.props.onLaunch({
-									tableName:this.state.table,
-									frontEndFilters: this.state.selectionList,
-									originalVizName: this.props.type,
-									datasourceId: this.state.datasourceId,
-									filterAllowedColumnList: this.state.filterAllowedColumnList,
-								},this.onLaunchResultCallback) }
-								primary = {true } 
-							/>
+							<Flexbox>
+								<h3 style={{ 
+								fontSize: "20px", 
+								/* border: "1px solid black", */ 
+								paddingTop: "10px",
+								margin: "0px",
+            					padding: "8px 31px 0 0"}}>3. Select Filter(s) and Launch.</h3>
+
+								<RaisedButton 
+									label = { "Launch" }
+									style = {{
+										width: "112px",
+										/* margin: "0px 10px 9px 0px" */
+									}}
+									buttonStyle = {{
+										height: '35px',
+										lineHeight: '35px',
+										/* shouldLaunchBeDisabled() not working */
+										backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : /*this.props.settings.colors.buttons.general) */"#000")
+									}} 
+									labelStyle = {{
+										fontSize: '12px',
+										textAlign: "center",
+										color: this.props.settings.colors.overviewButtonsColor.text,
+										margin: "0px 0px 0px -3px",
+										paddingLeft: "0px",
+										paddingRight: "0px"
+									}}
+									overlayStyle = {{
+										height: '35px',
+										lineHeight: '35px',
+									}}
+									disabled = { this.shouldLaunchBeDisabled() }
+									onClick = { () => this.props.onLaunch({
+										tableName:this.state.table,
+										frontEndFilters: this.state.selectionList,
+										originalVizName: this.props.type,
+										datasourceId: this.state.datasourceId,
+										filterAllowedColumnList: this.state.filterAllowedColumnList,
+									},this.onLaunchResultCallback) }
+									primary = {true } 
+								/>
+								</Flexbox>
 						</div>
 					</div>
 				</div>
