@@ -420,7 +420,7 @@ class ViewsManager extends React.Component {
             fontSize:"18px", 
             padding: "7px",
             /* borderBottom: "1px solid black" */
-            /* backgroundColor: "#e7e7fd" */
+            /* backgroundColor: "white" */
         };
 
         const styleForSecViewSelect = {
@@ -428,16 +428,16 @@ class ViewsManager extends React.Component {
             margin: "0 auto", 
             height: "35px",
             fontSize: "18px", 
-            backgroundColor: "#e7e7fd",
+            /* backgroundColor: "white", */
             /* borderBottom: "1px solid black"  */
         };
 
         const h3TableHeader = {
             fontSize: "22px", 
             borderBottom: "1px solid black", 
-            padding: "13px 0 0 3px",
+            padding: "9px 0 0 3px",
             margin: "0px",
-            /* backgroundColor: "white", */
+            backgroundColor: "#e7e7fd",
             fontWeight: "300"
         };
 
@@ -596,7 +596,7 @@ class ViewsManager extends React.Component {
 
                         <div style = {{ 
                             display: "table",
-                            backgroundColor: '#e7e7fd'/* this.props.settings.colors.homePageColors.subBackground */, 
+                            backgroundColor: 'white'/* this.props.settings.colors.homePageColors.subBackground */, 
                             /* borderBottomRightRadius: "3px", 
                             borderBottomLeftRadius: "3px", */
                             border: "1px solid black",
@@ -620,54 +620,55 @@ class ViewsManager extends React.Component {
                                         height: "100%", 
                                         float: "left", 
                                         borderRight: "2px solid black" }} > 
-                                        <h3 style={h3TableHeader}>① Select a Topic</h3>
+                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>①</b> Select a Topic</h3>
+                                        <div>
+                                            <div
+                                            onClick = { (e) => {
+                                                this.flip("MarketingAndRecruiting", mandrList.length),
+                                                this.unHighlightTopicRows(),
+                                                this.highlightTopicSelectedRow(e.target.innerHTML);
+                                                /*
+                                                this.highlightTopicSelectedRow(e.target.innerHTML); } */
+                                            ;} } 
+                                            /* onMouseEnter={() =>  styleForFirstViewSelect.backgroundColor = '#ddd'}
+                                            onMouseLeave={() => styleForFirstViewSelect.backgroundColor = '#e7e7fd'} */
+                                            className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light` } 
+                                            style = {styleForFirstViewSelect} >
+                                            Marketing and Recruiting
+                                            </div>
 
-                                        <div
-                                        onClick = { (e) => {
-                                            this.flip("MarketingAndRecruiting", mandrList.length),
-                                            this.unHighlightTopicRows(),
-                                            this.highlightTopicSelectedRow(e.target.innerHTML);
-                                            /*
-                                            this.highlightTopicSelectedRow(e.target.innerHTML); } */
-                                         ;} } 
-                                        /* onMouseEnter={() =>  styleForFirstViewSelect.backgroundColor = '#ddd'}
-                                        onMouseLeave={() => styleForFirstViewSelect.backgroundColor = '#e7e7fd'} */
-                                        className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light` } 
-                                        style = {styleForFirstViewSelect} >
-                                        Marketing and Recruiting
+                                            <div className = "main-category-select"
+                                            onClick = {(e) => {
+                                                this.flip("Admissions", admList.length),
+                                                this.unHighlightTopicRows(),
+                                                this.highlightTopicSelectedRow(e.target.innerHTML);
+                                            } } 
+                                            className = { `${(admList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
+                                            style={styleForFirstViewSelect} >
+                                            Admissions
                                         </div>
 
-                                        <div className = "main-category-select"
-                                        onClick = {(e) => {
-                                            this.flip("Admissions", admList.length),
-                                            this.unHighlightTopicRows(),
-                                            this.highlightTopicSelectedRow(e.target.innerHTML);
-                                        } } 
-                                        className = { `${(admList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
-                                        style={styleForFirstViewSelect} >
-                                        Admissions
-                                       </div>
+                                            <div className = "main-category-select"
+                                            onClick = {(e) => { 
+                                                this.flip("FinancialAid", faList.length), 
+                                                this.unHighlightTopicRows(),
+                                                this.highlightTopicSelectedRow(e.target.innerHTML);
+                                            }} 
+                                            className = { `${(faList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
+                                            style={styleForFirstViewSelect} >
+                                            Financial Aid
+                                            </div>
 
-                                        <div className = "main-category-select"
-                                        onClick = {(e) => { 
-                                            this.flip("FinancialAid", faList.length), 
-                                            this.unHighlightTopicRows(),
-                                            this.highlightTopicSelectedRow(e.target.innerHTML);
-                                         }} 
-                                        className = { `${(faList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
-                                        style={styleForFirstViewSelect} >
-                                        Financial Aid
-                                        </div>
-
-                                        <div className = "main-category-select"
-                                        onClick = {(e) => {
-                                            this.flip("Custom", customList.length),
-                                            this.unHighlightTopicRows(),
-                                            this.highlightTopicSelectedRow(e.target.innerHTML); 
-                                        }}
-                                        className = { `${(customList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
-                                        style={styleForFirstViewSelect} >
-                                        Custom
+                                            <div className = "main-category-select"
+                                            onClick = {(e) => {
+                                                this.flip("Custom", customList.length),
+                                                this.unHighlightTopicRows(),
+                                                this.highlightTopicSelectedRow(e.target.innerHTML); 
+                                            }}
+                                            className = { `${(customList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
+                                            style={styleForFirstViewSelect} >
+                                            Custom
+                                            </div>
                                         </div>
 
                                     </div>
@@ -677,8 +678,8 @@ class ViewsManager extends React.Component {
                                         height: "100%", 
                                         width: "50%", 
                                         float: "right" }}>
-                                        <h3 style={h3TableHeader}>② Select an Inquiry</h3>
-                                        <Flexbox style = {{ /* alignItems: "center",  */height: "100%" }} >
+                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>②</b> Select an Inquiry</h3>
+                                        <Flexbox style = {{ /* alignItems: "center",  height: "100%",*/ /* borderBottom: "1px solid black"  */}} >
                                         {this.state.type === "MarketingAndRecruiting" ? 
                                         <div style={{width:"100%"}}> {marketingAndRecruiting} </div>
                                             /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
@@ -737,7 +738,7 @@ class ViewsManager extends React.Component {
                             } */}
                         </div>
                         <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
-                                onLaunch={(extra,callback) => {this.onLaunch(extra,callback), console.log('here?')} }/>
+                                onLaunch={(extra,callback) => {this.onLaunch(extra,callback)} }/>
                     {/* </ExpandTransition> */}
             </div>
         );

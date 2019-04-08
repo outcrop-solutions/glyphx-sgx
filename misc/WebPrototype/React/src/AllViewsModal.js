@@ -894,7 +894,7 @@ class allViewsModal extends React.Component {
 								paddingTop: "10px",
 								fontWeight: "300",
 								margin: "0px",
-            					padding: "8px 31px 0 0"}}>③ Select Filter(s) and Launch.</h3>
+            					padding: "8px 31px 0 0"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3>
 
 								<RaisedButton 
 									label = { "Launch" }
