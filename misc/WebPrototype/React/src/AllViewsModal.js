@@ -89,8 +89,9 @@ class allViewsModal extends React.Component {
         if (nextProps.typeURL !== this.props.typeURL) {
 
 			// Show the window load-mask as backend call is being made
-			this.setState({ loadMask: true, loadDone: false });
 			this.props.dispatch(editModalDisplay(false, null));
+			this.setState({ loadMask: true, loadDone: false });
+
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
@@ -155,10 +156,11 @@ class allViewsModal extends React.Component {
 							datasourceId: response.datasourceId })
 						}, 2000);
 					context.props.dispatch( setTimer(new Date().getTime()) );
-						
-				}
-			);
-        }
+					context.props.dispatch(editModalDisplay(true));
+				}		
+			);	
+		}
+		
     }
 
 
@@ -669,29 +671,6 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	loadingOrNot(loadingState, loadDone){
-		if(loadingState === true){
-			return(
-				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%" }} > 
-					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-				</div>
-			);
-		}
-		// else if (loadingState === false && loadDone === true){
-		// 	return (
-		// 		<div>
-		// 			testing testing
-		// 		</div>
-		// 	);
-		// }
-		else if(loadingState === false && loadDone === true){
-			return(
-				<div>
-				</div>
-			);
-		}
-	}
-
 	render() {
 		var data = this.state.data;
 		var context = this;
@@ -778,11 +757,6 @@ class allViewsModal extends React.Component {
 		});
 
 		return(
-			<div>
-			{/* <div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
-					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-				</div>   */}
-		{/* this.loadingDiv(this.state.loadMask, this.state.loadDone) */}
 			<div
 				style={{paddingTop: "10px"}}
 				/* title = { this.props.type }
@@ -950,8 +924,7 @@ class allViewsModal extends React.Component {
 						</div>
 					</div>
 				</div>
-				
-			</div>
+
 			</div>
 		);
 	}
