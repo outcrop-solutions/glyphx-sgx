@@ -419,16 +419,17 @@ class ViewsManager extends React.Component {
         const styleForFirstViewSelect = {
             fontSize:"18px", 
             padding: "7px",
+            /* borderBottom: "1px solid black" */
             /* backgroundColor: "#e7e7fd" */
         };
 
         const styleForSecViewSelect = {
             width: "100%", 
-            minWidth: "331px", 
             margin: "0 auto", 
             height: "35px",
             fontSize: "18px", 
-            backgroundColor: "#e7e7fd" 
+            backgroundColor: "#e7e7fd",
+            /* borderBottom: "1px solid black"  */
         };
 
         const h3TableHeader = {
