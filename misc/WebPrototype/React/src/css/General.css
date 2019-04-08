@@ -314,3 +314,7 @@ textarea {
   cursor: pointer;
 }
 
+.fa-check:hover, .fa-times:hover {
+  cursor: pointer;
+}
+

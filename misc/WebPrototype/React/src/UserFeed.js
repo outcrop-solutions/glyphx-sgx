@@ -174,7 +174,7 @@ class UserFeed extends React.Component {
                     }} 
                     key = { guidGenerator() } 
                 >
-                    <CardText style = {{ padding: "5px", borderRadius: "10px" }} >
+                    <CardText style = {{ padding: "5px", borderRadius: "10px", fontSize: "16px" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
 
                             {/* <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } /> */}
@@ -184,7 +184,7 @@ class UserFeed extends React.Component {
                                     <div style = {{ wordBreak: "break-word" }} ><span style = {{ fontWeight: "bold" }} >{post.state.author.split("|SPLITTER|")[0]}:</span> &nbsp; {post.state.body}</div>
                                 </Flexbox>
 
-                                <Divider style = {{ marginBottom: "3px", backgroundColor: "#b9b9b9" }} />
+                                <Divider style = {{ marginBottom: "1px", backgroundColor: "#b9b9b9" }} />
 
                                 <Flexbox flexDirection = "row" minWidth = "100%" className = "noselect" style = {{ margin: "-2px 0px -1px 0px" }} >
 
@@ -297,12 +297,12 @@ class UserFeed extends React.Component {
 
                     <textarea 
                         id = "messageBodyHolder" 
-                        placeholder = "Type your message" 
+                        placeholder = "Type your message." 
                         rows = "5" 
                         value = { this.state.messageBody } 
                         onKeyDown = { (e) => this.checkEnter(e) } 
                         onChange = { (e) => this.setState({ messageBody: e.target.value}) } 
-                        style = {{ borderRadius: "5px", padding: "10px", marginTop: "10px", backgroundColor: "#e7e7fd" }} 
+                        style = {{ borderRadius: "5px", padding: "10px", marginTop: "10px", backgroundColor: "#e7e7fd", fontSize: "16px" }} 
                     ></textarea>
                     
                 </Flexbox>

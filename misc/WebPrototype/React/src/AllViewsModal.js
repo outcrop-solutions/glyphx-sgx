@@ -674,7 +674,8 @@ class allViewsModal extends React.Component {
 	render() {
 		var data = this.state.data;
 		var context = this;
-
+		console.log(data);
+		if(data.length && this.state.loadDone){
 		var displayData = this.state.data.map( function(col) {
 			return (
 				<Flexbox 
@@ -701,8 +702,15 @@ class allViewsModal extends React.Component {
 						}} 
 					> 
 						<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
-							<i className = "fa fa-check" style = {{ marginRight: "3px" }} onClick = { () => context.selectDeselectCol(col, "select") } /> 
-							<i className = "fa fa-times" onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
+							<i 
+							className = "fa fa-check" 
+							style = {{ marginRight: "3px" }}
+							title= "Select Column" 
+							onClick = { () => context.selectDeselectCol(col, "select") } /> 
+							<i 
+							className = "fa fa-times" 
+							title= "Deselect Column"
+							onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
 						</div>
 
 						<div style = {{ marginTop: "-16px", paddingBottom: "4px", fontSize: "14px" }} > 
@@ -755,6 +763,14 @@ class allViewsModal extends React.Component {
 				</Flexbox>
 			)
 		});
+	}
+	else if(data.length === 0 && this.state.loadDone === true){
+		return(
+			<div className= "no-results" style={{textAlign: "center", fontSize: "22px", verticalAlign: "center"}}>
+				<b>No Filter Options Available. Please Select Another Query.</b>
+			</div>
+		);
+	}
 
 		return(
 			<div
@@ -894,7 +910,7 @@ class allViewsModal extends React.Component {
 								paddingTop: "10px",
 								fontWeight: "300",
 								margin: "0px",
-            					padding: "8px 31px 0 0"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3>
+            					padding: "2px 31px 0 0"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3>
 
 								<RaisedButton 
 									label = { "Launch" }
@@ -975,7 +991,8 @@ class AllViewsRow extends React.Component {
 					backgroundColor: ( this.props.selected ? "#7c78a0" : "white" ), 
 					textAlign: "center",
 					padding: "2px",
-					margin: "0"
+					margin: "0",
+					fontSize: "16px"
 				}} 
 			> 
 				{this.props.children}

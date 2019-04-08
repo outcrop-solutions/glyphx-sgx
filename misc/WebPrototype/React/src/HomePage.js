@@ -431,8 +431,8 @@ class HomePage extends React.Component {
                                             </div>
                                     </div> */}
                                     <Flexbox style={{height: "98%", width: "100%"}}>
-                                        <div style = {{ backgroundColor: "#ffffff", overflow: " hidden" }} >
-                                            <div style = {{ height: '100%', margin: "15px 0px -6px", padding: "0 0 5px 0" }} >
+                                        <div style = {{ backgroundColor: "#ffffff", overflow: " hidden", padding: "0 6px 5px 6px" }} >
+                                            <div style = {{ height: '100%', margin: "15px 0px -6px"/* , padding: "0 0 5px 0"  */}} >
                                                     <img 
                                                         src = { imgsrc } 
                                                         style = {{ display: "block", margin: "0 auto", width: "90%", height: "90%", padding: "0 0 3px 0" }} 
@@ -449,7 +449,7 @@ class HomePage extends React.Component {
                                 {/* <div className = "line-break" 
                                         style = {{borderTop: "2px solid black", paddingBottom: "9px", backgroundColor: "#ffffff"}}></div> */}
 
-                                <div style = {{ padding: "0px 6px 12px 12px", height: "84%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                <div style = {{ padding: "0px 6px 12px 12px", height: "87%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
                              </Flexbox>
