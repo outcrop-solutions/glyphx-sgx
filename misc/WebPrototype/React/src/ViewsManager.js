@@ -525,27 +525,6 @@ class ViewsManager extends React.Component {
             )
         });
 
-        /* let emptyDiv = function(){
-            return(
-                <div
-                // containerStyle = {{ padding: "0px" }} 
-                style = {{ 
-                    width: "80%", 
-                    minWidth: "331px", 
-                    margin: "0 auto", 
-                    height: "35px", 
-                    backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody  
-                }} 
-            >
-                <div
-                    style = {{ padding: "7px" }}
-                    className = "funnel-bottom-body noselect"
-                >
-                </div>
-            </div>
-            );
-        } */
-
        /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
 
