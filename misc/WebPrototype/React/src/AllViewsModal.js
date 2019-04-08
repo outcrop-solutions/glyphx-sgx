@@ -89,15 +89,15 @@ class allViewsModal extends React.Component {
         if (nextProps.typeURL !== this.props.typeURL) {
 
 			// Show the window load-mask as backend call is being made
-			this.setState({ loadMask: true });
-
+			this.setState({ loadMask: true, loadDone: false });
+			this.props.dispatch(editModalDisplay(false, null));
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
 			//debugger;
 
 			// Get the data corresponding to the URL
-			debugger;
+			// debugger;
 			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function (responseText) { 
 					var response = JSON.parse(responseText);
@@ -107,7 +107,7 @@ class allViewsModal extends React.Component {
 					var keyArray = Object.keys(preData);
 					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
-					debugger;
+					// debugger;
 
 					//console.log(response);
 
@@ -140,20 +140,20 @@ class allViewsModal extends React.Component {
 						data.push(dataCol);
 					}
 
-					debugger;
+					// debugger;
 
 					// Post the new data to the state and hide the window load-mask
-					setTimeout(function() {
+					setTimeout(function(){
 						context.setState({ 
-						data: data, 
-						table: response.tableName, 
-						selectAll: selectAll, 
-						filterAllowedColumnList: response.filterAllowedColumnList, 
-						selectionList: [], 
-						loadMask: false,
-						loadDone: true, 
-						datasourceId: response.datasourceId });
-					}, 2000);
+							data: data, 
+							table: response.tableName, 
+							selectAll: selectAll, 
+							filterAllowedColumnList: response.filterAllowedColumnList, 
+							selectionList: [], 
+							loadMask: false,
+							loadDone: true, 
+							datasourceId: response.datasourceId })
+						}, 2000);
 					context.props.dispatch( setTimer(new Date().getTime()) );
 						
 				}
@@ -669,6 +669,29 @@ class allViewsModal extends React.Component {
 		}
 	}
 
+	loadingOrNot(loadingState, loadDone){
+		if(loadingState === true){
+			return(
+				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%" }} > 
+					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+				</div>
+			);
+		}
+		// else if (loadingState === false && loadDone === true){
+		// 	return (
+		// 		<div>
+		// 			testing testing
+		// 		</div>
+		// 	);
+		// }
+		else if(loadingState === false && loadDone === true){
+			return(
+				<div>
+				</div>
+			);
+		}
+	}
+
 	render() {
 		var data = this.state.data;
 		var context = this;
@@ -693,7 +716,7 @@ class allViewsModal extends React.Component {
 						style = {{ 
 							backgroundColor: "#42459c", 
 							color: "#ffffff", 
-							height: "30px",
+							height: "27px",
     						fontSize: "21px",
 							textAlign: "center"
 						}} 
@@ -755,6 +778,11 @@ class allViewsModal extends React.Component {
 		});
 
 		return(
+			<div>
+			{/* <div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
+					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+				</div>   */}
+		{/* this.loadingDiv(this.state.loadMask, this.state.loadDone) */}
 			<div
 				style={{paddingTop: "10px"}}
 				/* title = { this.props.type }
@@ -812,7 +840,7 @@ class allViewsModal extends React.Component {
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
 				</div> 
 
-				<div style = {{ height: "60vh", paddingBottom: "30px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none") }} >
+				<div style = {{ height: "60vh", paddingBottom: "30px", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{displayData}
 					</Flexbox>
@@ -923,6 +951,7 @@ class allViewsModal extends React.Component {
 					</div>
 				</div>
 				
+			</div>
 			</div>
 		);
 	}

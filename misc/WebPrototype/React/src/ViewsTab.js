@@ -108,7 +108,7 @@ class ViewsTab extends React.Component {
 			
             return (
                 <Card 
-                    className = "inherit-hover noselect" 
+                    className = "inherit-hover noselect hover-recent-select" 
                     containerStyle = {{ padding: "0px", borderRadius: "5px", width: "100%" }} 
                     style = {{ 
                         backgroundColor: context.props.settings.colors.general.lightBubble, 
@@ -120,7 +120,7 @@ class ViewsTab extends React.Component {
                     key = { view } 
                 >
                     <CardText
-                        className="hover-recent-select"
+                    /* className="hover-recent-select" */
                         style = {{ padding: "7px", borderRadius: "5px", width: "100%" }}
                         onClick = { () => context.props.loadRecentView(view) }
                     >

@@ -382,7 +382,7 @@ class HomePage extends React.Component {
     // }
 
     render() {
-        console.log(this)
+       /*  console.log(this) */
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
 		var context = this;
@@ -412,7 +412,7 @@ class HomePage extends React.Component {
                             {/* Left Column */}
                             <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
 
-                                <div style = {{padding: "0px 6px 2px 12px", height: "17%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}}>
+                                <div style = {{padding: "0px 6px 2px 12px", height: "16%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}}>
                                    {/*  <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground '#000000',
                                         marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
                                             <div 
@@ -432,10 +432,10 @@ class HomePage extends React.Component {
                                     </div> */}
                                     <Flexbox style={{height: "98%", width: "100%"}}>
                                         <div style = {{ backgroundColor: "#ffffff", overflow: " hidden" }} >
-                                            <div style = {{ height: '100%', margin: "15px 0px -6px" }} >
+                                            <div style = {{ height: '100%', margin: "15px 0px -6px", padding: "0 0 5px 0" }} >
                                                     <img 
                                                         src = { imgsrc } 
-                                                        style = {{ display: "block", margin: "0 auto", width: "90%", height: "90%" }} 
+                                                        style = {{ display: "block", margin: "0 auto", width: "90%", height: "90%", padding: "0 0 3px 0" }} 
                                                         alt = "University Logo" 
                                                         draggable = { false } 
                                                         className = "noselect" 
@@ -449,7 +449,7 @@ class HomePage extends React.Component {
                                 {/* <div className = "line-break" 
                                         style = {{borderTop: "2px solid black", paddingBottom: "9px", backgroundColor: "#ffffff"}}></div> */}
 
-                                <div style = {{ padding: "0px 6px 12px 12px", height: "83%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                <div style = {{ padding: "0px 6px 12px 12px", height: "84%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
                              </Flexbox>

@@ -38,5 +38,5 @@
 
   .hover-recent-select:hover{
     cursor: pointer;
-    /* background-color:#dadada */
+    background-color:#dadada !important;
   }
