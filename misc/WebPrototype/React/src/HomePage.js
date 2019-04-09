@@ -547,7 +547,7 @@ class HomePage extends React.Component {
                                             
                                         </div> 
                                     </Flexbox>
-                                    <div style = {{height: "32%"}}> 
+                                    <div style = {{height: "30%"}}> 
                                         {/* <div style = {{ 
                                             backgroundColor: '#018cbb'this.props.settings.colors.homePageColors.headerBackground , 
                                             borderRadius: "2px", 
