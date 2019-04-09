@@ -713,7 +713,7 @@ class allViewsModal extends React.Component {
 								onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
 							</div>
 
-							<div style = {{ marginTop: "-16px", paddingBottom: "4px", fontSize: "14px" }} > 
+							<div style = {{ marginTop: "-19px", paddingBottom: "4px", fontSize: "17px" }} > 
 								{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
 							</div>
 						</div>

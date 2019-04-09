@@ -601,9 +601,9 @@ class ViewsManager extends React.Component {
                             backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
                             borderRadius: "2px", 
                             paddingBottom: "4px", 
-                            margin: "auto auto 15px auto", 
-                            padding: "14px 0 12px 0",
-                            fontSize: "19px",
+                            margin: "auto auto 12px auto", 
+                            padding: "10px 0 8px 0",
+                            fontSize: "21px",
                             letterSpacing: "0.14em",
                             textTransform: "uppercase",
                             textAlign: "center"}}
