@@ -12,6 +12,7 @@ import AllViewsModal from './AllViewsModal.js';
 import Flexbox from 'flexbox-react';
 import './css/ViewsManager.css';
 import './css/General.css';
+import { get } from 'http';
 
 
 /**
@@ -31,6 +32,7 @@ class ViewsManager extends React.Component {
 			selectionTypeURL: "",
 			flipped: false,
             clicked: false,
+            legendPng: ""
 		}
 	}
 
@@ -327,43 +329,74 @@ class ViewsManager extends React.Component {
         }
     }
 
+    getLegend() {
+        var context = this;
+        let imgPath = '';
+        let legendSrc = '';
+        
+        if(this.state.selectionTypeURL !== ""){
+            let index = this.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+            let sdtPath = this.state.selectionTypeURL.substring(index + 1);
+            makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
+                function (responseText) { 
+                    imgPath = responseText;
+                    if (imgPath !== '') {
+                        legendSrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(imgPath);
+                        context.setState({legendPng: legendSrc});
+                        return;
+                    }
+                }
+            );
+           
+            
+        }
+        if(this.state.legendPng){
+            return(
+                <div style = {{ 
+                    marginLeft: "15px",
+                    width: "35%",}} >
+                            
+                    <img
+                        src = {this.state.legendPng} 
+                        style = {{ width: '99%', height: "100%", borderRadius: "3px" }} 
+                        alt = "Legend" 
+                        /* className = "legendImage noselect" */ 
+                        draggable = { false } 
+                    />
+                </div>
+            );
+        }
+    }
+    
+    dynamicTableHeight(){
+        console.log(document.getElementsByClassName('right-col-table').height());
+        if(document.getElementsByClassName('right-col-table').height() > document.getElementsByClassName('left-col-table').height()){
+            let rightHeight = document.getElementsByClassName('right-col-table').height();
+            /* document.getElementsByClassName('left-col-table').height() = rightHeight; */
+        }
+    }
+
     render() {
         let context = this;
-        console.log(this)
+        /* console.log(this) */
         var funnelData = this.props.funnelData;
         // console.log(funnelData);
         var mandrList, admList, faList, customList, retentionList;
 
         //checking to see if its there and if it is, copy and put it in a new array
-        if (funnelData["Marketing and Recruiting"]) {
-            mandrList = funnelData["Marketing and Recruiting"];
-        }
-        else {
-            mandrList = [];
-        }
-
-        if (funnelData["Admissions"]) {
-            admList = funnelData["Admissions"];
-        }
-        else {
-            admList = [];
-        }
-
-        if (funnelData["Financial Aid"]) {
-            faList = funnelData["Financial Aid"];
-        }
-        else {
-            faList = [];
-        }
-
-        if (funnelData["Custom"]) {
-            customList = funnelData["Custom"];
-        }
-        else {
-            customList = [];
-        }
-
+        if (funnelData["Marketing and Recruiting"]) mandrList = funnelData["Marketing and Recruiting"];
+        else mandrList = [];
         
+
+        if (funnelData["Admissions"]) admList = funnelData["Admissions"];
+        else admList = [];
+
+        if (funnelData["Financial Aid"]) faList = funnelData["Financial Aid"];
+        else faList = [];
+
+        if (funnelData["Custom"]) customList = funnelData["Custom"];
+        else customList = [];
+
         // console.log(mandrList);
 
         // console.log(admList);
@@ -371,7 +404,6 @@ class ViewsManager extends React.Component {
         // console.log(faList);
 
         // console.log(customList);
-       
 
         //splicing out things that aren't supposed to be in there. to double check
         for (var i = mandrList.length - 1; i > -1; i--) {
@@ -396,8 +428,6 @@ class ViewsManager extends React.Component {
             }
         }
 
-        
-
         console.log(faList);
         */
 
@@ -413,8 +443,6 @@ class ViewsManager extends React.Component {
                 mandrList.splice(i, 1);
             }
         }
-
-        
 
         const styleForFirstViewSelect = {
             fontSize:"19px", 
@@ -524,7 +552,7 @@ class ViewsManager extends React.Component {
                 </div>
             )
         });
-
+        
        /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
 
@@ -582,7 +610,7 @@ class ViewsManager extends React.Component {
                             backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
                             borderRadius: "2px", 
                             paddingBottom: "4px", 
-                            margin: "auto auto 17px auto", 
+                            margin: "auto auto 15px auto", 
                             padding: "14px 0 12px 0",
                             fontSize: "19px",
                             letterSpacing: "0.14em",
@@ -593,7 +621,7 @@ class ViewsManager extends React.Component {
                 </div>
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
-
+                <Flexbox style={{height: "25%"}}>
                         <div style = {{ 
                             display: "table",
                             backgroundColor: 'white'/* this.props.settings.colors.homePageColors.subBackground */, 
@@ -601,7 +629,7 @@ class ViewsManager extends React.Component {
                             borderBottomLeftRadius: "3px", */
                             border: "1px solid black",
                             height: "25%",
-                            width: "68%",
+                            width: "65%",
                             /* borderBottomLeftRadius: "18px",
                             borderBottomRightRadius: "18px" */
                             }} >
@@ -615,7 +643,8 @@ class ViewsManager extends React.Component {
                                         //marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
                                 > */}
-                                    <div /*className = { "Card-Front" + flippedCSS }  */style = {{ 
+                                    <div className = "left-col-table" 
+                                    style = {{ 
                                         width: "50%",
                                         height: "100%", 
                                         float: "left", 
@@ -674,7 +703,8 @@ class ViewsManager extends React.Component {
                                     </div>
 
                                     {/*this is where the 2nd modal pops up after initial selection */}
-                                    <div style = {{ 
+                                    <div className = "right-col-table" 
+                                    style = {{ 
                                         height: "100%", 
                                         width: "50%", 
                                         float: "right" }}>
@@ -695,50 +725,15 @@ class ViewsManager extends React.Component {
                                         </Flexbox>
                                     </div>
                                 
-                                    {/*being passed as a prop after ran through a function into MyViews component */}                               
-                                    {/* {this.state.type === "Saved Views" ? <SavedViews 
-                                    onSavedViewSelect={(savedViewObj,callback) => this.onSavedViewSelect(savedViewObj,callback)}/> : null} */}
-
-                                {/* <FlatButton
-                                    label = "Back"
-                                    backgroundColor = "#dcdcdc"
-                                    onClick = { this.handlePrev }
-                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
-                                /> */}
-
-                                {/* this is where the 3rd modal pops up after 2nd modal selection - the pop-out modal to filter*/}
-                                
                             </div>
-                            
-{/* 
-                            {this.state.stepIndex === 0 ? 
-                                <div style = {{ margin: "0 auto", width: "70%" }} >
-                                    <RaisedButton 
-                                        label = "My Views"
-                                        style = {{ width: "100%", marginBottom: "17px" }}
-                                        buttonStyle = {{
-                                            height: '50px',
-                                            lineHeight: '50px',
-                                            backgroundColor: this.props.settings.colors.buttons.general
-                                        }} 
-                                        labelStyle = {{
-                                            fontSize: '14px',
-                                            color: this.props.settings.colors.overviewButtonsColor.text,
-                                            margin: "0px 0px 0px -3px",
-                                            paddingLeft: "0px",
-                                            paddingRight: "0px"
-                                        }}
-                                        overlayStyle = {{ height: '50px', lineHeight: '50px' }}
-                                        onClick = {this.handleNext.bind(this, "My Views")}
-                                        primary = { true } 
-                                    />
-                                </div>
-                                : 
-                                null
-                            } */}
                         </div>
-                        <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
-                                onLaunch={(extra,callback) => {this.onLaunch(extra,callback)} }/>
+
+                        {/*displays legend Png for newer users*/}
+                        {this.getLegend()}
+
+                </Flexbox>
+                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
+                        onLaunch={(extra,callback) => {this.onLaunch(extra,callback)} }/>
                     {/* </ExpandTransition> */}
             </div>
         );

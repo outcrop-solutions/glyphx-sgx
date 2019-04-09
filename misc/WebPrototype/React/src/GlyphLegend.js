@@ -22,7 +22,7 @@ class GlyphLegend extends React.Component {
         var context = this;
 
         // debugger;
-        
+        console.log(window.encodeURI('getLegendURL/')+this.props.VizParams.sdtPath)
         makeServerCall(window.encodeURI('getLegendURL/' + this.props.VizParams.sdtPath ),
             function (responseText) { 
 
@@ -35,6 +35,7 @@ class GlyphLegend extends React.Component {
                 //console.log(imgPath);
 
                 context.setState({ imgPath: responseText });
+                console.log(context.state.imgPath, window.SERVER_URL, context.props.VizParams.sdtPath)
             }
         );
         

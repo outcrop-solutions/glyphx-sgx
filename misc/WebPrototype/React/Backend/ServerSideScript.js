@@ -263,7 +263,6 @@ app.get('/getLegendURL/:sdtFile', async (req, res, next) => {
 	
 });
 
-
 app.get('/vizdata/:key', function (req, res) {
 	var tempPath = req.params.key;
 	console.log(req.params.key);
