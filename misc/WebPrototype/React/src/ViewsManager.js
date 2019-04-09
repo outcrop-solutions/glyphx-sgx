@@ -12,7 +12,6 @@ import AllViewsModal from './AllViewsModal.js';
 import Flexbox from 'flexbox-react';
 import './css/ViewsManager.css';
 import './css/General.css';
-import { get } from 'http';
 
 
 /**
@@ -367,14 +366,6 @@ class ViewsManager extends React.Component {
             );
         }
     }
-    
-    dynamicTableHeight(){
-        console.log(document.getElementsByClassName('right-col-table').height());
-        if(document.getElementsByClassName('right-col-table').height() > document.getElementsByClassName('left-col-table').height()){
-            let rightHeight = document.getElementsByClassName('right-col-table').height();
-            /* document.getElementsByClassName('left-col-table').height() = rightHeight; */
-        }
-    }
 
     render() {
         let context = this;
@@ -643,7 +634,7 @@ class ViewsManager extends React.Component {
                                         //marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
                                 > */}
-                                    <div className = "left-col-table" 
+                                    <div
                                     style = {{ 
                                         width: "50%",
                                         height: "100%", 
@@ -703,7 +694,7 @@ class ViewsManager extends React.Component {
                                     </div>
 
                                     {/*this is where the 2nd modal pops up after initial selection */}
-                                    <div className = "right-col-table" 
+                                    <div
                                     style = {{ 
                                         height: "100%", 
                                         width: "50%", 
