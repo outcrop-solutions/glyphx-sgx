@@ -431,7 +431,7 @@ class HomePage extends React.Component {
                                             </div>
                                     </div> */}
                                     <Flexbox style={{height: "98%", width: "100%"}}>
-                                        <div style = {{ backgroundColor: "#ffffff", overflow: " hidden", padding: "0 6px 5px 6px" }} >
+                                        <div style = {{ backgroundColor: "#ffffff", overflow: " hidden", padding: "10px 6px 5px 6px" }} >
                                             <div style = {{ height: '100%', margin: "15px 0px -6px"/* , padding: "0 0 5px 0"  */}} >
                                                     <img 
                                                         src = { imgsrc } 
@@ -480,12 +480,12 @@ class HomePage extends React.Component {
                              </Flexbox> 
 
                              {/* Right Column */}
-                             <Flexbox style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
+                             <Flexbox style = {{ width: "21%", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
                                 <div style = {{padding: "8px 10px 12px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
                                         
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
-                                        <Flexbox style={{marginBottom: "6px"}}>
+                                        <Flexbox style={{marginBottom: "6px", padding: "3px 0 1px 0",}}>
                                             <div style = {{height: "29.33%", minHeight: "0", paddingBottom: '0px',}} className="training-hover">
                                                 {/* <div
                                                 onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
@@ -547,7 +547,7 @@ class HomePage extends React.Component {
                                             
                                         </div> 
                                     </Flexbox>
-                                    <div style = {{height: "33%"}}> 
+                                    <div style = {{height: "32%"}}> 
                                         {/* <div style = {{ 
                                             backgroundColor: '#018cbb'this.props.settings.colors.homePageColors.headerBackground , 
                                             borderRadius: "2px", 
