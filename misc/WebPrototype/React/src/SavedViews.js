@@ -522,7 +522,7 @@ class SimpleTable extends React.Component {
 
         return (
             <div>
-                <div style = {{ margin: "1px 4px -9px"/* , padding: "0px 8px"*/}}  >
+                <div style = {{ margin: "1px 4px -9px"}}  >
                     <SearchBox 
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
@@ -540,7 +540,7 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox /* style = {{ padding: "0px 12px" }} */>
+                <Flexbox>
                     <Table 
                         className = {this.props.id}
                         fixedHeader = { true }
@@ -554,21 +554,21 @@ class SimpleTable extends React.Component {
                         <TableHeader
                             adjustForCheckbox = { false }
                             displaySelectAll = { false }
-                            style = {{ backgroundColor: "#018cbb", /*, border: "1px solid black" ,*/ fontSize: "14px"  }}
+                            style = {{ backgroundColor: "#018cbb", fontSize: "14px"  }}
                         >
                             <TableRow
                             style = {{ 
                                 height: "36px", 
                                 cursor: "pointer", 
-                                /* , fontSize: "14px" */ }} >
+                            }} >
                                 {colNames}
                             </TableRow>
                         </TableHeader>
                         <TableBody 
                         displayRowCheckbox = { false }
-                        style = {{/* border: "1px solid black",  */
+                        style = {{
                             cursor: "pointer",
-                            backgroundColor: hoverColor/* , fontSize: "14px" */ 
+                            backgroundColor: hoverColor
                         }} >
                             {rows}
                         </TableBody>

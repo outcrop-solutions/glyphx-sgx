@@ -789,39 +789,6 @@ class allViewsModal extends React.Component {
 							primary = { true }
 							onClick = { this.handleBackClick }
 							style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
-						/>,
-						<RaisedButton 
-							label = { "Launch" }
-							style = {{
-								width: "112px",
-								margin: "0px 10px 9px 0px"
-							}}
-							buttonStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-								backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : this.props.settings.colors.buttons.general)
-							}} 
-							labelStyle = {{
-								fontSize: '12px',
-								textAlign: "center",
-								color: this.props.settings.colors.overviewButtonsColor.text,
-								margin: "0px 0px 0px -3px",
-								paddingLeft: "0px",
-								paddingRight: "0px"
-							}}
-							overlayStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-							}}
-							disabled = { this.shouldLaunchBeDisabled() }
-							onClick = { () => this.props.onLaunch({
-								tableName:this.state.table,
-								frontEndFilters: this.state.selectionList,
-								originalVizName: this.props.type,
-								datasourceId: this.state.datasourceId,
-								filterAllowedColumnList: this.state.filterAllowedColumnList,
-							},this.onLaunchResultCallback) }
-							primary = {true } 
 						/>
 					]
 				} */
@@ -916,6 +883,7 @@ class allViewsModal extends React.Component {
 									label = { "Launch" }
 									style = {{
 										width: "112px",
+										boxShadow: "0"
 										/* margin: "0px 10px 9px 0px" */
 									}}
 									buttonStyle = {{

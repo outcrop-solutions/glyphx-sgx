@@ -413,23 +413,6 @@ class HomePage extends React.Component {
                             <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
 
                                 <div style = {{padding: "0px 6px 2px 12px", height: "16%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}}>
-                                   {/*  <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground '#000000',
-                                        marginBottom: "3px", paddingBottom: "4px", borderRadius: "2px", minHeight: "0"}}>
-                                            <div 
-                                                className = "noselect"
-                                                style = {{ 
-                                                    color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                    margin: "0 auto",
-                                                    width: "267px", 
-                                                    paddingTop: "4px",
-                                                    fontSize: "19px",
-                                                    letterSpacing: "0.70em",
-                                                    textTransform: "uppercase"
-                                                }}
-                                            > 
-                                                Glyph Model
-                                            </div>
-                                    </div> */}
                                     <Flexbox style={{height: "98%", width: "100%"}}>
                                         <div style = {{ backgroundColor: "#ffffff", overflow: " hidden", padding: "10px 6px 5px 6px" }} >
                                             <div style = {{ height: '100%', margin: "10px 0px -6px"/* , padding: "0 0 5px 0"  */}} >
@@ -456,20 +439,6 @@ class HomePage extends React.Component {
                             
                             {/* Middle column */}  
                              <Flexbox flexDirection = "column" style = {{ width: "58%" }} >
-                                
-                                {/* Uni Logo */}
-                               {/*  <div style = {{ backgroundColor: "#ffffff" }} >
-                                    <div style = {{ height: '120px', margin: "15px 0px -6px" }} >
-                                            <img 
-                                                src = { imgsrc } 
-                                                style = {{ display: "block", margin: "0 auto", maxWidth: "90%", maxHeight: "90%" }} 
-                                                alt = "University Logo" 
-                                                draggable = { false } 
-                                                className = "noselect" 
-                                            />
-                                    </div>
-                                </div>
-                                */}
                             
                                 {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
@@ -487,36 +456,6 @@ class HomePage extends React.Component {
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
                                         <Flexbox style={{marginBottom: "6px", padding: "3px 0 1px 0",}}>
                                             <div style = {{height: "29.33%", minHeight: "0", paddingBottom: '0px',}} className="training-hover">
-                                                {/* <div
-                                                onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
-                                                onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
-                                                style = {{ 
-                                                    backgroundColor: this.props.settings.colors.homePageColors.headerBackground '#000',
-                                                    marginBottom: "3px", 
-                                                    paddingBottom: "4px", 
-                                                    borderRadius: "2px",
-                                                    minHeight: "0"}}>
-                                                    <a 
-                                                    href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
-                                                    style={{textDecoration: "none"}} 
-                                                    target="_blank"
-                                                    title="Go to Tutorial Main Page">
-                                                    <div 
-                                                        className = "noselect"
-                                                        style = {{ 
-                                                            color: this.state.trainingHover ? '#00c4d9' : 
-                                                                this.props.settings.colors.overviewButtonsColor.text, 
-                                                            margin: "0 auto",
-                                                            width: "165px", 
-                                                            paddingTop: "4px",
-                                                            fontSize: "19px",
-                                                            letterSpacing: "0.23em",
-                                                            textTransform: "uppercase"
-                                                        }}
-                                                    > 
-                                                        Training
-                                                    </div></a>
-                                                </div> */}
                                                 <a
                                                 href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
                                                 style={{textDecoration: "none"}} 
@@ -548,27 +487,6 @@ class HomePage extends React.Component {
                                         </div> 
                                     </Flexbox>
                                     <div style = {{height: "30%"}}> 
-                                        {/* <div style = {{ 
-                                            backgroundColor: '#018cbb'this.props.settings.colors.homePageColors.headerBackground , 
-                                            borderRadius: "2px", 
-                                            marginTop: "15px", 
-                                            marginBottom: "3px", 
-                                            paddingBottom: "4px" }} >
-                                            <div 
-                                                style = {{ 
-                                                    color: this.props.settings.colors.overviewButtonsColor.text, 
-                                                    margin: "0 auto",
-                                                    width: "309px", 
-                                                    paddingTop: "4px",
-                                                    fontSize: "19px",
-                                                    letterSpacing: "0.23em",
-                                                    textTransform: "uppercase"
-                                                }}
-                                                className = "noselect"
-                                            > 
-                                                Announcements
-                                            </div>
-                                        </div> */}
                                         <h2
                                                 className='noselect'
                                                 style={{

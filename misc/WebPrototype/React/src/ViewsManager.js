@@ -280,13 +280,6 @@ class ViewsManager extends React.Component {
         }
     } */
 
-    /* unHighlightTopicRows(){
-        // console.log(document.getElementsByClassName('main-category-select'))
-        for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
-            document.getElementsByClassName('main-category-select')[i].style.backgroundColor = '#e7e7fd';
-        }
-    } */
-
     highlightTopicSelectedRow(innerHtml){
         for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
             if(document.getElementsByClassName('main-category-select')[i].innerHTML === innerHtml){
@@ -347,7 +340,6 @@ class ViewsManager extends React.Component {
                 }
             );
            
-            
         }
         if(this.state.legendPng){
             return(
@@ -359,7 +351,6 @@ class ViewsManager extends React.Component {
                         src = {this.state.legendPng} 
                         style = {{ width: '99%', height: "100%", borderRadius: "3px" }} 
                         alt = "Legend" 
-                        /* className = "legendImage noselect" */ 
                         draggable = { false } 
                     />
                 </div>
@@ -577,25 +568,7 @@ class ViewsManager extends React.Component {
 
         return(
             <div style={{height:"100%"}}>
-                <div /* style = {{ 
-                    backgroundColor: '#0446a0', this.props.settings.colors.homePageColors.headerBackground, 
-                    marginBottom: "3px", 
-                    borderRadius: "2px", 
-                    paddingBottom: "4px" }} */ >
-                   {/*  <div 
-                        style = {{ 
-                            color: this.props.settings.colors.overviewButtonsColor.text, 
-                            margin: "0 auto",
-                            width: "349.2px", 
-                            padding: "14px 0 12px 0",
-                            fontSize: "21px",
-                            letterSpacing: "0.23em",
-                            textTransform: "uppercase"
-                        }}
-                        className = "noselect"
-                    > 
-                        Views Library
-                    </div> */}
+                <div>
                     <h2
                         className='noselect'
                         style={{
@@ -618,13 +591,9 @@ class ViewsManager extends React.Component {
                         <div style = {{ 
                             display: "table",
                             backgroundColor: 'white'/* this.props.settings.colors.homePageColors.subBackground */, 
-                            /* borderBottomRightRadius: "3px", 
-                            borderBottomLeftRadius: "3px", */
                             border: "1px solid black",
                             height: "25%",
                             width: "65%",
-                            /* borderBottomLeftRadius: "18px",
-                            borderBottomRightRadius: "18px" */
                             }} >
 
                             <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
@@ -649,11 +618,7 @@ class ViewsManager extends React.Component {
                                                 this.flip("MarketingAndRecruiting", mandrList.length),
                                                 this.unHighlightTopicRows(),
                                                 this.highlightTopicSelectedRow(e.target.innerHTML);
-                                                /*
-                                                this.highlightTopicSelectedRow(e.target.innerHTML); } */
                                             ;} } 
-                                            /* onMouseEnter={() =>  styleForFirstViewSelect.backgroundColor = '#ddd'}
-                                            onMouseLeave={() => styleForFirstViewSelect.backgroundColor = '#e7e7fd'} */
                                             className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light` } 
                                             style = {styleForFirstViewSelect} >
                                             Marketing and Recruiting
