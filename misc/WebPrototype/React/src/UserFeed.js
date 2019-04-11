@@ -25,7 +25,8 @@ class UserFeed extends React.Component {
         messages: [],
         //teamSelectValue: "University of Notre Dame",
         channelName: "TestingChannel",
-        messageBody: ""
+        messageBody: "",
+        noAccess: false
     }
 
 
@@ -33,9 +34,7 @@ class UserFeed extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
 	componentDidMount() {
-
         var institution = this.props.userInfo.institutionDir.split("/");
-        
         if (institution.length > 1) {
             this.setState({ channelName: institution[institution.length -2] });
         }
@@ -65,6 +64,7 @@ class UserFeed extends React.Component {
                 // debugger;
                 if (channel) {
                     this.setState({ channelClient: channel });
+                    console.log(channel, this.state.channelClient)
                     return channel;
                 }
             })
@@ -80,26 +80,41 @@ class UserFeed extends React.Component {
                 //console.log("\n\n\n\n\nMEMBERS:");
                 //channel.getMembers().then(members => { console.log(members) });
                 // debugger;
-                this.setState({ channelClient: channel });
+                /* this.setState({ channelClient: channel }); */
                 channel.getMembers()
                 .then(members => {
+                    console.log(members)
                     // debugger;
-                    var shouldJoin = true;
-                    for (var i = 0; i < members.length; i++) {
-                        if (members[i].state.identity == (this.props.userInfo.Name + "|SPLITTER|" + this.props.userInfo.Email)) {
-                            shouldJoin = false;
+                    var shouldJoin = false;
+                    let count = 0;
+                    let userStr = this.props.userInfo.Name + "|SPLITTER|" + this.props.userInfo.Email;
+
+                    while (count < members.length){
+                        // console.log(count, members.length-1)
+                        if(members[count].state.identity === userStr ){
+                            // console.log(members[count].state.identity, userStr)
+                            shouldJoin = true;
+                            return;
+                        }
+                        else {
+                            count++;
                         }
                     }
-
                     if (shouldJoin) {
                         return channel.join();
+                    }
+                    else if(shouldJoin === false){
+                        this.setState({noAccess: true});
+                        return;
                     }
                 })
             })
             .then(() => {
                 // debugger;
-                this.state.channelClient.getMessages().then(this.messagesLoaded);
-                this.state.channelClient.on('messageAdded', this.messageAdded);
+                if(this.state.channelClient.getMessages() && this.state.noAccess === false){
+                    this.state.channelClient.getMessages().then(this.messagesLoaded);
+                    this.state.channelClient.on('messageAdded', this.messageAdded);
+                }
             });
         });
     };
@@ -162,7 +177,7 @@ class UserFeed extends React.Component {
 
         var context = this;
 
-        var posts = this.state.messages.map( function(post) {
+        var posts = context.state.messages.map( function(post) {
             return (
                 <Card 
                     containerStyle = {{ padding: "0px", borderRadius: "10px" }} 
@@ -216,7 +231,7 @@ class UserFeed extends React.Component {
                 </Card>
             )
         });
-
+    
         return (
             <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
 
@@ -290,7 +305,7 @@ class UserFeed extends React.Component {
                             className = "customScroll"
                             id = "chatArea"
                         >
-                            {posts}
+                            {this.state.noAccess ? <div>NO ACCESS TO THIS ORGANIZATION'S USER FEED. PLEASE CONTACT THE HELP DESK.</div> : posts}
 
                         </div>
                     </Flexbox>
