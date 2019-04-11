@@ -256,7 +256,7 @@ class XYZRemapModal extends React.Component {
                                 }
                              }
 
-                             if (responseDetails.Y != responseDetails.X) {
+                             if (responseDetails.Y !== responseDetails.X) {
                                 if (responseDetails.Ytype === "INT") {
                                     var parseY = parseInt(response.data[i][responseDetails.Y], 10);
                                     if (responseDetails.YMin > parseY) {
@@ -273,7 +273,7 @@ class XYZRemapModal extends React.Component {
                                 }
                              }
 
-                             if (responseDetails.Z != responseDetails.X && responseDetails.Z !== responseDetails.Y) {
+                             if (responseDetails.Z !== responseDetails.X && responseDetails.Z !== responseDetails.Y) {
                                 if (responseDetails.Ztype === "INT") {
                                     var parseZ = parseInt(response.data[i][responseDetails.Z], 10);
                                     if (responseDetails.ZMin > parseZ) {
@@ -301,7 +301,7 @@ class XYZRemapModal extends React.Component {
                             responseDetails.ZUnique.sort();
                         }
 
-                        if (responseDetails.Y == responseDetails.X) {
+                        if (responseDetails.Y === responseDetails.X) {
                             if (responseDetails.Ytype === "INT") {
                                 responseDetails.YMin = responseDetails.XMin;
                                 responseDetails.YMax = responseDetails.XMax;
@@ -311,7 +311,7 @@ class XYZRemapModal extends React.Component {
                             }
                         }
 
-                        if (responseDetails.Z == responseDetails.X) {
+                        if (responseDetails.Z === responseDetails.X) {
                             if (responseDetails.Ztype === "INT") {
                                 responseDetails.ZMin = responseDetails.XMin;
                                 responseDetails.ZMax = responseDetails.XMax;
@@ -455,7 +455,7 @@ class XYZRemapModal extends React.Component {
                             onClick = { () => 
                                 this.setState({ 
                                     XLowerRange: (this.state.XLowerRange === -180 ? 180 : -180), 
-                                    XUpperRange: (this.state.XUpperRange == -180 ? 180 : -180)  }) }
+                                    XUpperRange: (this.state.XUpperRange === -180 ? 180 : -180)  }) }
                             label = { <i className = { this.state.XLowerRange === -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} 
                             style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
@@ -498,7 +498,7 @@ class XYZRemapModal extends React.Component {
                             onClick = { () => 
                                 this.setState({ 
                                     YLowerRange: (this.state.YLowerRange === -180 ? 180 : -180), 
-                                    YUpperRange: (this.state.YUpperRange == -180 ? 180 : -180)  }) }
+                                    YUpperRange: (this.state.YUpperRange === -180 ? 180 : -180)  }) }
                             label = { <i className = { this.state.YLowerRange === -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} 
                             style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
@@ -541,7 +541,7 @@ class XYZRemapModal extends React.Component {
                             onClick = { () => 
                                 this.setState({ 
                                     ZLowerRange: (this.state.ZLowerRange === 0 ? 360 : 0), 
-                                    ZUpperRange: (this.state.ZUpperRange == 360 ? 0 : 360)  }) }
+                                    ZUpperRange: (this.state.ZUpperRange === 360 ? 0 : 360)  }) }
                             label = { <i className = { this.state.ZLowerRange === 0 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} 
                             style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
