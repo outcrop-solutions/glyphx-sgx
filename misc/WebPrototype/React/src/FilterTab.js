@@ -33,7 +33,7 @@ class FilterTabs extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.data != nextProps.data){
+        if(this.props.data !== nextProps.data){
             this.setState({tableData: nextProps.data});
         }
     }
@@ -96,7 +96,7 @@ class FilterTabs extends React.Component {
      * @param {String/Object} element: this is the name of the column
      */
     scroll = (element) => {
-        if (typeof element == 'string') {
+        if (typeof element === 'string') {
             element = document.getElementById(element);
         }
 

@@ -64,7 +64,8 @@ class HomePage extends React.Component {
 	 */
     componentDidMount() {
 
-        if (window.location.href.indexOf("http://") != -1 && window.location.href.indexOf("localhost") == -1 && window.location.href.indexOf("ec2-34-215-50-82") == -1 && window.location.href.indexOf("ec2-34-221-39-241") == -1) {
+        if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
+        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
         
@@ -196,7 +197,7 @@ class HomePage extends React.Component {
 
         //console.log("HOME-MINUTES: " + minutes);
 
-        if (minutes == 23) {
+        if (minutes === 23) {
             this.props.dispatch(editModalDisplay(true));
         }
 
@@ -356,6 +357,7 @@ class HomePage extends React.Component {
 			var savedViewObj;
 			
 			this.props.storedViews.savedViews.forEach(function(savedView) {
+                //this needs to stay == for typecasting purposes
 				if (rowArray[3] == savedView.ID) {
 					savedViewObj = savedView
                 }
@@ -460,6 +462,7 @@ class HomePage extends React.Component {
                                                 href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
                                                 style={{textDecoration: "none"}} 
                                                 target="_blank"
+                                                rel="noopener noreferrer"
                                                 title="Go to Tutorial Main Page">
                                                     <h2
                                                         className='training-hover'

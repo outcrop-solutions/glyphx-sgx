@@ -39,7 +39,7 @@ class PinningViewsModal extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState){
-        return (this.state != nextState || this.props.settings != nextProps.settings);
+        return (this.state !== nextState || this.props.settings !== nextProps.settings);
 
         /*
         if (this.state != nextState) {

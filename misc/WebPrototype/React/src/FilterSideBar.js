@@ -8,7 +8,7 @@ import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
-import UndoRedoChangeListener from './UndoRedoChangeListener.js';
+/* import UndoRedoChangeListener from './UndoRedoChangeListener.js'; */
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './css/FilterSideBar.css';
 
@@ -59,7 +59,7 @@ class FilterSideBar extends React.Component {
             function(res,b,c) {
             // Hide the loadmask.
                 
-                if (typeof res == 'string') {
+                if (typeof res === 'string') {
                     res = JSON.parse(res);
                 }
 
@@ -135,7 +135,7 @@ class FilterSideBar extends React.Component {
         // debugger;
 
         return new Promise(function(resolve, reject) {
-            var result = 'A is done'        
+           /*  var result = 'A is done'    */     
 
             // Get the data corresponding to the URL
             makeServerCall(URL,
@@ -195,7 +195,7 @@ class FilterSideBar extends React.Component {
      * }
      */
     convertToCompatibleDataObject(obj) {
-        var resObj = (typeof obj == 'string' ? JSON.parse(obj) : obj);
+        var resObj = (typeof obj === 'string' ? JSON.parse(obj) : obj);
         var returnObj = {};
         var resObjLen = resObj.length;
         var columnObj = null;
@@ -271,7 +271,7 @@ class FilterSideBar extends React.Component {
             var columnName = property;
             var range;
             //var type = isNaN(columnObj.flatValues[0]) ||  columnObj.flatValues[0]=='' ? 'Text' : 'Number';
-            var type = typeof columnObj.flatValues[0] == 'string' ? 'Text' : 'Number';
+            var type = typeof columnObj.flatValues[0] === 'string' ? 'Text' : 'Number';
 
             if (type === "Number") {
                 var minMax = this.findMinMax( columnObj.flatValues );

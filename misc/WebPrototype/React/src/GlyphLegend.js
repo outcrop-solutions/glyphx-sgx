@@ -49,7 +49,7 @@ class GlyphLegend extends React.Component {
 
         var imgsrc = '';
 
-        if (this.state.imgPath != '') {
+        if (this.state.imgPath !== '') {
             imgsrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.state.imgPath);
         }
 

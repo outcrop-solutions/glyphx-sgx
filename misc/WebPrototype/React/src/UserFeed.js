@@ -4,7 +4,7 @@ import { makeServerCall } from './ServerCallHelper.js';
 import { guidGenerator } from './GeneralFunctions.js';
 import Flexbox from 'flexbox-react';
 import { Card, CardText } from 'material-ui/Card';
-import Select from 'react-select';
+/* import Select from 'react-select'; */
 import Divider from 'material-ui/Divider';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import Twilio from 'twilio-chat';
@@ -147,7 +147,7 @@ class UserFeed extends React.Component {
     };
 
     checkEnter(event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             event.preventDefault();
 
             // debugger;
@@ -212,7 +212,7 @@ class UserFeed extends React.Component {
                                             {post.state.dateUpdated.getHours() > 12 ? 
                                                 (post.state.dateUpdated.getHours() - 12) + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'pm'
                                                 :
-                                                (post.state.dateUpdated.getHours() == 12 ? 
+                                                (post.state.dateUpdated.getHours() === 12 ? 
                                                     12 + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'pm'
                                                     :
                                                     post.state.dateUpdated.getHours() + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'am'

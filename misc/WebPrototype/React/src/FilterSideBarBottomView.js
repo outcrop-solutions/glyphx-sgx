@@ -39,7 +39,7 @@ class FilterSideBarBottomView extends React.Component {
      **/
 	componentWillReceiveProps(nextProps) {
         if (Object.keys(nextProps.tableData).length !== 0) {
-            if (this.props.UndoRedoHistory && this.props.UndoRedoHistory.history.length == 0) {
+            if (this.props.UndoRedoHistory && this.props.UndoRedoHistory.history.length === 0) {
                 this.props.dispatch(editUndoRedoHistory({
                     history: [{filterList: this.props.GLOBAL, tableData: nextProps.tableData}],
                     position: 0
@@ -328,7 +328,7 @@ class FilterSideBarBottomView extends React.Component {
      * @param {String/Object} element: this is the name of the column
      */
     scroll = (element) => {
-        if (typeof element == 'string') {
+        if (typeof element === 'string') {
             element = document.getElementById(element);
         }
 

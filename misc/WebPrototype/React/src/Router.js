@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
+import { /* Router, */ Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { checkUserLoggedIn } from './ServerCallHelper.js';
 import createHistory from 'history/createBrowserHistory';
 import Login from './Login.js';
@@ -12,8 +12,8 @@ import Maintenance from './Maintenance.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
-const browserHistory = createHistory();
-var interval = {};
+/* const browserHistory = createHistory();
+var interval = {}; */
 var isUserLoggedIn = false;
 var maintenance = false;
 

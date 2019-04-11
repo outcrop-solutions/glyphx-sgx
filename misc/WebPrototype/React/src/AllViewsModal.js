@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { makeServerCall } from './ServerCallHelper.js';
-import Dialog from 'material-ui/Dialog';
+/* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
-import FlatButton from 'material-ui/FlatButton';
+/* import FlatButton from 'material-ui/FlatButton'; */
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 import SearchBox from './SearchBox.js';

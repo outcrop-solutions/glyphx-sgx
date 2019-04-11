@@ -72,7 +72,9 @@ class FilterSideBarTopView extends React.Component {
     
     componentWillReceiveProps(nextProps) {
         // debugger;
-        if (nextProps.storedViews.savedViews != this.props.storedViews.savedViews || nextProps.VizParams.query != nextProps.RecentVizDropdown.query || this.props.RecentVizDropdown != nextProps.RecentVizDropdown) {
+        if (nextProps.storedViews.savedViews !== this.props.storedViews.savedViews || 
+            nextProps.VizParams.query !== nextProps.RecentVizDropdown.query || 
+            this.props.RecentVizDropdown !== nextProps.RecentVizDropdown) {
             var convertedViewSelectItems = this.convertToSelectFormat(nextProps.storedViews.savedViews, nextProps.RecentVizDropdown);
             this.setState({ viewSelectItems: convertedViewSelectItems, tableSelectValues: [nextProps.VizParams.tableName] });
         }
@@ -86,17 +88,17 @@ class FilterSideBarTopView extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.state != nextState || 
-            this.props.initParams != nextProps.initParams || 
-            this.props.settings != nextProps.settings || 
-            this.props.filterIDs != nextProps.filterIDs || 
-            this.props.tableData != nextProps.tableData || 
-            this.props.statData != nextProps.statData || 
-            this.props.RecentVizDropdown != nextProps.RecentVizDropdown || 
-            this.props.statisticDisplay != nextProps.statisticDisplay || 
-            this.props.initialX != nextProps.initialX || 
-            this.props.initialY != nextProps.initialY || 
-            this.props.initialZ != nextProps.initialZ 
+        return (this.state !== nextState || 
+            this.props.initParams !== nextProps.initParams || 
+            this.props.settings !== nextProps.settings || 
+            this.props.filterIDs !== nextProps.filterIDs || 
+            this.props.tableData !== nextProps.tableData || 
+            this.props.statData !== nextProps.statData || 
+            this.props.RecentVizDropdown !== nextProps.RecentVizDropdown || 
+            this.props.statisticDisplay !== nextProps.statisticDisplay || 
+            this.props.initialX !== nextProps.initialX || 
+            this.props.initialY !== nextProps.initialY || 
+            this.props.initialZ !== nextProps.initialZ 
         );
         
         /*
@@ -124,7 +126,7 @@ class FilterSideBarTopView extends React.Component {
 
         // debugger;
 
-        if (this.props.RecentVizDropdown == null || this.props.RecentVizDropdown == undefined) {
+        if (this.props.RecentVizDropdown === null || this.props.RecentVizDropdown === undefined) {
             this.props.dispatch( setRecentVizDropdown( this.props.VizParams ));
             this.setState({ viewSelectItems: this.convertToSelectFormat(this.props.storedViews.savedViews, this.props.VizParams) });
         }
@@ -133,7 +135,7 @@ class FilterSideBarTopView extends React.Component {
         }
 
 
-        if (this.state.tableSelectItems.length == 1) {
+        if (this.state.tableSelectItems.length === 1) {
             this.setState({
                 tableSelectValues: this.state.tableSelectItems[0].value
             });
@@ -162,13 +164,14 @@ class FilterSideBarTopView extends React.Component {
      * @param {array} obj: The object passed as prop containing the view select values;
      */
     convertToSelectFormat(arrViewSelect, recentVizDropdown) {
-        var viewSelectItems = [];
+        /* var viewSelectItems = []; */
         var arrReturn = [];
 
         // debugger;
 
-        if (this.props.RecentVizDropdown != this.props.VizParams && (this.props.RecentVizDropdown != null || this.props.RecentVizDropdown != undefined)) {
-            if (recentVizDropdown != null) {
+        if (this.props.RecentVizDropdown !== this.props.VizParams && 
+            (this.props.RecentVizDropdown !== null || this.props.RecentVizDropdown !== undefined)) {
+            if (recentVizDropdown !== null) {
                 arrReturn.push({label: "RECENT: " + recentVizDropdown.originalVizName, value: "RECENT_VIZ_DROPDOWN" });
                 // debugger;
             }
@@ -181,7 +184,7 @@ class FilterSideBarTopView extends React.Component {
         // Set the Saved Views data to the store.
         var savedViews = arrViewSelect ? arrViewSelect : [];
         for (var index = 0; index < savedViews.length; index++) {;
-            if (savedViews[index].OriginalVizName == this.props.VizParams.originalVizName) {
+            if (savedViews[index].OriginalVizName === this.props.VizParams.originalVizName) {
                 arrReturn.push(
                     {
                         label: savedViews[index].Name, value: savedViews[index].ID
@@ -290,7 +293,7 @@ class FilterSideBarTopView extends React.Component {
             // Check if same name view already exists
             context.state.viewSelectItems.forEach(
                 function(element) {
-                    if (element.label == viewName ) {
+                    if (element.label === viewName ) {
                         nameAlreadyExists = true;
                     }
                 }
@@ -329,7 +332,7 @@ class FilterSideBarTopView extends React.Component {
         var fef = this.props.VizParams.frontEndFilters;
         var filterObj = JSON.parse(JSON.stringify(this.props.filter));
         var colName = "";
-        var values;
+        /* var values; */
         var finalFilterObj={};
         
         var query = "SELECT * FROM " + this.props.VizParams.tableName + " WHERE ";
@@ -397,7 +400,7 @@ class FilterSideBarTopView extends React.Component {
             function(res ,b, c) {
             // Hide the loadmask.
                 
-                if (typeof res == 'string') {
+                if (typeof res === 'string') {
                     res = JSON.parse(res);
                 }
                 
@@ -520,7 +523,7 @@ class FilterSideBarTopView extends React.Component {
 
         // debugger;
 
-        if (!(JSON.stringify(undoRedoHistory.history[undoRedoHistory.history.length - 1]) == JSON.stringify({filterList: this.props.filter, tableData: this.props.tableData})) ) {
+        if (!(JSON.stringify(undoRedoHistory.history[undoRedoHistory.history.length - 1]) === JSON.stringify({filterList: this.props.filter, tableData: this.props.tableData})) ) {
 
             if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
                 undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -545,13 +548,13 @@ class FilterSideBarTopView extends React.Component {
         this.setState({ viewSelectValue: value });
         //console.log(value);
 
-        if (value != "RECENT_VIZ_DROPDOWN") {
+        if (value !== "RECENT_VIZ_DROPDOWN") {
 
             // Load Filters!
             var savedVizObj;
 
             this.props.storedViews.savedViews.forEach(function(v) {
-                if (v.ID == value) {
+                if (v.ID === value) {
                     savedVizObj = v;
                 }
             })
@@ -575,7 +578,7 @@ class FilterSideBarTopView extends React.Component {
                 funnelData = this.props.funnelData[keys[keyIndex]];
         
                 for(var index = 0; index < funnelData.length; index++) {
-                    if (funnelData[index][0] == originalVizName) {
+                    if (funnelData[index][0] === originalVizName) {
                         path = funnelData[index][1];
                         flag = false;
                         break;
@@ -806,7 +809,7 @@ class FilterSideBarTopView extends React.Component {
         }
 
         this.state.viewSelectItems.forEach(function(v){
-            if(v.value == context.state.viewSelectValue)
+            if(v.value === context.state.viewSelectValue)
                 viewName = v.label;
         })
         
@@ -1054,19 +1057,19 @@ class FilterSideBarTopView extends React.Component {
         var statDataKeys = Object.keys(this.props.statData);
         var sameList = true;
 
-        if (statDataKeys.length != this.props.colList.length) {
+        if (statDataKeys.length !== this.props.colList.length) {
             sameList = false;
         }
         else {
             for (var i = 0; i < statDataKeys.length; i++) {
-                if (statDataKeys.indexOf(this.props.colList[i]) == -1) {
+                if (statDataKeys.indexOf(this.props.colList[i]) === -1) {
                     sameList = false;
                     break;
                 }
             }
         }
 
-        if (statDataKeys.length != 0 && sameList) {
+        if (statDataKeys.length !== 0 && sameList) {
             // debugger; //WOOOOOOOOOOOOOOOOO
             for (var i = statisticColSelectItems.length -1; i > -1; i--) {
                 var colKeys = Object.keys(this.props.statData[statisticColSelectItems[i].value].values)
@@ -1398,7 +1401,7 @@ class FilterSideBarTopView extends React.Component {
                 </Flexbox>
                 
                 {/* Row 3 */}
-                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: this.state. multiTable ? "5px 0px" : "5px 0px -4px" }} >
+                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: this.state.multiTable ? "5px 0px" : "5px 0px -4px" }} >
                     <Flexbox style = {{ width: "30%" }} > 
                         <Tooltip
                             placement = 'left'
@@ -1618,7 +1621,7 @@ class FilterSideBarTopView extends React.Component {
                         className = "selectTableName dark-theme"
                         simpleValue
                         value = { this.state.tableSelectValues } 
-                        disabled = { this.state.tableSelectItems.length == 1 } 
+                        disabled = { this.state.tableSelectItems.length === 1 } 
                         placeholder = "Select your table(s)" 
                         options = { this.state.tableSelectItems } 
                         onChange = { this.onSelectTableChange.bind(this) } 

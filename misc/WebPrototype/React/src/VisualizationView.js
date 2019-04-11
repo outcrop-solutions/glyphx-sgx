@@ -93,7 +93,7 @@ class VisualizationView extends React.Component {
 		// For the selectboxes  
 		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
 		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 9);
-        style.sheet.insertRule('.Select-control { background-color: ' + "#ffffff" + '!important; }', 10);
+        style.sheet.insertRule('.Select-control { background-color: #ffffff !important; }', 10);
 		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
 		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
 		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 13);
@@ -133,7 +133,7 @@ class VisualizationView extends React.Component {
 
         //console.log("VIZ-MINUTES: " + minutes);
 
-        if (minutes == 23) {
+        if (minutes === 23) {
             this.props.dispatch(editModalDisplay(true));
         }
 
@@ -179,7 +179,7 @@ class VisualizationView extends React.Component {
         this.setState({ vizKey: '' });
         
         var gv = document.getElementById('GlyphViewerContainer');
-        var filterNav = document.getElementById("filterNav");
+        /* var filterNav = document.getElementById("filterNav"); */
         var topNav = document.getElementById("TopNav");
 
         if (!this.props.settings.sideBarOverlap) {
@@ -401,7 +401,7 @@ class VisualizationView extends React.Component {
                                     <ComponentLoadMask stopLoop = {this.state.glyphViewLoaded ? true : false} bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } imgLink = "./Res/Img/GlyphED.png" />
                                 </div>
 
-                                {this.state.vizKey == '' ? 
+                                {this.state.vizKey === '' ? 
                                     null 
                                     : 
                                     <iframe 

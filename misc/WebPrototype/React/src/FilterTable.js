@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Column, Table } from 'react-virtualized';
 //import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
-import { guidGenerator } from './GeneralFunctions.js';
+/* import { guidGenerator } from './GeneralFunctions.js'; */
 import { makeServerCall } from './ServerCallHelper.js';
 import Checkbox from 'material-ui/Checkbox';
 import Promise from 'bluebird';
 import ScrollIntoView from 'scroll-into-view-if-needed';
-import SearchBox from './SearchBox.js';
+/* import SearchBox from './SearchBox.js'; */
 import Flexbox from 'flexbox-react';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
@@ -61,7 +61,7 @@ function CustomRowRendererComponent({
         }
     }
 
-    if (selectedData.indexOf(rowData.value) != -1) {
+    if (selectedData.indexOf(rowData.value) !== -1) {
         style.backgroundColor = "#e0e0e0";
     }
 
@@ -109,7 +109,7 @@ class FilterTable extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.tableData != nextProps.tableData) {
+        if (this.props.tableData !== nextProps.tableData) {
             this.setState({ tableData: nextProps.tableData, flatData: [] });
             this.refresh = true;
         }
@@ -123,13 +123,13 @@ class FilterTable extends React.Component {
      **/
     shouldComponentUpdate(nextProps, nextState) {
 
-        return (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues || 
-                this.props.settings != nextProps.settings ||
-                this.state.flatData != nextState.flatData ||
-                this.state.searchTerm != nextState.searchTerm ||
-                this.props.tableData != nextProps.tableData ||
-                this.props.ShowAllTables != nextProps.ShowAllTables ||
-                this.state.height != nextState.height
+        return (this.props.tableState[this.props.id].selectedValues !== nextProps.tableState[this.props.id].selectedValues || 
+                this.props.settings !== nextProps.settings ||
+                this.state.flatData !== nextState.flatData ||
+                this.state.searchTerm !== nextState.searchTerm ||
+                this.props.tableData !== nextProps.tableData ||
+                this.props.ShowAllTables !== nextProps.ShowAllTables ||
+                this.state.height !== nextState.height
                 );
 
         /*
@@ -265,7 +265,7 @@ class FilterTable extends React.Component {
         var checked = false;
 
         for (var i = 0; i < selectedValues.length; i++) {
-            if (selectedValues[i] == e.rowData.value) {
+            if (selectedValues[i] === e.rowData.value) {
                 checked = true;
             }
         }
@@ -591,12 +591,16 @@ class FilterTable extends React.Component {
         for (var i in this.state.tableData.values) {
 
             if (sTerm != "") {
-                if (this.state.tableData.values[i].value.toString().toLowerCase().indexOf(sTerm.toLowerCase()) != -1) {
-                    rows.push({ value: this.state.tableData.values[i].value, count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
+                if (this.state.tableData.values[i].value.toString().toLowerCase().indexOf(sTerm.toLowerCase()) !== -1) {
+                    rows.push({ 
+                        value: this.state.tableData.values[i].value, 
+                        count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
                 }
             }
             else {
-                rows.push({ value: this.state.tableData.values[i].value, count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
+                rows.push({ 
+                    value: this.state.tableData.values[i].value, 
+                    count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
             }
         }
 
@@ -610,7 +614,7 @@ class FilterTable extends React.Component {
      * @param {String/Object} element: this is the name of the column
      */
     scroll = (element) => {
-        if (typeof element == 'string') {
+        if (typeof element === 'string') {
             element = document.getElementById(element);
         }
 
@@ -638,7 +642,7 @@ class FilterTable extends React.Component {
 
         var index = list.indexOf(col);
 
-        if (index == -1) {
+        if (index === -1) {
             list.push(col);
             var tableData = this.props.fullTableData;
             tableData[col] = this.props.UndoRedoHistory.history[0].tableData[col];
@@ -654,9 +658,9 @@ class FilterTable extends React.Component {
 
 
     render() {
-        var id = this.props.id;
+/*         var id = this.props.id;
         var internalColName = this.props.internalColName;
-        var tableBodyHeight = (300 - 32) + "px";
+        var tableBodyHeight = (300 - 32) + "px"; */
         var rows = this.createRows();
 
         return (
@@ -723,7 +727,7 @@ class FilterTable extends React.Component {
                             >
                                 <Checkbox
                                     label = "Show All"
-                                    checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) != -1 ? true : false }
+                                    checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) !== -1 ? true : false }
                                     onCheck = { () => this.updateCheck(this.props.internalColName.replace("_pinned", "")) }
                                     iconStyle = {{ fill: 'rgba(0, 0, 0, 0.6)', margin: "2px 2px 0px 0px" }}
                                     labelStyle = {{ width: "100%", margin: "5px 5px 0px 0px", color: 'rgba(0, 0, 0, 0.6)' }}
@@ -776,12 +780,12 @@ class FilterTable extends React.Component {
 
                         <RaisedButton 
                             primary = { true } 
-                            onClick = { () => this.setState({ height: this.state.height == 350 ? 600 : 350 }) }
+                            onClick = { () => this.setState({ height: this.state.height === 350 ? 600 : 350 }) }
                             buttonStyle = {{ backgroundColor: "#b6b6b5", width: "364px" }}
                             style = {{ height: '16px', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
                         >
                             <i 
-                                className = { this.state.height == 350 ? "fa fa-caret-down" : "fa fa-caret-up" }
+                                className = { this.state.height === 350 ? "fa fa-caret-down" : "fa fa-caret-up" }
                                 style = {{
                                     fontSize: '1.6em',
                                     margin: "-2px 0px 0px 0px",
@@ -889,7 +893,10 @@ class FilterRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.checked !== nextProps.checked || this.props.settings != nextProps.settings || this.props.value != nextProps.value || this.props.percentStr != nextProps.percentStr);
+        return (this.props.checked !== nextProps.checked || 
+            this.props.settings !== nextProps.settings || 
+            this.props.value !== nextProps.value || 
+            this.props.percentStr !== nextProps.percentStr);
     }
 
 

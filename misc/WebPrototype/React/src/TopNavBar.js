@@ -12,7 +12,7 @@ import Avatar from 'material-ui/Avatar';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
-import AdminWizardModal from './AdminWizardModal.js';
+/* import AdminWizardModal from './AdminWizardModal.js'; */
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import './css/General.css';

@@ -70,7 +70,7 @@ class TextRangeTable extends React.Component {
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
-        this.props.rangeList;
+        /* this.props.rangeList; */
         // debugger;
 
         makeServerCall('applyFilters',
@@ -218,10 +218,10 @@ class TextRangeRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.range != nextProps.range || this.props.settings != nextProps.settings) {
+        if (this.props.range !== nextProps.range || this.props.settings !== nextProps.settings) {
             return true;
         }
-        if (this.state.min != nextState.min || this.state.max != nextState.max || this.state.text != nextState.text) {
+        if (this.state.min !== nextState.min || this.state.max !== nextState.max || this.state.text !== nextState.text) {
             return true;
         }
         return false;
@@ -293,8 +293,8 @@ class TextRangeRow extends React.Component {
      **/
      onSliderTextChange(e) {
          if (e.target.value.length <= 1) {
-             if (e.target.value == "") {
-                 if (e.target.name == "min") {
+             if (e.target.value === "") {
+                 if (e.target.name === "min") {
                     this.setState({ min: "" });
                  }
 
@@ -307,7 +307,7 @@ class TextRangeRow extends React.Component {
              var index = alphabet.indexOf(value);
 
              if (index != -1) {
-                 if (e.target.name == "min") {
+                 if (e.target.name === "min") {
                     this.setState({ min: index });
                  }
 
@@ -451,11 +451,11 @@ class TextRangeRow extends React.Component {
                 var min = null;
                 var max = null;
 
-                if (this.state.min == "") {
+                if (this.state.min === "") {
                     min = 0;
                 }
 
-                if (this.state.max == "") {
+                if (this.state.max === "") {
                     max = 25;
                 }
 

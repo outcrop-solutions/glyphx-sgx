@@ -466,7 +466,8 @@ class ShoutAnnouncement extends React.Component {
                             borderRadius: "5px"
                         }}
                         className = "cursorHand"
-                        onClick = { () => this.props.announcement.content.linkType == "link" ? window.open(this.props.announcement.content.link) : null }
+                        onClick = { () => this.props.announcement.content.linkType === "link" ? 
+                        window.open(this.props.announcement.content.link) : null }
                     >
 
                         <Flexbox flexDirection = "row" className = "noselect" >

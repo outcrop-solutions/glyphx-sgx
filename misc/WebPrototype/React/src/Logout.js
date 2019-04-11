@@ -1,7 +1,7 @@
 import React from 'react';
 import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
 import { hideSplashScreen } from './LoadMaskHelper.js';
-import Dialog from 'material-ui/Dialog';
+/* import Dialog from 'material-ui/Dialog'; */
 
 
 /**

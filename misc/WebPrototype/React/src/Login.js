@@ -28,7 +28,8 @@ class Login extends React.Component {
 	 */
     componentDidMount() {
         
-        if (window.location.href.indexOf("http://") != -1 && window.location.href.indexOf("localhost") == -1 && window.location.href.indexOf("ec2-34-215-50-82") == -1 && window.location.href.indexOf("ec2-34-221-39-241") == -1) {
+        if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
+        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
 
@@ -147,7 +148,7 @@ class Login extends React.Component {
         
         var lblErrPass = document.getElementById('errPass');
 
-        if (result && result.status == 'success') { 
+        if (result && result.status === 'success') { 
             // Save the details to store
             if (result.userInformation) {
                 result.userInformation.loggedInTime = new Date();
@@ -158,13 +159,13 @@ class Login extends React.Component {
             this.saveUserInfo(result.userInformation, result.funnelInfo, result.savedViews);
         }
 
-        else if (result && result.status == "failure") {
+        else if (result && result.status === "failure") {
             //console.log('Error');
             lblErrPass.hidden = false;
             lblErrPass.innerText = "Incorrect Username/Password";
         }
 
-        else if (result && result.status == "expired") {
+        else if (result && result.status === "expired") {
             //console.log('Error');
             lblErrPass.hidden = false;
             lblErrPass.innerText = "User License has expired";
@@ -189,7 +190,7 @@ class Login extends React.Component {
         this.props.dispatch(saveUserInfo(userInfo, funnelInfo, savedViews));
 
         // Call function post login if provided.
-        if (typeof this.props.doAfterLogin == 'function') {
+        if (typeof this.props.doAfterLogin === 'function') {
             this.props.doAfterLogin(userInfo);
         }
         

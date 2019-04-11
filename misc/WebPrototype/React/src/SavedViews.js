@@ -34,10 +34,10 @@ class SavedViews extends React.Component {
         for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
             funnelData = this.props.funnelData[keys[keyIndex]];
     
-            for(var index=0;index<funnelData.length;index++)
+            for(var i = 0;i < funnelData.length; i++)
             {
-                if(funnelData[index][0] == originalVizName){
-                    path = funnelData[index][1];
+                if(funnelData[i][0] === originalVizName){
+                    path = funnelData[i][1];
                     flag = false;
                     break;
                 }
@@ -78,7 +78,7 @@ class SavedViews extends React.Component {
                     )
                 );
 
-                if(typeof callback == 'function'){
+                if(typeof callback === 'function'){
 					callback(true);
 					//context.props.history.push('/glyph-viewer');
 				}
@@ -244,7 +244,7 @@ class SimpleTable extends React.Component {
 
         // Find the other column & remove the sort applied icon.
         for (var i = 0; i < columns.length; i++) {
-            if (columns[i].id != this.props.id + columnName) {
+            if (columns[i].id !== this.props.id + columnName) {
                 columns[i].classList.remove('fa-sort-amount-desc');
                 columns[i].classList.remove('fa-sort-amount-asc');
                 columns[i].classList.add('fa-sort');
@@ -256,7 +256,7 @@ class SimpleTable extends React.Component {
 
         switch (type) {
             case "Text":
-                if (sortDirection == "asc") {
+                if (sortDirection === "asc") {
                     flatData.sort(
                         function(a, b) {
                             if (a[columnName] < b[columnName]) {
@@ -287,7 +287,7 @@ class SimpleTable extends React.Component {
                 break;
 
             case "Number":
-                if (sortDirection == "asc") {
+                if (sortDirection === "asc") {
                     flatData.sort(function(a, b) { return a[columnName] - b[columnName] });
                 }
 

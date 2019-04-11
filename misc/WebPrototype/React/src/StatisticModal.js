@@ -19,7 +19,8 @@ class StatisticModal extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState){
-        return (this.props.statData != nextProps.statData || this.props.statistics != nextProps.statistics || this.props.statDisplay != nextProps.statDisplay);
+        return (this.props.statData !== nextProps.statData || 
+            this.props.statistics !== nextProps.statistics || this.props.statDisplay !== nextProps.statDisplay);
     };
 
     generateList(keys, struct) {
@@ -83,7 +84,7 @@ class StatisticModal extends React.Component {
         var list = this.generateList(keys, struct);
         list.sort();
 
-        if (list.length % 2 == 0) {
+        if (list.length % 2 === 0) {
 
             return ((list[(list.length / 2)] + list[(list.length / 2) + 1]) / 2);
         }
@@ -99,7 +100,7 @@ class StatisticModal extends React.Component {
         var countArray = [struct.values[keys[0]].value]
 
         for (var i = 1; i < keys.length; i++) {
-            if (struct.values[keys[i]].count == maxCount) {
+            if (struct.values[keys[i]].count === maxCount) {
                 countArray.push(struct.values[keys[i]].value);
             }
             else if (struct.values[keys[i]].count > maxCount) {

@@ -63,7 +63,7 @@ class NumberRangeTable extends React.Component {
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
-        this.props.rangeList;
+        /* this.props.rangeList; */
         // debugger;
 
         makeServerCall('applyFilters',
@@ -217,7 +217,10 @@ class NumberRangeRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.range != nextProps.range || this.props.settings != nextProps.settings || this.state.min !== nextState.min || this.state.max !== nextState.max);
+        return (this.props.range !== nextProps.range || 
+            this.props.settings !== nextProps.settings || 
+            this.state.min !== nextState.min || 
+            this.state.max !== nextState.max);
 
         /*
         if (this.props.range != nextProps.range || this.props.settings != nextProps.settings) {
@@ -444,11 +447,11 @@ class NumberRangeRow extends React.Component {
                 var min = null;
                 var max = null;
 
-                if (this.state.min == "") {
+                if (this.state.min === "") {
                     min = this.props.minVal;
                 }
 
-                if (this.state.max == "") {
+                if (this.state.max === "") {
                     max = this.props.maxVal;
                 }
 

@@ -34,7 +34,7 @@ class ViewsTab extends React.Component {
         // Make server call to grab recent views
         makeServerCall("fetchRecentViews",
             function (responseText) { 
-				if (typeof responseText == 'string' && responseText != null && responseText != "") {
+				if (typeof responseText === 'string' && responseText !== null && responseText !== "") {
 					responseText = JSON.parse(responseText);
 					// Post the new data to the state and hide the window load-mask
 					context.setState({ loadMask: false, recents: responseText.reverse()});
@@ -87,8 +87,8 @@ class ViewsTab extends React.Component {
         var newList = this.state.recents.slice(0, 5);
 
         var recentViews = newList.map( function(view) {
-			if (typeof view[1] == 'string' && !isNaN(view[1])) {
-				view[1] = parseInt(view[1]);
+			if (typeof view[1] === 'string' && !isNaN(view[1])) {
+                view[1] = parseInt(view[1]);
 			}
 				
 			var viewTimeStamp = new Date(view[1]);
@@ -99,7 +99,7 @@ class ViewsTab extends React.Component {
 			if (viewTimeStamp.getHours() > 12) {
 				viewTime =  viewTimeStamp.getHours() - 12 + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'pm';
             }
-            else if (viewTimeStamp.getHours() == 12) {
+            else if (viewTimeStamp.getHours() === 12) {
 				viewTime =  12 + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'pm';
             }
 			else {
@@ -227,7 +227,7 @@ class ViewsTab extends React.Component {
                 {/* Recent Views Tab */}
                 <div id="Recent" className="tabcontent">
                     <div style = {{ padding: "7px", marginBottom: "5px", display: (this.state.loadMask ? "none" : "") }} >
-                        {this.state.recents.length == 0 ? 
+                        {this.state.recents.length === 0 ? 
                         <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
                         : recentViews}
                     </div>

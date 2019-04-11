@@ -6,7 +6,7 @@ import Flexbox from 'flexbox-react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
+/* import FontIcon from 'material-ui/FontIcon'; */
 import Divider from 'material-ui/Divider';
 import Select from 'react-styled-select'
 
@@ -55,7 +55,7 @@ class XYZRemapModal extends React.Component {
             var ZVals = [];
 
             for (var i = 0; i < this.props.VizParams.filterAllowedColumnList.length; i++) {
-                if (this.props.VizParams.filterAllowedColumnList[i].toLowerCase().indexOf("geo") != -1) {
+                if (this.props.VizParams.filterAllowedColumnList[i].toLowerCase().indexOf("geo") !== -1) {
                     XVals.push({ label: "longitude", value: "longitude" });
                     YVals.push({ label: "latitude", value: "latitude" });
                     break;
@@ -93,7 +93,9 @@ class XYZRemapModal extends React.Component {
 	componentWillReceiveProps(nextProps) {
 
         //if (this.props.XYZDisplay != nextProps.XYZDisplay && (this.state.XTemp == null || this.state.YTemp == null || this.state.ZTemp == null) ) {
-        if (this.props.initialX != nextProps.initialX || this.props.initialY != nextProps.initialY || this.props.initialZ != nextProps.initialZ) {
+        if (this.props.initialX !== nextProps.initialX || 
+            this.props.initialY !== nextProps.initialY || 
+            this.props.initialZ !== nextProps.initialZ) {
             this.setState({ 
                 XValue: nextProps.initialX,
                 XTemp: nextProps.initialX, 
@@ -135,7 +137,7 @@ class XYZRemapModal extends React.Component {
     }
 
     linearInterpolation (x1, x2, y1, y2, x) {
-        if (x2 - x1 == 0) {
+        if (x2 - x1 === 0) {
             if (x >= y1 && x <= y2) {
                 return x;
             }
@@ -166,10 +168,10 @@ class XYZRemapModal extends React.Component {
         */
 
         var cols = "" + (this.state.XTemp ? this.state.XTemp + ", " : "") + 
-                    (this.state.YTemp == this.state.XTemp ? "" :  (this.state.YTemp ? this.state.YTemp + ", ": "")) + 
-                    (this.state.ZTemp == this.state.XTemp || this.state.ZTemp == this.state.YTemp ? "" : (this.state.ZTemp ? this.state.ZTemp + ", ": ""));
+                    (this.state.YTemp === this.state.XTemp ? "" :  (this.state.YTemp ? this.state.YTemp + ", ": "")) + 
+                    (this.state.ZTemp === this.state.XTemp || this.state.ZTemp === this.state.YTemp ? "" : (this.state.ZTemp ? this.state.ZTemp + ", ": ""));
 
-        if (cols != "") {
+        if (cols !== "") {
             this.setState({ XValue: this.state.XTemp, YValue: this.state.YTemp, ZValue: this.state.ZTemp });
 
             var query = "SELECT rowid, " + cols.substring(0, cols.length - 2) + " FROM " + this.props.VizParams.tableName;
@@ -239,7 +241,7 @@ class XYZRemapModal extends React.Component {
 
                         
                         for (var i = 0; i < response.data.length; i++) {
-                             if (responseDetails.Xtype == "INT") {
+                             if (responseDetails.Xtype === "INT") {
                                  var parseX = parseInt(response.data[i][responseDetails.X], 10);
                                  if (responseDetails.XMin > parseX) {
                                      responseDetails.XMin = parseX;
@@ -249,13 +251,13 @@ class XYZRemapModal extends React.Component {
                                  }
                              }
                              else {
-                                if (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) == -1) {
+                                if (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) === -1) {
                                     responseDetails.XUnique.push(response.data[i][responseDetails.X]);
                                 }
                              }
 
                              if (responseDetails.Y != responseDetails.X) {
-                                if (responseDetails.Ytype == "INT") {
+                                if (responseDetails.Ytype === "INT") {
                                     var parseY = parseInt(response.data[i][responseDetails.Y], 10);
                                     if (responseDetails.YMin > parseY) {
                                         responseDetails.YMin = parseY;
@@ -265,14 +267,14 @@ class XYZRemapModal extends React.Component {
                                     }
                                 }
                                 else {
-                                    if (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) == -1) {
+                                    if (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) === -1) {
                                         responseDetails.YUnique.push(response.data[i][responseDetails.Y]);
                                     }
                                 }
                              }
 
-                             if (responseDetails.Z != responseDetails.X && responseDetails.Z != responseDetails.Y) {
-                                if (responseDetails.Ztype == "INT") {
+                             if (responseDetails.Z != responseDetails.X && responseDetails.Z !== responseDetails.Y) {
+                                if (responseDetails.Ztype === "INT") {
                                     var parseZ = parseInt(response.data[i][responseDetails.Z], 10);
                                     if (responseDetails.ZMin > parseZ) {
                                         responseDetails.ZMin = parseZ;
@@ -282,7 +284,7 @@ class XYZRemapModal extends React.Component {
                                     }
                                 }
                                 else {
-                                    if (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) == -1) {
+                                    if (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) === -1) {
                                         responseDetails.ZUnique.push(response.data[i][responseDetails.Z]);
                                     }
                                 }
@@ -300,7 +302,7 @@ class XYZRemapModal extends React.Component {
                         }
 
                         if (responseDetails.Y == responseDetails.X) {
-                            if (responseDetails.Ytype == "INT") {
+                            if (responseDetails.Ytype === "INT") {
                                 responseDetails.YMin = responseDetails.XMin;
                                 responseDetails.YMax = responseDetails.XMax;
                             }
@@ -310,7 +312,7 @@ class XYZRemapModal extends React.Component {
                         }
 
                         if (responseDetails.Z == responseDetails.X) {
-                            if (responseDetails.Ztype == "INT") {
+                            if (responseDetails.Ztype === "INT") {
                                 responseDetails.ZMin = responseDetails.XMin;
                                 responseDetails.ZMax = responseDetails.XMax;
                             }
@@ -318,8 +320,8 @@ class XYZRemapModal extends React.Component {
                                 responseDetails.ZUnique = responseDetails.XUnique;
                             }
                         }
-                        else if (responseDetails.Z == responseDetails.Y) {
-                            if (responseDetails.Ztype == "INT") {
+                        else if (responseDetails.Z === responseDetails.Y) {
+                            if (responseDetails.Ztype === "INT") {
                                 responseDetails.ZMin = responseDetails.YMin;
                                 responseDetails.ZMax = responseDetails.YMax;
                             }
@@ -338,21 +340,21 @@ class XYZRemapModal extends React.Component {
 
                             var node = { rowID: response.data[i].rowid };
 
-                            if (responseDetails.Xtype == "INT") {
+                            if (responseDetails.Xtype === "INT") {
                                 node.X = context.linearInterpolation(responseDetails.XMin, responseDetails.XMax, context.state.XLowerRange, context.state.XUpperRange, parseInt(response.data[i][responseDetails.X], 10));
                             }
                             else {
                                 node.X = (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) + 1) * (context.state.XUpperRange - context.state.XLowerRange) / (responseDetails.XUnique.length) + context.state.XLowerRange
                             }
 
-                            if (responseDetails.Ytype == "INT") {
+                            if (responseDetails.Ytype === "INT") {
                                 node.Y = context.linearInterpolation(responseDetails.YMin, responseDetails.YMax, context.state.YLowerRange, context.state.YUpperRange, parseInt(response.data[i][responseDetails.Y], 10));
                             }
                             else {
                                 node.Y = (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) + 1) * (context.state.YUpperRange - context.state.YLowerRange) / (responseDetails.YUnique.length) + context.state.YLowerRange
                             }
 
-                            if (responseDetails.Ztype == "INT") {
+                            if (responseDetails.Ztype === "INT") {
                                 node.Z = context.linearInterpolation(responseDetails.ZMin, responseDetails.ZMax, context.state.ZLowerRange, context.state.ZUpperRange, parseInt(response.data[i][responseDetails.Z], 10));
                             }
                             else {
@@ -450,8 +452,12 @@ class XYZRemapModal extends React.Component {
                         
 
                         <RaisedButton
-                            onClick = { () => this.setState({ XLowerRange: (this.state.XLowerRange == -180 ? 180 : -180), XUpperRange: (this.state.XUpperRange == -180 ? 180 : -180)  }) }
-                            label = { <i className = { this.state.XLowerRange == -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
+                            onClick = { () => 
+                                this.setState({ 
+                                    XLowerRange: (this.state.XLowerRange === -180 ? 180 : -180), 
+                                    XUpperRange: (this.state.XUpperRange == -180 ? 180 : -180)  }) }
+                            label = { <i className = { this.state.XLowerRange === -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} 
+                            style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
                                 margin: "2px 12px 0px 3px",
                                 minWidth: "37px",
@@ -489,8 +495,12 @@ class XYZRemapModal extends React.Component {
                         />
 
                         <RaisedButton
-                            onClick = { () => this.setState({ YLowerRange: (this.state.YLowerRange == -180 ? 180 : -180), YUpperRange: (this.state.YUpperRange == -180 ? 180 : -180)  }) }
-                            label = { <i className = { this.state.YLowerRange == -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
+                            onClick = { () => 
+                                this.setState({ 
+                                    YLowerRange: (this.state.YLowerRange === -180 ? 180 : -180), 
+                                    YUpperRange: (this.state.YUpperRange == -180 ? 180 : -180)  }) }
+                            label = { <i className = { this.state.YLowerRange === -180 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} 
+                            style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
                                 margin: "2px 12px 0px 3px",
                                 minWidth: "37px",
@@ -528,8 +538,12 @@ class XYZRemapModal extends React.Component {
                         />
 
                         <RaisedButton
-                            onClick = { () => this.setState({ ZLowerRange: (this.state.ZLowerRange == 0 ? 360 : 0), ZUpperRange: (this.state.ZUpperRange == 360 ? 0 : 360)  }) }
-                            label = { <i className = { this.state.ZLowerRange == 0 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} style = {{ margin: "0px 0px 0px -5px" }} /> }
+                            onClick = { () => 
+                                this.setState({ 
+                                    ZLowerRange: (this.state.ZLowerRange === 0 ? 360 : 0), 
+                                    ZUpperRange: (this.state.ZUpperRange == 360 ? 0 : 360)  }) }
+                            label = { <i className = { this.state.ZLowerRange === 0 ? "fa fa-sort-alpha-asc" : "fa fa-sort-alpha-desc"} 
+                            style = {{ margin: "0px 0px 0px -5px" }} /> }
                             style = {{
                                 margin: "2px 12px 0px 3px",
                                 minWidth: "37px",

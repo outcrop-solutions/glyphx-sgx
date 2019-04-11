@@ -56,7 +56,7 @@ class SettingsModal extends React.Component {
      **/
     onSettingsSave() {
 
-        if (this.state.axesVisibilityTempSelection != this.state.axesVisibilitySelection) {
+        if (this.state.axesVisibilityTempSelection !== this.state.axesVisibilitySelection) {
             if (document.getElementById('GlyphViewer')) {
                 document.getElementById('GlyphViewer').contentWindow.postMessage({action: 'toggleAxis'}, '*');
                 this.state.axisVisible ? this.setState({ axisVisible: false }) : this.setState({ axisVisible: true });

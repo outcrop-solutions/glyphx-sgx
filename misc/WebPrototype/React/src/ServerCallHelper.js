@@ -1,6 +1,5 @@
 
-const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : window.SERVER_URL;
-
+const serverAddress = window.APP_MODE === "DEVELOPMENT" ? "" : window.SERVER_URL;
 
 /**
  * This function makes a server call and returns the data returned from the server
@@ -11,7 +10,7 @@ const serverAddress = window.APP_MODE == "DEVELOPMENT" ? "" : window.SERVER_URL;
 export function makeServerCall(url, callback, options) {
     var saddress = serverAddress;
 
-    if (url == null || (callback && typeof callback != 'function')) {
+    if (url === null || (callback && typeof callback !== 'function')) {
         console.error('Please provide complete parameters!');
         return false;
     }
@@ -40,13 +39,13 @@ export function httpGetRequest (saddress, callback, options) {
     xmlHttp.withCredentials = true;
 
     xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            if (typeof callback == 'function') {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (typeof callback === 'function') {
                 callback(xmlHttp.responseText, options);
             }
         }
 
-        else if (xmlHttp.status == 500 && options && options.onServerCallError && typeof options.onServerCallError == 'function') {
+        else if (xmlHttp.status === 500 && options && options.onServerCallError && typeof options.onServerCallError === 'function') {
             options.onServerCallError();
         }
     }
@@ -68,13 +67,13 @@ function httpPostRequest(saddress, callback, options) {
     xmlHttp.withCredentials = true;
 
     xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            if (typeof callback == 'function') {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (typeof callback === 'function') {
                 callback(xmlHttp.responseText, options);
             }
         }
 
-        else if (xmlHttp.status == 500 && options && options.onServerCallError && typeof options.onServerCallError == 'function') {
+        else if (xmlHttp.status === 500 && options && options.onServerCallError && typeof options.onServerCallError === 'function') {
             options.onServerCallError();
         }
     }
@@ -103,7 +102,7 @@ export function checkUserLoggedIn(onServerError) {
         return xmlHttp.responseText;
     }
 
-    if (typeof onServerError == 'function') {
+    if (typeof onServerError === 'function') {
         onServerError();
     }
 }
@@ -134,11 +133,11 @@ export function getCookie(cname) {
     for (var i = 0; i <ca.length; i++) {
         var c = ca[i];
 
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
 
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
