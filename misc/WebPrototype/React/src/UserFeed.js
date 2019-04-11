@@ -182,7 +182,7 @@ class UserFeed extends React.Component {
                 <Card 
                     containerStyle = {{ padding: "0px", borderRadius: "10px" }} 
                     style = {{ 
-                        backgroundColor: context.props.settings.colors.general.lightBubble, 
+                        backgroundColor: context.props.settings.colors.general.lightBubble,
                         borderRadius: "10px", 
                         paddingBottom: "2px", 
                         marginBottom: "7px"
@@ -279,7 +279,7 @@ class UserFeed extends React.Component {
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0", padding: "7px 7px 0px 7px", display: (this.state.loadMask ? "none" : "") }}  > 
+                <Flexbox flexDirection = "column" style = {{ fontFamily: "helvetica", height: "100%", minHeight: "0", padding: "7px 7px 0px 7px", display: (this.state.loadMask ? "none" : "") }}  > 
 
                     {/*
                     <Select 

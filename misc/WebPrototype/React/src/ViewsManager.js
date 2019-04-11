@@ -438,6 +438,7 @@ class ViewsManager extends React.Component {
         const styleForFirstViewSelect = {
             fontSize:"19px", 
             padding: "7px",
+            fontFamily: "Helvetica"
             /* borderBottom: "1px solid black" */
             /* backgroundColor: "white" */
         };
@@ -447,6 +448,7 @@ class ViewsManager extends React.Component {
             margin: "0 auto", 
             height: "35px",
             fontSize: "19px", 
+            fontFamily: "Helvetica"
             /* backgroundColor: "white", */
             /* borderBottom: "1px solid black"  */
         };
