@@ -45,7 +45,7 @@ class HomePage extends React.Component {
     // 0 for start, "done" for end
     state = {
         tutorialStage: "done",
-        trainingHover: false
+        trainingHover: false,
     }
 	
 	goToVizView(success) {
@@ -432,13 +432,13 @@ class HomePage extends React.Component {
                                     </div> */}
                                     <Flexbox style={{height: "98%", width: "100%"}}>
                                         <div style = {{ backgroundColor: "#ffffff", overflow: " hidden", padding: "10px 6px 5px 6px" }} >
-                                            <div style = {{ height: '100%', margin: "15px 0px -6px"/* , padding: "0 0 5px 0"  */}} >
+                                            <div style = {{ height: '100%', margin: "10px 0px -6px"/* , padding: "0 0 5px 0"  */}} >
                                                     <img 
                                                         src = { imgsrc } 
-                                                        style = {{ display: "block", margin: "0 auto", width: "90%", height: "90%", padding: "0 0 3px 0" }} 
+                                                        style = {{ display: "block", margin: "0 auto", width: "100%", height: "100%", objectFit: "contain", padding: "0 0 3px 0" }} 
                                                         alt = "University Logo" 
                                                         draggable = { false } 
-                                                        className = "noselect" 
+                                                        className = "noselect instit-img"
                                                     />
                                             </div>
                                         </div>
