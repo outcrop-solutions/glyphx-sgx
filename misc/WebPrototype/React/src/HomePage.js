@@ -438,7 +438,7 @@ class HomePage extends React.Component {
                                                         style = {{ display: "block", margin: "0 auto", width: "100%", height: "100%", objectFit: "contain", padding: "0 0 3px 0" }} 
                                                         alt = "University Logo" 
                                                         draggable = { false } 
-                                                        className = "noselect instit-img"
+                                                        className = "noselect"
                                                     />
                                             </div>
                                         </div>
