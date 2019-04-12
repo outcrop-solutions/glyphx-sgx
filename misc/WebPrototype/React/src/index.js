@@ -59,7 +59,6 @@ const initialFilterState = {
  **/
 const filterReducer = function(state = initialFilterState, action) {
     var stateVal, previousRange, selected, display, i;
-    console.log(state);
     switch (action.type) {
         /**
          * Initializes the Filter structure

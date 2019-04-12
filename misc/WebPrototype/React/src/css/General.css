@@ -318,3 +318,8 @@ textarea {
   cursor: pointer;
 }
 
+.user-feed-name:hover{
+  cursor: pointer;
+  color: #018cbb;
+}
+

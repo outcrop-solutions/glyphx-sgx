@@ -26,7 +26,11 @@ class UserFeed extends React.Component {
         //teamSelectValue: "University of Notre Dame",
         channelName: "TestingChannel",
         messageBody: "",
-        noAccess: false
+        noAccess: false,
+        selfClick: "",
+        privateChat: [],
+        privChannelStr: "",
+        mySid: ""
     }
 
 
@@ -47,19 +51,33 @@ class UserFeed extends React.Component {
         makeServerCall("token?userInfo=" + context.props.userInfo.Name + "|SPLITTER|" + context.props.userInfo.Email,
             function (responseText) { 
                 var chat = new Twilio(responseText);
+                console.log(chat.user)
+                
 
                 // debugger;
 
                 chat.initialize().then(context.clientInitiated.bind(context));
+                chat.getSubscribedChannels().then(res => {
+                    if(res){
+                        console.log(res,res.items.slice(1))
+                        // context.setState({
+                        //     mySid: res.descriptor.sid
+                        // });
+
+                        /**
+                         * WORK IN PROGRESS HERE
+                         */
+                    }
+                })
                 
-                context.setState({ token: responseText, chatClient: chat });
+                context.setState({ token: responseText, chatClient: chat, /* mySid: chat.user.entity.descriptor.sid */ });
             }
         );
 	}
 
     clientInitiated = () => {
         this.setState({ chatReady: true }, () => {
-        this.state.chatClient.getChannelByUniqueName(this.state.channelName)
+        this.state.chatClient.getChannelByUniqueName(this.state.channelName /* 'notredame' */)
             .then(channel => {
                 // debugger;
                 if (channel) {
@@ -83,11 +101,13 @@ class UserFeed extends React.Component {
                 /* this.setState({ channelClient: channel }); */
                 channel.getMembers()
                 .then(members => {
-                    console.log(members)
+                    console.log(members, this.state.channelName)
                     // debugger;
                     var shouldJoin = false;
                     let count = 0;
                     let userStr = this.props.userInfo.Name + "|SPLITTER|" + this.props.userInfo.Email;
+                    let institutionGrpPath = this.props.userInfo.institutionDir;
+                    let institutionGrp = institutionGrpPath.slice(institutionGrpPath.indexOf("Institution")+13, institutionGrpPath.length-1);
 
                     while (count < members.length){
                         // console.log(count, members.length-1)
@@ -103,18 +123,58 @@ class UserFeed extends React.Component {
                     if (shouldJoin) {
                         return channel.join();
                     }
+
+                    else if(institutionGrp === this.state.channelName){
+                        return channel.join();
+                    }
                     else if(shouldJoin === false){
                         this.setState({noAccess: true});
                         return;
                     }
+                    
                 })
             })
             .then(() => {
                 // debugger;
-                if(this.state.channelClient.getMessages() && this.state.noAccess === false){
+                let oneOnoneChats;
+                if(this.state.channelClient && this.state.noAccess === false){
                     this.state.channelClient.getMessages().then(this.messagesLoaded);
                     this.state.channelClient.on('messageAdded', this.messageAdded);
                 }
+                oneOnoneChats = this.state.chatClient.channels.channels._c;
+
+                for (const [k, v] of oneOnoneChats.entries()) {
+                    console.log(k, '---------------------------', v.uniqueName);
+                    // if(v.uniqueName.includes(this.state.mySid)){
+                    //     console.log(v.uniqueName)
+                    //     v.getMessages().then(this.privateLoaded);
+                    //     v.on('messageAdded', this.privateAdded);
+                    // }
+                    /* let name = v.state.identity.split("|SPLITTER|")[0]
+                    if(name === this.props.userInfo.Name){
+                        //my id
+                        myId = k;
+                        this.setState({mySid: myId})
+                        // console.log(myId)
+                        //MBf6c2f3b72cb9467786de95f9579ee6f1
+                    }
+                    if(text === name){
+                        secondId = k;
+                        //MBd274dd4d087d44ad8c72f0672d58ece6
+                        // console.log(secondId)
+                    } */
+                  }
+                /* if(this.state.chatClient){
+                    this.state.chatClient.getChannelByUniqueName("MBf6c2f3b72cb9467786de95f9579ee6f1MBac4632b86e5c49119be733c771282821").then(res => {
+                        if(res){
+                        console.log(res);
+                        res.getMessages().then(this.privateLoaded);
+                        res.on('messageAdded', this.privateAdded);
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })      
+                } */
             });
         });
     };
@@ -135,6 +195,7 @@ class UserFeed extends React.Component {
         }
         */
         this.setState({ messages: messages, loadMask: false }, () => this.scrollToBottomChat());
+        // console.log(this.state.messages);
         //console.log("MESSAGES:");
         //console.log(messages);
     };
@@ -143,6 +204,28 @@ class UserFeed extends React.Component {
         // debugger;
         this.setState((prevState, props) => ({
             messages: [...prevState.messages, message]
+        }), () => this.scrollToBottomChat());
+    };
+
+    privateLoaded = messagePage => {
+        console.log(messagePage)
+        // debugger;
+        var messages = messagePage.items;
+        /*
+        if (messages.length > 100) {
+            messages = messages.slice(messages.length - 100);
+        }
+        */
+        this.setState({ privateChat: messages, loadMask: false }, () => this.scrollToBottomChat());
+        console.log(this.state.privateChat);
+        //console.log("MESSAGES:");
+        //console.log(messages);
+    };
+
+    privateAdded = message => {
+        // debugger;
+        this.setState((prevState, props) => ({
+            privateChat: [...prevState.privateChat, message]
         }), () => this.scrollToBottomChat());
     };
 
@@ -166,14 +249,102 @@ class UserFeed extends React.Component {
     onTeamSelectChange = (value) => {
         this.setState({ teamSelectValue: value });
     };
-    
+
+    startPrivateChat(text){
+        // console.log(this.state.channelClient,'=====', this.state.chatClient)
+        let myId, secondId, channelString;
+        if(this.props.userInfo.Name === text){
+            //if its your name, do nothing
+            // console.log('same')
+            return;
+        }
+        else {
+            // console.log(this.state.channelClient.members._c);
+            //new ES6 data structure, MAP
+            let mapV = this.state.channelClient.members._c;
+            const a = [mapV.values()];
+            // console.log(a)
+
+            for (const [k, v] of mapV.entries()) {
+                // console.log(k, '---------------------------', v);
+                let name = v.state.identity.split("|SPLITTER|")[0]
+                if(name === this.props.userInfo.Name){
+                    //my id
+                    myId = k;
+                    this.setState({mySid: myId})
+                    // console.log(myId)
+                    //MBf6c2f3b72cb9467786de95f9579ee6f1
+                }
+                if(text === name){
+                    secondId = k;
+                    //MBd274dd4d087d44ad8c72f0672d58ece6
+                    // console.log(secondId)
+                }
+            }
+            channelString = myId + secondId;
+            if(channelString) this.setState({privChannelStr: channelString})
+            
+            if(channelString){
+                this.state.chatClient.getChannelByUniqueName(channelString)
+                .then(res => {
+                    // console.log(res, res.uniqueName);
+                    if(res.uniqueName){
+                    return;
+                    }
+                    else{
+                        this.state.chatClient.createChannel({
+                            uniqueName: channelString 
+                        }).then(channel => {
+                            return channel.join();
+                        });
+                    }
+                })
+                .then(() => {
+                    // console.log(this.state.chatClient.getChannelByUniqueName(channelString))
+                    if(this.state.chatClient){
+                        this.state.chatClient.getChannelByUniqueName(channelString).then(res => {
+                            if(res){
+                            // console.log(res);
+                            res.getMessages().then(this.privateLoaded);
+                            res.on('messageAdded', this.privateAdded);
+                            }
+                            return res;
+                        }).then(res => {
+                            res.invite(text).then(() => {
+                                console.log('Your friend was invited')
+                            })
+                        })
+                        /**
+                         * WORK IN PROGRESS
+                         * 
+                         */
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            }
+        }
+        // console.log([myId, secondId])
+    }
+
+    getAllYourChannels(){
+        this.state.chatClient.getUserChannelDescriptors()
+            .then((paginator) => {
+                console.log(paginator.state.items)
+                for (let i = 0; i < paginator.items.length; i++) {
+                  var channel = paginator.items[i];
+                  console.log('Channel: ' + channel.friendlyName);
+                }
+              });    
+    }
 
     render() {
 
         var teamList = ["University of Notre Dame", "Marketing & Recruiting", "Admissions", "Financial Aid", "Custom Team 1"];
         teamList = teamList.map( function(value) {
 			return({ label: value, value: value });
-		});
+        });
 
         var context = this;
 
@@ -196,7 +367,90 @@ class UserFeed extends React.Component {
  
                             <Flexbox flexDirection = "column" style = {{ width: "100%" }} >
                                 <Flexbox style = {{ height: "100%" }} > 
-                                    <div style = {{ wordBreak: "break-word" }} ><span style = {{ fontWeight: "bold" }} >{post.state.author.split("|SPLITTER|")[0]}:</span> &nbsp; {post.state.body}</div>
+                                    <div style = {{ wordBreak: "break-word" }} >
+                                        <span
+                                        id= "names"
+                                        className= "user-feed-name"
+                                        style = {{ fontWeight: "bold" }}
+                                        title = "Start a private chat with..."
+                                        /* role= "dialog" */
+                                        onClick={(e) => {
+                                            console.log(e.target.textContent, context.state.chatClient); 
+                                            context.startPrivateChat(e.target.textContent);
+                                            context.getAllYourChannels()} }>
+                                        {post.state.author.split("|SPLITTER|")[0]}</span>
+                                        <span>:</span>
+                                    {/*  &nbsp; */} {post.state.body}
+                                    </div>
+                                </Flexbox>
+
+                                <Divider style = {{ marginBottom: "1px", backgroundColor: "#b9b9b9" }} />
+
+                                <Flexbox flexDirection = "row" minWidth = "100%" className = "noselect" style = {{ margin: "-2px 0px -1px 0px" }} >
+
+                                    {/* <i className = "fa fa-comments" style = {{ fontSize: "17px", marginRight: "15px" }} /> */}
+                                    {/* <i className = "fa fa-thumbs-up" style = {{ fontSize: "17px",marginRight: "25px" }} /> */}
+                                    <div style = {{ margin: "0px 15px 0px 0px" }} > {(post.state.dateUpdated.getMonth() + 1) + "/" + post.state.dateUpdated.getDate() + "/" + post.state.dateUpdated.getFullYear()} </div>
+
+                                    <Flexbox style = {{ width: "100%" }} > 
+                                        <div style = {{ width: "100%", textAlign: "right" }} > 
+                                            {post.state.dateUpdated.getHours() > 12 ? 
+                                                (post.state.dateUpdated.getHours() - 12) + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'pm'
+                                                :
+                                                (post.state.dateUpdated.getHours() === 12 ? 
+                                                    12 + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'pm'
+                                                    :
+                                                    post.state.dateUpdated.getHours() + ":" + (post.state.dateUpdated.getMinutes() < 10 ? '0' + post.state.dateUpdated.getMinutes() : post.state.dateUpdated.getMinutes()) + 'am'
+                                                )
+                                            }
+
+                                        </div>
+                                    </Flexbox>
+
+                                </Flexbox>
+
+                            </Flexbox>
+                        </Flexbox>
+                        
+                    </CardText>
+                </Card>
+            )
+        });
+
+        var privatePosts = context.state.privateChat.map( function(post) {
+            return (
+                <Card 
+                    containerStyle = {{ padding: "0px", borderRadius: "10px" }} 
+                    style = {{ 
+                        backgroundColor: context.props.settings.colors.general.lightBubble,
+                        borderRadius: "10px", 
+                        paddingBottom: "2px", 
+                        marginBottom: "7px"
+                    }} 
+                    key = { guidGenerator() } 
+                >
+                    <CardText style = {{ padding: "5px", borderRadius: "10px", fontSize: "16px" }} >
+                        <Flexbox flexDirection = "row" minWidth = "100%" >
+
+                            {/* <img src = { post[1] } className = "img-circle noselect" style = {{ marginRight: "10px" }} alt = { post[0] } draggable = { false } /> */}
+ 
+                            <Flexbox flexDirection = "column" style = {{ width: "100%" }} >
+                                <Flexbox style = {{ height: "100%" }} > 
+                                    <div style = {{ wordBreak: "break-word" }} >
+                                        <span
+                                        id= "names"
+                                        className= "user-feed-name"
+                                        style = {{ fontWeight: "bold" }}
+                                        /* title = "Start a private chat with... "*/
+                                        /* role= "dialog" */
+                                        /* onClick={(e) => {
+                                            console.log(e.target.textContent, context.state.chatClient); 
+                                            context.startPrivateChat(e.target.textContent);
+                                            context.getAllYourChannels()} } */>
+                                        {post.state.author.split("|SPLITTER|")[0]}</span>
+                                        <span>:</span>
+                                    {/*  &nbsp; */} {post.state.body}
+                                    </div>
                                 </Flexbox>
 
                                 <Divider style = {{ marginBottom: "1px", backgroundColor: "#b9b9b9" }} />
@@ -284,10 +538,27 @@ class UserFeed extends React.Component {
                             className = "customScroll"
                             id = "chatArea"
                         >
-                            {this.state.noAccess ? <div>NO ACCESS TO THIS ORGANIZATION'S USER FEED. PLEASE CONTACT THE HELP DESK.</div> : posts}
-
+                            {this.state.noAccess ? <div style={{fontSize: "20px", marginTop: "40px", textAlign: "center"}}>
+                            NO ACCESS TO THIS ORGANIZATION'S USER FEED. PLEASE CONTACT THE HELP DESK.</div> : posts}
+                            
                         </div>
                     </Flexbox>
+                    {/* <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
+                        <div
+                            style = {{
+                                padding: "7px 7px 0px 5px",
+                                height: "100%",
+                                width: "100%",
+                                borderRadius: "2px",
+                                overflowY: "scroll",
+                            }}
+                            className = "customScroll"
+                            id = "chatArea"
+                        >
+                            {privatePosts}
+                        </div>
+                    </Flexbox> */}
+                    
 
                     <textarea 
                         id = "messageBodyHolder" 

@@ -36,10 +36,14 @@ class ViewsManager extends React.Component {
     }
     
     componentDidMount(){
-        Promise.all([document.getElementById("topic-defaultOpen").click()])
-        .then(() => {
-        document.getElementById("inquiry-defaultOpen").firstChild.click();
-        });
+        if(document.getElementById("topic-defaultOpen")){
+            Promise.all([document.getElementById("topic-defaultOpen").click()])
+            .then(() => {
+                if(document.getElementById("inquiry-defaultOpen")){
+                    document.getElementById("inquiry-defaultOpen").firstChild.click();
+                }
+            });
+        }
     }
 
     /**

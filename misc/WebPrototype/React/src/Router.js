@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { /* Router, */ Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { checkUserLoggedIn } from './ServerCallHelper.js';
-import createHistory from 'history/createBrowserHistory';
+/* import createHistory from 'history/createBrowserHistory'; */
 import Login from './Login.js';
 import HomePage from './HomePage.js';
 import NotFoundPage from './NotFoundPage.js'; 
