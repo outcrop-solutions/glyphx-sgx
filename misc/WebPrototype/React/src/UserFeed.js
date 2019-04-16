@@ -26,11 +26,11 @@ class UserFeed extends React.Component {
         //teamSelectValue: "University of Notre Dame",
         channelName: "TestingChannel",
         messageBody: "",
+        privateMessageBody: "",
         noAccess: false,
         selfClick: "",
         privateChat: [],
-        privChannelStr: "",
-        mySid: ""
+        privChannels: []
     }
 
 
@@ -47,6 +47,7 @@ class UserFeed extends React.Component {
         }
 
         var context = this;
+        let channelArr = [];
 
         makeServerCall("token?userInfo=" + context.props.userInfo.Name + "|SPLITTER|" + context.props.userInfo.Email,
             function (responseText) { 
@@ -57,20 +58,38 @@ class UserFeed extends React.Component {
                 // debugger;
 
                 chat.initialize().then(context.clientInitiated.bind(context));
+                
+                context.setState({ token: responseText, chatClient: chat});
+
                 chat.getSubscribedChannels().then(res => {
                     if(res){
-                        console.log(res,res.items.slice(1))
-                        // context.setState({
-                        //     mySid: res.descriptor.sid
-                        // });
+                        // console.log(res,res.items.slice(1))
+                        if(res.items){
+                            for(let i = 0; i < res.items.length; i++){
+                                if(context.state.channelName !== res.items[i].uniqueName){
+                                channelArr.push(res.items[i].uniqueName);
+                                context.state.chatClient.getChannelByUniqueName(res.items[i].uniqueName)
+                                    .then(channel => {
+                                        if(channel){
+                                            context.state.privChannels.push(channel);
+                                            channel.getMessages().then(context.privateLoaded);
+                                            channel.on('messageAdded', context.privateAdded);
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    });
+                                }
+                            }
+                        }
+                        console.log(channelArr)
 
                         /**
                          * WORK IN PROGRESS HERE
                          */
                     }
-                })
-                
-                context.setState({ token: responseText, chatClient: chat, /* mySid: chat.user.entity.descriptor.sid */ });
+                });
+
             }
         );
 	}
@@ -271,7 +290,7 @@ class UserFeed extends React.Component {
                 if(name === this.props.userInfo.Name){
                     //my id
                     myId = k;
-                    this.setState({mySid: myId})
+                    // this.setState({mySid: myId})
                     // console.log(myId)
                     //MBf6c2f3b72cb9467786de95f9579ee6f1
                 }
@@ -282,7 +301,7 @@ class UserFeed extends React.Component {
                 }
             }
             channelString = myId + secondId;
-            if(channelString) this.setState({privChannelStr: channelString})
+            // if(channelString) this.setState({privChannelStr: channelString})
             
             if(channelString){
                 this.state.chatClient.getChannelByUniqueName(channelString)
@@ -295,6 +314,10 @@ class UserFeed extends React.Component {
                         this.state.chatClient.createChannel({
                             uniqueName: channelString 
                         }).then(channel => {
+                            /**
+                             * this is where i would invite the guest to the channel. back-end server call with twilio to invite new user to ch.
+                             * WORK IN PROGRESS
+                             */
                             return channel.join();
                         });
                     }
@@ -485,6 +508,7 @@ class UserFeed extends React.Component {
                 </Card>
             )
         });
+
     
         return (
             <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
@@ -512,7 +536,12 @@ class UserFeed extends React.Component {
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <Flexbox flexDirection = "column" style = {{ fontFamily: "helvetica", height: "100%", minHeight: "0", padding: "7px 7px 0px 7px", display: (this.state.loadMask ? "none" : "") }}  > 
+                <Flexbox flexDirection = "column" style = {{ 
+                    fontFamily: "helvetica", 
+                    height: "100%", 
+                    minHeight: "0", 
+                    padding: "7px 7px 0px 7px", 
+                    display: (this.state.loadMask ? "none" : "") }}  > 
 
                     {/*
                     <Select 
@@ -525,25 +554,27 @@ class UserFeed extends React.Component {
                         className = "noselect"
                     />
                     */}
-                
-                    <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
-                        <div
-                            style = {{
-                                padding: "7px 7px 0px 5px",
-                                height: "100%",
-                                width: "100%",
-                                borderRadius: "2px",
-                                overflowY: "scroll",
-                            }}
-                            className = "customScroll"
-                            id = "chatArea"
-                        >
-                            {this.state.noAccess ? <div style={{fontSize: "20px", marginTop: "40px", textAlign: "center"}}>
-                            NO ACCESS TO THIS ORGANIZATION'S USER FEED. PLEASE CONTACT THE HELP DESK.</div> : posts}
-                            
-                        </div>
-                    </Flexbox>
-                    {/* <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
+                    {/* <Flexbox className="user-feed-tab-defaultOpen" style={{display: ""}}> */}
+                        <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
+                            <div
+                                style = {{
+                                    padding: "7px 7px 0px 5px",
+                                    height: "100%",
+                                    width: "100%",
+                                    borderRadius: "2px",
+                                    overflowY: "scroll",
+                                }}
+                                className = "customScroll"
+                                id = "chatArea"
+                            >
+                                {this.state.noAccess ? <div style={{fontSize: "20px", marginTop: "40px", textAlign: "center"}}>
+                                NO ACCESS TO THIS ORGANIZATION'S USER FEED. PLEASE CONTACT THE HELP DESK.</div> : posts}
+                                
+                            </div>
+                        </Flexbox>
+                    {/* </Flexbox> */}
+                    <Flexbox>
+                    {/* <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0", display: `${this.state.privChannels ? "" : "none"}` }} >
                         <div
                             style = {{
                                 padding: "7px 7px 0px 5px",
@@ -558,6 +589,7 @@ class UserFeed extends React.Component {
                             {privatePosts}
                         </div>
                     </Flexbox> */}
+                    </Flexbox>
                     
 
                     <textarea 
@@ -567,7 +599,7 @@ class UserFeed extends React.Component {
                         value = { this.state.messageBody } 
                         onKeyDown = { (e) => this.checkEnter(e) } 
                         onChange = { (e) => this.setState({ messageBody: e.target.value}) } 
-                        style = {{ borderRadius: "5px", padding: "10px", marginTop: "10px", backgroundColor: "#e7e7fd", fontSize: "16px" }} 
+                        style = {{ borderRadius: "5px", padding: "10px", marginTop: "10px", backgroundColor: "#e7e7fd", fontSize: "16px"/* , height: "30%" */ }} 
                     ></textarea>
                     
                 </Flexbox>

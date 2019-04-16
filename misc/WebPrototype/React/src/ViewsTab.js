@@ -219,7 +219,7 @@ class ViewsTab extends React.Component {
                 </div>
 
                 <div style = {{ 
-                    height: "250px", 
+                    height: "70%", 
                     display: (this.state.loadMask ? "" : "none") }} >
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
