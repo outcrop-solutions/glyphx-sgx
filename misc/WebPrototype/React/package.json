@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001/",
   "dependencies": {
+    "aws-sdk": "^2.441.0",
     "bluebird": "^3.5.0",
     "flexbox-react": "^4.4.0",
     "react": "^15.5.4",
@@ -16,23 +17,24 @@
     "prop-types": "^15.5.7"
   },
   "devDependencies": {
-    "react-scripts": "^1.0.7",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "font-awesome": "^4.7.0",
     "material-ui": "^0.20.0",
-    "react-tap-event-plugin": "^2.0.1",
-    "react-alert": "^2.1.1",
     "rc-slider": "^8.1.2",
-    "react-collapsible": "^2.0.4",
-    "react-swipeable-views": "^0.12.3",
-    "redux": "^3.7.0",
-    "react-redux": "^5.0.5",
-    "react-dual-listbox": "^1.1.0",
     "rc-tooltip": "^3.4.6",
-    "react-select": "^1.2.1",
-    "scroll-into-view-if-needed": "^1.1.0",
+    "react-alert": "^2.1.1",
+    "react-collapsible": "^2.0.4",
+    "react-dual-listbox": "^1.1.0",
+    "react-redux": "^5.0.5",
     "react-rnd": "^5.0.9",
     "react-router-dom": "^4.1.2",
-    "react-styled-select": "^1.0.0"
+    "react-scripts": "^1.0.7",
+    "react-select": "^1.2.1",
+    "react-styled-select": "^1.0.0",
+    "react-swipeable-views": "^0.12.3",
+    "react-tap-event-plugin": "^2.0.1",
+    "redux": "^3.7.0",
+    "scroll-into-view-if-needed": "^1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

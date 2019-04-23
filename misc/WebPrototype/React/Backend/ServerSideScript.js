@@ -181,6 +181,52 @@ app.use(session(
  */
 app.use(express.static(path.join(__dirname, '.')));
 
+
+app.get('/aws', function (req, res) {
+	
+	//check if file exists.
+		// console.log(typeof apigClientFactory);
+		let apigClient = apigClientFactory.newClient({
+			accessKey: 'AKIAUWRBLENVICAQBC4Z',
+			secretKey: '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',
+		  });
+	
+		let params = {
+			// This is where any modeled request parameters should be added.
+			// The key is the parameter name, as it is defined in the API in API Gateway.
+			region: 'us-east-2',
+			port: "3306"
+		  };
+		  
+		  var body = {
+		//     // This is where you define the body of the request,
+		//     "Query": "UserAccounts"
+		  };
+		  
+		  var additionalParams = {
+			// If there are any unmodeled query parameters or headers that must be
+			//   sent with the request, add them here.
+			headers: {
+			  /* param0: '',
+			  param1: '' */
+			},
+			queryParams: {
+			  /* param0: '',
+			  param1: '' */
+			}
+		  };
+		  
+		  apigClient.GET(params, body, additionalParams)
+			  .then(function(result){
+				  console.log(result, 'new api gateway')
+				// Add success callback code here.
+			  }).catch( function(result){
+				  console.log(result, 'new api gateway error')
+				// Add error callback code here.
+			  });
+});
+
+
 /**
  * TWILIO SERVER ACTIONS
  */

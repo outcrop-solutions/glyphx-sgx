@@ -68,7 +68,6 @@ class HomePage extends React.Component {
         && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
-        
 
         //window.location.reload();
 
@@ -505,9 +504,12 @@ class HomePage extends React.Component {
                                                     letterSpacing: "0.14em",
                                                     textTransform: "uppercase",
                                                     textAlign: "center"}}
+                                                onClick={() => {
+                                                    makeServerCall('aws');
+                                                }}
                                                 >Annoucements
                                         </h2>
-
+                                                api
                                         <AnnouncementsDisplay />
                                     </div>       
                                     </Flexbox>

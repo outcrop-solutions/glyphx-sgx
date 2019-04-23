@@ -31,7 +31,7 @@ class ViewsManager extends React.Component {
 			selectionTypeURL: "",
 			flipped: false,
             clicked: false,
-            legendPng: ""
+            legendPng: "",
 		}
     }
     
@@ -336,15 +336,25 @@ class ViewsManager extends React.Component {
         var context = this;
         let imgPath = '';
         let legendSrc = '';
+        let strArr = this.state.selectionType.split(" ");
+        let firstWord = strArr[0];
         
         if(this.state.selectionTypeURL !== ""){
             let index = this.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
             let sdtPath = this.state.selectionTypeURL.substring(index + 1);
+            // console.log(window.encodeURI('getLegendUrl/' + sdtPath), 'sdtpath')
             makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
                 function (responseText) { 
+                    // console.log('RESPONSETEXT', responseText, 'RESPONSETEXT')
                     imgPath = responseText;
-                    if (imgPath !== '') {
+                    /**
+                     * MUTATE BACKEND CALL TO RETURN MORE THAN 1 PNG
+                     * WORK IN PROGRESS
+                     */
+                    
+                    if (imgPath !== '' && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
                         legendSrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(imgPath);
+                        // console.log(legendSrc,'here')
                         context.setState({legendPng: legendSrc});
                         return;
                     }

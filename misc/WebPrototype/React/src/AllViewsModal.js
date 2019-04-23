@@ -62,11 +62,12 @@ class allViewsModal extends React.Component {
      **/
     shouldComponentUpdate(nextProps, nextState) {
 		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data 
-			|| this.props.allViewsDisplay !== nextProps.allViewsDisplay || this.state.snackbarVisible !== nextState.snackbarVisible
+			|| this.props.allViewsDisplay !== nextProps.allViewsDisplay || 
+			this.state.snackbarVisible !== nextState.snackbarVisible
 		);
 
-		/*
-        if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
+		
+        /* if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
             return true;
         }
 
@@ -74,8 +75,8 @@ class allViewsModal extends React.Component {
 			return true;
 		}
 
-        return false;
-		*/
+        return false; */
+		
     };
 
 
@@ -386,7 +387,7 @@ class allViewsModal extends React.Component {
 		for (var i = 0; i < sList.length; i++) {
 			if (sList[i][0] === array[0]) {
 				var index = sList[i].indexOf(array[1]);
-				if (index !== -1) {
+				if (index !== -1) {	
 					return [i, index];
 				}
 				else {
