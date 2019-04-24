@@ -512,7 +512,7 @@ class HomePage extends React.Component {
                                                         post: true,
                                                         data: {Query: "UserAccounts"}
                                                     }); */
-                                                    makeServerCall("/aws",
+                                                    makeServerCall("aws",
                                                     function(responseText){
                                                         console.log(JSON.parse(responseText));
                                                     });
