@@ -8,6 +8,57 @@ const serverAddress = window.APP_MODE === "DEVELOPMENT" ? "" : window.SERVER_URL
  * @param options: -ADCMT
  */
 
+// export function makeLambdaGetCall(saddress, callback, options) {
+//     var xmlHttp = new XMLHttpRequest();
+//     // xmlHttp.withCredentials = true;
+
+//     xmlHttp.onreadystatechange = function() { 
+//         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+//             if (typeof callback === 'function') {
+//                 callback(xmlHttp.responseText, options);
+//             }
+//         }
+
+//         else if (xmlHttp.status === 500 && options && options.onServerCallError && typeof options.onServerCallError === 'function') {
+//             options.onServerCallError();
+//         }
+//     }
+
+//     // True for asynchronous 
+//     xmlHttp.open("GET", saddress, true);
+
+//     xmlHttp.send(null);
+// }
+
+// export function makeLambdaPostCall(saddress, callback, options) {
+//     console.log(options, JSON.stringify(options))
+//     var xmlHttp = new XMLHttpRequest();
+//     // xmlHttp.withCredentials = true;
+
+//     xmlHttp.onreadystatechange = function() { 
+//         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+//             if (typeof callback === 'function') {
+//                 callback(xmlHttp.responseText, options);
+//             }
+//         }
+
+//         else if (xmlHttp.status === 500 && options && options.onServerCallError && typeof options.onServerCallError === 'function') {
+//             options.onServerCallError();
+//         }
+//     }
+
+//     // True for asynchronous 
+//     xmlHttp.open("POST", saddress);
+//     xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+//     xmlHttp.setRequestHeader("x-api-key", );
+//     if(options){
+//         xmlHttp.send(JSON.stringify(options));
+//     }
+//     else {
+//         console.log('no body received.');
+//     }
+// }
+
 export function makeServerCall(url, callback, options) {
     var saddress = serverAddress;
 

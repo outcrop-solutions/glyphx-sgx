@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
-import { makeServerCall } from './ServerCallHelper.js';
+import { makeServerCall/* , makeLambdaGetCall, makeLambdaPostCall */ } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -505,11 +505,20 @@ class HomePage extends React.Component {
                                                     textTransform: "uppercase",
                                                     textAlign: "center"}}
                                                 onClick={() => {
-                                                    makeServerCall('aws');
+                                                    /* makeServerCall('/aws', 
+                                                    function(responseText) {
+                                                        console.log(JSON.parse(responseText));
+                                                    }, {
+                                                        post: true,
+                                                        data: {Query: "UserAccounts"}
+                                                    }); */
+                                                    makeServerCall("/aws",
+                                                    function(responseText){
+                                                        console.log(JSON.parse(responseText));
+                                                    });
                                                 }}
                                                 >Annoucements
                                         </h2>
-                                                api
                                         <AnnouncementsDisplay />
                                     </div>       
                                     </Flexbox>
