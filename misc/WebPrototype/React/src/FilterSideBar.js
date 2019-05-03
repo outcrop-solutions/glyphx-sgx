@@ -64,7 +64,7 @@ class FilterSideBar extends React.Component {
                 }
 
                 // debugger;
-                
+                if (result) console.log(result);
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
                     context.makeFilterStructure(result);

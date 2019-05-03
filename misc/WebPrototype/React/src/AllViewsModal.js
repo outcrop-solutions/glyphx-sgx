@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
+import { makeServerCall, makeAWSCall } from './ServerCallHelper.js';
 /* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
@@ -85,28 +85,32 @@ class allViewsModal extends React.Component {
      * @param nextProps: The props the component would have after the change
      **/
 	componentWillReceiveProps(nextProps) {
-
+		
 		// Only care if URL changes because then new data needs to be loaded
         if (nextProps.typeURL !== this.props.typeURL) {
 
 			// Show the window load-mask as backend call is being made
 			this.props.dispatch(editModalDisplay(false, null));
-			this.setState({ loadMask: true, loadDone: false });
+			this.setState({ loadMask: true, loadDone: false, data: [] });
 
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
-
+			console.log(nextProps.typeURL.substring(index + 1), 'whats going on')
 			//debugger;
 
 			// Get the data corresponding to the URL
 			// debugger;
+			let startTime = window.performance.now();
+			let endTime;
 			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
 				function (responseText) { 
+					endTime = window.performance.now();
 					var response = JSON.parse(responseText);
 					var preData = response.frontEndFilterData; 
 					var data = [];
 					var selectAll = {};
 					var keyArray = Object.keys(preData);
+					console.log(preData, keyArray, endTime-startTime)
 					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
 					// debugger;
@@ -145,7 +149,7 @@ class allViewsModal extends React.Component {
 					// debugger;
 
 					// Post the new data to the state and hide the window load-mask
-					setTimeout(function(){
+					// setTimeout(function(){
 						context.setState({ 
 							data: data, 
 							table: response.tableName, 
@@ -154,12 +158,37 @@ class allViewsModal extends React.Component {
 							selectionList: [], 
 							loadMask: false,
 							loadDone: true, 
-							datasourceId: response.datasourceId })
-						}, 2000);
+							datasourceId: response.datasourceId });
 					context.props.dispatch( setTimer(new Date().getTime()) );
 					context.props.dispatch(editModalDisplay(true));
 				}		
 			);	
+				// makeAWSCall('/frontendfiltersaws', 
+				// function(responseText) {
+				// 	let megaArr = [];
+				// 	console.log(JSON.parse(responseText));
+				// 	let filts = JSON.parse(responseText).body;
+				// 	console.log(filts)
+				// 	for(let key in filts){
+				// 		let newArr = Array.from(new Set(filts[key]))
+				// 		newArr = newArr.sort();
+				// 		console.log(newArr)
+				// 		if(newArr.indexOf("[BLANK]") !== -1){
+				// 			console.log(newArr.indexOf("[BLANK]"))
+				// 			newArr.splice(newArr.indexOf("[BLANK]"), 1);
+				// 			newArr.unshift(key, "[BLANK]");
+				// 			megaArr.push(newArr);
+				// 		} else{ 
+				// 			newArr.unshift(key);
+				// 			megaArr.push(newArr);
+				// 		}
+				// 	}
+				// 	console.log(megaArr)
+				// 	context.setState({data: megaArr});
+				// }, {
+				// 	post: true,
+				// 	data: {key: nextProps.typeURL.substring(index + 1)}
+				// });
 		}
 		
     }

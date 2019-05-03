@@ -92,66 +92,73 @@
 	
   */
 
-const port = 5001;
-const RECENT_FILE_NAME = "RecentList.json";
-const SETTINGS_FILE_NAME = "UserSettings.json";
-const USERS_DIR_NAME = ".users";
-const MAX_RECENT_VIEWS_PER_USER = 20;
-
-var now = require('performance-now');
-var path = require("path");
-var fs = require('fs');
-var util = require('util');
-
-
-//Sql and promise settings
-var Promise = require('bluebird');
-var sqlite = require('sqlite');
-var mysql = require('sync-mysql');
-var sha256 = require('js-sha256');
-var mySqlConnection;
-
-//sdt file reading configuration
-var shell = require('shelljs');
-var parse = require('xml-parser');
-var xpath = require('xpath');
-var dom = require('xmldom').DOMParser;
-
-// Twilio configuration
-let twilio = require("twilio");
-
-const accountSid = "ACf8bdf11b425c1a2b4dc32fd8e269d030";
-const authToken = "c943d8e261b1a814c75ca2cd7319798a";
-//const accountSid = "AC4ac45e4fe73943f85369e6d6b90074cd";
-//const authToken = "0628a5b87c40ba6b576d049bc66c9a11";
-const serviceSid = "ISf8431dd8f893479cac16a5bcca564c1a";
-const apiSid = "SKac248c8e57613ec7645dd6ad40cb97a0";
-const apiSecret = "W33ki0JguPHEnl8IWrnrziblhFsO3zAb";
-
-const AccessToken = twilio.jwt.AccessToken;
-const ChatGrant = AccessToken.ChatGrant;
-const client = require('twilio')(accountSid, authToken);
-const service = client.chat.services(serviceSid);
-
-
-
-/*
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////// SERVER CONFIGURATION /////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
-
-var express = require('express');
-var compression = require('compression');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-
-const app = express();
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
-app.use(bodyParser.json()); // parse application/json
-app.use(compression()); // gzip compression.
+ const port = 5001;
+ const RECENT_FILE_NAME = "RecentList.json";
+ const SETTINGS_FILE_NAME = "UserSettings.json";
+ const USERS_DIR_NAME = ".users";
+ const MAX_RECENT_VIEWS_PER_USER = 20;
+ 
+ var now = require('performance-now');
+ var path = require("path");
+ var fs = require('fs');
+ var util = require('util');
+ 
+ 
+ //Sql and promise settings
+ var Promise = require('bluebird');
+ var sqlite = require('sqlite');
+ var mysql = require('sync-mysql');
+ var sha256 = require('js-sha256');
+ var mySqlConnection;
+ 
+ //sdt file reading configuration
+ var shell = require('shelljs');
+ var parse = require('xml-parser');
+ var xpath = require('xpath');
+ var dom = require('xmldom').DOMParser;
+ 
+ let AWS = require('aws-sdk');
+ 
+ // Twilio configuration
+ let twilio = require("twilio");
+ let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+ 
+ const accountSid = "ACf8bdf11b425c1a2b4dc32fd8e269d030";
+ const authToken = "c943d8e261b1a814c75ca2cd7319798a";
+ //const accountSid = "AC4ac45e4fe73943f85369e6d6b90074cd";
+ //const authToken = "0628a5b87c40ba6b576d049bc66c9a11";
+ const serviceSid = "ISf8431dd8f893479cac16a5bcca564c1a";
+ const apiSid = "SKac248c8e57613ec7645dd6ad40cb97a0";
+ 
+ const AccessToken = twilio.jwt.AccessToken;
+ const ChatGrant = AccessToken.ChatGrant;
+ const client = require('twilio')(accountSid, authToken);
+ const service = client.chat.services(serviceSid);
+ 
+ // AWS API-Gateway/Lambda Configuration
+ 
+ const apiSecret = "W33ki0JguPHEnl8IWrnrziblhFsO3zAb";
+ const apiGatewayKey = "DljEtaIfiyTF0xENjqXeabNDZLtPxRd738rflzCd";
+ const apiGatewayURL = "https://bfjqbtjmo4.execute-api.us-east-2.amazonaws.com/frontendfilters1/items";
+ const apiGatwayURLFrontEndFilters = 'https://bfjqbtjmo4.execute-api.us-east-2.amazonaws.com/frontendfilters1/frontendfilters';
+ 
+ /*
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////// SERVER CONFIGURATION /////////////////////////////////////////////////////
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ */
+ 
+ var express = require('express');
+ var compression = require('compression');
+ var session = require('express-session');
+ var bodyParser = require('body-parser');
+ 
+ const app = express();
+ app.engine('html', require('ejs').renderFile);
+ app.set('view engine', 'html');
+ app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
+ app.use(bodyParser.json()); // parse application/json
+ app.use(compression()); // gzip compression.
 
 /** ALLOW CORS **/
 app.use(function(req, res, next) {
@@ -183,48 +190,97 @@ app.use(express.static(path.join(__dirname, '.')));
 
 
 app.get('/aws', function (req, res) {
-	
-	//check if file exists.
-		// console.log(typeof apigClientFactory);
-		let apigClient = apigClientFactory.newClient({
-			accessKey: 'AKIAUWRBLENVICAQBC4Z',
-			secretKey: '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',
-		  });
-	
-		let params = {
-			// This is where any modeled request parameters should be added.
-			// The key is the parameter name, as it is defined in the API in API Gateway.
-			region: 'us-east-2',
-			port: "3306"
-		  };
-		  
-		  var body = {
-		//     // This is where you define the body of the request,
-		//     "Query": "UserAccounts"
-		  };
-		  
-		  var additionalParams = {
-			// If there are any unmodeled query parameters or headers that must be
-			//   sent with the request, add them here.
-			headers: {
-			  /* param0: '',
-			  param1: '' */
-			},
-			queryParams: {
-			  /* param0: '',
-			  param1: '' */
-			}
-		  };
-		  
-		  apigClient.GET(params, body, additionalParams)
-			  .then(function(result){
-				  console.log(result, 'new api gateway')
-				// Add success callback code here.
-			  }).catch( function(result){
-				  console.log(result, 'new api gateway error')
-				// Add error callback code here.
-			  });
+	// console.log('***********', apiGatewayKey, apiGatewayURL, '*********')
+	var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.withCredentials = true;
+
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+			console.log(xmlHttp.responseText,'responseeeeeeeeeeeeeeeeeeeee');
+            res.send(xmlHttp.responseText);
+        }
+        else if (xmlHttp.status === 500) {
+            res.send(xmlHttp.statusText);
+        }
+    }
+
+    // True for asynchronous 
+	xmlHttp.open("GET", apiGatewayURL, true);
+	xmlHttp.setRequestHeader("x-api-key", apiGatewayKey);
+	xmlHttp.send(null);
+
 });
+
+
+app.post('/aws', function (req, res) {
+	console.log('***********', apiGatewayKey, apiGatewayURL, req.body, '*********')
+	var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.withCredentials = true;
+
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            res.send(xmlHttp.responseText);
+        }
+        else if (xmlHttp.status === 500) {
+            res.send(xmlHttp.statusText);
+        }
+    }
+
+    // True for asynchronous 
+	xmlHttp.open("POST", apiGatewayURL, true);
+	xmlHttp.setRequestHeader("Content-Type", "application/json");
+	xmlHttp.setRequestHeader("x-api-key", apiGatewayKey);
+	xmlHttp.send(req.body);
+
+});
+
+app.post('/frontendfiltersaws', function (req, res) {
+	console.log('***********', req.body.key, '*********')
+	let rawS3Key = req.body.key;
+	let newKey = rawS3Key.replace("\\", "/");
+	let arr = [];
+
+	fetchS3Obj(newKey)
+	.then(res => {
+		// console.log(res, "RESPONSE");
+		if(res){
+				let docu = new dom().parseFromString(res);
+				let tableName = xpath.select1("//FrontEnd/Filter/FilterField/@table", docu).value;
+				// console.log(tableName, "TABLE NAME");
+				let frontEndFilts = xpath.select("//FrontEnd/Filter/FilterField/@field", docu);
+		  // console.log(frontEndFilts, 'FIELDLIST')
+			for(let i = 0; i < frontEndFilts.length; i++){
+					arr.push(frontEndFilts[i].value);
+			}
+			return {tableName, arr};
+		}
+	}).then(result => {
+		if(result){
+			let payload = {
+				body: {
+					filterList: result.arr, tableName: result.tableName}
+			};
+			console.log(payload, "MY FRONT END FILTS")
+			var xmlHttp = new XMLHttpRequest();
+				// xmlHttp.withCredentials = true;
+
+				xmlHttp.onreadystatechange = function() { 
+						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+								res.send(xmlHttp.responseText);
+						}
+						else if (xmlHttp.status === 500) {
+								res.send(xmlHttp.statusText);
+						}
+				}
+				// True for asynchronous 
+			xmlHttp.open("POST", apiGatwayURLFrontEndFilters, true);
+			xmlHttp.setRequestHeader("Content-Type", "application/json");
+			xmlHttp.setRequestHeader("x-api-key", apiGatewayKey);
+			xmlHttp.send(JSON.stringify(payload));
+		}
+	}).catch(err => {
+		console.log(err)
+	});
 
 
 /**
@@ -646,6 +702,36 @@ function getFrontEndFilterInfo(filename) {
 	}
 	
 	return returnObj;
+}
+
+function fetchS3Obj(key){
+	
+	const params = {
+			Bucket: "viz-group-notredame-source",
+			Key: key
+		};
+
+	let s3 = new AWS.S3();
+
+	s3.config.update({
+			accessKeyId: "AKIAUWRBLENVICAQBC4Z", 
+			secretAccessKey: "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",
+			region: "us-east-2"
+	});
+
+	return new Promise((resolve, reject) => {
+			s3.getObject(
+			params ,
+				function(err, data) {
+					if(err !== null){
+						reject(err);
+					}
+					else if(data){
+						// console.log(typeof data.Body, '==============', data.Body)
+						resolve(data.Body.toString('utf8'));
+					}
+				})
+	})
 }
 
 function fetchSDTFileFromS3(s3Directory, arrListOfFiles) {
