@@ -233,60 +233,58 @@
  
  });
  
-
  app.post('/checkFrontEndFilterQuery', function (req, res) {
-	console.log('***********', req.body.key, '*********')
-	let rawS3Key = req.body.key;
-	let newKey = rawS3Key.replace("\\", "/");
-	console.log(newKey)
-	let arr = [];
-
-	fetchS3Obj(newKey)
-	.then(res => {
-		// console.log(res, "RESPONSE");
-		if(res){
-				let docu = new dom().parseFromString(res);
-				let tableName = xpath.select1("//FrontEnd/Filter/FilterField/@table", docu).value;
-				// console.log(tableName, "TABLE NAME");
-				let frontEndFilts = xpath.select("//FrontEnd/Filter/FilterField/@field", docu);
-		  // console.log(frontEndFilts, 'FIELDLIST')
-			for(let i = 0; i < frontEndFilts.length; i++){
-					arr.push(frontEndFilts[i].value);
-			}
-			console.log(tableName, arr)
-			return {tableName, arr};
-		}
-	}).then(result => {
-		if(result){
-			let payload = {
-				body: {
-					filterList: result.arr, 
-					tableName: result.tableName}
-			};
-			console.log(payload, "MY FRONT END FILTS")
-			var xmlHttp = new XMLHttpRequest();
-				// xmlHttp.withCredentials = true;
-
-				xmlHttp.onreadystatechange = function() { 
-						if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-								res.send(xmlHttp.responseText);
-						}
-						else if (xmlHttp.status === 500) {
-								res.send(xmlHttp.statusText);
-						}
-				}
-				// True for asynchronous 
-			xmlHttp.open("POST", apiGatwayURLFrontEndFilters, true);
-			xmlHttp.setRequestHeader("Content-Type", "application/json");
-			xmlHttp.setRequestHeader("x-api-key", apiGatewayKey);
-			xmlHttp.send(JSON.stringify(payload));
-		}
-	}).catch(err => {
-		console.log(err)
-	});
-
-});
-
+	 console.log('***********', req.body.key, '*********')
+	 let rawS3Key = req.body.key;
+	 let newKey = rawS3Key.replace("\\", "/");
+	 console.log(newKey)
+	 let arr = [];
+ 
+	 fetchS3Obj(newKey)
+	 .then(res => {
+		 // console.log(res, "RESPONSE");
+		 if(res){
+				 let docu = new dom().parseFromString(res);
+				 let tableName = xpath.select1("//FrontEnd/Filter/FilterField/@table", docu).value;
+				 // console.log(tableName, "TABLE NAME");
+				 let frontEndFilts = xpath.select("//FrontEnd/Filter/FilterField/@field", docu);
+		   // console.log(frontEndFilts, 'FIELDLIST')
+			 for(let i = 0; i < frontEndFilts.length; i++){
+					 arr.push(frontEndFilts[i].value);
+			 }
+			 console.log(tableName, arr)
+			 return {tableName, arr};
+		 }
+	 }).then(result => {
+		 if(result){
+			 let payload = {
+				 body: {
+					 filterList: result.arr, 
+					 tableName: result.tableName}
+			 };
+			 console.log(payload, "MY FRONT END FILTS")
+			 var xmlHttp = new XMLHttpRequest();
+				 // xmlHttp.withCredentials = true;
+ 
+				 xmlHttp.onreadystatechange = function() { 
+						 if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+								 res.send(xmlHttp.responseText);
+						 }
+						 else if (xmlHttp.status === 500) {
+								 res.send(xmlHttp.statusText);
+						 }
+				 }
+				 // True for asynchronous 
+			 xmlHttp.open("POST", apiGatwayURLFrontEndFilters, true);
+			 xmlHttp.setRequestHeader("Content-Type", "application/json");
+			 xmlHttp.setRequestHeader("x-api-key", apiGatewayKey);
+			 xmlHttp.send(JSON.stringify(payload));
+		 }
+	 }).catch(err => {
+		 console.log(err)
+	 });
+ 
+ });
  /**
   * TWILIO SERVER ACTIONS
   */

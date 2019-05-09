@@ -696,8 +696,8 @@ class allViewsModal extends React.Component {
 	render() {
 		var data = this.state.data;
 		var context = this;
-		console.log(data);
-		if(data.length && this.state.loadDone){
+		// console.log(data);
+		if(data.length !== 0 && this.state.loadDone){
 			var displayData = this.state.data.map( function(col) {
 				return (
 					<Flexbox 
