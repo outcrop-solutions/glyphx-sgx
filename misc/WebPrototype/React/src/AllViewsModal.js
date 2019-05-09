@@ -95,7 +95,7 @@ class allViewsModal extends React.Component {
 
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
-			console.log(nextProps.typeURL.substring(index + 1), 'whats going on')
+			// console.log(nextProps.typeURL.substring(index + 1), 'whats going on')
 			//debugger;
 
 			// Get the data corresponding to the URL
@@ -151,44 +151,36 @@ class allViewsModal extends React.Component {
 					// Post the new data to the state and hide the window load-mask
 					// setTimeout(function(){
 						context.setState({ 
-							data: data, 
+							// data: data, 
 							table: response.tableName, 
 							selectAll: selectAll, 
 							filterAllowedColumnList: response.filterAllowedColumnList, 
 							selectionList: [], 
-							loadMask: false,
-							loadDone: true, 
+							// loadMask: false,
+							// loadDone: true, 
 							datasourceId: response.datasourceId });
 					context.props.dispatch( setTimer(new Date().getTime()) );
 					context.props.dispatch(editModalDisplay(true));
 				}		
 			);	
-				// makeAWSCall('/frontendfiltersaws', 
-				// function(responseText) {
-				// 	let megaArr = [];
-				// 	console.log(JSON.parse(responseText));
-				// 	let filts = JSON.parse(responseText).body;
-				// 	console.log(filts)
-				// 	for(let key in filts){
-				// 		let newArr = Array.from(new Set(filts[key]))
-				// 		newArr = newArr.sort();
-				// 		console.log(newArr)
-				// 		if(newArr.indexOf("[BLANK]") !== -1){
-				// 			console.log(newArr.indexOf("[BLANK]"))
-				// 			newArr.splice(newArr.indexOf("[BLANK]"), 1);
-				// 			newArr.unshift(key, "[BLANK]");
-				// 			megaArr.push(newArr);
-				// 		} else{ 
-				// 			newArr.unshift(key);
-				// 			megaArr.push(newArr);
-				// 		}
-				// 	}
-				// 	console.log(megaArr)
-				// 	context.setState({data: megaArr});
-				// }, {
-				// 	post: true,
-				// 	data: {key: nextProps.typeURL.substring(index + 1)}
-				// });
+				makeAWSCall('/checkFrontEndFilterQuery', 
+				function(responseText) {
+					// console.log(typeof responseText)
+					// let megaArr = [];
+					let response = JSON.parse(responseText);
+					console.log(response);
+					if(responseText && !response.errorMessage){
+						// let filts = response.body;
+						// console.log(filts);
+						context.setState({
+							data: response.body, 
+							loadMask: false,
+							loadDone: true, });
+					}
+				}, {
+					post: true,
+					data: {key: nextProps.typeURL.substring(index + 1)}
+				});
 		}
 		
     }
@@ -990,7 +982,8 @@ class AllViewsRow extends React.Component {
 					textAlign: "center",
 					padding: "2px",
 					margin: "0",
-					fontSize: "16px"
+					fontSize: "16px",
+					display: (this.props.children.length ? "" : "none")
 				}} 
 			> 
 				{this.props.children}

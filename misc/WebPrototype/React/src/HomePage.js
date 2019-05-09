@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
-import { makeServerCall, makeAWSCall } from './ServerCallHelper.js';
+import { makeServerCall, makeAWSCall, } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -504,6 +504,16 @@ class HomePage extends React.Component {
                                                     letterSpacing: "0.14em",
                                                     textTransform: "uppercase",
                                                     textAlign: "center"}}
+                                               /*  onClick={() => {
+                                                    makeAWSCall('/checkFrontEndFilterQuery', function(responseText){
+                                                        console.log(responseText)
+                                                    },{
+                                                        post: true,
+                                                        data: {
+                                                            key: "GlobalAdmissions"
+                                                        }
+                                                    })
+                                                }} */
                                                 >Annoucements
                                         </h2>
                                         <AnnouncementsDisplay />

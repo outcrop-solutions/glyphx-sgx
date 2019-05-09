@@ -92,6 +92,7 @@ export function makeServerCall(url, callback, options) {
 export function httpGetRequest (saddress, callback, options) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.withCredentials = true;
+    // console.log(xmlHttp,'XMLHTTP')
 
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
@@ -139,16 +140,15 @@ function httpPostRequest(saddress, callback, options) {
 }
 
 export function makeAWSCall(url, callback, options) {
-    var saddress = serverAddress;
-
+    
     if (url === null || (callback && typeof callback !== 'function')) {
         console.error('Please provide complete parameters!');
         return false;
     }
         
     if (options && options.post) {
-        saddress = saddress+url;
-        awsPostRequest(saddress, callback, options);
+        let sAdr = serverAddress + url;
+        awsPostRequest(sAdr, callback, options);
     }
 
     return true;
@@ -156,7 +156,7 @@ export function makeAWSCall(url, callback, options) {
 
 function awsPostRequest(saddress, callback, options) {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.withCredentials = true;
+    // xmlHttp.withCredentials = true;
 
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {

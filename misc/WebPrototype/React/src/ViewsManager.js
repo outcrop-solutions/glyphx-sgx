@@ -157,8 +157,18 @@ class ViewsManager extends React.Component {
         }
 
         console.log("-----------------------Stage 2 reached");
+        var currentDate = new Date();
+        console.log(
+            "TABLE:", tableName,
+            "TIME:",currentDate.getTime(),
+            "DATE:",currentDate.getTime(), 
+            "FRONT END FILTS:",frontEndFilters, 
+            "ORIGINAL VIZ NAME:",originalVizName, 
+            "DATA SOURCE ID:",datasourceId, 
+            "Allowed COlmn list:",filterAllowedColumnList, 
+            "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
 		
-		var currentDate = new Date(); //If you dont want it to update on 
+		 //If you dont want it to update on 
 		makeServerCall('checkFrontEndFilterQuery',
 			function(res){
                 res = JSON.parse(res);
