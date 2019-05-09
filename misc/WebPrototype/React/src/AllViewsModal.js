@@ -163,7 +163,7 @@ class allViewsModal extends React.Component {
 					context.props.dispatch(editModalDisplay(true));
 				}		
 			);	
-				makeAWSCall('/checkFrontEndFilterQuery', 
+				makeAWSCall('checkFrontEndFilterQuery', 
 				function(responseText) {
 					// console.log(typeof responseText)
 					// let megaArr = [];
