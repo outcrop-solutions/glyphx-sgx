@@ -173,7 +173,7 @@ class allViewsModal extends React.Component {
 						// let filts = response.body;
 						// console.log(filts);
 						context.setState({
-							data: response.body, 
+							data: response.filters, 
 							loadMask: false,
 							loadDone: true, });
 					}
@@ -696,102 +696,104 @@ class allViewsModal extends React.Component {
 	render() {
 		var data = this.state.data;
 		var context = this;
-		// console.log(data);
-		if(data.length !== 0 && this.state.loadDone){
-			var displayData = this.state.data.map( function(col) {
-				return (
-					<Flexbox 
-						flexDirection = "column" 
-						key = { col } 
-						style = {{ 
-							width: "100%", 
-							border: "1px solid", 
-							borderLeft: (col === data[0] ? "1px solid" : "none"),
-							borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
-							borderTopLeftRadius: (col === data[0] ? "3px" : ""),
-							borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
-							borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
-						}} 
-					>
-						<div 
-							className = "noselect" 
+		console.log(data);
+		if(data){
+			if(data.length && this.state.loadDone){
+				var displayData = this.state.data.map( function(col) {
+					return (
+						<Flexbox 
+							flexDirection = "column" 
+							key = { col } 
 							style = {{ 
-								backgroundColor: "#42459c", 
-								color: "#ffffff", 
-								height: "27px",
-								fontSize: "21px",
-								textAlign: "center"
+								width: "100%", 
+								border: "1px solid", 
+								borderLeft: (col === data[0] ? "1px solid" : "none"),
+								borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
+								borderTopLeftRadius: (col === data[0] ? "3px" : ""),
+								borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
+								borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
 							}} 
-						> 
-							<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
-								<i 
-								className = "fa fa-check" 
-								style = {{ marginRight: "3px" }}
-								title= "Select Column" 
-								onClick = { () => context.selectDeselectCol(col, "select") } /> 
-								<i 
-								className = "fa fa-times" 
-								title= "Deselect Column"
-								onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
+						>
+							<div 
+								className = "noselect" 
+								style = {{ 
+									backgroundColor: "#42459c", 
+									color: "#ffffff", 
+									height: "27px",
+									fontSize: "21px",
+									textAlign: "center"
+								}} 
+							> 
+								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
+									<i 
+									className = "fa fa-check" 
+									style = {{ marginRight: "3px" }}
+									title= "Select Column" 
+									onClick = { () => context.selectDeselectCol(col, "select") } /> 
+									<i 
+									className = "fa fa-times" 
+									title= "Deselect Column"
+									onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
+								</div>
+
+								<div style = {{ marginTop: "-19px", paddingBottom: "4px", fontSize: "17px" }} > 
+									{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
+								</div>
 							</div>
 
-							<div style = {{ marginTop: "-19px", paddingBottom: "4px", fontSize: "17px" }} > 
-								{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
+							<div style = {{ margin: "1px 1px 0px 0px" }} >
+								<SearchBox 
+									ref = "SearchBox"
+									settings = {{
+										SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+										searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
+										overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
+										overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
+										tableSelectColor: context.props.settings.colors.tableSelectColor.background
+									}}
+									onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
+									id = { "tf-" + col[0] }
+									collapseButton = { false }
+									shouldOnBlur = { col.length > 500 ? true : false }
+								/>
 							</div>
-						</div>
 
-						<div style = {{ margin: "1px 1px 0px 0px" }} >
-							<SearchBox 
-								ref = "SearchBox"
-								settings = {{
-									SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
-									searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
-									overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
-									overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
-									tableSelectColor: context.props.settings.colors.tableSelectColor.background
-								}}
-								onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
-								id = { "tf-" + col[0] }
-								collapseButton = { false }
-								shouldOnBlur = { col.length > 500 ? true : false }
-							/>
-						</div>
+							<div id = { col[0] } style = {{ overflow: "auto" }} >
 
-						<div id = { col[0] } style = {{ overflow: "auto" }} >
+								{ (col.length > 500 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
+								<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
 
-							{ (col.length > 500 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
-							<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
-
-							{col.map( function(elem) {
-								return (
-									(elem !== col[0] ? 
-										<div
-											key = { col[0] + elem } 
-											onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
-											onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
-											style = {{ 
-												display: (col.length > 500 ? "none" : "")
-											}}
-										>
-											<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
-												{elem} 
-											</AllViewsRow>
-										</div> : ""
+								{col.map( function(elem) {
+									return (
+										(elem !== col[0] ? 
+											<div
+												key = { col[0] + elem } 
+												onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
+												onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
+												style = {{ 
+													display: (col.length > 500 ? "none" : "")
+												}}
+											>
+												<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
+													{elem} 
+												</AllViewsRow>
+											</div> : ""
+										)
 									)
-								)
-							})}
+								})}
 
-						</div>
-					</Flexbox>
-				)
-			});
-		}
-		else if(data.length === 0 && this.state.loadDone === true){
-			return(
-				<div className= "no-results" style={{textAlign: "center", fontSize: "22px"}}>
-					<h3 style={{paddingTop: "35px"}}>No Filter Options Available. Please Select Another Query.</h3>
-				</div>
-			);
+							</div>
+						</Flexbox>
+					)
+				});
+			}
+			else if(data.length === 0 && this.state.loadDone === true){
+				return(
+					<div className= "no-results" style={{textAlign: "center", fontSize: "22px"}}>
+						<h3 style={{paddingTop: "35px"}}>No Filter Options Available. Please Select Another Query.</h3>
+					</div>
+				);
+			}
 		}
 
 		return(

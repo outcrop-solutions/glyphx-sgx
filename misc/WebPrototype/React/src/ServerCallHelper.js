@@ -156,9 +156,10 @@ export function makeAWSCall(url, callback, options) {
 
 function awsPostRequest(saddress, callback, options) {
     var xmlHttp = new XMLHttpRequest();
-    // xmlHttp.withCredentials = true;
+    xmlHttp.withCredentials = true;
 
     xmlHttp.onreadystatechange = function() { 
+        console.log(xmlHttp.responseText)
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if (typeof callback === 'function') {
                 callback(xmlHttp.responseText, options);
@@ -166,7 +167,7 @@ function awsPostRequest(saddress, callback, options) {
         }
 
         else if (xmlHttp.status === 500 && options && options.onServerCallError && typeof options.onServerCallError === 'function') {
-            options.onServerCallError();
+            console.log(xmlHttp.responseText);
         }
     }
 
