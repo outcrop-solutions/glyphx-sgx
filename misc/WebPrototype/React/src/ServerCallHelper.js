@@ -60,9 +60,6 @@ export function makeLambdaPostCall(saddress, callback, options) {
 }
 
 export function makeServerCall(url, callback, options) {
-    if(serverAddress){
-    console.log(serverAddress);
-    }
     var saddress = serverAddress;
 
     if (url === null || (callback && typeof callback !== 'function')) {
@@ -159,7 +156,7 @@ function awsPostRequest(saddress, callback, options) {
     xmlHttp.withCredentials = true;
 
     xmlHttp.onreadystatechange = function() { 
-        console.log(xmlHttp.responseText)
+        // console.log(xmlHttp.responseText)
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             if (typeof callback === 'function') {
                 callback(xmlHttp.responseText, options);
