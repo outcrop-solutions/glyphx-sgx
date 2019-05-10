@@ -151,7 +151,7 @@ class allViewsModal extends React.Component {
 					// Post the new data to the state and hide the window load-mask
 					// setTimeout(function(){
 						context.setState({ 
-							// data: data, 
+							data: data, 
 							table: response.tableName, 
 							selectAll: selectAll, 
 							filterAllowedColumnList: response.filterAllowedColumnList, 
@@ -163,7 +163,7 @@ class allViewsModal extends React.Component {
 					context.props.dispatch(editModalDisplay(true));
 				}		
 			);	
-				makeAWSCall('checkFrontEndFilterQuery', 
+				makeAWSCall('fetchEC2SqliteFilters', 
 				function(responseText) {
 					// console.log(typeof responseText)
 					// let megaArr = [];
