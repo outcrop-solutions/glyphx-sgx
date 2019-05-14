@@ -173,18 +173,21 @@ class allViewsModal extends React.Component {
 					*RESPONSE BODY STRUCTURE
 					*{
 					*statusCode: ""
-					*body: {
-					*	filters: [ [], [] ...]	
+					*	body: {
+					*		filters: [ [], [] ...],
+					*		tableName: ""	
 					*}	
 					*}
 					*/
 					if(response && response.statusCode === 200){
-						// let filts = response.body;
-						// console.log(filts);
+						let filts = response.body;
+						console.log(filts.tableName);
 						context.setState({
+							table: response.body.tableName,
 							data: response.body.filters, 
 							loadMask: false,
-							loadDone: true });
+							loadDone: true,
+							selectionList: [] });
 					}
 				}, {
 					post: true,
