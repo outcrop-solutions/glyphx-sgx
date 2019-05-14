@@ -24,8 +24,6 @@ import './css/FilterSideBar.css';
 import './css/General.css';
 
 
-
-
 /**
  * This is the top section which contains the overview in the filter side-bar
  * @param initParams: - ADCMT

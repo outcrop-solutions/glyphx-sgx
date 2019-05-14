@@ -377,17 +377,23 @@ class FilterSideBar extends React.Component {
     * @param {object} event: the event object.
 	*/
     toggleTopView = (event) => {
-		var collapseTopViewButton = document.getElementById("collapseTopViewButton");
+        var collapseTopViewButton_1 = document.getElementById("collapseTopViewButton1");
+        var collapseTopViewButton_2 = document.getElementById("collapseTopViewButton2");
 		
         if (this.refs['topCollapisble'].state.isClosed) {
-			collapseTopViewButton.style.transform = '';
+            collapseTopViewButton_1.style.transform = '';
+            collapseTopViewButton_2.style.transform = '';
+            document.getElementById("text-collapsible-viz").innerHTML = "HIDE";
 		    this.refs['topCollapisble'].openCollapsible();
 		}
 
         else {
-			collapseTopViewButton.style.transform = 'rotateZ(180deg)';
+            collapseTopViewButton_1.style.transform = 'rotateZ(180deg)';
+            collapseTopViewButton_2.style.transform = 'rotateZ(180deg)';
+            document.getElementById("text-collapsible-viz").innerHTML = "SHOW";
 		    this.refs['topCollapisble'].closeCollapsible();
-		}
+        }
+
     };
 
 
@@ -456,17 +462,37 @@ class FilterSideBar extends React.Component {
                     primary = { true } 
                     onClick = { this.toggleTopView.bind(this) }
                     buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
-                    style = {{ height: '20px', margin: "0px 0px 1px 1px" }}
+                    style = {{ height: '26px', margin: "7px 0px 7px 1px"}}
                 >
                     <i 
-                        id = "collapseTopViewButton" 
+                        id = "collapseTopViewButton1" 
                         className = "fa fa-caret-up" 
                         style = {{
                             fontSize: '1.6em',
                             color: this.props.settings.colors.hideTopViewButtonColor.icon,
-                            transition: 'transform 500ms'
-                        }}
-                    /> 
+                            transition: 'transform 100ms',
+                            verticalAlign: "initial"
+                    }}
+                    />   
+
+                    <span id="text-collapsible-viz" 
+                    style={{
+                        color: "white", 
+                        letterSpacing: ".2em", 
+                        padding: "0 10px 0 10px"}}>
+                    HIDE
+                    </span> 
+                    
+                    <i 
+                        id = "collapseTopViewButton2" 
+                        className = "fa fa-caret-up" 
+                        style = {{
+                            fontSize: '1.6em',
+                            color: this.props.settings.colors.hideTopViewButtonColor.icon,
+                            transition: 'transform 100ms',
+                            verticalAlign: "initial"
+                    }}
+                    />
                 </RaisedButton>
 
                 {/* BOTTOM SECTION */}
