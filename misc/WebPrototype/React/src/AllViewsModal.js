@@ -151,7 +151,7 @@ class allViewsModal extends React.Component {
 					// Post the new data to the state and hide the window load-mask
 					// setTimeout(function(){
 						context.setState({ 
-							data: data, 
+							// data: data, 
 							table: response.tableName, 
 							selectAll: selectAll, 
 							filterAllowedColumnList: response.filterAllowedColumnList, 
@@ -168,14 +168,23 @@ class allViewsModal extends React.Component {
 					// console.log(typeof responseText)
 					// let megaArr = [];
 					let response = JSON.parse(responseText);
-					console.log(response);
-					if(responseText && !response.errorMessage){
+					console.log(response.body.filters, response.statusCode);
+					/*
+					*RESPONSE BODY STRUCTURE
+					*{
+					*statusCode: ""
+					*body: {
+					*	filters: [ [], [] ...]	
+					*}	
+					*}
+					*/
+					if(response && response.statusCode === 200){
 						// let filts = response.body;
 						// console.log(filts);
 						context.setState({
-							data: response.filters, 
+							data: response.body.filters, 
 							loadMask: false,
-							loadDone: true, });
+							loadDone: true });
 					}
 				}, {
 					post: true,
@@ -693,13 +702,11 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	render() {
-		var data = this.state.data;
+	dataFunc(data){
 		var context = this;
-		console.log(data);
 		if(data){
 			if(data.length && this.state.loadDone){
-				var displayData = this.state.data.map( function(col) {
+				return this.state.data.map( function(col) {
 					return (
 						<Flexbox 
 							flexDirection = "column" 
@@ -775,7 +782,7 @@ class allViewsModal extends React.Component {
 												}}
 											>
 												<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
-													{elem} 
+													{elem.toString()} 
 												</AllViewsRow>
 											</div> : ""
 										)
@@ -795,7 +802,13 @@ class allViewsModal extends React.Component {
 				);
 			}
 		}
+	}
 
+	render() {
+		var data = this.state.data;
+		var context = this;
+		// console.log(data);
+		
 		return(
 			<div
 				style={{paddingTop: "10px"}}
@@ -823,7 +836,7 @@ class allViewsModal extends React.Component {
 
 				<div style = {{ height: "58vh", paddingBottom: "30px", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
-						{displayData}
+						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
 
 					<Snackbar
@@ -985,7 +998,7 @@ class AllViewsRow extends React.Component {
 					padding: "2px",
 					margin: "0",
 					fontSize: "16px",
-					display: (this.props.children.length ? "" : "none")
+					display: (this.props.children.length)
 				}} 
 			> 
 				{this.props.children}
