@@ -100,94 +100,104 @@ class allViewsModal extends React.Component {
 
 			// Get the data corresponding to the URL
 			// debugger;
-			let startTime = window.performance.now();
-			let endTime;
-			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
-				function (responseText) { 
-					endTime = window.performance.now();
-					var response = JSON.parse(responseText);
-					var preData = response.frontEndFilterData; 
-					var data = [];
-					var selectAll = {};
-					var keyArray = Object.keys(preData);
-					console.log(preData, keyArray, endTime-startTime)
-					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+			// let startTime = window.performance.now();
+			// let endTime;
+			// makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
+			// 	function (responseText) { 
+			// 		endTime = window.performance.now();
+			// 		var response = JSON.parse(responseText);
+			// 		var preData = response.frontEndFilterData; 
+			// 		var data = [];
+			// 		var selectAll = {};
+			// 		var keyArray = Object.keys(preData);
+			// 		console.log(preData, keyArray, endTime-startTime)
+			// 		var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
-					// debugger;
+			// 		// debugger;
 
-					//console.log(response);
+			// 		//console.log(response);
 
-					context.props.dispatch(updateFilterFromSnapshot({}));
+			// 		context.props.dispatch(updateFilterFromSnapshot({}));
 
-					// Seperate and store the actual data and the selectAll boolean of each column
-					for (var i = 0; i < keyArray.length; i++) {
-						var dataCol = [];
-						selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
+			// 		// Seperate and store the actual data and the selectAll boolean of each column
+			// 		for (var i = 0; i < keyArray.length; i++) {
+			// 			var dataCol = [];
+			// 			selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
 
-						for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
-							dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
-						}
+			// 			for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
+			// 				dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
+			// 			}
 
-						if (isNaN(dataCol[0])) {
-							dataCol.sort(collator.compare);
-						}
+			// 			if (isNaN(dataCol[0])) {
+			// 				dataCol.sort(collator.compare);
+			// 			}
 
-						else {
-							dataCol.sort(
-								function (a, b) {
-									return a - b;
-								}
-							);
-						}
+			// 			else {
+			// 				dataCol.sort(
+			// 					function (a, b) {
+			// 						return a - b;
+			// 					}
+			// 				);
+			// 			}
 
-						dataCol.unshift(keyArray[i]);
+			// 			dataCol.unshift(keyArray[i]);
 
-						//debugger;
-						data.push(dataCol);
-					}
+			// 			//debugger;
+			// 			data.push(dataCol);
+			// 		}
+			// 		console.log(selectAll, typeof selectAll);
 
-					// debugger;
+			// 		// debugger;
 
-					// Post the new data to the state and hide the window load-mask
-					// setTimeout(function(){
-						context.setState({ 
-							// data: data, 
-							table: response.tableName, 
-							selectAll: selectAll, 
-							filterAllowedColumnList: response.filterAllowedColumnList, 
-							selectionList: [], 
-							// loadMask: false,
-							// loadDone: true, 
-							datasourceId: response.datasourceId });
-					context.props.dispatch( setTimer(new Date().getTime()) );
-					context.props.dispatch(editModalDisplay(true));
-				}		
-			);	
+			// 		// Post the new data to the state and hide the window load-mask
+			// 		// setTimeout(function(){
+			// 		context.setState({ 
+			// 			// data: data, 
+			// 			// table: response.tableName, 
+			// 			selectAll: selectAll, 
+			// 			// filterAllowedColumnList: response.filterAllowedColumnList, 
+			// 			// selectionList: [], 
+			// 			// loadMask: false,
+			// 			// loadDone: true, 
+			// 			// datasourceId: response.datasourceId });
+			// 		});
+			// 		context.props.dispatch( setTimer(new Date().getTime()) );
+			// 		context.props.dispatch(editModalDisplay(true));
+			// 	}		
+			// );	
 				makeAWSCall('fetchEC2SqliteFilters', 
 				function(responseText) {
 					// console.log(typeof responseText)
 					// let megaArr = [];
 					let response = JSON.parse(responseText);
-					console.log(response.body.filters, response.statusCode);
+					console.log(response.body, response.statusCode);
 					/*
 					*RESPONSE BODY STRUCTURE
 					*{
-					*statusCode: ""
+					*statusCode: #
 					*	body: {
 					*		filters: [ [], [] ...],
-					*		tableName: ""	
+					*		tableName: "",
+					*		datasourceId: "",
+					*       selectAll: {},
+					*		filterAllowedColumnList: []
 					*}	
 					*}
 					*/
+					context.props.dispatch(updateFilterFromSnapshot({}));
 					if(response && response.statusCode === 200){
-						let filts = response.body;
-						console.log(filts.tableName);
+						let results = response.body;
 						context.setState({
-							table: response.body.tableName,
-							data: response.body.filters, 
+							table: results.tableName,
+							data: results.filters,
+							selectAll: results.selectAll, 
+							filterAllowedColumnList: results.filterAllowedColumnList,
+							datasourceId: results.datasourceId,
 							loadMask: false,
 							loadDone: true,
 							selectionList: [] });
+						context.props.dispatch( setTimer(new Date().getTime()) );
+						context.props.dispatch(editModalDisplay(true));
 					}
 				}, {
 					post: true,

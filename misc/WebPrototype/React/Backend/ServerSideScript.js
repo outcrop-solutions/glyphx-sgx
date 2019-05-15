@@ -139,8 +139,8 @@
  
  const apiSecret = "W33ki0JguPHEnl8IWrnrziblhFsO3zAb";
  const apiGatewayKey = "DljEtaIfiyTF0xENjqXeabNDZLtPxRd738rflzCd";
- const apiGatewayURL = "https://bfjqbtjmo4.execute-api.us-east-2.amazonaws.com/frontendfilters1/items";
- const apiGatwayURLFrontEndFilters = 'https://bfjqbtjmo4.execute-api.us-east-2.amazonaws.com/frontendfilters1/frontendfilters';
+ const apiGatewayURL = "https://bfjqbtjmo4.execute-api.us-east-2.amazonaws.com/frontendfilters2/items";
+ const apiGatwayURLFrontEndFilters = 'https://bfjqbtjmo4.execute-api.us-east-2.amazonaws.com/frontendfilters2/frontendfilters';
  
  /*
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,12 +233,14 @@
  
  });
  
- app.post('/checkFrontEndFilterQuery', function (req, res) {
+ app.post('/fetchEC2SqliteFilters', function (req, res) {
 	 console.log('***********', req.body.key, '*********')
 	 let rawS3Key = req.body.key;
 	 let newKey = rawS3Key.replace("\\", "/");
 	 console.log(newKey)
-	 let arr = [];
+	 let frontEndFiltsArr = [],
+	 fieldListArr = [],
+	 selectAllObj = {};
  
 	 fetchS3Obj(newKey)
 	 .then(res => {
@@ -248,30 +250,52 @@
 				 let tableName = xpath.select1("//FrontEnd/Filter/FilterField/@table", docu).value;
 				 // console.log(tableName, "TABLE NAME");
 				 let frontEndFilts = xpath.select("//FrontEnd/Filter/FilterField/@field", docu);
+				 let datasourceId = xpath.select("//Datasources/Datasource/@id", docu);
+				 let selectAllValues = xpath.select("//FrontEnd/Filter/@selectall", docu);
+				 let fieldList = xpath.select("//ElasticList/ElasticField/@field", docu);
 		   // console.log(frontEndFilts, 'FIELDLIST')
 			 for(let i = 0; i < frontEndFilts.length; i++){
-					 arr.push(frontEndFilts[i].value);
+				 frontEndFiltsArr.push(frontEndFilts[i].value);
+				 selectAllObj[frontEndFilts[i].value] = selectAllValues[i] ? selectAllValues[i].value : true;
 			 }
-			 console.log(tableName, arr)
-			 return {tableName, arr};
+ 
+			 for (var j = 0; j < fieldList.length; j++) {
+				 fieldListArr.push(fieldList[j].value);
+			 }
+			 // console.log(tableName, frontEndFilts)
+			 return {
+				 tableName, 
+				 frontEndFiltsArr, 
+				 datasourceId: datasourceId[0].value, 
+				 selectAllValues: selectAllObj,
+				 filterAllowedColumnList: fieldListArr};
 		 }
 	 }).then(result => {
 		 if(result){
 			 let payload = {
-				 body: {
-					 filterList: result.arr, 
+				 data: {
+					 filterList: result.frontEndFiltsArr, 
 					 tableName: result.tableName}
 			 };
-			 console.log(payload, "MY FRONT END FILTS")
+			 console.log(result, "MY FRONT END FILTS")
 			 var xmlHttp = new XMLHttpRequest();
 				 // xmlHttp.withCredentials = true;
  
 				 xmlHttp.onreadystatechange = function() { 
+					 
 						 if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-								 res.send(xmlHttp.responseText);
+							 // console.log(xmlHttp.responseText, typeof xmlHttp.responseText);
+							 let addRes = JSON.parse(xmlHttp.responseText);
+							  addRes.body.tableName = result.tableName;
+							  addRes.body.datasourceId = result.datasourceId;
+							  addRes.body.selectAll = result.selectAllValues;
+							  addRes.body.filterAllowedColumnList = result.filterAllowedColumnList;
+							  addRes = JSON.stringify(addRes);
+							 console.log(addRes)
+							 res.send(addRes);
 						 }
 						 else if (xmlHttp.status === 500) {
-								 res.send(xmlHttp.statusText);
+							 res.send(xmlHttp.statusText);
 						 }
 				 }
 				 // True for asynchronous 

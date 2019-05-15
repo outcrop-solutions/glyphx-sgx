@@ -33,7 +33,8 @@ class FilterSideBar extends React.Component {
             filterIDs: null,
             initialX: '',
             initialY: '',
-            initialZ: ''
+            initialZ: '',
+            loadingDone: false
         };
     };
 
@@ -68,7 +69,7 @@ class FilterSideBar extends React.Component {
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
                     context.makeFilterStructure(result);
-                    context.setState({ tableData: result });
+                    context.setState({ tableData: result, loadingDone: true });
                     context.props.dispatch(setStatData(result));
                     context.props.updateViz(res.glyphViewerKey);
 
@@ -408,104 +409,113 @@ class FilterSideBar extends React.Component {
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
-            <Flexbox 
-                flexDirection = "column"
-                flexGrow = {1}
-                id = "FilterWindowOuterContiner"
-                style = {{ 
-                    height: "100%",
-                    overflow:'hidden',
-                    transition: '1s'
-                }}
-            >
-                {/* TOP SECTION */}
-                <div>
-                    <AlertContainer ref = { a => this.msg = a } />
+            <div>
+                <div id = "darkLayer" 
+                className = "darkClass" 
+                style={{
+                    display: (this.state.loadingDone === true ? "none" : ""), 
+                    overflow: "hidden"}}>
                 </div>
 
-                {/*<UndoRedoChangeListener tableData = { this.state.tableData } /> */}
-
-                <Collapsible
-                    transitionTime = {200} 
-                    open = { true }
-                    triggerDisabled = { true }
-                    contentInnerClassName  = "Flex__layout-column topViewContent"
-                    ref = 'topCollapisble'
-                    triggerClassName = 'noHeaderTrigger cursorNormal'
-                    triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
-                    contentOuterClassName = "cursorNormal"
-                    overflowWhenOpen = "visible"
-                >
-
-                    <FilterSideBarTopView 
-                        initParams = { this.state.topViewInitParams } 
-                        colList = { colList } 
-                        showAlert = { (strMsg) => this.showAlert(strMsg) }
-                        reloadParent = { this.loadVisualization }
-                        refreshParent = { this.refreshTableDataOnRowSelection }
-                        showHideLoadingMask = { this.props.showHideLoadingMask }
-                        filterIDs = { this.state.filterIDs }
-                        setFilterIDs = { this.setFilterIDs.bind(this) }
-                        tableData = { this.state.tableData } 
-                        setTableData = { this.setTableData.bind(this) }
-                        handleDraggableCorrection = { this.props.handleDraggableCorrection }
-                        initialX = { this.state.initialX }
-                        initialY = { this.state.initialY }
-                        initialZ = { this.state.initialZ }
-                    />
-
-                </Collapsible>
-            
-                {/* COLLAPSE TOP SECTION BUTTON */}
-                <RaisedButton 
-                    fullWidth = { true } 
-                    primary = { true } 
-                    onClick = { this.toggleTopView.bind(this) }
-                    buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
-                    style = {{ height: '26px', margin: "7px 0px 7px 1px"}}
-                >
-                    <i 
-                        id = "collapseTopViewButton1" 
-                        className = "fa fa-caret-up" 
-                        style = {{
-                            fontSize: '1.6em',
-                            color: this.props.settings.colors.hideTopViewButtonColor.icon,
-                            transition: 'transform 100ms',
-                            verticalAlign: "initial"
+                <Flexbox 
+                    flexDirection = "column"
+                    flexGrow = {1}
+                    id = "FilterWindowOuterContiner"
+                    style = {{ 
+                        height: "100%",
+                        overflow:'hidden',
+                        transition: '500ms'
                     }}
-                    />   
+                >
+                    {/* TOP SECTION */}
+                    <div>
+                        <AlertContainer ref = { a => this.msg = a } />
+                    </div>
 
-                    <span id="text-collapsible-viz" 
-                    style={{
-                        color: "white", 
-                        letterSpacing: ".2em", 
-                        padding: "0 10px 0 10px"}}>
-                    HIDE
-                    </span> 
-                    
-                    <i 
-                        id = "collapseTopViewButton2" 
-                        className = "fa fa-caret-up" 
-                        style = {{
-                            fontSize: '1.6em',
-                            color: this.props.settings.colors.hideTopViewButtonColor.icon,
-                            transition: 'transform 100ms',
-                            verticalAlign: "initial"
-                    }}
-                    />
-                </RaisedButton>
+                    {/*<UndoRedoChangeListener tableData = { this.state.tableData } /> */}
 
-                {/* BOTTOM SECTION */}
+                    <Collapsible
+                        transitionTime = {200} 
+                        open = { true }
+                        triggerDisabled = { true }
+                        contentInnerClassName  = "Flex__layout-column topViewContent"
+                        ref = 'topCollapisble'
+                        triggerClassName = 'noHeaderTrigger cursorNormal'
+                        triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
+                        contentOuterClassName = "cursorNormal"
+                        overflowWhenOpen = "visible"
+                    >
+
+                        <FilterSideBarTopView 
+                            initParams = { this.state.topViewInitParams } 
+                            colList = { colList } 
+                            showAlert = { (strMsg) => this.showAlert(strMsg) }
+                            reloadParent = { this.loadVisualization }
+                            refreshParent = { this.refreshTableDataOnRowSelection }
+                            showHideLoadingMask = { this.props.showHideLoadingMask }
+                            filterIDs = { this.state.filterIDs }
+                            setFilterIDs = { this.setFilterIDs.bind(this) }
+                            tableData = { this.state.tableData } 
+                            setTableData = { this.setTableData.bind(this) }
+                            handleDraggableCorrection = { this.props.handleDraggableCorrection }
+                            initialX = { this.state.initialX }
+                            initialY = { this.state.initialY }
+                            initialZ = { this.state.initialZ }
+                        />
+
+                    </Collapsible>
                 
-                <FilterSideBarBottomView 
-                    ref = "bottom" 
-                    tableData = { this.state.tableData } 
-                    refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} 
-                    setFilterIDs = { this.setFilterIDs.bind(this) }
-                    setTableData = { this.setTableData.bind(this) }
-                />
+                    {/* COLLAPSE TOP SECTION BUTTON */}
+                    <RaisedButton 
+                        fullWidth = { true } 
+                        primary = { true } 
+                        onClick = { this.toggleTopView.bind(this) }
+                        buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
+                        style = {{ height: '26px', margin: "7px 0px 7px 1px"}}
+                    >
+                        <i 
+                            id = "collapseTopViewButton1" 
+                            className = "fa fa-caret-up" 
+                            style = {{
+                                fontSize: '1.6em',
+                                color: this.props.settings.colors.hideTopViewButtonColor.icon,
+                                transition: 'transform 100ms linear',
+                                verticalAlign: "initial"
+                        }}
+                        />   
 
-            </Flexbox>
+                        <span id="text-collapsible-viz" 
+                        style={{
+                            color: "white", 
+                            letterSpacing: ".2em", 
+                            padding: "0 10px 0 10px"}}>
+                        HIDE
+                        </span> 
+                        
+                        <i 
+                            id = "collapseTopViewButton2" 
+                            className = "fa fa-caret-up" 
+                            style = {{
+                                fontSize: '1.6em',
+                                color: this.props.settings.colors.hideTopViewButtonColor.icon,
+                                transition: 'transform 100ms linear',
+                                verticalAlign: "initial"
+                        }}
+                        />
+                    </RaisedButton>
+
+                    {/* BOTTOM SECTION */}
+                    
+                    <FilterSideBarBottomView 
+                        ref = "bottom" 
+                        tableData = { this.state.tableData } 
+                        refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} 
+                        setFilterIDs = { this.setFilterIDs.bind(this) }
+                        setTableData = { this.setTableData.bind(this) }
+                    />
+
+                </Flexbox>
+            </div>
         );
     }
 }
