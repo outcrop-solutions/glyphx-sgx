@@ -31,9 +31,6 @@ class FilterSideBar extends React.Component {
 			},
             topViewVisible: true,
             filterIDs: null,
-            initialX: '',
-            initialY: '',
-            initialZ: '',
             loadingDone: false
         };
     };
@@ -52,7 +49,7 @@ class FilterSideBar extends React.Component {
    loadVisualization() {
         var context = this;
 
-        this.props.VizParams;
+        // this.props.VizParams;
 
         // debugger;
 
@@ -65,7 +62,8 @@ class FilterSideBar extends React.Component {
                 }
 
                 // debugger;
-                if (result) console.log(result);
+                console.log(res, context.props.VizParams);
+                // if (result) console.log(result);
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
                     context.makeFilterStructure(result);
@@ -73,19 +71,20 @@ class FilterSideBar extends React.Component {
                     context.props.dispatch(setStatData(result));
                     context.props.updateViz(res.glyphViewerKey);
 
-                    makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
-                        function (responseText) { 
-                            var response = JSON.parse(responseText);
+                    // makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
+                    //     function (responseText) { 
+                    //         var response = JSON.parse(responseText);
 
-                            // debugger;
+                    //         // debugger;
 
-                            context.setState({ 
-                                initialX: response.initialX,
-                                initialY: response.initialY, 
-                                initialZ: response.initialZ,
-                            });
-                        }
-                    );
+                    //         context.setState({ 
+                    //             initialX: response.initialX,
+                    //             initialY: response.initialY, 
+                    //             initialZ: response.initialZ,
+                    //         });
+                    //     }
+                    // );
+                    // console.log(context.props.initialX, context.props.initialY, context.props.initialZ)
                     
                 }
                 else {
@@ -409,14 +408,6 @@ class FilterSideBar extends React.Component {
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
-            <div>
-                <div id = "darkLayer" 
-                className = "darkClass" 
-                style={{
-                    display: (this.state.loadingDone === true ? "none" : ""), 
-                    overflow: "hidden"}}>
-                </div>
-
                 <Flexbox 
                     flexDirection = "column"
                     flexGrow = {1}
@@ -458,9 +449,9 @@ class FilterSideBar extends React.Component {
                             tableData = { this.state.tableData } 
                             setTableData = { this.setTableData.bind(this) }
                             handleDraggableCorrection = { this.props.handleDraggableCorrection }
-                            initialX = { this.state.initialX }
-                            initialY = { this.state.initialY }
-                            initialZ = { this.state.initialZ }
+                            initialX = { this.props.initialX }
+                            initialY = { this.props.initialY }
+                            initialZ = { this.props.initialZ }
                         />
 
                     </Collapsible>
@@ -515,7 +506,6 @@ class FilterSideBar extends React.Component {
                     />
 
                 </Flexbox>
-            </div>
         );
     }
 }
@@ -546,7 +536,10 @@ const mapStateToProps = function(state){
     VizParams: state.filterState.VizParams,
     filterObj: state.filterState.Filter,
     UndoRedoHistory: state.filterState.UndoRedoHistory,
-    ShowAllTables: state.filterState.ShowAllTables
+    ShowAllTables: state.filterState.ShowAllTables,
+    initialX: state.filterState.initialVizX,
+    initialY: state.filterState.initialVizY,
+    initialZ: state.filterState.initialVizZ
   }
 };
 

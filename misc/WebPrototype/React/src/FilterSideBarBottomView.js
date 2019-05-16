@@ -10,6 +10,7 @@ import PinningViewsModal from './PinningViewsModal.js';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './css/FilterSideBar.css';
 
+
 /**
  * This is the bottom view of the side bar that you see on the right side of the screen.
  * @param tableData: - Data formatted into form needed to load filters
@@ -121,6 +122,7 @@ class FilterSideBarBottomView extends React.Component {
 
     /**
      * This function creates and returns the markup for the column.
+     * This is the function that shows all the rows
      * @param {object} config: 
      *  {
      *      outerDivClassName: '',
@@ -162,7 +164,8 @@ class FilterSideBarBottomView extends React.Component {
                                     fontSize: '0.9rem',
                                     color: this.props.settings.colors.collapsibleColor.subText
                                 }}
-                            >
+                            >   
+                                {/* The name of the filter tab */}
                                 {config.displayName}
                             </span>
                         </div>
@@ -170,6 +173,7 @@ class FilterSideBarBottomView extends React.Component {
                     //onClose = { () => this.updateTabRender('tab-' + config.internalColName, false) }
                     //onOpen = { () => this.updateTabRender('tab-' + config.internalColName, true) }
                 >
+                    {/* The actual rows of data under the tabs*/}
                     <FilterTabs 
                         ref = { 'tab-' + config.internalColName } 
                         internalColName = { config.internalColName } 

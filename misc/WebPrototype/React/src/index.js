@@ -48,7 +48,10 @@ const initialFilterState = {
     },
     TimeoutTimer: null,
     ShowAllTables: [],
-    RecentVizDropdown: null
+    RecentVizDropdown: null,
+    initialVizX: null,
+    initialVizY: null,
+    initialVizZ: null
 };
 
 
@@ -623,6 +626,14 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 ShowAllTables: action.showAllTables
+            }
+        
+        case 'SET_INITIAL_XYZ':
+            return {
+                ...state,
+                initialVizX: action.X,
+                initialVizY: action.Y,
+                initialVizZ: action.Z
             }
 
 		

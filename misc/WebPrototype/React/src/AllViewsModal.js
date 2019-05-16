@@ -180,7 +180,10 @@ class allViewsModal extends React.Component {
 					*		tableName: "",
 					*		datasourceId: "",
 					*       selectAll: {},
-					*		filterAllowedColumnList: []
+					*		filterAllowedColumnList: [],
+					*		initialX: "",
+					*		initialY: "",
+					*		initialZ: ""
 					*}	
 					*}
 					*/
@@ -196,6 +199,7 @@ class allViewsModal extends React.Component {
 							loadMask: false,
 							loadDone: true,
 							selectionList: [] });
+						context.props.dispatch(setInitialXYZ(results.initialX, results.initialY, results.initialZ));
 						context.props.dispatch( setTimer(new Date().getTime()) );
 						context.props.dispatch(editModalDisplay(true));
 					}
@@ -1038,6 +1042,13 @@ export const updateFilterFromSnapshot = (snapshot) => ({
 export const setTimer = (timeoutTimer) => ({
     type: 'SET_TIMEOUT_TIMER',
     timeoutTimer,
+});
+
+export const setInitialXYZ = (X, Y, Z) => ({
+    type: 'SET_INITIAL_XYZ',
+	X,
+	Y,
+	Z
 });
 
 
