@@ -661,7 +661,9 @@ class FilterTable extends React.Component {
 /*         var id = this.props.id;
         var internalColName = this.props.internalColName;
         var tableBodyHeight = (300 - 32) + "px"; */
+        //creating the rows
         var rows = this.createRows();
+        console.log(rows);
 
         return (
 

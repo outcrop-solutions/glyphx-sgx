@@ -116,6 +116,7 @@ class FilterSideBar extends React.Component {
 
         // Create the query to pass
         var filterObj = this.props.filterObj;
+        console.log(filterObj);
         for (var column in filterObj) {
             if (filterObj[column].selectedValues.length > 0) {
                 if (flag) {
@@ -132,7 +133,17 @@ class FilterSideBar extends React.Component {
         }
 
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
+        let URL2 = "fetchSelectedRowDataEC2";
+        let originalQuery = context.props.VizParams.query;
+        console.log(URL, context.props.VizParams.query, originalQuery.indexOf("WHERE"), "URL")
+        
+        let originalSlice = originalQuery.slice(originalQuery.indexOf("WHERE")+5).trim();
+        console.log(originalSlice);
         // debugger;
+
+        let concatStr = `${query} AND ${originalSlice}`;
+        let quoteReplace = concatStr.replace(/"/g, "'");
+        console.log(quoteReplace);
 
         return new Promise(function(resolve, reject) {
            /*  var result = 'A is done'    */     
@@ -160,6 +171,18 @@ class FilterSideBar extends React.Component {
                     }
                 }
             );
+            makeServerCall(URL2, 
+                function(responseText) {
+                    if(responseText){
+                        console.log(JSON.parse(responseText));
+                    }
+                },
+                {
+                  post: true,
+                  data: {
+                      query: quoteReplace
+                  }  
+                })
         });
    }
 
