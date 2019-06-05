@@ -398,7 +398,10 @@ class FilterSideBarBottomView extends React.Component {
             ref = this.refs[divList[i].getAttribute('id')] 
             
             if (ref && (extra ? !extra.filterViewClick : true) ) {
-                ref.state.isClosed ? null : ref.closeCollapsible();
+                if(!ref.state.isClosed){
+                    ref.closeCollapsible();
+                }
+                // ref.state.isClosed ? null : ref.closeCollapsible();
             }
 			
             shouldBeVisible = false;
@@ -429,7 +432,10 @@ class FilterSideBarBottomView extends React.Component {
             ref = this.refs[divList[i].getAttribute('id')];
             
             if (ref) {
-                ref.state.isClosed ? null : ref.closeCollapsible();
+                if(!ref.state.isClosed){
+                    ref.closeCollapsible();
+                }
+                // ref.state.isClosed ? null : ref.closeCollapsible();
             }
 		}
     }

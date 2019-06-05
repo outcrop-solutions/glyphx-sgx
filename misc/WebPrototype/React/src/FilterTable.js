@@ -169,10 +169,10 @@ class FilterTable extends React.Component {
     componentDidMount() {
         this.componentDidUpdate();
 
-        var undoRedoHistory = {
-            history: [{filterList: this.props.tableState, tableData: this.props.fullTableData}],
-            position: 0
-        }
+        // var undoRedoHistory = {
+        //     history: [{filterList: this.props.tableState, tableData: this.props.fullTableData}],
+        //     position: 0
+        // }
 
         //this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
         
@@ -601,7 +601,7 @@ class FilterTable extends React.Component {
 
         for (var i in this.state.tableData.values) {
 
-            if (sTerm != "") {
+            if (sTerm !== "") {
                 if (this.state.tableData.values[i].value.toString().toLowerCase().indexOf(sTerm.toLowerCase()) !== -1) {
                     rows.push({ 
                         value: this.state.tableData.values[i].value, 

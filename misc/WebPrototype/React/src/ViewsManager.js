@@ -121,10 +121,10 @@ class ViewsManager extends React.Component {
             }
         );
 
-        makeServerCall('fetchEC2SqliteFilters',
+        makeServerCall('frontEndFiltersEC2',
             function (responseText) {
                 var response = JSON.parse(responseText);
-                console.log(response, 'response from fetch ec2 sqlite filters in views manager');
+                console.log(response, 'response from fetch front filters ec2 in views manager');
                 // Post the new data to the state and hide the window load-mask
                 // context.props.dispatch(
                 //     setCurrentVizParams(
@@ -384,8 +384,8 @@ class ViewsManager extends React.Component {
         var context = this;
         let imgPath = '';
         let legendSrc = '';
-        let strArr = this.state.selectionType.split(" ");
-        let firstWord = strArr[0];
+        // let strArr = this.state.selectionType.split(" ");
+        // let firstWord = strArr[0];
         
         if(this.state.selectionTypeURL !== ""){
             let index = this.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
@@ -463,11 +463,11 @@ class ViewsManager extends React.Component {
             }
         }
         // console.log(mandrList);
-        for (var i = admList.length - 1; i > -1; i--) {
-            if (admList[i][0] !== "Current Year RC with Prior Year Admits" && 
-            admList[i][0] !== "Global Admissions" && admList[i][0] !== "Applicants" 
-            && admList[i][0] !== "Applicants by High School" && admList[i][0] !== "Review Committee") {
-                admList.splice(i, 1);
+        for (var x = admList.length - 1; x > -1; x--) {
+            if (admList[x][0] !== "Current Year RC with Prior Year Admits" && 
+            admList[x][0] !== "Global Admissions" && admList[x][0] !== "Applicants" 
+            && admList[x][0] !== "Applicants by High School" && admList[x][0] !== "Review Committee") {
+                admList.splice(x, 1);
             }
         }
         // console.log(admList);
@@ -484,18 +484,18 @@ class ViewsManager extends React.Component {
         console.log(faList);
         */
 
-        for (var i = customList.length - 1; i > -1; i--) {
-            if (customList[i][0] !== "Applicants" && customList[i][0] !== "Pre-College" &&
-             customList[i][0] !== "Adversity" && customList[i][0] !== "First Source" && 
-             customList[i][0] !== "Retention Geo" && customList[i][0] !== "Retention Non Geo") {
-                customList.splice(i, 1);
+        for (var j = customList.length - 1; j > -1; j--) {
+            if (customList[j][0] !== "Applicants" && customList[j][0] !== "Pre-College" &&
+             customList[j][0] !== "Adversity" && customList[j][0] !== "First Source" && 
+             customList[j][0] !== "Retention Geo" && customList[j][0] !== "Retention Non Geo") {
+                customList.splice(j, 1);
             }
         }
         // console.log(customList);
 
-        for (var i = mandrList.length - 1; i > -1; i--) {
-            if (mandrList[i][0] !== "Prospects" && mandrList[i][0] !== "High School Profiles") {
-                mandrList.splice(i, 1);
+        for (var k = mandrList.length - 1; k > -1; k--) {
+            if (mandrList[k][0] !== "Prospects" && mandrList[k][0] !== "High School Profiles") {
+                mandrList.splice(k, 1);
             }
         }
 

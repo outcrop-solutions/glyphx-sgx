@@ -337,7 +337,7 @@ class TextRangeRow extends React.Component {
              var value = e.target.value.toUpperCase();
              var index = alphabet.indexOf(value);
 
-             if (index != -1) {
+             if (index !== -1) {
                  if (e.target.name === "min") {
                     this.setState({ min: index });
                  }

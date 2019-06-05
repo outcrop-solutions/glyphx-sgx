@@ -655,7 +655,7 @@ class FilterSideBarTopView extends React.Component {
                 }
             );
 
-            makeServerCall('fetchEC2SqliteFilters',
+            makeServerCall('frontEndFiltersEC2',
                 function (responseText) {
                     var response = JSON.parse(responseText);
                     console.log(response, 'response from fetch ec2 sqlite filters in sidebar top view');
@@ -930,7 +930,7 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onFilteredDataClick = (event) => {
         //var IDs = document.getElementById("GlyphViewer").contentWindow.getSelectedGlyphIDs();
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        // var iframe = document.getElementById('GlyphViewer').contentWindow;
         // var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
 
         var context = this;

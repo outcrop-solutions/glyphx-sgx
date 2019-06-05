@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall, makeAWSCall } from './ServerCallHelper.js';
+import { makeServerCall/* , makeAWSCall */ } from './ServerCallHelper.js';
 /* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
@@ -165,7 +165,7 @@ class allViewsModal extends React.Component {
 			// 		context.props.dispatch(editModalDisplay(true));
 			// 	}		
 			// );	
-				makeAWSCall('fetchEC2SqliteFilters', 
+				makeServerCall('frontEndFiltersEC2', 
 				function(responseText) {
 					// console.log(typeof responseText)
 					// let megaArr = [];

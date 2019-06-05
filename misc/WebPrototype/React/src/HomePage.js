@@ -250,7 +250,7 @@ class HomePage extends React.Component {
     }
     
     fetchAnnouncements(){
-        var context = this;
+        // var context = this;
 
         /*
         
@@ -357,8 +357,8 @@ class HomePage extends React.Component {
 			
 			this.props.storedViews.savedViews.forEach(function(savedView) {
                 //this needs to stay == for typecasting purposes
-				if (rowArray[3] == savedView.ID) {
-					savedViewObj = savedView
+				if (rowArray[3] === savedView.ID) {
+					savedViewObj = savedView;
                 }
 			});
 			
@@ -481,7 +481,7 @@ class HomePage extends React.Component {
                                                             letterSpacing: "0.14em",
                                                             textTransform: "uppercase",
                                                             textAlign: "center"}}
-                                                        >Training
+                                                        >Tutorials
                                                     </h2>
                                                 </a>
                                                 <Tutorials/>

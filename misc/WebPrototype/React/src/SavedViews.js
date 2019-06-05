@@ -86,7 +86,7 @@ class SavedViews extends React.Component {
             }
         );
 
-        makeServerCall('fetchEC2SqliteFilters',
+        makeServerCall('frontEndFiltersEC2',
             function (responseText) {
                 var response = JSON.parse(responseText);
                 console.log(response, 'response from fetching ec2 sqlite filters on saved views');
