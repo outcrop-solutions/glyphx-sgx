@@ -47,7 +47,7 @@ class ComponentLoadMask extends React.Component {
                 [loadingMessages[i], loadingMessages[j]] = [loadingMessages[j], loadingMessages[i]];
             }
 
-            var context = this;
+            // var context = this;
 
             // var loopVar = setInterval(function() {
             //     if (context.props.stopLoop) {

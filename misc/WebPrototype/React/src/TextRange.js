@@ -102,6 +102,37 @@ class TextRangeTable extends React.Component {
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
             }
         );
+
+        makeServerCall('applyFiltersEC2',
+        function(responseText, b) {
+            // var resultJson = JSON.parse(result);
+            // // debugger;
+            console.log(responseText, 'response from apply filts in text range');
+            // var data = resultJson.data;
+            // var tempRowIds = [];
+            
+            // if (data && Array.isArray(data)) {
+            //     if (data.length > 0) {							
+            //         for (var index = 0; index < data.length; index++) {
+            //             tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+            //         }
+            //     }
+            //     else {
+            //         // No data was matched.
+            //         console.log('NO MATCH');
+            //     }
+            // }
+            
+            // context.props.setFilterIDs(tempRowIds);
+            // iframe.filterGlyphs(tempRowIds);
+
+            // context.props.dispatch( setTimer(new Date().getTime()) );
+        },
+        {
+            post: true, 
+            data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+        }
+    );
     };
 
 

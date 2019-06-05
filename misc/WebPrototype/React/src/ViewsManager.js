@@ -120,6 +120,44 @@ class ViewsManager extends React.Component {
 				
             }
         );
+
+        makeServerCall('fetchEC2SqliteFilters',
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                console.log(response, 'response from fetch ec2 sqlite filters in views manager');
+                // Post the new data to the state and hide the window load-mask
+                // context.props.dispatch(
+                //     setCurrentVizParams(
+                //         {
+                //             tableName: response.tableName,
+                //             datasourceId: response.datasourceId ,
+                //             query: query,
+                //             originalVizName:originalVizName,
+                //             filterAllowedColumnList:  response.filterAllowedColumnList,
+                //             sdtPath: sdtPath,
+                //             savedViz: true,
+                //             vizID:savedVizObj.ID,
+                //             savedVizName: savedVizObj.Name,
+                //             frontEndFilterString: savedVizObj.frontEndFilterString,
+                //             initialX: response.initialX,
+                //             initialY: response.initialY,
+                //             initialZ: response.initialZ
+                //         }
+                //     )
+                // );
+
+                // if(typeof callback === 'function'){
+				// 	callback(true);
+				// 	//context.props.history.push('/glyph-viewer');
+				// }
+				
+            }, {
+                post: true,
+                data: {
+                    key: tempPath
+                }
+            }
+        );
     }
 	
 	// Moving this here instead of AllViewsModal.js due to refs problem

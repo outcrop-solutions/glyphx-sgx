@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
-import { makeServerCall, makeAWSCall, } from './ServerCallHelper.js';
+import { makeServerCall, /* makeAWSCall, */ } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -84,9 +84,9 @@ class HomePage extends React.Component {
 
             this.props.dispatch( setTimer(new Date().getTime()) );
 
-            var context = this;
+            // var context = this;
             
-            var x = setInterval(function() {
+            setInterval(function() {
                 // console.log(context.state, 'what is this?!?!');
                 // context.setState(context.state);
             }, 60000);
@@ -386,7 +386,7 @@ class HomePage extends React.Component {
        /*  console.log(this) */
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
-		var context = this;
+		// var context = this;
         return (
             <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
 
@@ -504,16 +504,6 @@ class HomePage extends React.Component {
                                                     letterSpacing: "0.14em",
                                                     textTransform: "uppercase",
                                                     textAlign: "center"}}
-                                               /*  onClick={() => {
-                                                    makeAWSCall('/checkFrontEndFilterQuery', function(responseText){
-                                                        console.log(responseText)
-                                                    },{
-                                                        post: true,
-                                                        data: {
-                                                            key: "GlobalAdmissions"
-                                                        }
-                                                    })
-                                                }} */
                                                 >Annoucements
                                         </h2>
                                         <AnnouncementsDisplay />

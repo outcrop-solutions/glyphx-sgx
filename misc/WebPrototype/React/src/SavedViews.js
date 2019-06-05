@@ -85,6 +85,45 @@ class SavedViews extends React.Component {
 				
             }
         );
+
+        makeServerCall('fetchEC2SqliteFilters',
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                console.log(response, 'response from fetching ec2 sqlite filters on saved views');
+                // Post the new data to the state and hide the window load-mask
+                // context.props.dispatch(
+                //     setCurrentVizParams(
+                //         {
+                //             tableName: response.tableName,
+                //             datasourceId: response.datasourceId ,
+                //             query: query,
+                //             originalVizName:originalVizName,
+                //             filterAllowedColumnList:  response.filterAllowedColumnList,
+                //             sdtPath: sdtPath,
+                //             savedViz: true,
+                //             vizID:savedVizObj.ID,
+                //             savedVizName: savedVizObj.Name,
+                //             frontEndFilterString: savedVizObj.frontEndFilterString,
+                //             initialX: response.initialX,
+                //             initialY: response.initialY,
+                //             initialZ: response.initialZ
+                //         }
+                //     )
+                // );
+
+                // if(typeof callback === 'function'){
+				// 	callback(true);
+				// 	//context.props.history.push('/glyph-viewer');
+				// }
+				
+            },
+            {
+                post: true,
+                data: {
+                    key: tempPath
+                }
+            }
+        );
     }
 	
 	goToVizView(){

@@ -120,9 +120,9 @@ class SettingsModal extends React.Component {
 			return({ label: value, value: value });
 		});
 
-        var colorThemes = this.state.colorThemes.map(function(value) {
-			return({ label: value, value: value });
-		});
+        // var colorThemes = this.state.colorThemes.map(function(value) {
+		// 	return({ label: value, value: value });
+		// });
 
         return(
             <Dialog

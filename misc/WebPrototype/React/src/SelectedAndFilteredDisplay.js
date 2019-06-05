@@ -100,7 +100,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 
 	render() {
 		var data = this.props.data;
-		var context = this;
+		// var context = this;
         var dataKeys;
 
         if (data[0]) {

@@ -246,6 +246,17 @@ class FilterTable extends React.Component {
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState } 
             }
         );
+
+        makeServerCall('applyFiltersEC2',
+            function(responseText) {
+                console.log(JSON.parse(responseText), 'response from apply filts on filt table');
+
+
+            },
+            {
+                post: true,
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState}
+            });
     };
 
 
@@ -663,7 +674,7 @@ class FilterTable extends React.Component {
         var tableBodyHeight = (300 - 32) + "px"; */
         //creating the rows
         var rows = this.createRows();
-        console.log(rows);
+        // console.log(rows);
 
         return (
 

@@ -267,7 +267,7 @@ class Login extends React.Component {
      * -ADCMT
      **/
     handleForgotPassSubmit = () => {
-        var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
+        // var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
         //console.log(email);
         this.handleCloseForgotPassDailog();
 

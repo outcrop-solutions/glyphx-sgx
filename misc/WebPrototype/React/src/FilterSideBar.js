@@ -37,7 +37,7 @@ class FilterSideBar extends React.Component {
 
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
-        var context = this;
+        // var context = this;
         for (var i = 0; i < collapsibles.length; i++) {
             collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
@@ -52,9 +52,12 @@ class FilterSideBar extends React.Component {
         // this.props.VizParams;
 
         // debugger;
-
+        let start = Date.now();
+        let end;
         makeServerCall('loadVisualization',
             function(res,b,c) {
+                end = Date.now();
+                console.log(end-start + "milliseconds");
             // Hide the loadmask.
                 
                 if (typeof res === 'string') {
@@ -62,10 +65,11 @@ class FilterSideBar extends React.Component {
                 }
 
                 // debugger;
-                console.log(res, context.props.VizParams);
+                console.log(res.data, context.props.VizParams);
                 // if (result) console.log(result);
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
+                    console.log(result);
                     context.makeFilterStructure(result);
                     context.setState({ tableData: result, loadingDone: true });
                     context.props.dispatch(setStatData(result));
@@ -102,7 +106,57 @@ class FilterSideBar extends React.Component {
                     filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
                 }
             }
-        )
+        );
+        makeServerCall('loadVisualizationEC2',
+            function(res,b,c) {
+            // Hide the loadmask.
+                
+                if (typeof res === 'string') {
+                    res = JSON.parse(res);
+                }
+
+                // debugger;
+                console.log(res, context.props.VizParams, 'new load viz ec2');
+                // if (result) console.log(result);
+                // if (Array.isArray(res.data) && res.data.length > 0) {
+                //     var result = context.convertToCompatibleDataObject(res.data);
+                //     context.makeFilterStructure(result);
+                //     context.setState({ tableData: result, loadingDone: true });
+                //     context.props.dispatch(setStatData(result));
+                //     context.props.updateViz(res.glyphViewerKey);
+
+                //     // makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
+                //     //     function (responseText) { 
+                //     //         var response = JSON.parse(responseText);
+
+                //     //         // debugger;
+
+                //     //         context.setState({ 
+                //     //             initialX: response.initialX,
+                //     //             initialY: response.initialY, 
+                //     //             initialZ: response.initialZ,
+                //     //         });
+                //     //     }
+                //     // );
+                //     // console.log(context.props.initialX, context.props.initialY, context.props.initialZ)
+                    
+                // }
+                // else {
+                //     // 0 records matched.
+                //     console.log('none matched');
+                // }
+            },
+            {
+                post: true, 
+                data:  { 
+                    tableName: context.props.VizParams.tableName, 
+                    query: context.props.VizParams.query, 
+                    sdtPath: context.props.VizParams.sdtPath, 
+                    datasourceId: context.props.VizParams.datasourceId ,
+                    filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
+                }
+            }
+        );
    }
 
    
@@ -134,17 +188,17 @@ class FilterSideBar extends React.Component {
 
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
         let URL2 = "fetchSelectedRowDataEC2";
-        let originalQuery = context.props.VizParams.query;
-        console.log(URL, context.props.VizParams.query, originalQuery.indexOf("WHERE"), "URL")
+        // let originalQuery = context.props.VizParams.query;
+        console.log(query, context.props.VizParams.query, "URL")
         
-        let originalSlice = originalQuery.slice(originalQuery.indexOf("WHERE")+5).trim();
-        console.log(originalSlice);
+        // let originalSlice = originalQuery.slice(originalQuery.indexOf("WHERE")).trim();
+        // console.log(originalSlice);
         // debugger;
-
-        let concatStr = `${query} AND ${originalSlice}`;
-        let quoteReplace = concatStr.replace(/"/g, "'");
-        console.log(quoteReplace);
-
+        console.log(query.replace(/"/g, "'"));
+        // let concatStr = `${query} ${originalSlice}`;
+        // let quoteReplace = concatStr.replace(/"/g, "'");
+        // console.log(quoteReplace);
+        
         return new Promise(function(resolve, reject) {
            /*  var result = 'A is done'    */     
 
@@ -173,14 +227,17 @@ class FilterSideBar extends React.Component {
             );
             makeServerCall(URL2, 
                 function(responseText) {
+                    if(typeof responseText === 'string'){
+                        responseText = JSON.parse(responseText);
+                    }
                     if(responseText){
-                        console.log(JSON.parse(responseText));
+                        console.log(responseText.body);
                     }
                 },
                 {
                   post: true,
                   data: {
-                      query: quoteReplace
+                      query: query.replace(/"/g, "'")
                   }  
                 })
         });

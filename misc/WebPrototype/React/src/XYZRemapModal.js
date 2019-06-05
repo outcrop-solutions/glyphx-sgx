@@ -150,6 +150,198 @@ class XYZRemapModal extends React.Component {
         }
     }
 
+    onSettingSaveXYZRes(responseText){
+        var response = responseText;
+
+        if (typeof responseText === 'string') {
+            response = JSON.parse(response);
+        }
+        
+        console.log(response);
+
+        var responseDetails = {
+            X: this.state.XTemp,
+            Y: this.state.YTemp,
+            Z: this.state.ZTemp
+        }
+
+        // debugger;
+
+        if (responseDetails.X != null) {
+            if (isNaN(response.data[0][responseDetails.X])) {
+                responseDetails.Xtype = "STR";
+                responseDetails.XUnique = [];
+            }
+            else {
+                responseDetails.Xtype = "INT";
+                responseDetails.XMin = parseInt(response.data[0][responseDetails.X], 10);
+                responseDetails.XMax = parseInt(response.data[0][responseDetails.X], 10);
+            }
+        }
+
+        if (responseDetails.Y != null) {
+            if (isNaN(response.data[0][responseDetails.Y])) {
+                responseDetails.Ytype = "STR";
+                responseDetails.YUnique = [];
+            }
+            else {
+                responseDetails.Ytype = "INT";
+                responseDetails.YMin = parseInt(response.data[0][responseDetails.Y], 10);
+                responseDetails.YMax = parseInt(response.data[0][responseDetails.Y], 10);
+            }
+        }
+
+        if (responseDetails.Z != null) {
+            if (isNaN(response.data[0][responseDetails.Z])) {
+                responseDetails.Ztype = "STR";
+                responseDetails.ZUnique = [];
+            }
+            else {
+                responseDetails.Ztype = "INT";
+                responseDetails.ZMin = parseInt(response.data[0][responseDetails.Z], 10);
+                responseDetails.ZMax = parseInt(response.data[0][responseDetails.Z], 10);
+            }
+        }
+
+
+        
+        for (var i = 0; i < response.data.length; i++) {
+             if (responseDetails.Xtype === "INT") {
+                 var parseX = parseInt(response.data[i][responseDetails.X], 10);
+                 if (responseDetails.XMin > parseX) {
+                     responseDetails.XMin = parseX;
+                 }
+                 else if (responseDetails.XMax < parseX) {
+                     responseDetails.XMax = parseX;
+                 }
+             }
+             else {
+                if (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) === -1) {
+                    responseDetails.XUnique.push(response.data[i][responseDetails.X]);
+                }
+             }
+
+             if (responseDetails.Y !== responseDetails.X) {
+                if (responseDetails.Ytype === "INT") {
+                    var parseY = parseInt(response.data[i][responseDetails.Y], 10);
+                    if (responseDetails.YMin > parseY) {
+                        responseDetails.YMin = parseY;
+                    }
+                    else if (responseDetails.YMax < parseY) {
+                        responseDetails.YMax = parseY;
+                    }
+                }
+                else {
+                    if (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) === -1) {
+                        responseDetails.YUnique.push(response.data[i][responseDetails.Y]);
+                    }
+                }
+             }
+
+             if (responseDetails.Z !== responseDetails.X && responseDetails.Z !== responseDetails.Y) {
+                if (responseDetails.Ztype === "INT") {
+                    var parseZ = parseInt(response.data[i][responseDetails.Z], 10);
+                    if (responseDetails.ZMin > parseZ) {
+                        responseDetails.ZMin = parseZ;
+                    }
+                    else if (responseDetails.ZMax < parseZ) {
+                        responseDetails.ZMax = parseZ;
+                    }
+                }
+                else {
+                    if (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) === -1) {
+                        responseDetails.ZUnique.push(response.data[i][responseDetails.Z]);
+                    }
+                }
+             }
+        }
+
+        if (responseDetails.XUnique) {
+            responseDetails.XUnique.sort();
+        }
+        if (responseDetails.YUnique) {
+            responseDetails.YUnique.sort();
+        }
+        if (responseDetails.ZUnique) {
+            responseDetails.ZUnique.sort();
+        }
+
+        if (responseDetails.Y === responseDetails.X) {
+            if (responseDetails.Ytype === "INT") {
+                responseDetails.YMin = responseDetails.XMin;
+                responseDetails.YMax = responseDetails.XMax;
+            }
+            else {
+                responseDetails.YUnique = responseDetails.XUnique;
+            }
+        }
+
+        if (responseDetails.Z === responseDetails.X) {
+            if (responseDetails.Ztype === "INT") {
+                responseDetails.ZMin = responseDetails.XMin;
+                responseDetails.ZMax = responseDetails.XMax;
+            }
+            else {
+                responseDetails.ZUnique = responseDetails.XUnique;
+            }
+        }
+        else if (responseDetails.Z === responseDetails.Y) {
+            if (responseDetails.Ztype === "INT") {
+                responseDetails.ZMin = responseDetails.YMin;
+                responseDetails.ZMax = responseDetails.YMax;
+            }
+            else {
+                responseDetails.ZUnique = responseDetails.YUnique;
+            }
+        }
+
+        responseDetails;
+        // debugger;
+
+        
+        var XYZDataStructure = [];
+
+        for (var i = 0; i < response.data.length; i++) {
+
+            var node = { rowID: response.data[i].rowid };
+
+            if (responseDetails.Xtype === "INT") {
+                node.X = this.linearInterpolation(responseDetails.XMin, responseDetails.XMax, this.state.XLowerRange, this.state.XUpperRange, parseInt(response.data[i][responseDetails.X], 10));
+            }
+            else {
+                node.X = (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) + 1) * (this.state.XUpperRange - this.state.XLowerRange) / (responseDetails.XUnique.length) + this.state.XLowerRange
+            }
+
+            if (responseDetails.Ytype === "INT") {
+                node.Y = this.linearInterpolation(responseDetails.YMin, responseDetails.YMax, this.state.YLowerRange, this.state.YUpperRange, parseInt(response.data[i][responseDetails.Y], 10));
+            }
+            else {
+                node.Y = (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) + 1) * (this.state.YUpperRange - this.state.YLowerRange) / (responseDetails.YUnique.length) + this.state.YLowerRange
+            }
+
+            if (responseDetails.Ztype === "INT") {
+                node.Z = this.linearInterpolation(responseDetails.ZMin, responseDetails.ZMax, this.state.ZLowerRange, this.state.ZUpperRange, parseInt(response.data[i][responseDetails.Z], 10));
+            }
+            else {
+                node.Z = (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) + 1) * (this.state.ZUpperRange - this.state.ZLowerRange) / (responseDetails.ZUnique.length) + this.state.ZLowerRange
+            }
+
+            XYZDataStructure.push(node);
+        }
+
+        this.props.dispatch(editModalDisplay(false));
+
+        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        iframe.updateXYZCoordinates(XYZDataStructure, responseDetails.X, responseDetails.Y, responseDetails.Z);
+
+        //console.log(XYZDataStructure);
+        // debugger;
+
+        this.props.dispatch( setTimer(new Date().getTime()) );
+
+        
+    }
+
 
     /**
      * When settings are saved, updates the redux store and local state to reflect the changes
@@ -177,206 +369,33 @@ class XYZRemapModal extends React.Component {
             var query = "SELECT rowid, " + cols.substring(0, cols.length - 2) + " FROM " + this.props.VizParams.tableName;
             //var query = "SELECT rowid, * FROM " + this.props.VizParams.tableName;
 
-            var URL = "getXYZData?searchQuery=" + query; 
+            let URL = "getXYZData?searchQuery=" + query; 
+            let URL2 = "getXYZDataEC2";
             // debugger;
 
             var context = this;
         
             return new Promise(function(resolve, reject) {
-                var result = 'A is done'        
+                // var result = 'A is done'        
 
                 // Get the data corresponding to the URL
                 makeServerCall(URL,
                     function (responseText) { 
-                        var response = responseText;
-
-                        if (typeof responseText === 'string') {
-                            response = JSON.parse(response);
-                        }
-
-                        var responseDetails = {
-                            X: context.state.XTemp,
-                            Y: context.state.YTemp,
-                            Z: context.state.ZTemp
-                        }
-
-                        // debugger;
-
-                        if (responseDetails.X != null) {
-                            if (isNaN(response.data[0][responseDetails.X])) {
-                                responseDetails.Xtype = "STR";
-                                responseDetails.XUnique = [];
-                            }
-                            else {
-                                responseDetails.Xtype = "INT";
-                                responseDetails.XMin = parseInt(response.data[0][responseDetails.X], 10);
-                                responseDetails.XMax = parseInt(response.data[0][responseDetails.X], 10);
-                            }
-                        }
-
-                        if (responseDetails.Y != null) {
-                            if (isNaN(response.data[0][responseDetails.Y])) {
-                                responseDetails.Ytype = "STR";
-                                responseDetails.YUnique = [];
-                            }
-                            else {
-                                responseDetails.Ytype = "INT";
-                                responseDetails.YMin = parseInt(response.data[0][responseDetails.Y], 10);
-                                responseDetails.YMax = parseInt(response.data[0][responseDetails.Y], 10);
-                            }
-                        }
-
-                        if (responseDetails.Z != null) {
-                            if (isNaN(response.data[0][responseDetails.Z])) {
-                                responseDetails.Ztype = "STR";
-                                responseDetails.ZUnique = [];
-                            }
-                            else {
-                                responseDetails.Ztype = "INT";
-                                responseDetails.ZMin = parseInt(response.data[0][responseDetails.Z], 10);
-                                responseDetails.ZMax = parseInt(response.data[0][responseDetails.Z], 10);
-                            }
-                        }
-
-
-                        
-                        for (var i = 0; i < response.data.length; i++) {
-                             if (responseDetails.Xtype === "INT") {
-                                 var parseX = parseInt(response.data[i][responseDetails.X], 10);
-                                 if (responseDetails.XMin > parseX) {
-                                     responseDetails.XMin = parseX;
-                                 }
-                                 else if (responseDetails.XMax < parseX) {
-                                     responseDetails.XMax = parseX;
-                                 }
-                             }
-                             else {
-                                if (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) === -1) {
-                                    responseDetails.XUnique.push(response.data[i][responseDetails.X]);
-                                }
-                             }
-
-                             if (responseDetails.Y !== responseDetails.X) {
-                                if (responseDetails.Ytype === "INT") {
-                                    var parseY = parseInt(response.data[i][responseDetails.Y], 10);
-                                    if (responseDetails.YMin > parseY) {
-                                        responseDetails.YMin = parseY;
-                                    }
-                                    else if (responseDetails.YMax < parseY) {
-                                        responseDetails.YMax = parseY;
-                                    }
-                                }
-                                else {
-                                    if (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) === -1) {
-                                        responseDetails.YUnique.push(response.data[i][responseDetails.Y]);
-                                    }
-                                }
-                             }
-
-                             if (responseDetails.Z !== responseDetails.X && responseDetails.Z !== responseDetails.Y) {
-                                if (responseDetails.Ztype === "INT") {
-                                    var parseZ = parseInt(response.data[i][responseDetails.Z], 10);
-                                    if (responseDetails.ZMin > parseZ) {
-                                        responseDetails.ZMin = parseZ;
-                                    }
-                                    else if (responseDetails.ZMax < parseZ) {
-                                        responseDetails.ZMax = parseZ;
-                                    }
-                                }
-                                else {
-                                    if (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) === -1) {
-                                        responseDetails.ZUnique.push(response.data[i][responseDetails.Z]);
-                                    }
-                                }
-                             }
-                        }
-
-                        if (responseDetails.XUnique) {
-                            responseDetails.XUnique.sort();
-                        }
-                        if (responseDetails.YUnique) {
-                            responseDetails.YUnique.sort();
-                        }
-                        if (responseDetails.ZUnique) {
-                            responseDetails.ZUnique.sort();
-                        }
-
-                        if (responseDetails.Y === responseDetails.X) {
-                            if (responseDetails.Ytype === "INT") {
-                                responseDetails.YMin = responseDetails.XMin;
-                                responseDetails.YMax = responseDetails.XMax;
-                            }
-                            else {
-                                responseDetails.YUnique = responseDetails.XUnique;
-                            }
-                        }
-
-                        if (responseDetails.Z === responseDetails.X) {
-                            if (responseDetails.Ztype === "INT") {
-                                responseDetails.ZMin = responseDetails.XMin;
-                                responseDetails.ZMax = responseDetails.XMax;
-                            }
-                            else {
-                                responseDetails.ZUnique = responseDetails.XUnique;
-                            }
-                        }
-                        else if (responseDetails.Z === responseDetails.Y) {
-                            if (responseDetails.Ztype === "INT") {
-                                responseDetails.ZMin = responseDetails.YMin;
-                                responseDetails.ZMax = responseDetails.YMax;
-                            }
-                            else {
-                                responseDetails.ZUnique = responseDetails.YUnique;
-                            }
-                        }
-
-                        responseDetails;
-                        // debugger;
-
-                        
-                        var XYZDataStructure = [];
-
-                        for (var i = 0; i < response.data.length; i++) {
-
-                            var node = { rowID: response.data[i].rowid };
-
-                            if (responseDetails.Xtype === "INT") {
-                                node.X = context.linearInterpolation(responseDetails.XMin, responseDetails.XMax, context.state.XLowerRange, context.state.XUpperRange, parseInt(response.data[i][responseDetails.X], 10));
-                            }
-                            else {
-                                node.X = (responseDetails.XUnique.indexOf(response.data[i][responseDetails.X]) + 1) * (context.state.XUpperRange - context.state.XLowerRange) / (responseDetails.XUnique.length) + context.state.XLowerRange
-                            }
-
-                            if (responseDetails.Ytype === "INT") {
-                                node.Y = context.linearInterpolation(responseDetails.YMin, responseDetails.YMax, context.state.YLowerRange, context.state.YUpperRange, parseInt(response.data[i][responseDetails.Y], 10));
-                            }
-                            else {
-                                node.Y = (responseDetails.YUnique.indexOf(response.data[i][responseDetails.Y]) + 1) * (context.state.YUpperRange - context.state.YLowerRange) / (responseDetails.YUnique.length) + context.state.YLowerRange
-                            }
-
-                            if (responseDetails.Ztype === "INT") {
-                                node.Z = context.linearInterpolation(responseDetails.ZMin, responseDetails.ZMax, context.state.ZLowerRange, context.state.ZUpperRange, parseInt(response.data[i][responseDetails.Z], 10));
-                            }
-                            else {
-                                node.Z = (responseDetails.ZUnique.indexOf(response.data[i][responseDetails.Z]) + 1) * (context.state.ZUpperRange - context.state.ZLowerRange) / (responseDetails.ZUnique.length) + context.state.ZLowerRange
-                            }
-
-                            XYZDataStructure.push(node);
-                        }
-
-                        context.props.dispatch(editModalDisplay(false));
-
-                        var iframe = document.getElementById('GlyphViewer').contentWindow;
-                        iframe.updateXYZCoordinates(XYZDataStructure, responseDetails.X, responseDetails.Y, responseDetails.Z);
-
-                        //console.log(XYZDataStructure);
-                        // debugger;
-
-                        context.props.dispatch( setTimer(new Date().getTime()) );
-
-                        
+                       context.onSettingSaveXYZRes(responseText);
                     }
                 );
+                
+                makeServerCall(URL2, 
+                    function(responseText){
+                        // context.onSettingSaveXYZRes(responseText);
+                        console.log(JSON.parse(responseText));
+                    },
+                    {
+                        post: true,
+                        data: {
+                            query
+                        }
+                    });
             });
         }
 

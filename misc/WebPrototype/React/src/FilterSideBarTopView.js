@@ -36,7 +36,7 @@ class FilterSideBarTopView extends React.Component {
         super(props);
 
         var tableSelectItems = [];
-        if (typeof props.VizParams.tableName != 'array') {
+        if (!Array.isArray(props.VizParams.tableName)) {
             tableSelectItems.push({ label: props.VizParams.tableName, value: props.VizParams.tableName });
         }
         else {
@@ -305,7 +305,7 @@ class FilterSideBarTopView extends React.Component {
             else {
                 
                 // Save the view
-                var id = context.saveView(context,viewName,true);
+                context.saveView(context,viewName,true);
                 
             }
         }
@@ -393,7 +393,8 @@ class FilterSideBarTopView extends React.Component {
             }
         }
 		
-		var currentDate = new Date();
+        var currentDate = new Date();
+        
         makeServerCall('saveView',
             function(res ,b, c) {
             // Hide the loadmask.
@@ -510,6 +511,38 @@ class FilterSideBarTopView extends React.Component {
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
             }
         );
+        
+        makeServerCall('applyFiltersEC2',
+            function(result, b) {
+                var resultJson = JSON.parse(result);
+                // debugger;
+                console.log(resultJson, 'applyFilters');
+                var data = resultJson.data;
+                var tempRowIds = [];
+                
+				// if (data && Array.isArray(data)) {
+				// 	if (data.length > 0) {							
+				// 		for (var index = 0; index < data.length; index++) {
+				// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+				// 		}
+				// 	}
+				// 	else {
+				// 		// No data was matched.
+				// 		console.log('NO MATCH');
+				// 	}
+				// }
+
+                // context.props.setFilterIDs(tempRowIds);
+
+                // iframe.filterGlyphs(tempRowIds);
+
+                // context.props.dispatch( setTimer(new Date().getTime()) );
+            },
+            {
+                post: true, 
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
+            }
+        );
     };
 
 
@@ -619,6 +652,44 @@ class FilterSideBarTopView extends React.Component {
 
                     // Hide mask
                     context.props.showHideLoadingMask(false);
+                }
+            );
+
+            makeServerCall('fetchEC2SqliteFilters',
+                function (responseText) {
+                    var response = JSON.parse(responseText);
+                    console.log(response, 'response from fetch ec2 sqlite filters in sidebar top view');
+                    // Post the new data to the state and hide the window load-mask
+                    // context.props.dispatch(
+                    //     setCurrentVizParams(
+                    //         {
+                    //             tableName: response.tableName,
+                    //             datasourceId: response.datasourceId ,
+                    //             query: query,
+                    //             originalVizName:originalVizName,
+                    //             filterAllowedColumnList:  response.filterAllowedColumnList,
+                    //             sdtPath: sdtPath,
+                    //             savedViz: true,
+                    //             vizID:savedVizObj.ID,
+                    //             savedVizName: savedVizObj.Name,
+                    //             frontEndFilterString: savedVizObj.frontEndFilterString
+                    //         }
+                    //     )
+                    // );
+
+                    // context.props.dispatch( setTimer(new Date().getTime()) );
+
+                    // //context.props.history.push('/glyph-viewer');
+                    // context.props.reloadParent();
+
+                    // // Hide mask
+                    // context.props.showHideLoadingMask(false);
+                },
+                {
+                    post: true,
+                    data: {
+                        key: sdtPath
+                    }
                 }
             );
         }
@@ -860,7 +931,7 @@ class FilterSideBarTopView extends React.Component {
     onFilteredDataClick = (event) => {
         //var IDs = document.getElementById("GlyphViewer").contentWindow.getSelectedGlyphIDs();
         var iframe = document.getElementById('GlyphViewer').contentWindow;
-        var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
+        // var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
 
         var context = this;
 
