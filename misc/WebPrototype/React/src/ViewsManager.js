@@ -388,20 +388,16 @@ class ViewsManager extends React.Component {
 
     getLegend() {
         var context = this;
-        // let imgPath = '';
-        // let legendSrc = '';
         // let strArr = this.state.selectionType.split(" ");
         // let firstWord = strArr[0];
         
-        // console.log('caled get legend');
         let index = context.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
         let sdtPath = context.state.selectionTypeURL.substring(index + 1);
-        // console.log(window.encodeURI('getLegendURL/' + sdtPath), 'sdtpath');
+
         makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
             function (responseText) { 
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
-                // console.log(response.body, 'RESPONSETEXT');
                 let imgPath = response.body;
                 /**
                  * MUTATE BACKEND CALL TO RETURN MORE THAN 1 PNG
@@ -413,23 +409,6 @@ class ViewsManager extends React.Component {
                 }
             }
         );
-            
-        // if(this.state.legendPng){
-        //     return(
-        //         <div style = {{
-        //             marginLeft: "15px",
-        //             width: "35%",}} >
-                            
-        //             <img
-        //                 src = {'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/' + window.encodeURIComponent(this.state.legendPng)} 
-        //                 style = {{ width: '99%', height: "100%", borderRadius: "3px" }} 
-        //                 title = "Legend.png"
-        //                 alt = "Legend" 
-        //                 draggable = { false } 
-        //             />
-        //         </div>
-        //     );
-        // }
     }
 
     render() {
@@ -770,8 +749,6 @@ class ViewsManager extends React.Component {
                         </div>
 
                         {/*displays legend Png for newer users*/}
-            
-                        {/* {this.getLegend()} */}
                         
                         <div style = {{
                             display: this.state.legendPng ? "" : "none",

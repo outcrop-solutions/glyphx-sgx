@@ -165,7 +165,7 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{overflow: "auto", height: "33%", marginBottom: "4px"}}>
+            <div style = {{height: "33%", marginBottom: "4px"}}>
                 <div>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
@@ -233,7 +233,7 @@ class ViewsTab extends React.Component {
                     </div>
                 </div>
                 {/* Saved Views Tab */}
-                <div id="Saved" className="tabcontent">
+                <div id="Saved" className="tabcontent" style={{height: "70%", overflow: "auto"}}>
                     <SavedViews/> 
                 </div>
                 

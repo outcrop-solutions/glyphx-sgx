@@ -579,13 +579,13 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox>
+                <Flexbox style={{padding: "3px"}}>
                     <Table 
                         className = {this.props.id}
                         fixedHeader = { true }
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
-                        height = "100%"
+                        // height = "100%"
                         width = "100%"
                         /* wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" }}*/
                         //onRowSelection = { () => console.log("row selected") }
