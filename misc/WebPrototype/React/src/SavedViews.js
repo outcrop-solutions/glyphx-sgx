@@ -136,7 +136,7 @@ class SavedViews extends React.Component {
 
     render() {
         return (
-            <div style = {{ padding: "10px 0px 0px 0px" }} >
+            <div>
 
                 <div style = {{ marginBottom: "3px" }} >
                 {/*outdated collapside bar that was implemented on ViewsManager. Working code.*/}

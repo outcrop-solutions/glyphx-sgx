@@ -25,7 +25,9 @@ class GlyphLegend extends React.Component {
         console.log(window.encodeURI('getLegendURL/')+this.props.VizParams.sdtPath)
         makeServerCall(window.encodeURI('getLegendURL/' + this.props.VizParams.sdtPath ),
             function (responseText) { 
-
+                let response;
+                if(typeof responseText === 'string') response = JSON.parse(responseText);
+                let imgPath_1 = response.body;
                 // debugger;
                 //console.log("RESPONSE TEXT");
                 //console.log(responseText);
@@ -34,8 +36,10 @@ class GlyphLegend extends React.Component {
 
                 //console.log(imgPath);
 
-                context.setState({ imgPath: responseText });
-                console.log(context.state.imgPath, window.SERVER_URL, context.props.VizParams.sdtPath)
+                context.setState({ 
+                    imgPath: `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath_1)}`
+                });
+                // console.log(context.state.imgPath, window.SERVER_URL, context.props.VizParams.sdtPath)
             }
         );
         
@@ -47,11 +51,11 @@ class GlyphLegend extends React.Component {
         //var imgsrc = window.SERVER_URL + "getLegendImg/" + this.props.VizParams.sdtPath;
         //var imgsrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.props.VizParams.sdtPath);
 
-        var imgsrc = '';
+        // var imgsrc = '';
 
-        if (this.state.imgPath !== '') {
-            imgsrc = window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.state.imgPath);
-        }
+        // if (this.state.imgPath !== '') {
+        //     imgsrc = this.state.imgPath;
+        // }
 
         // debugger;
 
@@ -89,7 +93,7 @@ class GlyphLegend extends React.Component {
                         <FontIcon 
                             className = "fa fa-external-link cursorHand" 
                             style = {{ color: "#ffffff",  fontSize: "24px", margin: "2px 3px 0px 0px", float: "right", paddingRight: "2px" }} 
-                            onClick = { () => window.open(window.SERVER_URL + "getLegendImg/" + window.encodeURIComponent(this.state.imgPath)) } 
+                            onClick = { () => window.open(this.state.imgPath) } 
                         />
                     </div>
 
@@ -97,7 +101,7 @@ class GlyphLegend extends React.Component {
                         
                         <img 
                             //src = { this.state.imgPath } 
-                            src = { imgsrc } 
+                            src = { this.state.imgPath !== "" ? this.state.imgPath : "#" } 
                             style = {{ width: '100%', height: "calc(100% - 26px)", borderRadius: "3px" }} 
                             alt = "Legend" 
                             className = "legendImage noselect" 

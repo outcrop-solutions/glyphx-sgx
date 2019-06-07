@@ -405,7 +405,9 @@ class ViewsManager extends React.Component {
                  */
                 
                 if (imgPath !== '' && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
-                    context.setState({legendPng: imgPath});
+                    context.setState({
+                        legendPng: 
+                        `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath)}`});
                 }
             }
         );
@@ -751,12 +753,13 @@ class ViewsManager extends React.Component {
                         {/*displays legend Png for newer users*/}
                         
                         <div style = {{
-                            display: this.state.legendPng ? "" : "none",
+                            display: this.state.legendPng.length ? "" : "none",
                             marginLeft: "15px",
                             width: "35%",}} >
                                     
                             <img
-                                src = {'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/' + window.encodeURIComponent(this.state.legendPng)} 
+                                src = {this.state.legendPng ? 
+                                    this.state.legendPng : "#"} 
                                 style = {{ width: '99%', height: "100%", borderRadius: "3px" }} 
                                 title = "Legend.png"
                                 alt = "Legend" 

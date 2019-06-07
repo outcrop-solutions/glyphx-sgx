@@ -323,3 +323,17 @@ textarea {
   color: #018cbb;
 }
 
+.high-count-div{
+  margin: auto; 
+  text-align: center; 
+  font-size: 16px;
+}
+
+.light-color{
+  background-color: white;
+}
+
+.dark-color{
+  background-color: rgb(124, 120, 160);
+}
+

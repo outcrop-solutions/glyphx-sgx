@@ -118,6 +118,7 @@ class VisualizationView extends React.Component {
 
 
         document.title = "GlyphEd - Viewer";
+
     }
 
     componentDidUpdate(){
@@ -142,6 +143,10 @@ class VisualizationView extends React.Component {
             alert("Your session has expired due to inactivity.");
         }
         
+    }
+
+    componentWillUnmount(){
+        this.props.dispatch(editModalDisplay_2(false));
     }
 
     
@@ -439,6 +444,11 @@ export const editModalDisplay = (timeoutModal) => ({
 export const clearFilterOptions = () => ({
     type: 'CLEAR_FILTER',
     
+});
+
+export const editModalDisplay_2 = (legendModal) => ({
+    type: 'EDIT_MODAL_DISPLAY',
+    legendModal,
 });
 
 

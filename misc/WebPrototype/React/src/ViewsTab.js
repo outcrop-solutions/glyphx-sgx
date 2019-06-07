@@ -233,7 +233,7 @@ class ViewsTab extends React.Component {
                     </div>
                 </div>
                 {/* Saved Views Tab */}
-                <div id="Saved" className="tabcontent" style={{height: "70%", overflow: "auto"}}>
+                <div id="Saved" className="tabcontent customScroll" style={{height: "70%", overflow: "auto", marginTop: "7px"}}>
                     <SavedViews/> 
                 </div>
                 

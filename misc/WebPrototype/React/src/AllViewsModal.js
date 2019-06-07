@@ -29,7 +29,8 @@ class allViewsModal extends React.Component {
 		mouseup: true,
 		selectAll: [],
 		loadMask: false,
-		loadDone: false
+		loadDone: false,
+		selectAll500: false,
 	}
 	constructor(props){
 		super(props);
@@ -753,11 +754,11 @@ class allViewsModal extends React.Component {
 									className = "fa fa-check" 
 									style = {{ marginRight: "3px" }}
 									title= "Select Column" 
-									onClick = { () => context.selectDeselectCol(col, "select") } /> 
+									onClick = { () => {context.selectDeselectCol(col, "select"), context.setState({selectAll500: true}) }} /> 
 									<i 
 									className = "fa fa-times" 
 									title= "Deselect Column"
-									onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
+									onClick = { () => {context.selectDeselectCol(col, "deselect"), context.setState({selectAll500: false}) }} /> 
 								</div>
 
 								<div style = {{ marginTop: "-19px", paddingBottom: "4px", fontSize: "17px" }} > 
@@ -784,7 +785,13 @@ class allViewsModal extends React.Component {
 
 							<div id = { col[0] } style = {{ overflow: "auto" }} >
 
-								{ (col.length > 500 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
+								{ (col.length > 500 ? 
+									<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
+										id = { "st-" + col[0] } 
+										> 
+										Search to view. <br /> Count: {col.length - 1} 
+									</div> : null) }
+
 								<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
 
 								{col.map( function(elem) {
