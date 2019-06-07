@@ -789,7 +789,7 @@ class allViewsModal extends React.Component {
 									<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
 										id = { "st-" + col[0] } 
 										> 
-										Search to view. <br /> Count: {col.length - 1} 
+										Too many filters. <br /> Select all or search to view. <br /> <br /> Results: {col.length - 1} 
 									</div> : null) }
 
 								<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>

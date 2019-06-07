@@ -64,7 +64,8 @@ class FilterSideBarTopView extends React.Component {
             deleteDailogOpen: false,
             deleteDialogLabel: 'Are you sure you want to delete ; ?',
             selectedData: [],
-            multiTable: false
+            multiTable: false,
+            statisticsSelectBoth: false
         };
     }
     
@@ -743,7 +744,7 @@ class FilterSideBarTopView extends React.Component {
     * @param value: - ADCMT
 	*/
     onSelectStatisticStatChange = (value) => {
-        this.setState({ statisticStatSelectValues: value });
+        this.setState({ statisticStatSelectValues: value, statisticsSelectBoth: false });
         //console.log(value);
 
         // Load Table Columns
@@ -755,7 +756,7 @@ class FilterSideBarTopView extends React.Component {
     * @param value: - ADCMT
 	*/
     onSelectStatisticColChange = (value) => {
-        this.setState({ statisticColSelectValues: value });
+        this.setState({ statisticColSelectValues: value, statisticsSelectBoth: false });
         //console.log(value);
 
         // Load Table Columns
@@ -1209,7 +1210,7 @@ class FilterSideBarTopView extends React.Component {
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
                                 <div> 
-                                    Undo Filter Action
+                                    Undo Filter
                                 </div> 
                             }
                         >
@@ -1248,7 +1249,7 @@ class FilterSideBarTopView extends React.Component {
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
                                 <div> 
-                                    Redo Filter Action
+                                    Redo Filter
                                 </div> 
                             }
                         >
@@ -1346,7 +1347,7 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                Select and monitor Statistics on Numeric Columns
+                                                Select and Monitor Statistics on Numeric Columns
                                             </div> 
                                         }
                                     >
@@ -1361,7 +1362,7 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                View data of Selected Glyphs in Table Format
+                                                View Data of Selected Glyphs in Table Format
                                             </div> 
                                         }
                                     >
@@ -1375,7 +1376,7 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                View data of Currently Visible Glyphs in Table Format
+                                                View Data of Currently Visible Glyphs in Table Format
                                             </div> 
                                         }
                                     >
@@ -1646,7 +1647,8 @@ class FilterSideBarTopView extends React.Component {
                             <FlatButton
                                 label = "Apply"
                                 primary = { true }
-                                onClick = { () => this.onApplyStatistics(this) }
+                                onClick = { () => {this.state.statisticColSelectValues && this.state.statisticStatSelectValues ? 
+                                    this.onApplyStatistics(this) : this.setState({statisticsSelectBoth: true}) }}
                                 style = {{ color: this.props.settings.colors.saveModalColor.saveButton }}
                             />,
                             <FlatButton
@@ -1659,7 +1661,7 @@ class FilterSideBarTopView extends React.Component {
                     } 
                 >
 
-                    <b>Select which columns to monitor:</b> <br />
+                    <b>Select which column(s) to monitor:</b> <br />
                     <OldSelect 
                         multi 
                         simpleValue
@@ -1672,7 +1674,7 @@ class FilterSideBarTopView extends React.Component {
                     <br />
                     <br />
 
-                    <b>Select which statistics to apply:</b> <br />
+                    <b>Select which statistic(s) to apply:</b> <br />
                     <OldSelect 
                         multi 
                         simpleValue
@@ -1681,6 +1683,11 @@ class FilterSideBarTopView extends React.Component {
                         options = { statisticStatSelectItems } 
                         onChange = { this.onSelectStatisticStatChange.bind(this) } 
                     />
+
+                    <div 
+                        style={{display: this.state.statisticsSelectBoth ? "" : "none"}}>
+                        <b>Select at least 1 column and statistic to apply.</b>
+                    </div>
                 </Dialog>
                 
                 {/* Row 4 */}
