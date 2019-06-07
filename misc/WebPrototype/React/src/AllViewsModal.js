@@ -1017,7 +1017,7 @@ class AllViewsRow extends React.Component {
 			<p
 				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
 				style = {{ 
-					backgroundColor: ( this.props.selected ? "#7c78a0" : "white" ), 
+					backgroundColor: ( this.props.selected ? "#bfbfbf" : "white" ), 
 					textAlign: "center",
 					padding: "2px",
 					margin: "0",

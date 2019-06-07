@@ -327,6 +327,7 @@ textarea {
   margin: auto; 
   text-align: center; 
   font-size: 16px;
+  padding: 10px 0 10px 0;
 }
 
 .light-color{
@@ -334,6 +335,6 @@ textarea {
 }
 
 .dark-color{
-  background-color: rgb(124, 120, 160);
+  background-color: #bfbfbf;
 }
 
