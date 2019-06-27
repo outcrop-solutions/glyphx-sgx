@@ -56,7 +56,7 @@ class ViewsManager extends React.Component {
     };
 	
 	//Moving this here instead of SavedViews.js due to refs problem
-	onSavedViewSelect(savedVizObj,callback,recentViewClick){
+	onSavedViewSelect = (savedVizObj,callback,recentViewClick) => {
         // console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
         var originalVizName = savedVizObj.OriginalVizName; 
         var query = savedVizObj.QueryString; 

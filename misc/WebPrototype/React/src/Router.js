@@ -1,14 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { /* Router, */ Route, Switch, Redirect, HashRouter } from 'react-router-dom';
-import { checkUserLoggedIn } from './ServerCallHelper.js';
+import { checkUserLoggedIn, makeServerCall } from './ServerCallHelper.js';
 /* import createHistory from 'history/createBrowserHistory'; */
 import Login from './Login.js';
 import HomePage from './HomePage.js';
 import NotFoundPage from './NotFoundPage.js'; 
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
-import Maintenance from './Maintenance.js'
+import Maintenance from './Maintenance.js';
+import ShareLoading from './ShareLoading.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
@@ -23,6 +24,7 @@ class ApplicationRouter extends React.Component{
   constructor (props) {
     super(props);
     var context = this;
+
     try {
         var res = checkUserLoggedIn(this.onServerError);
         var jsonRes = JSON.parse(res);
@@ -40,24 +42,28 @@ class ApplicationRouter extends React.Component{
   }
 
   onServerError() {
-      maintenance = true;
+    maintenance = true;
   }
 
   RedirectToLogin = () => (
-      <Redirect to = "/login" />
+    <Redirect to = "/login" />
   );
 
   LoginForm = () => (
-      (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> ) )
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <Redirect to = "/home" /> : <Login/> ) )
   );
 
   HomeView = () => (
-      (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <HomePage /> : <Redirect to = "/login" /> ) )
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <HomePage /> : this.RedirectToLogin() ) )
   );
 
   VisualizationWindow = () => (
-      (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <VisualizationView /> : <Redirect to = "/login" /> ) )
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <VisualizationView /> : this.RedirectToLogin() ) )
   );
+
+  SharedVizLink = () => {
+    (maintenance ? <Redirect to = "/maintenance" /> : ( this.checkSharedHash() ? <VisualizationView /> : this.RedirectToLogin() ) )
+  };
 
   LogoutView = () => (
       <Logout />
@@ -75,6 +81,34 @@ class ApplicationRouter extends React.Component{
       return (this.props.isUserLoggedIn || isUserLoggedIn);
   }
 
+  checkSharedHash(vars) {
+    // console.log(vars, vars.params.id);
+    return new Promise((resolve, reject) => {
+        return makeServerCall('authShareLink',
+            function(res,b,c) {
+                if (typeof res === 'string') res = JSON.parse(res);
+                
+                console.log(res);
+                console.log(res.body.authShare);
+
+                if(res.body) {
+                    resolve(res.body.authShare);
+                }
+                else {
+                    reject();
+                }
+            
+            },
+            {
+                post: true, 
+                data:  { 
+                    id: vars.params.id
+                }
+            }
+        );
+    });
+  }
+
     render() {
         return (
             <MuiThemeProvider>
@@ -88,6 +122,21 @@ class ApplicationRouter extends React.Component{
 
                         <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
 
+                        <Route path = "/glyph-viewer/shared/:id" /* render = {({match}) =>  */
+                        // (maintenance ? 
+                        //     <Redirect to = "/maintenance" /> : this.checkSharedHash(match) ? 
+                        //                 <Login /> : this.RedirectToLogin() ) } />
+                        // (this.checkSharedHash(match) ? 
+                        // <Login /> : maintenance ? 
+                                /* <Redirect to = "/maintenance" /> : console.log('no')  ) */
+                                render = {
+                                    ({match}) => (
+                                        <ShareLoading vars={match}/>
+                                    ,
+                                        this.props.sharedLinkStatus ? <Login /> : <Maintenance />
+                                    )
+                                }
+                        />
 
                         <Route exact path = "/logout" component = { this.LogoutView } />
 
@@ -120,7 +169,8 @@ const mapStateToProps = function (state) {
     return {
         settings: state.filterState.Settings,
         userInfo: state.filterState.UserInfo,
-        isUserLoggedIn: state.filterState.isUserLoggedIn
+        isUserLoggedIn: state.filterState.isUserLoggedIn,
+        sharedLinkStatus: state.filterState.sharedLinkStatus
     }
 }
 

@@ -210,12 +210,14 @@ class FilterTable extends React.Component {
     applyFilter = () => {
         //console.log('Filter Applied');
         var iframe = document.getElementById('GlyphViewer').contentWindow;
+        console.log(iframe);
 
         var context = this;
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
+                console.log(resultJson);
                 // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
@@ -231,7 +233,7 @@ class FilterTable extends React.Component {
 						console.log('NO MATCH');
 					}
 				}
-				
+				console.log(tempRowIds);
                 context.props.setFilterIDs(tempRowIds);
                 iframe.filterGlyphs(tempRowIds);
 

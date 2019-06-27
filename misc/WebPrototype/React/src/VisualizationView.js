@@ -147,6 +147,7 @@ class VisualizationView extends React.Component {
 
     componentWillUnmount(){
         this.props.dispatch(editModalDisplay_2(false));
+        this.props.dispatch(clearStatisticsData());
     }
 
     
@@ -305,7 +306,7 @@ class VisualizationView extends React.Component {
                             </div>
 
                             <FilterSideBar 
-                                updateViz = { (key) => this.updateViz(key) } 
+                                updateViz = { (key) => {this.updateViz(key), console.log(key)} } 
                                 showHideLoadingMask = { this.showHideLoadingMask.bind(this) } 
                                 handleDraggableCorrection = { this.handleDraggableCorrection.bind(this) } 
                             />
@@ -449,6 +450,10 @@ export const clearFilterOptions = () => ({
 export const editModalDisplay_2 = (legendModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     legendModal,
+});
+
+export const clearStatisticsData = () => ({
+    type: 'CLEAR_STATISTICS_DATA'
 });
 
 

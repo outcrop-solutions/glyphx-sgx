@@ -467,10 +467,16 @@ class SimpleTable extends React.Component {
 
         if (this.state.flatData != null && this.state.flatData.length > 0) {
             var keys = Object.keys(this.state.flatData[0]);
+            // console.log(keys);
             var flatData = this.state.flatData;
 
             for (var i = keys.length - 1; i > -1 ; i--) {
-                if (keys[i] === "ID" || keys[i] === "UserID" || keys[i] === "QueryString" || keys[i] === "InstitutionId" || keys[i] === "Shareable" || keys[i] === "frontEndFilterString") {
+                if (keys[i] === "ID" || 
+                    keys[i] === "UserID" || 
+                    keys[i] === "QueryString" || 
+                    keys[i] === "InstitutionId" || 
+                    keys[i] === "Shareable" || 
+                    keys[i] === "frontEndFilterString") {
                     keys.splice(i, 1);
                 }
             }
@@ -587,6 +593,7 @@ class SimpleTable extends React.Component {
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
                         // height = "100%"
                         width = "100%"
+                        style= {{border: "1px solid black"}}
                         /* wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" }}*/
                         //onRowSelection = { () => console.log("row selected") }
                     >

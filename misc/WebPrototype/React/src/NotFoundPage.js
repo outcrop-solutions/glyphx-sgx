@@ -26,9 +26,9 @@ class NotFoundPage extends React.Component {
                             <div style = {{ margin: "-90px 0px 0px" }} >
                                 <hgroup>
                                     <h1>404</h1>
-                                    <h2 style = {{ color: "#ffffff" }} >Can you even type?</h2>
+                                    <h2>Not Found.</h2>
                                 </hgroup>
-                                <Link to = "/home" style = {{ color: "#ffffff" }} >Back to Home</Link>
+                                <Link to = "/home" style = {{ color: "#ffffff", fontSize: "18px" }} >Back to Home</Link>
                             </div>
                         </article>
                     </div>

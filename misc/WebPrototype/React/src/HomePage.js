@@ -344,24 +344,24 @@ class HomePage extends React.Component {
 	//[]
 	loadRecentView(rowArray) {
 		//console.log("recentViewloaded");
-		//console.log(rowArray);
 		var ref = this.refs.viewsManager.getWrappedInstance();
-		
-		// This means that this is a funnel view click
+		// This means that this is a recent view click
 		if (rowArray.length > 4) {
-			//todo work out something for funnel click.
+			//todo work out something for recent view click.
 			ref.onLaunch(rowArray,this.goToVizView);
 		}
 		else { // This means that this is a saved view click
 			var savedViewObj;
 			
 			this.props.storedViews.savedViews.forEach(function(savedView) {
-                //this needs to stay == for typecasting purposes
-				if (rowArray[3] === savedView.ID) {
+                //
+                //this needs to stay == for typecasting purposes!!
+                //
+				if (rowArray[3] == savedView.ID) {
 					savedViewObj = savedView;
                 }
-			});
-			
+            });
+            
 			if (savedViewObj) {
 				ref.onSavedViewSelect(savedViewObj, this.goToVizView, true);
 			}

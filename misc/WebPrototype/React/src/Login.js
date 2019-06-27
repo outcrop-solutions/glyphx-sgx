@@ -258,21 +258,23 @@ class Login extends React.Component {
     /**
      * Closes the forgot password modal through the local state
      **/
-    handleCloseForgotPassDailog = () => {
-        this.setState({ openForgotPasswordDialog: false, snackbar: false });
+    handleCloseForgotPassDialog = () => {
+        this.setState({ openForgotPasswordDialog: false, snackbar: false});
     };
 
 
     /**
      * -ADCMT
      **/
-    handleForgotPassSubmit = () => {
+    handleForgotPassSubmit(){
         // var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
-        //console.log(email);
-        this.handleCloseForgotPassDailog();
+        this.handleCloseForgotPassDialog();
 
         // Send server call to email password recovery link.
         this.setState({ snackbar: true });
+
+        let text = document.getElementsByClassName("retrieve-Pass-Text");
+        console.log('text', text);
     }
 
 
@@ -383,7 +385,10 @@ class Login extends React.Component {
 
                             <div style = {{ margin: "-4px 0px -16px 0px" }} >
                                 <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
-                                    <a onClick = { () => window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank') } style = {{ cursor: 'pointer' }} >Forgot password?</a>
+                                    <a 
+                                    onClick = { () => /* window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank')  */ 
+                                        this.setState({openForgotPasswordDialog: true})} 
+                                    style = {{ cursor: 'pointer' }} >Forgot password?</a>
                                 </label>
                             </div>
                             
@@ -432,18 +437,18 @@ class Login extends React.Component {
                         title = "Forgot Password?"
                         modal = { true }
                         open = { this.state.openForgotPasswordDialog }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
+                        onRequestClose = { this.handleCloseForgotPassDialog }
                         actions = {[
                             <RaisedButton
                                 label = "Submit"
                                 primary = { true }
-                                onClick = { this.handleForgotPassSubmit }
+                                onClick = {() => {this.handleForgotPassSubmit() } }
                             />,
                             <span> &nbsp; </span>,
                             <RaisedButton
                                 label = "Cancel"
                                 primary = { true }
-                                onClick = { this.handleCloseForgotPassDailog }
+                                onClick = {() => this.handleCloseForgotPassDialog() }
                             />
                         ]}
                     >
@@ -451,6 +456,8 @@ class Login extends React.Component {
                         <input 
                             type = "text"
                             id = "ForgotUserText"
+                            className = "retrieve-Pass-Text"
+                            placeholder = "example@email.com"
                             style = {{ height: 'inherit', border: '1px #b3b3b3 solid', outlineWidth: '0', fontSize: '20px' }}
                         />
                     </Dialog>
@@ -458,15 +465,15 @@ class Login extends React.Component {
                     <Snackbar
                         open = { this.state.snackbar }
                         message = "A link has been sent to your email address to reset the password."
-                        autoHideDuration = { 5000 }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
+                        autoHideDuration = { 3000 }
+                        onRequestClose = { this.handleCloseForgotPassDialog }
                     />
 
                     <Dialog
                         title = {<div style = {{ textAlign: "center", fontWeight: "bold" }} >END-USER LICENSE AGREEMENT (EULA) </div>}
                         modal = { true }
                         open = { this.state.openTermsAndConditionsDialog }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
+                        onRequestClose = { this.handleCloseForgotPassDialog }
                         bodyStyle = {{ overflowY: "scroll" }}
                         actions = {[
                             <RaisedButton

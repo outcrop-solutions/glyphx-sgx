@@ -338,3 +338,6 @@ textarea {
   background-color: #bfbfbf;
 }
 
+td:last-child{
+  text-align: center !important;
+}

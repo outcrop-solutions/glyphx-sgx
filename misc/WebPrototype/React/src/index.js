@@ -51,7 +51,8 @@ const initialFilterState = {
     RecentVizDropdown: null,
     initialVizX: null,
     initialVizY: null,
-    initialVizZ: null
+    initialVizZ: null,
+    sharedLinkStatus: null,
 };
 
 
@@ -608,7 +609,13 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 StatisticsData: action.statData
-			}
+            }
+            
+        case 'CLEAR_STATISTICS_DATA':
+        return {
+            ...state,
+            StatisticsData: {}
+        }
         
         case 'SET_TIMEOUT_TIMER':
             return {
@@ -634,6 +641,12 @@ const filterReducer = function(state = initialFilterState, action) {
                 initialVizX: action.X,
                 initialVizY: action.Y,
                 initialVizZ: action.Z
+            }
+
+        case 'SHARE_LINK_REDIRECT':
+            return {
+                ...state,
+                sharedLinkStatus: action.falsy
             }
 
 		

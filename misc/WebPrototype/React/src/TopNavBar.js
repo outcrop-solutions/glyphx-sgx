@@ -4,14 +4,18 @@ import { withRouter } from 'react-router';
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+// import Icon from 'material-ui/core/Icon';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
+import { makeServerCall } from './ServerCallHelper.js';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
+import ShareImg from './images/share.png';
+import LinkImg from './images/link.png';
 /* import AdminWizardModal from './AdminWizardModal.js'; */
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
@@ -116,8 +120,44 @@ class TopNavBar extends React.Component {
         this.props.history.push('/home')
     }
 
+    createShareLink(){
+        makeServerCall('createShareLink',
+            function(res,b,c) {
+                if (typeof res === 'string') res = JSON.parse(res);
+                
+                // debugger;
+                console.log(res);
+
+                // if (Array.isArray(res.body.data) && res.body.data.length > 0) {
+                //     // var result = context.convertToCompatibleDataObject(res.data);
+                //     // console.log(result);
+                //     // context.makeFilterStructure(result);
+                //     // context.setState({ tableData: result, loadingDone: true });
+                //     // context.props.dispatch(setStatData(result));
+                //     // context.props.updateViz(res.glyphViewerKey);
+                // }
+                // else {
+                //     // 0 records matched.
+                //     console.log('bad time');
+                // }
+            },
+            {
+                post: true, 
+                data:  { 
+                    sdtPath: this.props.vizParams.sdtPath,
+                    tableName: this.props.vizParams.tableName,
+                    query: this.props.vizParams.query,
+                    datasourceId: this.props.vizParams.datasourceId,
+                    filterAllowedColumnList: this.props.vizParams.filterAllowedColumnList
+
+                }
+            }
+        );
+    }
+
 
     render() {
+        console.log(this.props.vizParams);
         return(
             <Toolbar 
                 style = {{ padding: '0px', height: "36px", backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
@@ -177,6 +217,35 @@ class TopNavBar extends React.Component {
                             }
                         >
                             <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
+                        </Tooltip>
+                    </IconButton>
+
+                    <IconButton 
+                        //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
+                        onClick = { () => this.createShareLink() }
+                        style = {{ 
+                            zIndex: (this.props.tutorialStage === 4 ? "300" : "5"),
+                            display: (
+                                this.props.userInfo.Admin === 1
+                                && Object.keys(this.props.statData).length !== 0  ? "" : "none" )
+                        }}
+                        className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
+                    >
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Share
+                                </div> 
+                            }
+                        >
+                            <FontIcon >
+                                <img style={{backgroundColor: "white", borderRadius: "50%", padding: "1px"}} src={LinkImg}/>
+                            </FontIcon>
                         </Tooltip>
                     </IconButton>
 
@@ -328,7 +397,9 @@ export const editModalDisplay = (settingsModal, alertsModal, helpModal, adminMod
 const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
-    userInfo: state.filterState.UserInfo
+    userInfo: state.filterState.UserInfo,
+    statData: state.filterState.StatisticsData,
+    vizParams: state.filterState.VizParams,
   }
 }
 
