@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
 import Promise from 'bluebird';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
@@ -11,13 +10,14 @@ import Flexbox from 'flexbox-react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import FilterSummaryView from './FilterSummaryView.js';
+import Tooltip from 'rc-tooltip';
 import OldSelect from 'react-select';
 import Select from 'react-styled-select'
 import Snackbar from 'material-ui/Snackbar';
+import { makeServerCall } from './ServerCallHelper.js';
+import FilterSummaryView from './FilterSummaryView.js';
 import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
 import XYZRemapModal from './XYZRemapModal.js';
-import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import 'react-select/dist/react-select.min.css';
 import './css/FilterSideBar.css';

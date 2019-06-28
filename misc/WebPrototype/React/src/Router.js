@@ -9,7 +9,8 @@ import NotFoundPage from './NotFoundPage.js';
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
 import Maintenance from './Maintenance.js';
-import ShareLoading from './ShareLoading.js';
+import ShareLoading from './Demo/ShareLoading.js';
+import EmptyDiv from './Demo/EmptyDiv.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
@@ -61,10 +62,6 @@ class ApplicationRouter extends React.Component{
     (maintenance ? <Redirect to = "/maintenance" /> : ( this.getLoggedInStatus() ? <VisualizationView /> : this.RedirectToLogin() ) )
   );
 
-  SharedVizLink = () => {
-    (maintenance ? <Redirect to = "/maintenance" /> : ( this.checkSharedHash() ? <VisualizationView /> : this.RedirectToLogin() ) )
-  };
-
   LogoutView = () => (
       <Logout />
   );
@@ -73,7 +70,6 @@ class ApplicationRouter extends React.Component{
       (maintenance ? <Maintenance /> : <Redirect to = "/login" /> )
   );
 
-
   /**
    * We are checking both as the dispatch doesn't updates the store asynchronously and thus we have to set a flag in this class to true and check that.
    */
@@ -81,35 +77,8 @@ class ApplicationRouter extends React.Component{
       return (this.props.isUserLoggedIn || isUserLoggedIn);
   }
 
-  checkSharedHash(vars) {
-    // console.log(vars, vars.params.id);
-    return new Promise((resolve, reject) => {
-        return makeServerCall('authShareLink',
-            function(res,b,c) {
-                if (typeof res === 'string') res = JSON.parse(res);
-                
-                console.log(res);
-                console.log(res.body.authShare);
-
-                if(res.body) {
-                    resolve(res.body.authShare);
-                }
-                else {
-                    reject();
-                }
-            
-            },
-            {
-                post: true, 
-                data:  { 
-                    id: vars.params.id
-                }
-            }
-        );
-    });
-  }
-
     render() {
+        console.log(this.props.sharedLinkStatus);
         return (
             <MuiThemeProvider>
                 <HashRouter >
@@ -122,21 +91,13 @@ class ApplicationRouter extends React.Component{
 
                         <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
 
-                        <Route path = "/glyph-viewer/shared/:id" /* render = {({match}) =>  */
-                        // (maintenance ? 
-                        //     <Redirect to = "/maintenance" /> : this.checkSharedHash(match) ? 
-                        //                 <Login /> : this.RedirectToLogin() ) } />
-                        // (this.checkSharedHash(match) ? 
-                        // <Login /> : maintenance ? 
-                                /* <Redirect to = "/maintenance" /> : console.log('no')  ) */
+                        <Route exact path = "/shared/:id"
                                 render = {
                                     ({match}) => (
-                                        <ShareLoading vars={match}/>
-                                    ,
-                                        this.props.sharedLinkStatus ? <Login /> : <Maintenance />
-                                    )
-                                }
+                                        <ShareLoading vars={match}/>)}
                         />
+
+                        <Route exact path = "/glyph-viewer/shared/:id" component = { VisualizationView } />
 
                         <Route exact path = "/logout" component = { this.LogoutView } />
 

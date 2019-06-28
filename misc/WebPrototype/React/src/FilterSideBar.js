@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Flexbox from 'flexbox-react';
 import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
+import { makeServerCall } from './ServerCallHelper.js';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
 /* import UndoRedoChangeListener from './UndoRedoChangeListener.js'; */

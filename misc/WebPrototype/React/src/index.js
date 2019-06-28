@@ -53,6 +53,7 @@ const initialFilterState = {
     initialVizY: null,
     initialVizZ: null,
     sharedLinkStatus: null,
+    shareID: ""
 };
 
 
@@ -646,9 +647,24 @@ const filterReducer = function(state = initialFilterState, action) {
         case 'SHARE_LINK_REDIRECT':
             return {
                 ...state,
-                sharedLinkStatus: action.falsy
+                sharedLinkStatus: action.t_Or_F
             }
 
+        case 'RESET_LINK_REDIRECT':
+            return {
+                ...state,
+                sharedLinkStatus: null,
+                shareID: ""
+            }
+            
+
+        case 'SET_SHARE_ID':
+            return {
+                ...state,
+                shareID: action.id
+            }
+
+        
 		
         /**
          * Shouldn't reach here unless theres a typo in the action

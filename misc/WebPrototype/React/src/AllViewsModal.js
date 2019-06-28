@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall/* , makeAWSCall */ } from './ServerCallHelper.js';
 /* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
+import { makeServerCall/* , makeAWSCall */ } from './ServerCallHelper.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './css/General.css';

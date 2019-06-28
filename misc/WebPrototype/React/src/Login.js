@@ -27,6 +27,7 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
+        console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
         
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
         && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
@@ -419,7 +420,11 @@ class Login extends React.Component {
                             */}
 
                             <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
-                                By logging in you agree to the <a onClick = { () => this.setState({ openTermsAndConditionsDialog: true }) } style = {{ color: '#1d3ad8', cursor: 'pointer' }} ><u>Terms and Conditions </u></a>
+                                By logging in, you agree to the &nbsp;
+                                <a 
+                                    onClick = { () => this.setState({ openTermsAndConditionsDialog: true }) } 
+                                    style = {{ /* color: '#1d3ad8', */ cursor: 'pointer' }} ><u>Terms and Conditions.</u>
+                                </a>
                             </label>
 
                             <br />

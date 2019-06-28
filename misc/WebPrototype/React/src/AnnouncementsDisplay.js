@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
 import Flexbox from 'flexbox-react';
-import VotingModal from './VotingModal.js';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
+import VotingModal from './VotingModal.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './css/General.css';
 
