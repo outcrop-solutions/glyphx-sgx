@@ -196,15 +196,15 @@ class ViewsManager extends React.Component {
 
         console.log("-----------------------Stage 2 reached");
         var currentDate = new Date();
-        console.log(
-            "TABLE:", tableName,
-            "TIME:",currentDate.getTime(),
-            "DATE:",currentDate.getTime(), 
-            "FRONT END FILTS:",frontEndFilters, 
-            "ORIGINAL VIZ NAME:",originalVizName, 
-            "DATA SOURCE ID:",datasourceId, 
-            "Allowed COlmn list:",filterAllowedColumnList, 
-            "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
+        // console.log(
+        //     "TABLE:", tableName,
+        //     "TIME:",currentDate.getTime(),
+        //     "DATE:",currentDate.getTime(), 
+        //     "FRONT END FILTS:",frontEndFilters, 
+        //     "ORIGINAL VIZ NAME:",originalVizName, 
+        //     "DATA SOURCE ID:",datasourceId, 
+        //     "Allowed COlmn list:",filterAllowedColumnList, 
+        //     "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
 		
 		 //If you dont want it to update on 
 		makeServerCall('checkFrontEndFilterQuery',
@@ -647,7 +647,7 @@ class ViewsManager extends React.Component {
                 </div>
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
-                <Flexbox style={{height: "25%", paddingBottom: "3px"}}>
+                <Flexbox style={{height: "25%", padding: "8px 0 0 0"}}>
                         <div style = {{ 
                             display: "table",
                             backgroundColor: 'white'/* this.props.settings.colors.homePageColors.subBackground */, 
@@ -768,7 +768,7 @@ class ViewsManager extends React.Component {
                         </div>
                     
                 </Flexbox>
-                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } 
+                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL }
                         onLaunch={(extra,callback) => {this.onLaunch(extra,callback)} }/>
                     {/* </ExpandTransition> */}
             </div>

@@ -121,6 +121,7 @@ class TopNavBar extends React.Component {
     }
 
     createShareLink(){
+        // console.log(this.props.vizParams);
         makeServerCall('createShareLink',
             function(res,b,c) {
                 if (typeof res === 'string') res = JSON.parse(res);
@@ -148,8 +149,9 @@ class TopNavBar extends React.Component {
                     tableName: this.props.vizParams.tableName,
                     query: this.props.vizParams.query,
                     datasourceId: this.props.vizParams.datasourceId,
-                    filterAllowedColumnList: this.props.vizParams.filterAllowedColumnList
-
+                    filterAllowedColumnList: this.props.vizParams.filterAllowedColumnList,
+                    originalVizName: this.props.vizParams.originalVizName,
+                    frontEndFilters: this.props.vizParams.frontEndFilters ? this.props.vizParams.frontEndFilters : this.props.vizParams.frontEndFilterString
                 }
             }
         );

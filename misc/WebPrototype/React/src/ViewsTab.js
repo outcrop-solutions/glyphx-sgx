@@ -165,7 +165,7 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{height: "33%", marginBottom: "4px"}}>
+            <div style = {{height: "33.33%", marginBottom: "4px", paddingBottom: "15px"}}>
                 <div>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
@@ -203,7 +203,7 @@ class ViewsTab extends React.Component {
                 </div>
 
                 {/* tab content */}
-                <div className="tab">
+                <div className="tab" style={{padding: "5px 0 3px 0"}}>
                     
                     <button className="tablinks" id="tab-defaultOpen" 
                     onClick= {(e) => this.openViewsTab(e,'Recent')}

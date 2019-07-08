@@ -835,7 +835,7 @@ class allViewsModal extends React.Component {
 		
 		return(
 			<div
-				style={{paddingTop: "10px"}}
+				style={{paddingTop: "20px"}}
 				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -870,7 +870,7 @@ class allViewsModal extends React.Component {
 						onRequestClose = { () => this.setState({ snackbarVisible: false }) }
 					/>
 					<div>
-						<div style={{float: 'left', display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<div style={{float: 'left', paddingTop: "10px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							<RaisedButton 
 								label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
 								style = {{
@@ -924,7 +924,7 @@ class allViewsModal extends React.Component {
 								primary = { true } 
 							/>
 						</div>
-						<div style={{float: "right", padding: "8px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<div style={{float: "right", padding: "18px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							{/* <FlatButton
 								label = "Back"
 								primary = { true }

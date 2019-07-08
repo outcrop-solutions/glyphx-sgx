@@ -14,6 +14,8 @@ class ShareLoading extends React.Component {
         super(props);
         this.state = {
             loadMask: false,
+            done: false,
+            status: false
         }
     }
     
@@ -26,9 +28,15 @@ class ShareLoading extends React.Component {
         if(this.props.vars){
             console.log(this.props.vars);
             return Promise.all([
-                this.checkSharedHash(this.props.vars), 
+                this.checkSharedHash(this.props.vars)])
+            .then(() => {
                 this.props.dispatch(setShareID(this.props.vars.params.id))
-            ])
+                return;
+            })
+            .then(() => {
+                this.setState({done: true});
+                return;
+            })
             .catch(err => {
                 console.log(err);
             });
@@ -37,14 +45,15 @@ class ShareLoading extends React.Component {
 
     componentDidUpdate(){
         //when it comes back with a response, it is set in redux state where the user is pushed to a different path based on redux
+
         window.setTimeout(() => {
-            if(this.props.sharedLinkStatus){
-                let url = 'login?username=' + "Guest" + "&password=" + "e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48";
-                makeServerCall(url, (responseText) => {
-                    let response; 
+            if(this.props.sharedLinkStatus && this.state.done === true && this.state.status === true){
+                let url = 'login?username=' + "Guest1" + "&password=" + "e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48";
+
+                makeServerCall(url, (response) => {
         
-                    if(typeof responseText === 'string'){
-                        response = JSON.parse(responseText);
+                    if(typeof response === 'string'){
+                        response = JSON.parse(response);
                     }
 
                     if (response) { 
@@ -54,28 +63,28 @@ class ShareLoading extends React.Component {
                             response.userInformation.idleTime = 0;
                         }
 
-                        this.saveUserInfo(response.userInformation, response.funnelInfo, response.savedViews);
+                        this.saveUserInfo(response.userInformation);
                     }
                     else {
                         this.props.history.push("/maintenance");
                     }
 
                     hideLoadMask();
-                }, {onServerCallError: this.showMaintanencePage} );
+                }, {onServerCallError: this.props.history.push('/maintenance')} );
 
                 // this.props.history.push(`/glyph-viewer/shared/${this.props.shareID}`);
             }
-            else if(!this.props.shareLinkStatus){
+            else if(!this.props.shareLinkStatus && this.state.done === true && this.state.status === false){
                 this.props.history.push('/login');
             }
-        }, 3000);
+        }, 10000);
     }
 
     componentWillMount(){
         this.props.dispatch(resetShareLinkData());
     }
 
-    checkSharedHash(vars) {
+    async checkSharedHash(vars) {
         let context = this;
         //server call to check if the hash path entered actually exists in the remote backend
             makeServerCall('authShareLink',
@@ -87,6 +96,17 @@ class ShareLoading extends React.Component {
     
                     if(res.body && res.body.authShare){
                         context.props.dispatch(sharedLink(true));
+                        context.setState({status: true});
+                        context.props.dispatch(setCurrentVizParams_2({
+							originalVizName: res.body.originalVizName, 
+							tableName: res.body.tableName,
+							datasourceId: res.body.datasourceId,
+							query: res.body.query, 
+							filterAllowedColumnList: res.body.filterAllowedColumnList, 
+							sdtPath: res.body.sdtPath, 
+							frontEndFilters: res.body.frontEndFilters
+						}));
+					// context.props.dispatch(editModalDisplay(false));
                     }
                     else if(res.body && !res.body.authShare){
                         context.props.dispatch(sharedLink(false));
@@ -102,10 +122,10 @@ class ShareLoading extends React.Component {
             );
       }
 
-    saveUserInfo = (userInfo, funnelInfo, savedViews) => {
+    saveUserInfo(userInfo){
         //console.log('Success');
         // this.setState({ openPassword: false });
-        this.props.dispatch(saveUserInfo(userInfo, funnelInfo, savedViews));
+        this.props.dispatch(saveUserInfo_2(userInfo));
 
         // Call function post login if provided.
         // if (typeof this.props.doAfterLogin === 'function') {
@@ -113,7 +133,7 @@ class ShareLoading extends React.Component {
         // }
 
         // Redirect to home page.
-        this.props.history.push(`/glyph-viewer/shared/${this.props.shareID}`);
+        this.props.history.push(`/glyph-viewer/${this.props.shareID}`);
         // this.props.history.push("/glyph-viewer");
     }    
 
@@ -156,11 +176,19 @@ export const resetShareLinkData = () => ({
     type: 'RESET_LINK_REDIRECT'
 });
 
-export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
-    type: 'SAVE_USER_INFO',
+export const saveUserInfo_2 = (userInfo) => ({
+    type: 'SAVE_USER_INFO_ONLY',
     userInfo,
-    funnelInfo,
-    savedViews
+});
+
+export const editModalDisplay_2 = (allViewsModal) => ({
+    type: 'EDIT_MODAL_DISPLAY',
+    allViewsModal,
+});
+
+export const setCurrentVizParams_2 = (vizParams) => ({
+   type: 'SET_VIZ_PARAMS',
+   vizParams,
 });
 
 

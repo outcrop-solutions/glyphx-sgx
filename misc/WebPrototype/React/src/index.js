@@ -664,8 +664,14 @@ const filterReducer = function(state = initialFilterState, action) {
                 shareID: action.id
             }
 
-        
-		
+        case 'SAVE_USER_INFO_ONLY':
+
+            return {
+                ...state,
+                UserInfo: action.userInfo,
+                isUserLoggedIn: true,
+            }
+            
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/

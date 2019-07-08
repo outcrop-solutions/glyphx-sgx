@@ -97,7 +97,7 @@ class ApplicationRouter extends React.Component{
                                         <ShareLoading vars={match}/>)}
                         />
 
-                        <Route exact path = "/glyph-viewer/shared/:id" component = { VisualizationView } />
+                        <Route exact path = "/glyph-viewer/:id" component = { this.VisualizationWindow } />
 
                         <Route exact path = "/logout" component = { this.LogoutView } />
 
