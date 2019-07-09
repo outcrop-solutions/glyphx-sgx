@@ -165,7 +165,7 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{height: "33.33%", marginBottom: "4px", paddingBottom: "15px"}}>
+            <div style = {{height: "33.33%", marginBottom: "4px", display: "inline-table"}}>
                 <div>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 

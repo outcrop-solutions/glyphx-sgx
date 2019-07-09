@@ -455,7 +455,7 @@ class HomePage extends React.Component {
                                     <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
                                         
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
-                                        <Flexbox style={{marginBottom: "6px", padding: "3px 0 1px 0",}}>
+                                        <Flexbox style={{display: "block", marginBottom: "6px"}}>
                                             <div style = {{height: "29.33%", minHeight: "0", paddingBottom: '0px',}} className="training-hover">
                                                 <a
                                                 href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
@@ -488,7 +488,7 @@ class HomePage extends React.Component {
                                             
                                         </div> 
                                     </Flexbox>
-                                    <div style = {{height: "32%"}}> 
+                                    <div style = {{height: "32%", display: "block"}}> 
                                         <h2
                                                 className='noselect'
                                                 style={{

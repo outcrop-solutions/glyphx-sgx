@@ -512,6 +512,10 @@ class ViewsManager extends React.Component {
             fontWeight: "300"
         };
 
+        const subContents = {
+            padding: "7px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"  
+        };
+        
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
                 <div
@@ -521,8 +525,8 @@ class ViewsManager extends React.Component {
                     id= "inquiry-defaultOpen" 
                 >
                     <div
-                        style = {{ padding: "7px" }}
-                        className = "funnel-top-body noselect second-view-selection light"
+                        style = { subContents }
+                        className = "noselect second-view-selection light"
                         onClick = { (e) => {
                             context.handleViewSelect(title);
                             context.unHighlightInquiryRows();
@@ -542,8 +546,8 @@ class ViewsManager extends React.Component {
                     key = { title } 
                 >
                     <div
-                        style = {{ padding: "7px" }}
-                        className = "funnel-middle-body noselect second-view-selection light"
+                        style = { subContents }
+                        className = "noselect second-view-selection light"
                         onClick = {(e) => {
                             context.handleViewSelect(title);
                             context.unHighlightInquiryRows();
@@ -563,8 +567,8 @@ class ViewsManager extends React.Component {
                     key = { title } 
                 >
                     <div
-                        style = {{ padding: "7px" }}
-                        className = "funnel-bottom-body noselect second-view-selection light"
+                        style = { subContents }
+                        className = "noselect second-view-selection light"
                         onClick = {(e) => {
                             context.handleViewSelect(title);
                             context.unHighlightInquiryRows();
@@ -584,8 +588,8 @@ class ViewsManager extends React.Component {
                     key = { title } 
                 >
                     <div
-                        style = {{ padding: "7px" }}
-                        className = "funnel-bottom-body noselect second-view-selection light"
+                        style = { subContents }
+                        className = "noselect second-view-selection light"
                         onClick = {(e) => {
                             context.handleViewSelect(title);
                             context.unHighlightInquiryRows();
@@ -647,14 +651,15 @@ class ViewsManager extends React.Component {
                 </div>
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
-                <Flexbox style={{height: "25%", padding: "8px 0 0 0"}}>
+                <Flexbox style={{height: "25%",/*  padding: "8px 0 0 0", marginBottom: "10px", */ display: "inline-flex"}}>
                         <div style = {{ 
                             display: "table",
                             backgroundColor: 'white'/* this.props.settings.colors.homePageColors.subBackground */, 
                             border: "1px solid black",
                             height: "25%",
                             width: "65%",
-                            }} >
+                            }} 
+                            className = "tabular-data">
 
                             <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
                                {/*  <div 
@@ -755,12 +760,13 @@ class ViewsManager extends React.Component {
                         <div style = {{
                             display: this.state.legendPng.length ? "" : "none",
                             marginLeft: "15px",
-                            width: "35%",}} >
+                            width: "35%",
+                            height: "100%"}} >
                                     
                             <img
                                 src = {this.state.legendPng ? 
                                     this.state.legendPng : "#"} 
-                                style = {{ width: '99%', height: "100%", borderRadius: "3px" }} 
+                                style = {{borderRadius: "3px",width: "99%"}} 
                                 title = "Legend.png"
                                 alt = "Legend" 
                                 draggable = { false } 

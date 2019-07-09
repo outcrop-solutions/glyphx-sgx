@@ -835,7 +835,7 @@ class allViewsModal extends React.Component {
 		
 		return(
 			<div
-				style={{paddingTop: "20px"}}
+				// style={{paddingTop: "10px"}}
 				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}

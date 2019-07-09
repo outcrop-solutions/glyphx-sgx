@@ -518,12 +518,9 @@ class UserFeed extends React.Component {
                         style={{
                             color: this.props.settings.colors.overviewButtonsColor.text,
                             backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
-                            borderRadius: "2px", 
-                           /*  marginTop: "15px", 
-                            marginBottom: "3px", */ 
-                            paddingBottom: "4px", 
+                            borderRadius: "2px",
+                            padding: "4px 0 4px 0", 
                             margin: "0 auto", 
-                            paddingTop: "4px",
                             fontSize: "19px",
                             letterSpacing: "0.14em",
                             textTransform: "uppercase",
@@ -540,7 +537,7 @@ class UserFeed extends React.Component {
                     fontFamily: "helvetica", 
                     height: "100%", 
                     minHeight: "0", 
-                    padding: "7px 7px 0px 7px", 
+                    padding: "7px 7px 12px 7px", 
                     display: (this.state.loadMask ? "none" : "") }}  > 
 
                     {/*
