@@ -1,0 +1,52 @@
+var createScene = function () {
+    var scene = new BABYLON.Scene(engine);
+
+    //var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 3, 15, BABYLON.Vector3.Zero(), scene);
+    camera.setTarget(BABYLON.Vector3.Zero());
+    camera.lowerRadiusLimit = 3;
+
+    camera.attachControl(canvas, true);
+
+    //var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    var light = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(1, -1, 1), scene);
+    light.specular = new BABYLON.Color3(0, 0, 0);
+    light.intensity = 0.6;
+
+    //var sphere = BABYLON.MeshBuilder.CreateIcoSphere("icosphere", {radius:2, subdivisions: 16}, scene);
+    var pin = BABYLON.MeshBuilder.CreateCylinder("Pin", {height: 1, diameterTop: 0.35, diameterBottom: 0, tessellation: 32}, scene);
+    //pin.setEnabled(false);
+
+    var material = new BABYLON.StandardMaterial("sm", scene);
+    material.emissiveColor = new BABYLON.Color3.FromHexString("#ffff00");
+    material.diffuseColor = new BABYLON.Color3.FromHexString("#ffff00");
+    material.wireframe = true;
+    material.alpha = 0.05;
+
+    pin.material = material;
+
+    var sphere = BABYLON.Mesh.CreateSphere("Sphere", 12, 0.35, scene);
+    sphere.material = material;    
+    //sphere.parent = pin;
+    sphere.position.y = 1;
+
+    var sphereCSG = BABYLON.CSG.FromMesh(sphere);
+
+    var cube = BABYLON.Mesh.CreateBox("Cube", 1.0, scene);
+    cube.position.y += 0.499;
+    sphereCSG.subtractInPlace(BABYLON.CSG.FromMesh(cube));
+    cube.setEnabled(false);
+
+    var ball = sphereCSG.toMesh("bowling ball", sphere.material, scene, false);
+    ball.parent = pin;
+    ball.position.y = 0.5;
+    sphere.setEnabled(false);
+
+    var main = BABYLON.Mesh.CreateBox("Cube", 1.0, scene);
+    pin.position.y = 1;
+
+    var newMesh = BABYLON.Mesh.MergeMeshes([pin,ball]);
+
+    return scene;
+
+};

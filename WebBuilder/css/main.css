@@ -1,0 +1,238 @@
+
+.menuBardemoBasicUsage .page-container {
+  padding: 32px; }
+
+.menuBardemoBasicUsage .page {
+  margin: 0 auto;
+  padding: 24px;
+  max-width: 680px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.25); }
+
+.menuBardemoBasicUsage .page h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-top: 0;
+  font-weight: normal; }
+
+.menuBardemoBasicUsage .page p {
+  line-height: 1.6rem; }
+
+.box1 {  
+  display:flex;
+  box-sizing: border-box;
+  min-width:100%;
+  max-height:100%;
+  flex:1 1 100%;
+}
+
+.sgx-side-bar {
+  background-color: gray;
+  height: 100px;
+}
+
+.sgx-data-col, .sgx-shape-col, .sgx-color-col,
+  .sgx-map-col, .sgx-prop-col {
+    border: solid 1px silver;
+    text-align: center;
+  }
+
+.sgx-data-col {
+
+}
+
+.sgx-shape-col {
+
+}
+
+.sgx-color-col {
+
+}
+
+.sgx-map-col {
+
+}
+
+.sgx-prop-col {
+
+}
+
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 14px;
+    font-weight: 400;
+    color: black;
+    display: inline-block;
+    background-color: white;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    padding: 4px;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: #d0d0d0;
+}
+
+.inputfile + label {
+  cursor: pointer; /* "hand" cursor */
+}
+
+.bi-type-switch {
+  margin-bottom: 4px;
+  background-color: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  padding: 4px;
+}
+
+.base-image {
+  padding: 6px;
+}
+
+.axis-css {
+  width: 30%;
+  margin: auto;
+}
+
+.sgx-properties {
+  margin: 6px 8px;
+}
+
+.prop-min-max {
+  height: 22px;
+  width: 70px;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  padding: 0px;
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+.sgx-properties > md-collapsible > md-collapsible-item > md-collapsible-header {
+  min-height: 36px;
+}
+
+.prop-open-arrow {
+  height: 10px;
+  min-height: 10px !important;
+  background-color: #313390;
+}
+
+.prop-open-arrow > div > i {
+  margin-left: auto;
+  margin-right: auto;
+  color: white;
+  height: 10px;
+  margin-top: -3px;
+}
+
+.sgx-properties > md-collapsible > md-collapsible-item > md-collapsible-header .md-collapsible-tools {
+  padding: 0 6px;
+}
+
+.mbodyTag {
+  width: 100px;
+  height: 24px;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+}
+
+.sbodyTag {
+  width: 75px;
+  height: 18px;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+}
+
+.selectize-control.headTag, .selectize-control.bodyTag {
+  width: 100px;
+}
+
+.selectize-control.headTag .selectize-input, .selectize-control.multi .selectize-input.has-items  {
+  padding: 0px;
+  margin-top: 4px;
+  height: 24px;
+}
+
+.selectize-control.headTag .selectize-input > div, .selectize-control.bodyTag .selectize-input > div {
+  margin: 0px;
+}
+
+.selectize-control.bodyTag .selectize-input, .selectize-control.multi .selectize-input.has-items {
+  margin-top: 0px;
+  height: 24px;
+}
+
+.btn-center-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.selected-class-name {
+  background-color: #deeff5 !important;
+  border: solid 1px #add8e6 !important;
+}
+
+.col-headers {
+  background-color: #313390 !important;
+  color: white !important;
+}
+
+#glyphwindow {
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  width: 32px;
+  height: 24px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+}
+
+.item {
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+  color: rgb(33,33,33);
+  background-color: rgb(250,250,250);
+  padding: 0 6px;
+  margin: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+}
+
+.drag {
+  opacity: 0.5;
+}
+
+.over {
+  background: gray;
+}
+/*
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be foundin the LICENSE file at http://material.angularjs.org/HEAD/license.
+*/
