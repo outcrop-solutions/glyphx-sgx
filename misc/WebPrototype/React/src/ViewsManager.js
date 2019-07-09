@@ -49,9 +49,9 @@ class ViewsManager extends React.Component {
     /**
      * Enables transition pause when navigating from regular view to my views and vice versa
      */
-    dummyAsync = (cb) => {
-        this.setState({ loading: true }, () => {
-            this.asyncTimer = setTimeout(cb, 500);
+        dummyAsync = (cb) => {
+            this.setState({ loading: true }, () => {
+                this.asyncTimer = setTimeout(cb, 500);
         });
     };
 	
@@ -658,8 +658,7 @@ class ViewsManager extends React.Component {
                             border: "1px solid black",
                             height: "25%",
                             width: "65%",
-                            }} 
-                            className = "tabular-data">
+                            }}>
 
                             <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
                                {/*  <div 
@@ -671,6 +670,7 @@ class ViewsManager extends React.Component {
                                     }} 
                                 > */}
                                     <div
+                                    id = "tabular-data"
                                     style = {{ 
                                         width: "50%",
                                         height: "100%", 
@@ -766,7 +766,8 @@ class ViewsManager extends React.Component {
                             <img
                                 src = {this.state.legendPng ? 
                                     this.state.legendPng : "#"} 
-                                style = {{borderRadius: "3px",width: "99%"}} 
+                                style = {{borderRadius: "3px",width: "99%", minHeight: "200px"
+                                }} 
                                 title = "Legend.png"
                                 alt = "Legend" 
                                 draggable = { false } 
