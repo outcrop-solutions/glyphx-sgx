@@ -202,7 +202,7 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
-                        onClick = { () => window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank') }
+                        onClick = { () => window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') }
                         style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5") }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
