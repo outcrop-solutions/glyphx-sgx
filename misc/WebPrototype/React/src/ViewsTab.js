@@ -47,6 +47,29 @@ class ViewsTab extends React.Component {
                 
            }
         );
+
+        // makeServerCall("fetchRecentViewsEC2",
+        //     function (responseText) { 
+		// 		if (typeof responseText === 'string' && responseText !== null && responseText !== "") {
+        // 			responseText = JSON.parse(responseText);
+        //          console.log(responseText);
+		// 			// Post the new data to the state and hide the window load-mask
+		// 			context.setState({ loadMask: false, recents: responseText.reverse()});
+		// 		}
+		// 		else {
+		// 			context.setState({ loadMask: false });
+		// 		}
+                
+		// 		context.props.dispatch( setTimer(new Date().getTime()) );
+                
+        //    },
+        //    {
+        //        post: true,
+        //        data: {
+        //            fetch: true
+        //        }
+        //    }
+        // );
         //On component mount, open Views Tab
         document.getElementById("tab-defaultOpen").click();
     }
@@ -158,7 +181,7 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{height: "33.33%", marginBottom: "9px", display: "inline-table"}}>
+            <div style = {{height: "33.33%", marginBottom: "4px", display: "inline-table"}}>
                 <div>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
