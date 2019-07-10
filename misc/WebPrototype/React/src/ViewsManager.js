@@ -766,7 +766,7 @@ class ViewsManager extends React.Component {
                             <img
                                 src = {this.state.legendPng ? 
                                     this.state.legendPng : "#"} 
-                                style = {{borderRadius: "3px",width: "99%", minHeight: "200px"
+                                style = {{borderRadius: "3px",width: "99%", minHeight: "200px", height: "100%"
                                 }} 
                                 title = "Legend.png"
                                 alt = "Legend" 

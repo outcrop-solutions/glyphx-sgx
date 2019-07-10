@@ -145,18 +145,11 @@ class ViewsTab extends React.Component {
                                     </div> 
                                 </Tooltip>
                             </Flexbox>
-
-                            <Flexbox style = {{ width: "40%" }} > 
-                                <div style = {{ width: "100%", textAlign: "right" }} >
-                                    { viewTime }
-                                </div>
-                            </Flexbox>
-
-                            <Flexbox style = {{ width: "40%" }} > 
-                                <div style = {{ width: "100%", textAlign: "right", /* margin: "0px 1px 0px" */ }} >
-                                    { viewDate }
-                                </div>
-                            </Flexbox>  
+                                
+                            <div style = {{ width: "100%", textAlign: "right" }} >
+                                { viewTime } &nbsp; &nbsp; { viewDate }
+                            </div>
+                           
                         </Flexbox>
 
                     </CardText>

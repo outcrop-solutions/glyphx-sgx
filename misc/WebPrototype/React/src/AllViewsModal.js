@@ -858,7 +858,7 @@ class allViewsModal extends React.Component {
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
 				</div> 
 
-				<div style = {{ height: "58vh", paddingBottom: "30px", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
+				<div style = {{ height: "58vh", padding: "10px 0 10px 0", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
