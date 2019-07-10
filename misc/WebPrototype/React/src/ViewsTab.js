@@ -165,7 +165,7 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{height: "33.33%", marginBottom: "4px", display: "inline-table"}}>
+            <div style = {{height: "33.33%", marginBottom: "9px", display: "inline-table"}}>
                 <div>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
@@ -226,7 +226,7 @@ class ViewsTab extends React.Component {
 
                 {/* Recent Views Tab */}
                 <div id="Recent" className="tabcontent">
-                    <div style = {{ padding: "7px", marginBottom: "5px", display: (this.state.loadMask ? "none" : "") }} >
+                    <div style = {{ padding: "7px", display: (this.state.loadMask ? "none" : "") }} >
                         {this.state.recents.length === 0 ? 
                         <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
                         : recentViews}
