@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 		//Need to figure out better way to not have the splash screen disappear before the user sees it
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
-		GlyphPortableWindow w;
+		GlyphEdViewerWindow w;
 		QFile file(":GlyphViewer/Resources/glyphed_stylesheet.qss"); //For building app 
 		//QFile file("../../../GUI/GlyphViewer/Resources/glyphed_stylesheet.qss"); //For faster style testing
 		file.open(QFile::ReadOnly);
