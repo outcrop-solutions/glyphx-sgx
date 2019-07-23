@@ -31,7 +31,7 @@ export function makeLambdaGetCall(saddress, callback, options) {
 }
 
 export function makeLambdaPostCall(saddress, callback, options) {
-    console.log(options, JSON.stringify(options))
+    // console.log(options, JSON.stringify(options))
     var xmlHttp = new XMLHttpRequest();
     // xmlHttp.withCredentials = true;
 
@@ -61,7 +61,7 @@ export function makeLambdaPostCall(saddress, callback, options) {
 
 export function makeServerCall(url, callback, options) {
     var saddress = serverAddress;
-
+    console.log(url);
     if (url === null || (callback && typeof callback !== 'function')) {
         console.error('Please provide complete parameters!');
         return false;
