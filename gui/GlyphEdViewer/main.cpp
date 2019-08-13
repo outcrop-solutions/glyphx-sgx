@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 	fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat( fmt );
     
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Portable", SynGlyphX::getAppVersionString());
+	SynGlyphX::GlyphBuilderApplication::Setup("GlyphEd Viewer", SynGlyphX::getAppVersionString());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 
 	//qInstallMessageHandler(myMessageHandler);

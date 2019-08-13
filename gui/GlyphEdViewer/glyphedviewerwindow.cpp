@@ -29,6 +29,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "Profiler.h"
 #include <hal/hal.h>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -40,11 +41,18 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	CreateMenus();
 	CreateDockWidgets();
 
+	menuBar()->hide();
+
 	QStackedWidget* centerWidgetsContainer = new QStackedWidget(this);
 	centerWidgetsContainer->setContentsMargins(0, 0, 0, 0);
 	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setCentralWidget(centerWidgetsContainer);
 
+	QWebEngineView* dlg = new QWebEngineView(this);
+	//dlg->setMinimumSize(width, height);
+	dlg->load(QUrl("https://viewer.glyphed.com"));
+	centerWidgetsContainer->addWidget(dlg);
+	
 	try {
 		
 		CreateANTzWidget();
@@ -68,9 +76,9 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 
-	CreateInteractionToolbar();
+	//CreateInteractionToolbar();
 
-	centerWidgetsContainer->setCurrentIndex(1);
+	centerWidgetsContainer->setCurrentIndex(0);
 
 	statusBar()->showMessage(SynGlyphX::Application::applicationName() + " Started", 3000);
 
@@ -118,11 +126,11 @@ void GlyphEdViewerWindow::CreateANTzWidget() {
 	antzWidgetContainer->addWidget(m_viewer);
 	antzWidgetContainer->setCurrentWidget(m_viewer);
 	
-	QObject::connect( m_resetCameraToDefaultPosition, &QAction::triggered, this, [this]{ m_viewer->resetCamera(); } );
-	QObject::connect(m_showAnimation, &QAction::toggled, this, [this]{ m_viewer->enableAnimation( !m_viewer->animationEnabled() ); });
-	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(true); });
-	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(false); });
-	QObject::connect( m_hideAllTagsAction, &QAction::triggered, this, [this]{ m_viewer->hideAllTags(); });
+	//QObject::connect( m_resetCameraToDefaultPosition, &QAction::triggered, this, [this]{ m_viewer->resetCamera(); } );
+	//QObject::connect(m_showAnimation, &QAction::toggled, this, [this]{ m_viewer->enableAnimation( !m_viewer->animationEnabled() ); });
+	//QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(true); });
+	//QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(false); });
+	//QObject::connect( m_hideAllTagsAction, &QAction::triggered, this, [this]{ m_viewer->hideAllTags(); });
 
 	m_viewer->setOnSelectionChanged( [this]( bool selection_exists )
 	{
@@ -135,10 +143,10 @@ void GlyphEdViewerWindow::CreateANTzWidget() {
 void GlyphEdViewerWindow::CreateMenus() {
 
 	//Create File Menu
-	m_fileMenu = menuBar()->addMenu(tr("File"));
+	//m_fileMenu = menuBar()->addMenu(tr("File"));
 
-	QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
-	QObject::connect(exitAction, &QAction::triggered, this, &GlyphEdViewerWindow::close);
+	//QAction* exitAction = CreateMenuAction(m_fileMenu, tr("Exit"), QKeySequence::Quit);
+	//QObject::connect(exitAction, &QAction::triggered, this, &GlyphEdViewerWindow::close);
 
 	//Create View Menu
 	CreateViewMenu();
@@ -178,13 +186,13 @@ void GlyphEdViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	CreateHelpMenu();
+	//CreateHelpMenu();
 
-	QAction* openGLSettingsAction = new QAction(tr("OpenGL Settings"), m_helpMenu);
-	QObject::connect(openGLSettingsAction, &QAction::triggered, this, &GlyphEdViewerWindow::ShowOpenGLSettings);
+	//QAction* openGLSettingsAction = new QAction(tr("OpenGL Settings"), m_helpMenu);
+	//QObject::connect(openGLSettingsAction, &QAction::triggered, this, &GlyphEdViewerWindow::ShowOpenGLSettings);
 
-	m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
-	m_helpMenu->insertSeparator(m_aboutBoxAction);
+	//m_helpMenu->insertAction(m_aboutBoxAction, openGLSettingsAction);
+	//m_helpMenu->insertSeparator(m_aboutBoxAction);
 
 #ifdef __APPLE__
 	menuBar()->addSeparator();
@@ -216,6 +224,25 @@ void GlyphEdViewerWindow::CreateDockWidgets() {
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(400, 280);
 	m_legendsDockWidget->hide();
+
+	m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
+	//m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
+	QWebEngineView* dlg = new QWebEngineView(this);
+	//dlg->setMinimumSize(width, height);
+	dlg->load(QUrl("https://synglyphx.s3.amazonaws.com/Filter+Bar/filters.html"));
+	m_rightDockWidget->setWidget(dlg);
+	addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
+	act = m_rightDockWidget->toggleViewAction();
+	m_loadedVisualizationDependentActions.push_back(act);
+	QIcon filterIcon;
+	QPixmap filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
+	QPixmap filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
+	filterIcon.addPixmap(filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	filterIcon.addPixmap(filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	act->setIcon(filterIcon);
+	m_viewMenu->addAction(act);
+	//m_showHideToolbar->addAction(act);
+	m_rightDockWidget->hide();
 }
 
 void GlyphEdViewerWindow::ShowOpenGLSettings() {
@@ -252,7 +279,7 @@ void GlyphEdViewerWindow::ChangeStereoMode() {
 	}
 	else {
 
-		m_stereoAction->setChecked(false);
+		//m_stereoAction->setChecked(false);
 		QMessageBox::information(this, tr("Stereo not supported"), tr("Stereo is not supported. Check your driver settings to see if stereo is enabled and available for your hardware.  Contact the manufacturer of your GPU for assitance."));
 	}
 }
@@ -367,7 +394,7 @@ void GlyphEdViewerWindow::CreateInteractionToolbar() {
 
 void GlyphEdViewerWindow::OnStereoSetup(bool stereoEnabled) {
 
-	m_stereoAction->setChecked(stereoEnabled);
+	//m_stereoAction->setChecked(stereoEnabled);
 }
 
 void GlyphEdViewerWindow::OnShowHideHUDAxis(bool show) {
