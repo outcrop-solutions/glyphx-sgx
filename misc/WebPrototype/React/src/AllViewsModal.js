@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import uuid from 'uuid/v4';
 /* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
@@ -31,6 +32,8 @@ class allViewsModal extends React.Component {
 		loadMask: false,
 		loadDone: false,
 		selectAll500: false,
+		socketIo: null,
+		uid: ""
 	}
 	constructor(props){
 		super(props);
@@ -43,6 +46,34 @@ class allViewsModal extends React.Component {
 	componentDidMount() {
 		// Mouseup listener used to handle click drag selection
 		window.onmouseup = this.handleMouseUp.bind(this);
+		var context = this;
+
+		const socket = new WebSocket('ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001');
+
+		// opened
+		socket.addEventListener('open', function (event) {
+			let uid = uuid();
+			console.log(uid);
+			context.setState({uid: uid});
+			socket.send(JSON.stringify({uid}));
+		});
+
+		// listening
+		socket.addEventListener('message', function (event) {
+			let data;
+			console.log(event)
+			if(event.data.length){
+			console.log('Message from server: ', event.data);
+				if(typeof event.data === 'string') data = JSON.parse(event.data);
+				if(data.passthrough){
+					console.log(data.passthrough);
+				}
+			// socket.close();
+			}
+		});
+		
+		this.setState({socketIo: socket});
+		
 	}
 	
 
@@ -828,10 +859,17 @@ class allViewsModal extends React.Component {
 		}
 	}
 
+	wbSocketFxn(arr){
+		this.state.socketIo.send(JSON.stringify({
+			uid: this.state.uid,
+			array: arr
+		}));
+		
+	}
+
 	render() {
 		var data = this.state.data;
 		var context = this;
-		// console.log(data);
 		
 		return(
 			<div
@@ -920,7 +958,7 @@ class allViewsModal extends React.Component {
 									height: '35px',
 									lineHeight: '35px',
 								}}
-								onClick = { () => this.selectDesectAll(data, "deselect") }
+								onClick = { () => {this.selectDesectAll(data, "deselect"), this.wbSocketFxn([1,2,3,4,5,6,8]);} }
 								primary = { true } 
 							/>
 						</div>
@@ -972,7 +1010,7 @@ class allViewsModal extends React.Component {
 										originalVizName: this.props.type,
 										datasourceId: this.state.datasourceId,
 										filterAllowedColumnList: this.state.filterAllowedColumnList,
-									},this.onLaunchResultCallback) }
+									},this.onLaunchResultCallback)}
 									primary = {true } 
 								/>
 								</Flexbox>
