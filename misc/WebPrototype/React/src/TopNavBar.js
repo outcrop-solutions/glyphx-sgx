@@ -10,7 +10,8 @@ import ListItem from 'material-ui/List/ListItem';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
-import { makeServerCall } from './ServerCallHelper.js';
+import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
+import { hideSplashScreen } from './LoadMaskHelper.js';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
@@ -41,10 +42,17 @@ class TopNavBar extends React.Component {
     /**
      * Performs a logout by redirecting the site to the loagout page
      **/
-    logout = () => {
-        this.props.history.push("/logout");
+    logout = () => {    
+        let context = this;
+        deleteCookie(getLoginCookieName());
+        hideSplashScreen();
+        makeServerCall("logout",
+        function (responseText) { 
+            context.props.dispatch(logoutClear());
+            context.props.history.push('/');
+        }
+        );
     };
-
 
     /**
      * Opens the Admin wizard and closes the user menu
@@ -159,7 +167,7 @@ class TopNavBar extends React.Component {
 
 
     render() {
-        console.log(this.props.vizParams);
+        // console.log(this.props.vizParams);
         return(
             <Toolbar 
                 style = {{ padding: '0px', height: "36px", backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
@@ -389,6 +397,10 @@ export const editModalDisplay = (settingsModal, alertsModal, helpModal, adminMod
     alertsModal,
     helpModal,
     adminModal
+});
+
+export const logoutClear = () => ({
+    type: 'LOGOUT_CLEAR',
 });
 
 

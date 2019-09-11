@@ -27,7 +27,7 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
-        console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
+        // console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
         
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
         && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
@@ -43,7 +43,7 @@ class Login extends React.Component {
         // Open the modal so it transitions up as soon as you land
         setTimeout(function () {
             context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
-        }, 1000);
+        }, 500);
 
         // Add event listeners for using the enter key to login
         document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));

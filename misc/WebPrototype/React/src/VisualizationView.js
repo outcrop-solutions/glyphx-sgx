@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
+import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
 import { withRouter } from 'react-router';
 import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -123,8 +124,7 @@ class VisualizationView extends React.Component {
 
     componentDidUpdate(){
         //debugger;
-        //console.log('update!');
-
+        let context = this;
         var now = new Date().getTime();
         var distance = now - this.props.timeoutTimer;
 
@@ -132,14 +132,19 @@ class VisualizationView extends React.Component {
 
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
-        //console.log("VIZ-MINUTES: " + minutes);
-
         if (minutes === 23) {
             this.props.dispatch(editModalDisplay(true));
         }
 
         else if (minutes > 27) {
-            this.props.history.push("/logout");
+            deleteCookie(getLoginCookieName());
+            hideSplashScreen();
+            makeServerCall("logout",
+                function (responseText) { 
+                    context.props.dispatch(logoutClear());
+                    context.props.history.push('/');
+                }
+            );
             alert("Your session has expired due to inactivity.");
         }
         
@@ -454,6 +459,10 @@ export const editModalDisplay_2 = (legendModal) => ({
 
 export const clearStatisticsData = () => ({
     type: 'CLEAR_STATISTICS_DATA'
+});
+
+export const logoutClear = () => ({
+    type: 'LOGOUT_CLEAR',
 });
 
 

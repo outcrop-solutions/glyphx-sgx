@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import uuid from 'uuid/v4';
 /* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
@@ -32,8 +31,7 @@ class allViewsModal extends React.Component {
 		loadMask: false,
 		loadDone: false,
 		selectAll500: false,
-		socketIo: null,
-		uid: ""
+		socketIo: null
 	}
 	constructor(props){
 		super(props);
@@ -48,32 +46,32 @@ class allViewsModal extends React.Component {
 		window.onmouseup = this.handleMouseUp.bind(this);
 		var context = this;
 
+		//for desktop side
+		if(window.location.href.indexOf('uid') > -1){
+			context.props.dispatch(
+				setUid(window.location.href.slice(
+					window.location.href.indexOf('uid')+4, 
+					window.location.href.indexOf('#'))));
+		}
+
 		const socket = new WebSocket('ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001');
 
-		// opened
-		socket.addEventListener('open', function (event) {
-			let uid = uuid();
-			console.log(uid);
-			context.setState({uid: uid});
-			socket.send(JSON.stringify({uid}));
-		});
-
 		// listening
-		socket.addEventListener('message', function (event) {
-			let data;
-			console.log(event)
-			if(event.data.length){
-			console.log('Message from server: ', event.data);
-				if(typeof event.data === 'string') data = JSON.parse(event.data);
-				if(data.passthrough){
-					console.log(data.passthrough);
+			socket.addEventListener('message', function (event) {
+				let data;
+				console.log(event);
+				if(event.data.length > 0){
+					data = JSON.parse(event.data);
+					if(event.data.indexOf('{') > -1) {
+						console.log(event.data)
+						// console.log('Placeholder.')
+					}
+					else if(event.data.launch === true){
+						console.log('yes launch');
+					}
 				}
-			// socket.close();
-			}
-		});
-		
+			});
 		this.setState({socketIo: socket});
-		
 	}
 	
 
@@ -859,12 +857,11 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	wbSocketFxn(arr){
+	wbSocketFxn(){
 		this.state.socketIo.send(JSON.stringify({
-			uid: this.state.uid,
-			array: arr
+			url_uid: this.props.uid,
+			launch: true
 		}));
-		
 	}
 
 	render() {
@@ -958,7 +955,7 @@ class allViewsModal extends React.Component {
 									height: '35px',
 									lineHeight: '35px',
 								}}
-								onClick = { () => {this.selectDesectAll(data, "deselect"), this.wbSocketFxn([1,2,3,4,5,6,8]);} }
+								onClick = { () => {this.selectDesectAll(data, "deselect")} }
 								primary = { true } 
 							/>
 						</div>
@@ -1004,13 +1001,13 @@ class allViewsModal extends React.Component {
 										lineHeight: '35px',
 									}}
 									disabled = { this.shouldLaunchBeDisabled() }
-									onClick = { () => this.props.onLaunch({
+									onClick = { () => /* this.props.onLaunch({
 										tableName:this.state.table,
 										frontEndFilters: this.state.selectionList,
 										originalVizName: this.props.type,
 										datasourceId: this.state.datasourceId,
 										filterAllowedColumnList: this.state.filterAllowedColumnList,
-									},this.onLaunchResultCallback)}
+									},this.onLaunchResultCallback)} */this.wbSocketFxn()}
 									primary = {true } 
 								/>
 								</Flexbox>
@@ -1096,6 +1093,10 @@ export const setInitialXYZ = (X, Y, Z) => ({
 	Z
 });
 
+export const setUid = (uid) => ({
+    type: 'SET_UID',
+    uid,
+});
 
 /**
  * Maps portions of the store to props of your choosing
@@ -1105,6 +1106,7 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
 	allViewsDisplay: state.filterState.ModalDisplay.allViewsModal,
+	uid: state.filterState.uid
   }
 }
 

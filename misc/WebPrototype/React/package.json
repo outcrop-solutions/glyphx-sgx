@@ -10,11 +10,8 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-virtualized": "^9.18.0",
-    "socket.io-client": "^2.2.0",
     "twilio": "^3.13.0",
-    "twilio-chat": "^2.1.0",
-    "uuid": "^3.3.3",
-    "ws": "^7.1.2"
+    "twilio-chat": "^2.1.0"
   },
   "peerDependencies": {
     "prop-types": "^15.5.7"

@@ -53,7 +53,8 @@ const initialFilterState = {
     initialVizY: null,
     initialVizZ: null,
     sharedLinkStatus: null,
-    shareID: ""
+    shareID: "",
+    uid: ""
 };
 
 
@@ -670,6 +671,25 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 UserInfo: action.userInfo,
                 isUserLoggedIn: true,
+            }
+
+        case 'SET_UID':
+            return {
+                ...state,
+                uid: action.uid
+            }
+        
+        case 'LOGOUT_CLEAR':
+            return {
+                ...state,
+                UserInfo: {},
+                FunnelData: {},
+                isUserLoggedIn: false,
+                LatestFilterChange: "none",
+                TimeoutTimer: null,
+                initialVizX: null,
+                initialVizY: null,
+                initialVizZ: null
             }
             
         /**

@@ -393,18 +393,19 @@ class ViewsManager extends React.Component {
         
         let index = context.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
         let sdtPath = context.state.selectionTypeURL.substring(index + 1);
-
+        console.log(sdtPath, 'sdtPath');
         makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
             function (responseText) { 
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
                 let imgPath = response.body;
+                console.log(imgPath,'imgPath');
                 /**
                  * MUTATE BACKEND CALL TO RETURN MORE THAN 1 PNG
                  * WORK IN PROGRESS
                  */
                 
-                if (imgPath !== '' && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
+                if (imgPath && imgPath.length > 0 && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
                     context.setState({
                         legendPng: 
                         `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath)}`});

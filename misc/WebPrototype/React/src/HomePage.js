@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
-import { makeServerCall, /* makeAWSCall, */ } from './ServerCallHelper.js';
+import { deleteCookie, getLoginCookieName, makeServerCall, /* makeAWSCall, */ } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -185,23 +185,27 @@ class HomePage extends React.Component {
 
     componentDidUpdate(){
         //debugger;
-        //console.log('update!');
-
+        let context = this;
         var now = new Date().getTime();
         var distance = now - this.props.timeoutTimer;
-
+       
         //console.log("HOME-SESSION: " + this.props.timeoutTimer);
 
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-        //console.log("HOME-MINUTES: " + minutes);
-
+        
         if (minutes === 23) {
             this.props.dispatch(editModalDisplay(true));
         }
 
         else if (minutes > 27) {
-            this.props.history.push("/logout");
+            deleteCookie(getLoginCookieName());
+            hideSplashScreen();
+            makeServerCall("logout",
+                function (responseText) { 
+                    context.props.dispatch(logoutClear());
+                    context.props.history.push('/');
+                }
+            );
             alert("Your session has expired due to inactivity.");
         }
         
@@ -554,6 +558,10 @@ export const setRecentVizDropdown = (recentVizDropdown) => ({
 export const editModalDisplay = (timeoutModal) => ({
     type: 'EDIT_MODAL_DISPLAY',
     timeoutModal,
+});
+
+export const logoutClear = () => ({
+    type: 'LOGOUT_CLEAR',
 });
 
 

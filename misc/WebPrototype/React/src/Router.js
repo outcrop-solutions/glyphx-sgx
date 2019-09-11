@@ -78,7 +78,7 @@ class ApplicationRouter extends React.Component{
   }
 
     render() {
-        console.log(this.props.sharedLinkStatus);
+        // console.log(this.props.sharedLinkStatus);
         return (
             <MuiThemeProvider>
                 <HashRouter >
@@ -99,7 +99,7 @@ class ApplicationRouter extends React.Component{
 
                         <Route exact path = "/glyph-viewer/:id" component = { this.VisualizationWindow } />
 
-                        <Route exact path = "/logout" component = { this.LogoutView } />
+                        <Route path = "/logout" component = { this.LogoutView } />
 
                         <Route exact path = "/maintenance" component = { this.Maintenance } />
 
