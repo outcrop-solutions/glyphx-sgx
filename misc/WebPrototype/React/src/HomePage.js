@@ -183,9 +183,14 @@ class HomePage extends React.Component {
         this.fetchSaveUserSettings();
     }
 
+    componentWillUnmount(){
+        this.props.dispatch(logoutClear());
+        deleteCookie(getLoginCookieName());
+        hideSplashScreen();
+    }
+
     componentDidUpdate(){
         //debugger;
-        let context = this;
         var now = new Date().getTime();
         var distance = now - this.props.timeoutTimer;
        
@@ -198,19 +203,23 @@ class HomePage extends React.Component {
         }
 
         else if (minutes > 27) {
-            deleteCookie(getLoginCookieName());
-            hideSplashScreen();
-            makeServerCall("logout",
+            return new Promise((resolve, reject) => {
+                makeServerCall("logout",
                 function (responseText) { 
-                    context.props.dispatch(logoutClear());
-                    context.props.history.push('/');
+                    resolve(true);
                 }
             );
-            alert("Your session has expired due to inactivity.");
+            }).then(res =>{
+                if(res === true){
+                    alert("Your session has expired due to inactivity.");
+                    window.location.reload();
+                    
+                }
+            }).catch(err =>{
+                console.log(err);
+            });
         }
-        
     }
-
 
     /**
      * This function is because on the homepage load we want to fetch the saved views.

@@ -35,9 +35,12 @@ class ViewsTab extends React.Component {
         makeServerCall("fetchRecentViews",
             function (responseText) { 
 				if (typeof responseText === 'string' && responseText !== null && responseText !== "") {
-					responseText = JSON.parse(responseText);
-					// Post the new data to the state and hide the window load-mask
-					context.setState({ loadMask: false, recents: responseText.reverse()});
+                    responseText = JSON.parse(responseText);
+                    console.log(responseText);
+                    // Post the new data to the state and hide the window load-mask
+                    if(responseText.isUserLoggedIn !== false){
+                        context.setState({ loadMask: false, recents: responseText.reverse()});
+                    }
 				}
 				else {
 					context.setState({ loadMask: false });

@@ -122,6 +122,12 @@ class VisualizationView extends React.Component {
 
     }
 
+    componentWillUnmount(){
+        this.props.dispatch(logoutClear());
+        deleteCookie(getLoginCookieName());
+        hideSplashScreen();
+    }
+
     componentDidUpdate(){
         //debugger;
         let context = this;
@@ -137,15 +143,21 @@ class VisualizationView extends React.Component {
         }
 
         else if (minutes > 27) {
-            deleteCookie(getLoginCookieName());
-            hideSplashScreen();
-            makeServerCall("logout",
+            return new Promise((resolve, reject) => {
+                makeServerCall("logout",
                 function (responseText) { 
-                    context.props.dispatch(logoutClear());
-                    context.props.history.push('/');
+                    resolve(true);
                 }
             );
-            alert("Your session has expired due to inactivity.");
+            }).then(res =>{
+                if(res === true){
+                    alert("Your session has expired due to inactivity.");
+                    window.location.reload();
+                    
+                }
+            }).catch(err =>{
+                console.log(err);
+            });
         }
         
     }

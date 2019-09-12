@@ -681,15 +681,8 @@ const filterReducer = function(state = initialFilterState, action) {
         
         case 'LOGOUT_CLEAR':
             return {
-                ...state,
-                UserInfo: {},
-                FunnelData: {},
-                isUserLoggedIn: false,
-                LatestFilterChange: "none",
-                TimeoutTimer: null,
-                initialVizX: null,
-                initialVizY: null,
-                initialVizZ: null
+                ...initialFilterState,
+                uid: state.uid
             }
             
         /**

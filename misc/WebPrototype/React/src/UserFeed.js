@@ -163,7 +163,7 @@ class UserFeed extends React.Component {
                 oneOnoneChats = this.state.chatClient.channels.channels._c;
 
                 for (const [k, v] of oneOnoneChats.entries()) {
-                    console.log(k, '---------------------------', v.uniqueName);
+                    // console.log(k, '---------------------------', v.uniqueName);
                     // if(v.uniqueName.includes(this.state.mySid)){
                     //     console.log(v.uniqueName)
                     //     v.getMessages().then(this.privateLoaded);
@@ -227,7 +227,7 @@ class UserFeed extends React.Component {
     };
 
     privateLoaded = messagePage => {
-        console.log(messagePage)
+        // console.log(messagePage)
         // debugger;
         var messages = messagePage.items;
         /*
@@ -236,7 +236,7 @@ class UserFeed extends React.Component {
         }
         */
         this.setState({ privateChat: messages, loadMask: false }, () => this.scrollToBottomChat());
-        console.log(this.state.privateChat);
+        // console.log(this.state.privateChat);
         //console.log("MESSAGES:");
         //console.log(messages);
     };

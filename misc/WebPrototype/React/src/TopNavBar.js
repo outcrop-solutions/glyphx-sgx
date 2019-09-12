@@ -37,21 +37,32 @@ class TopNavBar extends React.Component {
         imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
 
     };
+
+    componentWillUnmount(){
+        this.props.dispatch(logoutClear());
+        deleteCookie(getLoginCookieName());
+        hideSplashScreen();
+    }
     
 
     /**
      * Performs a logout by redirecting the site to the loagout page
      **/
     logout = () => {    
-        let context = this;
-        deleteCookie(getLoginCookieName());
-        hideSplashScreen();
-        makeServerCall("logout",
-        function (responseText) { 
-            context.props.dispatch(logoutClear());
-            context.props.history.push('/');
-        }
+        return new Promise((resolve, reject) => {
+            makeServerCall("logout",
+            function (responseText) { 
+                resolve(true);
+            }
         );
+        }).then(res =>{
+            if(res === true){
+                window.location.reload();
+                
+            }
+        }).catch(err =>{
+            console.log(err);
+        });
     };
 
     /**
