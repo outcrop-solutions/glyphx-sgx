@@ -174,17 +174,17 @@
     z-index: 2 !important;
 }
 
-/* .darkClass {
+.darkClass {
     background-color: white;
     filter:alpha(opacity=50); 
     opacity: 0.5; 
     -moz-opacity:0.50;
     z-index: 20;
-    height: 80%;
+    height: 100%;
     width: 100%;
     background-repeat:no-repeat;
     background-position:center;
     position:absolute;
     top: 0px;
     left: 0px;
-} */
+}

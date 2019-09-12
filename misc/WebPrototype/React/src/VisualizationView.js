@@ -35,7 +35,8 @@ class VisualizationView extends React.Component {
         showCorrection: false,
         hideOnClick: false,
         setTimer: false,
-        vizKey: ''
+        vizKey: '',
+        sideBar: false
     };
 
 
@@ -422,7 +423,11 @@ class VisualizationView extends React.Component {
                                 />
 
 
-                                <div style = {{ width: "100%", height: "100%", display: ((this.state.glyphViewLoaded || this.props.uid )? "none" : "") }} >
+                                <div style = {{ 
+                                    width: "100%", 
+                                    height: "100%", 
+                                    display: ((this.state.glyphViewLoaded || this.props.uid )? "none" : "") 
+                                }} >
                                     <ComponentLoadMask 
                                         stopLoop = { this.state.glyphViewLoaded ? true : false } 
                                         bgColor = "#c6c6c6" 

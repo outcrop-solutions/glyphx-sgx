@@ -8,6 +8,7 @@ import Collapsible from 'react-collapsible';
 import { makeServerCall } from './ServerCallHelper.js';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
+import ComponentLoadMask from './ComponentLoadMask.js';
 /* import UndoRedoChangeListener from './UndoRedoChangeListener.js'; */
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import './css/FilterSideBar.css';
@@ -490,6 +491,23 @@ class FilterSideBar extends React.Component {
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
+            <div>
+                {/* <div id = "darkLayer" 
+                className = "darkClass" 
+                style={{
+                    display: (this.state.loadingDone === true ? "none" : ""), 
+                    overflow: "hidden"}}>
+                </div> */}
+                <div 
+                    id = 'darkLayer'
+                    className = 'darkClass'
+                    style = {{ display: (this.state.loadingDone ? "none" : ""), overflow: "hidden"}}>
+                    <ComponentLoadMask 
+                        stopLoop = { this.state.loadingDone ? true : false } 
+                        bgColor = "#c6c6c6" 
+                        color = { this.props.settings.colors.buttons.general } />
+                </div>
+
                 <Flexbox 
                     flexDirection = "column"
                     flexGrow = {1}
@@ -588,6 +606,7 @@ class FilterSideBar extends React.Component {
                     />
 
                 </Flexbox>
+            </div>
         );
     }
 }
@@ -621,7 +640,8 @@ const mapStateToProps = function(state){
     ShowAllTables: state.filterState.ShowAllTables,
     initialX: state.filterState.initialVizX,
     initialY: state.filterState.initialVizY,
-    initialZ: state.filterState.initialVizZ
+    initialZ: state.filterState.initialVizZ,
+    uid: state.filterState.uid
   }
 };
 
