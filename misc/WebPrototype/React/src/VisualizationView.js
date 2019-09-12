@@ -422,7 +422,7 @@ class VisualizationView extends React.Component {
                                 />
 
 
-                                <div style = {{ width: "100%", height: "100%", display: (this.state.glyphViewLoaded ? "none" : "") }} >
+                                <div style = {{ width: "100%", height: "100%", display: ((this.state.glyphViewLoaded || this.props.uid )? "none" : "") }} >
                                     <ComponentLoadMask 
                                         stopLoop = { this.state.glyphViewLoaded ? true : false } 
                                         bgColor = "#c6c6c6" 
@@ -430,14 +430,17 @@ class VisualizationView extends React.Component {
                                         imgLink = "./Res/Img/GlyphED.png" />
                                 </div>
 
-                                {(this.state.vizKey === '' && !this.props.uid) ? 
-                                    null 
+                                {(this.state.vizKey === '' || this.props.uid) ? 
+                                    <div></div>
                                     : 
                                     <iframe 
                                         id = "GlyphViewer" 
                                         onLoad = { this.onLoadGlyphView.bind(this) } 
                                         title = "3D rendering engine" 
-                                        style = {{ width:'100%', height:'100%', border: 'none' }} 
+                                        style = {{ 
+                                            width:'100%', 
+                                            height:'100%', 
+                                            border: 'none'}} 
                                         src = {"./Res/Viz/demo.html#" + this.state.vizKey}
                                     />
                                 } 
