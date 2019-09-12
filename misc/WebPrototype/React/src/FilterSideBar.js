@@ -107,56 +107,58 @@ class FilterSideBar extends React.Component {
                 }
             }
         );
-        makeServerCall('loadVisualizationEC2',
-            function(res,b,c) {
-            // Hide the loadmask.
+
+        //NEW
+        // makeServerCall('loadVisualizationEC2',
+        //     function(res,b,c) {
+        //     // Hide the loadmask.
                 
-                if (typeof res === 'string') {
-                    res = JSON.parse(res);
-                }
+        //         if (typeof res === 'string') {
+        //             res = JSON.parse(res);
+        //         }
 
-                // debugger;
-                console.log(res, context.props.VizParams, 'new load viz ec2');
-                // if (result) console.log(result);
-                // if (Array.isArray(res.data) && res.data.length > 0) {
-                //     var result = context.convertToCompatibleDataObject(res.data);
-                //     context.makeFilterStructure(result);
-                //     context.setState({ tableData: result, loadingDone: true });
-                //     context.props.dispatch(setStatData(result));
-                //     context.props.updateViz(res.glyphViewerKey);
+        //         // debugger;
+        //         console.log(res, context.props.VizParams, 'new load viz ec2');
+        //         // if (result) console.log(result);
+        //         // if (Array.isArray(res.data) && res.data.length > 0) {
+        //         //     var result = context.convertToCompatibleDataObject(res.data);
+        //         //     context.makeFilterStructure(result);
+        //         //     context.setState({ tableData: result, loadingDone: true });
+        //         //     context.props.dispatch(setStatData(result));
+        //         //     context.props.updateViz(res.glyphViewerKey);
 
-                //     // makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
-                //     //     function (responseText) { 
-                //     //         var response = JSON.parse(responseText);
+        //         //     // makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
+        //         //     //     function (responseText) { 
+        //         //     //         var response = JSON.parse(responseText);
 
-                //     //         // debugger;
+        //         //     //         // debugger;
 
-                //     //         context.setState({ 
-                //     //             initialX: response.initialX,
-                //     //             initialY: response.initialY, 
-                //     //             initialZ: response.initialZ,
-                //     //         });
-                //     //     }
-                //     // );
-                //     // console.log(context.props.initialX, context.props.initialY, context.props.initialZ)
+        //         //     //         context.setState({ 
+        //         //     //             initialX: response.initialX,
+        //         //     //             initialY: response.initialY, 
+        //         //     //             initialZ: response.initialZ,
+        //         //     //         });
+        //         //     //     }
+        //         //     // );
+        //         //     // console.log(context.props.initialX, context.props.initialY, context.props.initialZ)
                     
-                // }
-                // else {
-                //     // 0 records matched.
-                //     console.log('none matched');
-                // }
-            },
-            {
-                post: true, 
-                data:  { 
-                    tableName: context.props.VizParams.tableName, 
-                    query: context.props.VizParams.query, 
-                    sdtPath: context.props.VizParams.sdtPath, 
-                    datasourceId: context.props.VizParams.datasourceId ,
-                    filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
-                }
-            }
-        );
+        //         // }
+        //         // else {
+        //         //     // 0 records matched.
+        //         //     console.log('none matched');
+        //         // }
+        //     },
+        //     {
+        //         post: true, 
+        //         data:  { 
+        //             tableName: context.props.VizParams.tableName, 
+        //             query: context.props.VizParams.query, 
+        //             sdtPath: context.props.VizParams.sdtPath, 
+        //             datasourceId: context.props.VizParams.datasourceId ,
+        //             filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
+        //         }
+        //     }
+        // );
    }
 
    

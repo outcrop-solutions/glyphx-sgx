@@ -38,17 +38,11 @@ class TopNavBar extends React.Component {
 
     };
 
-    componentWillUnmount(){
-        this.props.dispatch(logoutClear());
-        deleteCookie(getLoginCookieName());
-        hideSplashScreen();
-    }
-    
-
     /**
      * Performs a logout by redirecting the site to the loagout page
      **/
     logout = () => {    
+        let context = this;
         return new Promise((resolve, reject) => {
             makeServerCall("logout",
             function (responseText) { 
@@ -58,10 +52,12 @@ class TopNavBar extends React.Component {
         }).then(res =>{
             if(res === true){
                 window.location.reload();
-                
+                deleteCookie(getLoginCookieName());
+                context.props.dispatch(logoutClear());
+                hideSplashScreen();
             }
         }).catch(err =>{
-            console.log(err);
+            // console.log(err);
         });
     };
 

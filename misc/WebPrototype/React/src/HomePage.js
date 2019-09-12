@@ -183,14 +183,9 @@ class HomePage extends React.Component {
         this.fetchSaveUserSettings();
     }
 
-    componentWillUnmount(){
-        this.props.dispatch(logoutClear());
-        deleteCookie(getLoginCookieName());
-        hideSplashScreen();
-    }
-
     componentDidUpdate(){
         //debugger;
+        let context = this;
         var now = new Date().getTime();
         var distance = now - this.props.timeoutTimer;
        
@@ -213,10 +208,12 @@ class HomePage extends React.Component {
                 if(res === true){
                     alert("Your session has expired due to inactivity.");
                     window.location.reload();
-                    
+                    deleteCookie(getLoginCookieName());
+                    context.props.dispatch(logoutClear());
+                    hideSplashScreen();
                 }
             }).catch(err =>{
-                console.log(err);
+                // console.log(err);
             });
         }
     }

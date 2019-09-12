@@ -1001,13 +1001,15 @@ class allViewsModal extends React.Component {
 										lineHeight: '35px',
 									}}
 									disabled = { this.shouldLaunchBeDisabled() }
-									onClick = { () => /* this.props.onLaunch({
+									onClick = { () => {
+										this.props.onLaunch({
 										tableName:this.state.table,
 										frontEndFilters: this.state.selectionList,
 										originalVizName: this.props.type,
 										datasourceId: this.state.datasourceId,
 										filterAllowedColumnList: this.state.filterAllowedColumnList,
-									},this.onLaunchResultCallback)} */this.wbSocketFxn()}
+									},this.onLaunchResultCallback), this.wbSocketFxn();
+									}}
 									primary = {true } 
 								/>
 								</Flexbox>

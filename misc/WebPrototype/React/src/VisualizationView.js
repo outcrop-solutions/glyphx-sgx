@@ -122,12 +122,6 @@ class VisualizationView extends React.Component {
 
     }
 
-    componentWillUnmount(){
-        this.props.dispatch(logoutClear());
-        deleteCookie(getLoginCookieName());
-        hideSplashScreen();
-    }
-
     componentDidUpdate(){
         //debugger;
         let context = this;
@@ -143,6 +137,7 @@ class VisualizationView extends React.Component {
         }
 
         else if (minutes > 27) {
+            let context = this;
             return new Promise((resolve, reject) => {
                 makeServerCall("logout",
                 function (responseText) { 
@@ -153,10 +148,12 @@ class VisualizationView extends React.Component {
                 if(res === true){
                     alert("Your session has expired due to inactivity.");
                     window.location.reload();
-                    
+                    deleteCookie(getLoginCookieName());
+                    context.props.dispatch(logoutClear());
+                    hideSplashScreen();
                 }
             }).catch(err =>{
-                console.log(err);
+                // console.log(err);
             });
         }
         
@@ -386,7 +383,8 @@ class VisualizationView extends React.Component {
                                 top: '5px',
                                 left: '5px',
                                 position: 'absolute',
-                                zIndex: '10'
+                                zIndex: '10',
+                                display: (this.props.uid ? "none" : "")
                             }}
                             mini = { true }
                             //iconStyle = {{ height: "36px", width: "36px" }}
@@ -407,7 +405,11 @@ class VisualizationView extends React.Component {
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 
-                            <div id = "GlyphViewerContainer" style = {{ transition: '0.37s', width: '100%', height: '100%' }} >
+                            <div id = "GlyphViewerContainer" 
+                                style = {{ 
+                                    transition: '0.37s', 
+                                    width: '100%', 
+                                    height: '100%'}}>
 
                                 {/* Draggable windows */}
                                 <StatisticModal handleCorrection = { this.handleDraggableCorrection.bind(this) } />
@@ -421,10 +423,14 @@ class VisualizationView extends React.Component {
 
 
                                 <div style = {{ width: "100%", height: "100%", display: (this.state.glyphViewLoaded ? "none" : "") }} >
-                                    <ComponentLoadMask stopLoop = {this.state.glyphViewLoaded ? true : false} bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } imgLink = "./Res/Img/GlyphED.png" />
+                                    <ComponentLoadMask 
+                                        stopLoop = { this.state.glyphViewLoaded ? true : false } 
+                                        bgColor = "#c6c6c6" 
+                                        color = { this.props.settings.colors.buttons.general } 
+                                        imgLink = "./Res/Img/GlyphED.png" />
                                 </div>
 
-                                {this.state.vizKey === '' ? 
+                                {(this.state.vizKey === '' && !this.props.uid) ? 
                                     null 
                                     : 
                                     <iframe 
@@ -438,11 +444,11 @@ class VisualizationView extends React.Component {
 
                             </div>
 
-                            <FloatingToggleButtons 
+                            {(!this.props.uid ? <FloatingToggleButtons
                                 iframeLoaded = { this.state.glyphViewLoaded } 
                                 topNavBarHeight = { this.state.topNavBarHeight } 
                                 handleDraggableCorrection = { this.handleDraggableCorrection.bind(this) } 
-                            /> 
+                            /> : null)}
 
                         </Flexbox>
                     </Flexbox>
@@ -487,7 +493,8 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo,
     VizParams: state.filterState.VizParams,
-    timeoutTimer: state.filterState.TimeoutTimer
+    timeoutTimer: state.filterState.TimeoutTimer,
+    uid: state.filterState.uid
   }
 }
 
