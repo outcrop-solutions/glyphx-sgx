@@ -149,8 +149,8 @@ class VisualizationView extends React.Component {
                 if(res === true){
                     alert("Your session has expired due to inactivity.");
                     window.location.reload();
-                    deleteCookie(getLoginCookieName());
                     context.props.dispatch(logoutClear());
+                    deleteCookie(getLoginCookieName());
                     hideSplashScreen();
                 }
             }).catch(err =>{

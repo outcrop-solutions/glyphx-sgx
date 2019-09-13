@@ -209,10 +209,12 @@ class FilterTable extends React.Component {
      */
     applyFilter = () => {
         //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
-        console.log(iframe);
-
         var context = this;
+        var iframe;
+        if(!context.props.uid){
+            iframe = document.getElementById('GlyphViewer').contentWindow;
+            console.log(iframe);
+        }
 
         makeServerCall('applyFilters',
             function(result, b) {
@@ -221,21 +223,28 @@ class FilterTable extends React.Component {
                 // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
-                
-				if (data && Array.isArray(data)) {
-					if (data.length > 0) {							
-						for (var index = 0; index < data.length; index++) {
-							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-						}
-					}
-					else {
-						// No data was matched.
-						console.log('NO MATCH');
-					}
-				}
-				console.log(tempRowIds);
-                context.props.setFilterIDs(tempRowIds);
-                iframe.filterGlyphs(tempRowIds);
+
+                if(context.props.uid){
+                    context.props.webSocket.send(JSON.stringify({
+                        filters: data
+                    }));
+                }
+                if(!context.props.uid){
+                    if (data && Array.isArray(data)) {
+                        if (data.length > 0) {							
+                            for (var index = 0; index < data.length; index++) {
+                                tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+                            }
+                        }
+                        else {
+                            // No data was matched.
+                            console.log('NO MATCH');
+                        }
+                    }
+                    console.log(tempRowIds);
+                    context.props.setFilterIDs(tempRowIds);
+                    iframe.filterGlyphs(tempRowIds);
+                }
 
                 // debugger;
                 
@@ -970,7 +979,9 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     VizParams: state.filterState.VizParams,
     UndoRedoHistory: state.filterState.UndoRedoHistory,
-    ShowAllTables: state.filterState.ShowAllTables
+    ShowAllTables: state.filterState.ShowAllTables,
+    webSocket: state.filterState.webSocket,
+    uid: state.filterState.uid
   }
 };
 

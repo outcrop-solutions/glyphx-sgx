@@ -198,6 +198,7 @@ class HomePage extends React.Component {
         }
 
         else if (minutes > 27) {
+            alert("Your session has expired due to inactivity.");
             return new Promise((resolve, reject) => {
                 makeServerCall("logout",
                 function (responseText) { 
@@ -206,10 +207,9 @@ class HomePage extends React.Component {
             );
             }).then(res =>{
                 if(res === true){
-                    alert("Your session has expired due to inactivity.");
                     window.location.reload();
-                    deleteCookie(getLoginCookieName());
                     context.props.dispatch(logoutClear());
+                    deleteCookie(getLoginCookieName());
                     hideSplashScreen();
                 }
             }).catch(err =>{

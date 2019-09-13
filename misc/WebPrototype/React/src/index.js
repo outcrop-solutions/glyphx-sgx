@@ -54,7 +54,8 @@ const initialFilterState = {
     initialVizZ: null,
     sharedLinkStatus: null,
     shareID: "",
-    uid: ""
+    uid: "",
+    webSocket: null
 };
 
 
@@ -684,7 +685,12 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...initialFilterState,
                 uid: state.uid
             }
-            
+
+        case 'SET_SOCKET':
+            return {
+                ...state,
+                webSocket: action.socket
+            }    
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/

@@ -30,8 +30,7 @@ class allViewsModal extends React.Component {
 		selectAll: [],
 		loadMask: false,
 		loadDone: false,
-		selectAll500: false,
-		socketIo: null
+		selectAll500: false
 	}
 	constructor(props){
 		super(props);
@@ -55,7 +54,8 @@ class allViewsModal extends React.Component {
 		}
 
 		const socket = new WebSocket('ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001');
-
+		console.log(socket)
+		this.props.dispatch(setSocket(socket));
 		// listening
 			socket.addEventListener('message', function (event) {
 				let data;
@@ -71,7 +71,7 @@ class allViewsModal extends React.Component {
 					}
 				}
 			});
-		this.setState({socketIo: socket});
+		// this.props.dispatch(setSocket(socket));
 	}
 	
 
@@ -858,7 +858,7 @@ class allViewsModal extends React.Component {
 	}
 
 	wbSocketFxn(){
-		this.state.socketIo.send(JSON.stringify({
+		this.props.webSocket.send(JSON.stringify({
 			url_uid: this.props.uid,
 			launch: true
 		}));
@@ -1100,6 +1100,11 @@ export const setUid = (uid) => ({
     uid,
 });
 
+export const setSocket = (socket) => ({
+    type: 'SET_SOCKET',
+    socket,
+});
+
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
@@ -1108,7 +1113,8 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
 	allViewsDisplay: state.filterState.ModalDisplay.allViewsModal,
-	uid: state.filterState.uid
+	uid: state.filterState.uid,
+	webSocket: state.filterState.webSocket
   }
 }
 
