@@ -182,7 +182,14 @@ class TopNavBar extends React.Component {
             >
                 {/* Logo */}
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
-                    <span style = {{ cursor: 'pointer' }} onClick = { () => this.returnHome() } >
+                    <span 
+                        style = {{ cursor: 'pointer' }} 
+                        onClick = { () => {
+                            this.returnHome(); 
+                            (this.props.uid ? 
+                                this.props.webSocket.send(JSON.stringify({url_uid: this.props.uid, home: true})) 
+                                : null )
+                        }} >
                         {this.props.homePage ? 
                             this.state.imgLogoSrc
                             :
@@ -421,6 +428,8 @@ const mapStateToProps = function(state) {
     userInfo: state.filterState.UserInfo,
     statData: state.filterState.StatisticsData,
     vizParams: state.filterState.VizParams,
+    webSocket: state.filterState.webSocket,
+    uid: state.filterState.uid
   }
 }
 

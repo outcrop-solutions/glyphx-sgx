@@ -286,7 +286,7 @@ class FloatingToggleButtons extends React.Component {
                         id = "collapsibleFloatingButton"
                         backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                         style = {{
-                            top: '56px',
+                            top: '8px',
                             left: '5px',
                             position: 'absolute',
                             zIndex: '10',

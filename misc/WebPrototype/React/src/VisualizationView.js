@@ -366,7 +366,8 @@ class VisualizationView extends React.Component {
                         </Tooltip>
                     </div>
 
-                    <Tooltip
+                    {/* Outdated Home button. Leaving here in case. */}
+                    {/* <Tooltip
                         placement = 'right'
                         mouseEnterDelay = { 0.5 }
                         mouseLeaveDelay = { 0.15 }
@@ -399,7 +400,7 @@ class VisualizationView extends React.Component {
                                 }}
                             /> 
                         </FloatingActionButton>
-                    </Tooltip>
+                    </Tooltip> */}
 					
 					{/* Actual Application body that you see */}
                     <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>

@@ -226,6 +226,7 @@ class FilterTable extends React.Component {
 
                 if(context.props.uid){
                     context.props.webSocket.send(JSON.stringify({
+                        url_uid: context.props.uid,
                         filters: data
                     }));
                 }
