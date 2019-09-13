@@ -258,16 +258,16 @@ class FilterTable extends React.Component {
             }
         );
 
-        makeServerCall('applyFiltersEC2',
-            function(responseText) {
-                console.log(JSON.parse(responseText), 'response from apply filts on filt table');
+        // makeServerCall('applyFiltersEC2',
+        //     function(responseText) {
+        //         console.log(JSON.parse(responseText), 'response from apply filts on filt table');
 
 
-            },
-            {
-                post: true,
-                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState}
-            });
+        //     },
+        //     {
+        //         post: true,
+        //         data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState}
+        //     });
     };
 
 
