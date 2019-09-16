@@ -30,7 +30,8 @@ class allViewsModal extends React.Component {
 		selectAll: [],
 		loadMask: false,
 		loadDone: false,
-		selectAll500: false
+		selectAll500: false,
+		sdtUrl: ""
 	}
 	constructor(props){
 		super(props);
@@ -118,6 +119,7 @@ class allViewsModal extends React.Component {
 		
 		// Only care if URL changes because then new data needs to be loaded
         if (nextProps.typeURL !== this.props.typeURL) {
+			
 
 			// Show the window load-mask as backend call is being made
 			this.props.dispatch(editModalDisplay(false, null));
@@ -125,6 +127,11 @@ class allViewsModal extends React.Component {
 
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+
+			console.log(nextProps.typeURL.substring(index + 1));
+			let str = nextProps.typeURL.substring(index + 1).replace("\\", "/");
+			context.setState({sdtUrl: str});
+			console.log(str);
 			// console.log(nextProps.typeURL.substring(index + 1), 'whats going on')
 			//debugger;
 
@@ -860,6 +867,7 @@ class allViewsModal extends React.Component {
 	wbSocketFxn(){
 		this.props.webSocket.send(JSON.stringify({
 			url_uid: this.props.uid,
+			sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
 			launch: true
 		}));
 	}
