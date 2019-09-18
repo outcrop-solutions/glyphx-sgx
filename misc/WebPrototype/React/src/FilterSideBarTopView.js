@@ -1109,6 +1109,15 @@ class FilterSideBarTopView extends React.Component {
         }
     }
 
+    desktopClearFilters(){
+        if(this.props.uid){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                clear_all: true
+            }));
+        }
+    }
+
 	
 	render = () => {
         
@@ -1507,7 +1516,7 @@ class FilterSideBarTopView extends React.Component {
                                     height: '25px',
                                     lineHeight: '25px'
                                 }}
-                                onClick = { this.onClearAllFilters }
+                                onClick = { () => {this.onClearAllFilters, this.desktopClearFilters() }}
                                 primary = { true } 
                             />
                         </Tooltip>
@@ -1765,7 +1774,9 @@ const mapStateToProps = function(state){
 	VizParams: state.filterState.VizParams,
     UndoRedoHistory: state.filterState.UndoRedoHistory,
     statData: state.filterState.StatisticsData,
-    RecentVizDropdown: state.filterState.RecentVizDropdown
+    RecentVizDropdown: state.filterState.RecentVizDropdown,
+    uid: state.filterState.uid,
+    webSocket: state.filterState.webSocket
   }
 };
 

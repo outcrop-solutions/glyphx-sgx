@@ -314,7 +314,7 @@ class VisualizationView extends React.Component {
 
                     <TimeoutAlert />
 
-                    <div id  = "filterNav" className = "sidenav" style = {{ height: "100%" }} >
+                    <div id  = "filterNav" className = "sidenav" style = {{ height: "100%", overflow: "hidden" }} >
                         <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
                             <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '36px', transition: '0.37s' }}>
                                 <TopNavBar />

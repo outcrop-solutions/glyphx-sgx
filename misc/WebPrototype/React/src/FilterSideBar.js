@@ -73,6 +73,7 @@ class FilterSideBar extends React.Component {
                     console.log(result);
                     context.makeFilterStructure(result);
                     context.setState({ tableData: result, loadingDone: true });
+                    if(context.props.uid) context.desktopFilterLoad();
                     context.props.dispatch(setStatData(result));
                     context.props.updateViz(res.glyphViewerKey);
 
@@ -488,6 +489,16 @@ class FilterSideBar extends React.Component {
         this.setState({ tableData: tableData });
     }
 
+    desktopFilterLoad(){
+        let context = this;
+        if(context.state.loadingDone === true){
+            context.props.webSocket.send(JSON.stringify({
+                url_uid: context.props.uid,
+                load_done: true
+            }));
+        }
+    }
+
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
@@ -501,7 +512,7 @@ class FilterSideBar extends React.Component {
                 <div 
                     id = 'darkLayer'
                     className = 'darkClass'
-                    style = {{ display: (this.state.loadingDone ? "none" : ""), overflow: "hidden"}}>
+                    style = {{ display: (this.state.loadingDone ? "none" : "")}}>
                     <ComponentLoadMask 
                         stopLoop = { this.state.loadingDone ? true : false } 
                         bgColor = "#c6c6c6" 
@@ -641,7 +652,8 @@ const mapStateToProps = function(state){
     initialX: state.filterState.initialVizX,
     initialY: state.filterState.initialVizY,
     initialZ: state.filterState.initialVizZ,
-    uid: state.filterState.uid
+    uid: state.filterState.uid,
+    webSocket: state.filterState.webSocket
   }
 };
 
