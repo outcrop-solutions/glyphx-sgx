@@ -437,7 +437,7 @@ class VisualizationView extends React.Component {
                                 </div>
 
                                 {(this.state.vizKey === '' || this.props.uid) ? 
-                                    <div></div>
+                                    <div style={{width: '100%', height: '100%', backgroundColor: 'black'}}></div>
                                     : 
                                     <iframe 
                                         id = "GlyphViewer" 

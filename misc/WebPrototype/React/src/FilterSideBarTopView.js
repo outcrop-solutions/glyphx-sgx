@@ -478,7 +478,8 @@ class FilterSideBarTopView extends React.Component {
      */
     applyFilter = () => {
         //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        if(!this.props.uid){
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
 
@@ -502,8 +503,7 @@ class FilterSideBarTopView extends React.Component {
 				}
 
                 context.props.setFilterIDs(tempRowIds);
-
-                iframe.filterGlyphs(tempRowIds);
+                if(!context.props.uid) iframe.filterGlyphs(tempRowIds);
 
                 context.props.dispatch( setTimer(new Date().getTime()) );
             },
@@ -543,7 +543,8 @@ class FilterSideBarTopView extends React.Component {
                 post: true, 
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
             }
-        );
+            );
+        }
     };
 
 
@@ -773,10 +774,12 @@ class FilterSideBarTopView extends React.Component {
         var columnsFilterApplied = filterSummaryView.refs;
         //filterSummaryView.handleRowDel('StaffAssigned');
         
-		var iframe = document.getElementById('GlyphViewer').contentWindow;
+        var iframe;
+        if(!context.props.uid) {
+            iframe = document.getElementById('GlyphViewer').contentWindow;
+            iframe.filterGlyphs([]);
+        }
         //iframe.postMessage({action:'clear'}, '*');
-        iframe.filterGlyphs([]);
-
 
         // let pom = new Promise(function (resolve, reject) {
         //     for (var property in columnsFilterApplied) {
@@ -811,15 +814,18 @@ class FilterSideBarTopView extends React.Component {
             var buttonState = !this.state.hideShowButtonTextFlag;
             this.setState({ hideShowButtonTextFlag: buttonState });
 
-            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            var iframe;
+            if(!this.props.uid){
+            iframe = document.getElementById('GlyphViewer').contentWindow;
             
             // If the flag true then hide
-            if (buttonState) {
-                iframe.filterGlyphs(this.props.filterIDs);
-            }
-            else {
-                // Show all the glyphs
-                iframe.filterGlyphs([]);
+                if (buttonState) {
+                    iframe.filterGlyphs(this.props.filterIDs);
+                }
+                else {
+                    // Show all the glyphs
+                    iframe.filterGlyphs([]);
+                }
             }
         }
     };
@@ -898,9 +904,10 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onSelectedDataClick = (event) => {
         //var IDs = document.getElementById("GlyphViewer").contentWindow.getSelectedGlyphIDs();
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
-        var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
-
+        if(!this.props.uid){
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
+        }
         var context = this;
 
         // Get the data corresponding to the URL
@@ -1516,7 +1523,7 @@ class FilterSideBarTopView extends React.Component {
                                     height: '25px',
                                     lineHeight: '25px'
                                 }}
-                                onClick = { () => {this.onClearAllFilters, this.desktopClearFilters() }}
+                                onClick = { () => {this.onClearAllFilters(), this.desktopClearFilters() }}
                                 primary = { true } 
                             />
                         </Tooltip>

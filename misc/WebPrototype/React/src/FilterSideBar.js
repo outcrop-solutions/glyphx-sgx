@@ -502,7 +502,7 @@ class FilterSideBar extends React.Component {
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
-            <div>
+            <div style = {{overflow: 'auto'}}>
                 {/* <div id = "darkLayer" 
                 className = "darkClass" 
                 style={{
