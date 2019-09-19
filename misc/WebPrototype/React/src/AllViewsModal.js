@@ -867,9 +867,7 @@ class allViewsModal extends React.Component {
 	wbSocketFxn(){
 		var data = this.state.selectionList.slice();
 		var outerIndex;
-		var returnObj = {
-			query: "SELECT * FROM " + this.state.table + " WHERE "
-		};
+		var query = "SELECT * FROM " + this.state.table + " WHERE ";
 	
 		for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
 			var dataItem = data[outerIndex].slice();
@@ -879,32 +877,24 @@ class allViewsModal extends React.Component {
 			dataItem.shift(); 
 
 			var values = '("' + dataItem.toString() + '")';
-			returnObj.query = returnObj.query + columnName + " IN " + values.replace(/,/g , '","');
+			query = query + columnName + " IN " + values.replace(/,/g , '","');
 			
 			if (outerIndex != data.length-1) {
-				returnObj.query = returnObj.query + " AND ";
+				query = query + " AND ";
 			}
 
 			else {
-				returnObj.query = returnObj.query + ";";
+				query = query + ";";
 			}
 		}
-		console.log(returnObj, "***********************");
-		
-		if(this.props.VizParams.query){
-		console.log(this.props.VizParams)
-		this.props.webSocket.send(JSON.stringify({
-			url_uid: this.props.uid,
-			sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
-			query: this.props.VizParams.query,
-			launch: true
-		}));
+		if(query.indexOf(';')){
+			this.props.webSocket.send(JSON.stringify({
+				url_uid: this.props.uid,
+				sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
+				query,
+				launch: true
+			}));
 		}
-	}
-
-	desktopQueryPassthrough = (tableName, frontEndFilters) =>{
-
-		
 	}
 
 	render() {
