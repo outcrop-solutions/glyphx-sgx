@@ -161,8 +161,8 @@ class ViewsManager extends React.Component {
     }
 	
 	// Moving this here instead of AllViewsModal.js due to refs problem
-	onLaunch(extra, callback) {
-        console.log(extra);
+	onLaunch(extra, callback, callback_2) {
+        console.log(extra, callback_2);
         // Handle launch when no selections made on a column (select all unless its not allowed to select all)
 		var context = this;
 		var tableName;
@@ -802,7 +802,8 @@ const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     funnelData: state.filterState.FunnelData,
-    storedViews: state.filterState.StoredViews
+    storedViews: state.filterState.StoredViews,
+    uid: state.filterState.uid
   }
 }
 
