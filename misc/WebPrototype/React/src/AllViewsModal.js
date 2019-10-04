@@ -887,10 +887,11 @@ class allViewsModal extends React.Component {
 				query = query + ";";
 			}
 		}
-		if(query.indexOf(';')){
+		if(query.indexOf(';') && this.props.legend_url_arr){
 			this.props.webSocket.send(JSON.stringify({
 				url_uid: this.props.uid,
 				sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
+				legendURLArr: this.props.legend_url_arr,
 				query,
 				launch: true
 			}));
@@ -1148,6 +1149,7 @@ const mapStateToProps = function(state){
 	allViewsDisplay: state.filterState.ModalDisplay.allViewsModal,
 	uid: state.filterState.uid,
 	webSocket: state.filterState.webSocket,
+	legend_url_arr: state.filterState.legend_url_arr,
 	VizParams: state.filterState.VizParams
   }
 }

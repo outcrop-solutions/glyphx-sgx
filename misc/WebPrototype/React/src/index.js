@@ -55,7 +55,8 @@ const initialFilterState = {
     sharedLinkStatus: null,
     shareID: "",
     uid: "",
-    webSocket: null
+    webSocket: null,
+    legend_url_arr: []
 };
 
 
@@ -691,6 +692,11 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 webSocket: action.socket
             }    
+        case 'SET_LEGEND_URL_ARR':
+            return {
+                ...state,
+                legend_url_arr: action.arr
+            }   
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/

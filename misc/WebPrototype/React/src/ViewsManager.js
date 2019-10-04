@@ -398,13 +398,11 @@ class ViewsManager extends React.Component {
             function (responseText) { 
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
-                let imgPath = response.body;
-                console.log(imgPath,'imgPath');
-                /**
-                 * MUTATE BACKEND CALL TO RETURN MORE THAN 1 PNG
-                 * WORK IN PROGRESS
-                 */
+                let imgPath = response.body.legendUrl;
+                console.log(response.body.legendUrl,'imgPath');
                 
+                context.props.dispatch(setLegendUrlArr(response.body.imgArr));
+
                 if (imgPath && imgPath.length > 0 && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
                     context.setState({
                         legendPng: 
@@ -811,6 +809,11 @@ export const setCurrentVizParams = (vizParams) => ({
    type: 'SET_VIZ_PARAMS',
    vizParams,
 });
+
+export const setLegendUrlArr = (arr) => ({
+    type: 'SET_LEGEND_URL_ARR',
+    arr,
+ });
 
 
 /**

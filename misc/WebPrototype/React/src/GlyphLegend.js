@@ -22,28 +22,23 @@ class GlyphLegend extends React.Component {
         var context = this;
 
         // debugger;
-        console.log(window.encodeURI('getLegendURL/')+this.props.VizParams.sdtPath)
+        // console.log(window.encodeURI('getLegendURL/')+this.props.VizParams.sdtPath)
         makeServerCall(window.encodeURI('getLegendURL/' + this.props.VizParams.sdtPath ),
             function (responseText) { 
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
-                let imgPath_1 = response.body;
-                // debugger;
-                //console.log("RESPONSE TEXT");
-                //console.log(responseText);
-
-                //var imgPath = "../" + responseText.split("/WebViewer/")[1];
-
-                //console.log(imgPath);
-
-                context.setState({ 
-                    imgPath: `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath_1)}`
-                });
-                // console.log(context.state.imgPath, window.SERVER_URL, context.props.VizParams.sdtPath)
-            }
+                if(response.body){
+                    let imgPath_1 = response.body.legendUrl;
+                    console.log(imgPath_1)
+                    // debugger;
+    
+                    //var imgPath = "../" + responseText.split("/WebViewer/")[1];
+    
+                    context.setState({
+                    imgPath: `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath_1)}`});
+                }
+            }    
         );
-        
-        
     }
 
     render() {
