@@ -5,7 +5,6 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
-#include <QtWidgets/QStackedWidget>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
@@ -30,6 +29,11 @@
 #include "Profiler.h"
 #include <hal/hal.h>
 #include <QtWebEngineWidgets/QWebEngineView>
+#include <QtCore/QUuid>
+#include <QtGui/QScreen>
+//#include <QtNetwork>
+#include "sqlitewriter.h"
+#include "S3FileManager.h"
 
 GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -43,19 +47,64 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	menuBar()->hide();
 
-	QStackedWidget* centerWidgetsContainer = new QStackedWidget(this);
+	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
+	m_mappingModel = new SynGlyphX::DataTransformModel(this);
+	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
+
+	centerWidgetsContainer = new QStackedWidget(this);
 	centerWidgetsContainer->setContentsMargins(0, 0, 0, 0);
 	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setCentralWidget(centerWidgetsContainer);
 
+	uid = QUuid::createUuid().toString();
+	uid.remove(QChar('{'));
+	uid.remove(QChar('}'));
 	QWebEngineView* dlg = new QWebEngineView(this);
 	//dlg->setMinimumSize(width, height);
-	dlg->load(QUrl("https://viewer.glyphed.com"));
+	//dlg->load(QUrl("https://viewer.glyphed.com"));
+	dlg->load(QUrl("http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5000?uid="+uid));
 	centerWidgetsContainer->addWidget(dlg);
+
+	QScreen *screen = QGuiApplication::primaryScreen();
+	QRect screenGeometry = screen->geometry();
+	int width = screenGeometry.width() - 450;
+	int height = screenGeometry.height() - 83;
+
+	m_viewer = new SynGlyphX::SceneViewer(this, SynGlyphX::ViewerMode::Full);
+	m_viewer->setFilteredResultsDisplayMode(SynGlyphX::FilteredResultsDisplayMode::HideUnfiltered);
+	m_viewer->setGeometry(0, 0, width, height);
+	m_viewer->hide();
+
+	m_viewer->addAction(m_showTagsAction);
+	m_viewer->addAction(m_hideTagsAction);
+	m_viewer->addAction(m_hideAllTagsAction);
+	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(true); });
+	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(false); });
+	QObject::connect( m_hideAllTagsAction, &QAction::triggered, this, [this]{ m_viewer->hideAllTags(); });
+
+	m_viewer->setOnSelectionChanged([this](bool selection_exists)
+	{
+		m_clearSelectionAction->setEnabled(selection_exists);
+		m_showTagsAction->setEnabled(selection_exists);
+		m_hideTagsAction->setEnabled(selection_exists);
+	});
+
+	try {
+
+		if (!m_dataEngineConnection->hasJVM()) {
+
+			m_dataEngineConnection->createJVM();
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
+		return;
+	}
 	
 	try {
 		
-		CreateANTzWidget();
+		//CreateANTzWidget();
 	}
 
 	catch (const std::exception& e) {
@@ -87,6 +136,20 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	UpdateFilenameWindowTitle(s_noFileName);
 
 	std::vector<std::string> images;
+
+	file.setFileName("qLog.txt");
+	file.open(QIODevice::WriteOnly);
+	QTextStream out(&file);
+	out << "Initiating Socket \n" << endl;
+	out << uid << endl;
+
+	//EchoClient client(QUrl(QStringLiteral("ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001")), false);
+	//connect(&client, &EchoClient::setLaunch, this, &GlyphEdViewerWindow::OnLaunch);
+	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
+	QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &GlyphEdViewerWindow::OnSocketLaunch);
+	QObject::connect(&m_webSocket, &QWebSocket::close, this, &GlyphEdViewerWindow::OnSocketClosed);
+	m_webSocket.open(QUrl(QStringLiteral("ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001")));
+
 }
 
 GlyphEdViewerWindow::~GlyphEdViewerWindow()
@@ -138,6 +201,11 @@ void GlyphEdViewerWindow::CreateANTzWidget() {
 		m_showTagsAction->setEnabled( selection_exists );
 		m_hideTagsAction->setEnabled( selection_exists );
 	} );
+}
+
+void GlyphEdViewerWindow::closeJVM(){
+
+	m_dataEngineConnection->destroyJVM();
 }
 
 void GlyphEdViewerWindow::CreateMenus() {
@@ -243,6 +311,187 @@ void GlyphEdViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(act);
 	//m_showHideToolbar->addAction(act);
 	m_rightDockWidget->hide();
+}
+
+void GlyphEdViewerWindow::OnSocketConnect() {
+
+QTextStream out(&file);
+out << "Socket opened" << endl;
+
+QString toSend("uid=" + uid);
+m_webSocket.sendTextMessage(toSend);
+}
+
+void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
+	//qDebug() << "Message to launch received";
+	//centerWidgetsContainer->setCurrentIndex(1);
+	QTextStream out(&file);
+	out << "Message received: " << message << endl;
+
+	QStringList qsl = message.split(QChar(','));
+	QString type = qsl.at(0).split(QChar(':')).at(1);
+	type.remove(QChar('"'));
+	type.remove(QChar('}'));
+	out << "{{" + type + "}}" << endl;
+
+	QString text;
+	if (type == "LAUNCH"){
+		QString sdt = "https" + message.split(QChar(':')).at(3).split(QChar('"')).at(0);
+		QString query = message.split(QChar(':')).at(4).split(QChar(',')).at(0);
+		QStringList legends = message.split("\"legendURLArr\":[").at(1).split(QChar(']')).at(0).split(QChar(','));
+		//text = "Received launch response from server. \n Launch " + query;
+		std::vector<std::string> bimgs = MakeDataRequest(query, sdt, legends);
+		QSize size = this->size();
+		m_viewer->resize(size.width() - 450, size.height() - 20);
+		m_viewer->show();
+		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), bimgs);
+		//QMessageBox::information(this, tr("Server message"), sdt);
+	}
+	else if (type == "FILTER"){
+		QString ids = message.split(QChar('[')).at(1).split(QChar(']')).at(0);
+		SynGlyphX::IndexSet myset = parseFilters(ids);
+		std::set<unsigned long>::iterator it;
+		QStringList qsl;
+		for (it = myset.begin(); it != myset.end(); ++it){
+			qsl.append(QString::number(*it));
+		}
+		text = "Received launch response from server. \n Filter [" + qsl.join(", ") + "]";
+		m_viewer->setFilteredResults(parseFilters(ids), true);
+	}
+	else if (type == "HOME"){
+		text = "Received launch response from server. \n Home " + uid;
+		m_viewer->hide();
+	}
+	else if (type == "VFILTERS LOAD DONE"){
+		text = "Received launch response from server. \n Load Done " + uid;
+	}
+	else if (type == "VFILTERS CLEAR ALL"){
+		text = "Received launch response from server. \n Clear All " + uid;
+		m_viewer->setFilteredResults(SynGlyphX::IndexSet(), true);
+	}
+
+	//QMessageBox::information(this, tr("Server message"), text);
+
+	//m_webSocket.close();
+}
+
+void GlyphEdViewerWindow::OnSocketClosed() {
+
+	QTextStream out(&file);
+	out << "Socket closed" << endl;
+
+	QMessageBox::information(this, tr("Server message"), "Socket closed.");
+}
+
+std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QString sdt, QStringList legends) {
+
+	QNetworkRequest request(QUrl("http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/fetchall"));
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+	QJsonObject body;
+	body.insert("query", query.mid(1, query.length() - 3).replace("\\", ""));
+
+	QNetworkAccessManager nam;
+	QNetworkReply *reply = nam.post(request, QJsonDocument(body).toJson());
+	while (!reply->isFinished())
+	{
+		qApp->processEvents();
+	}
+	QByteArray response_data = reply->readAll();
+	QJsonDocument json = QJsonDocument::fromJson(response_data);
+	QJsonArray data = json.array();
+
+	reply->deleteLater();
+
+	DataEngine::GlyphEngine ge;
+	ge.initiate(m_dataEngineConnection->getEnv(), "", "", "", "", "GlyphViewer", false);
+
+	QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
+	std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+	std::string cacheDirectoryPath = dcd + ("/cache_" + uuid.toStdString() + "/");
+	//std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
+
+	cache_location = QString::fromStdString(cacheDirectoryPath);//"C:/Users/bryan/OneDrive/Documents/GitHub/sgx/bin/Win64/Release/VizFiles/";
+	QStringList sdt_split = sdt.split(QChar('/'));
+	QString filename = cache_location + sdt_split.at(sdt_split.size() - 1);
+
+	//QMessageBox::information(this, tr("Server message"), location);
+
+	QString table_name = query.split("FROM ").at(1).split(" ").at(0);
+
+	QString bucket_name = sdt.split(QChar('.')).at(0).split("/").at(2);
+	QString key_name = sdt.split(".com/").at(1);
+	//QMessageBox::information(this, tr("Server message"), bucket_name + " | " + key_name);
+	ge.DownloadFiles(bucket_name, key_name, cache_location);
+	for (QString legend : legends) {
+		QStringList legend_parts = legend.left(legend.length()-1).split(QChar('/'));
+		int legend_length = legend_parts.size();
+		QString legend_key = legend_parts.at(legend_length-2) + "/" + legend_parts.at(legend_length-1);
+		ge.DownloadFiles(bucket_name, legend_key, cache_location);
+	}
+
+	m_mappingModel->LoadDataTransformFile(filename);
+	std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+
+	SqliteWriter* sql_writer = new SqliteWriter();
+	QString ret_query = sql_writer->WriteDatabase(cache_location, data, sdt_split.at(sdt_split.size() - 1), table_name);
+
+	ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
+
+	QString id = sql_writer->GetId();
+	QStringList tableNames = sql_writer->GetTableNames();
+	QString table_query = "SELECT * FROM " + tableNames.at(0);
+	ge.SetQueryForDatasource(id, tableNames.at(0), table_query);
+
+	if (ge.IsUpdateNeeded()){
+		DownloadBaseImages(ge);
+		ge.generateGlyphs(this);
+	}
+
+	return ge.getBaseImages();
+}
+
+void GlyphEdViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
+
+	QTextStream out(&file);
+	out << "{{DBI Start}}" << endl;
+
+	try {
+
+		const std::vector<SynGlyphX::BaseImage>& bis = m_mappingModel->GetDataMapping().get()->GetBaseObjects();
+		out << "{{DBI BIS returned}}" << bis.size() << endl;
+		ge.getDownloadedBaseImage(bis);
+	}
+	catch (const DownloadException& e) {
+
+		SynGlyphX::Application::restoreOverrideCursor();
+		QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	}
+	catch (const std::exception&) {
+
+		throw;
+	}
+}
+
+void GlyphEdViewerWindow::resizeEvent(QResizeEvent* event) {
+
+	//QMessageBox::information(this, tr("Server message"), "resize");
+	QSize size = this->size();
+	m_viewer->resize(size.width() - 450, size.height() - 20);
+
+	SynGlyphX::MainWindow::resizeEvent(event);
+
+}
+
+SynGlyphX::IndexSet GlyphEdViewerWindow::parseFilters(QString response) {
+	//typedef std::set<unsigned long> IndexSet;
+	QStringList rowids = response.split(QChar(','));
+	SynGlyphX::IndexSet is;
+	for (QString row : rowids){
+		is.insert(row.split(QChar(':')).at(1).split(QChar('}')).at(0).toInt()-1);
+	}
+	return is;
 }
 
 void GlyphEdViewerWindow::ShowOpenGLSettings() {

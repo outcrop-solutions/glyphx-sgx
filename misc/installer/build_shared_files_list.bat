@@ -5,3 +5,4 @@ pause
 
 echo Building shared_files.wxs...
 heat dir ..\..\bin\Win64\Release\ -o shared_files.wxs -gg -scom -frag -srd -sreg -dr APPDIR -cg SharedFilesID >NUL
+pause

@@ -11,6 +11,8 @@
 #include <queue>
 #include <functional>
 #include <unordered_set>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -375,11 +377,12 @@ namespace SynGlyphX
 				assert( depth == 3 || depth == 4 );
 				tex = create_texture( w, h, depth == 3 ? hal::texture_format::rgb8 : hal::texture_format::rgba8, data );
 				stbi_image_free( data );
+
 				if ( generate_mips )
 				{
 					glBindTexture( GL_TEXTURE_2D, tex->handle );
 					glGenerateMipmap( GL_TEXTURE_2D );
-					glBindTexture( GL_TEXTURE_2D, 0 );
+					glBindTexture(GL_TEXTURE_2D, 0); 
 					tex->has_mipchain = true;
 				}
 			}

@@ -4,8 +4,11 @@
 #include "aws/s3/S3Client.h"
 #include "aws/core/auth/AWSCredentialsProvider.h"
 #include "aws/s3/model/ListObjectsRequest.h"
+#include "aws/s3/model/GetObjectRequest.h"
 #include "aws/core/utils/StringUtils.h"
 #include <algorithm>
+#include <fstream>
+#include <QtCore/QStringList>
 
 namespace DataEngine
 {

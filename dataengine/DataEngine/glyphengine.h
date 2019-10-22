@@ -53,7 +53,7 @@ namespace DataEngine
 
 	public:
 		GlyphEngine():jniSet(false){};
-		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn,std::string appName);
+		void initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn, std::string appName, bool run = true);
 		void AddVisualization(JNIEnv *env, std::string sdtPath);
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
@@ -64,6 +64,7 @@ namespace DataEngine
 		QStringList DistinctValuesForField(QString id, QString table, QString field);
 		void SetQueryForDatasource(QString id, QString table, QString query);
 		int SizeOfQuery(QString id, QString table, QString query);
+		bool DownloadFiles(QString bucket_name, QString file_name, QString location);
 		~GlyphEngine(){};
 
 	};

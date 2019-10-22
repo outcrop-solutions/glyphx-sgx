@@ -403,7 +403,7 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	//act->setIconVisibleInMenu(false);
 	act->setIcon(legendIcon);
 	m_loadedVisualizationDependentActions.push_back(act);
-	m_viewMenu->addAction(act);m_rightDockWidget
+	m_viewMenu->addAction(act);
 	m_showHideToolbar->addAction(act);
 	m_legendsDockWidget->move(100, 100);
 	m_legendsDockWidget->resize(SynGlyphX::Application::DynamicQSize(400, 280));

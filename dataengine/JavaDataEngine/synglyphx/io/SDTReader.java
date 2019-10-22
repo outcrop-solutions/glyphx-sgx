@@ -546,7 +546,12 @@ public class SDTReader {
 					Logger.getInstance().add(csv.getID()+csv.getTable());
 				}else{
 					String id = e.getAttribute("id");
-					String host = getValue("Host", e);
+					//String host = getValue("Host", e);
+					//if(!new File(outDir + "data.db").exists()){
+					String host = outDir + "data.db";
+					//}
+					Logger.getInstance().add("NEW HOST NAME");
+					Logger.getInstance().add(host);
 					String user = "";
 					String pass = "";
 					try{

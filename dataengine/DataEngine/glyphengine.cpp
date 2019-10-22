@@ -11,31 +11,30 @@
 
 namespace DataEngine
 {
-	void GlyphEngine::initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn, std::string appName){
+	void GlyphEngine::initiate(JNIEnv *env, std::string sdtPath, std::string outDir, std::string bid, std::string bfn, std::string appName, bool run){
+
+		/*std::ofstream myfile;
+		myfile.open("dmlog.txt");
+		myfile << "Into initiate";*/
 
 		if (!jniSet){
 			jniEnv = env;
 			jcls = jniEnv->FindClass("GlyphEngine");
 			jniSet = true;
+			//myfile << "jniSet";
 		}
 		sdtFile = sdtPath;
 		baseOutputDir = outDir;
 		baseImageDir = bid;
 		baseFilename = bfn;
-		application = appName;
-		/*
-		std::ofstream myfile;
-		myfile.open("dmlog.txt");
-		myfile << outDir;
-		myfile << appName;
-		*/
+		application = appName;	
 
 		//jcls = jniEnv->FindClass("GlyphEngine");
 		if (jcls == NULL){
 			//myfile << "GlyphEngine class not found";
 		}
-		if (jcls != NULL) {
-			//qDebug() << "GlyphEngine class found";
+		if (jcls != NULL && run) {
+			//myfile << "GlyphEngine class found";
 			jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
 				"initiate", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
 			int err_code = 0;
@@ -504,5 +503,24 @@ namespace DataEngine
 				jniEnv->ExceptionClear();
 			}
 		}
+	}
+
+	bool GlyphEngine::DownloadFiles(QString bucket_name, QString file_name, QString location){
+
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"downloadFiles", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z");
+		bool success = false;
+		if (methodId != NULL) {
+			jstring jbn = jniEnv->NewStringUTF(bucket_name.toStdString().c_str());
+			jstring jfn = jniEnv->NewStringUTF(file_name.toStdString().c_str());
+			jstring jloc = jniEnv->NewStringUTF(location.toStdString().c_str());
+			success = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId, jbn, jfn, jloc);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+		}
+
+		return success;
 	}
 }

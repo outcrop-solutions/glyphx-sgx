@@ -13,6 +13,8 @@
 #include "baseimagerenderer.h"
 #include "legacyglyphplacement.h"
 #include "glyphscene.h"
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 //#include "glm/ext.hpp"
 //#include <hal/debug.h>
 
@@ -384,6 +386,12 @@ namespace SynGlyphX
 
 	void SceneReader::read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids)
 	{
+
+		QFile srfile("srLog.txt");
+		srfile.open(QIODevice::WriteOnly);
+		QTextStream out(&srfile);
+		out << "{{In Scene Reader}}" << endl;
+
 		root_count = 0u;
 		next_filtering_index = 0;
 
@@ -393,6 +401,8 @@ namespace SynGlyphX
 		FILE* countfile = count_file.get();
 		cfile scene_file( scenefilename );
 		file = scene_file.get();
+
+		out << "{{Got scene files}}" << endl;
 
 		if ( countfile && file )
 		{
@@ -415,13 +425,17 @@ namespace SynGlyphX
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 
 			scene.beginAdding( glyph_count + link_count );
+			out << "{{Begin adding}}" << endl;
 
 			for ( int i = 0; i < base_image_count; ++i )
 				read_base_image( base_images, base_image_textures, default_base_texture, grids );
+			out << "{{Base images read}}" << endl;
 			for ( int i = 0; i < glyph_count; ++i )
 				read_glyph_element( scene );
+			out << "{{Glyphs read}}" << endl;
 			for ( int i = 0; i < link_count; ++i )
 				read_link( scene );
+			out << "{{Links read}}" << endl;
 
 			// Done adding; finish scene setup and clean up.
 			scene.finishAdding();

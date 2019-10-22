@@ -162,6 +162,7 @@ namespace SynGlyphX
 		for (auto img : baseImages)
 		{
 			auto texture = hal::device::load_texture(img.c_str());
+
 			if (!texture)
 			{
 				texture = default_base_texture;
@@ -323,10 +324,12 @@ namespace SynGlyphX
 			std::vector<std::string> images;
 			QStringList filters;
 			filters << "*.png";
+			//images.push_back("C:/Users/bryan/OneDrive/Documents/GitHub/sgx/bin/Win64/Release/VizFiles/scene/base_img.png");
 			QStringList infoList = QDir::current().entryList(filters, QDir::Files);
 			for (QString image : infoList){
 				images.push_back(image.toStdString());
 			}
+
 			loadScene("glyphs.sgc", "glyphs.sgn", images);
 		}
 	}
@@ -1107,8 +1110,9 @@ namespace SynGlyphX
 	{
 		scene->clearFilter();
 		if (!disableFiltering) scene->setFilterApplied();
-		for (auto index : results)
+		for (auto index : results){
 			scene->setPassedFilter(index);
+		}
 		if (scene->getFilterMode() == FilteredResultsDisplayMode::HideUnfiltered)
 			scene->clearFilteredOutFromSelection();
 	}

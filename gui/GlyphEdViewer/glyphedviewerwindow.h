@@ -31,6 +31,9 @@
 #include "glyphengine.h"
 #include "legendsdisplaywidget.h"
 #include "SettingsStoredFileList.h"
+#include <QtWidgets/QStackedWidget>
+#include <QtWebSockets/QWebSocket>
+#include <QtCore/QFile>
 
 namespace SynGlyphX
 {
@@ -44,8 +47,10 @@ class GlyphEdViewerWindow : public SynGlyphX::MainWindow
 public:
 	GlyphEdViewerWindow(QWidget *parent = 0);
 	~GlyphEdViewerWindow();
+	void closeJVM();
 
 protected:
+	void resizeEvent(QResizeEvent* resizeEvent) override;
 	void closeEvent(QCloseEvent* event) override;
 
 	bool DoesHelpExist() const override;
@@ -64,6 +69,9 @@ private slots:
 	void OnEnableDisableFreeSelectionCamera( bool enable );
 	void OnEnableDisableSelEffect( bool enable );
 	void OnEnableDisableSuperimposedGadgets( bool enable );
+	void OnSocketConnect();
+	void OnSocketLaunch(QString message);
+	void OnSocketClosed();
 
 private:
 	class HUDGenerationInfo {
@@ -97,6 +105,9 @@ private:
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
 	void CreateInteractionToolbar();
+	SynGlyphX::IndexSet parseFilters(QString response);
+	std::vector<std::string> MakeDataRequest(QString query, QString sdt, QStringList legends);
+	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -122,6 +133,7 @@ private:
 
 	QAction* m_openURLAction;
 
+	QStackedWidget* centerWidgetsContainer;
 	LegendsDisplayWidget* m_legendsWidget;
 	QDockWidget* m_legendsDockWidget;
 	QDockWidget* m_rightDockWidget;
@@ -131,6 +143,11 @@ private:
 	bool m_showErrorFromTransform;
 	bool m_showHomePage;
 	QString m_defaultProject;
+	QWebSocket m_webSocket;
+	QFile file;
+	QString uid;
+	QString cache_location;
+	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 
