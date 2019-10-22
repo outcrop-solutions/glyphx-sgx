@@ -55,12 +55,16 @@ TARGET_LINK_LIBRARIES(GlyphEdViewer ${Boost_LIBRARIES}
 									Qt5::Gui 
 									Qt5::OpenGL 
 									Qt5::Widgets 
+									Qt5::WebSockets
 									SGXUtility 
 									SGXFoundation 
+									SGXDataMapping 
 									SGXImage 
 									SGXGUI 
+									SGXDataTransformGUI
 									SGXGraphics
-									SGXSceneViewer)
+									SGXSceneViewer
+									DataEngine)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphEdViewer ${BREAKPAD_LIBRARIES})
