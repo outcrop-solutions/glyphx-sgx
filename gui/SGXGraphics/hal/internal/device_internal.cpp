@@ -11,8 +11,6 @@
 #include <queue>
 #include <functional>
 #include <unordered_set>
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
