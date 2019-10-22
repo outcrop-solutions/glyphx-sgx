@@ -28,7 +28,7 @@ glyphed=0
 
 # Process command-line options.
 
-while getopts "drvegbcimj:q:" opt; do
+while getopts "drvegubcimj:q:" opt; do
 	case "$opt" in
 		d)
 			build=Debug
@@ -50,6 +50,10 @@ while getopts "drvegbcimj:q:" opt; do
 			;;
 		m)
 			app=DataMapper
+			((appcount++))
+			;;
+		u)
+			app=GlyphEdViewer
 			((appcount++))
 			;;
         p)
@@ -189,7 +193,7 @@ if [ $app = GlyphViewer ] || [ $app = GlyphEd ]; then
 fi
 
 echo Copying icon into app bundle...
-if [ $app = GlyphEd ]; then
+if [ $app = GlyphEd ] || [ $app = GlyphEdViewer ]; then
 	cp ../../Misc/osx_resources/glyphed.icns ../../bin/OSX64/$build/$app.app/Contents/Resources/synglyphx_x.icns
 else
 	cp ../../Misc/osx_resources/synglyphx_x.icns ../../bin/OSX64/$build/$app.app/Contents/Resources
@@ -205,6 +209,9 @@ if [ $do_install = 1 ]; then
 #	cp -R $app.app ~/Desktop
 	echo Creating OSX package...
 	cd ../../bin/OSX64/$build
+	if [ $app = GlyphEdViewer ]; then
+		install_path=/Applications/GlyphEdViewer.app
+	fi
 	if [ $app = GlyphEd ]; then
 		install_path=/Applications/GlyphEd.app
 	else
