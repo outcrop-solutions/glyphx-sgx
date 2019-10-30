@@ -656,7 +656,7 @@ class ViewsManager extends React.Component {
                 </div> */}
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
-                <Flexbox style={{/*height: "23%", display: "inline-flex" */backgroundColor: "#e6e7e8", justifyContent: "space-evenly"}}>
+                <Flexbox style={{/*height: "23%", display: "inline-flex" */backgroundColor: "#e6e7e8", paddingLeft: "25px"}}>
                         <div style = {{ 
                             // backgroundColor: 'white', 
                             // height: "25%",

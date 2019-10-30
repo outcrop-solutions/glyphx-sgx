@@ -923,11 +923,46 @@ class allViewsModal extends React.Component {
 					]
 				} */
 			>
+
+				<h3 style={{ 
+					paddingTop: "10px",
+					padding: "18px 0px 18px 25px",
+					fontSize: "20px", 
+					fontFamily: "ITCFranklinGothicStd-DmCd",
+					margin: "0px",
+					fontWeight: "300",
+					textTransform: "uppercase",
+					letterSpacing: "1px",
+					color: ((this.state.loadMask === true || this.state.loadDone === true) ? "black" : "lightgrey")
+					}}><b style={{fontSize:"28px"}}>③</b> Select Additional Filter(s)
+				</h3>
+
+				<div style = {{ 
+					height: "95.5vh", 
+					fontSize: "37px", 
+					textAlign: "center",
+					fontFamily: "ITCFranklinGothicStd-DmCd",
+					backgroundColor: "#e6e7e8",
+					color: "lightslategrey",
+					paddingTop: "145px",
+					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
+					TIP:
+					<br/>
+					[General tip for using the viewer, 
+					<br/>
+					which switches to another tip 
+					<br/>
+					periodically.]
+				</div>
+
 				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
 				</div> 
 
 				<div style = {{ height: "58vh", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
+
+					{/* the data table*/}
+
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
@@ -1001,7 +1036,7 @@ class allViewsModal extends React.Component {
 								style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton"black", backgroundColor: "#efefef" }}
 							/> */}
 							<Flexbox>
-								<h3 style={{ 
+								{/* <h3 style={{ 
 								paddingTop: "10px",
 								padding: "2px 31px 0 0",
 								fontSize: "20px", 
@@ -1009,7 +1044,7 @@ class allViewsModal extends React.Component {
 								margin: "0px",
 								fontWeight: "300",
 								textTransform: "uppercase",
-								letterSpacing: "1px"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3>
+								letterSpacing: "1px"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3> */}
 
 								<RaisedButton 
 									label = { "Launch" }
