@@ -926,7 +926,7 @@ class allViewsModal extends React.Component {
 
 				<h3 style={{ 
 					paddingTop: "10px",
-					padding: "18px 0px 18px 25px",
+					padding: "18px 0px 10px 25px",
 					fontSize: "20px", 
 					fontFamily: "ITCFranklinGothicStd-DmCd",
 					margin: "0px",
@@ -959,11 +959,70 @@ class allViewsModal extends React.Component {
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
 				</div> 
 
-				<div style = {{ height: "58vh", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
+				<div style = {{ 
+					height: "62vh", 
+					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
+					padding: "0px 28px 0px 26px" }} 
+				>
+
+					<div style={{float: 'right', paddingTop: "10px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<RaisedButton 
+							label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
+							style = {{
+								width: "121px",
+								margin: "8px 10px 9px 0px"
+							}}
+							buttonStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+								backgroundColor: this.props.settings.colors.buttons.general
+							}} 
+							labelStyle = {{
+								fontSize: '12px',
+								textAlign: "center",
+								color: this.props.settings.colors.overviewButtonsColor.text,
+								margin: "0px 0px 0px -3px",
+								paddingLeft: "0px",
+								paddingRight: "0px"
+							}}
+							overlayStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+							}}
+							onClick = { () => this.selectDesectAll(data, "select") }
+							primary = { true } 
+						/>
+
+						<RaisedButton 
+							label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
+							style = {{
+								width: "135px"
+							}}
+							buttonStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+								backgroundColor: this.props.settings.colors.buttons.general
+							}} 
+							labelStyle = {{
+								fontSize: '12px',
+								textAlign: "center",
+								color: this.props.settings.colors.overviewButtonsColor.text,
+								margin: "0px 0px 0px -3px",
+								paddingLeft: "0px",
+								paddingRight: "0px"
+							}}
+							overlayStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+							}}
+							onClick = { () => {this.selectDesectAll(data, "deselect")} }
+							primary = { true } 
+						/>
+					</div>
 
 					{/* the data table*/}
 
-					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
+					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%", clear: "both" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
 
@@ -974,60 +1033,7 @@ class allViewsModal extends React.Component {
 						onRequestClose = { () => this.setState({ snackbarVisible: false }) }
 					/>
 					<div>
-						<div style={{float: 'left', paddingTop: "10px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
-							<RaisedButton 
-								label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
-								style = {{
-									width: "121px",
-									margin: "8px 10px 9px 0px"
-								}}
-								buttonStyle = {{
-									height: '35px',
-									lineHeight: '35px',
-									backgroundColor: this.props.settings.colors.buttons.general
-								}} 
-								labelStyle = {{
-									fontSize: '12px',
-									textAlign: "center",
-									color: this.props.settings.colors.overviewButtonsColor.text,
-									margin: "0px 0px 0px -3px",
-									paddingLeft: "0px",
-									paddingRight: "0px"
-								}}
-								overlayStyle = {{
-									height: '35px',
-									lineHeight: '35px',
-								}}
-								onClick = { () => this.selectDesectAll(data, "select") }
-								primary = { true } 
-							/>
-
-							<RaisedButton 
-								label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
-								style = {{
-									width: "135px"
-								}}
-								buttonStyle = {{
-									height: '35px',
-									lineHeight: '35px',
-									backgroundColor: this.props.settings.colors.buttons.general
-								}} 
-								labelStyle = {{
-									fontSize: '12px',
-									textAlign: "center",
-									color: this.props.settings.colors.overviewButtonsColor.text,
-									margin: "0px 0px 0px -3px",
-									paddingLeft: "0px",
-									paddingRight: "0px"
-								}}
-								overlayStyle = {{
-									height: '35px',
-									lineHeight: '35px',
-								}}
-								onClick = { () => {this.selectDesectAll(data, "deselect")} }
-								primary = { true } 
-							/>
-						</div>
+						
 						<div style={{float: "right", padding: "18px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							{/* <FlatButton
 								label = "Back"
