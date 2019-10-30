@@ -107,14 +107,14 @@ class AnnouncementsDisplay extends React.Component {
         );
 
         return (
-            <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
+            <Flexbox flexGrow = {1} style = {{ minHeight: "200px" }} >
                 
                 <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
                 <div style = {{ padding: "7px 4px 6px",/*  paddingBottom: "12px",  */display: (this.state.loadMask ? "none" : "") }} >
-                    <div style = {{ height: "100%", overflowY: "scroll", borderRadius: "3px" }} className = "customScroll" >
+                    <div style = {{ height: "205px", overflowY: "scroll", borderRadius: "3px" }} className = "customScroll" >
                         {announcements}
                     </div>
                 </div>

@@ -7,12 +7,18 @@
         <meta name = "theme-color" content = "#000000">
         <title>GlyphEd</title>
         <link rel = "stylesheet" href = "https://fonts.googleapis.com/css?family=Open+Sans" >
-    
+        <!-- <link href="./fonts/itcfranklingothicstd-demi.otf" rel="stylesheet" type="text/css"> -->
         <style type = "text/css">
 
-          /* * {
-              font-family:  "franklin-gothic-urw";
-          } */
+        @font-face {
+            font-family: ITCFranklinGothicStd-Demi;
+            src: url("./Fonts/itcfranklingothicstd-demi.otf") format("opentype");
+        }
+
+        @font-face {
+            font-family: ITCFranklinGothicStd-Med;
+            src: url("./Fonts/ITCFranklinGothicStd-Med.otf") format("opentype");
+        }
 
           html, body {
               font-weight: 300;
@@ -20,7 +26,6 @@
               margin: 0;
               padding: 0;
               width: 100%;
-              font-family:  "franklin-gothic-urw";
           }
 
           .elem {
@@ -220,7 +225,7 @@
 
     </head>
   
-    <body bgcolor = 'grey'>
+    <body>
         <noscript>
             You need to enable JavaScript to run this app.
         </noscript>
@@ -238,7 +243,7 @@
         </div>
 
         <!-- React Router swaps components into this root -->
-        <div id = "root"></div>
+        <div id = "root" bgcolor='#9ea3af'></div>
 
 
         

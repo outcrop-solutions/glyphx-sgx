@@ -16,6 +16,7 @@ import TimeoutAlert from './TimeoutAlert.js';
 import Tutorials from './Tutorials';
 import './css/TopNav.css';
 import './css/General.css';
+import { white } from 'material-ui/styles/colors';
 
 const muiTheme = getMuiTheme({
     datePicker: {
@@ -400,7 +401,7 @@ class HomePage extends React.Component {
         return (
             <MuiThemeProvider muiTheme = { muiTheme } style = {{ height: "100%" }} >
 
-                <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh" }} >
+                <Flexbox flexDirection = "column" minHeight = "100vh" style = {{}} >
                     <TopNavBar homePage = { true } tutorialStage = { this.state.tutorialStage } />
 
                     <TimeoutAlert />
@@ -417,16 +418,16 @@ class HomePage extends React.Component {
                             null
                     }
                     
-                    <Flexbox flexGrow = {1} style = {{ height: "100%", minHeight: "0" }} >
+                    <Flexbox flexGrow = {1} style = {{width: "75vw", margin: "auto" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
                         
                             {/* Left Column */}
-                            <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
+                            {/* <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
 
                                 <div style = {{padding: "0px 6px 2px 12px", height: "16%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}}>
                                     <Flexbox style={{height: "98%", width: "100%"}}>
                                         <div style = {{ backgroundColor: "#ffffff", overflow: " hidden", padding: "10px 6px 5px 6px" }} >
-                                            <div style = {{ height: '100%', margin: "10px 0px -6px"/* , padding: "0 0 5px 0"  */}} >
+                                            <div style = {{ height: '100%', margin: "10px 0px -6px", padding: "0 0 5px 0" }} >
                                                     <img 
                                                         src = { imgsrc } 
                                                         style = {{ display: "block", margin: "0 auto", width: "100%", height: "100%", objectFit: "contain", padding: "0 0 3px 0" }} 
@@ -440,16 +441,13 @@ class HomePage extends React.Component {
                                     </Flexbox>
                                 </div>
 
-                                {/* <div className = "line-break" 
-                                        style = {{borderTop: "2px solid black", paddingBottom: "9px", backgroundColor: "#ffffff"}}></div> */}
-
                                 <div style = {{ padding: "0px 6px 12px 12px", height: "87%", width: "100%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                     <UserFeed />
                                 </div>
-                             </Flexbox>
+                             </Flexbox> */}
                             
                             {/* Middle column */}  
-                             <Flexbox flexDirection = "column" style = {{ width: "58%" }} >
+                             <Flexbox flexDirection = "column" style = {{ width: "50vw" }} >
                             
                                 {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
@@ -460,12 +458,40 @@ class HomePage extends React.Component {
                              </Flexbox> 
 
                              {/* Right Column */}
-                             <Flexbox style = {{ width: "21%", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
-                                <div style = {{padding: "8px 10px 12px 6px", height: "100%", width: "100%", overflow: "auto", backgroundColor: "#ffffff"}} >
-                                    <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }} >
-                                        
+                             <Flexbox style = {{ width: "25vw", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
+                                <div style = {{height: "100%", width: "100%", backgroundColor: "#ffffff"}} >
+                                    {/* <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}> */}
+
+                                        <div style = {{height: "264px", display: "block"}}> 
+                                            <div style={{
+                                                height: "50px",
+                                                width: "25vw",
+                                                backgroundColor: "#0c1836"
+                                            }}>
+                                                <h2
+                                                    className='noselect'
+                                                    style={{
+                                                        width: "162px",
+                                                        height: "19px",
+                                                        fontFamily: "ITCFranklinGothicStd-Demi",
+                                                        fontSize: "18px",
+                                                        letterSpacing: "0.92px",
+                                                        color: "white",
+                                                        margin: "0px",
+                                                        fontSize: "22px",
+                                                        textTransform: "uppercase",
+                                                        paddingLeft: "18px",
+                                                        lineHeight: "52px"
+                                                    }}
+                                                    >Glyph Key
+                                                </h2>
+                                            </div>
+
+                                            
+                                        </div>       
+
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
-                                        <Flexbox style={{display: "block", marginBottom: "6px"}}>
+                                        {/* <Flexbox style={{display: "block", marginBottom: "6px"}}>
                                             <div style = {{height: "29.33%", minHeight: "0", paddingBottom: '0px',}} className="training-hover">
                                                 <a
                                                 href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
@@ -480,10 +506,8 @@ class HomePage extends React.Component {
                                                         style={{
                                                             color: this.state.trainingHover ? '#00c4d9' : 
                                                                 this.props.settings.colors.overviewButtonsColor.text,
-                                                            backgroundColor: '#000'/* this.props.settings.colors.homePageColors.headerBackground  */, 
+                                                            backgroundColor: '#000', 
                                                             borderRadius: "2px", 
-                                                            /* marginTop: "15px", 
-                                                            marginBottom: "3px",  */
                                                             paddingBottom: "4px", 
                                                             margin: "0 auto 6px", 
                                                             paddingTop: "4px",
@@ -496,30 +520,65 @@ class HomePage extends React.Component {
                                                 </a>
                                                 <Tutorials/>
                                             
-                                        </div> 
-                                    </Flexbox>
-                                    <div style = {{height: "32%", display: "block"}}> 
-                                        <h2
+                                            </div> 
+                                        </Flexbox> */}
+                                        
+                                    <div style = {{height: "265px", display: "block"}}> 
+                                        <div style={{
+                                            height: "50px",
+                                            width: "25vw",
+                                            backgroundColor: "#0c1836"
+                                        }}>
+                                            <h2
                                                 className='noselect'
                                                 style={{
-                                                    color: this.props.settings.colors.overviewButtonsColor.text,
-                                                    backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
-                                                    borderRadius: "2px", 
-                                                    /* marginTop: "15px", 
-                                                    marginBottom: "3px",  */
-                                                    paddingBottom: "4px", 
-                                                    margin: "0 auto", 
-                                                    paddingTop: "4px",
-                                                    fontSize: "19px",
-                                                    letterSpacing: "0.14em",
+                                                    // color: this.props.settings.colors.overviewButtonsColor.text,
+                                                    // backgroundColor: '#018cbb', 
+                                                    // borderRadius: "2px", 
+                                                    // paddingBottom: "4px", 
+                                                    // margin: "0 auto", 
+                                                    // paddingTop: "4px",
+                                                    // fontSize: "19px",
+                                                    // letterSpacing: "0.14em",
+                                                    // textTransform: "uppercase",
+                                                    // textAlign: "center"
+                                                    width: "162px",
+                                                    height: "19px",
+                                                    fontFamily: "ITCFranklinGothicStd-Demi",
+                                                    fontSize: "18px",
+                                                    letterSpacing: "0.92px",
+                                                    color: "white",
+                                                    margin: "0px",
+                                                    fontSize: "22px",
                                                     textTransform: "uppercase",
-                                                    textAlign: "center"}}
+                                                    paddingLeft: "18px",
+                                                    lineHeight: "52px"
+                                                }}
                                                 >Annoucements
-                                        </h2>
+                                            </h2>
+                                        </div>
+
                                         <AnnouncementsDisplay />
-                                    </div>       
-                                    </Flexbox>
+                                    </div> 
+
+                                    <div style = {{height: "235px", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
+                                        <div style={{
+                                            height: "24px",
+                                            width: "235px",
+                                            fontFamily: "ITCFranklinGothicStd-Med",
+                                            fontSize: "24px",
+                                            display: "inline-block",
+                                            color: "white",
+                                            lineHeight: "170px"
+                                        }}>
+                                            Need Assistance?
+                                        </div>
+
+                                    </div> 
+                                          
+                                    {/* </Flexbox> */}
                                 </div>
+
                              </Flexbox>   
 
                         </Flexbox>

@@ -34,7 +34,7 @@ class TopNavBar extends React.Component {
         userProfileMenuOpen: false,
         userInfoAnchorEl: {},
         displayAlertsCheckbox: true,
-        imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '200px' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
+        imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '10.07vw' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
 
     };
 
@@ -177,13 +177,36 @@ class TopNavBar extends React.Component {
         // console.log(this.props.vizParams);
         return(
             <Toolbar 
-                style = {{ padding: '0px', height: "36px", backgroundColor: this.props.settings.colors.topNavbarColor.barBackground }}
+                style = {{ padding: '0px', height: "65px", backgroundColor: "#031a72" }}
                 ref = "topNavToolbar"
-            >
+            >       
+                <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
+                    <IconButton 
+                        onClick = { (event) => this.ToggleUserInfoMenu(event) } 
+                        style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5") }}
+                        className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
+                    >
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Profile
+                                </div> 
+                            }
+                        >
+                            <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
+                        </Tooltip>
+                    </IconButton>
+                </ToolbarGroup>
+
                 {/* Logo */}
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
                     <span 
-                        style = {{ cursor: 'pointer' }} 
+                        style = {{ cursor: 'pointer'}} 
                         onClick = { () => {
                             this.returnHome(); 
                             (this.props.uid ? 
@@ -240,7 +263,7 @@ class TopNavBar extends React.Component {
                                 </div> 
                             }
                         >
-                            <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' />
+                            <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
                         </Tooltip>
                     </IconButton>
 
@@ -251,7 +274,8 @@ class TopNavBar extends React.Component {
                             zIndex: (this.props.tutorialStage === 4 ? "300" : "5"),
                             display: (
                                 this.props.userInfo.Admin === 1
-                                && Object.keys(this.props.statData).length !== 0  ? "" : "none" )
+                                && Object.keys(this.props.statData).length !== 0  ? "" : "none" ),
+                           
                         }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
@@ -275,7 +299,7 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5") }}
+                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "15px" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -290,7 +314,7 @@ class TopNavBar extends React.Component {
                                 </div> 
                             }
                         >
-                            <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' />
+                            <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
                         </Tooltip>
                     </IconButton>
                     
@@ -305,27 +329,6 @@ class TopNavBar extends React.Component {
                         <FontIcon id = "notificationBadge" className = "fa fa-exclamation-circle fa-1x notificationBadge" />
                     </IconButton>
                     */}
-                    
-                    <IconButton 
-                        onClick = { (event) => this.ToggleUserInfoMenu(event) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5") }}
-                        className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
-                    >
-                        <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
-                            mouseLeaveDelay = { 0.15 }
-                            destroyTooltipOnHide = { false }
-                            trigger = { Object.keys( {hover: 1} ) }
-                            overlay = { 
-                                <div> 
-                                    Profile
-                                </div> 
-                            }
-                        >
-                            <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' />
-                        </Tooltip>
-                    </IconButton>
 
                     {/*<IconButton onClick = { this.toggleNav.bind(this) } style = {{ margin: "0px 0px 0px -5px", display: (this.props.homePage ? "none" : "") }} >*/}
                         {/*<FontIcon className = "fa fa-caret-up fa-2x" color = '#ffffff' style = {{ transform: 'rotateZ(90deg)', margin: "0px 0px 0px 4px" }} />*/}

@@ -184,8 +184,12 @@ class ViewsTab extends React.Component {
         });
 
         return (
-            <div style = {{height: "33.33%", marginBottom: "4px", display: "inline-table"}}>
-                <div>
+            <div style = {{height: "247px", marginBottom: "4px", display: "inline-table"}}>
+                <div style={{
+                    height: "50px",
+                    width: "25vw",
+                    backgroundColor: "#0c1836"
+                }}>
                     {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
                     marginBottom: "3px", 
                     paddingBottom: "4px", 
@@ -207,17 +211,29 @@ class ViewsTab extends React.Component {
                     <h2
                         className='noselect'
                         style={{
-                            color: this.props.settings.colors.overviewButtonsColor.text,
-                            backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
-                            borderRadius: "2px", 
-                            paddingBottom: "4px", 
-                            margin: "auto auto 4px auto", 
-                            paddingTop: "4px",
-                            fontSize: "19px",
-                            letterSpacing: "0.14em",
+                            // color: this.props.settings.colors.overviewButtonsColor.text,
+                            // backgroundColor: , 
+                            // borderRadius: "2px", 
+                            // paddingBottom: "4px", 
+                            // margin: "auto auto 4px auto", 
+                            // paddingTop: "4px",
+                            // fontSize: "19px",
+                            // letterSpacing: "0.14em",
+                            // textTransform: "uppercase",
+                            // textAlign: "center"
+                            width: "162px",
+                            height: "19px",
+                            fontFamily: "ITCFranklinGothicStd-Demi",
+                            fontSize: "18px",
+                            letterSpacing: "0.92px",
+                            color: "white",
+                            margin: "0px",
+                            fontSize: "22px",
                             textTransform: "uppercase",
-                            textAlign: "center"}}
-                        >Views
+                            paddingLeft: "18px",
+                            lineHeight: "52px"
+                        }}
+                        >My Views
                     </h2>
                 </div>
 

@@ -631,12 +631,12 @@ class ViewsManager extends React.Component {
 
         return(
             <div style={{height:"100%"}}>
-                <div>
+                {/* <div>
                     <h2
                         className='noselect'
                         style={{
                             color: this.props.settings.colors.overviewButtonsColor.text,
-                            backgroundColor: '#018cbb'/* this.props.settings.colors.homePageColors.headerBackground  */, 
+                            backgroundColor: '#018cbb', 
                             borderRadius: "2px", 
                             paddingBottom: "4px", 
                             margin: "auto auto 12px auto", 
@@ -647,7 +647,7 @@ class ViewsManager extends React.Component {
                             textAlign: "center"}}
                         >Visualization Manager
                     </h2>
-                </div>
+                </div> */}
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
                 <Flexbox style={{height: "23%", marginBottom: "10px", display: "inline-flex"}}>
