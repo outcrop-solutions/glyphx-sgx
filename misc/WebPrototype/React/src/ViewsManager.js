@@ -486,9 +486,10 @@ class ViewsManager extends React.Component {
         }
 
         const styleForFirstViewSelect = {
-            fontSize:"19px", 
+            fontSize:"18px", 
             padding: "7px",
-            fontFamily: "Helvetica"
+            fontFamily: "ITCFranklinGothicStd-Med",
+            letterSpacing: "0.5px"
             /* borderBottom: "1px solid black" */
             /* backgroundColor: "white" */
         };
@@ -497,8 +498,9 @@ class ViewsManager extends React.Component {
             width: "100%", 
             margin: "0 auto", 
             height: "35px",
-            fontSize: "19px", 
-            fontFamily: "Helvetica"
+            fontSize: "18px", 
+            fontFamily: "ITCFranklinGothicStd-Med",
+            letterSpacing: "0.5px"
             /* backgroundColor: "white", */
             /* borderBottom: "1px solid black"  */
         };
@@ -684,7 +686,7 @@ class ViewsManager extends React.Component {
                                         <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>①</b> Choose A Topic</h3>
                                         <br/>
                                         <select style={dropDownSize}>
-                                            <option>Select A Topic</option>
+                                            <option style={styleForFirstViewSelect}>Select A Topic</option>
                                             <option
                                             onClick = { (e) => {
                                                 this.flip("MarketingAndRecruiting", mandrList.length);
