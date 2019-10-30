@@ -301,6 +301,7 @@ class ViewsManager extends React.Component {
      * @param type: side that is being flipped to
      */
     flip (type, len) {
+        console.log('called')
         if(len > 0){
         this.setState({ flipped: !this.state.flipped, clicked: true });
         var context = this;
@@ -503,12 +504,17 @@ class ViewsManager extends React.Component {
         };
 
         const h3TableHeader = {
-            fontSize: "22px", 
-            borderBottom: "1px solid black", 
-            padding: "9px 0 0 3px",
+            fontSize: "20px", 
+            fontFamily: "ITCFranklinGothicStd-DmCd",
             margin: "0px",
-            backgroundColor: "#e7e7fd",
-            fontWeight: "300"
+            fontWeight: "300",
+            textTransform: "uppercase",
+            letterSpacing: "1px"
+        };
+
+        const dropDownSize = {
+            height: "50px",
+            width: "315px",
         };
 
         const subContents = {
@@ -517,7 +523,7 @@ class ViewsManager extends React.Component {
         
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
-                <div
+                <option
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title }
@@ -533,13 +539,13 @@ class ViewsManager extends React.Component {
                     >
                         {title[0]}
                     </div>
-                </div>
+                </option>
             )
         });
 
         var admissions = admList.map( function(title) {
             return (
-                <div
+                <option
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title } 
@@ -554,13 +560,13 @@ class ViewsManager extends React.Component {
                     >
                         {title[0]}
                     </div>
-                </div>
+                </option>
             )
         });
 
         var financialAid = faList.map( function(title) {
             return (
-                <div
+                <option
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title } 
@@ -575,13 +581,13 @@ class ViewsManager extends React.Component {
                     >
                         {title[0]}
                     </div>
-                </div>
+                </option>
             )
         });
 
         var custom = customList.map( function(title) {
             return (
-                <div
+                <option
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title } 
@@ -596,7 +602,7 @@ class ViewsManager extends React.Component {
                     >
                         {title[0]}
                     </div>
-                </div>
+                </option>
             )
         });
         
@@ -650,13 +656,11 @@ class ViewsManager extends React.Component {
                 </div> */}
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
-                <Flexbox style={{height: "23%", marginBottom: "10px", display: "inline-flex"}}>
+                <Flexbox style={{/*height: "23%", display: "inline-flex" */backgroundColor: "#e6e7e8", justifyContent: "space-evenly"}}>
                         <div style = {{ 
-                            display: "table",
-                            backgroundColor: 'white'/* this.props.settings.colors.homePageColors.subBackground */, 
-                            border: "1px solid black",
-                            height: "25%",
-                            width: "65%",
+                            // backgroundColor: 'white', 
+                            // height: "25%",
+                            // width: "65%",
                             }}>
 
                             <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
@@ -671,80 +675,96 @@ class ViewsManager extends React.Component {
                                     <div
                                     id = "tabular-data"
                                     style = {{ 
-                                        width: "50%",
-                                        height: "100%", 
+                                        // width: "50%",
+                                        // height: "100%", 
                                         float: "left", 
-                                        borderRight: "2px solid black" }} > 
-                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>①</b> Select a Topic</h3>
-                                        <div>
-                                            <div
+                                        backgroundColor: "#e6e7e8",
+                                        padding: "27px 44px 24px 1px",
+                                        }} > 
+                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>①</b> Choose A Topic</h3>
+                                        <br/>
+                                        <select style={dropDownSize}>
+                                            <option>Select A Topic</option>
+                                            <option
                                             onClick = { (e) => {
                                                 this.flip("MarketingAndRecruiting", mandrList.length);
-                                                this.unHighlightTopicRows();
-                                                this.highlightTopicSelectedRow(e.target.innerHTML);
+                                                // this.unHighlightTopicRows();
+                                                // this.highlightTopicSelectedRow(e.target.innerHTML);
                                             ;} } 
                                             className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} 
                                             main-category-select light` } 
                                             id="topic-defaultOpen"
-                                            style = {styleForFirstViewSelect} >
+                                            style = {styleForFirstViewSelect} 
+                                            value="MarketingAndRecruiting"
+                                            >
                                             Marketing and Recruiting
-                                            </div>
+                                            </option>
 
-                                            <div className = "main-category-select"
+                                            <option className = "main-category-select"
                                             onClick = {(e) => {
+                                                console.log('called 1')
                                                 this.flip("Admissions", admList.length);
-                                                this.unHighlightTopicRows();
-                                                this.highlightTopicSelectedRow(e.target.innerHTML);
+                                                // this.unHighlightTopicRows();
+                                                // this.highlightTopicSelectedRow(e.target.innerHTML);
                                             } } 
                                             className = { `${(admList.length > 0 ? "noselect" : "cursorDefault noselect")} 
                                             main-category-select light`}
-                                            style={styleForFirstViewSelect} >
+                                            style={styleForFirstViewSelect}
+                                            value="Admissions" 
+                                            >
                                             Admissions
-                                        </div>
+                                            </option>
 
-                                            <div className = "main-category-select"
+                                            <option className = "main-category-select"
                                             onClick = {(e) => { 
                                                 this.flip("FinancialAid", faList.length); 
-                                                this.unHighlightTopicRows();
-                                                this.highlightTopicSelectedRow(e.target.innerHTML);
+                                                // this.unHighlightTopicRows();
+                                                // this.highlightTopicSelectedRow(e.target.innerHTML);
                                             }} 
                                             className = { `${(faList.length > 0 ? "noselect" : "cursorDefault noselect")} 
                                             main-category-select light`}
-                                            style={styleForFirstViewSelect} >
+                                            style={styleForFirstViewSelect}
+                                            value="FinancialAid"  
+                                            >
                                             Financial Aid
-                                            </div>
+                                            </option>
 
-                                            <div className = "main-category-select"
+                                            <option className = "main-category-select"
                                             onClick = {(e) => {
                                                 this.flip("Custom", customList.length);
-                                                this.unHighlightTopicRows();
-                                                this.highlightTopicSelectedRow(e.target.innerHTML); 
+                                                // this.unHighlightTopicRows();
+                                                // this.highlightTopicSelectedRow(e.target.innerHTML); 
                                             }}
                                             className = { `${(customList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
-                                            style={styleForFirstViewSelect} >
+                                            style={styleForFirstViewSelect} 
+                                            value="Custom" 
+                                            >
                                             Custom
-                                            </div>
-                                        </div>
+                                            </option>
+                                        </select>
 
                                     </div>
 
                                     {/*this is where the 2nd modal pops up after initial selection */}
-                                    <div
-                                    style = {{ 
-                                        height: "100%", 
-                                        width: "50%", 
-                                        float: "right" }}>
-                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>②</b> Select an Inquiry</h3>
+                                    <div style = {{ 
+                                        // height: "100%", 
+                                        // width: "50%", 
+                                        float: "right",
+                                        backgroundColor: "#e6e7e8",
+                                        padding: "27px 1px 24px 44px"
+                                    }}>
+                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>②</b> Choose An Inquiry</h3>
+                                        <br/>
                                         <Flexbox style = {{ /* alignItems: "center",  height: "100%",*/ /* borderBottom: "1px solid black"  */}} >
                                         {this.state.type === "MarketingAndRecruiting" ? 
-                                        <div style={{width:"100%"}}> {marketingAndRecruiting} </div>
+                                        <select style={dropDownSize}> {marketingAndRecruiting} </select>
                                             /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
                                                 : (this.state.type === "Admissions" ? 
-                                                <div style={{width:"100%"}}> {admissions} </div> 
+                                                <select style={dropDownSize}> {admissions} </select> 
                                                     : (this.state.type === "FinancialAid" ? 
-                                                    <div style={{width:"100%"}}> {financialAid} </div> 
+                                                    <select style={dropDownSize}> {financialAid} </select> 
                                                         : (this.state.type === "Custom" ? 
-                                                        <div style={{width:"100%"}}> {custom} </div> : null)
+                                                        <select style={dropDownSize}> {custom} </select> : null)
                                                     )
                                                 )
                                             }
@@ -756,7 +776,7 @@ class ViewsManager extends React.Component {
 
                         {/*displays legend Png for newer users*/}
                         
-                        <div style = {{
+                        {/* <div style = {{
                             display: this.state.legendPng.length ? "" : "none",
                             marginLeft: "15px",
                             width: "35%",
@@ -771,7 +791,7 @@ class ViewsManager extends React.Component {
                                 alt = "Legend" 
                                 draggable = { false } 
                             />
-                        </div>
+                        </div> */}
                     
                 </Flexbox>
                 <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL }

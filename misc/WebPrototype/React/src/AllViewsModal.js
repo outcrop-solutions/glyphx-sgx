@@ -927,7 +927,7 @@ class allViewsModal extends React.Component {
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
 				</div> 
 
-				<div style = {{ height: "58vh", padding: "10px 0 10px 0", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
+				<div style = {{ height: "58vh", display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none") }} >
 					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
@@ -1002,12 +1002,14 @@ class allViewsModal extends React.Component {
 							/> */}
 							<Flexbox>
 								<h3 style={{ 
-								fontSize: "22px", 
-								/* border: "1px solid black", */ 
 								paddingTop: "10px",
-								fontWeight: "300",
+								padding: "2px 31px 0 0",
+								fontSize: "20px", 
+								fontFamily: "ITCFranklinGothicStd-DmCd",
 								margin: "0px",
-            					padding: "2px 31px 0 0"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3>
+								fontWeight: "300",
+								textTransform: "uppercase",
+								letterSpacing: "1px"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3>
 
 								<RaisedButton 
 									label = { "Launch" }

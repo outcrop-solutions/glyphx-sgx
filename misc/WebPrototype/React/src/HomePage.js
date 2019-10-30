@@ -451,7 +451,7 @@ class HomePage extends React.Component {
                             
                                 {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
-                                   <div style = {{ padding: "9px 6px", height: "100%", width: "110%", overflow: "auto", backgroundColor: "#ffffff" }} >
+                                   <div style = {{ /* padding: "9px 6px", */ height: "100%", width: "110%", overflow: "auto", backgroundColor: "#ffffff" }} >
                                         <ViewsManager ref="viewsManager"/>
                                     </div>
                                 </Flexbox>
