@@ -223,3 +223,23 @@
 .dark{
   background-color: #bfbfbf;
 }
+
+select {
+  cursor: pointer;
+  position: relative;
+  padding-left: 13px;
+  font-family: ITCFranklinGothicStd-Med;
+  font-size: 18px;
+  letter-spacing: 0.7px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;       /* Remove default arrow */
+  background: url('https://upload.wikimedia.org/wikipedia/commons/4/42/Font_Awesome_5_solid_caret-down.svg') no-repeat white;
+  /* background-attachment: fixed; */
+  background-position: bottom 10px right 11px; 
+  background-size: 20px;
+}
+
+select.option{
+ cursor: pointer;
+}

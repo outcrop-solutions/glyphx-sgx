@@ -35,16 +35,16 @@ class ViewsManager extends React.Component {
 		}
     }
     
-    componentDidMount(){
-        if(document.getElementById("topic-defaultOpen")){
-            Promise.all([document.getElementById("topic-defaultOpen").click()])
-            .then(() => {
-                if(document.getElementById("inquiry-defaultOpen")){
-                    document.getElementById("inquiry-defaultOpen").firstChild.click();
-                }
-            });
-        }
-    }
+    // componentDidMount(){
+    //     if(document.getElementById("topic-defaultOpen")){
+    //         Promise.all([document.getElementById("topic-defaultOpen").click()])
+    //         .then(() => {
+    //             if(document.getElementById("inquiry-defaultOpen")){
+    //                 document.getElementById("inquiry-defaultOpen").firstChild.click();
+    //             }
+    //         });
+    //     }
+    // }
 
     /**
      * Enables transition pause when navigating from regular view to my views and vice versa
@@ -301,7 +301,7 @@ class ViewsManager extends React.Component {
      * @param type: side that is being flipped to
      */
     flip (type, len) {
-        console.log('called')
+        // console.log('called')
         if(len > 0){
         this.setState({ flipped: !this.state.flipped, clicked: true });
         var context = this;
@@ -346,46 +346,46 @@ class ViewsManager extends React.Component {
         }
     } */
 
-    highlightTopicSelectedRow(innerHtml){
-        for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
-            if(document.getElementsByClassName('main-category-select')[i].innerHTML === innerHtml){
-                let str = document.getElementsByClassName('main-category-select')[i].className;
-                document.getElementsByClassName('main-category-select')[i].className = str.replace('light', 'dark');
-            }
-        }
-    }
+    // highlightTopicSelectedRow(innerHtml){
+    //     for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
+    //         if(document.getElementsByClassName('main-category-select')[i].innerHTML === innerHtml){
+    //             let str = document.getElementsByClassName('main-category-select')[i].className;
+    //             document.getElementsByClassName('main-category-select')[i].className = str.replace('light', 'dark');
+    //         }
+    //     }
+    // }
 
-    unHighlightTopicRows(){
-        // console.log(document.getElementsByClassName('main-category-select'))
-        for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
-                let str = document.getElementsByClassName('main-category-select')[i].className;
-                document.getElementsByClassName('main-category-select')[i].className = str.replace('dark', 'light');
-        }
-    }
+    // unHighlightTopicRows(){
+    //     // console.log(document.getElementsByClassName('main-category-select'))
+    //     for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
+    //             let str = document.getElementsByClassName('main-category-select')[i].className;
+    //             document.getElementsByClassName('main-category-select')[i].className = str.replace('dark', 'light');
+    //     }
+    // }
 
-    highlightInquirySelectedRow(innerHtml){
-        /* for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
-            if(document.getElementsByClassName('second-view-selection')[i].innerHTML === innerHtml){
-                document.getElementsByClassName('second-view-selection')[i].style.backgroundColor = '#ddd';
-            }
-        } */
-        for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
-            if(document.getElementsByClassName('second-view-selection')[i].innerHTML === innerHtml){
-                let str = document.getElementsByClassName('second-view-selection')[i].className;
-                document.getElementsByClassName('second-view-selection')[i].className = str.replace('light', 'dark');
-            }
-        }
-    }
+    // highlightInquirySelectedRow(innerHtml){
+    //     /* for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         if(document.getElementsByClassName('second-view-selection')[i].innerHTML === innerHtml){
+    //             document.getElementsByClassName('second-view-selection')[i].style.backgroundColor = '#ddd';
+    //         }
+    //     } */
+    //     for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         if(document.getElementsByClassName('second-view-selection')[i].innerHTML === innerHtml){
+    //             let str = document.getElementsByClassName('second-view-selection')[i].className;
+    //             document.getElementsByClassName('second-view-selection')[i].className = str.replace('light', 'dark');
+    //         }
+    //     }
+    // }
 
-    unHighlightInquiryRows(){
-        /* for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
-            document.getElementsByClassName('second-view-selection')[i].style.backgroundColor = '#e7e7fd';
-        } */
-        for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
-            let str = document.getElementsByClassName('second-view-selection')[i].className;
-            document.getElementsByClassName('second-view-selection')[i].className = str.replace('dark', 'light');
-        }
-    }
+    // unHighlightInquiryRows(){
+    //     /* for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         document.getElementsByClassName('second-view-selection')[i].style.backgroundColor = '#e7e7fd';
+    //     } */
+    //     for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         let str = document.getElementsByClassName('second-view-selection')[i].className;
+    //         document.getElementsByClassName('second-view-selection')[i].className = str.replace('dark', 'light');
+    //     }
+    // }
 
     getLegend() {
         var context = this;
@@ -399,17 +399,58 @@ class ViewsManager extends React.Component {
             function (responseText) { 
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
-                let imgPath = response.body.legendUrl;
-                console.log(response.body.legendUrl,'imgPath');
-                
-                context.props.dispatch(setLegendUrlArr(response.body.imgArr));
+                console.log(response)
+                if(response.body){
+                    let imgPath = response.body.legendUrl;
+                    console.log(response.body.legendUrl,'imgPath');
+                    
+                    context.props.dispatch(setLegendUrlArr(response.body.imgArr));
 
-                if (imgPath && imgPath.length > 0 && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
-                    context.setState({
-                        legendPng: 
-                        `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath)}`});
+                    if (imgPath && imgPath.length > 0 && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
+                        context.setState({ legendPng: 
+                            `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath)}`});
+                    }
                 }
             }
+        );
+    }
+
+    selectTopic(val, mandrList, admList, faList, customList){
+        if(val === "MarketingAndRecruiting"){
+            this.flip(val, mandrList.length);
+        }
+        else if(val === "Admissions"){
+            this.flip(val, admList.length);
+        }
+        else if(val === "FinancialAid"){
+            this.flip(val, faList.length);
+        }
+        else if(val === "Custom"){
+            this.flip(val, customList.length);
+        }
+    }
+
+    selectInquiry(str){
+        if(str.length > 0 && str.indexOf(',') > 0){
+            let val = str.slice(0, str.indexOf(','));
+            let url = str.slice(str.indexOf(',') + 1);
+            console.log(val, url);
+            this.props.dispatch(editModalDisplay(true));
+    
+            return new Promise((resolve, reject) => {
+                this.setState({ selectionType: val, selectionTypeURL: url });
+                resolve();
+            }).then(() => {
+                this.getLegend();
+            });
+        }
+    }
+
+    injectOption(){
+        return (
+        <option>
+            Select An Inquiry
+        </option>
         );
     }
 
@@ -500,7 +541,10 @@ class ViewsManager extends React.Component {
             height: "35px",
             fontSize: "18px", 
             fontFamily: "ITCFranklinGothicStd-Med",
-            letterSpacing: "0.5px"
+            letterSpacing: "0.5px",
+            whiteSpace: "nowrap", 
+            overflow: "hidden", 
+            textOverflow: "ellipsis"  
             /* backgroundColor: "white", */
             /* borderBottom: "1px solid black"  */
         };
@@ -529,18 +573,19 @@ class ViewsManager extends React.Component {
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title }
-                    id= "inquiry-defaultOpen" 
+                    className = "noselect second-view-selection"
+                    value = { title }
                 >
-                    <div
+                    {/* <div
                         style = { subContents }
                         className = "noselect second-view-selection light"
                         onClick = { (e) => {
                             context.handleViewSelect(title);
                             context.unHighlightInquiryRows();
                             context.highlightInquirySelectedRow(e.target.innerHTML); } }
-                    >
+                    > */}
                         {title[0]}
-                    </div>
+                    {/* </div> */}
                 </option>
             )
         });
@@ -551,17 +596,10 @@ class ViewsManager extends React.Component {
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title } 
+                    className = "noselect second-view-selection"
+                    value = { title }
                 >
-                    <div
-                        style = { subContents }
-                        className = "noselect second-view-selection light"
-                        onClick = {(e) => {
-                            context.handleViewSelect(title);
-                            context.unHighlightInquiryRows();
-                            context.highlightInquirySelectedRow(e.target.innerHTML); } }
-                    >
-                        {title[0]}
-                    </div>
+                    {title[0]}
                 </option>
             )
         });
@@ -572,17 +610,10 @@ class ViewsManager extends React.Component {
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title } 
+                    className = "noselect second-view-selection"
+                    value = { title }
                 >
-                    <div
-                        style = { subContents }
-                        className = "noselect second-view-selection light"
-                        onClick = {(e) => {
-                            context.handleViewSelect(title);
-                            context.unHighlightInquiryRows();
-                            context.highlightInquirySelectedRow(e.target.innerHTML); } }
-                    >
-                        {title[0]}
-                    </div>
+                    {title[0]}
                 </option>
             )
         });
@@ -593,17 +624,10 @@ class ViewsManager extends React.Component {
                     // containerStyle = {{ padding: "0px" }} 
                     style = {styleForSecViewSelect} 
                     key = { title } 
+                    className = "noselect second-view-selection"
+                    value = { title }
                 >
-                    <div
-                        style = { subContents }
-                        className = "noselect second-view-selection light"
-                        onClick = {(e) => {
-                            context.handleViewSelect(title);
-                            context.unHighlightInquiryRows();
-                            context.highlightInquirySelectedRow(e.target.innerHTML); } }
-                    >
-                        {title[0]}
-                    </div>
+                    {title[0]}
                 </option>
             )
         });
@@ -637,6 +661,7 @@ class ViewsManager extends React.Component {
             />
         ); */
 
+        // console.log(mandrList);
         return(
             <div style={{height:"100%"}}>
                 {/* <div>
@@ -685,14 +710,14 @@ class ViewsManager extends React.Component {
                                         }} > 
                                         <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>①</b> Choose A Topic</h3>
                                         <br/>
-                                        <select style={dropDownSize}>
+                                        <select className="custom-select" id="custom-select" style={dropDownSize} onChange={e => {this.selectTopic(e.target.value, mandrList, admList, faList, customList)}}>
                                             <option style={styleForFirstViewSelect}>Select A Topic</option>
                                             <option
-                                            onClick = { (e) => {
-                                                this.flip("MarketingAndRecruiting", mandrList.length);
-                                                // this.unHighlightTopicRows();
-                                                // this.highlightTopicSelectedRow(e.target.innerHTML);
-                                            ;} } 
+                                            // onClick = { (e) => {
+                                            //     this.flip("MarketingAndRecruiting", mandrList.length);
+                                            //     this.unHighlightTopicRows();
+                                            //     this.highlightTopicSelectedRow(e.target.innerHTML);
+                                            // }} 
                                             className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} 
                                             main-category-select light` } 
                                             id="topic-defaultOpen"
@@ -703,12 +728,11 @@ class ViewsManager extends React.Component {
                                             </option>
 
                                             <option className = "main-category-select"
-                                            onClick = {(e) => {
-                                                console.log('called 1')
-                                                this.flip("Admissions", admList.length);
-                                                // this.unHighlightTopicRows();
-                                                // this.highlightTopicSelectedRow(e.target.innerHTML);
-                                            } } 
+                                            // onClick = {(e) => {
+                                            //     this.flip("Admissions", admList.length);
+                                            //     this.unHighlightTopicRows();
+                                            //     this.highlightTopicSelectedRow(e.target.innerHTML);
+                                            // }} 
                                             className = { `${(admList.length > 0 ? "noselect" : "cursorDefault noselect")} 
                                             main-category-select light`}
                                             style={styleForFirstViewSelect}
@@ -718,11 +742,11 @@ class ViewsManager extends React.Component {
                                             </option>
 
                                             <option className = "main-category-select"
-                                            onClick = {(e) => { 
-                                                this.flip("FinancialAid", faList.length); 
-                                                // this.unHighlightTopicRows();
-                                                // this.highlightTopicSelectedRow(e.target.innerHTML);
-                                            }} 
+                                            // onClick = {(e) => { 
+                                            //     this.flip("FinancialAid", faList.length); 
+                                            //     this.unHighlightTopicRows();
+                                            //     this.highlightTopicSelectedRow(e.target.innerHTML);
+                                            // }} 
                                             className = { `${(faList.length > 0 ? "noselect" : "cursorDefault noselect")} 
                                             main-category-select light`}
                                             style={styleForFirstViewSelect}
@@ -732,11 +756,11 @@ class ViewsManager extends React.Component {
                                             </option>
 
                                             <option className = "main-category-select"
-                                            onClick = {(e) => {
-                                                this.flip("Custom", customList.length);
-                                                // this.unHighlightTopicRows();
-                                                // this.highlightTopicSelectedRow(e.target.innerHTML); 
-                                            }}
+                                            // onClick = {(e) => {
+                                            //     this.flip("Custom", customList.length);
+                                            //     this.unHighlightTopicRows();
+                                            //     this.highlightTopicSelectedRow(e.target.innerHTML); 
+                                            // }}
                                             className = { `${(customList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
                                             style={styleForFirstViewSelect} 
                                             value="Custom" 
@@ -759,14 +783,14 @@ class ViewsManager extends React.Component {
                                         <br/>
                                         <Flexbox style = {{ /* alignItems: "center",  height: "100%",*/ /* borderBottom: "1px solid black"  */}} >
                                         {this.state.type === "MarketingAndRecruiting" ? 
-                                        <select style={dropDownSize}> {marketingAndRecruiting} </select>
+                                        <select className="custom-select" id="custom-select" style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{marketingAndRecruiting} </select>
                                             /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
                                                 : (this.state.type === "Admissions" ? 
-                                                <select style={dropDownSize}> {admissions} </select> 
+                                                <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{admissions} </select> 
                                                     : (this.state.type === "FinancialAid" ? 
-                                                    <select style={dropDownSize}> {financialAid} </select> 
+                                                    <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{financialAid} </select> 
                                                         : (this.state.type === "Custom" ? 
-                                                        <select style={dropDownSize}> {custom} </select> : null)
+                                                        <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{custom} </select> : null)
                                                     )
                                                 )
                                             }

@@ -1034,7 +1034,7 @@ class allViewsModal extends React.Component {
 					/>
 					<div>
 						
-						<div style={{float: "right", padding: "18px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<div style={{/* float: "right", */ padding: "18px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							{/* <FlatButton
 								label = "Back"
 								primary = { true }
@@ -1053,30 +1053,34 @@ class allViewsModal extends React.Component {
 								letterSpacing: "1px"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3> */}
 
 								<RaisedButton 
-									label = { "Launch" }
+									label = { "Launch Viewer" }
 									style = {{
-										width: "112px",
-										boxShadow: "0"
+										height: '60px',
+										width: '350px',
+										boxShadow: "0",
+										margin: "auto",
+										
 										/* margin: "0px 10px 9px 0px" */
 									}}
 									buttonStyle = {{
-										height: '35px',
-										lineHeight: '35px',
+										backgroundColor: (this.shouldLaunchBeDisabled() ? "darkgrey" : "#fdc743")
 										/* shouldLaunchBeDisabled() not working */
-										backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : /*this.props.settings.colors.buttons.general) */"#000")
+									
 									}} 
 									labelStyle = {{
-										fontSize: '12px',
-										textAlign: "center",
-										color: this.props.settings.colors.overviewButtonsColor.text,
+										fontSize: "20px",
+										fontFamily: "ITCFranklinGothicStd-Demi",
+										color: "#0c1836",
+										letterSpacing: "1px",
+										lineHeight: "58px",
 										margin: "0px 0px 0px -3px",
 										paddingLeft: "0px",
 										paddingRight: "0px"
 									}}
-									overlayStyle = {{
-										height: '35px',
-										lineHeight: '35px',
-									}}
+									// overlayStyle = {{
+									// 	height: '35px',
+									// 	lineHeight: '35px',
+									// }}
 									disabled = { this.shouldLaunchBeDisabled() }
 									onClick = { () => {
 										this.props.onLaunch({
