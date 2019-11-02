@@ -133,53 +133,59 @@ class ViewsTab extends React.Component {
             }
 			
             return (
-                <Card 
-                    className = "inherit-hover noselect hover-recent-select" 
-                    containerStyle = {{ padding: "0px", borderRadius: "5px", width: "100%" }} 
-                    style = {{ 
-                        backgroundColor: context.props.settings.colors.general.lightBubble, 
-                        height: "35px", 
-                        width: "100%", 
-                        borderRadius: "5px", 
-                        marginTop: (view === newList[0] ? "0px" : "5px"),
-                    }} 
-                    key = { view } 
-                >
-                    <CardText
-                    /* className="hover-recent-select" */
-                        style = {{ padding: "7px", borderRadius: "5px", width: "100%" }}
-                        onClick = { () => context.props.loadRecentView(view) }
+                <div>
+                    <Card 
+                        className = "inherit-hover noselect hover-recent-select" 
+                        containerStyle = {{ padding: "0px", width: "100%" }} 
+                        style = {{ 
+                            backgroundColor: "#e6e7e8", 
+                            height: "50px", 
+                            width: "100%", 
+                            boxShadow: "0px 0px 0px",
+                            padding: "10px",
+                            // marginTop: (view === newList[0] ? "0px" : "5px"),
+                        }} 
+                        key = { view } 
                     >
+                        <CardText
+                        /* className="hover-recent-select" */
+                            style = {{ padding: "7px", width: "100%" }}
+                            onClick = { () => context.props.loadRecentView(view) }
+                        >
 
-                        <Flexbox flexDirection = "row" minWidth = "100%" >
-                            <Flexbox style = {{ width: "100%", whiteSpace: "nowrap", overflow: "hidden", 
-                            fontSize: "16px", letterSpacing: "0.05em" }} > 
-                                <Tooltip
-                                    placement = 'left'
-                                    mouseEnterDelay = { 0.5 }
-                                    mouseLeaveDelay = { 0.15 }
-                                    destroyTooltipOnHide = { false }
-                                    trigger = { Object.keys( {hover: 1} ) }
-                                    overlay = { 
+                            <Flexbox flexDirection = "row" minWidth = "100%" >
+                                <Flexbox style = {{ width: "100%", whiteSpace: "nowrap", overflow: "hidden", 
+                                fontSize: "16px", letterSpacing: "0.05em" }} > 
+                                    <Tooltip
+                                        placement = 'left'
+                                        mouseEnterDelay = { 0.5 }
+                                        mouseLeaveDelay = { 0.15 }
+                                        destroyTooltipOnHide = { false }
+                                        trigger = { Object.keys( {hover: 1} ) }
+                                        overlay = { 
+                                            <div> 
+                                                { view[0] }
+                                            </div> 
+                                        }
+                                    >
                                         <div> 
                                             { view[0] }
                                         </div> 
-                                    }
-                                >
-                                    <div> 
-                                        { view[0] }
-                                    </div> 
-                                </Tooltip>
+                                    </Tooltip>
+                                </Flexbox>
+                                    
+                                <div style = {{ width: "100%", textAlign: "right" }} >
+                                    { viewTime } &nbsp; &nbsp; { viewDate }
+                                </div>
+                            
                             </Flexbox>
-                                
-                            <div style = {{ width: "100%", textAlign: "right" }} >
-                                { viewTime } &nbsp; &nbsp; { viewDate }
-                            </div>
-                           
-                        </Flexbox>
 
-                    </CardText>
-                </Card>
+                        </CardText>
+                    </Card>
+                    <div style={{height: "1px", width: "px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+
+                    </div>
+                </div>
             )
         });
 
@@ -261,14 +267,14 @@ class ViewsTab extends React.Component {
 
                 {/* Recent Views Tab */}
                 <div id="Recent" className="tabcontent">
-                    <div style = {{ padding: "7px", display: (this.state.loadMask ? "none" : "") }} >
+                    <div className = "customScroll" style = {{ height: "256px", padding: "0px 7px 7px 7px", overflow: "auto", display: (this.state.loadMask ? "none" : "") }} >
                         {this.state.recents.length === 0 ? 
                         <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
                         : recentViews}
                     </div>
                 </div>
                 {/* Saved Views Tab */}
-                <div id="Saved" className="tabcontent customScroll" style={{height: "70%", overflow: "auto", marginTop: "7px"}}>
+                <div id="Saved" className="tabcontent customScroll" style={{ overflow: "auto", marginTop: "7px"}}>
                     <SavedViews/> 
                 </div>
                 

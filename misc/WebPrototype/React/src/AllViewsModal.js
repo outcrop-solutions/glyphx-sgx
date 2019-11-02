@@ -942,7 +942,7 @@ class allViewsModal extends React.Component {
 					fontSize: "37px", 
 					textAlign: "center",
 					fontFamily: "ITCFranklinGothicStd-DmCd",
-					backgroundColor: "#e6e7e8",
+					backgroundColor: "lightgrey",
 					color: "lightslategrey",
 					paddingTop: "145px",
 					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>

@@ -113,8 +113,8 @@ class AnnouncementsDisplay extends React.Component {
                     <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                <div style = {{ padding: "7px 4px 6px",/*  paddingBottom: "12px",  */display: (this.state.loadMask ? "none" : "") }} >
-                    <div style = {{ height: "205px", overflowY: "scroll", borderRadius: "3px" }} className = "customScroll" >
+                <div style = {{ /* padding: "7px 4px 6px",  paddingBottom: "12px",  */display: (this.state.loadMask ? "none" : "") }} >
+                    <div style = {{ height: "215px", overflowY: "scroll", borderRadius: "3px", padding: "7px" }} className = "customScroll" >
                         {announcements}
                     </div>
                 </div>
@@ -129,7 +129,7 @@ class MaintenanceAnnouncement extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" /*  style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} */ >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox style = {{ height: "50%" }} >
@@ -153,13 +153,24 @@ class MaintenanceAnnouncement extends React.Component {
                     null
                 }
 
-                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                <Card containerStyle = {{ 
+                        padding: "0px", 
+                        borderRadius: "5px" }} 
+                    style = {{ 
+                        width: "100%", 
+                        textShadow: "0",
+                        backgroundColor: this.props.settings.colors.general.lightBubble, 
+                        boxShadow: "0px 0px 0px"
+                        /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
                             padding: "7px",
                             marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
-                            borderRadius: "5px"
+                            // borderRadius: "5px",
+                            backgroundColor: "#e6e7e8",
+                            marginBottom: "-6px",
+                            borderBottom: "1px solid #9ea3af"
                         }}
                         /* className = "cursorHand" */
                         //onClick = {  }
@@ -248,13 +259,23 @@ class ReleaseAnnouncement extends React.Component {
                     null
                 }
 
-                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                <Card containerStyle = {{ 
+                        padding: "0px", 
+                        borderRadius: "5px" }} 
+                    style = {{ 
+                        width: "100%", 
+                        backgroundColor: this.props.settings.colors.general.lightBubble,
+                        boxShadow: "0px 0px 0px" 
+                        /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
                             padding: "7px",
                             marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
-                            borderRadius: "5px"
+                            // borderRadius: "5px",
+                            backgroundColor: "#e6e7e8",
+                            marginBottom: "-6px",
+                            borderBottom: "1px solid #9ea3af"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.setState({ notesDisplay: true }) }
@@ -376,13 +397,21 @@ class PollAnnouncement extends React.Component {
                     null
                 }
                 
-                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ 
+                    width: "100%", 
+                    textShadow: "0",
+                    backgroundColor: this.props.settings.colors.general.lightBubble, 
+                    boxShadow: "0px 0px 0px"
+                    /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
                             padding: "7px",
                             marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
-                            borderRadius: "5px"
+                            // borderRadius: "5px",
+                            backgroundColor: "#e6e7e8",
+                            marginBottom: "-6px",
+                            borderBottom: "1px solid #9ea3af"
                         }}
                         className = "cursorHand"
                         onClick = { this.toggleDisplay }
@@ -457,13 +486,23 @@ class ShoutAnnouncement extends React.Component {
                     null
                 }
 
-                <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ width: "100%", backgroundColor: this.props.settings.colors.general.lightBubble, borderRadius: "5px", marginRight: "5px" }} >
+                <Card containerStyle = {{ 
+                        padding: "0px", 
+                        borderRadius: "5px" }} 
+                    style = {{ 
+                        width: "100%", 
+                        backgroundColor: this.props.settings.colors.general.lightBubble, 
+                        boxShadow: "0px 0px 0px"
+                        /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
                             padding: "7px",
                             marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
-                            borderRadius: "5px"
+                            // borderRadius: "5px",
+                            backgroundColor: "#e6e7e8",
+                            marginBottom: "-6px",
+                            borderBottom: "1px solid #9ea3af"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.props.announcement.content.linkType === "link" ? 
@@ -575,7 +614,7 @@ var announcementList = [
         type: "Shout",
         id: "a3",
         content: {
-            message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd; click to learn more.",
+            message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd. Click to learn more.",
             linkType: "link",
             link: "https://s3.amazonaws.com/sgxshared/gannon-case-study.pdf"
         },
@@ -585,7 +624,7 @@ var announcementList = [
         type: "Shout",
         id: "a4",
         content: {
-            message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept; click to learn more.",
+            message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept. Click to learn more.",
             linkType: "link",
             link: "http://www.globenewswire.com/news-release/2017/10/03/1140109/0/en/Kent-State-University-to-use-GlyphEd-to-Discover-Insights-in-Freshman-Student-Data.html"
         },

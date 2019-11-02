@@ -563,9 +563,9 @@ class ViewsManager extends React.Component {
             width: "315px",
         };
 
-        const subContents = {
-            padding: "7px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"  
-        };
+        // const subContents = {
+        //     padding: "7px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"  
+        // };
         
         var marketingAndRecruiting = mandrList.map( function(title) {
             return (
@@ -790,7 +790,8 @@ class ViewsManager extends React.Component {
                                                     : (this.state.type === "FinancialAid" ? 
                                                     <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{financialAid} </select> 
                                                         : (this.state.type === "Custom" ? 
-                                                        <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{custom} </select> : null)
+                                                        <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{custom} </select> : 
+                                                            <select disabled style={dropDownSize}><option>—</option></select>)
                                                     )
                                                 )
                                             }

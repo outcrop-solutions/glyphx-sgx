@@ -523,7 +523,7 @@ class HomePage extends React.Component {
                                             </div> 
                                         </Flexbox> */}
                                         
-                                    <div style = {{height: "265px", display: "block"}}> 
+                                    <div style = {{height: "266px", display: "block"}}> 
                                         <div style={{
                                             height: "50px",
                                             width: "25vw",
