@@ -299,7 +299,7 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "15px" }}
+                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "10px" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -315,6 +315,29 @@ class TopNavBar extends React.Component {
                             }
                         >
                             <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
+                        </Tooltip>
+                    </IconButton>
+
+                    <IconButton 
+                        // onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
+                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "17px", width: "110px" }}
+                        className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
+                    >
+                        <Tooltip
+                            placement = 'left'
+                            mouseEnterDelay = { 0.5 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div> 
+                                    Live Chat
+                                </div> 
+                            }
+                        >
+                            <FontIcon>
+                            <img src='./Res/Img/group-5.png' onClick={() => window.open('https://zoho.com', '_blank')}/* color = '#ffffff' style={{fontSize: "28px"}} *//>
+                            </FontIcon>
                         </Tooltip>
                     </IconButton>
                     
