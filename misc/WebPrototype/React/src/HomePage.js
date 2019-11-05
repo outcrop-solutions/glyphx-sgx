@@ -486,7 +486,11 @@ class HomePage extends React.Component {
                                                     >Glyph Key
                                                 </h2>
                                             </div>
-
+                                            
+                                            <img style={{width: "480px", height: "214px"}}
+                                                src= {(this.props.legend_url_arr.length > 0 ? 
+                                                    `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(this.props.legend_url_arr[0])}`: 
+                                                    "./Res/Img/x.png")}/>
                                             
                                         </div>       
 
@@ -601,7 +605,8 @@ const mapStateToProps = function(state){
     userInfo: state.filterState.UserInfo,
 	storedViews: state.filterState.StoredViews,
     funnelData: state.filterState.FunnelData,
-    timeoutTimer: state.filterState.TimeoutTimer
+    timeoutTimer: state.filterState.TimeoutTimer,
+    legend_url_arr: state.filterState.legend_url_arr
   }
 }
 

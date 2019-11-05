@@ -399,10 +399,10 @@ class ViewsManager extends React.Component {
             function (responseText) { 
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
-                console.log(response)
+                // console.log(response)
                 if(response.body){
                     let imgPath = response.body.legendUrl;
-                    console.log(response.body.legendUrl,'imgPath');
+                    console.log(response.body.legendUrl, response.body.imgArr,'imgPath');
                     
                     context.props.dispatch(setLegendUrlArr(response.body.imgArr));
 
