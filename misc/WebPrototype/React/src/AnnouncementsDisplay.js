@@ -159,18 +159,18 @@ class MaintenanceAnnouncement extends React.Component {
                     style = {{ 
                         width: "100%", 
                         textShadow: "0",
-                        backgroundColor: this.props.settings.colors.general.lightBubble, 
+                        // backgroundColor: this.props.settings.colors.general.lightBubble, 
                         boxShadow: "0px 0px 0px"
                         /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
-                            padding: "7px",
-                            marginTop: (this.props.first ? "0px" : "6px"),
+                            padding: "10px",
+                            // marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             // borderRadius: "5px",
                             backgroundColor: "#e6e7e8",
-                            marginBottom: "-6px",
-                            borderBottom: "1px solid #9ea3af"
+                            // marginBottom: "-6px",
+                            // borderBottom: "1px solid #9ea3af"
                         }}
                         /* className = "cursorHand" */
                         //onClick = {  }
@@ -204,6 +204,8 @@ class MaintenanceAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
+                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    </div>
                 </Card>
             </Flexbox>
         );
@@ -235,7 +237,7 @@ class ReleaseAnnouncement extends React.Component {
         );
 
         return (
-            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" style = {{ /* marginTop: (this.props.first ? "0px" : "6px"), */ marginBottom: (this.props.last ? "7px" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox /* style = {{ height: "33.33%" }} */ >
@@ -264,18 +266,18 @@ class ReleaseAnnouncement extends React.Component {
                         borderRadius: "5px" }} 
                     style = {{ 
                         width: "100%", 
-                        backgroundColor: this.props.settings.colors.general.lightBubble,
+                        // backgroundColor: this.props.settings.colors.general.lightBubble,
                         boxShadow: "0px 0px 0px" 
                         /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
-                            padding: "7px",
-                            marginTop: (this.props.first ? "0px" : "6px"),
+                            padding: "10px",
+                            // marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             // borderRadius: "5px",
                             backgroundColor: "#e6e7e8",
-                            marginBottom: "-6px",
-                            borderBottom: "1px solid #9ea3af"
+                            // marginBottom: "-6px",
+                            // borderBottom: "1px solid #9ea3af"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.setState({ notesDisplay: true }) }
@@ -351,6 +353,8 @@ class ReleaseAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
+                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    </div>
                 </Card>
             </Flexbox>
         );
@@ -373,7 +377,7 @@ class PollAnnouncement extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" style = {{ /* marginTop: (this.props.first ? "0px" : "6px"), */ marginBottom: (this.props.last ? "7px" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox style = {{ height: "50%" }} >
@@ -400,18 +404,18 @@ class PollAnnouncement extends React.Component {
                 <Card containerStyle = {{ padding: "0px", borderRadius: "5px" }} style = {{ 
                     width: "100%", 
                     textShadow: "0",
-                    backgroundColor: this.props.settings.colors.general.lightBubble, 
+                    // backgroundColor: this.props.settings.colors.general.lightBubble, 
                     boxShadow: "0px 0px 0px"
                     /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
-                            padding: "7px",
-                            marginTop: (this.props.first ? "0px" : "6px"),
+                            padding: "10px",
+                            // marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             // borderRadius: "5px",
                             backgroundColor: "#e6e7e8",
-                            marginBottom: "-6px",
-                            borderBottom: "1px solid #9ea3af"
+                            // marginBottom: "-6px",
+                            // borderBottom: "1px solid #9ea3af"
                         }}
                         className = "cursorHand"
                         onClick = { this.toggleDisplay }
@@ -452,6 +456,8 @@ class PollAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
+                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    </div>
                 </Card>
             </Flexbox>
         );
@@ -462,7 +468,7 @@ class ShoutAnnouncement extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ marginTop: (this.props.first ? "0px" : "6px"), marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" style = {{ /* marginTop: (this.props.first ? "0px" : "6px"), */ marginBottom: (this.props.last ? "7px" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox style = {{ height: "50%" }} >
@@ -491,18 +497,18 @@ class ShoutAnnouncement extends React.Component {
                         borderRadius: "5px" }} 
                     style = {{ 
                         width: "100%", 
-                        backgroundColor: this.props.settings.colors.general.lightBubble, 
+                        // backgroundColor: this.props.settings.colors.general.lightBubble, 
                         boxShadow: "0px 0px 0px"
                         /* borderRadius: "5px", marginRight: "5px" */ }} >
                     <CardText
                         style = {{
-                            padding: "7px",
-                            marginTop: (this.props.first ? "0px" : "6px"),
+                            padding: "10px",
+                            // marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             // borderRadius: "5px",
                             backgroundColor: "#e6e7e8",
-                            marginBottom: "-6px",
-                            borderBottom: "1px solid #9ea3af"
+                            // marginBottom: "-6px",
+                            // borderBottom: "1px solid #9ea3af"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.props.announcement.content.linkType === "link" ? 
@@ -537,6 +543,8 @@ class ShoutAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
+                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    </div>
                 </Card>
             </Flexbox>
         );

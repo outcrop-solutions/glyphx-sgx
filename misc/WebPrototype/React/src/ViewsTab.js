@@ -133,7 +133,7 @@ class ViewsTab extends React.Component {
             }
 			
             return (
-                <div>
+                <div key = {`${view[0]}${view[1]}`}>
                     <Card 
                         className = "inherit-hover noselect hover-recent-select" 
                         containerStyle = {{ padding: "0px", width: "100%" }} 
@@ -182,7 +182,7 @@ class ViewsTab extends React.Component {
 
                         </CardText>
                     </Card>
-                    <div style={{height: "1px", width: "px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
 
                     </div>
                 </div>
@@ -244,17 +244,17 @@ class ViewsTab extends React.Component {
                 </div>
 
                 {/* tab content */}
-                <div className="tab" style={{padding: "5px 0 3px 0"}}>
+                <div className="tab"/*  style={{padding: "5px 0 3px 0"}} */>
                     
                     <button className="tablinks" id="tab-defaultOpen" 
                     onClick= {(e) => this.openViewsTab(e,'Recent')}
-                    style = {{padding: "10px 52.3320px 10px 52.3320px"}}>
+                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%", marginLeft: "7px"}}>
                         Recent
                     </button>
                     
                     <button className="tablinks"
                     onClick= {(e) =>  this.openViewsTab(e, 'Saved')}
-                    style = {{padding: "10px 52.3320px 10px 52.3320px"}}>
+                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%", marginRight: "7px"}}>
                         Saved
                     </button>
                 </div>

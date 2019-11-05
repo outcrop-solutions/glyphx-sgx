@@ -16,12 +16,12 @@
   
   /* Change background color of buttons on hover */
   .tab button:hover {
-    background-color: #ddd;
+    background-color: darkgrey;
   }
   
   /* Create an active/current tablink class */
   .tab button.active {
-    background-color: #ccc;
+    background-color: #e6e7e8;
   }
   
   /* Style the tab content */
@@ -31,12 +31,16 @@
 
   .tablinks {
       text-transform: uppercase;
-      letter-spacing: 0.23em;
+      letter-spacing: 1.6px;
       font-size: 16px;
-      border: 2px solid grey;
+      border: none;
+      font-family: ITCFranklinGothicStd-DmCd;
+      color: #0c1836;
+      background-color: #ced1d7;
+      height: 45px;
   }
 
   .hover-recent-select:hover{
     cursor: pointer;
-    background-color:#dadada !important;
+    background-color:darkgrey !important;
   }
