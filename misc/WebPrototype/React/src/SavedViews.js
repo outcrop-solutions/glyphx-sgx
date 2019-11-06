@@ -386,10 +386,6 @@ class SimpleTable extends React.Component {
     handleRowSelection = (selectedRows) => {
         this.props.onClickSaved(this.state.flatData[selectedRows]);
     };
-
-    // hoverSelection(hover) {
-    //     this.setState({hover: !this.state.hover});
-    // };
     
     render() {
         var colNames = [];
@@ -467,7 +463,6 @@ class SimpleTable extends React.Component {
 
         if (this.state.flatData != null && this.state.flatData.length > 0) {
             var keys = Object.keys(this.state.flatData[0]);
-            // console.log(keys);
             var flatData = this.state.flatData;
 
             for (var i = keys.length - 1; i > -1 ; i--) {
@@ -533,7 +528,7 @@ class SimpleTable extends React.Component {
                             > 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {displayTemp} &nbsp;
-                                    <i /* style = {{fontSize: "16px"}} */ id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
+                                    <i id = { this.props.id + temp } className = { "fa fa-sort " + this.props.id + "sortableColumn" } /> 
                                 </div>
                             </TableHeaderColumn>
                         );
@@ -591,7 +586,6 @@ class SimpleTable extends React.Component {
                         fixedHeader = { true }
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
-                        // height = "100%"
                         width = "100%"
                         style= {{border: "1px solid black"}}
                         /* wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" }}*/

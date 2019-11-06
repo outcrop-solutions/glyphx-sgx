@@ -767,26 +767,34 @@ class allViewsModal extends React.Component {
 							key = { col } 
 							style = {{ 
 								width: "100%", 
-								border: "1px solid", 
-								borderLeft: (col === data[0] ? "1px solid" : "none"),
-								borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
-								borderTopLeftRadius: (col === data[0] ? "3px" : ""),
-								borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
-								borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
+								border: "1px solid",
+								height: "221px", 
+								borderLeft: "1px solid black",
+								borderBottom: "1px solid black",
+								marginBottom: "10px"
+								// borderLeft: (col === data[0] ? "1px solid" : "none"),
+								// borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
+								// borderTopLeftRadius: (col === data[0] ? "3px" : ""),
+								// borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
+								// borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
 							}} 
 						>
 							<div 
 								className = "noselect" 
 								style = {{ 
-									backgroundColor: "#42459c", 
+									// backgroundColor: "#42459c",
+									backgroundColor: "#0c1836", 
+									padding: "13px 0px 9px 18px",
 									color: "#ffffff", 
-									height: "27px",
-									fontSize: "21px",
-									textAlign: "center"
+									// height: "27px",
+									//extra height for no select colmn for some reason
+									fontSize: "16px",
+									fontFamily: "ITCFranklinGothicStd-DmCd"
+									// textAlign: "center"
 								}} 
 							> 
 								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
-									<i 
+									{/* <i 
 									className = "fa fa-check" 
 									style = {{ marginRight: "3px" }}
 									title= "Select Column" 
@@ -794,10 +802,10 @@ class allViewsModal extends React.Component {
 									<i 
 									className = "fa fa-times" 
 									title= "Deselect Column"
-									onClick = { () => {context.selectDeselectCol(col, "deselect"), context.setState({selectAll500: false}) }} /> 
+									onClick = { () => {context.selectDeselectCol(col, "deselect"), context.setState({selectAll500: false}) }} />  */}
 								</div>
 
-								<div style = {{ marginTop: "-19px", paddingBottom: "4px", fontSize: "17px" }} > 
+								<div style = {{ fontSize: "18px", letterSpacing: "0.5px" }} > 
 									{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
 								</div>
 							</div>
@@ -819,7 +827,7 @@ class allViewsModal extends React.Component {
 								/>
 							</div>
 
-							<div id = { col[0] } style = {{ overflow: "auto" }} >
+							<div className = "customScroll" id = { col[0] } style = {{ overflow: "auto" }} >
 
 								{ (col.length > 500 ? 
 									<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
@@ -960,13 +968,13 @@ class allViewsModal extends React.Component {
 				</div> 
 
 				<div style = {{ 
-					height: "62vh", 
+					// height: "62vh", 
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
 					padding: "0px 28px 0px 26px" }} 
 				>
 
 					<div style={{float: 'right', paddingTop: "10px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
-						<RaisedButton 
+						{/* <RaisedButton 
 							label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
 							style = {{
 								width: "121px",
@@ -1017,12 +1025,24 @@ class allViewsModal extends React.Component {
 							}}
 							onClick = { () => {this.selectDesectAll(data, "deselect")} }
 							primary = { true } 
-						/>
+						/> */}
+
+						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "18px"}}> 
+							<input 
+								type="checkbox"
+								style={{marginBottom: "15px"}}
+								onChange = {(e) => (
+									e.target.checked === true ? this.selectDesectAll(data, "select") : 
+										this.selectDesectAll(data, "deselect") )}
+							/>
+							Select All | Clear All 
+						</label>		
+						
 					</div>
 
 					{/* the data table*/}
 
-					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%", clear: "both" }} >
+					<Flexbox flexDirection = "column" style = {{ backgroundColor: "#ffffff", /* height: "100%", */ clear: "both" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
 
@@ -1059,8 +1079,6 @@ class allViewsModal extends React.Component {
 										width: '350px',
 										boxShadow: "0",
 										margin: "auto",
-										
-										/* margin: "0px 10px 9px 0px" */
 									}}
 									buttonStyle = {{
 										backgroundColor: (this.shouldLaunchBeDisabled() ? "darkgrey" : "#fdc743")
@@ -1136,10 +1154,10 @@ class AllViewsRow extends React.Component {
 				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
 				style = {{ 
 					backgroundColor: ( this.props.selected ? "#bfbfbf" : "white" ), 
-					textAlign: "center",
-					padding: "2px",
+					padding: "6px",
 					margin: "0",
 					fontSize: "16px",
+					fontFamily: "ITCFranklinGothicStd-Med",
 					display: (this.props.children.length)
 				}} 
 			> 

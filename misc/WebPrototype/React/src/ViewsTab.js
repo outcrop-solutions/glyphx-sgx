@@ -196,37 +196,10 @@ class ViewsTab extends React.Component {
                     width: "25vw",
                     backgroundColor: "#0c1836"
                 }}>
-                    {/*backgroundColor: '#018cbb' this.props.settings.colors.homePageColors.headerBackground,
-                    marginBottom: "3px", 
-                    paddingBottom: "4px", 
-                    borderRadius: "2px" }} >
-                    <div 
-                        className = "noselect"
-                        style = {{ 
-                            color: this.props.settings.colors.overviewButtonsColor.text, 
-                            margin: "0 auto",
-                            width: "103px", 
-                            paddingTop: "4px",
-                            fontSize: "19px",
-                            letterSpacing: "0.23em",
-                            textTransform: "uppercase"
-                        }}
-                    > 
-                        Views
-                    </div> */}
                     <h2
                         className='noselect'
                         style={{
                             // color: this.props.settings.colors.overviewButtonsColor.text,
-                            // backgroundColor: , 
-                            // borderRadius: "2px", 
-                            // paddingBottom: "4px", 
-                            // margin: "auto auto 4px auto", 
-                            // paddingTop: "4px",
-                            // fontSize: "19px",
-                            // letterSpacing: "0.14em",
-                            // textTransform: "uppercase",
-                            // textAlign: "center"
                             width: "162px",
                             height: "19px",
                             fontFamily: "ITCFranklinGothicStd-Demi",
@@ -244,7 +217,7 @@ class ViewsTab extends React.Component {
                 </div>
 
                 {/* tab content */}
-                <div className="tab"/*  style={{padding: "5px 0 3px 0"}} */>
+                <div className="tab">
                     
                     <button className="tablinks" id="tab-defaultOpen" 
                     onClick= {(e) => this.openViewsTab(e,'Recent')}
