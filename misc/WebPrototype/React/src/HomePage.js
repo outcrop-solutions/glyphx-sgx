@@ -487,11 +487,12 @@ class HomePage extends React.Component {
                                                 </h2>
                                             </div>
                                             
-                                            <img style={{width: "480px", height: "214px"}}
-                                                src= {(this.props.legend_url_arr.length > 0 ? 
-                                                    `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(this.props.legend_url_arr[0])}`: 
-                                                    "./Res/Img/x.png")}/>
-                                            
+                                            <div style={{display: "block", textAlign: "center"}}>
+                                            {this.props.legend_url_arr.length > 0 ? 
+                                                (<img style={{width: "480px", height: "214px"}}
+                                                    src={`http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(this.props.legend_url_arr[0])}`} />) : 
+                                                        <img style={{width: "480px", height: "140px", marginTop: "26px"}} src='./Res/Img/GlyphED.png'/>}
+                                            </div>
                                         </div>       
 
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>

@@ -138,7 +138,7 @@ class SavedViews extends React.Component {
         return (
             <div>
 
-                <div style = {{ marginBottom: "3px" }} >
+                <div /* style = {{ marginBottom: "3px" }} */ >
                 {/*outdated collapside bar that was implemented on ViewsManager. Working code.*/}
                     {/* <Collapsible
                         transitionTime = {200} 

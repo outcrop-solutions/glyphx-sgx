@@ -267,14 +267,14 @@ class ViewsTab extends React.Component {
 
                 {/* Recent Views Tab */}
                 <div id="Recent" className="tabcontent">
-                    <div className = "customScroll" style = {{ height: "256px", padding: "0px 7px 7px 7px", overflow: "auto", display: (this.state.loadMask ? "none" : "") }} >
+                    <div className = "customScroll" style = {{ height: "253px", padding: "0px 7px 7px 7px", overflow: "auto", display: (this.state.loadMask ? "none" : "") }} >
                         {this.state.recents.length === 0 ? 
                         <div style = {{ margin: "30px 0px 15px 0px", fontSize: "18px", textAlign: "center" }}> No Recent Views </div> 
                         : recentViews}
                     </div>
                 </div>
                 {/* Saved Views Tab */}
-                <div id="Saved" className="tabcontent customScroll" style={{ overflow: "auto", marginTop: "7px"}}>
+                <div id="Saved" className="tabcontent customScroll" style={{ overflow: "auto", paddingTop: "7px", backgroundColor: "#e6e7e8"}}>
                     <SavedViews/> 
                 </div>
                 
