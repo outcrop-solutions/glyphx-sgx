@@ -6,7 +6,7 @@ import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
-import { makeServerCall/* , makeAWSCall */ } from './ServerCallHelper.js';
+import { makeServerCall } from './ServerCallHelper.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './css/General.css';
@@ -790,7 +790,6 @@ class allViewsModal extends React.Component {
 									//extra height for no select colmn for some reason
 									fontSize: "16px",
 									fontFamily: "ITCFranklinGothicStd-DmCd"
-									// textAlign: "center"
 								}} 
 							> 
 								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
@@ -912,7 +911,6 @@ class allViewsModal extends React.Component {
 		
 		return(
 			<div
-				// style={{paddingTop: "10px"}}
 				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -968,40 +966,13 @@ class allViewsModal extends React.Component {
 				</div> 
 
 				<div style = {{ 
-					// height: "62vh", 
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
 					padding: "0px 28px 0px 26px" }} 
 				>
 
 					<div style={{float: 'right', paddingTop: "10px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
-						{/* <RaisedButton 
-							label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
-							style = {{
-								width: "121px",
-								margin: "8px 10px 9px 0px"
-							}}
-							buttonStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-								backgroundColor: this.props.settings.colors.buttons.general
-							}} 
-							labelStyle = {{
-								fontSize: '12px',
-								textAlign: "center",
-								color: this.props.settings.colors.overviewButtonsColor.text,
-								margin: "0px 0px 0px -3px",
-								paddingLeft: "0px",
-								paddingRight: "0px"
-							}}
-							overlayStyle = {{
-								height: '35px',
-								lineHeight: '35px',
-							}}
-							onClick = { () => this.selectDesectAll(data, "select") }
-							primary = { true } 
-						/>
-
-						<RaisedButton 
+					
+						{/*<RaisedButton 
 							label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
 							style = {{
 								width: "135px"
@@ -1042,7 +1013,7 @@ class allViewsModal extends React.Component {
 
 					{/* the data table*/}
 
-					<Flexbox flexDirection = "column" style = {{ backgroundColor: "#ffffff", /* height: "100%", */ clear: "both" }} >
+					<Flexbox flexDirection = "column" style = {{ backgroundColor: "#ffffff", clear: "both" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
 
@@ -1062,15 +1033,6 @@ class allViewsModal extends React.Component {
 								style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton"black", backgroundColor: "#efefef" }}
 							/> */}
 							<Flexbox>
-								{/* <h3 style={{ 
-								paddingTop: "10px",
-								padding: "2px 31px 0 0",
-								fontSize: "20px", 
-								fontFamily: "ITCFranklinGothicStd-DmCd",
-								margin: "0px",
-								fontWeight: "300",
-								textTransform: "uppercase",
-								letterSpacing: "1px"}}><b style={{fontSize:"28px"}}>③</b> Select Filter(s) and Launch.</h3> */}
 
 								<RaisedButton 
 									label = { "Launch Viewer" }
