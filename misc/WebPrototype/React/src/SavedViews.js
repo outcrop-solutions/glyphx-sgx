@@ -479,9 +479,17 @@ class SimpleTable extends React.Component {
             for (var i = 0; i < flatData.length; i++) {
                 var cDate = new Date(flatData[i].CreationDate);
                 var mDate = new Date(flatData[i].LastModifiedDate);
+                
+                let cDay, mDay;
 
-                cDate = (cDate.getMonth() + 1) + '-' + cDate.getDate() + '-' + cDate.getFullYear();
-                mDate = (mDate.getMonth() + 1) + '-' + mDate.getDate() + '-' + mDate.getFullYear();
+                if(cDate.getDate() < 10) cDay = '0' + cDate.getDate()
+                else cDay = cDate.getDate()
+
+                if(mDate.getDate() < 10) mDay = '0' + mDate.getDate()
+                else mDay = mDate.getDate()
+
+                cDate = (cDate.getMonth() + 1) + '/' + cDay + '/' + cDate.getFullYear();
+                mDate = (mDate.getMonth() + 1) + '/' + mDay + '/' + mDate.getFullYear();
 
                 flatData[i].CreationDate = cDate;
                 flatData[i].LastModifiedDate = mDate;
@@ -524,7 +532,7 @@ class SimpleTable extends React.Component {
                         colNames.push(
                             <TableHeaderColumn 
                             key = { this.props.id + temp } 
-                            style = {{fontSize: "16px", padding: "10px", color: "black"}}
+                            style = {{fontSize: "18px", padding: "10px", color: "black"}}
                             > 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {displayTemp} &nbsp;
@@ -535,7 +543,7 @@ class SimpleTable extends React.Component {
                     }
     
                     data.push(<TableRowColumn key = { dataRowObject[temp] } 
-                        style = {{ padding: "0px 0px 0px 3px", fontSize: "14px"}} > {dataRowObject[temp]} 
+                        style = {{ padding: "0px 0px 0px 3px", fontSize: "16px"}} > {dataRowObject[temp]} 
                         </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
@@ -563,7 +571,7 @@ class SimpleTable extends React.Component {
         return (
             <div>
                 <div style = {{ margin: "1px 4px -9px"}}  >
-                    <SearchBox 
+                    <SearchBox
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
                         collapseButton = { false }
@@ -594,7 +602,10 @@ class SimpleTable extends React.Component {
                         <TableHeader
                             adjustForCheckbox = { false }
                             displaySelectAll = { false }
-                            style = {{ backgroundColor: "#018cbb", fontSize: "14px"  }}
+                            style = {{ 
+                                backgroundColor: "#018cbb", 
+                                fontSize: "14px", 
+                                fontFamily: "ITCFranklinGothicStd-Med" }}
                         >
                             <TableRow
                             style = {{ 
@@ -608,6 +619,7 @@ class SimpleTable extends React.Component {
                         displayRowCheckbox = { false }
                         style = {{
                             cursor: "pointer",
+                            // fontFamily: "ITCFranklinGothicStd-Med",
                             backgroundColor: hoverColor
                         }} >
                             {rows}

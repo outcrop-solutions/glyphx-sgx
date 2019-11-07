@@ -188,10 +188,40 @@ class TopNavBar extends React.Component {
         // console.log(this.props.vizParams);
         return(
             <Toolbar 
-                style = {{ padding: '0px', height: "65px", backgroundColor: "#031a72" }}
+                style = {{ padding: '0px', height: (this.props.homePage ? "65px" : "36px"), backgroundColor: "#031a72" }}
                 ref = "topNavToolbar"
             >       
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >
+                    {this.props.homePage ? <div></div> : 
+                        <Tooltip
+                        onClick = { () => {
+                            this.returnHome(); 
+                            (this.props.uid ? 
+                                this.props.webSocket.send(JSON.stringify({url_uid: this.props.uid, home: true})) 
+                                : null )
+                        }}
+                        placement = 'left'
+                        mouseEnterDelay = { 0.5 }
+                        mouseLeaveDelay = { 0.15 }
+                        destroyTooltipOnHide = { false }
+                        trigger = { Object.keys( {hover: 1} ) }
+                        overlay = { 
+                            <div> 
+                                Return to Home Page
+                            </div> 
+                        }
+                    >
+                        <i 
+                            className = "fa fa-home"
+                            style = {{
+                                fontSize: '30px',
+                                color: this.props.settings.colors.collapsibleColor.mainIcon,
+                                margin: "5px 0px 1px 8px",
+                                cursor: "pointer"
+                            }}
+                        /> 
+                    </Tooltip>}
+
                     <IconButton 
                         onClick = { (event) => this.ToggleUserInfoMenu(event) } 
                         style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5") }}
@@ -212,14 +242,15 @@ class TopNavBar extends React.Component {
                             <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
                         </Tooltip>
                     </IconButton>
-                    <div style={{
+                    {this.props.homePage ? <div style={{
                         color: "white",
                         fontFamily: "ITCFranklinGothicStd-DmCd", 
                         fontSize: "20px", 
-                        margin: "8px 0px 0px 10px"}}
+                        margin: "8px 0px 0px 10px",
+                        letterSpacing: "0.5px"}}
                     >
                         Welcome, {this.showName()}
-                    </div>
+                    </div> : <div></div>}
                 </ToolbarGroup>
 
                 {/* Logo */}
@@ -235,27 +266,7 @@ class TopNavBar extends React.Component {
                         {this.props.homePage ? 
                             this.state.imgLogoSrc
                             :
-                            <Tooltip
-                                placement = 'left'
-                                mouseEnterDelay = { 0.5 }
-                                mouseLeaveDelay = { 0.15 }
-                                destroyTooltipOnHide = { false }
-                                trigger = { Object.keys( {hover: 1} ) }
-                                overlay = { 
-                                    <div> 
-                                        Return to Home Page
-                                    </div> 
-                                }
-                            >
-                                <i 
-                                    className = "fa fa-home"
-                                    style = {{
-                                        fontSize: '1.8em',
-                                        color: this.props.settings.colors.collapsibleColor.mainIcon,
-                                        margin: "0px 0px 1px 8px"
-                                    }}
-                                /> 
-                            </Tooltip>
+                            <div></div>
                         }
                     </span>
                 </ToolbarGroup>
@@ -286,7 +297,7 @@ class TopNavBar extends React.Component {
                         </Tooltip>
                     </IconButton>
 
-                    <IconButton 
+                    {/* <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
                         onClick = { () => this.createShareLink() }
                         style = {{ 
@@ -314,7 +325,7 @@ class TopNavBar extends React.Component {
                                 <img style={{backgroundColor: "white", borderRadius: "50%", padding: "1px"}} src={LinkImg}/>
                             </FontIcon>
                         </Tooltip>
-                    </IconButton>
+                    </IconButton> */}
 
                     <IconButton 
                         onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 

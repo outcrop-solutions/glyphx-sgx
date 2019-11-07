@@ -79,7 +79,8 @@ class SearchBox extends React.Component {
                             borderRadius: "4px",
                             border: "1px solid #ccc",
                             width: "100%",
-                            height: "30px"
+                            height: "30px",
+                            // fontFamily: "ITCFranklinGothicStd-Med"
                         }}
                         inputStyle = {{
                             paddingLeft:"5px",

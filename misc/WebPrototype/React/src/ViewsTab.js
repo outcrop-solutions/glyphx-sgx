@@ -108,28 +108,44 @@ class ViewsTab extends React.Component {
     
 
     render() {
-        var context = this;
+        let context = this;
 
-        var newList = this.state.recents.slice(0, 5);
+        let newList = this.state.recents.slice(0, 5);
 
-        var recentViews = newList.map( function(view) {
+        let recentViews = newList.map( function(view) {
 			if (typeof view[1] === 'string' && !isNaN(view[1])) {
                 view[1] = parseInt(view[1]);
 			}
 				
-			var viewTimeStamp = new Date(view[1]);
+            let viewTimeStamp = new Date(view[1]);
 
-			var viewDate =  (viewTimeStamp.getMonth() + 1) + "/" + viewTimeStamp.getDate() + "/" + viewTimeStamp.getFullYear();
+            let day;
+            
+            if(viewTimeStamp.getDate() < 10) day = '0' + viewTimeStamp.getDate();
+            else day = viewTimeStamp.getDate();
+            
 
-			var viewTime;
+			let viewDate =  (viewTimeStamp.getMonth() + 1) + "/" + day + "/" + viewTimeStamp.getFullYear();
+
+            let viewTime;
 			if (viewTimeStamp.getHours() > 12) {
-				viewTime =  viewTimeStamp.getHours() - 12 + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'pm';
+                viewTime =  
+                    viewTimeStamp.getHours() /* - 12 */ + ":" + 
+                        (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : 
+                            viewTimeStamp.getMinutes()) /* + 'pm'; */
             }
             else if (viewTimeStamp.getHours() === 12) {
-				viewTime =  12 + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'pm';
+                viewTime =  
+                    12 + ":" + 
+                        (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : 
+                            viewTimeStamp.getMinutes()) /* + 'pm'; */
             }
 			else {
-				viewTime = viewTimeStamp.getHours() + ":" + (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : viewTimeStamp.getMinutes()) + 'am';
+                viewTime = 
+                    (viewTimeStamp.getHours() < 10 ? '0' + viewTimeStamp.getHours() : viewTimeStamp.getHours()) 
+                    /* viewTimeStamp.getHours() */+ ":" + 
+                        (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() :
+                            viewTimeStamp.getMinutes()) /* + 'am'; */
             }
 			
             return (
@@ -143,6 +159,7 @@ class ViewsTab extends React.Component {
                             width: "100%", 
                             boxShadow: "0px 0px 0px",
                             padding: "10px",
+                            borderRadius: "0"
                             // marginTop: (view === newList[0] ? "0px" : "5px"),
                         }} 
                         key = { view } 
@@ -154,8 +171,14 @@ class ViewsTab extends React.Component {
                         >
 
                             <Flexbox flexDirection = "row" minWidth = "100%" >
-                                <Flexbox style = {{ width: "100%", whiteSpace: "nowrap", overflow: "hidden", 
-                                fontSize: "16px", letterSpacing: "0.05em" }} > 
+                                <Flexbox style = {{ 
+                                    width: "100%", 
+                                    whiteSpace: "nowrap", 
+                                    overflow: "hidden", 
+                                    fontSize: "16px", 
+                                    letterSpacing: "0.05em",
+                                    fontFamily: "ITCFranklinGothicStd-Med" 
+                                }} > 
                                     <Tooltip
                                         placement = 'left'
                                         mouseEnterDelay = { 0.5 }
@@ -174,7 +197,11 @@ class ViewsTab extends React.Component {
                                     </Tooltip>
                                 </Flexbox>
                                     
-                                <div style = {{ width: "100%", textAlign: "right" }} >
+                                <div style = {{ 
+                                    width: "100%", 
+                                    textAlign: "right", 
+                                    fontFamily: "ITCFranklinGothicStd-Med",
+                                    fontSize: "16px" }} >
                                     { viewTime } &nbsp; &nbsp; { viewDate }
                                 </div>
                             
@@ -182,7 +209,7 @@ class ViewsTab extends React.Component {
 
                         </CardText>
                     </Card>
-                    <div style={{backgroundColor: "#e6e7e8"}}>
+                    <div className = "inherit-hover hover-recent-select" style={{backgroundColor: "#e6e7e8"}}>
                         <div style={{
                             height: "1px", 
                             width: "448px", 
@@ -265,7 +292,8 @@ class ViewsTab extends React.Component {
                         <div style = {{ 
                             margin: "30px 0px 15px 0px", 
                             fontSize: "18px", 
-                            textAlign: "center"
+                            textAlign: "center",
+                            fontFamily: "ITCFranklinGothicStd-Med"
                         }}> No Recent Views </div> 
                         : recentViews}
                     </div>

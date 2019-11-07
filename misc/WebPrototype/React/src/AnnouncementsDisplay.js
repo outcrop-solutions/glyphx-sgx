@@ -173,6 +173,8 @@ class MaintenanceAnnouncement extends React.Component {
                             // marginTop: (this.props.first ? "0px" : "6px"),
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
+                            fontFamily: "ITCFranklinGothicStd-Med",
+                            fontSize: "16px"
                         }}
                         /* className = "cursorHand" */
                         //onClick = {  }
@@ -200,7 +202,7 @@ class MaintenanceAnnouncement extends React.Component {
                                 <div style = {{ width: "100%" }} > 
                                     We will be performing software updates and maintenance on our servers on {this.props.announcement.content.date}, 
                                     at {this.props.announcement.content.time} EST (UTC-5). Servers will be down for {this.props.announcement.content.length}. 
-                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "10px" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -277,6 +279,8 @@ class ReleaseAnnouncement extends React.Component {
                             padding: "10px",
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
+                            fontFamily: "ITCFranklinGothicStd-Med",
+                            fontSize: "16px"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.setState({ notesDisplay: true }) }
@@ -346,7 +350,7 @@ class ReleaseAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} >
                                 <div style = {{ width: "100%" }} > 
                                     Release {this.props.announcement.content.release} is now live! Click to view release notes.
-                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "10px" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -412,6 +416,8 @@ class PollAnnouncement extends React.Component {
                             padding: "10px",
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
+                            fontFamily: "ITCFranklinGothicStd-Med",
+                            fontSize: "16px"
                         }}
                         className = "cursorHand"
                         onClick = { this.toggleDisplay }
@@ -445,7 +451,7 @@ class PollAnnouncement extends React.Component {
                                         :  
                                         this.props.announcement.content.question + " Click to vote, voting will be open until " + this.props.announcement.content.date +  "."
                                     }
-                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "10px"}} >{this.props.announcement.postDate}</div>
                                 </div>
                                 
                             </Flexbox>
@@ -502,6 +508,8 @@ class ShoutAnnouncement extends React.Component {
                             padding: "10px",
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
+                            fontFamily: "ITCFranklinGothicStd-Med",
+                            fontSize: "16px"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.props.announcement.content.linkType === "link" ? 
@@ -530,7 +538,7 @@ class ShoutAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} > 
                                 <div style = {{ width: "100%" }} > 
                                     { this.props.announcement.content.message }
-                                    <div style = {{ textAlign: "right" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "10px" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
