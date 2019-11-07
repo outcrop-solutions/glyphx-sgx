@@ -214,7 +214,7 @@ class TopNavBar extends React.Component {
                         <i 
                             className = "fa fa-home"
                             style = {{
-                                fontSize: '30px',
+                                fontSize: '24px',
                                 color: this.props.settings.colors.collapsibleColor.mainIcon,
                                 margin: "5px 0px 1px 8px",
                                 cursor: "pointer"
@@ -239,7 +239,10 @@ class TopNavBar extends React.Component {
                                 </div> 
                             }
                         >
-                            <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
+                            <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' 
+                                style={{
+                                    fontSize: (this.props.homePage ? "28px" : "24px")
+                            }} />
                         </Tooltip>
                     </IconButton>
                     {this.props.homePage ? <div style={{
@@ -293,7 +296,10 @@ class TopNavBar extends React.Component {
                                 </div> 
                             }
                         >
-                            <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
+                            <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' 
+                                style={{
+                                    fontSize: (this.props.homePage ? "28px" : "24px")
+                            }} />
                         </Tooltip>
                     </IconButton>
 
@@ -344,7 +350,10 @@ class TopNavBar extends React.Component {
                                 </div> 
                             }
                         >
-                            <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
+                            <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' 
+                                style={{
+                                    fontSize: (this.props.homePage ? "28px" : "24px")
+                            }} />
                         </Tooltip>
                     </IconButton>
 
@@ -366,7 +375,8 @@ class TopNavBar extends React.Component {
                             }
                         >
                             <FontIcon>
-                            <img src='./Res/Img/LiveChat.png' onClick={() => window.open('https://zoho.com', '_blank')}/* color = '#ffffff' style={{fontSize: "28px"}} *//>
+                            <img src='./Res/Img/LiveChat.png' 
+                                onClick={() => window.open('https://zoho.com', '_blank')}/>
                             </FontIcon>
                         </Tooltip>
                     </IconButton>

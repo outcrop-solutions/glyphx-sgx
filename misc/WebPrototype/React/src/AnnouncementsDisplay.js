@@ -118,6 +118,7 @@ class AnnouncementsDisplay extends React.Component {
                         height: "215px", 
                         overflowY: "scroll", 
                         borderRadius: "3px",  
+                        width: "25vw"
                     }} 
                         className = "customScroll" >
                         {announcements}

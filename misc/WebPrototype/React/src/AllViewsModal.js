@@ -789,7 +789,8 @@ class allViewsModal extends React.Component {
 									// height: "27px",
 									//extra height for no select colmn for some reason
 									fontSize: "16px",
-									fontFamily: "ITCFranklinGothicStd-DmCd"
+									fontFamily: "ITCFranklinGothicStd-DmCd",
+									display: "block"
 								}} 
 							> 
 								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
