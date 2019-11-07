@@ -785,12 +785,10 @@ class allViewsModal extends React.Component {
 									// backgroundColor: "#42459c",
 									backgroundColor: "#0c1836", 
 									padding: "13px 0px 9px 18px",
-									color: "#ffffff", 
-									// height: "27px",
-									//extra height for no select colmn for some reason
+									color: "#ffffff",
 									fontSize: "16px",
 									fontFamily: "ITCFranklinGothicStd-DmCd",
-									display: "block"
+									height: "46px"
 								}} 
 							> 
 								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
