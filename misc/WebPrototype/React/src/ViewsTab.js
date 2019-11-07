@@ -219,6 +219,7 @@ class ViewsTab extends React.Component {
                         fontSize: "18px", 
                         float: "right", 
                         fontFamily: "ITCFranklinGothicStd-DmCd",
+                        cursor: "pointer",
                         margin: "-2px 14px 0px 0px"}}
                     >
                         See All&ensp;>

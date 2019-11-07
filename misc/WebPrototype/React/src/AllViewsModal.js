@@ -940,7 +940,9 @@ class allViewsModal extends React.Component {
 					textTransform: "uppercase",
 					letterSpacing: "1px",
 					color: ((this.state.loadMask === true || this.state.loadDone === true) ? "black" : "lightgrey")
-					}}><b style={{fontSize:"28px"}}>③</b> Select Additional Filter(s)
+				}}>  
+					<img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/3@2x.png"/> 
+					Select Additional Filter(s)
 				</h3>
 
 				<div style = {{ 
@@ -1116,8 +1118,8 @@ class AllViewsRow extends React.Component {
 				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
 				style = {{ 
 					backgroundColor: ( this.props.selected ? "#bfbfbf" : "white" ), 
-					padding: "6px",
-					margin: "0",
+					padding: "6px 6px 6px 15px",
+					margin: "0px",
 					fontSize: "16px",
 					fontFamily: "ITCFranklinGothicStd-Med",
 					display: (this.props.children.length)

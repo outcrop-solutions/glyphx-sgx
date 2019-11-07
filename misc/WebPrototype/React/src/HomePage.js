@@ -485,7 +485,7 @@ class HomePage extends React.Component {
                                                     }}
                                                     >Glyph Key
                                                 </h2>
-                                                <div style={{float: "right", margin: "-2px 14px 0px 0px"}}>
+                                                <div style={{float: "right", margin: "-2px 14px 0px 0px", cursor: "pointer",}}>
                                                     <img style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
                                             </div>
@@ -529,6 +529,7 @@ class HomePage extends React.Component {
                                                 fontSize: "18px", 
                                                 float: "right", 
                                                 fontFamily: "ITCFranklinGothicStd-DmCd",
+                                                cursor: "pointer",
                                                 margin: "-2px 14px 0px 0px"}}
                                             >
                                                 See All&ensp;>
@@ -538,7 +539,7 @@ class HomePage extends React.Component {
                                         <AnnouncementsDisplay />
                                     </div> 
 
-                                    <div style = {{height: "235px", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
+                                    <div style = {{height: "254px", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
                                         <div style={{
                                             height: "24px",
                                             width: "235px",

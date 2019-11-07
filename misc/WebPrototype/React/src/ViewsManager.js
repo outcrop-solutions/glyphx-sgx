@@ -694,7 +694,10 @@ class ViewsManager extends React.Component {
                                         backgroundColor: "#e6e7e8",
                                         padding: "27px 44px 24px 1px",
                                         }} > 
-                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>①</b> Choose A Topic</h3>
+                                        <h3 style={h3TableHeader}>
+                                            <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/1@2x.png"/>
+                                            Choose A Topic
+                                        </h3>
                                         <br/>
                                         <select className="custom-select" id="custom-select" style={dropDownSize} onChange={e => {this.selectTopic(e.target.value, mandrList, admList, faList, customList)}}>
                                             <option style={styleForFirstViewSelect}>Select A Topic</option>
@@ -748,7 +751,10 @@ class ViewsManager extends React.Component {
                                         backgroundColor: "#e6e7e8",
                                         padding: "27px 1px 24px 44px"
                                     }}>
-                                        <h3 style={h3TableHeader}><b style={{fontSize:"28px"}}>②</b> Choose An Inquiry</h3>
+                                        <h3 style={h3TableHeader}>
+                                            <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/2@2x.png"/> 
+                                            Choose An Inquiry
+                                        </h3>
                                         <br/>
                                         <Flexbox>
                                         {this.state.type === "MarketingAndRecruiting" ? 
