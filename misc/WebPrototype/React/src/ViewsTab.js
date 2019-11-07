@@ -214,6 +214,15 @@ class ViewsTab extends React.Component {
                         }}
                         >My Views
                     </h2>
+                    <span style={{
+                        color: "white", 
+                        fontSize: "18px", 
+                        float: "right", 
+                        fontFamily: "ITCFranklinGothicStd-DmCd",
+                        margin: "-2px 14px 0px 0px"}}
+                    >
+                        See All&ensp;>
+                    </span>
                 </div>
 
                 {/* tab content */}

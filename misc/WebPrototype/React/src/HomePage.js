@@ -485,6 +485,9 @@ class HomePage extends React.Component {
                                                     }}
                                                     >Glyph Key
                                                 </h2>
+                                                <div style={{float: "right", margin: "-2px 14px 0px 0px"}}>
+                                                    <img style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
+                                                </div>
                                             </div>
                                             
                                             <div style={{display: "block", textAlign: "center"}}>
@@ -496,37 +499,6 @@ class HomePage extends React.Component {
                                         </div>       
 
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
-                                        {/* <Flexbox style={{display: "block", marginBottom: "6px"}}>
-                                            <div style = {{height: "29.33%", minHeight: "0", paddingBottom: '0px',}} className="training-hover">
-                                                <a
-                                                href="https://s3.amazonaws.com/synglyphx/tutorials/home.html" 
-                                                style={{textDecoration: "none"}} 
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                title="Go to Tutorial Main Page">
-                                                    <h2
-                                                        className='training-hover'
-                                                        onMouseEnter={() => this.setState({trainingHover: !this.state.trainingHover})} 
-                                                        onMouseLeave={() => this.setState({trainingHover: !this.state.trainingHover})}
-                                                        style={{
-                                                            color: this.state.trainingHover ? '#00c4d9' : 
-                                                                this.props.settings.colors.overviewButtonsColor.text,
-                                                            backgroundColor: '#000', 
-                                                            borderRadius: "2px", 
-                                                            paddingBottom: "4px", 
-                                                            margin: "0 auto 6px", 
-                                                            paddingTop: "4px",
-                                                            fontSize: "19px",
-                                                            letterSpacing: "0.14em",
-                                                            textTransform: "uppercase",
-                                                            textAlign: "center"}}
-                                                        >Tutorials
-                                                    </h2>
-                                                </a>
-                                                <Tutorials/>
-                                            
-                                            </div> 
-                                        </Flexbox> */}
                                         
                                     <div style = {{height: "266px", display: "block"}}> 
                                         <div style={{
@@ -537,16 +509,7 @@ class HomePage extends React.Component {
                                             <h2
                                                 className='noselect'
                                                 style={{
-                                                    // color: this.props.settings.colors.overviewButtonsColor.text,
-                                                    // backgroundColor: '#018cbb', 
-                                                    // borderRadius: "2px", 
-                                                    // paddingBottom: "4px", 
-                                                    // margin: "0 auto", 
-                                                    // paddingTop: "4px",
-                                                    // fontSize: "19px",
-                                                    // letterSpacing: "0.14em",
-                                                    // textTransform: "uppercase",
-                                                    // textAlign: "center"
+                                                    // margin: "0 auto",
                                                     width: "162px",
                                                     height: "19px",
                                                     fontFamily: "ITCFranklinGothicStd-Demi",
@@ -561,6 +524,15 @@ class HomePage extends React.Component {
                                                 }}
                                                 >Annoucements
                                             </h2>
+                                            <span style={{
+                                                color: "white", 
+                                                fontSize: "18px", 
+                                                float: "right", 
+                                                fontFamily: "ITCFranklinGothicStd-DmCd",
+                                                margin: "-2px 14px 0px 0px"}}
+                                            >
+                                                See All&ensp;>
+                                            </span>
                                         </div>
 
                                         <AnnouncementsDisplay />
@@ -574,10 +546,28 @@ class HomePage extends React.Component {
                                             fontSize: "24px",
                                             display: "inline-block",
                                             color: "white",
-                                            lineHeight: "170px"
+                                            lineHeight: "150px"
                                         }}>
                                             Need Assistance?
                                         </div>
+                                        <br/>
+                                        <br/>
+                                        <button style={{
+                                            border: "none",
+                                            borderRadius: "5px",
+                                            height: "38px",
+                                            width: "144px",
+                                            fontFamily: "ITCFranklinGothicStd-DmCd",
+                                            fontSize: "16px",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.5px",
+                                            color: "#0c1836",
+                                            cursor: "pointer",
+                                            outline: "none"
+                                        }}
+                                        onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}>
+                                            See Tutorials
+                                        </button>
 
                                     </div> 
                                           

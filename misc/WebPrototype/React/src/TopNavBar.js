@@ -21,6 +21,7 @@ import LinkImg from './images/link.png';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import './css/General.css';
+import { white } from 'material-ui/styles/colors';
 
 
 /**
@@ -172,6 +173,16 @@ class TopNavBar extends React.Component {
         );
     }
 
+    showName () {
+        if(this.props.userInfo.Name.length > 0){
+            if(this.props.userInfo.Name.indexOf(' ') > 0) {
+                return this.props.userInfo.Name.slice(0, this.props.userInfo.Name.indexOf(' '));
+            }
+            else return this.props.userInfo.Name;
+        }
+        else return "Guest";
+    }
+
 
     render() {
         // console.log(this.props.vizParams);
@@ -201,6 +212,14 @@ class TopNavBar extends React.Component {
                             <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' style={{fontSize: "28px"}} />
                         </Tooltip>
                     </IconButton>
+                    <div style={{
+                        color: "white",
+                        fontFamily: "ITCFranklinGothicStd-DmCd", 
+                        fontSize: "20px", 
+                        margin: "8px 0px 0px 10px"}}
+                    >
+                        Welcome, {this.showName()}
+                    </div>
                 </ToolbarGroup>
 
                 {/* Logo */}
@@ -336,7 +355,7 @@ class TopNavBar extends React.Component {
                             }
                         >
                             <FontIcon>
-                            <img src='./Res/Img/group-5.png' onClick={() => window.open('https://zoho.com', '_blank')}/* color = '#ffffff' style={{fontSize: "28px"}} *//>
+                            <img src='./Res/Img/LiveChat.png' onClick={() => window.open('https://zoho.com', '_blank')}/* color = '#ffffff' style={{fontSize: "28px"}} *//>
                             </FontIcon>
                         </Tooltip>
                     </IconButton>
