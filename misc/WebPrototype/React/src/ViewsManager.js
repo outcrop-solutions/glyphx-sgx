@@ -692,7 +692,7 @@ class ViewsManager extends React.Component {
                                     style = {{ 
                                         float: "left", 
                                         backgroundColor: "#e6e7e8",
-                                        padding: "27px 44px 24px 1px",
+                                        padding: "27px 88px 24px 1px",
                                         }} > 
                                         <h3 style={h3TableHeader}>
                                             <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/1@2x.png"/>
@@ -746,10 +746,12 @@ class ViewsManager extends React.Component {
                                     </div>
 
                                     {/*this is where the 2nd modal pops up after initial selection */}
-                                    <div style = {{ 
-                                        float: "right",
-                                        backgroundColor: "#e6e7e8",
-                                        padding: "27px 1px 24px 44px"
+                                    <div 
+                                        id = "tabular-data-2"
+                                        style = {{ 
+                                            float: "right",
+                                            backgroundColor: "#e6e7e8",
+                                            padding: "27px 1px 24px 0px"
                                     }}>
                                         <h3 style={h3TableHeader}>
                                             <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/2@2x.png"/> 

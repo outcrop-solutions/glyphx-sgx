@@ -247,3 +247,12 @@ select.option{
 select:disabled {
   cursor: default;
 }
+
+
+/* Responsiveness for Mobile Friendly */
+
+@media only screen and (max-width: 1520px) {
+  #tabular-data-2 {
+    float: none !important;
+  }
+}
