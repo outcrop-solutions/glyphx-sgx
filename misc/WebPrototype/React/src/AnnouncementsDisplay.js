@@ -114,7 +114,12 @@ class AnnouncementsDisplay extends React.Component {
                 </div>
 
                 <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
-                    <div style = {{ height: "215px", overflowY: "scroll", borderRadius: "3px", padding: "7px" }} className = "customScroll" >
+                    <div style = {{ 
+                        height: "215px", 
+                        overflowY: "scroll", 
+                        borderRadius: "3px",  
+                    }} 
+                        className = "customScroll" >
                         {announcements}
                     </div>
                 </div>
@@ -201,7 +206,9 @@ class MaintenanceAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
-                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    <div style={{backgroundColor: "#e6e7e8"}}>
+                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        </div>
                     </div>
                 </Card>
             </Flexbox>
@@ -345,7 +352,9 @@ class ReleaseAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
-                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    <div style={{backgroundColor: "#e6e7e8"}}>
+                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        </div>
                     </div>
                 </Card>
             </Flexbox>
@@ -443,7 +452,9 @@ class PollAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
-                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    <div style={{backgroundColor: "#e6e7e8"}}>
+                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        </div>
                     </div>
                 </Card>
             </Flexbox>
@@ -525,7 +536,9 @@ class ShoutAnnouncement extends React.Component {
 
                         </Flexbox>
                     </CardText>
-                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                    <div style={{backgroundColor: "#e6e7e8"}}>
+                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        </div>
                     </div>
                 </Card>
             </Flexbox>

@@ -182,8 +182,13 @@ class ViewsTab extends React.Component {
 
                         </CardText>
                     </Card>
-                    <div style={{height: "1px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
-
+                    <div style={{backgroundColor: "#e6e7e8"}}>
+                        <div style={{
+                            height: "1px", 
+                            width: "448px", 
+                            borderBottom: "1px solid #9ea3af", 
+                            margin: "auto"}}>
+                        </div>
                     </div>
                 </div>
             )
@@ -231,13 +236,13 @@ class ViewsTab extends React.Component {
                     
                     <button className="tablinks" id="tab-defaultOpen" 
                     onClick= {(e) => this.openViewsTab(e,'Recent')}
-                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%", marginLeft: "7px"}}>
+                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%"}}>
                         Recent
                     </button>
                     
                     <button className="tablinks"
                     onClick= {(e) =>  this.openViewsTab(e, 'Saved')}
-                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%", marginRight: "7px"}}>
+                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%"}}>
                         Saved
                     </button>
                 </div>
@@ -252,7 +257,6 @@ class ViewsTab extends React.Component {
                 <div id="Recent" className="tabcontent">
                     <div className = "customScroll" style = {{ 
                         height: "253px", 
-                        padding: "0px 7px 7px 7px", 
                         overflow: "auto", 
                         display: (this.state.loadMask ? "none" : ""),
                         width: "25vw"
