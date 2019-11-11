@@ -500,7 +500,7 @@ class HomePage extends React.Component {
 
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
                                         
-                                    <div style = {{height: "266px", display: "block"}}> 
+                                    {/* <div style = {{height: "266px", display: "block"}}> 
                                         <div style={{
                                             height: "50px",
                                             width: "25vw",
@@ -534,10 +534,11 @@ class HomePage extends React.Component {
                                             >
                                                 See All&ensp;>
                                             </span>
-                                        </div>
+                                        </div> */}
+
 
                                         <AnnouncementsDisplay />
-                                    </div> 
+                                    {/* </div>  */}
 
                                     <div style = {{height: "254px", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
                                         <div style={{

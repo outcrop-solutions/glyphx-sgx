@@ -58,21 +58,37 @@ class allViewsModal extends React.Component {
 		console.log(socket)
 		this.props.dispatch(setSocket(socket));
 		// listening
-			socket.addEventListener('message', function (event) {
-				let data;
-				console.log(event);
-				if(event.data.length > 0){
-					data = JSON.parse(event.data);
-					if(event.data.indexOf('{') > -1) {
-						console.log(event.data)
-						// console.log('Placeholder.')
-					}
-					else if(event.data.launch === true){
-						console.log('yes launch');
-					}
+		socket.addEventListener('message', function (event) {
+			let data;
+			console.log(event);
+			if(event.data.length > 0){
+				data = JSON.parse(event.data);
+				if(event.data.indexOf('{') > -1) {
+					console.log(event.data)
+					// console.log('Placeholder.')
 				}
-			});
+				else if(event.data.launch === true){
+					console.log('yes launch');
+				}
+			}
+		});
 		// this.props.dispatch(setSocket(socket));
+
+		//tip generator
+		let tip_arr = [
+			'[General tip for using the viewer, which switches to another tip periodically1.]',
+			'[General tip for using the viewer, which switches to another tip periodically2.]',
+			'[General tip for using the viewer, which switches to another tip periodically3.]',
+			'[General tip for using the viewer, which switches to another tip periodically4.]',
+			'[General tip for using the viewer, which switches to another tip periodically5.]',
+			'[General tip for using the viewer, which switches to another tip periodically6.]',
+		];
+
+		document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
+
+		setInterval(() => {
+			document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
+		}, 8000);
 	}
 	
 
@@ -955,11 +971,9 @@ class allViewsModal extends React.Component {
 					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
 					TIP:
 					<br/>
-					[General tip for using the viewer, 
-					<br/>
-					which switches to another tip 
-					<br/>
-					periodically.]
+
+					<div id="tip_gen"></div>
+
 				</div>
 
 				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 

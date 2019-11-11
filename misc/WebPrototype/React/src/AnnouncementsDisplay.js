@@ -17,7 +17,8 @@ class AnnouncementsDisplay extends React.Component {
 
     state = {
         loadMask: true,
-        announcements: [] //restructure announcements to be = [{date: date, type: type, message: message}, ...]
+        announcements: [], //restructure announcements to be = [{date: date, type: type, message: message}, ...]
+        allAnnouncements: false
     }
 
 
@@ -107,25 +108,108 @@ class AnnouncementsDisplay extends React.Component {
         );
 
         return (
-            <Flexbox flexGrow = {1} style = {{ minHeight: "200px" }} >
-                
-                <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
-                    <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+            <div style = {{height: "266px", display: "block"}}> 
+                <div style={{
+                    height: "50px",
+                    width: "25vw",
+                    backgroundColor: "#0c1836"
+                }}>
+                    <h2
+                        className='noselect'
+                        style={{
+                            // margin: "0 auto",
+                            width: "162px",
+                            height: "19px",
+                            fontFamily: "ITCFranklinGothicStd-Demi",
+                            fontSize: "18px",
+                            letterSpacing: "0.92px",
+                            color: "white",
+                            margin: "0px",
+                            fontSize: "22px",
+                            textTransform: "uppercase",
+                            paddingLeft: "18px",
+                            lineHeight: "52px"
+                        }}
+                        >Annoucements
+                    </h2>
+                    <span 
+                        onClick={() => this.setState({allAnnouncements: true})}
+                        style={{
+                            color: "white", 
+                            fontSize: "18px", 
+                            float: "right", 
+                            fontFamily: "ITCFranklinGothicStd-DmCd",
+                            cursor: "pointer",
+                            margin: "-2px 14px 0px 0px"}}
+                    >
+                        See All&ensp;>
+                    </span>
+                    <Dialog 
+                            title = { <div style = {{ fontWeight: "bold" }} > Testing <Divider /></div> }
+                            modal = { true }
+                            open = { this.state.allAnnouncements }
+                            actions = {
+                                [
+                                    <FlatButton
+                                        label = "Close"
+                                        primary = { true }
+                                        onClick = { () => this.setState({ allAnnouncements: false }) }
+                                        style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                        labelStyle = {{ lineHeight: "40px" }}
+                                    />
+                                ]
+                            }
+                        >
+                            <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                                <Flexbox 
+                                    flexDirection = "column" 
+                                    style = {{ 
+                                        width: "75vw",
+                                        color: "#000000", 
+                                        paddingRight: "20px"
+                                    }} 
+                                >
+                                    <div style = {{ fontWeight: "bold" }} > New Features: </div>
+                                    {/* <ul>
+                                        {features}
+                                    </ul> */}
+                                </Flexbox>
+                                {/* {this.props.announcement.content.bugfixes.length > 0 ?
+                                    <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                        <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
+                                        <ul>
+                                            {bugfixes}
+                                        </ul>
+                                    </Flexbox>
+                                    :
+                                    null
+                                } */}
+                            </Flexbox>
+                        </Dialog>
                 </div>
 
-                <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
-                    <div style = {{ 
-                        height: "215px", 
-                        overflowY: "scroll", 
-                        borderRadius: "3px",  
-                        width: "25vw"
-                    }} 
-                        className = "customScroll" >
-                        {announcements}
+                {/* body */}
+                <Flexbox flexGrow = {1} style = {{ minHeight: "200px" }} >
+                    
+                    <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
+                        <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                     </div>
-                </div>
 
-            </Flexbox>
+                    <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
+                        <div style = {{ 
+                            height: "215px", 
+                            overflowY: "scroll", 
+                            borderRadius: "3px",  
+                            width: "25vw"
+                        }} 
+                            className = "customScroll" >
+                            {announcements}
+                        </div>
+                    </div>
+
+                </Flexbox>
+
+            </div> 
         );
     }
 }

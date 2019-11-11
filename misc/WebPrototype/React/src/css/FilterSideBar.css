@@ -18,10 +18,12 @@
 }
 
 .menuItemStyling {
-    font-size:      13px !important;
+    font-size:      16px !important;
     min-height:     0px !important;
     height:         25px !important;
     line-height:    30px !important;
+    text-transform: uppercase; 
+    font-family: ITCFranklinGothicStd-Med !important;
 }
 
 .cancelIconStyle {

@@ -441,6 +441,9 @@ class TopNavBar extends React.Component {
                                     { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" }
                                 </Avatar>
                             }
+                            style= {{
+                                fontSize: "19px", 
+                                fontFamily: "ITCFranklinGothicStd-Med"}}
                             primaryText = { this.props.userInfo ? this.props.userInfo.Name : ""}
                         />
 
