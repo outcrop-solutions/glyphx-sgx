@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
 import { Card, CardText } from 'material-ui/Card';
 import { makeServerCall } from './ServerCallHelper.js';
 import Flexbox from 'flexbox-react';
@@ -20,6 +23,7 @@ class ViewsTab extends React.Component {
     state = {
         loadMask: true,
         recents: [],
+        allViews: false
     }
 
 
@@ -105,121 +109,126 @@ class ViewsTab extends React.Component {
         // console.log('checking', document.getElementById(viewType).display);
         e.currentTarget.className += " active";
       }
+
+      viewsMap(view) {
+        if (typeof view[1] === 'string' && !isNaN(view[1])) {
+            view[1] = parseInt(view[1]);
+        }
+            
+        let viewTimeStamp = new Date(view[1]);
+
+        let day;
+        
+        if(viewTimeStamp.getDate() < 10) day = '0' + viewTimeStamp.getDate();
+        else day = viewTimeStamp.getDate();
+        
+
+        let viewDate =  (viewTimeStamp.getMonth() + 1) + "/" + day + "/" + viewTimeStamp.getFullYear();
+
+        let viewTime;
+        if (viewTimeStamp.getHours() > 12) {
+            viewTime =  
+                viewTimeStamp.getHours() /* - 12 */ + ":" + 
+                    (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : 
+                        viewTimeStamp.getMinutes()) /* + 'pm'; */
+        }
+        else if (viewTimeStamp.getHours() === 12) {
+            viewTime =  
+                12 + ":" + 
+                    (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : 
+                        viewTimeStamp.getMinutes()) /* + 'pm'; */
+        }
+        else {
+            viewTime = 
+                (viewTimeStamp.getHours() < 10 ? '0' + viewTimeStamp.getHours() : viewTimeStamp.getHours()) 
+                /* viewTimeStamp.getHours() */+ ":" + 
+                    (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() :
+                        viewTimeStamp.getMinutes()) /* + 'am'; */
+        }
+        
+        return (
+            <div key = {`${view[0]}${view[1]}`}>
+                <Card 
+                    className = "inherit-hover noselect hover-recent-select" 
+                    containerStyle = {{ padding: "0px", width: "100%" }} 
+                    style = {{ 
+                        backgroundColor: "#e6e7e8", 
+                        height: "50px", 
+                        width: "100%", 
+                        boxShadow: "0px 0px 0px",
+                        padding: "10px",
+                        borderRadius: "0"
+                        // marginTop: (view === newList[0] ? "0px" : "5px"),
+                    }} 
+                    key = { view } 
+                >
+                    <CardText
+                    /* className="hover-recent-select" */
+                        style = {{ padding: "7px", width: "100%" }}
+                        onClick = { () => this.props.loadRecentView(view) }
+                    >
+
+                        <Flexbox flexDirection = "row" minWidth = "100%" >
+                            <Flexbox style = {{ 
+                                width: "100%", 
+                                whiteSpace: "nowrap", 
+                                overflow: "hidden", 
+                                fontSize: "16px", 
+                                letterSpacing: "0.05em",
+                                fontFamily: "ITCFranklinGothicStd-Med" 
+                            }} > 
+                                <Tooltip
+                                    placement = 'left'
+                                    mouseEnterDelay = { 0.5 }
+                                    mouseLeaveDelay = { 0.15 }
+                                    destroyTooltipOnHide = { false }
+                                    trigger = { Object.keys( {hover: 1} ) }
+                                    overlay = { 
+                                        <div> 
+                                            { view[0] }
+                                        </div> 
+                                    }
+                                >
+                                    <div> 
+                                        { view[0] }
+                                    </div> 
+                                </Tooltip>
+                            </Flexbox>
+                                
+                            <div style = {{ 
+                                width: "100%", 
+                                textAlign: "right", 
+                                fontFamily: "ITCFranklinGothicStd-Med",
+                                fontSize: "16px" }} >
+                                { viewTime } &nbsp; &nbsp; { viewDate }
+                            </div>
+                        
+                        </Flexbox>
+
+                    </CardText>
+                </Card>
+                <div className = "inherit-hover hover-recent-select" style={{backgroundColor: "#e6e7e8"}}>
+                    <div style={{
+                        height: "1px", 
+                        width: "95.73%", 
+                        borderBottom: "1px solid #9ea3af", 
+                        margin: "auto"}}>
+                    </div>
+                </div>
+            </div>
+        )
+      }
     
 
     render() {
+        console.log(this.state.recents.length)
         let context = this;
 
         let newList = this.state.recents.slice(0, 5);
 
-        let recentViews = newList.map( function(view) {
-			if (typeof view[1] === 'string' && !isNaN(view[1])) {
-                view[1] = parseInt(view[1]);
-			}
-				
-            let viewTimeStamp = new Date(view[1]);
+        let recentViews = newList.map(view => this.viewsMap(view));
 
-            let day;
-            
-            if(viewTimeStamp.getDate() < 10) day = '0' + viewTimeStamp.getDate();
-            else day = viewTimeStamp.getDate();
-            
-
-			let viewDate =  (viewTimeStamp.getMonth() + 1) + "/" + day + "/" + viewTimeStamp.getFullYear();
-
-            let viewTime;
-			if (viewTimeStamp.getHours() > 12) {
-                viewTime =  
-                    viewTimeStamp.getHours() /* - 12 */ + ":" + 
-                        (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : 
-                            viewTimeStamp.getMinutes()) /* + 'pm'; */
-            }
-            else if (viewTimeStamp.getHours() === 12) {
-                viewTime =  
-                    12 + ":" + 
-                        (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() : 
-                            viewTimeStamp.getMinutes()) /* + 'pm'; */
-            }
-			else {
-                viewTime = 
-                    (viewTimeStamp.getHours() < 10 ? '0' + viewTimeStamp.getHours() : viewTimeStamp.getHours()) 
-                    /* viewTimeStamp.getHours() */+ ":" + 
-                        (viewTimeStamp.getMinutes() < 10 ? '0' + viewTimeStamp.getMinutes() :
-                            viewTimeStamp.getMinutes()) /* + 'am'; */
-            }
-			
-            return (
-                <div key = {`${view[0]}${view[1]}`}>
-                    <Card 
-                        className = "inherit-hover noselect hover-recent-select" 
-                        containerStyle = {{ padding: "0px", width: "100%" }} 
-                        style = {{ 
-                            backgroundColor: "#e6e7e8", 
-                            height: "50px", 
-                            width: "100%", 
-                            boxShadow: "0px 0px 0px",
-                            padding: "10px",
-                            borderRadius: "0"
-                            // marginTop: (view === newList[0] ? "0px" : "5px"),
-                        }} 
-                        key = { view } 
-                    >
-                        <CardText
-                        /* className="hover-recent-select" */
-                            style = {{ padding: "7px", width: "100%" }}
-                            onClick = { () => context.props.loadRecentView(view) }
-                        >
-
-                            <Flexbox flexDirection = "row" minWidth = "100%" >
-                                <Flexbox style = {{ 
-                                    width: "100%", 
-                                    whiteSpace: "nowrap", 
-                                    overflow: "hidden", 
-                                    fontSize: "16px", 
-                                    letterSpacing: "0.05em",
-                                    fontFamily: "ITCFranklinGothicStd-Med" 
-                                }} > 
-                                    <Tooltip
-                                        placement = 'left'
-                                        mouseEnterDelay = { 0.5 }
-                                        mouseLeaveDelay = { 0.15 }
-                                        destroyTooltipOnHide = { false }
-                                        trigger = { Object.keys( {hover: 1} ) }
-                                        overlay = { 
-                                            <div> 
-                                                { view[0] }
-                                            </div> 
-                                        }
-                                    >
-                                        <div> 
-                                            { view[0] }
-                                        </div> 
-                                    </Tooltip>
-                                </Flexbox>
-                                    
-                                <div style = {{ 
-                                    width: "100%", 
-                                    textAlign: "right", 
-                                    fontFamily: "ITCFranklinGothicStd-Med",
-                                    fontSize: "16px" }} >
-                                    { viewTime } &nbsp; &nbsp; { viewDate }
-                                </div>
-                            
-                            </Flexbox>
-
-                        </CardText>
-                    </Card>
-                    <div className = "inherit-hover hover-recent-select" style={{backgroundColor: "#e6e7e8"}}>
-                        <div style={{
-                            height: "1px", 
-                            width: "448px", 
-                            borderBottom: "1px solid #9ea3af", 
-                            margin: "auto"}}>
-                        </div>
-                    </div>
-                </div>
-            )
-        });
+        let allViews = this.state.recents.map(view => this.viewsMap(view));
 
         return (
             <div style = {{height: "247px", marginBottom: "4px", display: "inline-table"}}>
@@ -246,16 +255,72 @@ class ViewsTab extends React.Component {
                         }}
                         >My Views
                     </h2>
-                    <span style={{
-                        color: "white", 
-                        fontSize: "18px", 
-                        float: "right", 
-                        fontFamily: "ITCFranklinGothicStd-DmCd",
-                        cursor: "pointer",
-                        margin: "-2px 14px 0px 0px"}}
+                    <span 
+                        onClick= {() => this.setState({allViews: true})}
+                        style={{
+                            color: "white", 
+                            fontSize: "18px", 
+                            float: "right", 
+                            fontFamily: "ITCFranklinGothicStd-DmCd",
+                            cursor: "pointer",
+                            margin: "-2px 14px 0px 0px"}}
                     >
                         See All&ensp;>
                     </span>
+
+                    <Dialog 
+                        bodyStyle = {{overflowY: "scroll"}}
+                        title = { <div style = {{ fontWeight: "bold" }} > All Recent Views <Divider /></div> }
+                        modal = { true }
+                        open = { this.state.allViews }
+                        actions = {
+                            [
+                                <FlatButton
+                                    label = "Close"
+                                    primary = { true }
+                                    onClick = { () => this.setState({ allViews: false }) }
+                                    style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                    labelStyle = {{ lineHeight: "40px" }}
+                                />
+                            ]
+                        }
+                    >
+                        <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                            <Flexbox 
+                                flexDirection = "column" 
+                                style = {{ 
+                                    width: "75vw",
+                                    color: "#000000", 
+                                    paddingRight: "20px"
+                                }} 
+                            >
+                                {/* <div style = {{ fontWeight: "bold" }} > New Features: </div> */}
+                                {/* <ul>
+                                    {features}
+                                </ul> */}
+                                    <div>
+                                    <div style = {{ 
+                                        // overflowY: "scroll", 
+                                        borderRadius: "3px",
+                                    }} 
+                                        /* className = "customScroll" */ >
+                                        {allViews}
+                                    </div>
+                                </div>
+                            </Flexbox>
+                            {/* {this.props.announcement.content.bugfixes.length > 0 ?
+                                <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                    <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
+                                    <ul>
+                                        {bugfixes}
+                                    </ul>
+                                </Flexbox>
+                                :
+                                null
+                            } */}
+                        </Flexbox>
+                    </Dialog>
+
                 </div>
 
                 {/* tab content */}

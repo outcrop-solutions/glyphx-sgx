@@ -144,59 +144,61 @@ class AnnouncementsDisplay extends React.Component {
                     >
                         See All&ensp;>
                     </span>
+
                     <Dialog 
-                            title = { <div style = {{ fontWeight: "bold" }} > All Annoucements <Divider /></div> }
-                            modal = { true }
-                            open = { this.state.allAnnouncements }
-                            actions = {
-                                [
-                                    <FlatButton
-                                        label = "Close"
-                                        primary = { true }
-                                        onClick = { () => this.setState({ allAnnouncements: false }) }
-                                        style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                        labelStyle = {{ lineHeight: "40px" }}
-                                    />
-                                ]
-                            }
-                        >
-                            <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
-                                <Flexbox 
-                                    flexDirection = "column" 
-                                    style = {{ 
-                                        width: "75vw",
-                                        color: "#000000", 
-                                        paddingRight: "20px"
+                        title = { <div style = {{ fontWeight: "bold" }} > All Annoucements <Divider /></div> }
+                        modal = { true }
+                        open = { this.state.allAnnouncements }
+                        actions = {
+                            [
+                                <FlatButton
+                                    label = "Close"
+                                    primary = { true }
+                                    onClick = { () => this.setState({ allAnnouncements: false }) }
+                                    style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                    labelStyle = {{ lineHeight: "40px" }}
+                                />
+                            ]
+                        }
+                    >
+                        <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                            <Flexbox 
+                                flexDirection = "column" 
+                                style = {{ 
+                                    width: "75vw",
+                                    color: "#000000", 
+                                    paddingRight: "20px"
+                                }} 
+                            >
+                                {/* <div style = {{ fontWeight: "bold" }} > New Features: </div> */}
+                                {/* <ul>
+                                    {features}
+                                </ul> */}
+                                    <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
+                                    <div style = {{ 
+                                        // height: "215px", 
+                                        // overflowY: "scroll", 
+                                        borderRadius: "3px",  
+                                        // width: "25vw"
                                     }} 
-                                >
-                                    {/* <div style = {{ fontWeight: "bold" }} > New Features: </div> */}
-                                    {/* <ul>
-                                        {features}
-                                    </ul> */}
-                                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
-                                        <div style = {{ 
-                                            // height: "215px", 
-                                            overflowY: "scroll", 
-                                            borderRadius: "3px",  
-                                            // width: "25vw"
-                                        }} 
-                                            className = "customScroll" >
-                                            {announcements}
-                                        </div>
+                                        /* className = "customScroll" */ >
+                                        {announcements}
                                     </div>
-                                </Flexbox>
-                                {/* {this.props.announcement.content.bugfixes.length > 0 ?
-                                    <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
-                                        <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
-                                        <ul>
-                                            {bugfixes}
-                                        </ul>
-                                    </Flexbox>
-                                    :
-                                    null
-                                } */}
+                                </div>
                             </Flexbox>
-                        </Dialog>
+                            {/* {this.props.announcement.content.bugfixes.length > 0 ?
+                                <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                    <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
+                                    <ul>
+                                        {bugfixes}
+                                    </ul>
+                                </Flexbox>
+                                :
+                                null
+                            } */}
+                        </Flexbox>
+                    </Dialog>
+
                 </div>
 
                 {/* body */}
