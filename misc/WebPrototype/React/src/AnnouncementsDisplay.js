@@ -145,7 +145,7 @@ class AnnouncementsDisplay extends React.Component {
                         See All&ensp;>
                     </span>
                     <Dialog 
-                            title = { <div style = {{ fontWeight: "bold" }} > Testing <Divider /></div> }
+                            title = { <div style = {{ fontWeight: "bold" }} > All Annoucements <Divider /></div> }
                             modal = { true }
                             open = { this.state.allAnnouncements }
                             actions = {
@@ -169,10 +169,21 @@ class AnnouncementsDisplay extends React.Component {
                                         paddingRight: "20px"
                                     }} 
                                 >
-                                    <div style = {{ fontWeight: "bold" }} > New Features: </div>
+                                    {/* <div style = {{ fontWeight: "bold" }} > New Features: </div> */}
                                     {/* <ul>
                                         {features}
                                     </ul> */}
+                                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
+                                        <div style = {{ 
+                                            // height: "215px", 
+                                            overflowY: "scroll", 
+                                            borderRadius: "3px",  
+                                            // width: "25vw"
+                                        }} 
+                                            className = "customScroll" >
+                                            {announcements}
+                                        </div>
+                                    </div>
                                 </Flexbox>
                                 {/* {this.props.announcement.content.bugfixes.length > 0 ?
                                     <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
@@ -294,7 +305,7 @@ class MaintenanceAnnouncement extends React.Component {
                         </Flexbox>
                     </CardText>
                     <div style={{backgroundColor: "#e6e7e8"}}>
-                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        <div style={{height: "1px", width: "95.73%", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
                         </div>
                     </div>
                 </Card>
@@ -442,7 +453,7 @@ class ReleaseAnnouncement extends React.Component {
                         </Flexbox>
                     </CardText>
                     <div style={{backgroundColor: "#e6e7e8"}}>
-                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        <div style={{height: "1px", width: "95.73%", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
                         </div>
                     </div>
                 </Card>
@@ -544,7 +555,7 @@ class PollAnnouncement extends React.Component {
                         </Flexbox>
                     </CardText>
                     <div style={{backgroundColor: "#e6e7e8"}}>
-                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        <div style={{height: "1px", width: "95.73%", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
                         </div>
                     </div>
                 </Card>
@@ -630,7 +641,7 @@ class ShoutAnnouncement extends React.Component {
                         </Flexbox>
                     </CardText>
                     <div style={{backgroundColor: "#e6e7e8"}}>
-                        <div style={{height: "1px", width: "448px", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
+                        <div style={{height: "1px", width: "95.73%", borderBottom: "1px solid #9ea3af", margin: "auto"}}>
                         </div>
                     </div>
                 </Card>
