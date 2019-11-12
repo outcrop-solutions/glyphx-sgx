@@ -76,12 +76,12 @@ class allViewsModal extends React.Component {
 
 		//tip generator
 		let tip_arr = [
-			'[General tip for using the viewer, which switches to another tip periodically1.]',
-			'[General tip for using the viewer, which switches to another tip periodically2.]',
-			'[General tip for using the viewer, which switches to another tip periodically3.]',
-			'[General tip for using the viewer, which switches to another tip periodically4.]',
-			'[General tip for using the viewer, which switches to another tip periodically5.]',
-			'[General tip for using the viewer, which switches to another tip periodically6.]',
+			'[General tip for using the viewer, <br/> which switches to another tip periodically1.]',
+			'[General tip for using the viewer, <br/> which switches to another tip periodically2.]',
+			'[General tip for using the viewer, <br/> which switches to another tip periodically3.]',
+			'[General tip for using the viewer, <br/> which switches to another tip periodically4.]',
+			'[General tip for using the viewer, <br/> which switches to another tip periodically5.]',
+			'[General tip for using the viewer, <br/> which switches to another tip periodically6.]',
 		];
 
 		document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];

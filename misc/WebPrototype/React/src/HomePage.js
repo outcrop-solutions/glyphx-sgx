@@ -17,6 +17,9 @@ import Tutorials from './Tutorials';
 import './css/TopNav.css';
 import './css/General.css';
 import { white } from 'material-ui/styles/colors';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
 
 const muiTheme = getMuiTheme({
     datePicker: {
@@ -47,6 +50,7 @@ class HomePage extends React.Component {
     state = {
         tutorialStage: "done",
         trainingHover: false,
+        enlarge: false
     }
 	
 	goToVizView(success) {
@@ -485,16 +489,66 @@ class HomePage extends React.Component {
                                                     }}
                                                     >Glyph Key
                                                 </h2>
-                                                <div style={{float: "right", margin: "-2px 14px 0px 0px", cursor: "pointer",}}>
+
+                                                <div 
+                                                    onClick={() => (this.props.legend_url_arr.length ? this.setState({enlarge: true}) : null)}
+                                                    style={{float: "right", margin: "-2px 14px 0px 0px", cursor: "pointer",}}>
                                                     <img style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
+
+                                                <Dialog 
+                                                    repositionOnUpdate={false}
+                                                    style={{ paddingTop: '100px' }}
+                                                    title = { <div style = {{ fontWeight: "bold" }} > Glyph Key <Divider /></div> }
+                                                    modal = { true }
+                                                    open = { this.state.enlarge }
+                                                    actions = {
+                                                        [
+                                                            <FlatButton
+                                                                label = "Close"
+                                                                primary = { true }
+                                                                onClick = { () => this.setState({ enlarge: false }) }
+                                                                style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                                                labelStyle = {{ lineHeight: "40px" }}
+                                                            />
+                                                        ]
+                                                    }
+                                                >
+                                                    <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                                                        <Flexbox 
+                                                            flexDirection = "column" 
+                                                            style = {{ 
+                                                                width: "75vw",
+                                                                color: "#000000", 
+                                                                paddingRight: "20px"
+                                                            }} 
+                                                        >
+                                                                <div>
+                                                                <div style = {{ borderRadius: "3px" }}>
+                                                                    <img src={
+                                                                    'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
+                                                                    window.encodeURIComponent(this.props.legend_url_arr[0])}/>
+                                                                </div>
+                                                            </div>
+                                                        </Flexbox>
+                                                    </Flexbox>
+                                                </Dialog>
+
                                             </div>
                                             
                                             <div style={{display: "block", textAlign: "center"}}>
-                                            {this.props.legend_url_arr.length > 0 ? 
-                                                (<img style={{width: "100%", height: "214px"}}
-                                                    src={`http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(this.props.legend_url_arr[0])}`} />) : 
-                                                        <img style={{width: "100%", height: "140px", marginTop: "26px"}} src='./Res/Img/GlyphED.png'/>}
+                                                {<img style={{
+                                                        width: "100%", 
+                                                        height: "214px",  
+                                                       /*  padding: (this.props.legend_url_arr.length ? "" : "26px 0px 48px 0px") */}}
+                                                    src={
+                                                        (this.props.legend_url_arr.length ? 
+                                                        'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
+                                                        window.encodeURIComponent(this.props.legend_url_arr[0]) :
+                                                        './Res/Img/GlyphED.png'
+                                                        )
+                                                    } 
+                                                />}
                                             </div>
                                         </div>       
 

@@ -299,11 +299,7 @@ class ViewsTab extends React.Component {
                                     {features}
                                 </ul> */}
                                     <div>
-                                    <div style = {{ 
-                                        // overflowY: "scroll", 
-                                        borderRadius: "3px",
-                                    }} 
-                                        /* className = "customScroll" */ >
+                                    <div style = {{ borderRadius: "3px"}}>
                                         {allViews}
                                     </div>
                                 </div>
