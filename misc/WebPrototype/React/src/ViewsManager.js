@@ -656,7 +656,7 @@ class ViewsManager extends React.Component {
         ); */
 
         return(
-            <div style={{height:"100%"}}>
+            <div style={{height:"117vh"}}>
                 {/* <div>
                     <h2
                         className='noselect'
@@ -676,7 +676,7 @@ class ViewsManager extends React.Component {
                 </div> */}
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
-                <Flexbox style={{/*height: "23%", display: "inline-flex" */backgroundColor: "#e6e7e8", paddingLeft: "25px"}}>
+                <Flexbox style={{/*height: "117vh", display: "inline-flex" */backgroundColor: "#e6e7e8", paddingLeft: "25px"}}>
                         <div>
 
                             <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >

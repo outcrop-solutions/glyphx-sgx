@@ -6,6 +6,7 @@ import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
+import Divider from 'material-ui/Divider';
 import { makeServerCall } from './ServerCallHelper.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
@@ -823,6 +824,8 @@ class allViewsModal extends React.Component {
 									{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
 								</div>
 							</div>
+							&thinsp;
+							{/* <Divider/> */}
 
 							<div style = {{ margin: "1px 1px 0px 0px" }} >
 								<SearchBox 
@@ -961,7 +964,7 @@ class allViewsModal extends React.Component {
 				</h3>
 
 				<div style = {{ 
-					height: "95.5vh", 
+					height: "96.3vh", 
 					fontSize: "37px", 
 					textAlign: "center",
 					fontFamily: "ITCFranklinGothicStd-DmCd",
@@ -1031,7 +1034,7 @@ class allViewsModal extends React.Component {
 					<Flexbox flexDirection = "column" style = {{ backgroundColor: "#ffffff", clear: "both" }} >
 						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
-
+					<br/>
 					<Snackbar
 						open = { this.state.snackbarVisible }
 						message = "No matches for the selected values"

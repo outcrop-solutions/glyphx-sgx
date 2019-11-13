@@ -498,7 +498,8 @@ class HomePage extends React.Component {
 
                                                 <Dialog 
                                                     repositionOnUpdate={false}
-                                                    style={{ paddingTop: '100px' }}
+                                                    bodyStyle={{overflowY:"scroll"}}
+                                                    style={{ paddingTop: '50px' }}
                                                     title = { <div style = {{ fontWeight: "bold" }} > Glyph Key <Divider /></div> }
                                                     modal = { true }
                                                     open = { this.state.enlarge }
