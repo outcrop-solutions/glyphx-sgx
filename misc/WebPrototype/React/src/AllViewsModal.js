@@ -785,7 +785,7 @@ class allViewsModal extends React.Component {
 							style = {{ 
 								width: "100%", 
 								border: "1px solid",
-								height: "221px", 
+								height: "250px", 
 								borderLeft: "1px solid black",
 								borderBottom: "1px solid black",
 								marginBottom: "10px"
@@ -805,7 +805,7 @@ class allViewsModal extends React.Component {
 									color: "#ffffff",
 									fontSize: "16px",
 									fontFamily: "ITCFranklinGothicStd-DmCd",
-									height: "46px"
+									minHeight: "46px"
 								}} 
 							> 
 								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
@@ -824,8 +824,6 @@ class allViewsModal extends React.Component {
 									{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
 								</div>
 							</div>
-							&thinsp;
-							{/* <Divider/> */}
 
 							<div style = {{ margin: "1px 1px 0px 0px" }} >
 								<SearchBox 

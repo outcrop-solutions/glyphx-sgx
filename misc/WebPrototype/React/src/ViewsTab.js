@@ -221,7 +221,6 @@ class ViewsTab extends React.Component {
     
 
     render() {
-        console.log(this.state.recents.length)
         let context = this;
 
         let newList = this.state.recents.slice(0, 5);
