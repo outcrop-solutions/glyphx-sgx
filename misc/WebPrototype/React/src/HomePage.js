@@ -498,8 +498,9 @@ class HomePage extends React.Component {
 
                                                 <Dialog 
                                                     repositionOnUpdate={false}
-                                                    bodyStyle={{overflowY:"scroll"}}
-                                                    style={{ paddingTop: '50px' }}
+                                                    contentStyle={{maxWidth: "980px"}}
+                                                    bodyStyle={{overflowY: "auto", textAlign: "center"}}
+                                                    style={{ paddingTop: "20px" }}
                                                     title = { <div style = {{ fontWeight: "bold" }} > Glyph Key <Divider /></div> }
                                                     modal = { true }
                                                     open = { this.state.enlarge }
@@ -521,15 +522,13 @@ class HomePage extends React.Component {
                                                             style = {{ 
                                                                 width: "75vw",
                                                                 color: "#000000", 
-                                                                paddingRight: "20px"
+                                                                // paddingRight: "20px"
                                                             }} 
                                                         >
-                                                                <div>
-                                                                <div style = {{ borderRadius: "3px" }}>
-                                                                    <img src={
-                                                                    'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
-                                                                    window.encodeURIComponent(this.props.legend_url_arr[0])}/>
-                                                                </div>
+                                                            <div style = {{ borderRadius: "3px" }}>
+                                                                <img style={{maxWidth: "932px"}} src={
+                                                                'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
+                                                                window.encodeURIComponent(this.props.legend_url_arr[0])}/>
                                                             </div>
                                                         </Flexbox>
                                                     </Flexbox>

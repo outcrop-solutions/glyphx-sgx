@@ -975,6 +975,19 @@ class allViewsModal extends React.Component {
 
 					<div id="tip_gen"></div>
 
+					<div 
+						style={{
+							color: "blue", 
+							// textDecoration: "underline",
+							cursor: "pointer",
+							fontSize: "22px",
+							textTransform: "uppercase"
+						}} 
+						onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
+					>
+						See tutorials to learn more.
+					</div>
+
 				</div>
 
 				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
