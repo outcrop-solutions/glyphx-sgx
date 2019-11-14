@@ -450,8 +450,8 @@ class HomePage extends React.Component {
                                 </div>
                              </Flexbox> */}
                             
-                            {/* Middle column */}  
-                             <Flexbox flexDirection = "column" style = {{ width: "50vw" }} >
+                            {/* Left column */}  
+                             <Flexbox flexDirection = "column" style = {{ width: "50vw", height: "100%" }} >
                             
                                 {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
@@ -462,7 +462,7 @@ class HomePage extends React.Component {
                              </Flexbox> 
 
                              {/* Right Column */}
-                             <Flexbox style = {{ width: "25vw", zIndex: (this.state.tutorialStage === 2 ? "300" : "5") }} >
+                             <Flexbox style = {{ width: "25vw", zIndex: (this.state.tutorialStage === 2 ? "300" : "5"), height: "100%" }} >
                                 <div style = {{height: "100%", width: "100%", backgroundColor: "#ffffff"}} >
                                     {/* <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}> */}
 
