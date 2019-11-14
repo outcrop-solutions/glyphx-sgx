@@ -77,19 +77,20 @@ class allViewsModal extends React.Component {
 
 		//tip generator
 		let tip_arr = [
-			'[General tip for using the viewer, <br/> which switches to another tip periodically1.]',
-			'[General tip for using the viewer, <br/> which switches to another tip periodically2.]',
-			'[General tip for using the viewer, <br/> which switches to another tip periodically3.]',
-			'[General tip for using the viewer, <br/> which switches to another tip periodically4.]',
-			'[General tip for using the viewer, <br/> which switches to another tip periodically5.]',
-			'[General tip for using the viewer, <br/> which switches to another tip periodically6.]',
+			"Don't forget to click on a Glyph before zooming!",
+			"Use the pushpin icon to save your most frequently used filters at the top of your filter pane.",
+			"Trying to apply a range filter? Don't forget to turn on the slider bar next to your max value once your range selections are made.",
+			"Hold down shift & left click on your mouse to lasso a group of Glyphs in the scene.",
+			"The view button is where you can choose to show your filtered or underlying data.",
+			"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
+			"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
 		];
 
 		document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
 
 		setInterval(() => {
 			document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
-		}, 8000);
+		}, 12000);
 	}
 	
 
@@ -926,7 +927,7 @@ class allViewsModal extends React.Component {
 		var context = this;
 		
 		return(
-			<div
+			<div style={{height: "100%"}}
 				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -962,7 +963,7 @@ class allViewsModal extends React.Component {
 				</h3>
 
 				<div style = {{ 
-					height: "96.3vh", 
+					height: "100%", 
 					fontSize: "37px", 
 					textAlign: "center",
 					fontFamily: "ITCFranklinGothicStd-DmCd",
@@ -973,15 +974,21 @@ class allViewsModal extends React.Component {
 					TIP:
 					<br/>
 
-					<div id="tip_gen"></div>
+					{/* tip generator at componentDidMount */}
+					<div style={{
+						wordBreak: "break-word", 
+						padding: "0px 60px 0px 60px"}} 
+					id="tip_gen">
+						
+					</div>
 
 					<div 
 						style={{
-							color: "blue", 
-							// textDecoration: "underline",
+							color: "darkblue", 
+							textDecoration: "underline",
 							cursor: "pointer",
 							fontSize: "22px",
-							textTransform: "uppercase"
+							textTransform: "uppercase",
 						}} 
 						onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
 					>

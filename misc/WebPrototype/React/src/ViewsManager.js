@@ -656,7 +656,7 @@ class ViewsManager extends React.Component {
         ); */
 
         return(
-            <div style={{height:"117vh"}}>
+            <div style={{height:"100%", overflowY: "hidden"}}>
                 {/* <div>
                     <h2
                         className='noselect'
