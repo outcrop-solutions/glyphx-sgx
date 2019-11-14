@@ -42,7 +42,7 @@ class TopNavBar extends React.Component {
     /**
      * Performs a logout by redirecting the site to the loagout page
      **/
-    logout = () => {    
+    logout(){    
         let context = this;
         return new Promise((resolve, reject) => {
             makeServerCall("logout",
@@ -459,7 +459,7 @@ class TopNavBar extends React.Component {
                         {/* <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" /> */}
                         {/* {this.props.userInfo.admin ? show : dont} */}
                         {/* <MenuItem className = "menuItemStyling" primaryText = "User Settings" /> */}
-                        <MenuItem onClick = {() => {this.logout; this.socketLogout();} } className = "menuItemStyling" primaryText = "Sign out" />
+                        <MenuItem onClick = {() => {this.logout(); this.socketLogout();} } className = "menuItemStyling" primaryText = "Sign out" />
                         
                         
                         
