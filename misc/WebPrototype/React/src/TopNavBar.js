@@ -183,6 +183,15 @@ class TopNavBar extends React.Component {
         else return "Guest";
     }
 
+    socketLogout(){
+        if(this.props.uid){
+			this.props.webSocket.send(JSON.stringify({
+				url_uid: this.props.uid,
+				logout: true
+			}));
+		}
+    }
+
 
     render() {
         // console.log(this.props.vizParams);
@@ -450,7 +459,7 @@ class TopNavBar extends React.Component {
                         {/* <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" /> */}
                         {/* {this.props.userInfo.admin ? show : dont} */}
                         {/* <MenuItem className = "menuItemStyling" primaryText = "User Settings" /> */}
-                        <MenuItem onClick = { this.logout } className = "menuItemStyling" primaryText = "Sign out" />
+                        <MenuItem onClick = {() => {this.logout; this.socketLogout();} } className = "menuItemStyling" primaryText = "Sign out" />
                         
                         
                         

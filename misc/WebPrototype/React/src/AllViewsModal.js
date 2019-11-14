@@ -32,7 +32,17 @@ class allViewsModal extends React.Component {
 		loadMask: false,
 		loadDone: false,
 		selectAll500: false,
-		sdtUrl: ""
+		sdtUrl: "",
+		tip_arr: [
+			"Don't forget to click on a Glyph before zooming!",
+			"Use the pushpin icon to save your most frequently used filters at the top of your filter pane.",
+			"Trying to apply a range filter? Don't forget to turn on the slider bar next to your max value once your range selections are made.",
+			"Hold down shift & left click on your mouse to lasso a group of Glyphs in the scene.",
+			"The view button is where you can choose to show your filtered or underlying data.",
+			"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
+			"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
+		],
+
 	}
 	constructor(props){
 		super(props);
@@ -75,22 +85,9 @@ class allViewsModal extends React.Component {
 		});
 		// this.props.dispatch(setSocket(socket));
 
-		//tip generator
-		let tip_arr = [
-			"Don't forget to click on a Glyph before zooming!",
-			"Use the pushpin icon to save your most frequently used filters at the top of your filter pane.",
-			"Trying to apply a range filter? Don't forget to turn on the slider bar next to your max value once your range selections are made.",
-			"Hold down shift & left click on your mouse to lasso a group of Glyphs in the scene.",
-			"The view button is where you can choose to show your filtered or underlying data.",
-			"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
-			"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
-		];
+		//intial tip generate
+		document.getElementById('tip_gen').innerHTML = this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
 
-		document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
-
-		setInterval(() => {
-			document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
-		}, 12000);
 	}
 	
 
@@ -922,6 +919,15 @@ class allViewsModal extends React.Component {
 		}
 	}
 
+	rdmnTip(){
+		setInterval(() => {
+			if(document.getElementById('tip_gen')){
+				document.getElementById('tip_gen').innerHTML = 
+					this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
+			}
+		}, 12000);
+	}
+
 	render() {
 		var data = this.state.data;
 		var context = this;
@@ -973,7 +979,7 @@ class allViewsModal extends React.Component {
 					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
 					TIP:
 					<br/>
-
+					{this.rdmnTip()}
 					{/* tip generator at componentDidMount */}
 					<div style={{
 						wordBreak: "break-word", 
