@@ -23,7 +23,7 @@ class ViewsTab extends React.Component {
     state = {
         loadMask: true,
         recents: [],
-        allViews: false
+        allViews: false,
     }
 
 
@@ -81,6 +81,246 @@ class ViewsTab extends React.Component {
         document.getElementById("tab-defaultOpen").click();
     }
 
+    //new version of onlaunch with desktop side
+    socketRecentLaunch(view){
+        // let ref = this.refs.viewsManager.getWrappedInstance();
+        if(view.length > 4){
+            this.onLaunch(view, this.proceedToViz);
+        }
+        else {
+            let savedViewObj;
+            this.props.storedViews.savedViews.forEach((savedView) => {
+                //
+                //this needs to stay == for typecasting purposes!!
+                //
+				if (view[3] == savedView.ID) {
+					savedViewObj = savedView;
+                }
+            });
+
+            if (savedViewObj) {
+				this.onSavedViewSelect(savedViewObj, this.proceedToViz, true);
+			}
+        }
+    }
+
+    onSavedViewSelect = (savedVizObj,callback,recentViewClick) => {
+        // console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
+        var originalVizName = savedVizObj.OriginalVizName; 
+        var query = savedVizObj.QueryString; 
+        var funnelData;
+        var keys = Object.keys(this.props.funnelData);
+        var path;
+        var context = this;
+        var flag = true;
+    
+        for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
+            funnelData = this.props.funnelData[keys[keyIndex]];
+    
+            for(var i = 0;i < funnelData.length; i++)
+            {
+                if(funnelData[i][0] === originalVizName){
+                    path = funnelData[i][1];
+                    flag = false;
+                    break;
+                }
+            }
+        }
+    
+        var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+        var currentDate = new Date();
+		var sdtPath = path.substring(index + 1);
+		
+		if(recentViewClick){
+			//dosomething
+		}
+	
+		var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
+        makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                
+                // Post the new data to the state and hide the window load-mask
+                context.props.dispatch(
+                    setCurrentVizParams(
+                        {
+                            tableName: response.tableName,
+                            datasourceId: response.datasourceId ,
+                            query: query,
+                            originalVizName:originalVizName,
+                            filterAllowedColumnList:  response.filterAllowedColumnList,
+                            sdtPath: sdtPath,
+                            savedViz: true,
+                            vizID:savedVizObj.ID,
+                            savedVizName: savedVizObj.Name,
+                            frontEndFilterString: savedVizObj.frontEndFilterString,
+                            initialX: response.initialX,
+                            initialY: response.initialY,
+                            initialZ: response.initialZ
+                        }
+                    )
+                );
+
+                if(typeof callback === 'function'){
+					callback(true, query, sdtPath, context);
+					//context.props.history.push('/glyph-viewer');
+				}
+				
+            }
+        );
+
+        makeServerCall('frontEndFiltersEC2',
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                console.log(response, 'response from fetch front filters ec2 in views manager');
+                // Post the new data to the state and hide the window load-mask
+                // context.props.dispatch(
+                //     setCurrentVizParams(
+                //         {
+                //             tableName: response.tableName,
+                //             datasourceId: response.datasourceId ,
+                //             query: query,
+                //             originalVizName:originalVizName,
+                //             filterAllowedColumnList:  response.filterAllowedColumnList,
+                //             sdtPath: sdtPath,
+                //             savedViz: true,
+                //             vizID:savedVizObj.ID,
+                //             savedVizName: savedVizObj.Name,
+                //             frontEndFilterString: savedVizObj.frontEndFilterString,
+                //             initialX: response.initialX,
+                //             initialY: response.initialY,
+                //             initialZ: response.initialZ
+                //         }
+                //     )
+                // );
+
+                // if(typeof callback === 'function'){
+				// 	callback(true);
+				// 	//context.props.history.push('/glyph-viewer');
+				// }
+				
+            }, {
+                post: true,
+                data: {
+                    key: tempPath
+                }
+            }
+        );
+    }
+
+	onLaunch(extra, callback, callback_2) {
+        console.log(extra, callback_2);
+        // Handle launch when no selections made on a column (select all unless its not allowed to select all)
+		var context = this;
+		var tableName;
+		var frontEndFilters;
+		var originalVizName;
+		var datasourceId;
+		var filterAllowedColumnList;
+		var sdtPath;
+        var index;
+        
+        console.log("-----------------------Stage 1 reached");
+		
+		if (Array.isArray(extra)) { 
+		//[.originalVizName,.time,.date,.frontEndFilters,.datasourceId,.filterAllowedColumnList,sdtPath,tableName]
+			sdtPath = extra[6];
+			tableName = extra[7];
+			frontEndFilters = extra[3];
+			originalVizName = extra[0];
+			datasourceId = extra[4];
+			filterAllowedColumnList = extra[5];
+		}
+		else {
+			index = this.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+			sdtPath = this.state.selectionTypeURL.substring(index + 1);
+			tableName = extra.tableName;
+			frontEndFilters = extra.frontEndFilters;
+			originalVizName = extra.originalVizName;
+			datasourceId = extra.datasourceId;
+			filterAllowedColumnList = extra.filterAllowedColumnList;
+        }
+
+        console.log("-----------------------Stage 2 reached");
+        var currentDate = new Date();
+        // console.log(
+        //     "TABLE:", tableName,
+        //     "TIME:",currentDate.getTime(),
+        //     "DATE:",currentDate.getTime(), 
+        //     "FRONT END FILTS:",frontEndFilters, 
+        //     "ORIGINAL VIZ NAME:",originalVizName, 
+        //     "DATA SOURCE ID:",datasourceId, 
+        //     "Allowed COlmn list:",filterAllowedColumnList, 
+        //     "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
+		
+		 //If you dont want it to update on 
+		makeServerCall('checkFrontEndFilterQuery',
+			function(res){
+                res = JSON.parse(res);
+                
+                console.log("-----------------------Stage 3 reached");
+
+				// Check if match flag is true means that at least one row was returned using the query.
+				if (res.match === true || res.match === "true") {
+					// Set the params to the store and then goto viz page.
+					context.props.dispatch(setCurrentVizParams({
+							originalVizName: originalVizName, 
+							tableName: tableName,
+							datasourceId: datasourceId ,
+							query: res.query, 
+							filterAllowedColumnList: filterAllowedColumnList, 
+							sdtPath: sdtPath, 
+							frontEndFilters: frontEndFilters
+						}));
+                    context.props.dispatch(editModalDisplay(false));
+					//
+				}
+				
+				if (typeof callback === 'function') {
+					callback(res.match, res.query, sdtPath, context);
+                }
+            },
+            {
+                post: true, 
+                data:  { 
+					tableName: tableName,
+					time: currentDate.getTime(),
+					date: currentDate.getTime(), 
+					frontEndFilters: frontEndFilters, 
+					originalVizName: originalVizName, 
+					datasourceId: datasourceId, 
+					filterAllowedColumnList: filterAllowedColumnList, 
+					sdtPath: sdtPath 
+				}
+            }
+        );
+    }
+
+    proceedToViz(match, query, sdt, context){
+        if(match){
+            var index = sdt.replace(/\\/g, "/");;
+            
+            makeServerCall(window.encodeURI('getLegendURL/' + sdt),
+                function (responseText) { 
+                    let response;
+                    if(typeof responseText === 'string') response = JSON.parse(responseText);
+                    if(response.body){
+                        console.log(response.body.imgArr,'imgPath');
+
+                        context.props.webSocket.send(JSON.stringify({
+                            url_uid: context.props.uid,
+                            sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${index}`,
+                            legendURLArr: response.body.imgArr,
+                            query,
+                            launch: true
+                        }));
+                 
+                    }
+                }
+            );
+        }      
+    }
+
     /**
 	 * Updates tutorial stage
      * @param e: current target event
@@ -110,7 +350,7 @@ class ViewsTab extends React.Component {
         e.currentTarget.className += " active";
       }
 
-      viewsMap(view) {
+    viewsMap(view) {
         if (typeof view[1] === 'string' && !isNaN(view[1])) {
             view[1] = parseInt(view[1]);
         }
@@ -165,7 +405,7 @@ class ViewsTab extends React.Component {
                     <CardText
                     /* className="hover-recent-select" */
                         style = {{ padding: "7px", width: "100%" }}
-                        onClick = { () => this.props.loadRecentView(view) }
+                        onClick = { () => {this.props.loadRecentView(view); this.socketRecentLaunch(view);} }
                     >
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >
@@ -217,7 +457,7 @@ class ViewsTab extends React.Component {
                 </div>
             </div>
         )
-      }
+    }
     
 
     render() {
@@ -387,6 +627,11 @@ export const setTimer = (timeoutTimer) => ({
     timeoutTimer,
 });
 
+export const setCurrentVizParams = (vizParams) => ({
+    type: 'SET_VIZ_PARAMS',
+    vizParams,
+ });
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -395,7 +640,12 @@ export const setTimer = (timeoutTimer) => ({
 const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
-    userInfo: state.filterState.UserInfo
+    userInfo: state.filterState.UserInfo,
+    uid: state.filterState.uid,
+	webSocket: state.filterState.webSocket,
+	legend_url_arr: state.filterState.legend_url_arr,
+    VizParams: state.filterState.VizParams,
+    storedViews: state.filterState.StoredViews,
   }
 }
 

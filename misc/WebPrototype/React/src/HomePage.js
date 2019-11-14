@@ -422,7 +422,7 @@ class HomePage extends React.Component {
                             null
                     }
                     
-                    <Flexbox flexGrow = {1} style = {{width: "75vw", margin: "auto" }} >
+                    <Flexbox flexGrow = {1} style = {{width: "75vw", margin: "auto", height: "100%" }} >
                         <Flexbox flexDirection = "row" minWidth = "100%" >
                         
                             {/* Left Column */}

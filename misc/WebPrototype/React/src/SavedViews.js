@@ -78,6 +78,26 @@ class SavedViews extends React.Component {
                     )
                 );
 
+                makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
+                    function (responseText) { 
+                        let response;
+                        if(typeof responseText === 'string') response = JSON.parse(responseText);
+                        if(response.body){
+                            var index = sdtPath.replace(/\\/g, "/");;
+                            console.log(response.body.imgArr,'imgPath');
+
+                            context.props.webSocket.send(JSON.stringify({
+                                url_uid: context.props.uid,
+                                sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${index}`,
+                                legendURLArr: response.body.imgArr,
+                                query,
+                                launch: true
+                            }));
+                    
+                        }
+                    }
+                );
+
                 if(typeof callback === 'function'){
 					callback(true);
 					//context.props.history.push('/glyph-viewer');
@@ -640,7 +660,9 @@ const mapStateToProps = function(state) {
  return {
    settings: state.filterState.Settings,
    storedViews: state.filterState.StoredViews,
-   funnelData: state.filterState.FunnelData
+   funnelData: state.filterState.FunnelData,
+   uid: state.filterState.uid,
+   webSocket: state.filterState.webSocket,
  }
 }
 
