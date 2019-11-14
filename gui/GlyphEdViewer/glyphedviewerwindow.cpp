@@ -358,7 +358,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		text = "Received launch response from server. \n Filter [" + qsl.join(", ") + "]";
 		m_viewer->setFilteredResults(parseFilters(ids), true);
 	}
-	else if (type == "HOME"){
+	else if (type == "HOME" || type == "LOGOUT"){
 		text = "Received launch response from server. \n Home " + uid;
 		m_viewer->hide();
 	}
@@ -415,7 +415,7 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	QStringList sdt_split = sdt.split(QChar('/'));
 	QString filename = cache_location + sdt_split.at(sdt_split.size() - 1);
 
-	//QMessageBox::information(this, tr("Server message"), location);
+	//QMessageBox::information(this, tr("Server message"), filename);
 
 	QString table_name = query.split("FROM ").at(1).split(" ").at(0);
 

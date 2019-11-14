@@ -40,7 +40,7 @@ namespace DataEngine
 #ifdef WIN32
         else{
 			
-			jvmDll.Load("..\\..\\DataEngine\\jdk\\jre\\bin\\server\\jvm.dll");
+			jvmDll.Load("..\\..\\DataEngine\\jdk\\bin\\server\\jvm.dll");
 		}
 #endif
 		jre.close();

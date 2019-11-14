@@ -39,9 +39,9 @@ public class FileManager {
 		}
 		catch (Exception e) {
 			try{
-				e.printStackTrace();
-			}
-			catch(Exception eh){}
+		        e.printStackTrace(ErrorHandler.getInstance().addError());
+		    }catch(Exception ex){}
+		    e.printStackTrace();
 		}
 		xfer_mgr.shutdownNow();
 

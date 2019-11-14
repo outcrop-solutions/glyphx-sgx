@@ -238,3 +238,5 @@ pip-log.txt
 #Qt generated files
 moc_*.cpp
 qrc_*.cpp
+
+jdk/
