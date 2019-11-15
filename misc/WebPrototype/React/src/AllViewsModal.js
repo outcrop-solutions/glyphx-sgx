@@ -782,10 +782,7 @@ class allViewsModal extends React.Component {
 							key = { col } 
 							style = {{ 
 								width: "100%", 
-								border: "1px solid",
-								height: "250px", 
-								borderLeft: "1px solid black",
-								borderBottom: "1px solid black",
+								maxHeight: "250px", 
 								marginBottom: "10px"
 								// borderLeft: (col === data[0] ? "1px solid" : "none"),
 								// borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
@@ -795,19 +792,21 @@ class allViewsModal extends React.Component {
 							}} 
 						>
 							<div 
+								onClick= {(e) => context.expandCollapseTable(e.target.innerText)}
 								className = "noselect" 
 								style = {{ 
 									// backgroundColor: "#42459c",
 									backgroundColor: "#0c1836", 
 									padding: "13px 0px 9px 18px",
 									color: "#ffffff",
-									fontSize: "16px",
+									fontSize: "18px",
 									fontFamily: "ITCFranklinGothicStd-DmCd",
-									minHeight: "46px"
+									minHeight: "46px",
+									letterSpacing: "0.5px"
 								}} 
 							> 
-								<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
-									{/* <i 
+								{/* <div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
+									<i 
 									className = "fa fa-check" 
 									style = {{ marginRight: "3px" }}
 									title= "Select Column" 
@@ -815,61 +814,87 @@ class allViewsModal extends React.Component {
 									<i 
 									className = "fa fa-times" 
 									title= "Deselect Column"
-									onClick = { () => {context.selectDeselectCol(col, "deselect"), context.setState({selectAll500: false}) }} />  */}
-								</div>
+									onClick = { () => {context.selectDeselectCol(col, "deselect"), context.setState({selectAll500: false}) }} /> 
+								</div> */}
 
-								<div style = {{ fontSize: "18px", letterSpacing: "0.5px" }} > 
-									{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
-								</div>
+								{/* <div style = {{ fontSize: "18px", letterSpacing: "0.5px" }} >  */}
+									{/* {col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]}  */}
+									{col[0]}
+								{/* </div> */}
+								{/* <span
+
+									// onClick= {col[0] => context.expandCollapseTable(e.target.innerText)}
+								> 
+								<i className = "fa fa-caret-down" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} />
+								</span> */}
+								{/* <img src="./Res/Img/Enlarge.png"/> */}
+								<i 
+									style={{
+										fontSize: "36px", 
+										float: "right", 
+										margin: "-8px 18px 0px 0px"}} 
+									className="fa fa-caret-down"
+								></i>
+
 							</div>
 
-							<div style = {{ margin: "1px 1px 0px 0px" }} >
-								<SearchBox 
-									ref = "SearchBox"
-									settings = {{
-										SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
-										searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
-										overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
-										overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
-										tableSelectColor: context.props.settings.colors.tableSelectColor.background
-									}}
-									onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
-									id = { "tf-" + col[0] }
-									collapseButton = { false }
-									shouldOnBlur = { col.length > 500 ? true : false }
-								/>
-							</div>
+							<div
+								id = {'expand' + col[0]} 
+								className = "customScroll"
+								style={{
+									border: "1px solid",
+									borderLeft: "1px solid black",
+									borderBottom: "1px solid black",
+									overflowY: "scroll"	
+							}}>
+								<div style = {{ margin: "1px 1px 0px 0px", position: "absolute", width: "46.35vw" }} >
+									<SearchBox 
+										ref = "SearchBox"
+										settings = {{
+											SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+											searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
+											overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
+											overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
+											tableSelectColor: context.props.settings.colors.tableSelectColor.background
+										}}
+										onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
+										id = { "tf-" + col[0] }
+										collapseButton = { false }
+										shouldOnBlur = { col.length > 500 ? true : false }
+									/>
+								</div>
 
-							<div className = "customScroll" id = { col[0] } style = {{ overflow: "auto" }} >
+								<div /* className = "customScroll" */ id = { col[0] } style = {{ overflow: "auto", marginTop: "30px" }} >
 
-								{ (col.length > 500 ? 
-									<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
-										id = { "st-" + col[0] } 
-										> 
-										Too many filters. <br /> Select all or search to view. <br /> <br /> Results: {col.length - 1} 
-									</div> : null) }
+									{ (col.length > 500 ? 
+										<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
+											id = { "st-" + col[0] } 
+											> 
+											Too many filters. <br /> Select all or search to view. <br /> <br /> Results: {col.length - 1} 
+										</div> : null) }
 
-								<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
+									<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
 
-								{col.map( function(elem) {
-									return (
-										(elem !== col[0] ? 
-											<div
-												key = { col[0] + elem } 
-												onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
-												onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
-												style = {{ 
-													display: (col.length > 500 ? "none" : "")
-												}}
-											>
-												<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
-													{elem.toString()} 
-												</AllViewsRow>
-											</div> : ""
+									{col.map( function(elem) {
+										return (
+											(elem !== col[0] ? 
+												<div
+													key = { col[0] + elem } 
+													onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
+													onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
+													style = {{ 
+														display: (col.length > 500 ? "none" : "")
+													}}
+												>
+													<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
+														{elem.toString()} 
+													</AllViewsRow>
+												</div> : ""
+											)
 										)
-									)
-								})}
+									})}
 
+								</div>
 							</div>
 						</Flexbox>
 					)
@@ -926,6 +951,18 @@ class allViewsModal extends React.Component {
 					this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
 			}
 		}, 12000);
+	}
+
+	expandCollapseTable(target){
+		let id = 'expand' + target;
+		console.log(id)
+		if(document.getElementById(id)){
+			if(document.getElementById(id).style.display === "none"){
+				console.log('what? 1')
+				document.getElementById(id).style.display = "block";
+			}
+			else document.getElementById(id).style.display = "none";
+		}
 	}
 
 	render() {
@@ -1012,7 +1049,7 @@ class allViewsModal extends React.Component {
 					padding: "0px 28px 0px 26px" }} 
 				>
 
-					<div style={{float: 'right', paddingTop: "10px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+					<div style={{float: 'right', padding: "10px 0px 6px 0px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 					
 						{/*<RaisedButton 
 							label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
@@ -1043,13 +1080,49 @@ class allViewsModal extends React.Component {
 						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "18px"}}> 
 							<input 
 								type="checkbox"
-								style={{marginBottom: "15px"}}
+								style={{marginBottom: "15px", cursor: "pointer"}}
 								onChange = {(e) => (
 									e.target.checked === true ? this.selectDesectAll(data, "select") : 
 										this.selectDesectAll(data, "deselect") )}
 							/>
-							Select All | Clear All 
-						</label>		
+							Select All
+						</label>
+						
+						<span style={{
+							fontFamily: "ITCFranklinGothicStd-Med", 
+							fontSize: "18px", 
+							verticalAlign: "text-bottom",
+							margin: "0px 8px 0px 8px"}}>|</span>
+
+						<RaisedButton
+							buttonStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+								backgroundColor: "white",
+								color: "black",
+								fontSize: "18px",
+								fontFamily: "ITCFranklinGothicStd-Med",
+								borderRadius: "0",
+								border: "1px solid black"
+							}} 
+							labelStyle = {{
+								textAlign: "center",
+								color: "white",
+								margin: "0px 0px 0px -3px",
+								paddingLeft: "0px",
+								paddingRight: "0px",
+								
+								
+							}}
+							overlayStyle = {{
+								height: '35px',
+								lineHeight: '35px',
+							}}
+							onClick={() => this.selectDesectAll(data, "deselect")}
+							style={{}}> 
+							Clear All 
+						</RaisedButton>
+
 						
 					</div>
 

@@ -8,15 +8,15 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
 import ViewsTab from './ViewsTab.js';
 import ViewsManager from './ViewsManager.js';
-import UserFeed from './UserFeed.js';
 import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import TutorialWindow from './TutorialWindow.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TimeoutAlert from './TimeoutAlert.js';
-import Tutorials from './Tutorials';
+// import UserFeed from './UserFeed.js';
+// import Tutorials from './Tutorials';
 import './css/TopNav.css';
 import './css/General.css';
-import { white } from 'material-ui/styles/colors';
+// import { white } from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
@@ -478,7 +478,6 @@ class HomePage extends React.Component {
                                                         width: "162px",
                                                         height: "19px",
                                                         fontFamily: "ITCFranklinGothicStd-Demi",
-                                                        fontSize: "18px",
                                                         letterSpacing: "0.92px",
                                                         color: "white",
                                                         margin: "0px",

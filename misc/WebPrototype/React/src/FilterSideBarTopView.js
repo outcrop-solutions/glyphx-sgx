@@ -1125,7 +1125,27 @@ class FilterSideBarTopView extends React.Component {
         }
     }
 
-	
+    webSocketSend(type){
+        if(type === "view-stats"){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                view_stats: true 
+            }));
+        }
+        else if(type === "view-selected"){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                view_selected: true 
+            }));
+        }
+        else if(type === "view-filtered"){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                view_filtered: true 
+            }));
+        }
+    }
+
 	render = () => {
         
         //var statisticStatSelectItems = ["Count", "Min", "Max", "Mean", "Median", "Mode", "Sum", "Range", "St. Dev.", "Variance", "Skewness", "Kurtosis"];
@@ -1367,7 +1387,9 @@ class FilterSideBarTopView extends React.Component {
                                             </div> 
                                         }
                                     >
-                                        <MenuItem primaryText = "Statistics" className = "menuItemStyling" onClick = { () => this.handleOpenClose('statistics', true) } />
+                                        <MenuItem primaryText = "Statistics" className = "menuItemStyling" 
+                                            onClick = { () => (this.props.uid ? this.webSocketSend("view-stats") : 
+                                                this.handleOpenClose('statistics', true)) } />
                                     </Tooltip>
 
                                     <Tooltip
@@ -1382,7 +1404,9 @@ class FilterSideBarTopView extends React.Component {
                                             </div> 
                                         }
                                     >
-                                        <MenuItem primaryText = "Selected Data" className = "menuItemStyling" onClick = { this.onSelectedDataClick.bind(this) } />
+                                        <MenuItem primaryText = "Selected Data" className = "menuItemStyling" 
+                                            onClick = {() => (this.props.uid ? this.webSocketSend("view-selected") : 
+                                                this.onSelectedDataClick.bind(this) )} />
                                     </Tooltip>
                                     <Tooltip
                                         placement = 'left'
@@ -1396,7 +1420,9 @@ class FilterSideBarTopView extends React.Component {
                                             </div> 
                                         }
                                     >
-                                        <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" onClick = { this.onFilteredDataClick.bind(this) } />
+                                        <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" 
+                                        onClick = {() => (this.props.uid ? this.webSocketSend("view-filtered") : 
+                                            this.onFilteredDataClick.bind(this)) } />
                                     </Tooltip>
                                 </Menu>
                             </Popover>

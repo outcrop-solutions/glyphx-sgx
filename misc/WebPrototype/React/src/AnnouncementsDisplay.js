@@ -121,7 +121,6 @@ class AnnouncementsDisplay extends React.Component {
                             width: "162px",
                             height: "19px",
                             fontFamily: "ITCFranklinGothicStd-Demi",
-                            fontSize: "18px",
                             letterSpacing: "0.92px",
                             color: "white",
                             margin: "0px",

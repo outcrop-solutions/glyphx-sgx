@@ -105,7 +105,6 @@ class ViewsTab extends React.Component {
     }
 
     onSavedViewSelect = (savedVizObj,callback) => {
-        console.log('+++++++++++++++saved called')
         // console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
         var originalVizName = savedVizObj.OriginalVizName; 
         var query = savedVizObj.QueryString; 
@@ -325,7 +324,6 @@ class ViewsTab extends React.Component {
     }
 
     proceedToViz(query, sdt, context){
-        console.log('&&&&&&&&&&&&&&&&called')
         var index = sdt.replace(/\\/g, "/");;
         
         makeServerCall(window.encodeURI('getLegendURL/' + sdt),

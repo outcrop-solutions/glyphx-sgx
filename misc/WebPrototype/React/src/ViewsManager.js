@@ -531,7 +531,7 @@ class ViewsManager extends React.Component {
             fontSize:"18px", 
             padding: "7px",
             fontFamily: "ITCFranklinGothicStd-Med",
-            letterSpacing: "0.5px"
+            letterSpacing: "0.5px",
             /* borderBottom: "1px solid black" */
             /* backgroundColor: "white" */
         };
@@ -545,7 +545,7 @@ class ViewsManager extends React.Component {
             letterSpacing: "0.5px",
             whiteSpace: "nowrap", 
             overflow: "hidden", 
-            textOverflow: "ellipsis"  
+            textOverflow: "ellipsis",
             /* backgroundColor: "white", */
             /* borderBottom: "1px solid black"  */
         };
@@ -562,6 +562,7 @@ class ViewsManager extends React.Component {
         const dropDownSize = {
             height: "50px",
             width: "315px",
+            outline: "none"
         };
         
         var marketingAndRecruiting = mandrList.map( function(title) {

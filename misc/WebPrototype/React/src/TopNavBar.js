@@ -15,13 +15,13 @@ import { hideSplashScreen } from './LoadMaskHelper.js';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
 import HelpModal from './HelpModal.js';
-import ShareImg from './images/share.png';
-import LinkImg from './images/link.png';
+// import ShareImg from './images/share.png';
+// import LinkImg from './images/link.png';
 /* import AdminWizardModal from './AdminWizardModal.js'; */
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import './css/General.css';
-import { white } from 'material-ui/styles/colors';
+// import { white } from 'material-ui/styles/colors';
 
 
 /**
@@ -183,12 +183,19 @@ class TopNavBar extends React.Component {
         else return "Guest";
     }
 
-    socketLogout(){
+    webSocketSend(type){
         if(this.props.uid){
-			this.props.webSocket.send(JSON.stringify({
-				url_uid: this.props.uid,
-				logout: true
-			}));
+            if(type === "logout"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid,
+                    logout: true
+                }));
+            }
+            else if(type === "home"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid, 
+                    home: true}))
+            }
 		}
     }
 
@@ -205,9 +212,7 @@ class TopNavBar extends React.Component {
                         <Tooltip
                         onClick = { () => {
                             this.returnHome(); 
-                            (this.props.uid ? 
-                                this.props.webSocket.send(JSON.stringify({url_uid: this.props.uid, home: true})) 
-                                : null )
+                            this.webSocketSend("home");
                         }}
                         placement = 'left'
                         mouseEnterDelay = { 0.5 }
@@ -271,9 +276,7 @@ class TopNavBar extends React.Component {
                         style = {{ cursor: 'pointer'}} 
                         onClick = { () => {
                             this.returnHome(); 
-                            (this.props.uid ? 
-                                this.props.webSocket.send(JSON.stringify({url_uid: this.props.uid, home: true})) 
-                                : null )
+                            this.webSocketSend("home");
                         }} >
                         {this.props.homePage ? 
                             this.state.imgLogoSrc
@@ -384,7 +387,7 @@ class TopNavBar extends React.Component {
                             }
                         >
                             <FontIcon>
-                            <img src='./Res/Img/LiveChat.png' 
+                            <img alt="Live Chat Icon" src='./Res/Img/LiveChat.png' 
                                 onClick={() => window.open('https://zoho.com', '_blank')}/>
                             </FontIcon>
                         </Tooltip>
@@ -459,7 +462,7 @@ class TopNavBar extends React.Component {
                         {/* <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" /> */}
                         {/* {this.props.userInfo.admin ? show : dont} */}
                         {/* <MenuItem className = "menuItemStyling" primaryText = "User Settings" /> */}
-                        <MenuItem onClick = {() => {this.logout(); this.socketLogout();} } className = "menuItemStyling" primaryText = "Sign out" />
+                        <MenuItem onClick = {() => {this.logout(); this.webSocketSend("logout");} } className = "menuItemStyling" primaryText = "Sign out" />
                         
                         
                         
