@@ -1043,16 +1043,17 @@ class allViewsModal extends React.Component {
 
 				</div>
 
-				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
+				<div style = {{ height: "80vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
 					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
 				</div> 
 
 				<div style = {{ 
+					height: "99vh",
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
 					padding: "0px 28px 0px 26px" }} 
 				>
 
-					<div style={{float: 'right', padding: "10px 0px 6px 0px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+					<div style={{float: 'right', /* padding: "10px 0px 6px 0px", */ display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 					
 						{/*<RaisedButton 
 							label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
@@ -1143,7 +1144,7 @@ class allViewsModal extends React.Component {
 					/>
 					<div>
 						
-						<div style={{/* float: "right", */ padding: "18px 0px 8px 8px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<div style={{/* float: "right",*/ padding: "0px 0px 20px 0px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							{/* <FlatButton
 								label = "Back"
 								primary = { true }
@@ -1186,27 +1187,29 @@ class allViewsModal extends React.Component {
 									primary = {true } 
 								/> */}
 								<img
-								 alt = "GlyphIT Logo Launch Button"
-								 src={(this.shouldLaunchBeDisabled() ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
-								 style={{
-									 width: "40.09%", 
-									 margin: "auto", 
-									 border: "1px solid black", 
-									 cursor: "pointer", 
-									 boxShadow: "3.5px 3.5px 3.5px"}}
-								 onClick={() => {
-									 (this.shouldLaunchBeDisabled() ? 
-										null :
-										(this.props.onLaunch({
-											tableName:this.state.table,
-											frontEndFilters: this.state.selectionList,
-											originalVizName: this.props.type,
-											datasourceId: this.state.datasourceId,
-											filterAllowedColumnList: this.state.filterAllowedColumnList,
-										},this.onLaunchResultCallback), this.wbSocketFxn()
+									className="launch_button"
+									alt = "GlyphIT Logo Launch Button"
+									src={(this.shouldLaunchBeDisabled() ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
+									style={{
+										width: "40.09%", 
+										height: "100%",
+										margin: "auto", 
+										border: "1px solid black", 
+										cursor: "pointer", 
+										boxShadow: "3.5px 3.5px 3.5px"}}
+									onClick={() => {
+										(this.shouldLaunchBeDisabled() ? 
+											null :
+											(this.props.onLaunch({
+												tableName:this.state.table,
+												frontEndFilters: this.state.selectionList,
+												originalVizName: this.props.type,
+												datasourceId: this.state.datasourceId,
+												filterAllowedColumnList: this.state.filterAllowedColumnList,
+											},this.onLaunchResultCallback), this.wbSocketFxn()
+											)
 										)
-									 )
-								 }}
+									}}
 								/>
 							</Flexbox>
 						</div>
