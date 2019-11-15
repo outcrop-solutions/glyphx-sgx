@@ -99,17 +99,19 @@ class ViewsTab extends React.Component {
             });
 
             if (savedViewObj) {
-				this.onSavedViewSelect(savedViewObj, this.proceedToViz, true);
+				this.onSavedViewSelect(savedViewObj, this.proceedToViz);
 			}
         }
     }
 
-    onSavedViewSelect = (savedVizObj,callback,recentViewClick) => {
+    onSavedViewSelect = (savedVizObj,callback) => {
+        console.log('+++++++++++++++saved called')
         // console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
         var originalVizName = savedVizObj.OriginalVizName; 
         var query = savedVizObj.QueryString; 
         var funnelData;
         var keys = Object.keys(this.props.funnelData);
+        // console.log(this.props, '*******************************************KEYS')
         var path;
         var context = this;
         var flag = true;
@@ -131,82 +133,81 @@ class ViewsTab extends React.Component {
         var currentDate = new Date();
 		var sdtPath = path.substring(index + 1);
 		
-		if(recentViewClick){
-			//dosomething
-		}
+        if(typeof callback === 'function') callback(query, sdtPath, context);
 	
-		var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
-        makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
-            function (responseText) {
-                var response = JSON.parse(responseText);
+		// var tempPath = path.substring(index + 1) + "&&&"+currentDate.getTime()+","+originalVizName+","+savedVizObj.ID+","+savedVizObj.Name;
+        // makeServerCall(window.encodeURI('frontEndFilterData/' + tempPath ),
+        //     function (responseText) {
+        //         var response = JSON.parse(responseText);
                 
-                // Post the new data to the state and hide the window load-mask
-                context.props.dispatch(
-                    setCurrentVizParams(
-                        {
-                            tableName: response.tableName,
-                            datasourceId: response.datasourceId ,
-                            query: query,
-                            originalVizName:originalVizName,
-                            filterAllowedColumnList:  response.filterAllowedColumnList,
-                            sdtPath: sdtPath,
-                            savedViz: true,
-                            vizID:savedVizObj.ID,
-                            savedVizName: savedVizObj.Name,
-                            frontEndFilterString: savedVizObj.frontEndFilterString,
-                            initialX: response.initialX,
-                            initialY: response.initialY,
-                            initialZ: response.initialZ
-                        }
-                    )
-                );
+        //         // Post the new data to the state and hide the window load-mask
+        //         context.props.dispatch(
+        //             setCurrentVizParams(
+        //                 {
+        //                     tableName: response.tableName,
+        //                     datasourceId: response.datasourceId ,
+        //                     query: query,
+        //                     originalVizName:originalVizName,
+        //                     filterAllowedColumnList:  response.filterAllowedColumnList,
+        //                     sdtPath: sdtPath,
+        //                     savedViz: true,
+        //                     vizID:savedVizObj.ID,
+        //                     savedVizName: savedVizObj.Name,
+        //                     frontEndFilterString: savedVizObj.frontEndFilterString,
+        //                     initialX: response.initialX,
+        //                     initialY: response.initialY,
+        //                     initialZ: response.initialZ
+        //                 }
+        //             )
+        //         );
 
-                if(typeof callback === 'function'){
-					callback(true, query, sdtPath, context);
-					//context.props.history.push('/glyph-viewer');
-				}
+        //         if(typeof callback === 'function'){
+		// 			callback(true, query, sdtPath, context);
+		// 			//context.props.history.push('/glyph-viewer');
+		// 		}
 				
-            }
-        );
+        //     }
+        // );
 
-        makeServerCall('frontEndFiltersEC2',
-            function (responseText) {
-                var response = JSON.parse(responseText);
-                console.log(response, 'response from fetch front filters ec2 in views manager');
-                // Post the new data to the state and hide the window load-mask
-                // context.props.dispatch(
-                //     setCurrentVizParams(
-                //         {
-                //             tableName: response.tableName,
-                //             datasourceId: response.datasourceId ,
-                //             query: query,
-                //             originalVizName:originalVizName,
-                //             filterAllowedColumnList:  response.filterAllowedColumnList,
-                //             sdtPath: sdtPath,
-                //             savedViz: true,
-                //             vizID:savedVizObj.ID,
-                //             savedVizName: savedVizObj.Name,
-                //             frontEndFilterString: savedVizObj.frontEndFilterString,
-                //             initialX: response.initialX,
-                //             initialY: response.initialY,
-                //             initialZ: response.initialZ
-                //         }
-                //     )
-                // );
+        // makeServerCall('frontEndFiltersEC2',
+        //     function (responseText) {
+        //         var response = JSON.parse(responseText);
+        //         console.log(response, 'response from fetch front filters ec2 in views manager');
+        //         // Post the new data to the state and hide the window load-mask
+        //         // context.props.dispatch(
+        //         //     setCurrentVizParams(
+        //         //         {
+        //         //             tableName: response.tableName,
+        //         //             datasourceId: response.datasourceId ,
+        //         //             query: query,
+        //         //             originalVizName:originalVizName,
+        //         //             filterAllowedColumnList:  response.filterAllowedColumnList,
+        //         //             sdtPath: sdtPath,
+        //         //             savedViz: true,
+        //         //             vizID:savedVizObj.ID,
+        //         //             savedVizName: savedVizObj.Name,
+        //         //             frontEndFilterString: savedVizObj.frontEndFilterString,
+        //         //             initialX: response.initialX,
+        //         //             initialY: response.initialY,
+        //         //             initialZ: response.initialZ
+        //         //         }
+        //         //     )
+        //         // );
 
-                // if(typeof callback === 'function'){
-				// 	callback(true);
-				// 	//context.props.history.push('/glyph-viewer');
-				// }
+        //         // if(typeof callback === 'function'){
+		// 		// 	callback(true);
+		// 		// 	//context.props.history.push('/glyph-viewer');
+		// 		// }
 				
-            }, {
-                post: true,
-                data: {
-                    key: tempPath
-                }
-            }
-        );
+        //     }, {
+        //         post: true,
+        //         data: {
+        //             key: tempPath
+        //         }
+        //     }
+        // );
     }
+	
 
 	onLaunch(extra, callback, callback_2) {
         console.log(extra, callback_2);
@@ -252,73 +253,99 @@ class ViewsTab extends React.Component {
         //     "DATA SOURCE ID:",datasourceId, 
         //     "Allowed COlmn list:",filterAllowedColumnList, 
         //     "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
+
+        var data = frontEndFilters.slice();
+        var outerIndex;
+        let query = "SELECT * FROM " + tableName + " WHERE ";
+        
+        // 2D Array
+        //[[],[],[]]
+        for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
+            var dataItem = data[outerIndex].slice();
+            var columnName = dataItem[0];
+
+            // Removes the 1st element that is the name.
+            dataItem.shift(); 
+
+            var values = '("' + dataItem.toString() + '")';
+            query = query + columnName + " IN " + values.replace(/,/g , '","');
+            
+            if (outerIndex != data.length-1) {
+                query = query + " AND ";
+            }
+
+            else {
+                query = query + ";";
+            }
+        }
+
+        if (typeof callback === 'function') callback(query, sdtPath, context);
 		
 		 //If you dont want it to update on 
-		makeServerCall('checkFrontEndFilterQuery',
-			function(res){
-                res = JSON.parse(res);
+		// makeServerCall('checkFrontEndFilterQuery',
+		// 	function(res){
+        //         res = JSON.parse(res);
                 
-                console.log("-----------------------Stage 3 reached");
+        //         console.log("-----------------------Stage 3 reached");
 
-				// Check if match flag is true means that at least one row was returned using the query.
-				if (res.match === true || res.match === "true") {
-					// Set the params to the store and then goto viz page.
-					context.props.dispatch(setCurrentVizParams({
-							originalVizName: originalVizName, 
-							tableName: tableName,
-							datasourceId: datasourceId ,
-							query: res.query, 
-							filterAllowedColumnList: filterAllowedColumnList, 
-							sdtPath: sdtPath, 
-							frontEndFilters: frontEndFilters
-						}));
-                    context.props.dispatch(editModalDisplay(false));
-					//
-				}
+		// 		// Check if match flag is true means that at least one row was returned using the query.
+		// 		if (res.match === true || res.match === "true") {
+		// 			// Set the params to the store and then goto viz page.
+		// 			context.props.dispatch(setCurrentVizParams({
+		// 					originalVizName: originalVizName, 
+		// 					tableName: tableName,
+		// 					datasourceId: datasourceId ,
+		// 					query: res.query, 
+		// 					filterAllowedColumnList: filterAllowedColumnList, 
+		// 					sdtPath: sdtPath, 
+		// 					frontEndFilters: frontEndFilters
+		// 				}));
+        //             context.props.dispatch(editModalDisplay(false));
+		// 			//
+		// 		}
 				
-				if (typeof callback === 'function') {
-					callback(res.match, res.query, sdtPath, context);
-                }
-            },
-            {
-                post: true, 
-                data:  { 
-					tableName: tableName,
-					time: currentDate.getTime(),
-					date: currentDate.getTime(), 
-					frontEndFilters: frontEndFilters, 
-					originalVizName: originalVizName, 
-					datasourceId: datasourceId, 
-					filterAllowedColumnList: filterAllowedColumnList, 
-					sdtPath: sdtPath 
-				}
-            }
-        );
+		// 		if (typeof callback === 'function') {
+		// 			callback(res.match, res.query, sdtPath, context);
+        //         }
+        //     },
+        //     {
+        //         post: true, 
+        //         data:  { 
+		// 			tableName: tableName,
+		// 			time: currentDate.getTime(),
+		// 			date: currentDate.getTime(), 
+		// 			frontEndFilters: frontEndFilters, 
+		// 			originalVizName: originalVizName, 
+		// 			datasourceId: datasourceId, 
+		// 			filterAllowedColumnList: filterAllowedColumnList, 
+		// 			sdtPath: sdtPath 
+		// 		}
+        //     }
+        // );
     }
 
-    proceedToViz(match, query, sdt, context){
-        if(match){
-            var index = sdt.replace(/\\/g, "/");;
-            
-            makeServerCall(window.encodeURI('getLegendURL/' + sdt),
-                function (responseText) { 
-                    let response;
-                    if(typeof responseText === 'string') response = JSON.parse(responseText);
-                    if(response.body){
-                        console.log(response.body.imgArr,'imgPath');
+    proceedToViz(query, sdt, context){
+        console.log('&&&&&&&&&&&&&&&&called')
+        var index = sdt.replace(/\\/g, "/");;
+        
+        makeServerCall(window.encodeURI('getLegendURL/' + sdt),
+            function (responseText) { 
+                let response;
+                if(typeof responseText === 'string') response = JSON.parse(responseText);
+                if(response.body){
+                    console.log(response.body.imgArr,'imgPath');
 
-                        context.props.webSocket.send(JSON.stringify({
-                            url_uid: context.props.uid,
-                            sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${index}`,
-                            legendURLArr: response.body.imgArr,
-                            query,
-                            launch: true
-                        }));
-                 
-                    }
+                    context.props.webSocket.send(JSON.stringify({
+                        url_uid: context.props.uid,
+                        sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${index}`,
+                        legendURLArr: response.body.imgArr,
+                        query,
+                        launch: true
+                    }));
+                
                 }
-            );
-        }      
+            }
+        );
     }
 
     /**
@@ -646,6 +673,7 @@ const mapStateToProps = function(state) {
 	legend_url_arr: state.filterState.legend_url_arr,
     VizParams: state.filterState.VizParams,
     storedViews: state.filterState.StoredViews,
+    funnelData: state.filterState.FunnelData,
   }
 }
 
