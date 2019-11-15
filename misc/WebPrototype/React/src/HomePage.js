@@ -492,7 +492,7 @@ class HomePage extends React.Component {
                                                 <div 
                                                     onClick={() => (this.props.legend_url_arr.length ? this.setState({enlarge: true}) : null)}
                                                     style={{float: "right", margin: "-2px 14px 0px 0px", cursor: "pointer",}}>
-                                                    <img style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
+                                                    <img alt="Enlarge" style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
 
                                                 <Dialog 
@@ -525,7 +525,8 @@ class HomePage extends React.Component {
                                                             }} 
                                                         >
                                                             <div style = {{ borderRadius: "3px" }}>
-                                                                <img style={{maxWidth: "932px"}} src={
+                                                                <img style={{maxWidth: "932px"}} 
+                                                                    alt="Enlarged" src={
                                                                 'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
                                                                 window.encodeURIComponent(this.props.legend_url_arr[0])}/>
                                                             </div>
@@ -539,12 +540,13 @@ class HomePage extends React.Component {
                                                 {<img style={{
                                                         width: "100%", 
                                                         height: "214px",  
-                                                       /*  padding: (this.props.legend_url_arr.length ? "" : "26px 0px 48px 0px") */}}
+                                                        padding: (this.props.legend_url_arr.length ? "" : "30px")}}
+                                                    alt="Glyph Key/ Institution Logo"
                                                     src={
                                                         (this.props.legend_url_arr.length ? 
                                                         'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
                                                         window.encodeURIComponent(this.props.legend_url_arr[0]) :
-                                                        './Res/Img/GlyphED.png'
+                                                        imgsrc
                                                         )
                                                     } 
                                                 />}

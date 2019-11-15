@@ -945,10 +945,9 @@ class allViewsModal extends React.Component {
 	}
 
 	rdmnTip(){
-		setInterval(() => {
+		window.setInterval(() => {
 			if(document.getElementById('tip_gen')){
-				document.getElementById('tip_gen').innerHTML = 
-					this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
+				document.getElementById('tip_gen').innerHTML = this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
 			}
 		}, 12000);
 	}
@@ -1014,13 +1013,17 @@ class allViewsModal extends React.Component {
 					color: "lightslategrey",
 					paddingTop: "145px",
 					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
+
 					TIP:
+
 					<br/>
+
 					{this.rdmnTip()}
-					{/* tip generator at componentDidMount */}
+
 					<div style={{
 						wordBreak: "break-word", 
-						padding: "0px 60px 0px 60px"}} 
+						padding: "18px 60px 0px 60px",
+						height: "190px"}} 
 					id="tip_gen">
 						
 					</div>
@@ -1149,7 +1152,7 @@ class allViewsModal extends React.Component {
 							/> */}
 							<Flexbox>
 
-								<RaisedButton 
+								{/* <RaisedButton 
 									label = { "Launch Viewer" }
 									style = {{
 										height: '60px',
@@ -1159,8 +1162,6 @@ class allViewsModal extends React.Component {
 									}}
 									buttonStyle = {{
 										backgroundColor: (this.shouldLaunchBeDisabled() ? "darkgrey" : "#fdc743")
-										/* shouldLaunchBeDisabled() not working */
-									
 									}} 
 									labelStyle = {{
 										fontSize: "20px",
@@ -1172,10 +1173,6 @@ class allViewsModal extends React.Component {
 										paddingLeft: "0px",
 										paddingRight: "0px"
 									}}
-									// overlayStyle = {{
-									// 	height: '35px',
-									// 	lineHeight: '35px',
-									// }}
 									disabled = { this.shouldLaunchBeDisabled() }
 									onClick = { () => {
 										this.props.onLaunch({
@@ -1187,8 +1184,31 @@ class allViewsModal extends React.Component {
 									},this.onLaunchResultCallback), this.wbSocketFxn();
 									}}
 									primary = {true } 
+								/> */}
+								<img
+								 alt = "GlyphIT Logo Launch Button"
+								 src={(this.shouldLaunchBeDisabled() ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
+								 style={{
+									 width: "40.09%", 
+									 margin: "auto", 
+									 border: "1px solid black", 
+									 cursor: "pointer", 
+									 boxShadow: "3.5px 3.5px 3.5px"}}
+								 onClick={() => {
+									 (this.shouldLaunchBeDisabled() ? 
+										null :
+										(this.props.onLaunch({
+											tableName:this.state.table,
+											frontEndFilters: this.state.selectionList,
+											originalVizName: this.props.type,
+											datasourceId: this.state.datasourceId,
+											filterAllowedColumnList: this.state.filterAllowedColumnList,
+										},this.onLaunchResultCallback), this.wbSocketFxn()
+										)
+									 )
+								 }}
 								/>
-								</Flexbox>
+							</Flexbox>
 						</div>
 					</div>
 				</div>

@@ -296,7 +296,8 @@ class FilterSideBar extends React.Component {
             allowedColumns = this.props.VizParams.filterAllowedColumnList;
         }
         else {
-            var allowedColumns = keys;
+            allowedColumns = keys;
+            //was a var allowCols here
             var rowidIndex = keys.indexOf("rowid");
 
             allowedColumns.splice(rowidIndex, 1);
