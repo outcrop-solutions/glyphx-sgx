@@ -461,7 +461,7 @@ class ViewsTab extends React.Component {
                             </Flexbox>
                                 
                             <div style = {{ 
-                                width: "100%", 
+                                width: "60%", 
                                 textAlign: "right", 
                                 fontFamily: "ITCFranklinGothicStd-Med",
                                 fontSize: "16px" }} >
@@ -495,9 +495,9 @@ class ViewsTab extends React.Component {
         let allViews = this.state.recents.map(view => this.viewsMap(view));
 
         return (
-            <div style = {{height: "247px", marginBottom: "4px", display: "inline-table"}}>
+            <div style = {{height: "36vh", marginBottom: "4px", display: "inline-table"}}>
                 <div style={{
-                    height: "50px",
+                    height: "5.2vh",
                     width: "25vw",
                     backgroundColor: "#0c1836"
                 }}>
@@ -505,8 +505,7 @@ class ViewsTab extends React.Component {
                         className='noselect'
                         style={{
                             // color: this.props.settings.colors.overviewButtonsColor.text,
-                            width: "162px",
-                            height: "19px",
+                            float: "left",
                             fontFamily: "ITCFranklinGothicStd-Demi",
                             fontSize: "18px",
                             letterSpacing: "0.92px",
@@ -514,8 +513,7 @@ class ViewsTab extends React.Component {
                             margin: "0px",
                             fontSize: "22px",
                             textTransform: "uppercase",
-                            paddingLeft: "18px",
-                            lineHeight: "52px"
+                            padding: "12px 0px 10px 18px",
                         }}
                         >My Views
                     </h2>
@@ -527,7 +525,7 @@ class ViewsTab extends React.Component {
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            margin: "-2px 14px 0px 0px"}}
+                            margin: "16px 14px 0px 0px"}}
                     >
                         See All&ensp;>
                     </span>
@@ -588,13 +586,13 @@ class ViewsTab extends React.Component {
                     
                     <button className="tablinks" id="tab-defaultOpen" 
                     onClick= {(e) => this.openViewsTab(e,'Recent')}
-                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%"}}>
+                    style = {{padding: "10px 3vw 10px 3vw", width: "50%"}}>
                         Recent
                     </button>
                     
                     <button className="tablinks"
                     onClick= {(e) =>  this.openViewsTab(e, 'Saved')}
-                    style = {{padding: "10px 52.3320px 10px 52.3320px", width: "50%"}}>
+                    style = {{padding: "10px 3vw 10px 3vw", width: "50%"}}>
                         Saved
                     </button>
                 </div>
@@ -608,8 +606,8 @@ class ViewsTab extends React.Component {
                 {/* Recent Views Tab */}
                 <div id="Recent" className="tabcontent">
                     <div className = "customScroll" style = {{ 
-                        height: "253px", 
-                        overflow: "auto", 
+                        height: "26.15vh", 
+                        // overflow: "auto", 
                         display: (this.state.loadMask ? "none" : ""),
                         width: "25vw"
                     }} >

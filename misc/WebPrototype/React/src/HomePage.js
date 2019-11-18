@@ -466,17 +466,16 @@ class HomePage extends React.Component {
                                 <div style = {{height: "100%", width: "100%", backgroundColor: "#ffffff"}} >
                                     {/* <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}> */}
 
-                                        <div style = {{height: "264px", display: "block"}}> 
+                                        <div style = {{height: "27.25vh", display: "block"}}> 
                                             <div style={{
-                                                height: "50px",
+                                                height: "5.2vh",
                                                 width: "25vw",
                                                 backgroundColor: "#0c1836"
                                             }}>
                                                 <h2
                                                     className='noselect'
                                                     style={{
-                                                        width: "162px",
-                                                        height: "19px",
+                                                        float: "left",
                                                         fontFamily: "ITCFranklinGothicStd-Demi",
                                                         letterSpacing: "0.92px",
                                                         color: "white",
@@ -491,7 +490,7 @@ class HomePage extends React.Component {
 
                                                 <div 
                                                     onClick={() => (this.props.legend_url_arr.length ? this.setState({enlarge: true}) : null)}
-                                                    style={{float: "right", margin: "-2px 14px 0px 0px", cursor: "pointer",}}>
+                                                    style={{float: "right", margin: "16px 14px 0px 0px", cursor: "pointer",}}>
                                                     <img alt="Enlarge" style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
 
@@ -595,15 +594,14 @@ class HomePage extends React.Component {
                                         <AnnouncementsDisplay />
                                     {/* </div>  */}
 
-                                    <div style = {{height: "254px", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
+                                    <div style = {{height: "26.3vh", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
                                         <div style={{
-                                            height: "24px",
-                                            width: "235px",
+                                            width: "12.5vw",
                                             fontFamily: "ITCFranklinGothicStd-Med",
                                             fontSize: "24px",
                                             display: "inline-block",
                                             color: "white",
-                                            lineHeight: "150px"
+                                            marginTop: "58px"
                                         }}>
                                             Need Assistance?
                                         </div>
@@ -612,8 +610,8 @@ class HomePage extends React.Component {
                                         <button style={{
                                             border: "none",
                                             borderRadius: "5px",
-                                            height: "38px",
-                                            width: "144px",
+                                            height: "4.2vh",
+                                            width: "8.15vw",
                                             fontFamily: "ITCFranklinGothicStd-DmCd",
                                             fontSize: "16px",
                                             textTransform: "uppercase",

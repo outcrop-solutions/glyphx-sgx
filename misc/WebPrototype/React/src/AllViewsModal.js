@@ -1028,7 +1028,7 @@ class allViewsModal extends React.Component {
 						
 					</div>
 
-					<div 
+					<span 
 						style={{
 							color: "darkblue", 
 							textDecoration: "underline",
@@ -1039,7 +1039,7 @@ class allViewsModal extends React.Component {
 						onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
 					>
 						See tutorials to learn more.
-					</div>
+					</span>
 
 				</div>
 
@@ -1048,7 +1048,7 @@ class allViewsModal extends React.Component {
 				</div> 
 
 				<div style = {{ 
-					height: "99vh",
+					height: "96vh",
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
 					padding: "0px 28px 0px 26px" }} 
 				>

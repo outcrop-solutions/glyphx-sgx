@@ -108,26 +108,23 @@ class AnnouncementsDisplay extends React.Component {
         );
 
         return (
-            <div style = {{height: "266px", display: "block"}}> 
+            <div style = {{height: "27.45vh", display: "block"}}> 
                 <div style={{
-                    height: "50px",
+                    height: "5.2vh",
                     width: "25vw",
                     backgroundColor: "#0c1836"
                 }}>
                     <h2
                         className='noselect'
                         style={{
-                            // margin: "0 auto",
-                            width: "162px",
-                            height: "19px",
+                            float: "left",
                             fontFamily: "ITCFranklinGothicStd-Demi",
                             letterSpacing: "0.92px",
                             color: "white",
                             margin: "0px",
                             fontSize: "22px",
                             textTransform: "uppercase",
-                            paddingLeft: "18px",
-                            lineHeight: "52px"
+                            padding: "12px 0px 10px 18px",
                         }}
                         >Annoucements
                     </h2>
@@ -139,7 +136,7 @@ class AnnouncementsDisplay extends React.Component {
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            margin: "-2px 14px 0px 0px"}}
+                            margin: "16px 14px 0px 0px"}}
                     >
                         See All&ensp;>
                     </span>
@@ -195,7 +192,7 @@ class AnnouncementsDisplay extends React.Component {
                 </div>
 
                 {/* body */}
-                <Flexbox flexGrow = {1} style = {{ minHeight: "200px" }} >
+                <Flexbox flexGrow = {1} style = {{ height: "22.2vh" }} >
                     
                     <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
                         <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
@@ -203,7 +200,7 @@ class AnnouncementsDisplay extends React.Component {
 
                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
                         <div style = {{ 
-                            height: "215px", 
+                            height: "22.2vh", 
                             overflowY: "scroll", 
                             borderRadius: "3px",  
                             width: "25vw"
