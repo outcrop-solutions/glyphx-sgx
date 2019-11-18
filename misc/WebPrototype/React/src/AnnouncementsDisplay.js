@@ -201,8 +201,7 @@ class AnnouncementsDisplay extends React.Component {
                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
                         <div style = {{ 
                             height: "22.2vh", 
-                            overflowY: "scroll", 
-                            borderRadius: "3px",  
+                            overflowY: "scroll",
                             width: "25vw"
                         }} 
                             className = "customScroll" >

@@ -143,7 +143,7 @@ class allViewsModal extends React.Component {
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
-			console.log(nextProps.typeURL.substring(index + 1));
+			// console.log(nextProps.typeURL.substring(index + 1));
 			let str = nextProps.typeURL.substring(index + 1).replace("\\", "/");
 			context.setState({sdtUrl: str});
 			console.log(str);
@@ -222,7 +222,7 @@ class allViewsModal extends React.Component {
 					// console.log(typeof responseText)
 					// let megaArr = [];
 					let response = JSON.parse(responseText);
-					console.log(response.body, response.statusCode);
+					console.log(response.body, /* response.statusCode */);
 					/*
 					*RESPONSE BODY STRUCTURE
 					*{
@@ -792,10 +792,8 @@ class allViewsModal extends React.Component {
 							}} 
 						>
 							<div 
-								onClick= {(e) => context.expandCollapseTable(e.target.innerText)}
 								className = "noselect" 
 								style = {{ 
-									// backgroundColor: "#42459c",
 									backgroundColor: "#0c1836", 
 									padding: "13px 0px 9px 18px",
 									color: "#ffffff",
@@ -805,17 +803,6 @@ class allViewsModal extends React.Component {
 									letterSpacing: "0.5px"
 								}} 
 							> 
-								{/* <div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
-									<i 
-									className = "fa fa-check" 
-									style = {{ marginRight: "3px" }}
-									title= "Select Column" 
-									onClick = { () => {context.selectDeselectCol(col, "select"), context.setState({selectAll500: true}) }} /> 
-									<i 
-									className = "fa fa-times" 
-									title= "Deselect Column"
-									onClick = { () => {context.selectDeselectCol(col, "deselect"), context.setState({selectAll500: false}) }} /> 
-								</div> */}
 
 								{/* <div style = {{ fontSize: "18px", letterSpacing: "0.5px" }} >  */}
 									{/* {col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]}  */}
@@ -828,13 +815,44 @@ class allViewsModal extends React.Component {
 								<i className = "fa fa-caret-down" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} />
 								</span> */}
 								{/* <img src="./Res/Img/Enlarge.png"/> */}
-								<i 
-									style={{
-										fontSize: "36px", 
-										float: "right", 
-										margin: "-8px 18px 0px 0px"}} 
-									className="fa fa-caret-down"
-								></i>
+
+								<div style = {{ display: "inline-block", float: "right", margin: "0px 18px 0px 0px", fontSize: "18px" }} > 
+									<span
+									// className = "fa fa-check" 
+										style = {{ 
+											marginRight: "20px", 
+											cursor: (context.state.selectAll[col[0]] === 'true'? "pointer" : "not-allowed"),
+											color: (context.state.selectAll[col[0]] === 'true' ? "white" : "darkgrey") }}
+										// title= "Select All" 
+										onClick = { () => {
+											context.selectDeselectCol(col, "select"), 
+											context.setState({selectAll500: true}) }} 
+									> 
+										Select All
+									</span> 
+									<span
+										style = {{cursor: "pointer"}}
+										// className = "fa fa-times" 
+										onClick = { () => {
+											context.selectDeselectCol(col, "deselect"), 
+											context.setState({selectAll500: false}) }} 
+									>
+										Clear
+									</span> 
+								
+									<i 
+										id = {'collapse10481' + col[0]}
+										onClick={(e) => context.expandCollapseTable(e.target.id, e.target.className)}
+										style={{
+											verticalAlign: "sub",
+											fontSize: "36px", 
+											margin: "-8px 0px 0px 24px",
+											cursor: "pointer"}} 
+										className="fa fa-caret-up"
+									/>
+								</div>
+
+								
 
 							</div>
 
@@ -952,12 +970,19 @@ class allViewsModal extends React.Component {
 		}, 12000);
 	}
 
-	expandCollapseTable(target){
-		let id = 'expand' + target;
-		console.log(id)
+	expandCollapseTable(target, name){
+		console.log(name)
+		let substring = target.slice(target.indexOf('collapse10481')+13);
+		let id = 'expand' + substring;
+
+		if(name === 'fa fa-caret-down') {
+			document.getElementById(target).className = 'fa fa-caret-up';
+		}
+		else document.getElementById(target).className = 'fa fa-caret-down';
+
 		if(document.getElementById(id)){
 			if(document.getElementById(id).style.display === "none"){
-				console.log('what? 1')
+				// console.log('what? 1')
 				document.getElementById(id).style.display = "block";
 			}
 			else document.getElementById(id).style.display = "none";
@@ -1048,7 +1073,7 @@ class allViewsModal extends React.Component {
 				</div> 
 
 				<div style = {{ 
-					height: "96vh",
+					height: "97.5vh",
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
 					padding: "0px 28px 0px 26px" }} 
 				>

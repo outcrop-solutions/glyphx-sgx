@@ -395,7 +395,7 @@ class ViewsManager extends React.Component {
         
         let index = context.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
         let sdtPath = context.state.selectionTypeURL.substring(index + 1);
-        console.log(sdtPath, 'sdtPath');
+        // console.log(sdtPath, 'sdtPath');
         makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
             function (responseText) { 
                 let response;
@@ -435,7 +435,7 @@ class ViewsManager extends React.Component {
         if(str.length > 0 && str.indexOf(',') > 0){
             let val = str.slice(0, str.indexOf(','));
             let url = str.slice(str.indexOf(',') + 1);
-            console.log(val, url);
+            // console.log(val, url);
             this.props.dispatch(editModalDisplay(true));
     
             return new Promise((resolve, reject) => {

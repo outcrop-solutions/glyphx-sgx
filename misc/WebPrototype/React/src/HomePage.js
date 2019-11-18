@@ -482,15 +482,18 @@ class HomePage extends React.Component {
                                                         margin: "0px",
                                                         fontSize: "22px",
                                                         textTransform: "uppercase",
-                                                        paddingLeft: "18px",
-                                                        lineHeight: "52px"
+                                                        padding: "12px 0px 10px 18px",
                                                     }}
                                                     >Glyph Key
                                                 </h2>
 
                                                 <div 
                                                     onClick={() => (this.props.legend_url_arr.length ? this.setState({enlarge: true}) : null)}
-                                                    style={{float: "right", margin: "16px 14px 0px 0px", cursor: "pointer",}}>
+                                                    style={{
+                                                        float: "right", 
+                                                        margin: "16px 14px 0px 0px", 
+                                                        cursor: "pointer",
+                                                }}>
                                                     <img alt="Enlarge" style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
 
@@ -535,10 +538,10 @@ class HomePage extends React.Component {
 
                                             </div>
                                             
-                                            <div style={{display: "block", textAlign: "center"}}>
+                                            <div style={{display: "block", textAlign: "center", height: "22.05vh"}}>
                                                 {<img style={{
                                                         width: "100%", 
-                                                        height: "214px",  
+                                                        height: "22.05vh",  
                                                         padding: (this.props.legend_url_arr.length ? "" : "30px")}}
                                                     alt="Glyph Key/ Institution Logo"
                                                     src={
