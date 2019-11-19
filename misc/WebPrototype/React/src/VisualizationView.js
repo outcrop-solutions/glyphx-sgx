@@ -125,7 +125,7 @@ class VisualizationView extends React.Component {
 
     componentDidUpdate(){
         //debugger;
-        let context = this;
+        // let context = this;
         var now = new Date().getTime();
         var distance = now - this.props.timeoutTimer;
 
@@ -321,7 +321,7 @@ class VisualizationView extends React.Component {
                             </div>
 
                             <FilterSideBar 
-                                updateViz = { (key) => {this.updateViz(key), console.log(key)} } 
+                                updateViz = { (key) => this.updateViz(key) } 
                                 showHideLoadingMask = { this.showHideLoadingMask.bind(this) } 
                                 handleDraggableCorrection = { this.handleDraggableCorrection.bind(this) } 
                             />

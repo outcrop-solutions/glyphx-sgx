@@ -295,7 +295,7 @@ class Login extends React.Component {
                 <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
 
-                        <Paper  id = "loginForm" style = {{ backgroundColor: 'rgba(75, 38, 38, 0.50)', width: '310px', height: '327px', borderRadius: "3px"}} >
+                        <Paper  id = "loginForm" style = {{ backgroundColor: 'rgba(75, 38, 38, 0.50)', width: '17vw', height: '33.5vh', borderRadius: "3px"}} >
 
                             <div className = "loginFormOtherElements" style = {{ textAlign: 'center', paddingBottom: '0px'}} >
                                 <img src = "./Res/Img/sgx_inside.png" alt = "SynGlyphX" style = {{ width: "310px", marginTop: "25px" }} />
@@ -384,12 +384,19 @@ class Login extends React.Component {
                                 />
                             </Flexbox>
 
-                            <div style = {{ margin: "-4px 0px -16px 0px" }} >
+                            <div style = {{ /* margin: "-4px 0px -16px 0px" */ }} >
                                 <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
                                     <a 
                                     onClick = { () => /* window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank')  */ 
                                         this.setState({openForgotPasswordDialog: true})} 
-                                    style = {{ cursor: 'pointer' }} >Forgot password?</a>
+                                    style = {{ 
+                                        cursor: "pointer", 
+                                        fontFamily: "ITCFranklinGothicStd-DmCd", 
+                                        letterSpacing: "1px", 
+                                        fontSize: "16px" }} 
+                                    >
+                                        Forgot password?
+                                    </a>
                                 </label>
                             </div>
                             
@@ -419,7 +426,10 @@ class Login extends React.Component {
                             </label>
                             */}
 
-                            <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
+                            <label className = "loginFormOtherElements" id = "forgotPass" style = {{ 
+                                fontSize: '12px', 
+                                color: "#fff", 
+                                fontFamily: "ITCFranklinGothicStd-Med" }} >
                                 By logging in, you agree to the &nbsp;
                                 <a 
                                     onClick = { () => this.setState({ openTermsAndConditionsDialog: true }) } 

@@ -228,7 +228,7 @@ class TopNavBar extends React.Component {
                         <i 
                             className = "fa fa-home"
                             style = {{
-                                fontSize: '24px',
+                                fontSize: '26px',
                                 color: this.props.settings.colors.collapsibleColor.mainIcon,
                                 margin: "5px 0px 1px 8px",
                                 cursor: "pointer"
@@ -259,6 +259,7 @@ class TopNavBar extends React.Component {
                             }} />
                         </Tooltip>
                     </IconButton>
+                    
                     {this.props.homePage ? <div style={{
                         color: "white",
                         fontFamily: "ITCFranklinGothicStd-DmCd", 
@@ -436,11 +437,12 @@ class TopNavBar extends React.Component {
 
                 {/* User Icon Popover */}
                 <Popover
+                    canAutoPosition= { false }
                     open = { this.state.userProfileMenuOpen }
                     anchorEl = { this.state.userInfoAnchorEl }
                     onRequestClose = { this.ToggleUserInfoMenu }
-                    anchorOrigin = {{ "horizontal":"right", "vertical":"bottom" }}
-                    targetOrigin = {{ "horizontal":"right", "vertical":"top" }}
+                    anchorOrigin = {{ "horizontal":"left", "vertical":"bottom" }}
+                    targetOrigin = {{ "horizontal":"left", "vertical":"top" }}
                 >
                     <List>
                         <ListItem

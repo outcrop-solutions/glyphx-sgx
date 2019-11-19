@@ -865,7 +865,7 @@ class allViewsModal extends React.Component {
 									borderBottom: "1px solid black",
 									overflowY: "scroll"	
 							}}>
-								<div style = {{ margin: "1px 1px 0px 0px", position: "absolute", width: "46.35vw" }} >
+								<div style = {{ /* margin: "1px 1px 0px 0px", */ position: "absolute", width: "46.36vw" }} >
 									<SearchBox 
 										ref = "SearchBox"
 										settings = {{

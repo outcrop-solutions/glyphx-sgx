@@ -369,10 +369,9 @@ class HomePage extends React.Component {
 			var savedViewObj;
 			
 			this.props.storedViews.savedViews.forEach(function(savedView) {
-                //
-                //this needs to stay == for typecasting purposes!!
-                //
-				if (rowArray[3] == savedView.ID) {
+                let idConvertToString = savedView.ID.toString();
+                
+				if (rowArray[3] === idConvertToString) {
 					savedViewObj = savedView;
                 }
             });
