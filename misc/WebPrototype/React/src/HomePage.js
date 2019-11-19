@@ -370,7 +370,7 @@ class HomePage extends React.Component {
 			
 			this.props.storedViews.savedViews.forEach(function(savedView) {
                 let idConvertToString = savedView.ID.toString();
-                
+
 				if (rowArray[3] === idConvertToString) {
 					savedViewObj = savedView;
                 }
@@ -422,7 +422,7 @@ class HomePage extends React.Component {
                     }
                     
                     <Flexbox flexGrow = {1} style = {{width: "75vw", margin: "auto", height: "100%" }} >
-                        <Flexbox flexDirection = "row" minWidth = "100%" >
+                        <Flexbox flexDirection = "row" minWidth = "100%">
                         
                             {/* Left Column */}
                             {/* <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
@@ -461,7 +461,12 @@ class HomePage extends React.Component {
                              </Flexbox> 
 
                              {/* Right Column */}
-                             <Flexbox style = {{ width: "25vw", zIndex: (this.state.tutorialStage === 2 ? "300" : "5"), height: "100%" }} >
+                             <Flexbox style = {{ 
+                                 width: "25vw", 
+                                zIndex: (this.state.tutorialStage === 2 ? "300" : "5"), 
+                                height: "100%", 
+                                backgroundColor: "white" }} 
+                             >
                                 <div style = {{height: "100%", width: "100%", backgroundColor: "#ffffff"}} >
                                     {/* <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}> */}
 

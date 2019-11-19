@@ -1073,7 +1073,7 @@ class allViewsModal extends React.Component {
 				</div> 
 
 				<div style = {{ 
-					height: "auto",
+					minHeight: "97.5vh",
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
 					padding: "0px 28px 0px 26px" }} 
 				>
