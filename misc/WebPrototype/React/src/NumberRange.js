@@ -58,75 +58,75 @@ class NumberRangeTable extends React.Component {
     /**
      * - ADCMT
      */
-    applyFilter = () => {
-        //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
+    // applyFilter = () => {
+    //     //console.log('Filter Applied');
+    //     var iframe = document.getElementById('GlyphViewer').contentWindow;
 
-        var context = this;
-        /* this.props.rangeList; */
-        // debugger;
+    //     var context = this;
+    //     /* this.props.rangeList; */
+    //     // debugger;
 
-        makeServerCall('applyFilters',
-            function(result, b) {
-                var resultJson = JSON.parse(result);
-                // debugger;
-                var data = resultJson.data;
-                var tempRowIds = [];
+    //     makeServerCall('applyFilters',
+    //         function(result, b) {
+    //             var resultJson = JSON.parse(result);
+    //             // debugger;
+    //             var data = resultJson.data;
+    //             var tempRowIds = [];
                 
-				if (data && Array.isArray(data)) {
-					if (data.length > 0) {							
-						for (var index = 0; index < data.length; index++) {
-							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-						}
-					}
-					else {
-						// No data was matched.
-						console.log('NO MATCH');
-					}
-				}
+	// 			if (data && Array.isArray(data)) {
+	// 				if (data.length > 0) {							
+	// 					for (var index = 0; index < data.length; index++) {
+	// 						tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+	// 					}
+	// 				}
+	// 				else {
+	// 					// No data was matched.
+	// 					console.log('NO MATCH');
+	// 				}
+	// 			}
 				
-                context.props.setFilterIDs(tempRowIds);
-                iframe.filterGlyphs(tempRowIds);
+    //             context.props.setFilterIDs(tempRowIds);
+    //             iframe.filterGlyphs(tempRowIds);
 
-                context.props.dispatch( setTimer(new Date().getTime()) );
-            },
-            {
-                post: true, 
-                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.rangeList } 
-            }
-        );
+    //             context.props.dispatch( setTimer(new Date().getTime()) );
+    //         },
+    //         {
+    //             post: true, 
+    //             data: { tableName: this.props.VizParams.tableName, filterObj: this.props.rangeList } 
+    //         }
+    //     );
 
-        makeServerCall('applyFiltersEC2',
-            function(responseText, b) {
-                // var resultJson = JSON.parse(result);
-                console.log(responseText, 'response from apply filts in number range');
-                // debugger;
-                // var data = resultJson.data;
-                // var tempRowIds = [];
+    //     makeServerCall('applyFiltersEC2',
+    //         function(responseText, b) {
+    //             // var resultJson = JSON.parse(result);
+    //             console.log(responseText, 'response from apply filts in number range');
+    //             // debugger;
+    //             // var data = resultJson.data;
+    //             // var tempRowIds = [];
                 
-				// if (data && Array.isArray(data)) {
-				// 	if (data.length > 0) {							
-				// 		for (var index = 0; index < data.length; index++) {
-				// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-				// 		}
-				// 	}
-				// 	else {
-				// 		// No data was matched.
-				// 		console.log('NO MATCH');
-				// 	}
-				// }
+	// 			// if (data && Array.isArray(data)) {
+	// 			// 	if (data.length > 0) {							
+	// 			// 		for (var index = 0; index < data.length; index++) {
+	// 			// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+	// 			// 		}
+	// 			// 	}
+	// 			// 	else {
+	// 			// 		// No data was matched.
+	// 			// 		console.log('NO MATCH');
+	// 			// 	}
+	// 			// }
 				
-                // context.props.setFilterIDs(tempRowIds);
-                // iframe.filterGlyphs(tempRowIds);
+    //             // context.props.setFilterIDs(tempRowIds);
+    //             // iframe.filterGlyphs(tempRowIds);
 
-                // context.props.dispatch( setTimer(new Date().getTime()) );
-            },
-            {
-                post: true, 
-                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.rangeList } 
-            }
-        );
-    };
+    //             // context.props.dispatch( setTimer(new Date().getTime()) );
+    //         },
+    //         {
+    //             post: true, 
+    //             data: { tableName: this.props.VizParams.tableName, filterObj: this.props.rangeList } 
+    //         }
+    //     );
+    // };
 
 
     /**
@@ -158,7 +158,7 @@ class NumberRangeTable extends React.Component {
         var setFilterIDs = this.props.setFilterIDs;
         var UndoRedoHistory = this.props.UndoRedoHistory;
         var setTableData = this.props.setTableData;
-        var applyFilter = this.applyFilter.bind(this);
+        // var applyFilter = this.applyFilter.bind(this);
         var setFilterBusy = this.props.setFilterBusy;
 
         var range = rList.map( function(range) {
@@ -179,7 +179,7 @@ class NumberRangeTable extends React.Component {
                     setFilterIDs = { setFilterIDs }
                     UndoRedoHistory = { UndoRedoHistory }
                     setTableData = { setTableData }
-                    applyFilter = { applyFilter }
+                    // applyFilter = { applyFilter }
                     setFilterBusy = { setFilterBusy }
                     
                 />
@@ -300,8 +300,8 @@ class NumberRangeRow extends React.Component {
 
             pom.then(
                 () => context.props.updateStore(context.props.range[2], e[0], e[1], null, context.props.range)
-            ).then(
-                () => context.props.applyFilter()
+            // ).then(
+            //     () => context.props.applyFilter()
             ).then(
                 () => context.props.refreshTableDataOnRowSelection()
             ).then(
@@ -450,8 +450,8 @@ class NumberRangeRow extends React.Component {
 
             pom.then(
                 () => context.props.updateStore(context.props.range[2], min, max, null, context.props.range)
-            ).then(
-                () => context.props.applyFilter()
+            // ).then(
+            //     () => context.props.applyFilter()
             ).then(
                 () => context.props.refreshTableDataOnRowSelection()
             ).then(
@@ -499,8 +499,8 @@ class NumberRangeRow extends React.Component {
 
                 pom.then(
                     () => context.props.updateStore(context.props.range[2], min, max, true)
-                ).then(
-                    () => context.props.applyFilter()
+                // ).then(
+                //     () => context.props.applyFilter()
                 ).then(
                     () => context.props.refreshTableDataOnRowSelection()
                 ).then(
@@ -525,8 +525,8 @@ class NumberRangeRow extends React.Component {
                 //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
 
                 pom.then(
-                    () => context.props.applyFilter()
-                ).then(
+                //     () => context.props.applyFilter()
+                // ).then(
                     () => context.props.refreshTableDataOnRowSelection()
                 ).then(
                     () => context.props.addToHistory()
@@ -558,8 +558,8 @@ class NumberRangeRow extends React.Component {
             //pom.then(() => context.props.refreshTableDataOnRowSelection()).then(() => context.applyFilter()); //.then(() => context.addToHistory()).then(() => context.applyFilter())
 
             pom.then(
-                () => context.props.applyFilter()
-            ).then(
+            //     () => context.props.applyFilter()
+            // ).then(
                 () => context.props.refreshTableDataOnRowSelection()
             ).then(
                 () => context.props.addToHistory()

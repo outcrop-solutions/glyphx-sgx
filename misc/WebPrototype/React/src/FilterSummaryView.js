@@ -67,7 +67,10 @@ class FilterSummaryView extends React.Component {
                 resolve('done');
         });
 
-        pom.then(() => context.props.refreshParent()).then(() => context.applyFilter()).then(() => context.addToHistory());
+        pom
+        .then(() => context.props.refreshParent())
+        // .then(() => context.applyFilter())
+        .then(() => context.addToHistory());
     };
 
 
@@ -102,75 +105,75 @@ class FilterSummaryView extends React.Component {
     /**
      * - ADCMT
      */
-    applyFilter = () => {
-        //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
+    // applyFilter = () => {
+    //     //console.log('Filter Applied');
+    //     var iframe = document.getElementById('GlyphViewer').contentWindow;
 
-        var context = this;
+    //     var context = this;
 
-        makeServerCall('applyFilters',
-            function(result, b) {
-                var resultJson = JSON.parse(result);
-                // debugger;
-                var data = resultJson.data;
-                var tempRowIds = [];
+    //     makeServerCall('applyFilters',
+    //         function(result, b) {
+    //             var resultJson = JSON.parse(result);
+    //             // debugger;
+    //             var data = resultJson.data;
+    //             var tempRowIds = [];
                 
-				if (data && Array.isArray(data)) {
-					if (data.length > 0) {							
-						for (var index = 0; index < data.length; index++) {
-							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-						}
-					}
-					else {
-						// No data was matched.
-						console.log('NO MATCH');
-					}
-				}
+	// 			if (data && Array.isArray(data)) {
+	// 				if (data.length > 0) {							
+	// 					for (var index = 0; index < data.length; index++) {
+	// 						tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+	// 					}
+	// 				}
+	// 				else {
+	// 					// No data was matched.
+	// 					console.log('NO MATCH');
+	// 				}
+	// 			}
 				
-                // Change this to be located in the store
-                //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+    //             // Change this to be located in the store
+    //             //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
 
-                iframe.filterGlyphs(tempRowIds);
+    //             iframe.filterGlyphs(tempRowIds);
 
-                context.props.dispatch( setTimer(new Date().getTime()) );
-            },
-            {post: true, 
-                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
-            }
-        );
+    //             context.props.dispatch( setTimer(new Date().getTime()) );
+    //         },
+    //         {post: true, 
+    //             data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+    //         }
+    //     );
 
-        makeServerCall('applyFiltersEC2',
-            function(responseText, b) {
-                console.log(responseText, 'response from apply filts in filt summary view');
-                // var resultJson = JSON.parse(result);
-                // // debugger;
-                // var data = resultJson.data;
-                // var tempRowIds = [];
+    //     makeServerCall('applyFiltersEC2',
+    //         function(responseText, b) {
+    //             console.log(responseText, 'response from apply filts in filt summary view');
+    //             // var resultJson = JSON.parse(result);
+    //             // // debugger;
+    //             // var data = resultJson.data;
+    //             // var tempRowIds = [];
                 
-				// if (data && Array.isArray(data)) {
-				// 	if (data.length > 0) {							
-				// 		for (var index = 0; index < data.length; index++) {
-				// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-				// 		}
-				// 	}
-				// 	else {
-				// 		// No data was matched.
-				// 		console.log('NO MATCH');
-				// 	}
-				// }
+	// 			// if (data && Array.isArray(data)) {
+	// 			// 	if (data.length > 0) {							
+	// 			// 		for (var index = 0; index < data.length; index++) {
+	// 			// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+	// 			// 		}
+	// 			// 	}
+	// 			// 	else {
+	// 			// 		// No data was matched.
+	// 			// 		console.log('NO MATCH');
+	// 			// 	}
+	// 			// }
 				
-                // // Change this to be located in the store
-                // //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+    //             // // Change this to be located in the store
+    //             // //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
 
-                // iframe.filterGlyphs(tempRowIds);
+    //             // iframe.filterGlyphs(tempRowIds);
 
-                // context.props.dispatch( setTimer(new Date().getTime()) );
-            },
-            {post: true, 
-                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
-            }
-        );
-    };
+    //             // context.props.dispatch( setTimer(new Date().getTime()) );
+    //         },
+    //         {post: true, 
+    //             data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+    //         }
+    //     );
+    // };
 
 
     render() {
