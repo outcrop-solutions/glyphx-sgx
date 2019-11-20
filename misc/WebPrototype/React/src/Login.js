@@ -275,11 +275,22 @@ class Login extends React.Component {
         this.setState({ snackbar: true });
 
         let text = document.getElementsByClassName("retrieve-Pass-Text");
-        console.log('text', text);
+        // console.log('text', text);
     }
 
 
     render() {
+
+        let styleForInput = {
+            width: "80%",
+            borderColor: "#d9d9d9 #ccc #b3b3b3",
+            borderRadius: '5px',
+            border: "1px solid #ccc",
+            height: "4.15vh",
+            overflow: 'hidden',
+            backgroundColor: "white"
+        };
+
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
                 <video playsInline autoPlay loop muted 
@@ -306,17 +317,9 @@ class Login extends React.Component {
                             <Flexbox 
                                 flexDirection = "row" 
                                 className = "loginFormOtherElements"
-                                style = {{
-                                    width: "80%",
-                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                    borderRadius: '5px',
-                                    border: "1px solid #ccc",
-                                    height: "40px",
-                                    overflow: 'hidden',
-                                    backgroundColor: "white"
-                                }}
+                                style = {styleForInput}
                             >
-                                <div style = {{ width: "36px" }} >
+                                <div style = {{ width: "1.9vw" }} >
                                     <i 
                                         className = "fa fa-user" 
                                         style = {{
@@ -347,18 +350,10 @@ class Login extends React.Component {
                             <Flexbox 
                                 flexDirection = "row" 
                                 className = "loginFormOtherElements"
-                                style = {{
-                                    width: "80%",
-                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                    borderRadius: '5px',
-                                    border: "1px solid #ccc",
-                                    height: "40px",
-                                    overflow: 'hidden',
-                                    backgroundColor: "white"
-                                }}
+                                style = {styleForInput}
                             >
 
-                                <div style = {{ width: "36px" }} >
+                                <div style = {{ width: "1.9vw" }} >
                                     <i 
                                         className = "fa fa-lock" 
                                         style = {{
@@ -400,7 +395,15 @@ class Login extends React.Component {
                                 </label>
                             </div>
                             
-                            <label className = "loginFormOtherElements" id = "errPass" style = {{ color: 'red' }}  />
+                            <label 
+                                className = "loginFormOtherElements" 
+                                id = "errPass" 
+                                style = {{ 
+                                    color: 'red',
+                                    fontFamily: "ITCFranklinGothicStd-Med",
+                                    letterSpacing: "0.5px",
+                                    fontSize: "21px" }}  
+                            />
 
                             <br/>
 
@@ -449,7 +452,10 @@ class Login extends React.Component {
                     <br/>
                     
                     <Dialog
-                        title = "Forgot Password?"
+                        actionsContainerStyle = {{ marginLeft: "15px", textAlign: "left" }}
+                        titleStyle = {{ fontFamily: "ITCFranklinGothicStd-Med", fontSize: "26px", lineHeight: "normal" }}
+                        bodyStyle = {{ fontFamily: "ITCFranklinGothicStd-DmCd", fontSize: "20px" }}
+                        title = "Forgot Your Password?"
                         modal = { true }
                         open = { this.state.openForgotPasswordDialog }
                         onRequestClose = { this.handleCloseForgotPassDialog }
@@ -467,7 +473,7 @@ class Login extends React.Component {
                             />
                         ]}
                     >
-                        Please Enter Your Email address associated with the account. <br/>
+                        Please Enter Your Email address associated with the account. <br/><br/>
                         <input 
                             type = "text"
                             id = "ForgotUserText"

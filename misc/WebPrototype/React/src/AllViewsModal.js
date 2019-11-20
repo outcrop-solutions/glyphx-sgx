@@ -782,7 +782,7 @@ class allViewsModal extends React.Component {
 							key = { col } 
 							style = {{ 
 								width: "100%", 
-								maxHeight: "250px", 
+								maxHeight: "25.8vh", 
 								marginBottom: "10px"
 								// borderLeft: (col === data[0] ? "1px solid" : "none"),
 								// borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
@@ -799,7 +799,7 @@ class allViewsModal extends React.Component {
 									color: "#ffffff",
 									fontSize: "18px",
 									fontFamily: "ITCFranklinGothicStd-DmCd",
-									minHeight: "46px",
+									minHeight: "4.8vh",
 									letterSpacing: "0.5px"
 								}} 
 							> 
@@ -994,7 +994,7 @@ class allViewsModal extends React.Component {
 		var context = this;
 		
 		return(
-			<div style={{height: "100%"}}
+			<div style={{height: "100%", minHeight: "102vh"}}
 				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -1015,6 +1015,7 @@ class allViewsModal extends React.Component {
 			>
 
 				<h3 style={{ 
+					height: "6vh",
 					paddingTop: "10px",
 					padding: "18px 0px 10px 25px",
 					fontSize: "20px", 
@@ -1030,7 +1031,7 @@ class allViewsModal extends React.Component {
 				</h3>
 
 				<div style = {{ 
-					height: "100%", 
+					height: "96.3vh", 
 					fontSize: "37px", 
 					textAlign: "center",
 					fontFamily: "ITCFranklinGothicStd-DmCd",

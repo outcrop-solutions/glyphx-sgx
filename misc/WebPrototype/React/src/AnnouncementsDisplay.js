@@ -192,7 +192,7 @@ class AnnouncementsDisplay extends React.Component {
                 </div>
 
                 {/* body */}
-                <Flexbox flexGrow = {1} style = {{ height: "22.2vh" }} >
+                <Flexbox flexGrow = {1} style = {{ height: "22.2vh", display: "block" }} >
                     
                     <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
                         <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
@@ -201,7 +201,7 @@ class AnnouncementsDisplay extends React.Component {
                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
                         <div style = {{ 
                             height: "22.2vh", 
-                            overflowY: "scroll",
+                            overflowY: "auto",
                             width: "25vw"
                         }} 
                             className = "customScroll" >
@@ -233,7 +233,7 @@ class MaintenanceAnnouncement extends React.Component {
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
-                                    height: "30px",
+                                    height: "5.2vh",
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
@@ -261,7 +261,8 @@ class MaintenanceAnnouncement extends React.Component {
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px"
+                            fontSize: "16px",
+                            minHeight: "7.1vh"
                         }}
                         /* className = "cursorHand" */
                         //onClick = {  }
@@ -342,7 +343,7 @@ class ReleaseAnnouncement extends React.Component {
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
-                                    height: "30px",
+                                    minHeight: "5.2vh",
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
@@ -367,7 +368,8 @@ class ReleaseAnnouncement extends React.Component {
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px"
+                            fontSize: "16px",
+                            minHeight: "7.1vh"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.setState({ notesDisplay: true }) }
@@ -481,7 +483,7 @@ class PollAnnouncement extends React.Component {
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
-                                    height: "30px",
+                                    height: "5.2vh",
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
@@ -504,7 +506,8 @@ class PollAnnouncement extends React.Component {
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px"
+                            fontSize: "16px",
+                            minHeight: "7.1vh"
                         }}
                         className = "cursorHand"
                         onClick = { this.toggleDisplay }
@@ -571,7 +574,7 @@ class ShoutAnnouncement extends React.Component {
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
-                                    height: "30px",
+                                    minHeight: "5.2vh",
                                     width: "30px",
                                     borderRadius: "15px"
                                 }} 
@@ -596,7 +599,8 @@ class ShoutAnnouncement extends React.Component {
                             marginBottom: (this.props.last ? "7px" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px"
+                            fontSize: "16px",
+                            minHeight: "7.1vh"
                         }}
                         className = "cursorHand"
                         onClick = { () => this.props.announcement.content.linkType === "link" ? 

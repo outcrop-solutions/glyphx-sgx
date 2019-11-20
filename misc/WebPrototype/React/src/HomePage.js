@@ -50,7 +50,8 @@ class HomePage extends React.Component {
     state = {
         tutorialStage: "done",
         trainingHover: false,
-        enlarge: false
+        enlarge: false,
+        colMax: null
     }
 	
 	goToVizView(success) {
@@ -186,6 +187,14 @@ class HomePage extends React.Component {
         this.fetchSavedViews();
         this.fetchAnnouncements();
         this.fetchSaveUserSettings();
+
+        if(document.getElementById("right_col").clientHeight >= document.getElementById("left_col").clientHeight){
+            this.setState({colMax: document.getElementById("right_col").clientHeight});
+        }
+            else {
+            this.setState({colMax: document.getElementById("left_col").clientHeight});
+        }
+           
     }
 
     componentDidUpdate(){
@@ -422,7 +431,7 @@ class HomePage extends React.Component {
                     }
                     
                     <Flexbox flexGrow = {1} style = {{width: "75vw", margin: "auto", height: "100%" }} >
-                        <Flexbox flexDirection = "row" minWidth = "100%">
+                        <Flexbox flexDirection = "row" minWidth = "100%" style={{height: "100%"}}>
                         
                             {/* Left Column */}
                             {/* <Flexbox flexDirection = "column" style = {{ width: "21%", minHeight: "0", zIndex: (this.state.tutorialStage === 1 ? "300" : "5") }} >
@@ -450,7 +459,7 @@ class HomePage extends React.Component {
                              </Flexbox> */}
                             
                             {/* Left column */}  
-                             <Flexbox flexDirection = "column" style = {{ width: "50vw", height: "100%" }} >
+                             <Flexbox id ="left_col" flexDirection = "column" style = {{ width: "50vw", height: "100%" }} >
                             
                                 {/* Views Manager */}
                                 <Flexbox flexGrow = {1} style = {{ height: "100%", zIndex: (this.state.tutorialStage === 3 ? "300" : "5") }} >
@@ -461,11 +470,13 @@ class HomePage extends React.Component {
                              </Flexbox> 
 
                              {/* Right Column */}
-                             <Flexbox style = {{ 
-                                 width: "25vw", 
-                                zIndex: (this.state.tutorialStage === 2 ? "300" : "5"), 
-                                height: "100%", 
-                                backgroundColor: "white" }} 
+                             <Flexbox 
+                                id = "right_col"
+                                style = {{ 
+                                    width: "25vw", 
+                                    zIndex: (this.state.tutorialStage === 2 ? "300" : "5"), 
+                                    height: (this.state.colMax ? this.state.colMax : "100%"), 
+                                    backgroundColor: "white" }} 
                              >
                                 <div style = {{height: "100%", width: "100%", backgroundColor: "#ffffff"}} >
                                     {/* <Flexbox flexDirection = "column" style = {{ height: "100%", minHeight: "0" }}> */}

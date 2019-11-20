@@ -583,7 +583,7 @@ class SimpleTable extends React.Component {
                     }
     
                     data.push(<TableRowColumn key = { dataRowObject[temp] } 
-                        style = {{ padding: "0px 0px 0px 3px", fontSize: "16px"}} > {dataRowObject[temp]} 
+                        style = {{ padding: "0px 0px 0px 3px", fontSize: "16px", height: "5vh"}} > {dataRowObject[temp]} 
                         </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
@@ -598,6 +598,7 @@ class SimpleTable extends React.Component {
 
                 rows.push(
                     <TableRow 
+                    style={{height: "5vh"}}
                     className='hover-saved-row-select'
                     key = {j} 
                     selected = { this.isSelected(j) } 
@@ -610,7 +611,7 @@ class SimpleTable extends React.Component {
 
         return (
             <div>
-                <div style = {{ margin: "1px 4px -9px"}}  >
+                <div style = {{ margin: "1px 1px -9px"}}  >
                     <SearchBox
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
@@ -628,14 +629,15 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox style={{padding: "3px"}}>
-                    <Table 
+                <Flexbox /* style={{padding: "3px"}} */>
+                    <Table
+                        // wrapperStyle = {{border: "1px solid grey"}}
                         className = {this.props.id}
                         fixedHeader = { true }
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
                         width = "100%"
-                        style= {{border: "1px solid black"}}
+                        // style= {{border: "1px solid black"}}
                         /* wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" }}*/
                         //onRowSelection = { () => console.log("row selected") }
                     >
@@ -644,18 +646,19 @@ class SimpleTable extends React.Component {
                             displaySelectAll = { false }
                             style = {{ 
                                 backgroundColor: "#018cbb", 
-                                fontSize: "14px", 
+                                // fontSize: "14px", 
                                 fontFamily: "ITCFranklinGothicStd-Med" }}
                         >
                             <TableRow
                             style = {{ 
-                                height: "36px", 
+                                height: "5.8vh", 
                                 cursor: "pointer", 
                             }} >
                                 {colNames}
                             </TableRow>
                         </TableHeader>
                         <TableBody 
+                        
                         displayRowCheckbox = { false }
                         style = {{
                             cursor: "pointer",

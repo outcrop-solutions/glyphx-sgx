@@ -415,13 +415,13 @@ class ViewsTab extends React.Component {
             <div key = {`${view[0]}${view[1]}`}>
                 <Card 
                     className = "inherit-hover noselect hover-recent-select" 
-                    containerStyle = {{ padding: "0px", width: "100%" }} 
+                    containerStyle = {{ padding: "0px", width: "100%"}}
                     style = {{ 
                         backgroundColor: "#e6e7e8", 
-                        height: "50px", 
+                        height: "5.2vh", 
                         width: "100%", 
                         boxShadow: "0px 0px 0px",
-                        padding: "10px",
+                        // padding: "18px 11px 10px 11px",
                         borderRadius: "0"
                         // marginTop: (view === newList[0] ? "0px" : "5px"),
                     }} 
@@ -429,7 +429,7 @@ class ViewsTab extends React.Component {
                 >
                     <CardText
                     /* className="hover-recent-select" */
-                        style = {{ padding: "7px", width: "100%" }}
+                        style = {{ /* padding: "7px", */ width: "100%" }}
                         onClick = { () => {this.props.loadRecentView(view); this.socketRecentLaunch(view);} }
                     >
 
@@ -461,7 +461,7 @@ class ViewsTab extends React.Component {
                             </Flexbox>
                                 
                             <div style = {{ 
-                                width: "60%", 
+                                width: "100%", 
                                 textAlign: "right", 
                                 fontFamily: "ITCFranklinGothicStd-Med",
                                 fontSize: "16px" }} >

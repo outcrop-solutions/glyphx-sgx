@@ -560,8 +560,8 @@ class ViewsManager extends React.Component {
         };
 
         const dropDownSize = {
-            height: "50px",
-            width: "315px",
+            minHeight: "5.4vh",
+            minWidth: "17.2vw",
             outline: "none"
         };
         
@@ -693,7 +693,7 @@ class ViewsManager extends React.Component {
                                     style = {{ 
                                         float: "left", 
                                         backgroundColor: "#e6e7e8",
-                                        padding: "27px 88px 24px 1px",
+                                        padding: "2.7vh 9.1vh 2.4vh 0px",
                                         }} > 
                                         <h3 style={h3TableHeader}>
                                             <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/1@2x.png"/>
@@ -752,7 +752,7 @@ class ViewsManager extends React.Component {
                                         style = {{ 
                                             float: "right",
                                             backgroundColor: "#e6e7e8",
-                                            padding: "27px 1px 24px 0px"
+                                            padding: "2.7vh 0px 2.4vh 0px"
                                     }}>
                                         <h3 style={h3TableHeader}>
                                             <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/2@2x.png"/> 
