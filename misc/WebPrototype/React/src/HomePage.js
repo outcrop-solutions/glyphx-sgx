@@ -497,7 +497,7 @@ class HomePage extends React.Component {
                                                         margin: "0px",
                                                         fontSize: "1.2vw",
                                                         textTransform: "uppercase",
-                                                        padding: "12px 0px 10px 18px",
+                                                        padding: "1.25vh 0px 1.04vh 1.88vh",
                                                     }}
                                                     >Glyph Key
                                                 </h2>
@@ -509,7 +509,7 @@ class HomePage extends React.Component {
                                                         margin: "16px 14px 0px 0px", 
                                                         cursor: "pointer",
                                                 }}>
-                                                    <img alt="Enlarge" style={{height: "19px"}} src='./Res/Img/Enlarge@2x.png'/>
+                                                    <img alt="Enlarge" style={{height: "1.98vh"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
 
                                                 <Dialog 

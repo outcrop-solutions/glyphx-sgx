@@ -129,7 +129,7 @@ class ViewsTab extends React.Component {
         }
     
         var index = path.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
-        var currentDate = new Date();
+        // var currentDate = new Date();
 		var sdtPath = path.substring(index + 1);
 		
         if(typeof callback === 'function') callback(query, sdtPath, context);
@@ -242,7 +242,7 @@ class ViewsTab extends React.Component {
         }
 
         console.log("-----------------------Stage 2 reached");
-        var currentDate = new Date();
+        // var currentDate = new Date();
         // console.log(
         //     "TABLE:", tableName,
         //     "TIME:",currentDate.getTime(),
@@ -486,7 +486,7 @@ class ViewsTab extends React.Component {
     
 
     render() {
-        let context = this;
+        // let context = this;
 
         let newList = this.state.recents.slice(0, 5);
 
@@ -507,7 +507,6 @@ class ViewsTab extends React.Component {
                             // color: this.props.settings.colors.overviewButtonsColor.text,
                             float: "left",
                             fontFamily: "ITCFranklinGothicStd-Demi",
-                            fontSize: "18px",
                             letterSpacing: "0.92px",
                             color: "white",
                             margin: "0px",

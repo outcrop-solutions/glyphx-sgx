@@ -229,7 +229,7 @@ class MaintenanceAnnouncement extends React.Component {
                             <i 
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
-                                    fontSize: "20px",
+                                    fontSize: "2.085vh",
                                     margin: "0px 9px 0px 0px",
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
@@ -339,7 +339,7 @@ class ReleaseAnnouncement extends React.Component {
                             <i 
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
-                                    fontSize: "20px",
+                                    fontSize: "2.085vh",
                                     margin: "0px 9px 0px 0px",
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
@@ -427,7 +427,7 @@ class ReleaseAnnouncement extends React.Component {
                                     <i 
                                         className = "fa fa-code-fork" 
                                         style = {{ 
-                                            fontSize: "29px",
+                                            fontSize: "3.02vh",
                                             margin: "0px 9px 0px 0px",
                                             padding: "6px 0px 0px 13px",
                                             backgroundColor: this.props.settings.colors.announcementColors.release,
@@ -481,7 +481,7 @@ class PollAnnouncement extends React.Component {
                             <i 
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
-                                    fontSize: "20px",
+                                    fontSize: "2.085vh",
                                     margin: "0px 9px 0px 0px",
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
@@ -524,7 +524,7 @@ class PollAnnouncement extends React.Component {
                                     <i 
                                         className = "fa fa-gavel" 
                                         style = {{ 
-                                            fontSize: "20px",
+                                            fontSize: "2.085vh",
                                             margin: "0px 9px 0px 0px",
                                             padding: "10px 0px 0px 9px",
                                             backgroundColor: this.props.settings.colors.announcementColors.poll,
@@ -572,7 +572,7 @@ class ShoutAnnouncement extends React.Component {
                             <i 
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
-                                    fontSize: "20px",
+                                    fontSize: "2.085vh",
                                     margin: "0px 9px 0px 0px",
                                     padding: "6px 0px 0px 7px",
                                     color: "#ffffff",
@@ -617,7 +617,7 @@ class ShoutAnnouncement extends React.Component {
                                     <i 
                                         className = "fa fa-bullhorn" 
                                         style = {{ 
-                                            fontSize: "20px",
+                                            fontSize: "2.085vh",
                                             margin: "0px 9px 0px 0px",
                                             padding: "10px 0px 0px 9px",
                                             backgroundColor: this.props.settings.colors.announcementColors.shout,

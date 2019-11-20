@@ -6,7 +6,7 @@ import Flexbox from 'flexbox-react';
 /* import FlatButton from 'material-ui/FlatButton'; */
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
-import Divider from 'material-ui/Divider';
+// import Divider from 'material-ui/Divider';
 import { makeServerCall } from './ServerCallHelper.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';

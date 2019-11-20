@@ -282,9 +282,9 @@ class Login extends React.Component {
     render() {
 
         let styleForInput = {
-            width: "80%",
+            width: "85%",
             borderColor: "#d9d9d9 #ccc #b3b3b3",
-            borderRadius: '5px',
+            // borderRadius: '5px',
             border: "1px solid #ccc",
             height: "4.15vh",
             overflow: 'hidden',
@@ -309,7 +309,7 @@ class Login extends React.Component {
                         <Paper  id = "loginForm" style = {{ backgroundColor: 'rgba(75, 38, 38, 0.50)', width: '17vw', height: '33.5vh', borderRadius: "3px"}} >
 
                             <div className = "loginFormOtherElements" style = {{ textAlign: 'center', paddingBottom: '0px'}} >
-                                <img src = "./Res/Img/sgx_inside.png" alt = "SynGlyphX" style = {{ width: "310px", marginTop: "25px" }} />
+                                <img src = "./Res/Img/sgx_inside.png" alt = "SynGlyphX" style = {{ width: "16.15vw", marginTop: "2.61vh" }} />
                             </div>
 
                             <br/>
@@ -323,7 +323,7 @@ class Login extends React.Component {
                                     <i 
                                         className = "fa fa-user" 
                                         style = {{
-                                            fontSize: '2.25rem',
+                                            fontSize: '3.75vh',
                                             backgroundColor: 'white',
                                         }}
                                     />
@@ -357,7 +357,7 @@ class Login extends React.Component {
                                     <i 
                                         className = "fa fa-lock" 
                                         style = {{
-                                            fontSize: '2.25rem',
+                                            fontSize: '3.75vh',
                                             backgroundColor: 'white',
                                         }}
                                     />
@@ -380,7 +380,7 @@ class Login extends React.Component {
                             </Flexbox>
 
                             <div style = {{ /* margin: "-4px 0px -16px 0px" */ }} >
-                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
+                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ /* fontSize: '12px', */ color: "#fff" }} >
                                     <a 
                                     onClick = { () => /* window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank')  */ 
                                         this.setState({openForgotPasswordDialog: true})} 
@@ -388,7 +388,7 @@ class Login extends React.Component {
                                         cursor: "pointer", 
                                         fontFamily: "ITCFranklinGothicStd-DmCd", 
                                         letterSpacing: "1px", 
-                                        fontSize: "16px" }} 
+                                        fontSize: "1.67vh" }} 
                                     >
                                         Forgot password?
                                     </a>
@@ -402,7 +402,7 @@ class Login extends React.Component {
                                     color: 'red',
                                     fontFamily: "ITCFranklinGothicStd-Med",
                                     letterSpacing: "0.5px",
-                                    fontSize: "21px" }}  
+                                    fontSize: "2.19vh" }}  
                             />
 
                             <br/>
@@ -412,8 +412,8 @@ class Login extends React.Component {
                                 label = "Login"
                                 secondary = { true }
                                 onClick = { (evt) => this.buttonClick(evt, this) }
-                                buttonStyle = {{ backgroundColor: this.props.settings.colors.buttons.general }}
-                                labelStyle = {{ fontSize: '20px' }}
+                                buttonStyle = {{ backgroundColor: this.props.settings.colors.buttons.general, height: "3.75vh" }}
+                                labelStyle = {{ fontSize: '2.08vh' }}
                                 style = {{ 
                                     position: 'relative', 
                                     width: "65%",
@@ -444,7 +444,7 @@ class Login extends React.Component {
 
                             <IconButton 
                                 iconClassName = "fa fa-arrow-circle-down" 
-                                iconStyle = {{ color: 'white' }}
+                                iconStyle = {{ color: 'white', fontSize: "2.502vh" }}
                                 onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
                             />
                         </ Paper>
