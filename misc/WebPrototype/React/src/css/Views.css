@@ -7,10 +7,10 @@
   /* Style the buttons that are used to open the tab content */
   .tab button {
     background-color: inherit;
-    float: left;
+    /* float: left; */
     outline: none;
     cursor: pointer;
-    padding: 10px 12px;
+    /* padding: 10px 12px; */
     transition: 0.3s;
   }
   
@@ -37,7 +37,7 @@
       font-family: ITCFranklinGothicStd-DmCd;
       color: #0c1836;
       background-color: #ced1d7;
-      height: 45px;
+      height: 4.65vh;
   }
 
   .hover-recent-select:hover{

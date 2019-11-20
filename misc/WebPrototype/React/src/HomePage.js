@@ -495,7 +495,7 @@ class HomePage extends React.Component {
                                                         letterSpacing: "0.92px",
                                                         color: "white",
                                                         margin: "0px",
-                                                        fontSize: "22px",
+                                                        fontSize: "calc(22px + (36 - 22) * ((50vw - 25vw) / (4000 - 720)))",
                                                         textTransform: "uppercase",
                                                         padding: "12px 0px 10px 18px",
                                                     }}
@@ -557,7 +557,7 @@ class HomePage extends React.Component {
                                                 {<img style={{
                                                         width: "100%", 
                                                         height: "22.05vh",  
-                                                        padding: (this.props.legend_url_arr.length ? "" : "30px")}}
+                                                        padding: (this.props.legend_url_arr.length ? "" : "3.1vh")}}
                                                     alt="Glyph Key/ Institution Logo"
                                                     src={
                                                         (this.props.legend_url_arr.length ? 

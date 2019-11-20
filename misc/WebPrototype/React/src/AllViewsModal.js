@@ -1217,7 +1217,7 @@ class allViewsModal extends React.Component {
 									alt = "GlyphIT Logo Launch Button"
 									src={(this.shouldLaunchBeDisabled() ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
 									style={{
-										width: "40.09%", 
+										width: "33.09%", 
 										height: "100%",
 										margin: "auto", 
 										border: "1px solid black", 

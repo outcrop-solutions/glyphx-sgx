@@ -435,7 +435,7 @@ class ViewsTab extends React.Component {
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >
                             <Flexbox style = {{ 
-                                width: "100%", 
+                                width: "90%", 
                                 whiteSpace: "nowrap", 
                                 overflow: "hidden", 
                                 fontSize: "16px", 
@@ -586,13 +586,13 @@ class ViewsTab extends React.Component {
                     
                     <button className="tablinks" id="tab-defaultOpen" 
                     onClick= {(e) => this.openViewsTab(e,'Recent')}
-                    style = {{padding: "10px 3vw 10px 3vw", width: "50%"}}>
+                    style = {{height: "4.8vh", width: "50%"}}>
                         Recent
                     </button>
                     
                     <button className="tablinks"
                     onClick= {(e) =>  this.openViewsTab(e, 'Saved')}
-                    style = {{padding: "10px 3vw 10px 3vw", width: "50%"}}>
+                    style = {{height: "4.8vh", width: "50%"}}>
                         Saved
                     </button>
                 </div>
@@ -623,7 +623,8 @@ class ViewsTab extends React.Component {
                 </div>
                 {/* Saved Views Tab */}
                 <div id="Saved" className="tabcontent customScroll" style={{ 
-                    overflow: "auto", 
+                    height: "26.15vh",
+                    overflow: "auto",
                     paddingTop: "7px", 
                     backgroundColor: "#e6e7e8",
                     width: "25vw"

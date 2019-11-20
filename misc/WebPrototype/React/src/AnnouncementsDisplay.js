@@ -157,7 +157,8 @@ class AnnouncementsDisplay extends React.Component {
                             ]
                         }
                     >
-                        <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                        <Flexbox flexDirection = "row" className = "noselect" 
+                            style = {{ marginTop: "3vh", minHeight: "44vh", minWidth: "38vw" }} >
                             <Flexbox 
                                 flexDirection = "column" 
                                 style = {{ 
@@ -278,8 +279,8 @@ class MaintenanceAnnouncement extends React.Component {
                                             margin: "0px 9px 0px 0px",
                                             padding: "10px 0px 0px 9px",
                                             backgroundColor: this.props.settings.colors.announcementColors.maintenance,
-                                            height: "40px",
-                                            width: "40px",
+                                            height: "4.15vh",
+                                            width: "2.09vw",
                                             borderRadius: "3px"
                                         }} 
                                     />
@@ -390,7 +391,9 @@ class ReleaseAnnouncement extends React.Component {
                                 ]
                             }
                         >
-                            <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                            <Flexbox 
+                                flexDirection = "row" className = "noselect" 
+                                style = {{ marginTop: "3vh", minHeight: "44vh", minWidth: "38vw" }} >
                                 <Flexbox 
                                     flexDirection = "column" 
                                     style = {{ 
@@ -428,8 +431,8 @@ class ReleaseAnnouncement extends React.Component {
                                             margin: "0px 9px 0px 0px",
                                             padding: "6px 0px 0px 13px",
                                             backgroundColor: this.props.settings.colors.announcementColors.release,
-                                            height: "40px",
-                                            width: "40px",
+                                            height: "4.15vh",
+                                            width: "2.09vw",
                                             borderRadius: "3px"
                                         }} 
                                     />
@@ -525,8 +528,8 @@ class PollAnnouncement extends React.Component {
                                             margin: "0px 9px 0px 0px",
                                             padding: "10px 0px 0px 9px",
                                             backgroundColor: this.props.settings.colors.announcementColors.poll,
-                                            height: "40px",
-                                            width: "40px",
+                                            height: "4.15vh",
+                                            width: "2.09vw",
                                             borderRadius: "3px"
                                         }} 
                                     />
@@ -618,8 +621,8 @@ class ShoutAnnouncement extends React.Component {
                                             margin: "0px 9px 0px 0px",
                                             padding: "10px 0px 0px 9px",
                                             backgroundColor: this.props.settings.colors.announcementColors.shout,
-                                            height: "40px",
-                                            width: "40px",
+                                            height: "4.15vh",
+                                            width: "2.09vw",
                                             borderRadius: "3px"
                                         }} 
                                     />
