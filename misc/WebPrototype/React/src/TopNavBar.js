@@ -204,7 +204,7 @@ class TopNavBar extends React.Component {
         // console.log(this.props.vizParams);
         return(
             <Toolbar 
-                style = {{ padding: '0px', height: (this.props.homePage ? "65px" : "36px"), backgroundColor: "#031a72" }}
+                style = {{ padding: '0px', height: (this.props.homePage ? "6.72vh" : "3.72vh"), backgroundColor: "#031a72" }}
                 ref = "topNavToolbar"
             >       
                 <ToolbarGroup style = {{ zIndex: (this.props.tutorialStage === 8 ? "300" : "5") }} >

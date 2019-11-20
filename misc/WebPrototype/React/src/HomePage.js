@@ -495,7 +495,7 @@ class HomePage extends React.Component {
                                                         letterSpacing: "0.92px",
                                                         color: "white",
                                                         margin: "0px",
-                                                        fontSize: "calc(22px + (36 - 22) * ((50vw - 25vw) / (4000 - 720)))",
+                                                        fontSize: "1.2vw",
                                                         textTransform: "uppercase",
                                                         padding: "12px 0px 10px 18px",
                                                     }}

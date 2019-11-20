@@ -79,7 +79,7 @@ class SearchBox extends React.Component {
                             borderRadius: "4px",
                             border: "1px solid #ccc",
                             width: "100%",
-                            height: "30px",
+                            height: "3.1vh",
                             // fontFamily: "ITCFranklinGothicStd-Med"
                         }}
                         inputStyle = {{
