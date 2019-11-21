@@ -221,7 +221,7 @@ class TopNavBar extends React.Component {
                         destroyTooltipOnHide = { false }
                         trigger = { Object.keys( {hover: 1} ) }
                         overlay = { 
-                            <div> 
+                            <div style={{height: "1.877vh", width: "1.9vw", fontSize:"1.460vh"}}> 
                                 Return to Home Page
                             </div> 
                         }
@@ -253,7 +253,7 @@ class TopNavBar extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div id="where" style={{height: "1.877vh", width: "1.7vw"}}> 
+                                <div style={{height: "1.877vh", width: "1.85vw", fontSize:"1.460vh"}}> 
                                     Profile
                                 </div> 
                             }
@@ -314,7 +314,7 @@ class TopNavBar extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div style={{height: "1.877vh", width: "1.2vw"}}> 
+                                <div style={{height: "1.877vh", width: "1.35vw", fontSize:"1.460vh"}}> 
                                     Help
                                 </div> 
                             }
@@ -373,7 +373,7 @@ class TopNavBar extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div style={{height: "1.877vh", width: "1.9vw"}}> 
+                                <div style={{height: "1.877vh", width: "2.2vw", fontSize:"1.460vh"}}> 
                                     Settings
                                 </div> 
                             }
@@ -402,13 +402,14 @@ class TopNavBar extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div style={{height: "1.877vh", width: "2.5vw"}}> 
+                                <div style={{height: "1.877vh", width: "3vw", fontSize:"1.460vh"}}> 
                                     Live Chat
                                 </div> 
                             }
                         >
                             <FontIcon style={{fontSize: "2.503vh"}}>
-                            <img alt="Live Chat Icon" src='./Res/Img/LiveChat.png' 
+                            <img alt="Live Chat Icon" src='./Res/Img/LiveChat.png'
+                                style={{ width: "5vw", height: "2.6vh" }} 
                                 onClick={() => window.open('https://zoho.com', '_blank')}/>
                             </FontIcon>
                         </Tooltip>
