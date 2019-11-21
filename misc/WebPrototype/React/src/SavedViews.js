@@ -583,7 +583,7 @@ class SimpleTable extends React.Component {
                     }
     
                     data.push(<TableRowColumn key = { dataRowObject[temp] } 
-                        style = {{ padding: "0px 0px 0px 3px", fontSize: "16px", height: "5vh"}} > {dataRowObject[temp]} 
+                        style = {{ padding: "0px 0px 0px 0.313vh", fontSize: "1.668vh", height: "5vh"}} > {dataRowObject[temp]} 
                         </TableRowColumn>);
                     searchString = searchString + dataRowObject[temp] + ',';
                 }
@@ -611,7 +611,7 @@ class SimpleTable extends React.Component {
 
         return (
             <div>
-                <div style = {{ margin: "1px 1px -9px"}}  >
+                <div style = {{ margin: "0.1042vh 0.1042vh -0.938vh"}}  >
                     <SearchBox
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
@@ -629,7 +629,7 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox style={{ marginTop: "5px" }}>
+                <Flexbox style={{ marginTop: "0.5214vh" }}>
                     <Table
                         // wrapperStyle = {{border: "1px solid grey"}}
                         className = {this.props.id}

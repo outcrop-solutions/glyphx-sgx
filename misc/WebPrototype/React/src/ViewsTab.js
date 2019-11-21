@@ -435,7 +435,7 @@ class ViewsTab extends React.Component {
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >
                             <Flexbox style = {{ 
-                                width: "90%", 
+                                width: "91%", 
                                 whiteSpace: "nowrap", 
                                 overflow: "hidden", 
                                 fontSize: "1.668vh", 
@@ -612,8 +612,8 @@ class ViewsTab extends React.Component {
                     }} >
                         {this.state.recents.length === 0 ? 
                         <div style = {{ 
-                            margin: "30px 0px 15px 0px", 
-                            fontSize: "18px", 
+                            margin: "3.128vh 0px 1.564vh 0px", 
+                            fontSize: "1.877vh", 
                             textAlign: "center",
                             fontFamily: "ITCFranklinGothicStd-Med"
                         }}> No Recent Views </div> 
@@ -624,7 +624,7 @@ class ViewsTab extends React.Component {
                 <div id="Saved" className="tabcontent customScroll" style={{ 
                     height: "26.15vh",
                     overflow: "auto",
-                    paddingTop: "7px", 
+                    paddingTop: "0.730vh", 
                     backgroundColor: "#e6e7e8",
                     width: "25vw"
                 }}>

@@ -122,9 +122,9 @@ class AnnouncementsDisplay extends React.Component {
                             letterSpacing: "0.92px",
                             color: "white",
                             margin: "0px",
-                            fontSize: "22px",
+                            fontSize: "2.294vh",
                             textTransform: "uppercase",
-                            padding: "12px 0px 10px 18px",
+                            padding: "1.251vh 0px 1.043vh 1.877vh",
                         }}
                         >Annoucements
                     </h2>
@@ -132,11 +132,11 @@ class AnnouncementsDisplay extends React.Component {
                         onClick={() => this.setState({allAnnouncements: true})}
                         style={{
                             color: "white", 
-                            fontSize: "18px", 
+                            fontSize: "1.877vh", 
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            margin: "16px 14px 0px 0px"}}
+                            margin: "1.668vh 1.460vh 0px 0px"}}
                     >
                         See All&ensp;>
                     </span>
@@ -152,7 +152,7 @@ class AnnouncementsDisplay extends React.Component {
                                     primary = { true }
                                     onClick = { () => this.setState({ allAnnouncements: false }) }
                                     style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                    labelStyle = {{ lineHeight: "40px" }}
+                                    labelStyle = {{ lineHeight: "4.171vh" }}
                                 />
                             ]
                         }
@@ -164,7 +164,7 @@ class AnnouncementsDisplay extends React.Component {
                                 style = {{ 
                                     width: "75vw",
                                     color: "#000000", 
-                                    paddingRight: "20px"
+                                    paddingRight: "2.086vh"
                                 }} 
                             >
                                 {/* <div style = {{ fontWeight: "bold" }} > New Features: </div> */}
@@ -230,12 +230,12 @@ class MaintenanceAnnouncement extends React.Component {
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
                                     fontSize: "2.085vh",
-                                    margin: "0px 9px 0px 0px",
-                                    padding: "6px 0px 0px 7px",
+                                    margin: "0px 0.938vh 0px 0px",
+                                    padding: "0.626vh 0px 0px 0.730vh",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
                                     height: "5.2vh",
-                                    width: "30px",
+                                    width: "3.128vh",
                                     borderRadius: "15px"
                                 }} 
                                 onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
@@ -257,12 +257,12 @@ class MaintenanceAnnouncement extends React.Component {
                  }} >
                     <CardText
                         style = {{
-                            padding: "10px",
+                            padding: "1.043vh",
                             // marginTop: (this.props.first ? "0px" : "6px"),
-                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            marginBottom: (this.props.last ? "0.730vh" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px",
+                            fontSize: "1.668vh",
                             minHeight: "7.1vh"
                         }}
                         /* className = "cursorHand" */
@@ -275,9 +275,9 @@ class MaintenanceAnnouncement extends React.Component {
                                     <i 
                                         className = "fa fa-exclamation-triangle" 
                                         style = {{ 
-                                            fontSize: "20px",
-                                            margin: "0px 9px 0px 0px",
-                                            padding: "10px 0px 0px 9px",
+                                            fontSize: "2.086vh",
+                                            margin: "0px 0.938vh 0px 0px",
+                                            padding: "1.043vh 0px 0px 0.938vh",
                                             backgroundColor: this.props.settings.colors.announcementColors.maintenance,
                                             height: "4.15vh",
                                             width: "2.09vw",
@@ -291,7 +291,7 @@ class MaintenanceAnnouncement extends React.Component {
                                 <div style = {{ width: "100%" }} > 
                                     We will be performing software updates and maintenance on our servers on {this.props.announcement.content.date}, 
                                     at {this.props.announcement.content.time} EST (UTC-5). Servers will be down for {this.props.announcement.content.length}. 
-                                    <div style = {{ textAlign: "right", marginTop: "10px" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "1.043vh" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -332,7 +332,7 @@ class ReleaseAnnouncement extends React.Component {
         );
 
         return (
-            <Flexbox flexDirection = "row" style = {{marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" style = {{marginBottom: (this.props.last ? "0.730vh" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox>
@@ -340,12 +340,12 @@ class ReleaseAnnouncement extends React.Component {
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
                                     fontSize: "2.085vh",
-                                    margin: "0px 9px 0px 0px",
-                                    padding: "6px 0px 0px 7px",
+                                    margin: "0px 0.938vh 0px 0px",
+                                    padding: "0.626vh 0px 0px 0.730vh",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
                                     minHeight: "5.2vh",
-                                    width: "30px",
+                                    width: "3.128vh",
                                     borderRadius: "15px"
                                 }} 
                                 onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
@@ -366,10 +366,10 @@ class ReleaseAnnouncement extends React.Component {
                     <CardText
                         style = {{
                             padding: "10px",
-                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            marginBottom: (this.props.last ? "0.730vh" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px",
+                            fontSize: "1.668vh",
                             minHeight: "7.1vh"
                         }}
                         className = "cursorHand"
@@ -386,7 +386,7 @@ class ReleaseAnnouncement extends React.Component {
                                         primary = { true }
                                         onClick = { () => this.setState({ notesDisplay: false }) }
                                         style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                        labelStyle = {{ lineHeight: "40px" }}
+                                        labelStyle = {{ lineHeight: "4.171vh" }}
                                     />
                                 ]
                             }
@@ -399,7 +399,7 @@ class ReleaseAnnouncement extends React.Component {
                                     style = {{ 
                                         width: (this.props.announcement.content.bugfixes.length > 0 ? "50%" : "100%"), 
                                         color: "#000000", 
-                                        paddingRight: "20px" 
+                                        paddingRight: "2.086vh" 
                                     }} 
                                 >
                                     <div style = {{ fontWeight: "bold" }} > New Features: </div>
@@ -408,7 +408,7 @@ class ReleaseAnnouncement extends React.Component {
                                     </ul>
                                 </Flexbox>
                                 {this.props.announcement.content.bugfixes.length > 0 ?
-                                    <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "20px" }} >
+                                    <Flexbox flexDirection = "column" style = {{ width: "50%", color: "#000000", paddingRight: "2.086vh" }} >
                                         <div style = {{ fontWeight: "bold" }} > Bug Fixes: </div>
                                         <ul>
                                             {bugfixes}
@@ -428,8 +428,8 @@ class ReleaseAnnouncement extends React.Component {
                                         className = "fa fa-code-fork" 
                                         style = {{ 
                                             fontSize: "3.02vh",
-                                            margin: "0px 9px 0px 0px",
-                                            padding: "6px 0px 0px 13px",
+                                            margin: "0px 0.938vh 0px 0px",
+                                            padding: "0.626vh 0px 0px 1.356vh",
                                             backgroundColor: this.props.settings.colors.announcementColors.release,
                                             height: "4.15vh",
                                             width: "2.09vw",
@@ -442,7 +442,7 @@ class ReleaseAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} >
                                 <div style = {{ width: "100%" }} > 
                                     Release {this.props.announcement.content.release} is now live! Click to view release notes.
-                                    <div style = {{ textAlign: "right", marginTop: "10px" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "1.043vh" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
@@ -474,7 +474,7 @@ class PollAnnouncement extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" style = {{ marginBottom: (this.props.last ? "0.730vh" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox style = {{ height: "50%" }} >
@@ -482,12 +482,12 @@ class PollAnnouncement extends React.Component {
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
                                     fontSize: "2.085vh",
-                                    margin: "0px 9px 0px 0px",
-                                    padding: "6px 0px 0px 7px",
+                                    margin: "0px 0.938vh 0px 0px",
+                                    padding: "0.626vh 0px 0px 0.730vh",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
                                     height: "5.2vh",
-                                    width: "30px",
+                                    width: "3.128vh",
                                     borderRadius: "15px"
                                 }} 
                                 onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
@@ -505,11 +505,11 @@ class PollAnnouncement extends React.Component {
                     }} >
                     <CardText
                         style = {{
-                            padding: "10px",
-                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            padding: "1.043vh",
+                            marginBottom: (this.props.last ? "0.730vh" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px",
+                            fontSize: "1.668vh",
                             minHeight: "7.1vh"
                         }}
                         className = "cursorHand"
@@ -525,8 +525,8 @@ class PollAnnouncement extends React.Component {
                                         className = "fa fa-gavel" 
                                         style = {{ 
                                             fontSize: "2.085vh",
-                                            margin: "0px 9px 0px 0px",
-                                            padding: "10px 0px 0px 9px",
+                                            margin: "0px 0.938vh 0px 0px",
+                                            padding: "1.043vh 0px 0px 0.938vh",
                                             backgroundColor: this.props.settings.colors.announcementColors.poll,
                                             height: "4.15vh",
                                             width: "2.09vw",
@@ -544,7 +544,7 @@ class PollAnnouncement extends React.Component {
                                         :  
                                         this.props.announcement.content.question + " Click to vote, voting will be open until " + this.props.announcement.content.date +  "."
                                     }
-                                    <div style = {{ textAlign: "right", marginTop: "10px"}} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "1.043vh"}} >{this.props.announcement.postDate}</div>
                                 </div>
                                 
                             </Flexbox>
@@ -565,7 +565,7 @@ class ShoutAnnouncement extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ marginBottom: (this.props.last ? "7px" : "0px") }} >
+            <Flexbox flexDirection = "row" style = {{ marginBottom: (this.props.last ? "0.730vh" : "0px") }} >
                 {this.props.adminEdit? 
                     <Flexbox flexDirection = "column" alignSelf = "center" >
                         <Flexbox style = {{ height: "50%" }} >
@@ -573,12 +573,12 @@ class ShoutAnnouncement extends React.Component {
                                 className = "fa fa-minus cursorHand" 
                                 style = {{ 
                                     fontSize: "2.085vh",
-                                    margin: "0px 9px 0px 0px",
-                                    padding: "6px 0px 0px 7px",
+                                    margin: "0px 0.938vh 0px 0px",
+                                    padding: "0.626vh 0px 0px 0.730vh",
                                     color: "#ffffff",
                                     backgroundColor: "#aa0d0d",
                                     minHeight: "5.2vh",
-                                    width: "30px",
+                                    width: "3.128vh",
                                     borderRadius: "15px"
                                 }} 
                                 onClick = { () => this.props.deleteAnnouncement(this.props.announcement.id) }
@@ -598,11 +598,11 @@ class ShoutAnnouncement extends React.Component {
                 }} >
                     <CardText
                         style = {{
-                            padding: "10px",
-                            marginBottom: (this.props.last ? "7px" : "0px"),
+                            padding: "1.043vh",
+                            marginBottom: (this.props.last ? "0.730vh" : "0px"),
                             backgroundColor: "#e6e7e8",
                             fontFamily: "ITCFranklinGothicStd-Med",
-                            fontSize: "16px",
+                            fontSize: "1.668vh",
                             minHeight: "7.1vh"
                         }}
                         className = "cursorHand"
@@ -618,8 +618,8 @@ class ShoutAnnouncement extends React.Component {
                                         className = "fa fa-bullhorn" 
                                         style = {{ 
                                             fontSize: "2.085vh",
-                                            margin: "0px 9px 0px 0px",
-                                            padding: "10px 0px 0px 9px",
+                                            margin: "0px 0.938vh 0px 0px",
+                                            padding: "1.043vh 0px 0px 0.938vh",
                                             backgroundColor: this.props.settings.colors.announcementColors.shout,
                                             height: "4.15vh",
                                             width: "2.09vw",
@@ -632,7 +632,7 @@ class ShoutAnnouncement extends React.Component {
                             <Flexbox style = {{ width: "100%" }} > 
                                 <div style = {{ width: "100%" }} > 
                                     { this.props.announcement.content.message }
-                                    <div style = {{ textAlign: "right", marginTop: "10px" }} >{this.props.announcement.postDate}</div>
+                                    <div style = {{ textAlign: "right", marginTop: "1.043vh" }} >{this.props.announcement.postDate}</div>
                                 </div>
                             </Flexbox>
 
