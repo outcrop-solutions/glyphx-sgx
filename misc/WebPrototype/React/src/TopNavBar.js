@@ -202,7 +202,6 @@ class TopNavBar extends React.Component {
 
     render() {
         // console.log(this.props.vizParams);
-        // if(document.getElementById("where")) console.log(document.getElementById("where").clientHeight, document.getElementById("where").clientWidth)
         return(
             <Toolbar 
                 style = {{ padding: '0px', height: (this.props.homePage ? "6.72vh" : "3.72vh"), backgroundColor: "#031a72" }}
