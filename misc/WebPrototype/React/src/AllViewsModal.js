@@ -783,7 +783,7 @@ class allViewsModal extends React.Component {
 							style = {{ 
 								width: "100%", 
 								maxHeight: "25.8vh", 
-								marginBottom: "10px"
+								marginBottom: "1.043vh"
 								// borderLeft: (col === data[0] ? "1px solid" : "none"),
 								// borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
 								// borderTopLeftRadius: (col === data[0] ? "3px" : ""),
@@ -795,9 +795,9 @@ class allViewsModal extends React.Component {
 								className = "noselect" 
 								style = {{ 
 									backgroundColor: "#0c1836", 
-									padding: "13px 0px 9px 18px",
+									padding: "1.356vh 0px 0.938vh 1.877vh",
 									color: "#ffffff",
-									fontSize: "18px",
+									fontSize: "1.877vh",
 									fontFamily: "ITCFranklinGothicStd-DmCd",
 									minHeight: "4.8vh",
 									letterSpacing: "0.5px"
@@ -816,11 +816,15 @@ class allViewsModal extends React.Component {
 								</span> */}
 								{/* <img src="./Res/Img/Enlarge.png"/> */}
 
-								<div style = {{ display: "inline-block", float: "right", margin: "0px 18px 0px 0px", fontSize: "18px" }} > 
+								<div style = {{ 
+										display: "inline-block", 
+										float: "right", 
+										margin: "0px 1.877vh 0px 0px", 
+										fontSize: "1.877vh" }} > 
 									<span
 									// className = "fa fa-check" 
 										style = {{ 
-											marginRight: "20px", 
+											marginRight: "2.086vh", 
 											cursor: (context.state.selectAll[col[0]] === 'true'? "pointer" : "not-allowed"),
 											color: (context.state.selectAll[col[0]] === 'true' ? "white" : "darkgrey") }}
 										// title= "Select All" 
@@ -845,8 +849,8 @@ class allViewsModal extends React.Component {
 										onClick={(e) => context.expandCollapseTable(e.target.id, e.target.className)}
 										style={{
 											verticalAlign: "sub",
-											fontSize: "36px", 
-											margin: "-8px 0px 0px 24px",
+											fontSize: "3.754vh", 
+											margin: "-0.834vh 0px 0px 2.503vh",
 											cursor: "pointer"}} 
 										className="fa fa-caret-up"
 									/>
@@ -882,7 +886,7 @@ class allViewsModal extends React.Component {
 									/>
 								</div>
 
-								<div /* className = "customScroll" */ id = { col[0] } style = {{ overflow: "auto", marginTop: "30px" }} >
+								<div /* className = "customScroll" */ id = { col[0] } style = {{ overflow: "auto", marginTop: "3.128vh" }} >
 
 									{ (col.length > 500 ? 
 										<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
@@ -891,7 +895,7 @@ class allViewsModal extends React.Component {
 											Too many filters. <br /> Select all or search to view. <br /> <br /> Results: {col.length - 1} 
 										</div> : null) }
 
-									<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
+									<div id = { "se-" + col[0] } style = {{ margin: "1.043vh 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
 
 									{col.map( function(elem) {
 										return (
@@ -921,7 +925,7 @@ class allViewsModal extends React.Component {
 			else if(data.length === 0 && this.state.loadDone === true){
 				return(
 					<div className= "no-results" style={{textAlign: "center", fontSize: "22px"}}>
-						<h3 style={{paddingTop: "35px"}}>No Filter Options Available. Please Select Another Query.</h3>
+						<h3 style={{paddingTop: "3.650vh"}}>No Filter Options Available. Please Select Another Query.</h3>
 					</div>
 				);
 			}
@@ -1016,9 +1020,9 @@ class allViewsModal extends React.Component {
 
 				<h3 style={{ 
 					height: "6vh",
-					paddingTop: "10px",
-					padding: "18px 0px 10px 25px",
-					fontSize: "20px", 
+					paddingTop: "1.043vh",
+					padding: "1.877vh 0px 1.043vh 2.607vh",
+					fontSize: "2.086vh", 
 					fontFamily: "ITCFranklinGothicStd-DmCd",
 					margin: "0px",
 					fontWeight: "300",
@@ -1026,18 +1030,18 @@ class allViewsModal extends React.Component {
 					letterSpacing: "1px",
 					color: ((this.state.loadMask === true || this.state.loadDone === true) ? "black" : "lightgrey")
 				}}>  
-					<img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/3@2x.png"/> 
+					<img style={{verticalAlign: "middle", marginRight: "1.043vh", height: "3.024vh"}} src="./Res/Img/3@2x.png"/> 
 					Select Additional Filter(s)
 				</h3>
 
 				<div style = {{ 
 					height: "96.3vh", 
-					fontSize: "37px", 
+					fontSize: "3.858vh", 
 					textAlign: "center",
 					fontFamily: "ITCFranklinGothicStd-DmCd",
 					backgroundColor: "lightgrey",
 					color: "lightslategrey",
-					paddingTop: "145px",
+					paddingTop: "15.120vh",
 					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
 
 					TIP:
@@ -1048,8 +1052,8 @@ class allViewsModal extends React.Component {
 
 					<div style={{
 						wordBreak: "break-word", 
-						padding: "18px 60px 0px 60px",
-						height: "190px"}} 
+						padding: "1.877vh 6.257vh 0px 6.257vh",
+						height: "19.812vh"}} 
 					id="tip_gen">
 						
 					</div>
@@ -1059,7 +1063,7 @@ class allViewsModal extends React.Component {
 							color: "darkblue", 
 							textDecoration: "underline",
 							cursor: "pointer",
-							fontSize: "22px",
+							fontSize: "2.294vh",
 							textTransform: "uppercase",
 						}} 
 						onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
@@ -1076,7 +1080,7 @@ class allViewsModal extends React.Component {
 				<div style = {{ 
 					minHeight: "97.5vh",
 					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
-					padding: "0px 28px 0px 26px" }} 
+					padding: "0px 2.920vh 0px 2.711vh" }} 
 				>
 
 					<div style={{float: 'right', /* padding: "10px 0px 6px 0px", */ display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
@@ -1107,10 +1111,10 @@ class allViewsModal extends React.Component {
 							primary = { true } 
 						/> */}
 
-						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "18px"}}> 
+						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "1.877vh"}}> 
 							<input 
 								type="checkbox"
-								style={{marginBottom: "15px", cursor: "pointer"}}
+								style={{marginBottom: "1.564vh", cursor: "pointer"}}
 								onChange = {(e) => (
 									e.target.checked === true ? this.selectDesectAll(data, "select") : 
 										this.selectDesectAll(data, "deselect") )}
@@ -1120,17 +1124,17 @@ class allViewsModal extends React.Component {
 						
 						<span style={{
 							fontFamily: "ITCFranklinGothicStd-Med", 
-							fontSize: "18px", 
+							fontSize: "1.877vh", 
 							verticalAlign: "text-bottom",
-							margin: "0px 8px 0px 8px"}}>|</span>
+							margin: "0px 0.834vh 0px 0.834vh"}}>|</span>
 
 						<RaisedButton
 							buttonStyle = {{
-								height: '35px',
-								lineHeight: '35px',
+								height: '3.650vh',
+								lineHeight: '3.650vh',
 								backgroundColor: "white",
 								color: "black",
-								fontSize: "18px",
+								fontSize: "1.877vh",
 								fontFamily: "ITCFranklinGothicStd-Med",
 								borderRadius: "0",
 								border: "1px solid black"
@@ -1138,15 +1142,13 @@ class allViewsModal extends React.Component {
 							labelStyle = {{
 								textAlign: "center",
 								color: "white",
-								margin: "0px 0px 0px -3px",
+								margin: "0px 0px 0px -0.313vh",
 								paddingLeft: "0px",
 								paddingRight: "0px",
-								
-								
 							}}
 							overlayStyle = {{
-								height: '35px',
-								lineHeight: '35px',
+								height: '3.650vh',
+								// lineHeight: '3.650vh',
 							}}
 							onClick={() => this.selectDesectAll(data, "deselect")}
 							style={{}}> 
@@ -1170,7 +1172,9 @@ class allViewsModal extends React.Component {
 					/>
 					<div>
 						
-						<div style={{/* float: "right",*/ padding: "0px 0px 20px 0px", display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+						<div style={{/* float: "right",*/ 
+							padding: "0px 0px 2.086vh 0px", 
+							display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
 							{/* <FlatButton
 								label = "Back"
 								primary = { true }
@@ -1222,7 +1226,7 @@ class allViewsModal extends React.Component {
 										margin: "auto", 
 										border: "1px solid black", 
 										cursor: "pointer", 
-										boxShadow: "3.5px 3.5px 3.5px"}}
+										boxShadow: "0.36496vh 0.36496vh 0.36496vh"}}
 									onClick={() => {
 										(this.shouldLaunchBeDisabled() ? 
 											null :
@@ -1280,9 +1284,9 @@ class AllViewsRow extends React.Component {
 				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
 				style = {{ 
 					backgroundColor: ( this.props.selected ? "#bfbfbf" : "white" ), 
-					padding: "6px 6px 6px 15px",
+					padding: "0.626vh 0.626vh 0.626vh 1.564vh",
 					margin: "0px",
-					fontSize: "16px",
+					fontSize: "1.668vh",
 					fontFamily: "ITCFranklinGothicStd-Med",
 					display: (this.props.children.length)
 				}} 

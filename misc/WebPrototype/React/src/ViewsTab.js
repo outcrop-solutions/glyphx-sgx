@@ -438,7 +438,7 @@ class ViewsTab extends React.Component {
                                 width: "90%", 
                                 whiteSpace: "nowrap", 
                                 overflow: "hidden", 
-                                fontSize: "16px", 
+                                fontSize: "1.668vh", 
                                 letterSpacing: "0.05em",
                                 fontFamily: "ITCFranklinGothicStd-Med" 
                             }} > 
@@ -464,7 +464,7 @@ class ViewsTab extends React.Component {
                                 width: "100%", 
                                 textAlign: "right", 
                                 fontFamily: "ITCFranklinGothicStd-Med",
-                                fontSize: "16px" }} >
+                                fontSize: "1.668vh" }} >
                                 { viewTime } &nbsp; &nbsp; { viewDate }
                             </div>
                         
@@ -495,7 +495,7 @@ class ViewsTab extends React.Component {
         let allViews = this.state.recents.map(view => this.viewsMap(view));
 
         return (
-            <div style = {{height: "36vh", marginBottom: "4px", display: "inline-table"}}>
+            <div style = {{height: "36vh", marginBottom: "0.417vh", display: "inline-table"}}>
                 <div style={{
                     height: "5.2vh",
                     width: "25vw",
@@ -510,9 +510,9 @@ class ViewsTab extends React.Component {
                             letterSpacing: "0.92px",
                             color: "white",
                             margin: "0px",
-                            fontSize: "22px",
+                            fontSize: "2.294vh",
                             textTransform: "uppercase",
-                            padding: "12px 0px 10px 18px",
+                            padding: "1.251vh 0px 1.043vh 1.877vh",
                         }}
                         >My Views
                     </h2>
@@ -520,11 +520,11 @@ class ViewsTab extends React.Component {
                         onClick= {() => this.setState({allViews: true})}
                         style={{
                             color: "white", 
-                            fontSize: "18px", 
+                            fontSize: "1.877vh", 
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            margin: "16px 14px 0px 0px"}}
+                            margin: "1.668vh 1.460vh 0px 0px"}}
                     >
                         See All&ensp;>
                     </span>
@@ -541,18 +541,18 @@ class ViewsTab extends React.Component {
                                     primary = { true }
                                     onClick = { () => this.setState({ allViews: false }) }
                                     style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                    labelStyle = {{ lineHeight: "40px" }}
+                                    labelStyle = {{ lineHeight: "4.171vh" }}
                                 />
                             ]
                         }
                     >
-                        <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                        <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "3.128vh" }} >
                             <Flexbox 
                                 flexDirection = "column" 
                                 style = {{ 
                                     width: "75vw",
                                     color: "#000000", 
-                                    paddingRight: "20px"
+                                    paddingRight: "2.086vh"
                                 }} 
                             >
                                 {/* <div style = {{ fontWeight: "bold" }} > New Features: </div> */}

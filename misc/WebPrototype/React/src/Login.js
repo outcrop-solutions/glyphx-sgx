@@ -306,7 +306,12 @@ class Login extends React.Component {
                 <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
 
-                        <Paper  id = "loginForm" style = {{ backgroundColor: 'rgba(75, 38, 38, 0.50)', width: '17vw', height: '33.5vh', borderRadius: "3px"}} >
+                        <Paper  id = "loginForm" style = {{ 
+                            backgroundColor: 'rgba(75, 38, 38, 0.50)', 
+                            fontSize: "2.50vh",
+                            width: '17vw', 
+                            height: '33.5vh', 
+                            borderRadius: "3px"}} >
 
                             <div className = "loginFormOtherElements" style = {{ textAlign: 'center', paddingBottom: '0px'}} >
                                 <img src = "./Res/Img/sgx_inside.png" alt = "SynGlyphX" style = {{ width: "16.15vw", marginTop: "2.61vh" }} />
@@ -419,6 +424,7 @@ class Login extends React.Component {
                                     width: "65%",
                                     display: 'block',
                                     borderRadius: '3px',
+                                    minWidth: "9.176vh",
                                     color: this.props.settings.colors.settingsModalColor.saveButton 
                                 }}
                             />

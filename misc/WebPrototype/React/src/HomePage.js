@@ -506,7 +506,7 @@ class HomePage extends React.Component {
                                                     onClick={() => (this.props.legend_url_arr.length ? this.setState({enlarge: true}) : null)}
                                                     style={{
                                                         float: "right", 
-                                                        margin: "16px 14px 0px 0px", 
+                                                        margin: "1.668vh 1.460vh 0px 0px", 
                                                         cursor: "pointer",
                                                 }}>
                                                     <img alt="Enlarge" style={{height: "1.98vh"}} src='./Res/Img/Enlarge@2x.png'/>
@@ -514,9 +514,9 @@ class HomePage extends React.Component {
 
                                                 <Dialog 
                                                     repositionOnUpdate={false}
-                                                    contentStyle={{maxWidth: "980px"}}
+                                                    contentStyle={{maxWidth: "102.296vw"}}
                                                     bodyStyle={{overflowY: "auto", textAlign: "center"}}
-                                                    style={{ paddingTop: "20px" }}
+                                                    style={{ paddingTop: "2.086vh" }}
                                                     title = { <div style = {{ fontWeight: "bold" }} > Glyph Key <Divider /></div> }
                                                     modal = { true }
                                                     open = { this.state.enlarge }
@@ -527,12 +527,12 @@ class HomePage extends React.Component {
                                                                 primary = { true }
                                                                 onClick = { () => this.setState({ enlarge: false }) }
                                                                 style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                                                labelStyle = {{ lineHeight: "40px" }}
+                                                                labelStyle = {{ lineHeight: "4.171vh" }}
                                                             />
                                                         ]
                                                     }
                                                 >
-                                                    <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "30px" }} >
+                                                    <Flexbox flexDirection = "row" className = "noselect" style = {{ marginTop: "3.128vh" }} >
                                                         <Flexbox 
                                                             flexDirection = "column" 
                                                             style = {{ 
@@ -542,7 +542,7 @@ class HomePage extends React.Component {
                                                             }} 
                                                         >
                                                             <div style = {{ borderRadius: "3px" }}>
-                                                                <img style={{maxWidth: "932px"}} 
+                                                                <img style={{maxWidth: "97.286vw"}} 
                                                                     alt="Enlarged" src={
                                                                 'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
                                                                 window.encodeURIComponent(this.props.legend_url_arr[0])}/>
@@ -616,10 +616,10 @@ class HomePage extends React.Component {
                                         <div style={{
                                             width: "12.5vw",
                                             fontFamily: "ITCFranklinGothicStd-Med",
-                                            fontSize: "24px",
+                                            fontSize: "2.503vh",
                                             display: "inline-block",
                                             color: "white",
-                                            marginTop: "58px"
+                                            marginTop: "6.048vh"
                                         }}>
                                             Need Assistance?
                                         </div>
@@ -631,7 +631,7 @@ class HomePage extends React.Component {
                                             height: "4.2vh",
                                             width: "8.15vw",
                                             fontFamily: "ITCFranklinGothicStd-DmCd",
-                                            fontSize: "16px",
+                                            fontSize: "1.668vh",
                                             textTransform: "uppercase",
                                             letterSpacing: "0.5px",
                                             color: "#0c1836",

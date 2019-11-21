@@ -228,9 +228,9 @@ class TopNavBar extends React.Component {
                         <i 
                             className = "fa fa-home"
                             style = {{
-                                fontSize: '26px',
+                                fontSize: '2.71vh',
                                 color: this.props.settings.colors.collapsibleColor.mainIcon,
-                                margin: "5px 0px 1px 8px",
+                                margin: "0.52vh 0px 0.1vh 0.83vh",
                                 cursor: "pointer"
                             }}
                         /> 
@@ -255,7 +255,7 @@ class TopNavBar extends React.Component {
                         >
                             <FontIcon className = "fa fa-user fa-2x" color = '#ffffff' 
                                 style={{
-                                    fontSize: (this.props.homePage ? "28px" : "24px")
+                                    fontSize: (this.props.homePage ? "2.920vh" : "2.50vh")
                             }} />
                         </Tooltip>
                     </IconButton>
@@ -263,8 +263,8 @@ class TopNavBar extends React.Component {
                     {this.props.homePage ? <div style={{
                         color: "white",
                         fontFamily: "ITCFranklinGothicStd-DmCd", 
-                        fontSize: "20px", 
-                        margin: "8px 0px 0px 10px",
+                        fontSize: "2.086vh", 
+                        margin: "1.1vh 0px 0px 1.042vh",
                         letterSpacing: "0.5px"}}
                     >
                         Welcome, {this.showName()}
@@ -311,7 +311,7 @@ class TopNavBar extends React.Component {
                         >
                             <FontIcon className = "fa fa-question-circle fa-2x" color = '#ffffff' 
                                 style={{
-                                    fontSize: (this.props.homePage ? "28px" : "24px")
+                                    fontSize: (this.props.homePage ? "2.920vh" : "2.50vh")
                             }} />
                         </Tooltip>
                     </IconButton>
@@ -365,14 +365,14 @@ class TopNavBar extends React.Component {
                         >
                             <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' 
                                 style={{
-                                    fontSize: (this.props.homePage ? "28px" : "24px")
+                                    fontSize: (this.props.homePage ? "2.920vh" : "2.50vh")
                             }} />
                         </Tooltip>
                     </IconButton>
 
                     <IconButton 
                         // onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "17px", width: "110px" }}
+                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "0.67vh", width: "11.48v" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -423,10 +423,10 @@ class TopNavBar extends React.Component {
                             <i 
                                 className = "fa fa-caret-up cursorHand" 
                                 style = {{
-                                    fontSize: '2.3em',
+                                    fontSize: '3.754vh',
                                     color: this.props.settings.colors.collapsibleColor.mainIcon,
                                     transform: 'rotateZ(90deg)',
-                                    margin: "0px 0px 0px 4px",
+                                    margin: "0px 0px 0px 0.417vh",
                                     display: (this.props.homePage ? "none" : "")
                                 }}
                                 onClick = { this.toggleNav.bind(this) }
@@ -456,7 +456,7 @@ class TopNavBar extends React.Component {
                                 </Avatar>
                             }
                             style= {{
-                                fontSize: "19px", 
+                                fontSize: "1.98vh", 
                                 fontFamily: "ITCFranklinGothicStd-Med"}}
                             primaryText = { this.props.userInfo ? this.props.userInfo.Name : ""}
                         />
@@ -464,7 +464,11 @@ class TopNavBar extends React.Component {
                         {/* <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" /> */}
                         {/* {this.props.userInfo.admin ? show : dont} */}
                         {/* <MenuItem className = "menuItemStyling" primaryText = "User Settings" /> */}
-                        <MenuItem onClick = {() => {this.logout(); this.webSocketSend("logout");} } className = "menuItemStyling" primaryText = "Sign out" />
+                        <MenuItem 
+                            onClick = {() => {this.logout(); this.webSocketSend("logout");} } 
+                            className = "menuItemStyling" 
+                            primaryText = "Sign out" 
+                        />
                         
                         
                         

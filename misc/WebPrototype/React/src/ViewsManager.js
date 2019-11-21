@@ -528,7 +528,7 @@ class ViewsManager extends React.Component {
         }
 
         const styleForFirstViewSelect = {
-            fontSize:"18px", 
+            fontSize:"1.877vh", 
             padding: "7px",
             fontFamily: "ITCFranklinGothicStd-Med",
             letterSpacing: "0.5px",
@@ -539,8 +539,8 @@ class ViewsManager extends React.Component {
         const styleForSecViewSelect = {
             width: "100%", 
             margin: "0 auto", 
-            height: "35px",
-            fontSize: "18px", 
+            height: "3.650vh",
+            fontSize: "1.876vh", 
             fontFamily: "ITCFranklinGothicStd-Med",
             letterSpacing: "0.5px",
             whiteSpace: "nowrap", 
@@ -551,7 +551,7 @@ class ViewsManager extends React.Component {
         };
 
         const h3TableHeader = {
-            fontSize: "20px", 
+            fontSize: "2.086vh", 
             fontFamily: "ITCFranklinGothicStd-DmCd",
             margin: "0px",
             fontWeight: "300",
@@ -696,11 +696,21 @@ class ViewsManager extends React.Component {
                                         padding: "2.7vh 9.1vh 2.4vh 0px",
                                         }} > 
                                         <h3 style={h3TableHeader}>
-                                            <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/1@2x.png"/>
+                                            <img 
+                                            style={{
+                                                verticalAlign: "middle", 
+                                                marginRight: "1.043vh", 
+                                                height: "3.024vh"}} 
+                                            src="./Res/Img/1@2x.png"/>
                                             Choose A Topic
                                         </h3>
                                         <br/>
-                                        <select className="custom-select" id="custom-select" style={dropDownSize} onChange={e => {this.selectTopic(e.target.value, mandrList, admList, faList, customList)}}>
+                                        <select 
+                                            className="custom-select" 
+                                            id="custom-select" 
+                                            style={dropDownSize} 
+                                            onChange={e => {this.selectTopic(e.target.value, mandrList, admList, faList, customList)}}
+                                        >
                                             <option style={styleForFirstViewSelect}>Select A Topic</option>
                                             <option
                                             // onClick = { (e) => {
@@ -755,7 +765,11 @@ class ViewsManager extends React.Component {
                                             padding: "2.7vh 0px 2.4vh 0px"
                                     }}>
                                         <h3 style={h3TableHeader}>
-                                            <img style={{verticalAlign: "middle", marginRight: "10px", height: "29px"}} src="./Res/Img/2@2x.png"/> 
+                                            <img style={{
+                                                verticalAlign: "middle", 
+                                                marginRight: "1.043vh",
+                                                height: "3.024vh"}} 
+                                            src="./Res/Img/2@2x.png"/> 
                                             Choose An Inquiry
                                         </h3>
                                         <br/>
