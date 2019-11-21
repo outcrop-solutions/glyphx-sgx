@@ -238,7 +238,7 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         onClick = { (event) => this.ToggleUserInfoMenu(event) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5") }}
+                        style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5"), padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -294,7 +294,7 @@ class TopNavBar extends React.Component {
                     <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
                         onClick = { () => window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') }
-                        style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5") }}
+                        style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5"), padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -348,7 +348,10 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "10px" }}
+                        style = {{ 
+                            zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), 
+                            marginRight: "1.043vh", 
+                            padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -372,7 +375,11 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         // onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), marginRight: "0.67vh", width: "11.48v" }}
+                        style = {{ 
+                            zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), 
+                            marginRight: "0.67vh", 
+                            width: "11.48v", 
+                            padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -387,7 +394,7 @@ class TopNavBar extends React.Component {
                                 </div> 
                             }
                         >
-                            <FontIcon>
+                            <FontIcon style={{fontSize: "2.503vh"}}>
                             <img alt="Live Chat Icon" src='./Res/Img/LiveChat.png' 
                                 onClick={() => window.open('https://zoho.com', '_blank')}/>
                             </FontIcon>

@@ -344,8 +344,8 @@ class Login extends React.Component {
                                         borderLeft: '1px #b3b3b3 solid',
                                         float: 'right',
                                         outlineWidth: '0',
-                                        fontSize: '16px',
-                                        paddingLeft: "10px"
+                                        fontSize: '1.668vh',
+                                        paddingLeft: "1.043vh"
                                     }}
                                 />
                             </Flexbox>
@@ -378,8 +378,8 @@ class Login extends React.Component {
                                         width: '90%',
                                         float: 'right',
                                         outlineWidth: '0',
-                                        fontSize: '23px',
-                                        paddingLeft: "10px"
+                                        fontSize: '2.398vh',
+                                        paddingLeft: "1.043vh"
                                     }}
                                 />
                             </Flexbox>

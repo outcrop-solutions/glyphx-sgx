@@ -136,7 +136,7 @@ class AnnouncementsDisplay extends React.Component {
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            margin: "1.668vh 1.460vh 0px 0px"}}
+                            margin: "1.60vh 1.460vh 0px 0px"}}
                     >
                         See All&ensp;>
                     </span>

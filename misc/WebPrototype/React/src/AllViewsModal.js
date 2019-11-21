@@ -1114,7 +1114,7 @@ class allViewsModal extends React.Component {
 						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "1.877vh"}}> 
 							<input 
 								type="checkbox"
-								style={{marginBottom: "1.564vh", cursor: "pointer"}}
+								style={{marginBottom: "1.564vh", cursor: "pointer", height: "1.356vh"}}
 								onChange = {(e) => (
 									e.target.checked === true ? this.selectDesectAll(data, "select") : 
 										this.selectDesectAll(data, "deselect") )}
@@ -1137,7 +1137,8 @@ class allViewsModal extends React.Component {
 								fontSize: "1.877vh",
 								fontFamily: "ITCFranklinGothicStd-Med",
 								borderRadius: "0",
-								border: "1px solid black"
+								border: "1px solid black",
+								marginBottom: "0.834vh"
 							}} 
 							labelStyle = {{
 								textAlign: "center",

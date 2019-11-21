@@ -572,7 +572,7 @@ class SimpleTable extends React.Component {
                         colNames.push(
                             <TableHeaderColumn 
                             key = { this.props.id + temp } 
-                            style = {{fontSize: "18px", padding: "10px", color: "black"}}
+                            style = {{fontSize: "1.877vh", padding: "1.043vh", color: "black"}}
                             > 
                                 <div onClick = { (evt) => this.onSortClick(evt, temp, 'Text') } >
                                     {displayTemp} &nbsp;

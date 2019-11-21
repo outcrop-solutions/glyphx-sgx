@@ -20,7 +20,7 @@
 
 .customScroll::-webkit-scrollbar
 {
-	width: 14px;
+	width: 1.460vh;
 	background-color: #ebebeb;
   border-radius: 0px;
 }
