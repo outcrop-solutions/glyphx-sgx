@@ -1150,7 +1150,8 @@ class allViewsModal extends React.Component {
 							}}
 							overlayStyle = {{
 								height: '3.650vh',
-								// lineHeight: '3.650vh',
+								lineHeight: '3.650vh',
+								width: "4.8vw"
 							}}
 							onClick={() => this.selectDesectAll(data, "deselect")}
 							style={{}}> 

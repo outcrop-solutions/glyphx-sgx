@@ -301,6 +301,7 @@ class TopNavBar extends React.Component {
                         style = {{ 
                             height: "5.005vh",
                             width: "2.010vw", 
+                            marginRight: "0.55vh", 
                             zIndex: (this.props.tutorialStage === 4 ? "300" : "5"), 
                             padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
@@ -388,8 +389,8 @@ class TopNavBar extends React.Component {
                         style = {{ 
                             height: "5.005vh",
                             zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), 
-                            marginRight: "0.67vh", 
-                            width: "11.48v", 
+                            marginRight: "0.97vh", 
+                            width: "6.48vw", 
                             padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
