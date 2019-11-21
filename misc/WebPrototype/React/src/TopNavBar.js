@@ -202,6 +202,7 @@ class TopNavBar extends React.Component {
 
     render() {
         // console.log(this.props.vizParams);
+        // if(document.getElementById("where")) console.log(document.getElementById("where").clientHeight, document.getElementById("where").clientWidth)
         return(
             <Toolbar 
                 style = {{ padding: '0px', height: (this.props.homePage ? "6.72vh" : "3.72vh"), backgroundColor: "#031a72" }}
@@ -215,7 +216,7 @@ class TopNavBar extends React.Component {
                             this.webSocketSend("home");
                         }}
                         placement = 'left'
-                        mouseEnterDelay = { 0.5 }
+                        mouseEnterDelay = { 0.15 }
                         mouseLeaveDelay = { 0.15 }
                         destroyTooltipOnHide = { false }
                         trigger = { Object.keys( {hover: 1} ) }
@@ -247,12 +248,12 @@ class TopNavBar extends React.Component {
                     >
                         <Tooltip
                             placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
+                                <div id="where" style={{height: "1.877vh", width: "1.7vw"}}> 
                                     Profile
                                 </div> 
                             }
@@ -308,12 +309,12 @@ class TopNavBar extends React.Component {
                     >
                         <Tooltip
                             placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            mouseEnterDelay = { 0.3 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
+                                <div style={{height: "1.877vh", width: "1.2vw"}}> 
                                     Help
                                 </div> 
                             }
@@ -367,12 +368,12 @@ class TopNavBar extends React.Component {
                     >
                         <Tooltip
                             placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
+                                <div style={{height: "1.877vh", width: "1.9vw"}}> 
                                     Settings
                                 </div> 
                             }
@@ -396,12 +397,12 @@ class TopNavBar extends React.Component {
                     >
                         <Tooltip
                             placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            mouseEnterDelay = { 0.3 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
+                                <div style={{height: "1.877vh", width: "2.5vw"}}> 
                                     Live Chat
                                 </div> 
                             }
@@ -429,7 +430,7 @@ class TopNavBar extends React.Component {
                         {/*<FontIcon className = "fa fa-caret-up fa-2x" color = '#ffffff' style = {{ transform: 'rotateZ(90deg)', margin: "0px 0px 0px 4px" }} />*/}
                         <Tooltip
                             placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            mouseEnterDelay = { 0.3 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }

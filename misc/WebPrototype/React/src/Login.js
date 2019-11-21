@@ -274,7 +274,7 @@ class Login extends React.Component {
         // Send server call to email password recovery link.
         this.setState({ snackbar: true });
 
-        let text = document.getElementsByClassName("retrieve-Pass-Text");
+        // let text = document.getElementsByClassName("retrieve-Pass-Text");
         // console.log('text', text);
     }
 
