@@ -1114,7 +1114,8 @@ class allViewsModal extends React.Component {
 						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "1.877vh"}}> 
 							<input 
 								type="checkbox"
-								style={{marginBottom: "1.564vh", cursor: "pointer", height: "1.356vh"}}
+								className = "selectAllCheck"
+								style={{marginBottom: "1.564vh", cursor: "pointer"}}
 								onChange = {(e) => (
 									e.target.checked === true ? this.selectDesectAll(data, "select") : 
 										this.selectDesectAll(data, "deselect") )}

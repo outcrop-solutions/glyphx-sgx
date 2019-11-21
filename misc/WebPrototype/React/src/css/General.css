@@ -345,3 +345,8 @@ td:last-child{
 .launch_button:active{
   transform: translateY(4px);
 }
+
+input.selectAllCheck{
+  width: 1.357vw;
+  height: 1.356vh;
+}

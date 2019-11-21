@@ -238,7 +238,11 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         onClick = { (event) => this.ToggleUserInfoMenu(event) } 
-                        style = {{ zIndex: (this.props.tutorialStage === 7 ? "300" : "5"), padding: "1.251vh" }}
+                        style = {{
+                            height: "5.005vh",
+                            width: "2.010vw", 
+                            zIndex: (this.props.tutorialStage === 7 ? "300" : "5"), 
+                            padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -294,7 +298,11 @@ class TopNavBar extends React.Component {
                     <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
                         onClick = { () => window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') }
-                        style = {{ zIndex: (this.props.tutorialStage === 4 ? "300" : "5"), padding: "1.251vh" }}
+                        style = {{ 
+                            height: "5.005vh",
+                            width: "2.010vw", 
+                            zIndex: (this.props.tutorialStage === 4 ? "300" : "5"), 
+                            padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
                         <Tooltip
@@ -349,6 +357,8 @@ class TopNavBar extends React.Component {
                     <IconButton 
                         onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
                         style = {{ 
+                            height: "5.005vh",
+                            width: "2.010vw", 
                             zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), 
                             marginRight: "1.043vh", 
                             padding: "1.251vh" }}
@@ -376,6 +386,7 @@ class TopNavBar extends React.Component {
                     <IconButton 
                         // onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
                         style = {{ 
+                            height: "5.005vh",
                             zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), 
                             marginRight: "0.67vh", 
                             width: "11.48v", 
