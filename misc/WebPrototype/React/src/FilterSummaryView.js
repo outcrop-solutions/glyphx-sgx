@@ -269,7 +269,7 @@ class FilterSummaryView extends React.Component {
 
         return (
             <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:"20.855vh", borderRadius: "5px" }} containerStyle = {{ padding: "0px", borderRadius: "5px" }}>
-                <CardText style = {{ padding: "0.313vh 0.834vh", borderRadius: "5px" }} >
+                <CardText style = {{ padding: "0.313vh 0.834vh", borderRadius: "5px", fontSize: "1.460vh" }} >
                     <div>
 
                         <Flexbox flexDirection = "row" >

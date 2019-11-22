@@ -76,10 +76,10 @@ class TopNavBar extends React.Component {
      * Wont have to be reloaded after it is "closed"
 	 */ 
     toggleNav() {
-        console.log('which one is being called1')
+        console.log('this one is being called1')
         var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(23.6vw, 0px)" ? false : true;
-        var gv = document.getElementById('GlyphViewerContainer');
+        // var gv = document.getElementById('GlyphViewerContainer');
 
         var sidebarButton = document.getElementById("showSideBar");
         sidebarButton.style.display = "";
@@ -87,18 +87,18 @@ class TopNavBar extends React.Component {
         if (!filterNavOpen) {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
-            if (!this.props.settings.sideBarOverlap) {
-                gv.style.width = "calc(100% - 23.5vw)";
-            }
+            // if (!this.props.settings.sideBarOverlap) {
+            //     gv.style.width = "calc(100% - 23.5vw)";
+            // }
 
-            else {
-                gv.style.width = "100%";
-            }
+            // else {
+            //     gv.style.width = "100%";
+            // }
         }
 
         else {
             filterNav.style.transform = "translate(23.6vw, 0px)";
-            gv.style.width = "100%";
+            // gv.style.width = "100%";
         }
     }
 
@@ -196,6 +196,11 @@ class TopNavBar extends React.Component {
                 this.props.webSocket.send(JSON.stringify({
                     url_uid: this.props.uid, 
                     home: true}))
+            }
+            else if(type === "collapse_sidenav"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid, 
+                    collapse_sidenav: true}))
             }
 		}
     }
@@ -450,7 +455,7 @@ class TopNavBar extends React.Component {
                                     margin: "0px 0px 0px 0.417vh",
                                     display: (this.props.homePage ? "none" : "")
                                 }}
-                                onClick = { this.toggleNav.bind(this) }
+                                onClick = {() => {this.toggleNav(); this.webSocketSend("collapse_sidenav"); } }
                             /> 
                         </Tooltip>
                     {/*</IconButton>*/}

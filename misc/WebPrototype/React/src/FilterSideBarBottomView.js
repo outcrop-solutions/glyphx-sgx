@@ -587,7 +587,7 @@ class FilterSideBarBottomView extends React.Component {
                             </div>
                         }
                     >
-                        <div style = {{ margin: "-0.209vh -0.313vh -0.938vh 0.104vh" }} >
+                        <div style = {{ margin: "-0.209vh -0.313vh -0.438vh 0.104vh" }} >
                             <SearchBox 
                                 settings = {{
                                     SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 

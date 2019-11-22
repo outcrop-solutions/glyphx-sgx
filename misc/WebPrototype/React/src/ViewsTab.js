@@ -429,8 +429,8 @@ class ViewsTab extends React.Component {
                 >
                     <CardText
                     /* className="hover-recent-select" */
-                        style = {{ /* padding: "7px", */ width: "100%" }}
-                        onClick = { () => {this.props.loadRecentView(view); this.socketRecentLaunch(view);} }
+                        style = {{ padding: "1.6684045881126173vh", width: "100%" }}
+                        onClick = { () => {this.props.loadRecentView(view); this.socketRecentLaunch(view); } }
                     >
 
                         <Flexbox flexDirection = "row" minWidth = "100%" >

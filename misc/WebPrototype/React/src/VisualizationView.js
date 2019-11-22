@@ -241,11 +241,11 @@ class VisualizationView extends React.Component {
 	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
      * Wont have to be reloaded after it is "closed"
 	 */ 
-    toggleNav() {
-        console.log('this one is being called4')
+    toggleNav(){
+        console.log('this one is being called2')
         var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(23.6vw, 0px)" ? false : true;
-        var gv = document.getElementById('GlyphViewerContainer');
+        // var gv = document.getElementById('GlyphViewerContainer');
 
         var sidebarButton = document.getElementById("showSideBar");
         sidebarButton.style.display = "none";
@@ -253,18 +253,18 @@ class VisualizationView extends React.Component {
         if (!filterNavOpen) {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
-            if (!this.props.settings.sideBarOverlap) {
-                gv.style.width = "calc(100% - 23.5vw)";
-            }
+            // if (!this.props.settings.sideBarOverlap) {
+            //     gv.style.width = "calc(100% - 23.5vw)";
+            // }
 
-            else {
-                gv.style.width = "100%";
-            }
+            // else {
+            //     gv.style.width = "100%";
+            // }
         }
 
         else {
             filterNav.style.transform = "translate(23.6vw, 0px)";
-            gv.style.width = "100%";
+            // gv.style.width = "100%";
         }
     }
 
@@ -280,6 +280,16 @@ class VisualizationView extends React.Component {
         }
         this.props.dispatch(clearFilterOptions());
         this.props.history.push('/home')
+    }
+
+    webSocketSend(type){
+        if(this.props.uid){
+            if(type === "expand_sidenav"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid, 
+                    expand_sidenav: true}))
+            }
+		}
     }
 
 
@@ -352,7 +362,7 @@ class VisualizationView extends React.Component {
                                 }}
                                 mini = { true }
                                 //iconStyle = {{ height: "36px", width: "36px" }}
-                                onClick = { () => this.toggleNav() }
+                                onClick = { () => {this.toggleNav(); this.webSocketSend("expand_sidenav"); } }
                             >
                                 <i 
                                     className = "fa fa-caret-down" 
@@ -504,6 +514,7 @@ const mapStateToProps = function(state){
     userInfo: state.filterState.UserInfo,
     VizParams: state.filterState.VizParams,
     timeoutTimer: state.filterState.TimeoutTimer,
+    webSocket: state.filterState.webSocket,
     uid: state.filterState.uid
   }
 }

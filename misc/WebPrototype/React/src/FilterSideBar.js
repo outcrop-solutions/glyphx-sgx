@@ -591,7 +591,8 @@ class FilterSideBar extends React.Component {
                         style={{
                             color: "white", 
                             letterSpacing: ".2em", 
-                            padding: "0 1.043vh 0 1.043vh"}}>
+                            padding: "0 1.043vh 0 1.043vh",
+                            fontSize: "1.460vh"}}>
                         HIDE
                         </span> 
                         
