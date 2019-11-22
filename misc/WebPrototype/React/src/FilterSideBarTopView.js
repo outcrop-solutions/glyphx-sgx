@@ -1207,8 +1207,8 @@ class FilterSideBarTopView extends React.Component {
                 />
 
                 {/* Row 1 */} 
-                <Flexbox flexDirection = "row" style = {{ margin: "-9px 0px -2px -1px" }} >
-                    <Flexbox style = {{ width: "55%", margin: "1px 6px 0px 0px" }} > 
+                <Flexbox flexDirection = "row" style = {{ margin: "-0.938vh 0px -0.209vh -0.104vh" }} >
+                    <Flexbox style = {{ width: "55%", margin: "0.104vh 0.626vh 0px 0px" }} > 
                         <Select 
                             className = "selectViewName dark-theme"
                             simpleValue
@@ -1223,7 +1223,7 @@ class FilterSideBarTopView extends React.Component {
                         />
                     </Flexbox>
                     
-                    <Flexbox style = {{ width: "45%", marginBottom: "-4px" }} >
+                    <Flexbox style = {{ width: "45%", marginBottom: "-0.417vh" }} >
 
                         {/*
 
@@ -1252,26 +1252,26 @@ class FilterSideBarTopView extends React.Component {
                         >
                             <RaisedButton
                                 onClick = { () => this.handleUndo() }
-                                label = { <i className = "fa fa-undo" style = {{ margin: "0px 0px 0px -3px" }} /> }
+                                label = { <i className = "fa fa-undo" style = {{ margin: "0px 0px 0px -0.313vh" }} /> }
                                 style = {{
-                                    margin: "4px 6px 11px -2px",
-                                    minWidth: "37px",
-                                    width: "37px",
-                                    height: "25px"
+                                    margin: "0.417vh 0.626vh 1.147vh -0.209vh",
+                                    minWidth: "1.9vw",
+                                    width: "1.9vw",
+                                    height: "2.607vh"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: "2.607vh",
+                                    lineHeight: "2.607vh",
                                     //backgroundColor: ( this.canUndoRedo("undo") ? this.props.settings.colors.collapsibleColor.subBackground : "#bebebe" )
                                     backgroundColor: this.props.settings.colors.collapsibleColor.subBackground
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '13px',
+                                    fontSize: "1.356vh",
                                     color: this.props.settings.colors.overviewButtonsColor.text
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                                 primary = { true }
                             />
@@ -1291,26 +1291,26 @@ class FilterSideBarTopView extends React.Component {
                         >
                             <RaisedButton
                                 onClick = { () => this.handleRedo() }
-                                label = { <i className = "fa fa-repeat" style = {{ margin: "0px 0px 0px -3px" }} /> }
+                                label = { <i className = "fa fa-repeat" style = {{ margin: "0px 0px 0px -0.313vh" }} /> }
                                 style = {{
-                                    margin: "4px 2px 0px 0px",
-                                    minWidth: "37px",
-                                    width: "37px",
-                                    height: "25px"
+                                    margin: "0.417vh 0.209vh 0px 0px",
+                                    minWidth: "1.9vw",
+                                    width: "1.9vw",
+                                    height: "2.607vh"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '35px',
+                                    height: '2.607vh',
+                                    lineHeight: '3.650vh',
                                     //backgroundColor: ( this.canUndoRedo("redo") ? this.props.settings.colors.collapsibleColor.subBackground : "#bebebe" )
                                     backgroundColor: this.props.settings.colors.collapsibleColor.subBackground
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '13px',
+                                    fontSize: '1.360vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: "2.607vh",
+                                    lineHeight: "2.607vh"
                                 }}
                                 primary = { true }
                             />
@@ -1333,22 +1333,22 @@ class FilterSideBarTopView extends React.Component {
                                     onClick = { (evt) => this.handleOpenClose('menu', true, evt) }
                                     label = "Menu"
                                     style = {{
-                                        margin: "4px 0px 11px 4px",
-                                        minWidth: "112px",
-                                        width: "112px"
+                                        margin: "0.417vh 0px 1.147vh 0.417vh",
+                                        minWidth: "5.8vw",
+                                        width: "5.8vw"
                                     }}
                                     buttonStyle = {{
-                                        height: '25px',
-                                        lineHeight: '25px',
+                                        height: "2.607vh",
+                                        lineHeight: "2.607vh",
                                         backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                     }} 
                                     labelStyle = {{
-                                        fontSize: '13px',
+                                        fontSize: '1.360vh',
                                         color: this.props.settings.colors.overviewButtonsColor.text
                                     }}
                                     overlayStyle = {{
-                                        height: '25px',
-                                        lineHeight: '25px'
+                                        height: "2.607vh",
+                                        lineHeight: "2.607vh"
                                     }}
                                     primary = { true }
                                 />
@@ -1358,7 +1358,7 @@ class FilterSideBarTopView extends React.Component {
                                 open = { this.state.menu.open }
                                 anchorEl = { this.state.menu.anchorEl }
                                 onRequestClose = { (evt) => this.handleOpenClose('menu', false, evt) }
-                                style = {{ fontSize: '13px', width: "112px" }}
+                                style = {{ fontSize: '1.360vh', width: "11.691vw" }}
                             >
                                 <Menu>
                                     <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
@@ -1372,7 +1372,7 @@ class FilterSideBarTopView extends React.Component {
                                 open = { this.state.menu.showOpen }
                                 anchorEl = { this.state.menu.showAnchorEl }
                                 onRequestClose = { (evt) => this.handleOpenClose('showMenu', false, evt) }
-                                style = {{ fontSize: '13px' }}
+                                style = {{ fontSize: '1.360vh' }}
                             >
                                 <Menu>
                                     <Tooltip
@@ -1513,7 +1513,8 @@ class FilterSideBarTopView extends React.Component {
                 </Flexbox>
                 
                 {/* Row 3 */}
-                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: this.state.multiTable ? "5px 0px" : "5px 0px -4px" }} >
+                <Flexbox flexDirection = "row" alignContent = "space-between" 
+                    style = {{ margin: this.state.multiTable ? "0.521vh 0px" : "0.521vh 0px -0.417vh" }} >
                     <Flexbox style = {{ width: "30%" }} > 
                         <Tooltip
                             placement = 'left'
@@ -1534,20 +1535,20 @@ class FilterSideBarTopView extends React.Component {
                                     minWidth: "0px"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh',
                                     backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '12px',
+                                    fontSize: '1.251vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    margin: "0px 0px 0px -3px",
+                                    margin: "0px 0px 0px -0.313vh",
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                                 onClick = { () => {this.onClearAllFilters(), this.desktopClearFilters() }}
                                 primary = { true } 
@@ -1579,20 +1580,20 @@ class FilterSideBarTopView extends React.Component {
                                     minWidth: "0px"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh',
                                     backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '12px',
+                                    fontSize: '1.251vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
 
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                                 onClick = { this.onHideFilteredData.bind(this) }
                                 primary = { true } 
@@ -1624,19 +1625,19 @@ class FilterSideBarTopView extends React.Component {
                                     minWidth: "0px"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh',
                                     backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '12px',
+                                    fontSize: '1.251vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                             />
                         </Tooltip>
@@ -1733,7 +1734,7 @@ class FilterSideBarTopView extends React.Component {
                 </Dialog>
                 
                 {/* Row 4 */}
-                <Flexbox flexDirection = "row" style = {{ height: "31px", display: this.state.multiTable ? "" : "none" }} >
+                <Flexbox flexDirection = "row" style = {{ height: "3.233vh", display: this.state.multiTable ? "" : "none" }} >
                     <OldSelect 
                         multi 
                         className = "selectTableName dark-theme"

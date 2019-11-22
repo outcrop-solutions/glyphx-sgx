@@ -79,6 +79,7 @@ class SettingsModal extends React.Component {
         );
 
         if (!this.props.homePage) {
+            console.log('this one is being called3')
             var gv = document.getElementById('GlyphViewerContainer');
             var filterNav = document.getElementById("filterNav");
             var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;

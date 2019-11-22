@@ -109,6 +109,7 @@ class FloatingToggleButtons extends React.Component {
 	 * @param {object} e: event object.
 	 */
 	toggleFullScreenMode(e) {
+        console.log('which one is being called2')
 		var filterNav = document.getElementById("filterNav");
         var gv = document.getElementById('GlyphViewerContainer');
 		var iconDiv = e && e.currentTarget ? e.currentTarget.querySelector('.fa') : null;

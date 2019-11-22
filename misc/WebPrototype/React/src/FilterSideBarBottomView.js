@@ -137,7 +137,12 @@ class FilterSideBarBottomView extends React.Component {
      */
     getColumnHTML = (config) => {
         return (
-            <div id = { config.internalColName } name = { config.displayName } key = { config.internalColName } className = { config.outerDivClassName } style = {{ marginBottom: "2px" }} >
+            <div 
+                id = { config.internalColName } 
+                name = { config.displayName } 
+                key = { config.internalColName } 
+                className = { config.outerDivClassName } 
+                style = {{ marginBottom: "0.209vh" }} >
                 <Collapsible 
                     transitionTime = { 200 } 
                     key = { config.internalColName }
@@ -161,8 +166,8 @@ class FilterSideBarBottomView extends React.Component {
                             />
                             <span 
                                 style = {{
-                                    paddingLeft: '10px',
-                                    fontSize: '0.9rem',
+                                    paddingLeft: "1.043vh",
+                                    fontSize: "1.460vh",
                                     color: this.props.settings.colors.collapsibleColor.subText
                                 }}
                             >   
@@ -469,9 +474,9 @@ class FilterSideBarBottomView extends React.Component {
 
     render() {
         var pinnedEmptyString = (
-            <div className = "centerText cursorNormal" style = {{ margin: "0px 60px 7px", borderRadius: "5px" }} >
-                <div style = {{ fontSize: "17px", paddingTop: "6px", color: "#000000" }} > Nothing Pinned </div>
-                <div style = {{ fontSize: "14px", margin: "8px 0px -32px", color: "#000000" }} > Anything you pin shows up here for <br/> keeping track of important filters. </div>
+            <div className = "centerText cursorNormal" style = {{ margin: "0px 6.257vh 0.730vh", borderRadius: "5px" }} >
+                <div style = {{ fontSize: "1.773vh", paddingTop: "0.626vh", color: "#000000" }} > Nothing Pinned </div>
+                <div style = {{ fontSize: "1.460vh", margin: "0.834vh 0px -3.337vh", color: "#000000" }} > Anything you pin shows up here for <br/> keeping track of important filters. </div>
                 <br/><br/>
             </div>
         );
@@ -480,7 +485,7 @@ class FilterSideBarBottomView extends React.Component {
         console.log(this.props.tableData)
 
         var pinnedSearchBar = (
-            <div style = {{ margin: "1px -3px -6px 1px" }} >
+            <div style = {{ margin: "0.104vh -0.313vh -0.626vh 0.104vh" }} >
                 <SearchBox 
                     ref = "pinnedCollapisbleSearchBox"
                     hintText = "Search for column..."
@@ -510,12 +515,12 @@ class FilterSideBarBottomView extends React.Component {
                     overflow: 'auto !important',
                     overflowX: 'hidden',
                     transition: '1s',
-                    padding: "6px"
+                    padding: "0.626vh"
                 }}
                 id = "BottomView"
                 className = "sidenavbar"
             >
-                <div id = 'pinnedCollapisble' style = {{ margin: "-4px 0px 3px 0px" }} >
+                <div id = 'pinnedCollapisble' style = {{ margin: "-0.417vh 0px 0.313vh 0px" }} >
                     <Collapsible 
                         transitionTime = {200} 
                         ref = 'pinnedCollapisble'
@@ -524,11 +529,14 @@ class FilterSideBarBottomView extends React.Component {
                         handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this,'pinnedCollapisble') }
                         trigger = {
                             <div>
-                                <i className = "fa fa-thumb-tack" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                                <i className = "fa fa-thumb-tack" 
+                                    style = {{ 
+                                        fontSize: "2.086vh", 
+                                        color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                                 <span 
                                     style = {{
-                                        paddingLeft: '10px',
-                                        fontSize: '1.3rem',
+                                        paddingLeft: "1.043vh",
+                                        fontSize: "2.086vh",
                                         color: this.props.settings.colors.collapsibleColor.mainText
                                     }}
                                 >
@@ -551,12 +559,12 @@ class FilterSideBarBottomView extends React.Component {
                         {columnsObj.pinnnedColumns.length > 0 ? pinnedSearchBar : null}
                         {columnsObj.pinnnedColumns.length > 0 ? columnsObj.pinnnedColumns : null}
 
-                        <div style = {{ height: "30px" }} />
+                        <div style = {{ height: "3.128vh" }} />
 
                     </Collapsible>
                 </div>
             
-                <div id = 'filterCollapisble' style = {{ marginBottom: "-6px" }} >
+                <div id = 'filterCollapisble' style = {{ marginBottom: "-0.626vh" }} >
 
                     <Collapsible 
                         transitionTime = {200} 
@@ -566,11 +574,11 @@ class FilterSideBarBottomView extends React.Component {
                         handleTriggerClick = { this.onCollapsibleTriggerClick.bind(this, 'filterCollapisble') }
                         trigger = {
                             <div>
-                                <i className = "fa fa-filter" style = {{ fontSize: '1.3rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                                <i className = "fa fa-filter" style = {{ fontSize: "2.086vh", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                                 <span 
                                     style = {{
-                                        paddingLeft: '9px',
-                                        fontSize: '1.3rem',
+                                        paddingLeft: "0.938vh",
+                                        fontSize: "2.086vh",
                                         color: this.props.settings.colors.collapsibleColor.mainText
                                     }}
                                 >
@@ -579,7 +587,7 @@ class FilterSideBarBottomView extends React.Component {
                             </div>
                         }
                     >
-                        <div style = {{ margin: "-2px -3px -9px 1px" }} >
+                        <div style = {{ margin: "-0.209vh -0.313vh -0.938vh 0.104vh" }} >
                             <SearchBox 
                                 settings = {{
                                     SearchBoxClearHover: this.props.settings.colors.pinFilterColor.SearchBoxClearHover, 

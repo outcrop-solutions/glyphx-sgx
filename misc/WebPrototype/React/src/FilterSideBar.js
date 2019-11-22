@@ -573,17 +573,17 @@ class FilterSideBar extends React.Component {
                         fullWidth = { true } 
                         primary = { true } 
                         onClick = { this.toggleTopView.bind(this) }
-                        buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
-                        style = {{ height: '26px', margin: "7px 0px 7px 1px"}}
+                        buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "calc(100% - 0.209vw)" }}
+                        style = {{ height: '2.711vh', margin: "0.730vh 0px 0.730vh 0.104vh"}}
                     >
                         <i 
                             id = "collapseTopViewButton1" 
                             className = "fa fa-caret-up" 
                             style = {{
-                                fontSize: '1.6em',
+                                fontSize: '2.607vh',
                                 color: this.props.settings.colors.hideTopViewButtonColor.icon,
                                 transition: 'transform 100ms linear',
-                                verticalAlign: "initial"
+                                verticalAlign: "sub"
                         }}
                         />   
 
@@ -591,7 +591,7 @@ class FilterSideBar extends React.Component {
                         style={{
                             color: "white", 
                             letterSpacing: ".2em", 
-                            padding: "0 10px 0 10px"}}>
+                            padding: "0 1.043vh 0 1.043vh"}}>
                         HIDE
                         </span> 
                         
@@ -599,10 +599,10 @@ class FilterSideBar extends React.Component {
                             id = "collapseTopViewButton2" 
                             className = "fa fa-caret-up" 
                             style = {{
-                                fontSize: '1.6em',
+                                fontSize: "2.607vh",
                                 color: this.props.settings.colors.hideTopViewButtonColor.icon,
                                 transition: 'transform 100ms linear',
-                                verticalAlign: "initial"
+                                verticalAlign: "sub"
                         }}
                         />
                     </RaisedButton>

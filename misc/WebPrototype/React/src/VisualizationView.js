@@ -242,8 +242,9 @@ class VisualizationView extends React.Component {
      * Wont have to be reloaded after it is "closed"
 	 */ 
     toggleNav() {
+        console.log('this one is being called4')
         var filterNav = document.getElementById("filterNav");
-        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
+        var filterNavOpen = filterNav.style.transform === "translate(23.6vw, 0px)" ? false : true;
         var gv = document.getElementById('GlyphViewerContainer');
 
         var sidebarButton = document.getElementById("showSideBar");
@@ -253,7 +254,7 @@ class VisualizationView extends React.Component {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
             if (!this.props.settings.sideBarOverlap) {
-                gv.style.width = "calc(100% - 450px)";
+                gv.style.width = "calc(100% - 23.5vw)";
             }
 
             else {
@@ -262,7 +263,7 @@ class VisualizationView extends React.Component {
         }
 
         else {
-            filterNav.style.transform = "translate(460px, 0px)";
+            filterNav.style.transform = "translate(23.6vw, 0px)";
             gv.style.width = "100%";
         }
     }
@@ -316,7 +317,7 @@ class VisualizationView extends React.Component {
 
                     <div id  = "filterNav" className = "sidenav" style = {{ height: "100%", overflow: "hidden" }} >
                         <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
-                            <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '36px', transition: '0.37s' }}>
+                            <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '3.754vh', transition: '0.37s' }}>
                                 <TopNavBar />
                             </div>
 

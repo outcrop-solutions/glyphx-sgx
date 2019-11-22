@@ -268,19 +268,19 @@ class FilterSummaryView extends React.Component {
         });
 
         return (
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px', borderRadius: "5px" }} containerStyle = {{ padding: "0px", borderRadius: "5px" }}>
-                <CardText style = {{ padding: "3px 8px", borderRadius: "5px" }} >
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:"20.855vh", borderRadius: "5px" }} containerStyle = {{ padding: "0px", borderRadius: "5px" }}>
+                <CardText style = {{ padding: "0.313vh 0.834vh", borderRadius: "5px" }} >
                     <div>
 
                         <Flexbox flexDirection = "row" >
                             <Flexbox style = {{ width: "100%" }} > 
-                                <span style = {{ color: "#000000", width: "123px" }} > Options </span>
+                                <span style = {{ color: "#000000", width: "6.44vw" }} > Options </span>
                             </Flexbox>
                             <Flexbox style = {{ width: "100%" }} > 
-                                <span style = {{ color: "#000000", width: "106px"}} > Filter </span>
+                                <span style = {{ color: "#000000", width: "5.53vw"}} > Filter </span>
                             </Flexbox>
                             <Flexbox style = {{ width: "100%" }} > 
-                                <span style = {{ color: "#000000", width: "84px" }} > Min </span>
+                                <span style = {{ color: "#000000", width: "4.388vw" }} > Min </span>
                             </Flexbox>
                             <Flexbox style = {{ width: "100%" }} > 
                                 <span style = {{ color: "#000000" }} > Max </span>
@@ -290,7 +290,12 @@ class FilterSummaryView extends React.Component {
                         <Divider style = {{ marginBottom: "0px", backgroundColor: "#000000" }} />
 
                         {/* Displays the mapped views*/}
-                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3 style = {{ margin: "13px 0px 12px" }} > No Filters Selected </h3></div>}
+                        {view.length > 0 ? view : 
+                            <div className = "centerText cursorNormal">
+                                <h3 style = {{ margin: "1.356vh 0px 1.251vh", fontSize: "1.721vh" }} > 
+                                    No Filters Selected 
+                                </h3>
+                            </div>}
 
                     </div>
                 </CardText>
@@ -350,9 +355,9 @@ class FilterViewRow extends React.Component {
 
         return (
             <div >
-                <Flexbox flexDirection = "row" style = {{ minHeight: "32px", marginTop: "11.5px" }} >
+                <Flexbox flexDirection = "row" style = {{ minHeight: "3.337vh", marginTop: "1.199vh" }} >
 
-                        <div style = {{ width: "31px" }} >
+                        <div style = {{ width: "1.63vw" }} >
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash cursorHand"
@@ -360,16 +365,16 @@ class FilterViewRow extends React.Component {
                             />
                         </div>
 
-                    <div style = {{ width: "41px" }} >
+                    <div style = {{ width: "2.13vw" }} >
                         <Badge
                             badgeContent = { this.props.view[4] }
                             primary = { true }
                             style = {{ padding: "0px 0px 0px 0px" }}
                             badgeStyle = {{ 
-                                width: "20px", 
-                                height: "20px", 
-                                top: "-10px", 
-                                right: "-13px", 
+                                width: /*20*/"1.088vw", 
+                                height: "2.086vh", 
+                                top: "-1.043vh", 
+                                right: "-1.356vh", 
                                 backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, 
                                 color: this.props.settings.colors.filterOverviewColor.badgeText 
                             }}
@@ -382,16 +387,16 @@ class FilterViewRow extends React.Component {
                         </Badge>
                     </div>
 
-                    <div style = {{ width: "51px" }} >
+                    <div style = {{ width: "2.63vw" }} >
                         <Badge
                             badgeContent = { this.props.view[5] }
                             primary = { true }
                             style = {{ padding: "0px 0px 0px 0px" }}
                             badgeStyle = {{ 
-                                width: "20px", 
-                                height: "20px", 
-                                top: "-10px", 
-                                right: "-13px", 
+                                width: /*20*/"1.088vw", 
+                                height: "2.086vh", 
+                                top: "-1.043vh", 
+                                right: "-1.356vh", 
                                 backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, 
                                 color: this.props.settings.colors.filterOverviewColor.badgeText 
                             }}
@@ -404,7 +409,7 @@ class FilterViewRow extends React.Component {
                         </Badge>
                     </div>
 
-                    <div style = {{ width: "106px" }} >
+                    <div style = {{ width: "5.56vw" }} >
                         <Tooltip
                             placement = 'bottom'
                             mouseEnterDelay = { 0.5 }
@@ -419,7 +424,7 @@ class FilterViewRow extends React.Component {
                         </Tooltip>
                     </div>
 
-                   <div style = {{ width: "92.5px" }} >
+                   <div style = {{ width: "4.83vw" }} >
                         <Tooltip
                             placement = 'bottom'
                             mouseEnterDelay = { 0.5 }
