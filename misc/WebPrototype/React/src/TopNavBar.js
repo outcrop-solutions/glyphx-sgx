@@ -76,7 +76,7 @@ class TopNavBar extends React.Component {
      * Wont have to be reloaded after it is "closed"
 	 */ 
     toggleNav() {
-        console.log('this one is being called1')
+        // console.log('this one is being called1')
         var filterNav = document.getElementById("filterNav");
         var filterNavOpen = filterNav.style.transform === "translate(23.6vw, 0px)" ? false : true;
         // var gv = document.getElementById('GlyphViewerContainer');

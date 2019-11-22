@@ -257,13 +257,13 @@ table.blueTable thead th {
 
   border: none !important;
 
-  --styled-select-control__min-height: 22px;
-  --styled-select-input__height: 22px;
-  --styled-select-input__line-height: 22px;
-  --styled-select-placeholder__line-height: 22px;
-  --styled-select-value__line-height: 22px;
+  --styled-select-control__min-height: 2.5vh;
+  --styled-select-input__height: 2.5vh;
+  --styled-select-input__line-height: 2.5vh;
+  --styled-select-placeholder__line-height: 2.5vh;
+  --styled-select-value__line-height: 2.5vh;
  
-  --styled-select-menu-outer__margin: -5px 0 0 0;
+  --styled-select-menu-outer__margin: -0.521vh 0 0 0;
   --styled-select-menu-outer__padding: 0;
   --styled-select-menu-outer__background-color: #555;
   --styled-select-menu-outer__border-color: black;
@@ -282,7 +282,7 @@ table.blueTable thead th {
 .selectXYZ {
     width:30%;
     z-index: 100;
-    font-size: 13px;
+    font-size: 1.356vh;
 }
 
 .topViewContent {

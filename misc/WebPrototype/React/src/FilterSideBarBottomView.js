@@ -512,13 +512,13 @@ class FilterSideBarBottomView extends React.Component {
                 flexDirection = "column" 
                 flexGrow = {1}
                 style = {{ 
-                    overflow: 'auto !important',
-                    overflowX: 'hidden',
+                    overflowY: 'auto',
+                    // overflowX: 'hidden',
                     transition: '1s',
                     padding: "0.626vh"
                 }}
                 id = "BottomView"
-                className = "sidenavbar"
+                className = "sidenavbar customScroll"
             >
                 <div id = 'pinnedCollapisble' style = {{ margin: "-0.417vh 0px 0.313vh 0px" }} >
                     <Collapsible 

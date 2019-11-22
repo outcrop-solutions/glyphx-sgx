@@ -66,15 +66,15 @@
 }
 
 .Collapsible__contentInner {
-    padding: 10px;
+    padding: 1.043vh;
     border: 1px solid #ebebeb;
     border-top: 0; 
 }
   
 .Collapsible__contentInner p {
-    margin-bottom: 10px;
-    font-size: 14px;
-    line-height: 20px; 
+    margin-bottom: 1.043vh;
+    font-size: 1.460vh;
+    line-height: 2.085vh; 
 }
     
 .Collapsible__contentInner p:last-child {
@@ -86,19 +86,19 @@
     text-decoration: none;
     position: relative;
     border: 1px solid white;
-    padding: 15px;
+    padding: 1.564vh;
     color: white; 
-    font-size: 1rem;
+    font-size: 1.668vh;
 }
 
 .Collapsible__trigger:after {
     font-family: "FontAwesome";
     content: "\f107";
     position: absolute;
-    right: 15px;
-    top: 14px;
+    right: 1.564vh;
+    top: 1.460vh;
     display: block;
-    font-size: 1rem;
+    font-size: 1.668vh;
     transition: transform 300ms;
     color: var(--collapsible-text-color-main);
 }
@@ -125,8 +125,8 @@
 
 
 .columnNameHeader.Collapsible__trigger:after {
-    right: 15px;
-     top: 8px;
+    right: 1.564vh;
+     top: 0.834vh;
      color: var(--collapsible-text-color-sub);
 }
 
@@ -148,13 +148,13 @@
 .selectViewName {
     width:100%;
     z-index: 3;
-    font-size: 13px;
+    font-size: 1.356vh;
 }
 
 .selectTableName {
     width:100%;
     z-index: 2;
-    font-size: 13px;
+    font-size: 1.356vh;
 }
 
 .cursorHand:Hover {
@@ -167,9 +167,9 @@
 
 .notificationBadge {
 	color: red !important;
-    font-size: 18px !important;
-    top: -28px;
-    left: 9px;
+    font-size: 1.877vh !important;
+    top: -2.920vh;
+    left: 0.938vh;
 }
 
 .Select-menu-outer {

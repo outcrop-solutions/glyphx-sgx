@@ -30,7 +30,7 @@ nav ul a {
 /* The side navigation menu */
 .sidenav {
     /*height: 94.5%; 100% Full-height */
-    width: 23.5vw; /* 0 width - change this with JavaScript */
+    width: 23.5%; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
     right: 0;
