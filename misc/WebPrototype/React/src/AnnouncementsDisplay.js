@@ -142,6 +142,14 @@ class AnnouncementsDisplay extends React.Component {
                     </span>
 
                     <Dialog 
+                        contentStyle = {{ maxWidth: "40vw" }}
+                        titleStyle = {{fontSize: "2.313vh", lineHeight: "3.365vh"}}
+                        actionsContainerStyle = {{ padding: "0.841vh" }}
+                        bodyStyle = {{
+                            overflowY: "auto", 
+                            fontSize: "1.682vh", 
+                            maxHeight: "74.974vh", 
+                            padding: "0px 2.524vh 2.524vh"}}
                         title = { <div style = {{ fontWeight: "bold" }} > All Annoucements <Divider /></div> }
                         modal = { true }
                         open = { this.state.allAnnouncements }
@@ -151,7 +159,11 @@ class AnnouncementsDisplay extends React.Component {
                                     label = "Close"
                                     primary = { true }
                                     onClick = { () => this.setState({ allAnnouncements: false }) }
-                                    style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                    style = {{ 
+                                        height: "3.785vh", 
+                                        lineHeight: "3.785vh", 
+                                        minWidth: "7vw", 
+                                        color: this.props.settings.colors.settingsModalColor.saveButton }}
                                     labelStyle = {{ lineHeight: "4.171vh" }}
                                 />
                             ]

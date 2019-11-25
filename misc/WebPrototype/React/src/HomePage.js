@@ -514,8 +514,18 @@ class HomePage extends React.Component {
 
                                                 <Dialog 
                                                     repositionOnUpdate={false}
+                                                    titleStyle = {{
+                                                        fontSize: "2.313vh", 
+                                                        lineHeight: "3.365vh", 
+                                                        padding: "2.524vh 2.524vh 1.893vh"}}
+                                                    actionsContainerStyle = {{ padding: "0.841vh" }}
+                                                    bodyStyle = {{
+                                                        overflowY: "auto", 
+                                                        textAlign: "center", 
+                                                        fontSize: "1.682vh", 
+                                                        maxHeight: "74.974vh", 
+                                                        padding: "0px 2.524vh 2.524vh"}}
                                                     contentStyle={{maxWidth: "102.296vw"}}
-                                                    bodyStyle={{overflowY: "auto", textAlign: "center"}}
                                                     style={{ paddingTop: "2.086vh" }}
                                                     title = { <div style = {{ fontWeight: "bold" }} > Glyph Key <Divider /></div> }
                                                     modal = { true }

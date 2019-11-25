@@ -513,7 +513,6 @@ class FilterSideBarBottomView extends React.Component {
                 flexGrow = {1}
                 style = {{ 
                     overflowY: 'auto',
-                    // overflowX: 'hidden',
                     transition: '1s',
                     padding: "0.626vh"
                 }}

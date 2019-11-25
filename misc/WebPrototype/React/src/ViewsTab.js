@@ -455,7 +455,7 @@ class ViewsTab extends React.Component {
                                     }
                                 >
                                     <div> 
-                                        { view[0] }
+                                        { view[0].length > 25 ? view[0].substring(0, 25) + "..." : view[0] }
                                     </div> 
                                 </Tooltip>
                             </Flexbox>
@@ -530,7 +530,14 @@ class ViewsTab extends React.Component {
                     </span>
 
                     <Dialog 
-                        bodyStyle = {{overflowY: "scroll"}}
+                        contentStyle = {{ maxWidth: "40vw" }}
+                        titleStyle = {{fontSize: "2.313vh", lineHeight: "3.365vh"}}
+                        actionsContainerStyle = {{ padding: "0.841vh" }}
+                        bodyStyle = {{
+                            overflowY: "auto", 
+                            fontSize: "1.682vh", 
+                            maxHeight: "74.974vh", 
+                            padding: "0px 2.524vh 2.524vh"}}
                         title = { <div style = {{ fontWeight: "bold" }} > All Recent Views <Divider /></div> }
                         modal = { true }
                         open = { this.state.allViews }
@@ -540,7 +547,11 @@ class ViewsTab extends React.Component {
                                     label = "Close"
                                     primary = { true }
                                     onClick = { () => this.setState({ allViews: false }) }
-                                    style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                    style = {{ 
+                                        height: "3.785vh", 
+                                        lineHeight: "3.785vh", 
+                                        minWidth: "7vw", 
+                                        color: this.props.settings.colors.settingsModalColor.saveButton }}
                                     labelStyle = {{ lineHeight: "4.171vh" }}
                                 />
                             ]

@@ -539,19 +539,28 @@ class allViewsModal extends React.Component {
 				for (var j = 0; j < sList.length; j++) {
 					if (notSelectAll[i] === sList[j][0]) {
 						shouldBeDisabled = false;
+						document.getElementById("launch_button").style.cursor = "pointer";
 						break;
 					}
 				}
 				if (shouldBeDisabled) {
+					if(document.getElementById("launch_button")){
+						document.getElementById("launch_button").className = "launch_button_null";
+						document.getElementById("launch_button").style.cursor = "not-allowed";
+					} 
 					return true;
 				}
 			}
 		}
 
 		if (sList.length === 0) {
+			if(document.getElementById("launch_button")){
+				document.getElementById("launch_button").className = "launch_button_null";
+				document.getElementById("launch_button").style.cursor = "not-allowed";
+			} 
 			return true;
 		}
-
+		document.getElementById("launch_button").style.cursor = "pointer";
 		return false;
 	}
 
@@ -1220,6 +1229,7 @@ class allViewsModal extends React.Component {
 									primary = {true } 
 								/> */}
 								<img
+									id = "launch_button"
 									className="launch_button"
 									alt = "GlyphIT Logo Launch Button"
 									src={(this.shouldLaunchBeDisabled() ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
@@ -1227,8 +1237,7 @@ class allViewsModal extends React.Component {
 										width: "33.09%", 
 										height: "100%",
 										margin: "auto", 
-										border: "1px solid black", 
-										cursor: "pointer", 
+										border: "1px solid black",
 										boxShadow: "0.36496vh 0.36496vh 0.36496vh"}}
 									onClick={() => {
 										(this.shouldLaunchBeDisabled() ? 
