@@ -164,7 +164,7 @@ class AnnouncementsDisplay extends React.Component {
                                         lineHeight: "3.785vh", 
                                         minWidth: "7vw", 
                                         color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                    labelStyle = {{ lineHeight: "4.171vh" }}
+                                    labelStyle = {{ lineHeight: "4.171vh", fontSize: "1.472vh" }}
                                 />
                             ]
                         }

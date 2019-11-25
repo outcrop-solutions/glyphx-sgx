@@ -536,8 +536,12 @@ class HomePage extends React.Component {
                                                                 label = "Close"
                                                                 primary = { true }
                                                                 onClick = { () => this.setState({ enlarge: false }) }
-                                                                style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
-                                                                labelStyle = {{ lineHeight: "4.171vh" }}
+                                                                style = {{ 
+                                                                    height: "3.785vh", 
+                                                                    lineHeight: "3.785vh", 
+                                                                    minWidth: "7vw", 
+                                                                    color: this.props.settings.colors.settingsModalColor.saveButton }}
+                                                                labelStyle = {{ lineHeight: "4.171vh", fontSize: "1.472vh" }}
                                                             />
                                                         ]
                                                     }
