@@ -687,13 +687,13 @@ class FilterTable extends React.Component {
         //creating the rows
         var rows = this.createRows();
         // console.log(rows);
-
+        console.log(document.documentElement.clientHeight)
         return (
 
             <div style = {{ height: "inherit" }} >
                 <br/>
 
-                <div style = {{ margin: "-11px 15px -12px" }} >
+                <div style = {{ margin: "-1.157vh 1.577vh -1.262vh" }} >
 
                     <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
                         <Flexbox style = {{ width: "100%", borderRadius: "5px", backgroundColor: this.props.settings.colors.tableSelectColor.background }} > 
@@ -707,18 +707,18 @@ class FilterTable extends React.Component {
                                     borderRadius: "4px",
                                     border: "1px solid #ccc",
                                     width: "100%",
-                                    height: "30px"
+                                    height: "3.155vh"
                                 }}
                                 inputStyle = {{
-                                    paddingLeft:"5px",
-                                    paddingRight:"5px"
+                                    paddingLeft:"0.526vh",
+                                    paddingRight:"0.526vh"
                                 }}
                                 hintStyle = {{
-                                    paddingLeft:"7px",
-                                    bottom: "-1px"
+                                    paddingLeft:"0.736vh",
+                                    bottom: "-0.105vh"
                                 }}
                                 underlineStyle = {{
-                                    margin: "0px 0px -8px"
+                                    margin: "0px 0px -0.841vh"
                                 }}
                                 onChange = { (e) => this.onSearchChange(e) } 
                                 hintText = {
@@ -727,8 +727,8 @@ class FilterTable extends React.Component {
                                             className = "fa fa-search" 
                                             style = {{
                                                 padding: '0px', 
-                                                width: '24px',
-                                                height: '24px',
+                                                width: '2.524vh',
+                                                height: '2.524vh',
                                                 fontSize: 'inherit',
                                                 color: 'inherit'
                                             }}
@@ -744,7 +744,7 @@ class FilterTable extends React.Component {
                             <div 
                                 style = {{ 
                                     backgroundColor: this.props.settings.colors.tableSelectColor.background, 
-                                    margin: "0px 0px 0px 12px", 
+                                    margin: "0px 0px 0px 1.262vh", 
                                     //borderColor: "#d9d9d9 #ccc #b3b3b3",
                                     borderRadius: "4px",
                                     //border: "1px solid #ccc", 
@@ -766,11 +766,11 @@ class FilterTable extends React.Component {
 
 				<br/>
 				
-                <div style = {{ padding: "0px 15px" }} >
+                <div style = {{ padding: "0px 1.577vh" }} >
                     <div 
                         style = {{ 
-                            //borderBottomRightRadius: "5px",
-                            //borderBottomLeftRadius: "5px", 
+                            height: "38.486vh",
+                            width: "19vw",
                             overflow: "hidden" ,
                             height: (24 * (rows.length + 1) > this.state.height ? this.state.height + 16 : 24 * (rows.length + 1))
                         }} 
@@ -779,11 +779,15 @@ class FilterTable extends React.Component {
                         
 
                         <Table
-                            width = { 365 }
+                            width = { document.documentElement.clientHeight * .37668 }
                             height = { 24 * (rows.length + 1) > this.state.height ? this.state.height : 24 * (rows.length + 1) }
                             headerHeight = { 24 }
                             rowHeight = { 24 }
-                            gridStyle = {{ backgroundColor: "white", color: "black", marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > this.state.height ? "0" : "-10px" }}
+                            gridStyle = {{ 
+                                backgroundColor: "white", 
+                                color: "black", 
+                                marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > this.state.height ? 
+                                    "0" : "-10px" }}
                             headerStyle = {{ color: "black" }}
                             rowStyle = {{ borderBottom: "solid 1px #d3d3d3" }}
                             rowCount = { rows.length }
@@ -806,14 +810,14 @@ class FilterTable extends React.Component {
                         <RaisedButton 
                             primary = { true } 
                             onClick = { () => this.setState({ height: this.state.height === 350 ? 600 : 350 }) }
-                            buttonStyle = {{ backgroundColor: "#b6b6b5", width: "364px" }}
-                            style = {{ height: '16px', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
+                            buttonStyle = {{ backgroundColor: "#b6b6b5", width: "19vw" }}
+                            style = {{ height: '1.682vh', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
                         >
                             <i 
                                 className = { this.state.height === 350 ? "fa fa-caret-down" : "fa fa-caret-up" }
                                 style = {{
-                                    fontSize: '1.6em',
-                                    margin: "-2px 0px 0px 0px",
+                                    fontSize: '2.208vh',
+                                    margin: "-0.210vh 0px 0px 0px",
                                     color: "#000",
                                 }}
                             /> 

@@ -180,6 +180,8 @@ class FilterTabs extends React.Component {
                         }}           
                     >
                         <div id = { this.state.tableID } style = {{ maxHeight: "1000px", overflow: "hidden" }} >
+
+                            {/** this div is called when filter is busy and loading */}
                             <div 
                                 style = {{ 
                                     backgroundColor: "rgba(128, 128, 128, 0.36)", 
