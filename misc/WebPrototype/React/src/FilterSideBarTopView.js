@@ -1210,6 +1210,7 @@ class FilterSideBarTopView extends React.Component {
                 <Flexbox flexDirection = "row" style = {{ margin: "-0.938vh 0px -0.209vh -0.104vh" }} >
                     <Flexbox style = {{ width: "55%", margin: "0.104vh 0.626vh 0px 0px" }} > 
                         <Select 
+                            // overlayStyle = {{height: "10px", minHeight: "10px"}}
                             className = "selectViewName dark-theme"
                             simpleValue
                             value = { this.state.viewSelectValue } 

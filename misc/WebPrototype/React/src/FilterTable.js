@@ -104,7 +104,7 @@ class FilterTable extends React.Component {
             flatData: [],
             indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
             searchTerm: "",
-            height: 350
+            height: document.documentElement.clientHeight * .361197
         };
     }
 
@@ -687,7 +687,7 @@ class FilterTable extends React.Component {
         //creating the rows
         var rows = this.createRows();
         // console.log(rows);
-        console.log(document.documentElement.clientHeight)
+        console.log(document.documentElement.clientHeight, document.documentElement.clientHeight * .361197)
         return (
 
             <div style = {{ height: "inherit" }} >
@@ -707,7 +707,9 @@ class FilterTable extends React.Component {
                                     borderRadius: "4px",
                                     border: "1px solid #ccc",
                                     width: "100%",
-                                    height: "3.155vh"
+                                    height: "3.155vh",
+                                    lineHeight: "2.524vh",
+                                    fontSize: "1.682vh"
                                 }}
                                 inputStyle = {{
                                     paddingLeft:"0.526vh",
@@ -754,8 +756,16 @@ class FilterTable extends React.Component {
                                     label = "Show All"
                                     checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) !== -1 ? true : false }
                                     onCheck = { () => this.updateCheck(this.props.internalColName.replace("_pinned", "")) }
-                                    iconStyle = {{ fill: 'rgba(0, 0, 0, 0.6)', margin: "2px 2px 0px 0px" }}
-                                    labelStyle = {{ width: "100%", margin: "5px 5px 0px 0px", color: 'rgba(0, 0, 0, 0.6)' }}
+                                    iconStyle = {{ 
+                                        width: "2.524vh",
+                                        height: "2.524vh",
+                                        fill: 'rgba(0, 0, 0, 0.6)', 
+                                        margin: "0.210vh 0.210vh 0px 0px" }}
+                                    labelStyle = {{ 
+                                        width: "100%", 
+                                        lineHeight: "2.524vh",
+                                        margin: "5px 5px 0px 0px", 
+                                        color: 'rgba(0, 0, 0, 0.6)' }}
                                 />
                             </div>
                            
@@ -772,7 +782,8 @@ class FilterTable extends React.Component {
                             height: "38.486vh",
                             width: "19vw",
                             overflow: "hidden" ,
-                            height: (24 * (rows.length + 1) > this.state.height ? this.state.height + 16 : 24 * (rows.length + 1))
+                            height: (document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
+                                this.state.height + (document.documentElement.clientHeight * .016512) : document.documentElement.clientHeight * .02477 * (rows.length + 1))
                         }} 
                         onMouseEnter = { this.mouseIn } 
                         onMouseLeave = { this.mouseOut } >
@@ -780,14 +791,15 @@ class FilterTable extends React.Component {
 
                         <Table
                             width = { document.documentElement.clientHeight * .37668 }
-                            height = { 24 * (rows.length + 1) > this.state.height ? this.state.height : 24 * (rows.length + 1) }
-                            headerHeight = { 24 }
-                            rowHeight = { 24 }
+                            height = { document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
+                                    this.state.height : document.documentElement.clientHeight * .02477 * (rows.length + 1) }
+                            headerHeight = { document.documentElement.clientHeight * .02477 }
+                            rowHeight = { document.documentElement.clientHeight * .02477 }
                             gridStyle = {{ 
                                 backgroundColor: "white", 
                                 color: "black", 
                                 marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > this.state.height ? 
-                                    "0" : "-10px" }}
+                                    "0" : "-1.051vh" }}
                             headerStyle = {{ color: "black" }}
                             rowStyle = {{ borderBottom: "solid 1px #d3d3d3" }}
                             rowCount = { rows.length }
@@ -798,10 +810,10 @@ class FilterTable extends React.Component {
                             <Column
                                 label = 'Value'
                                 dataKey ='value'
-                                width = { 250 }
+                                width = { document.documentElement.clientHeight * .257997 }
                             />
                             <Column
-                                width = { 100 }
+                                width = { document.documentElement.clientHeight * .103199 }
                                 label = 'Count'
                                 dataKey = 'count'
                             />
@@ -809,12 +821,13 @@ class FilterTable extends React.Component {
 
                         <RaisedButton 
                             primary = { true } 
-                            onClick = { () => this.setState({ height: this.state.height === 350 ? 600 : 350 }) }
+                            onClick = { () => this.setState({ height: this.state.height === (document.documentElement.clientHeight * .361197) ? 
+                                    (document.documentElement.clientHeight * .619195) : (document.documentElement.clientHeight * .361197) }) }
                             buttonStyle = {{ backgroundColor: "#b6b6b5", width: "19vw" }}
                             style = {{ height: '1.682vh', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
                         >
                             <i 
-                                className = { this.state.height === 350 ? "fa fa-caret-down" : "fa fa-caret-up" }
+                                className = { this.state.height === (document.documentElement.clientHeight * .361197) ? "fa fa-caret-down" : "fa fa-caret-up" }
                                 style = {{
                                     fontSize: '2.208vh',
                                     margin: "-0.210vh 0px 0px 0px",

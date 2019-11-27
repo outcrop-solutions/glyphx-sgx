@@ -167,7 +167,7 @@ class FilterSideBarBottomView extends React.Component {
                             <span 
                                 style = {{
                                     paddingLeft: "1.043vh",
-                                    fontSize: "1.460vh",
+                                    fontSize: "1.460vh !important",
                                     color: this.props.settings.colors.collapsibleColor.subText
                                 }}
                             >   
