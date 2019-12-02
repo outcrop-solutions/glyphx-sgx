@@ -406,7 +406,6 @@ class HomePage extends React.Component {
     // }
 
     render() {
-       /*  console.log(this) */
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
 		// var context = this;
@@ -556,7 +555,21 @@ class HomePage extends React.Component {
                                                             }} 
                                                         >
                                                             <div style = {{ borderRadius: "3px" }}>
-                                                                <img style={{maxWidth: "97.286vw"}} 
+                                                                <img
+                                                                    id = "Legend_Id" 
+                                                                    style= {{
+                                                                        maxWidth: "97.286vw",
+                                                                        height: 
+                                                                            (document.getElementById("Legend_Id") ? 
+                                                                                (document.documentElement.clientHeight * 
+                                                                                    (document.getElementById("Legend_Id").clientHeight / 969)) : 
+                                                                                        ""),
+                                                                        width: 
+                                                                            (document.getElementById("Legend_Id") ? 
+                                                                                (document.documentElement.clientWidth * 
+                                                                                    document.getElementById("Legend_Id").clientWidth /1903) : 
+                                                                                        "")
+                                                                    }} 
                                                                     alt="Enlarged" src={
                                                                 'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
                                                                 window.encodeURIComponent(this.props.legend_url_arr[0])}/>

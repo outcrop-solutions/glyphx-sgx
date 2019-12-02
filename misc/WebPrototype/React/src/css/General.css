@@ -228,11 +228,12 @@ table.blueTable thead th {
 }
 
 .Select-value {
-    line-height: 26px !important;
+    line-height: 2.683vh !important;
+    font-size: 1.651vh;
 }
 
 .Select-value-label {
-    line-height: 26px;
+    line-height: 2.683vh;
 }
 
 

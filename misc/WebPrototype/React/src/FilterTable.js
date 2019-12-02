@@ -687,7 +687,7 @@ class FilterTable extends React.Component {
         //creating the rows
         var rows = this.createRows();
         // console.log(rows);
-        console.log(document.documentElement.clientHeight, document.documentElement.clientHeight * .361197)
+        // console.log(document.documentElement.clientHeight, document.documentElement.clientHeight * .361197)
         return (
 
             <div style = {{ height: "inherit" }} >

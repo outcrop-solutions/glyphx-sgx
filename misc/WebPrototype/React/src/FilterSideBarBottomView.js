@@ -68,7 +68,7 @@ class FilterSideBarBottomView extends React.Component {
      */
     makeColumns = (data, extra) => {
         var columnsFilterStructure = this.props.GLOBAL;
-        console.log(this.props.GLOBAL)
+        // console.log(this.props.GLOBAL)
         var arrColumnsReturn = [], arrPinnedColumnsReturn = [], arrPinDialogOptions = [], arrPinDialogSelected = [], objReturn = {};
 		var config;
 
@@ -482,7 +482,7 @@ class FilterSideBarBottomView extends React.Component {
         );
 
         var columnsObj = this.makeColumns(this.props.tableData);
-        console.log(this.props.tableData)
+        // console.log(this.props.tableData)
 
         var pinnedSearchBar = (
             <div style = {{ margin: "0.104vh -0.313vh -0.626vh 0.104vh" }} >

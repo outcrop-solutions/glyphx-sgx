@@ -140,7 +140,7 @@ class SettingsModal extends React.Component {
                 ref = "Settings"
                 modal = { true }
 				open = { this.props.settingsDisplay }
-				bodyStyle = {{ padding: "0px 2.477vh 1.032vh" }}
+				bodyStyle = {{ padding: "0px 2.477vh 1.032vh", fontSize: "1.651vh" }}
 				titleStyle = {{ 
                     backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, 
                     color: "#ffffff", 
@@ -152,13 +152,23 @@ class SettingsModal extends React.Component {
                             label = "Save"
                             primary = { true }
                             onClick = { () => this.onSettingsSave() }
-                            style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                            style = {{ 
+                                height: "3.785vh", 
+                                lineHeight: "3.785vh", 
+                                minWidth: "7vw", 
+                                color: this.props.settings.colors.settingsModalColor.saveButton }}
+                            labelStyle = {{ lineHeight: "4.171vh", fontSize: "1.472vh" }}
                         />,
                         <FlatButton
                             label = "Cancel"
                             primary = { true }
                             onClick = { () => this.onSettingsCancel() }
-                            style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
+                            style = {{ 
+                                height: "3.785vh", 
+                                lineHeight: "3.785vh", 
+                                minWidth: "7vw", 
+                                color: this.props.settings.colors.settingsModalColor.cancelButton }}
+                            labelStyle = {{ lineHeight: "4.171vh", fontSize: "1.472vh" }}
                         />
 					]
 				}
