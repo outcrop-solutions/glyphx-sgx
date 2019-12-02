@@ -242,9 +242,9 @@ class SettingsModal extends React.Component {
                             color: "#535353" }} className = "fa fa-question-circle" color = '#000000' />
                     </Tooltip>
 
-                    <label style = {{ margin: "-1.342vh 0px 0px 1.548vh" }} ><h4> Axes Visibility </h4></label>
+                    <label style = {{ margin: "-1.342vh 16.2vh 0px 1.548vh" }} ><h4> Axes Visibility </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 30.960vh", position: "fixed", zIndex: "2001" }} >
+                    <div >
                         <Select 
                             simpleValue
                             value = { this.state.axesVisibilityTempSelection } 
@@ -291,9 +291,9 @@ class SettingsModal extends React.Component {
                             color: "#535353" }} className = "fa fa-question-circle" />
                     </Tooltip>
 
-                    <label style = {{ margin: "-1.342vh 0px 0px 1.548vh" }} ><h4> Overlap Glyph Viewer </h4></label>
+                    <label style = {{ margin: "-1.342vh 10.320vh 0px 1.548vh" }} ><h4> Overlap Glyph Viewer </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 30.960vh", position: "fixed", zIndex: "2002" }} >
+                    <div>
                         <Select 
                             simpleValue
                             value = { this.state.overlapTempSelection } 
