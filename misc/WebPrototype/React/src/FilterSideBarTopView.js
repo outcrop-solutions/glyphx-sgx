@@ -12,7 +12,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Tooltip from 'rc-tooltip';
 import OldSelect from 'react-select';
-import Select from 'react-styled-select'
+import Select from 'react-select'
 import Snackbar from 'material-ui/Snackbar';
 import { makeServerCall } from './ServerCallHelper.js';
 import FilterSummaryView from './FilterSummaryView.js';
@@ -1185,7 +1185,6 @@ class FilterSideBarTopView extends React.Component {
             }
         }
         
-		
 		return(
             <Flexbox flexDirection = "column" id = "TopView" style = {{ height: "100%" }}>
 
@@ -1210,16 +1209,12 @@ class FilterSideBarTopView extends React.Component {
                 <Flexbox flexDirection = "row" style = {{ margin: "-0.938vh 0px -0.209vh -0.104vh" }} >
                     <Flexbox style = {{ width: "55%", margin: "0.104vh 0.626vh 0px 0px" }} > 
                         <Select 
-                            // overlayStyle = {{height: "10px", minHeight: "10px"}}
                             className = "selectViewName dark-theme"
                             simpleValue
                             value = { this.state.viewSelectValue } 
                             placeholder = "Select a view" 
                             options = { this.state.viewSelectItems } 
                             onChange = { this.onSelectViewChange } 
-                            /* style = {{
-                                margin: "-11px 0px 0px 0px"
-                            }} */
                             onOpen = { () => this.props.handleDraggableCorrection(true, true) }
                         />
                     </Flexbox>

@@ -113,30 +113,30 @@ class FilterTabs extends React.Component {
     render() {
         return (
             <div>
-                <div style = {{ margin: "-5px 0px -4px" }} >
+                <div style = {{ margin: "-0.516vh 0px -0.413vh" }} >
                     <Tabs onChange = { (value) => this.handleChange(value, this) } value = { this.state.slideIndex } inkBarStyle = {{ display: "none" }} >
                         <Tab 
                             label = { 
-                                <div style =  {{ width: "100%", overflow: "hidden", margin: "1px 0px 0px" }} >
-                                    <div style = {{ width: "88px", margin: "0 auto" }} >
+                                <div style =  {{ width: "100%", overflow: "hidden", margin: "0.103vh 0px 0px" }} >
+                                    <div style = {{ width: "4.583vw", margin: "0 auto" }} >
                                         <FontIcon 
                                             style = {{ 
-                                                width: "20px", 
+                                                width: "1.042vw", 
                                                 float: "left", 
-                                                fontSize: "20px", 
-                                                margin: "-1px 0px 0px", 
+                                                fontSize: "2.064vh", 
+                                                margin: "-0.103vh 0px 0px", 
                                                 color: (this.state.slideIndex === 0 ? 
                                                     this.props.settings.colors.filterTabColor.titleText : "#adadad") 
                                             }} 
                                             className = "fa fa-list-ul" >
                                         </FontIcon> 
-                                        <div style = {{ marginleft: "50px" }} >Elastic</div>
+                                        <div style = {{ marginleft: "5.160vh" }} >Elastic</div>
                                     </div>
                                 </div>
                             }
                             value = { 0 }
                             buttonStyle = { {
-                                height: "35px", 
+                                height: "3.612vh", 
                                 backgroundColor: (this.state.slideIndex === 0 ?
                                     "#353657" : this.props.settings.colors.filterTabColor.tabBackground), 
                                 color: (this.state.slideIndex === 0 ? 
@@ -146,24 +146,24 @@ class FilterTabs extends React.Component {
                         <Tab 
                             label = { 
                                 <div style =  {{ width: "100%", overflow: "hidden" }} >
-                                    <div style = {{ width: "80px", margin: "0 auto" }} >
+                                    <div style = {{ width: "4.167vw", margin: "0 auto" }} >
                                         <FontIcon style = {{ 
-                                                width: "20px", 
+                                                width: "1.042vw", 
                                                 float: "left", 
-                                                fontSize: "20px", 
-                                                margin: "-2px 0px 0px", 
+                                                fontSize: "2.064vh", 
+                                                margin: "-0.206vh 0px 0px", 
                                                 color: (this.state.slideIndex === 1 ? 
                                                     this.props.settings.colors.filterTabColor.titleText : "#adadad") 
                                             }} 
                                             className = "fa fa-sliders" >
                                         </FontIcon> 
-                                        <div style = {{ marginleft: "50px" }} >Range</div>
+                                        <div style = {{ marginleft: "5.160vh" }} >Range</div>
                                     </div>
                                 </div>
                             }
                             value = { 1 }
                             buttonStyle = { {
-                                height: "35px", 
+                                height: "3.612vh", 
                                 backgroundColor: (this.state.slideIndex === 1 ? 
                                     "#353657" : this.props.settings.colors.filterTabColor.tabBackground), 
                                 color: (this.state.slideIndex === 1 ? 

@@ -146,6 +146,7 @@
 }
 
 .selectViewName {
+    margin-top: 0.258vh;
     width:100%;
     z-index: 3;
     font-size: 1.356vh;
@@ -189,4 +190,32 @@
     position:absolute;
     top: 0px;
     left: 0px;
+}
+
+.Select, .Select div{
+    height: 2.580vh;
+}
+
+.Select{
+    color: rgb(87, 93, 94);
+}
+
+.Select-input, .Select-placeholder{
+    margin-top: -0.103vh;
+    font-family: ITCFranklinGothicStd-Med;
+    line-height: 2.890vh;
+    letter-spacing: 0.5px;
+    font-size: 1.651vh;
+    padding-left: 1.032vh;
+    padding-right: 1.032vh;
+}
+
+.Select-arrow-zone{
+    padding-top: 0.310vh;
+    width: 1.302vw;
+    padding-top: 0.516vh;
+}
+
+.Select-arrow{
+    border-width: 0.516vh 0.516vh 0.258vh;
 }

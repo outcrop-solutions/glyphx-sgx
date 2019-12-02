@@ -764,7 +764,8 @@ class FilterTable extends React.Component {
                                     labelStyle = {{ 
                                         width: "100%", 
                                         lineHeight: "2.524vh",
-                                        margin: "5px 5px 0px 0px", 
+                                        fontSize: "1.342vh",
+                                        margin: "0.516vh 0.516vh 0px 0px", 
                                         color: 'rgba(0, 0, 0, 0.6)' }}
                                 />
                             </div>
