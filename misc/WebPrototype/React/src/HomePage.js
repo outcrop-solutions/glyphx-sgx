@@ -586,46 +586,8 @@ class HomePage extends React.Component {
 
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>
                                         
-                                    {/* <div style = {{height: "266px", display: "block"}}> 
-                                        <div style={{
-                                            height: "50px",
-                                            width: "25vw",
-                                            backgroundColor: "#0c1836"
-                                        }}>
-                                            <h2
-                                                className='noselect'
-                                                style={{
-                                                    // margin: "0 auto",
-                                                    width: "162px",
-                                                    height: "19px",
-                                                    fontFamily: "ITCFranklinGothicStd-Demi",
-                                                    fontSize: "18px",
-                                                    letterSpacing: "0.92px",
-                                                    color: "white",
-                                                    margin: "0px",
-                                                    fontSize: "22px",
-                                                    textTransform: "uppercase",
-                                                    paddingLeft: "18px",
-                                                    lineHeight: "52px"
-                                                }}
-                                                >Annoucements
-                                            </h2>
-                                            <span style={{
-                                                color: "white", 
-                                                fontSize: "18px", 
-                                                float: "right", 
-                                                fontFamily: "ITCFranklinGothicStd-DmCd",
-                                                cursor: "pointer",
-                                                margin: "-2px 14px 0px 0px"}}
-                                            >
-                                                See All&ensp;>
-                                            </span>
-                                        </div> */}
-
-
                                         <AnnouncementsDisplay />
-                                    {/* </div>  */}
-
+                                
                                     <div style = {{height: "26.3vh", display: "block", backgroundColor: "#0c1836", textAlign: "center"}}> 
                                         <div style={{
                                             width: "12.5vw",
