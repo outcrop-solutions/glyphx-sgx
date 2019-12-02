@@ -749,6 +749,7 @@ class FilterTable extends React.Component {
                                     margin: "0px 0px 0px 1.262vh", 
                                     //borderColor: "#d9d9d9 #ccc #b3b3b3",
                                     borderRadius: "4px",
+                                    height: "3.096vh"
                                     //border: "1px solid #ccc", 
                                 }} 
                             >
@@ -764,7 +765,7 @@ class FilterTable extends React.Component {
                                     labelStyle = {{ 
                                         width: "100%", 
                                         lineHeight: "2.524vh",
-                                        fontSize: "1.342vh",
+                                        fontSize: "1.3vh",
                                         margin: "0.516vh 0.516vh 0px 0px", 
                                         color: 'rgba(0, 0, 0, 0.6)' }}
                                 />

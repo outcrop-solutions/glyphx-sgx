@@ -202,6 +202,11 @@ class TopNavBar extends React.Component {
                     url_uid: this.props.uid, 
                     collapse_sidenav: true}))
             }
+            else if(type === "settings_modal"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid, 
+                    settings_modal: true}))
+            }
 		}
     }
 
@@ -362,7 +367,8 @@ class TopNavBar extends React.Component {
                     </IconButton> */}
 
                     <IconButton 
-                        onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
+                        onClick = { () => {this.props.dispatch(editModalDisplay(true, null, null, null)); 
+                                this.webSocketSend("settings_modal"); } } 
                         style = {{ 
                             height: "5.005vh",
                             width: "2.010vw", 

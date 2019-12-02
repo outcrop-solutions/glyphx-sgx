@@ -202,12 +202,13 @@
 
 .Select-input, .Select-placeholder{
     margin-top: -0.103vh;
-    font-family: ITCFranklinGothicStd-Med;
+    /* font-family: ITCFranklinGothicStd-Med; */
     line-height: 2.890vh;
     letter-spacing: 0.5px;
-    font-size: 1.651vh;
+    font-size: 1.451vh;
     padding-left: 1.032vh;
     padding-right: 1.032vh;
+    text-transform: uppercase;
 }
 
 .Select-arrow-zone{
