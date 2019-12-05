@@ -351,3 +351,20 @@ input.selectAllCheck{
   width: 1.357vw;
   height: 1.356vh;
 }
+
+.ReactVirtualized__Table__row{
+  padding-right: 1.754vh !important;
+}
+
+.ReactVirtualized__Table__headerRow {
+  padding-right: 1.754vh !important;
+}
+
+.ReactVirtualized__Table__headerColumn:first-of-type, .ReactVirtualized__Table__rowColumn:first-of-type {
+  margin-left: 1.032vh !important;
+}
+
+.ReactVirtualized__Table__headerColumn, .ReactVirtualized__Table__rowColumn {
+  margin-right: 1.032vh !important;
+}
+

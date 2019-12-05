@@ -687,7 +687,7 @@ class FilterTable extends React.Component {
         //creating the rows
         var rows = this.createRows();
         // console.log(rows);
-        // console.log(document.documentElement.clientHeight, document.documentElement.clientHeight * .361197)
+        console.log(document.documentElement.clientHeight, document.documentElement.clientWidth)
         return (
 
             <div style = {{ height: "inherit" }} >
@@ -765,8 +765,8 @@ class FilterTable extends React.Component {
                                     labelStyle = {{ 
                                         width: "100%", 
                                         lineHeight: "2.524vh",
-                                        fontSize: "1.3vh",
-                                        margin: "0.516vh 0.516vh 0px 0px", 
+                                        fontSize: "1.2vh",
+                                        margin: "0.516vh 0.916vh 0px 0px", 
                                         color: 'rgba(0, 0, 0, 0.6)' }}
                                 />
                             </div>
@@ -781,7 +781,7 @@ class FilterTable extends React.Component {
                 <div style = {{ padding: "0px 1.577vh" }} >
                     <div 
                         style = {{ 
-                            height: "38.486vh",
+                            // height: "38.486vh !important",
                             width: "19vw",
                             overflow: "hidden" ,
                             height: (document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
@@ -793,7 +793,8 @@ class FilterTable extends React.Component {
 
                         <Table
                             width = { document.documentElement.clientHeight * .37668 }
-                            height = { document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
+                            height = { 
+                                document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
                                     this.state.height : document.documentElement.clientHeight * .02477 * (rows.length + 1) }
                             headerHeight = { document.documentElement.clientHeight * .02477 }
                             rowHeight = { document.documentElement.clientHeight * .02477 }
