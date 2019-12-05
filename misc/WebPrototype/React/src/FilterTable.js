@@ -755,6 +755,7 @@ class FilterTable extends React.Component {
                             >
                                 <Checkbox
                                     label = "Show All"
+                                    style = {{width: "110%"}}
                                     checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) !== -1 ? true : false }
                                     onCheck = { () => this.updateCheck(this.props.internalColName.replace("_pinned", "")) }
                                     iconStyle = {{ 
@@ -792,7 +793,7 @@ class FilterTable extends React.Component {
                         
 
                         <Table
-                            width = { document.documentElement.clientHeight * .37668 }
+                            width = { document.documentElement.clientWidth * 0.1901041666666667 }
                             height = { 
                                 document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
                                     this.state.height : document.documentElement.clientHeight * .02477 * (rows.length + 1) }
@@ -813,10 +814,10 @@ class FilterTable extends React.Component {
                             <Column
                                 label = 'Value'
                                 dataKey ='value'
-                                width = { document.documentElement.clientHeight * .257997 }
+                                width = { document.documentElement.clientWidth * 0.1302083333333333 }
                             />
                             <Column
-                                width = { document.documentElement.clientHeight * .103199 }
+                                width = { document.documentElement.clientWidth * 0.0520833333333333 }
                                 label = 'Count'
                                 dataKey = 'count'
                             />

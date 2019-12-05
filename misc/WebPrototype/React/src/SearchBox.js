@@ -66,8 +66,11 @@ class SearchBox extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
-                <Flexbox style = {{ width: "100%", borderRadius: "0.521vh", backgroundColor: this.props.settings.tableSelectColor }} > 
+            <Flexbox flexDirection = "row" >
+                <Flexbox style = {{ 
+                    width: "99.9%", 
+                    borderRadius: "0.521vh", 
+                    backgroundColor: this.props.settings.tableSelectColor }} > 
 
                     <TextField
                         id = { this.props.id }
@@ -76,7 +79,7 @@ class SearchBox extends React.Component {
                         value = { this.state.textFieldValue }
                         style = {{
                             borderColor: "#d9d9d9 #ccc #b3b3b3",
-                            borderRadius: "4px",
+                            // borderRadius: "4px",
                             border: "1px solid #ccc",
                             width: "100%",
                             height: "3.1vh",
@@ -92,8 +95,10 @@ class SearchBox extends React.Component {
                             bottom: "-0.104vh"
                         }}
                         underlineStyle = {{
+                            borderColor: "rgb(245, 245, 255)",
                             margin: "0px 0px -0.834vh"
                         }}
+                        
                         onChange = { this.onChange } 
                         onKeyPress = { (e) => this.blurOnEnter(e, this.props.id) }
                         hintText = {
@@ -111,7 +116,7 @@ class SearchBox extends React.Component {
                                 {this.props.hintText}
                             </span>
                         }
-                        underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -0.834vh 0px" }}
+                        underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -1.034vh 0px" }}
                         onBlur = { this.props.shouldOnBlur ? (evt) => this.props.onTextFieldValueChange(evt,this.props.pinned) : null }
                     /> 
                 </Flexbox>

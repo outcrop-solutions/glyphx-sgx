@@ -519,12 +519,11 @@ class HomePage extends React.Component {
                                                         padding: "2.524vh 2.524vh 1.893vh"}}
                                                     actionsContainerStyle = {{ padding: "0.841vh" }}
                                                     bodyStyle = {{
-                                                        overflowY: "auto", 
                                                         textAlign: "center", 
                                                         fontSize: "1.682vh", 
-                                                        maxHeight: "74.974vh", 
+                                                        overflowY: "inherit",
                                                         padding: "0px 2.524vh 2.524vh"}}
-                                                    contentStyle={{maxWidth: "102.296vw"}}
+                                                    contentStyle={{maxWidth: "65.296vw"}}
                                                     style={{ paddingTop: "2.086vh" }}
                                                     title = { <div style = {{ fontWeight: "bold" }} > Glyph Key <Divider /></div> }
                                                     modal = { true }
@@ -556,20 +555,7 @@ class HomePage extends React.Component {
                                                         >
                                                             <div style = {{ borderRadius: "3px" }}>
                                                                 <img
-                                                                    id = "Legend_Id" 
-                                                                    style= {{
-                                                                        maxWidth: "97.286vw",
-                                                                        height: 
-                                                                            (document.getElementById("Legend_Id") ? 
-                                                                                (document.documentElement.clientHeight * 
-                                                                                    (document.getElementById("Legend_Id").clientHeight / 969)) : 
-                                                                                        ""),
-                                                                        width: 
-                                                                            (document.getElementById("Legend_Id") ? 
-                                                                                (document.documentElement.clientWidth * 
-                                                                                    document.getElementById("Legend_Id").clientWidth /1903) : 
-                                                                                        "")
-                                                                    }} 
+                                                                    style= {{ width: "100%" }} 
                                                                     alt="Enlarged" src={
                                                                 'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
                                                                 window.encodeURIComponent(this.props.legend_url_arr[0])}/>

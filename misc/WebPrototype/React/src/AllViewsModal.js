@@ -42,7 +42,6 @@ class allViewsModal extends React.Component {
 			"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
 			"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
 		],
-
 	}
 	constructor(props){
 		super(props);
@@ -878,7 +877,9 @@ class allViewsModal extends React.Component {
 									borderBottom: "1px solid black",
 									overflowY: "scroll"	
 							}}>
-								<div style = {{ /* margin: "1px 1px 0px 0px", */ position: "absolute", width: "46.36vw" }} >
+								<div style = {{ 
+										position: "absolute", 
+										width: "46.36vw" }} >
 									<SearchBox 
 										ref = "SearchBox"
 										settings = {{
@@ -901,7 +902,7 @@ class allViewsModal extends React.Component {
 										<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
 											id = { "st-" + col[0] } 
 											> 
-											Too many filters. <br /> Select all or search to view. <br /> <br /> Results: {col.length - 1} 
+											500+ Results Returned. <br/> Search to Filter and View. <br /> <br /> Results: {col.length - 1} 
 										</div> : null) }
 
 									<div id = { "se-" + col[0] } style = {{ margin: "1.043vh 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
