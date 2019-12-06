@@ -527,7 +527,9 @@ class FilterSideBar extends React.Component {
                     style = {{ 
                         height: "100%",
                         overflow:'hidden',
-                        transition: '500ms'
+                        transition: '500ms',
+                        fontFamily: "ITCFranklinGothicStd-Med",
+                        letterSpacing: "1px"
                     }}
                 >
                     {/* TOP SECTION */}

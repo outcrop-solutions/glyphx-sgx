@@ -1126,7 +1126,19 @@ class FilterSideBarTopView extends React.Component {
     }
 
     webSocketSend(type){
-        if(type === "view-stats"){
+        if(type === "save-viz"){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                save_viz: true 
+            }));
+        }
+        else if(type === "save-as-viz"){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                save_as_viz: true 
+            }));
+        }
+        else if(type === "view-stats"){
             this.props.webSocket.send(JSON.stringify({
                 url_uid: this.props.uid,
                 view_stats: true 
@@ -1357,10 +1369,25 @@ class FilterSideBarTopView extends React.Component {
                                 style = {{ fontSize: '1.360vh', width: "11.691vw" }}
                             >
                                 <Menu>
-                                    <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
-                                    <MenuItem primaryText = "Save" className = "menuItemStyling" onClick = { this.onMenuSaveClick }/>
-                                    <MenuItem primaryText = "Save As" className = "menuItemStyling" onClick = { this.onMenuSaveAsClick }/>
-                                    <MenuItem primaryText = "Delete" className = "menuItemStyling" onClick = { this.onMenuDeleteClick } disabled = {this.state.viewSelectValue === null || this.state.viewSelectValue === ""}/>
+                                    <MenuItem 
+                                        primaryText = "New" 
+                                        className = "menuItemStyling" 
+                                        onClick = { this.onMenuNewClick }/>
+                                    <MenuItem 
+                                        primaryText = "Save" 
+                                        className = "menuItemStyling" 
+                                        onClick = {() => (this.props.uid ? 
+                                                this.webSocketSend("save-viz") : this.onMenuSaveClick()) }/>
+                                    <MenuItem 
+                                        primaryText = "Save As" 
+                                        className = "menuItemStyling" 
+                                        onClick = {() => (this.props.uid ? 
+                                                this.webSocketSend("save-as-viz") : this.onMenuSaveAsClick()) }/>
+                                    <MenuItem 
+                                        primaryText = "Delete" 
+                                        className = "menuItemStyling" 
+                                        onClick = { this.onMenuDeleteClick } 
+                                        disabled = {this.state.viewSelectValue === null || this.state.viewSelectValue === ""}/>
                                 </Menu>
                             </Popover>
 
