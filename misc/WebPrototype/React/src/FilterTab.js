@@ -157,7 +157,7 @@ class FilterTabs extends React.Component {
                                             }} 
                                             className = "fa fa-sliders" >
                                         </FontIcon> 
-                                        <div style = {{ marginleft: "5.160vh" }} >Range</div>
+                                        <div style = {{ marginleft: "5.160vh", fontSize: "1.445vh" }} >Range</div>
                                     </div>
                                 </div>
                             }

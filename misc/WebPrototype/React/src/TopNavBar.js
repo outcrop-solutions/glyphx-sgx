@@ -367,8 +367,8 @@ class TopNavBar extends React.Component {
                     </IconButton> */}
 
                     <IconButton 
-                        onClick = { () => {this.props.dispatch(editModalDisplay(true, null, null, null)); 
-                                this.webSocketSend("settings_modal"); } } 
+                        onClick = { () => (this.props.uid ? this.webSocketSend("settings_modal") : 
+                            this.props.dispatch(editModalDisplay(true, null, null, null)) )  } 
                         style = {{ 
                             height: "5.005vh",
                             width: "2.010vw", 

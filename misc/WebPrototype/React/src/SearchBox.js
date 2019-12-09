@@ -5,6 +5,7 @@ import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
+import './css/SearchBox.css';
 
 
 /**
@@ -70,7 +71,8 @@ class SearchBox extends React.Component {
                 <Flexbox style = {{ 
                     width: "99.9%", 
                     borderRadius: "0.521vh", 
-                    backgroundColor: this.props.settings.tableSelectColor }} > 
+                    // backgroundColor: this.props.settings.tableSelectColor 
+                    }} > 
 
                     <TextField
                         id = { this.props.id }
@@ -78,7 +80,7 @@ class SearchBox extends React.Component {
                         ref = "SearchTextField"
                         value = { this.state.textFieldValue }
                         style = {{
-                            borderColor: "#d9d9d9 #ccc #b3b3b3",
+                            // borderColor: "#d9d9d9 #ccc #b3b3b3",
                             // borderRadius: "4px",
                             border: "1px solid #ccc",
                             width: "100%",
@@ -88,15 +90,15 @@ class SearchBox extends React.Component {
                             // fontFamily: "ITCFranklinGothicStd-Med"
                         }}
                         inputStyle = {{
-                            padding: "0px 0.521vh 0px 0.521vh"
+                            padding: "0px 0.521vh 0px 0.521vh",
                         }}
                         hintStyle = {{
                             paddingLeft:"0.730vh",
-                            bottom: "-0.104vh"
+                            bottom: "-0.104vh",
                         }}
                         underlineStyle = {{
                             borderColor: "rgb(245, 245, 255)",
-                            margin: "0px 0px -0.834vh"
+                            margin: "0px 0px -0.834vh",
                         }}
                         
                         onChange = { this.onChange } 
@@ -116,9 +118,13 @@ class SearchBox extends React.Component {
                                 {this.props.hintText}
                             </span>
                         }
-                        underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -1.034vh 0px" }}
+                        underlineFocusStyle = {{ 
+                            borderColor: this.props.settings.searchBoxUnderline, 
+                            margin: "0px 0px -1.034vh 0px",
+                        }}
                         onBlur = { this.props.shouldOnBlur ? (evt) => this.props.onTextFieldValueChange(evt,this.props.pinned) : null }
                     /> 
+
                 </Flexbox>
 
                 {/* Conditionally renders the collapse button */}
