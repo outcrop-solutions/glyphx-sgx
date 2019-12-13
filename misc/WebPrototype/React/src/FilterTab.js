@@ -124,13 +124,13 @@ class FilterTabs extends React.Component {
                                                 width: "1.042vw", 
                                                 float: "left", 
                                                 fontSize: "2.064vh", 
-                                                margin: "-0.103vh 0px 0px", 
+                                                margin: "-0.103vh 0.516vh 0px 0px", 
                                                 color: (this.state.slideIndex === 0 ? 
                                                     this.props.settings.colors.filterTabColor.titleText : "#adadad") 
                                             }} 
                                             className = "fa fa-list-ul" >
                                         </FontIcon> 
-                                        <div style = {{ marginleft: "5.160vh" }} >Elastic</div>
+                                        <div style = {{ marginleft: "5.160vh", fontSize: "1.445vh" }} >Elastic</div>
                                     </div>
                                 </div>
                             }
@@ -151,7 +151,7 @@ class FilterTabs extends React.Component {
                                                 width: "1.042vw", 
                                                 float: "left", 
                                                 fontSize: "2.064vh", 
-                                                margin: "-0.206vh 0px 0px", 
+                                                margin: "-0.206vh 0.516vh 0px 0px", 
                                                 color: (this.state.slideIndex === 1 ? 
                                                     this.props.settings.colors.filterTabColor.titleText : "#adadad") 
                                             }} 

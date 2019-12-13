@@ -330,7 +330,11 @@ class VisualizationView extends React.Component {
                     <TimeoutAlert />
 
                     <div id  = "filterNav" className = "sidenav" style = {{ height: "100%", overflow: "hidden" }} >
-                        <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
+                        <Flexbox 
+                            flexDirection = "column" 
+                            minHeight = "100vh" 
+                            style = {{ height: "100vh", overflow: "hidden",}}
+                        >
                             <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '3.754vh', transition: '0.37s' }}>
                                 <TopNavBar />
                             </div>
@@ -418,7 +422,14 @@ class VisualizationView extends React.Component {
                     </Tooltip> */}
 					
 					{/* Actual Application body that you see */}
-                    <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
+                    <Flexbox 
+                        flexDirection = "column" 
+                        minHeight = "100vh" 
+                        style = {{ 
+                            height: "100vh", 
+                            overflow: "hidden",
+                            background: "black" }}
+                    >
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 

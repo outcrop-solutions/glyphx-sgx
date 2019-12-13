@@ -749,8 +749,9 @@ class FilterTable extends React.Component {
                                     margin: "0px 0px 0px 1.262vh", 
                                     //borderColor: "#d9d9d9 #ccc #b3b3b3",
                                     borderRadius: "4px",
-                                    height: "3.096vh"
+                                    height: "3.096vh",
                                     //border: "1px solid #ccc", 
+                                    width: "4.427vw"
                                 }} 
                             >
                                 <Checkbox
@@ -779,7 +780,7 @@ class FilterTable extends React.Component {
 
 				<br/>
 				
-                <div style = {{ padding: "0px 1.577vh" }} >
+                <div style = {{ padding: "0 1.577vh 0 1.577vh" }} >
                     <div 
                         style = {{ 
                             // height: "38.486vh !important",
