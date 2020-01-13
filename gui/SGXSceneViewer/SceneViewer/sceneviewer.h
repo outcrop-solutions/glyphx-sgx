@@ -30,6 +30,7 @@
 #include <array>
 #include "glyphrenderer.h"
 #include "glyphgeometrydb.h"
+#include "LegendsWidget.h"
 
 namespace SynGlyphX
 {
@@ -53,7 +54,7 @@ namespace SynGlyphX
 	{
 		Full,
 		SingleGlyph,
-		SingleGlyph_AllowSelection,
+		SingleGlyph_AllowSelection
 	};
 
 	class SGXSCENEVIEWER_API SceneViewer : public QOpenGLWidget
@@ -105,6 +106,7 @@ namespace SynGlyphX
 		void hideAllTags();
 		void enableSuperimposedGlyphGadgets( bool val );
 
+		void setupLegendWindow(QString cache_location, QStringList legends);
 		void setFilteredResults( const IndexSet& results, bool disableFiltering );
 		void setFilteredResultsDisplayMode( FilteredResultsDisplayMode mode );
 		FilteredResultsDisplayMode filteredResultsDisplayMode() { return scene->getFilterMode(); }
@@ -239,6 +241,7 @@ namespace SynGlyphX
 		hal::font* hud_font;
 		GlyphGeometryDB geomDB;
 		SuperimposedGroupManager* group_manager;
+		LegendsWidget* legendsWidget;
 
 		//Navigation buttons.
 		QToolButton* m_upRotateButton;

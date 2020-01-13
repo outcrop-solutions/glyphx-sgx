@@ -101,6 +101,11 @@ public class GlyphEngine {
 		return images;
 	}
 
+	public static String[] getCompassValues(){
+		String[] compass = sdtReader.getCompassValues();
+		return compass;
+	}
+
 	public static void setBoundingBox(double[] nw, double[] se, double[] imageSize){
 		Logger.getInstance().add("Downloaded Map BoundingBox: ("+String.valueOf(nw[0])+","+String.valueOf(nw[1])+"),("+String.valueOf(se[0])+","+String.valueOf(se[1])+")"); 
 		Logger.getInstance().add("Image Size: "+String.valueOf(imageSize[0])+", "+String.valueOf(imageSize[1]));

@@ -111,6 +111,8 @@ namespace SynGlyphX
 
 		static const unsigned int NO_GROUP = 0u;
 
+		std::vector<int> getSelectionIds();
+
 	private:
 		void compute_groups();
 		void update_groups();

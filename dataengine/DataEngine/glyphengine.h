@@ -57,6 +57,7 @@ namespace DataEngine
 		void AddVisualization(JNIEnv *env, std::string sdtPath);
 		bool getDownloadedBaseImage(std::vector<SynGlyphX::BaseImage> baseImages);
 		std::vector<std::string> getBaseImages();
+		std::vector<std::string> getCompassValues();
 		void generateGlyphs(QWidget *mainWindow);
 		bool IsUpdateNeeded() const;
 		QString JavaErrors();
