@@ -523,4 +523,35 @@ namespace DataEngine
 
 		return success;
 	}
+
+	std::vector<std::string> GlyphEngine::getCompassValues(){
+
+		std::vector<std::string> compass;
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"getCompassValues", "()[Ljava/lang/String;");
+		jobjectArray itr;
+		if (methodId != NULL) {
+			//qDebug() << "Returning count...";
+			itr = (jobjectArray)jniEnv->CallStaticObjectMethod(jcls, methodId);
+			if (jniEnv->ExceptionCheck()) {
+
+				jthrowable exc;
+				exc = jniEnv->ExceptionOccurred();
+				jmethodID toString = jniEnv->GetMethodID(jniEnv->FindClass("java/lang/Object"), "toString", "()Ljava/lang/String;");
+				jniEnv->CallObjectMethod(exc, toString);
+
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+			int length = jniEnv->GetArrayLength(itr);
+
+			for (int i = 0; i < length; i++){
+				jstring element = (jstring)jniEnv->GetObjectArrayElement(itr, i);
+				const char *str = jniEnv->GetStringUTFChars(element, 0);
+				compass.push_back(str);
+			}
+		}
+		return compass;
+	}
 }

@@ -63,6 +63,10 @@ namespace SynGlyphX
 		setMouseTracking(true);
 		setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 
+		legendsWidget = new LegendsWidget(this);
+		legendsWidget->resize(400, 280);
+		legendsWidget->hide();
+
 		if (mode == ViewerMode::Full)
 		{
 			m_upRotateButton = CreateNavigationButton(tr("Rotate Up"), true);
@@ -104,6 +108,71 @@ namespace SynGlyphX
 			m_moveDownButton = CreateNavigationButton(tr("Move Down"), true);
 			m_moveDownButton->setIcon(QIcon(":SGXGUI/Resources/down_arrow.png"));
 			QObject::connect(m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move(camera->get_world_up(), -buttonMoveUpDownRate); });
+
+			QString style = QString("QToolButton {"
+				"    border: 1px;"
+				"    width: 36px; min-width: 36px; max-width: 36px;"
+				"    height: 36px; min-height: 36px; max-height: 36px;"
+				"    border-radius: 18px;"
+				"    background-color: rgb(45, 48, 145);"
+				"    color: white;"
+				"    padding: 0;"
+				"    margin: 0;"
+				"    font-size: 12px;"
+				"    font-family: Arial;"
+				"}"
+				"QToolButton:checked {"
+				"    border: 2px solid white; "
+				"}"
+				"QToolButton:disabled {"
+				"    background-color: rgb(45, 48, 145); "
+				"    color: grey; "
+				"}");
+
+			QToolButton* legendButton = new QToolButton(this);
+			legendButton->setAttribute(Qt::WA_TranslucentBackground);
+			legendButton->setStyleSheet(style);
+			QIcon legendIcon;
+			legendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(30,30), QIcon::Normal, QIcon::Off);
+			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			legendButton->setIcon(legendIcon);
+			legendButton->setToolTip("Show/Hide Legends");
+			QObject::connect(legendButton, &QToolButton::pressed, this, [this]() { legendsWidget->setVisible(!legendsWidget->isVisible()); });
+			legendButton->move(QPoint(0, 20));
+
+			QToolButton* axesButton = new QToolButton(this);
+			axesButton->setAttribute(Qt::WA_TranslucentBackground);
+			axesButton->setStyleSheet(style);
+			QIcon axesIcon;
+			axesIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(30,30), QIcon::Normal, QIcon::Off);
+			//axesIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			axesButton->setIcon(axesIcon);
+			axesButton->setToolTip("Show/Hide Axes");
+			QObject::connect(axesButton, &QToolButton::pressed, this, [this]() { enableSceneAxes(!sceneAxesEnabled()); });
+			axesButton->move(QPoint(0, 60));
+
+			QToolButton* hudButton = new QToolButton(this);
+			hudButton->setAttribute(Qt::WA_TranslucentBackground);
+			hudButton->setStyleSheet(style);
+			QIcon hudIcon;
+			hudIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(30, 30), QIcon::Normal, QIcon::Off);
+			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			hudButton->setIcon(hudIcon);
+			hudButton->setToolTip("Show/Hide Compass");
+			QObject::connect(hudButton, &QToolButton::pressed, this, [this]() { enableHUDAxes(!hudAxesEnabled()); });
+			hudButton->move(QPoint(0, 100));
+
+			QToolButton* camButton = new QToolButton(this);
+			camButton->setAttribute(Qt::WA_TranslucentBackground);
+			camButton->setStyleSheet(style);
+			QIcon camIcon;
+			camIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(30,30), QIcon::Normal, QIcon::Off);
+			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			camButton->setIcon(camIcon);
+			camButton->setToolTip("Reset Camera Position");
+			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
+			camButton->move(QPoint(0, 140));
+
 		}
 		else
 		{
@@ -1169,17 +1238,17 @@ namespace SynGlyphX
 			flags = QItemSelectionModel::Toggle;
 			focusFlags = SynGlyphX::ItemFocusSelectionModel::FocusFlag::Toggle;
 
-			std::unordered_set<int> ids;
+			std::unordered_set<int> selected_ids;
 
 			QItemSelection selected;
 			scene->enumSelected([&](const Glyph3DNode& node)
 			{
 				int id = node.getRootParent()->getID();
-				if (ids.find(id) == ids.end())
+				if (selected_ids.find(id) == selected_ids.end())
 				{
 					QModelIndex modelIndex = glyph_forest_model->IndexFromCSVID(id);
 					selected.select(modelIndex, modelIndex);
-					ids.insert(id);
+					selected_ids.insert(id);
 				}
 			});
 
@@ -1220,4 +1289,10 @@ namespace SynGlyphX
 	{
 		if (group_manager) group_manager->setMode(val ? SuperimposedGadgetMode::Always : SuperimposedGadgetMode::OnSelection);
 	}
+
+	void SceneViewer::setupLegendWindow(QString cache_location, QStringList legends)
+	{
+		legendsWidget->SetLegends(cache_location, legends);
+	}
+
 }

@@ -148,6 +148,11 @@ private:
 	QString uid;
 	QString cache_location;
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	bool zero_results;
+	std::vector<std::string> compass;
+	bool collapsed;
+	QString table_name;
+	QStringList filter_ids;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 

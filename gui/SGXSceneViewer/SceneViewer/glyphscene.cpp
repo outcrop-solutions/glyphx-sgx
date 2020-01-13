@@ -672,4 +672,15 @@ namespace SynGlyphX
 			}
 		}
 	}
+
+	std::vector<int> GlyphScene::getSelectionIds()
+	{
+		std::vector<int> ids;
+
+		for (auto entry : selection){
+			ids.push_back(entry->getFilteringIndex());
+		}
+		
+		return ids;
+	}
 }

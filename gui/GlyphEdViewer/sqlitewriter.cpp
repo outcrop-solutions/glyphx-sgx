@@ -5,7 +5,6 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <QtXml/QXmlSimpleReader>
-#include <QtWidgets/QMessageBox>
 
 SqliteWriter::SqliteWriter()
 {

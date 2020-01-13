@@ -149,6 +149,18 @@ public class SDTReader {
 
 	}
 
+	public String[] getCompassValues() {
+		Logger.getInstance().add("COMPASS ROSE");
+		Logger.getInstance().add(templates.get(1).getInput("PositionX"));
+		Logger.getInstance().add(templates.get(1).getInput("PositionY"));
+		Logger.getInstance().add(templates.get(1).getInput("PositionZ"));
+		String[] compass = new String[3];
+		compass[0] = templates.get(1).getInput("PositionX");
+		compass[1] = templates.get(1).getInput("PositionY");
+		compass[2] = templates.get(1).getInput("PositionZ");
+		return compass;
+	}
+
 	public void continueInitXML() {
 		try{
 		//if(updateNeeded){

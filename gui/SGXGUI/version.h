@@ -7,12 +7,12 @@ namespace SynGlyphX
 {
 	// Increment this for the first release of a new version (that is, the first
 	// time we provide it to non-developers).
-	inline const char* getAppVersionString() { return "1.2.03"; }
+	inline const char* getAppVersionString() { return "1.3.00"; }
 
 	// Increment this for EVERY build that's released (so we can use it to know
 	// EXACTLY which build everyone is using).
 	// @todo - eventually we should automate incrementing this.
-	inline unsigned int getBuildNumber() { return 366u; }
+	inline unsigned int getBuildNumber() { return 367u; }
 
 	// Combine the two above strings.
 	inline std::string getFullVersionString()

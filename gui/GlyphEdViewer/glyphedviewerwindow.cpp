@@ -33,7 +33,9 @@
 #include <QtGui/QScreen>
 //#include <QtNetwork>
 #include "sqlitewriter.h"
+#include "version.h"
 #include "S3FileManager.h"
+#include "selecteddatawidget.h"
 
 GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -47,6 +49,7 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	menuBar()->hide();
 
+	collapsed = false;
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
@@ -67,7 +70,7 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	QScreen *screen = QGuiApplication::primaryScreen();
 	QRect screenGeometry = screen->geometry();
-	int width = screenGeometry.width() - 450;
+	int width = screenGeometry.width() - (screenGeometry.width()*0.235);//450;
 	int height = screenGeometry.height() - 83;
 
 	m_viewer = new SynGlyphX::SceneViewer(this, SynGlyphX::ViewerMode::Full);
@@ -75,9 +78,47 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	m_viewer->setGeometry(0, 0, width, height);
 	m_viewer->hide();
 
+	//CONTEXT MENU
+	m_enableDisableFlyToObjectAction = new QAction(tr("Enable/Disable Fly-to-Object"), this);
+	m_enableDisableFlyToObjectAction->setCheckable(true);
+	m_enableDisableFlyToObjectAction->setChecked(false);
+	m_enableDisableFlyToObjectAction->setEnabled(false);
+	m_loadedVisualizationDependentActions.push_back(m_enableDisableFlyToObjectAction);
+	QObject::connect(m_enableDisableFlyToObjectAction, &QAction::toggled, this, &GlyphEdViewerWindow::OnEnableDisableFlyToObjectAction);
+
+	m_enableDisableFreeSelectionCameraAction = new QAction(tr("Enable/Disable Orbit Selection"), this);
+	m_enableDisableFreeSelectionCameraAction->setCheckable(true);
+	m_enableDisableFreeSelectionCameraAction->setChecked(true);
+	m_enableDisableFreeSelectionCameraAction->setEnabled(false);
+	m_loadedVisualizationDependentActions.push_back(m_enableDisableFreeSelectionCameraAction);
+	QObject::connect(m_enableDisableFreeSelectionCameraAction, &QAction::toggled, this, &GlyphEdViewerWindow::OnEnableDisableFreeSelectionCamera);
+	
+	m_enableDisableSelEffectActionMenu = new QAction(tr("Enable/Disable Selection Effect"), this);
+	m_enableDisableSelEffectActionMenu->setCheckable(true);
+	m_enableDisableSelEffectActionMenu->setChecked(true);
+	m_enableDisableSelEffectActionMenu->setEnabled(false);
+	m_loadedVisualizationDependentActions.push_back(m_enableDisableSelEffectActionMenu);
+	QObject::connect(m_enableDisableSelEffectActionMenu, &QAction::toggled, this, &GlyphEdViewerWindow::OnEnableDisableSelEffect);
+
+	m_enableDisableSuperimposedGlyphGadgets = new QAction(tr("Enable/Disable Overlapping Group Indicators"), this);
+	m_enableDisableSuperimposedGlyphGadgets->setCheckable(true);
+	m_enableDisableSuperimposedGlyphGadgets->setChecked(false);
+	m_enableDisableSuperimposedGlyphGadgets->setEnabled(false);
+	m_loadedVisualizationDependentActions.push_back(m_enableDisableSuperimposedGlyphGadgets);
+	QObject::connect(m_enableDisableSuperimposedGlyphGadgets, &QAction::toggled, this, &GlyphEdViewerWindow::OnEnableDisableSuperimposedGadgets);
+
 	m_viewer->addAction(m_showTagsAction);
 	m_viewer->addAction(m_hideTagsAction);
 	m_viewer->addAction(m_hideAllTagsAction);
+	m_viewer->addAction(SynGlyphX::SharedActionList::CreateSeparator(m_viewer));
+	m_viewer->addAction(m_enableDisableFlyToObjectAction);
+	m_viewer->addAction(m_enableDisableFreeSelectionCameraAction);
+	m_viewer->addAction(m_enableDisableSelEffectActionMenu);
+	m_viewer->addAction(m_enableDisableSuperimposedGlyphGadgets);
+	m_viewer->addAction(m_clearSelectionAction);
+	//CONTEXT MENU
+	m_viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+
 	QObject::connect(m_showTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(true); });
 	QObject::connect(m_hideTagsAction, &QAction::triggered, this, [this]{ m_viewer->showTagsOfSelectedObjects(false); });
 	QObject::connect( m_hideAllTagsAction, &QAction::triggered, this, [this]{ m_viewer->hideAllTags(); });
@@ -336,26 +377,32 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 
 	QString text;
 	if (type == "LAUNCH"){
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		zero_results = false;
 		QString sdt = "https" + message.split(QChar(':')).at(3).split(QChar('"')).at(0);
-		QString query = message.split(QChar(':')).at(4).split(QChar(',')).at(0);
+		QString query = message.split(QChar(':')).at(4).split(QChar(';')).at(0) + ";\"";
 		QStringList legends = message.split("\"legendURLArr\":[").at(1).split(QChar(']')).at(0).split(QChar(','));
 		//text = "Received launch response from server. \n Launch " + query;
 		std::vector<std::string> bimgs = MakeDataRequest(query, sdt, legends);
-		QSize size = this->size();
-		m_viewer->resize(size.width() - 450, size.height() - 20);
-		m_viewer->show();
-		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), bimgs);
+		if (!zero_results){
+			QSize size = this->size();
+			m_viewer->resize(size.width() - (size.width()*0.235), size.height() - 20);
+			m_viewer->show();
+			m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), bimgs);
+			m_viewer->setAxisNames(compass.at(0).c_str(), compass.at(1).c_str(), compass.at(2).c_str());
+		}
+		SynGlyphX::Application::restoreOverrideCursor();
 		//QMessageBox::information(this, tr("Server message"), sdt);
 	}
 	else if (type == "FILTER"){
 		QString ids = message.split(QChar('[')).at(1).split(QChar(']')).at(0);
 		SynGlyphX::IndexSet myset = parseFilters(ids);
+		filter_ids.clear();
 		std::set<unsigned long>::iterator it;
-		QStringList qsl;
 		for (it = myset.begin(); it != myset.end(); ++it){
-			qsl.append(QString::number(*it));
+			filter_ids.append(QString::number(*it+1));
 		}
-		text = "Received launch response from server. \n Filter [" + qsl.join(", ") + "]";
+		text = "Received launch response from server. \n Filter [" + filter_ids.join(", ") + "]";
 		m_viewer->setFilteredResults(parseFilters(ids), true);
 	}
 	else if (type == "HOME" || type == "LOGOUT"){
@@ -368,6 +415,46 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 	else if (type == "VFILTERS CLEAR ALL"){
 		text = "Received launch response from server. \n Clear All " + uid;
 		m_viewer->setFilteredResults(SynGlyphX::IndexSet(), true);
+		filter_ids.clear();
+	}
+	else if (type == "VIEW_SELECTED"){
+		std::vector<int> ids = m_viewer->getScene().getSelectionIds();
+		if (ids.size() != 0){
+			QStringList str_ids;
+			for (int id : ids){
+				str_ids << QString::number(id + 1);
+			}
+			SelectedDataWidget* sdw = new SelectedDataWidget(this, cache_location, table_name, str_ids);
+			sdw->show();
+		}
+		else{
+			QMessageBox::information(this, tr("Server message"), "No Glyphs are currently selected.");
+		}
+	}
+	else if (type == "VIEW_FILTERED"){
+		if (filter_ids.size() != 0){
+			SelectedDataWidget* sdw = new SelectedDataWidget(this, cache_location, table_name, filter_ids);
+			sdw->show();
+		}
+		else{
+			QMessageBox::information(this, tr("Server message"), "No Glyphs are currently filtered.");
+		}
+	}
+	else if (type == "VIEW_STATS"){
+		QMessageBox::information(this, tr("Server message"), "VIEW_STATS");
+	}
+	else if (type == "COLLAPSE_SIDENAV"){
+		QSize size = this->size();
+		m_viewer->resize(size.width() - (size.width()*0.026), size.height() - 20);
+		collapsed = true;
+	}
+	else if (type == "EXPAND_SIDENAV"){
+		QSize size = this->size();
+		m_viewer->resize(size.width() - (size.width()*0.235), size.height() - 20);
+		collapsed = false;
+	}
+	else if (type == "SETTINGS_MODAL"){
+		QMessageBox::information(this, tr("Server message"), "SETTINGS_MODAL");
 	}
 
 	//QMessageBox::information(this, tr("Server message"), text);
@@ -401,7 +488,15 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	QJsonDocument json = QJsonDocument::fromJson(response_data);
 	QJsonArray data = json.array();
 
+	//QMessageBox::information(this, tr("Server message"), QString::number(response_data.size()));
+
 	reply->deleteLater();
+
+	if (response_data.size() == 2){
+		//QMessageBox::information(this, tr("Server message"), "No matches");
+		zero_results = true;
+		return std::vector<std::string>();
+	}
 
 	DataEngine::GlyphEngine ge;
 	ge.initiate(m_dataEngineConnection->getEnv(), "", "", "", "", "GlyphViewer", false);
@@ -417,19 +512,22 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 
 	//QMessageBox::information(this, tr("Server message"), filename);
 
-	QString table_name = query.split("FROM ").at(1).split(" ").at(0);
+	table_name = query.split("FROM ").at(1).split(" ").at(0);
 
 	QString bucket_name = sdt.split(QChar('.')).at(0).split("/").at(2);
 	QString key_name = sdt.split(".com/").at(1);
 	//QMessageBox::information(this, tr("Server message"), bucket_name + " | " + key_name);
+	QStringList legend_list;
 	ge.DownloadFiles(bucket_name, key_name, cache_location);
 	for (QString legend : legends) {
 		QStringList legend_parts = legend.left(legend.length()-1).split(QChar('/'));
 		int legend_length = legend_parts.size();
 		QString legend_key = legend_parts.at(legend_length-2) + "/" + legend_parts.at(legend_length-1);
+		legend_list << legend_parts.at(legend_length - 1);
 		ge.DownloadFiles(bucket_name, legend_key, cache_location);
 	}
 
+	m_viewer->setupLegendWindow(cache_location, legend_list);
 	m_mappingModel->LoadDataTransformFile(filename);
 	std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 
@@ -447,6 +545,17 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 		DownloadBaseImages(ge);
 		ge.generateGlyphs(this);
 	}
+
+	compass = ge.getCompassValues();
+	//QMessageBox::information(this, tr("Server message"), QString::fromStdString(compass.at(0)) + " | " + QString::fromStdString(compass.at(1)) + " | " + QString::fromStdString(compass.at(2)));
+
+	bool show = true;
+	for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
+		if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
+			show = false;
+		}
+	}
+	m_viewer->enableSceneAxes(show);
 
 	return ge.getBaseImages();
 }
@@ -466,10 +575,9 @@ void GlyphEdViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
 		QMessageBox::information(this, "Download Image Error", tr("Base image failed to download so the world map was used instead.\n\nError: ") + tr(e.what()), QMessageBox::Ok);
-		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	}
 	catch (const std::exception&) {
-
+	
 		throw;
 	}
 }
@@ -478,7 +586,13 @@ void GlyphEdViewerWindow::resizeEvent(QResizeEvent* event) {
 
 	//QMessageBox::information(this, tr("Server message"), "resize");
 	QSize size = this->size();
-	m_viewer->resize(size.width() - 450, size.height() - 20);
+
+	if (collapsed){
+		m_viewer->resize(size.width() - (size.width()*0.026), size.height() - 20);
+	}
+	else {
+		m_viewer->resize(size.width() - (size.width()*0.235), size.height() - 20);
+	}
 
 	SynGlyphX::MainWindow::resizeEvent(event);
 
@@ -674,7 +788,7 @@ void GlyphEdViewerWindow::OnEnableDisableSelEffect( bool enable )
 	{
 		m_viewer->enableSelectionEffect( enable );
 		m_enableDisableSelEffectActionMenu->setChecked( enable );
-		m_enableDisableSelEffectAction->setChecked( enable );
+		//m_enableDisableSelEffectAction->setChecked( enable );
 	}
 }
 
@@ -706,7 +820,7 @@ QString GlyphEdViewerWindow::GetApplicationDisplayName() const {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		return SynGlyphX::Application::applicationName() + " (Powered by " + SynGlyphX::Application::organizationName() + ")";
+		return SynGlyphX::Application::applicationName() + " (SynGlyphX Inside) " + SynGlyphX::getFullVersionString().c_str();
 	}
 	else {
 

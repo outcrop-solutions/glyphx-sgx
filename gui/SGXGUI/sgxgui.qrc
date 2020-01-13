@@ -59,6 +59,9 @@
         <file>Resources/GlyphEd/ucollege.png</file>
         <file>Resources/fathead-syn-inside.jpg</file>
         <file>Resources/GlyphEd/synglyphx_x_ED.ico</file>
+        <file>Resources/Icons/camera_icon.png</file>
+        <file>Resources/Icons/axes_icon.png</file>
+        <file>Resources/Icons/legend_icon.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
         <file alias="qt.conf">Resources/qt.conf</file>
