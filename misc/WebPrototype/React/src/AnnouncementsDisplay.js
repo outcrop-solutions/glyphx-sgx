@@ -184,7 +184,7 @@ class AnnouncementsDisplay extends React.Component {
                                     {features}
                                 </ul> */}
                                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
-                                    <div style = {{ borderRadius: "3px" }}>
+                                    <div style = {{ borderRadius: "3px", width: "37vw" }}>
                                         {announcements}
                                     </div>
                                 </div>

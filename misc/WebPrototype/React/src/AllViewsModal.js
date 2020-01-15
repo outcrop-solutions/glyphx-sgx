@@ -879,7 +879,8 @@ class allViewsModal extends React.Component {
 							}}>
 								<div style = {{ 
 										position: "absolute", 
-										width: "46.36vw" }} >
+										width: "46.36vw",
+										backgroundColor: "white" }} >
 									<SearchBox 
 										ref = "SearchBox"
 										settings = {{

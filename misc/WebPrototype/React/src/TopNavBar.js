@@ -482,11 +482,19 @@ class TopNavBar extends React.Component {
                             leftAvatar = {
                                 <Avatar
                                     //src="./Res/Img/x.png"
-                                    backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
+                                    style= {{ 
+                                        fontSize: "2.064vh", 
+                                        height: "4.128vh",
+                                        width: "4.128vh",
+                                        top: "0.826vh",
+                                        left: "1.651vh",
+                                        backgroundColor: this.props.settings.colors.overviewButtonsColor.background
+                                    }}
                                 >
                                     { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" }
                                 </Avatar>
                             }
+                            innerDivStyle = {{padding: "2.064vh 1.651vh 2.064vh 7.43vh"}}
                             style= {{
                                 fontSize: "1.98vh", 
                                 fontFamily: "ITCFranklinGothicStd-Med"}}

@@ -32,6 +32,7 @@ class ViewsManager extends React.Component {
 			flipped: false,
             clicked: false,
             legendPng: "",
+            topicArray: [],
             //legendPng is legacy code
 		}
     }
@@ -416,22 +417,27 @@ class ViewsManager extends React.Component {
         );
     }
 
-    selectTopic(val, mandrList, admList, faList, customList){
-        if(val === "MarketingAndRecruiting"){
-            this.flip(val, mandrList.length);
-        }
-        else if(val === "Admissions"){
-            this.flip(val, admList.length);
-        }
-        else if(val === "FinancialAid"){
-            this.flip(val, faList.length);
-        }
-        else if(val === "Custom"){
-            this.flip(val, customList.length);
+    selectTopic(val){
+        console.log(val, this.props.funnelData[val])
+        // if(val === "MarketingAndRecruiting"){
+        //     this.flip(val, mandrList.length);
+        // }
+        // else if(val === "Admissions"){
+        //     this.flip(val, admList.length);
+        // }
+        // else if(val === "FinancialAid"){
+        //     this.flip(val, faList.length);
+        // }
+        // else if(val === "Custom"){
+        //     this.flip(val, customList.length);
+        // }
+        if(this.props.funnelData[val].length > 0){
+            this.flip(val, this.props.funnelData[val].length);
         }
     }
 
     selectInquiry(str){
+        console.log(str)
         if(str.length > 0 && str.indexOf(',') > 0){
             let val = str.slice(0, str.indexOf(','));
             let url = str.slice(str.indexOf(',') + 1);
@@ -447,6 +453,23 @@ class ViewsManager extends React.Component {
         }
     }
 
+    // topicRender(styleForFirstViewSelect){
+    //     let funnelData = this.props.funnelData;
+    //     console.log(funnelData)
+    //     if(Object.keys(funnelData).length > 0){
+    //         Object.keys(funnelData).map((property) => {
+    //             console.log(property)
+    //             return(
+    //                 <div className = "main-category-select"
+    //                 >
+    //                 {property}
+    //                 </div>
+    //             );
+            
+    //         })
+    //     }
+    // }
+    
     injectOption(){
         return (
         <option>
@@ -459,22 +482,24 @@ class ViewsManager extends React.Component {
         let context = this;
         /* console.log(this) */
         var funnelData = this.props.funnelData;
+        let new_funnel_data = {};
+        let wholeList = [];
         // console.log(funnelData);
-        var mandrList, admList, faList, customList /* retentionList */;
+        // var mandrList, admList, faList, customList /* retentionList */;
 
         //checking to see if its there and if it is, copy and put it in a new array
-        if (funnelData["Marketing and Recruiting"]) mandrList = funnelData["Marketing and Recruiting"];
-        else mandrList = [];
+        // if (funnelData["Marketing and Recruiting"]) mandrList = funnelData["Marketing and Recruiting"];
+        // else mandrList = [];
         
 
-        if (funnelData["Admissions"]) admList = funnelData["Admissions"];
-        else admList = [];
+        // if (funnelData["Admissions"]) admList = funnelData["Admissions"];
+        // else admList = [];
 
-        if (funnelData["Financial Aid"]) faList = funnelData["Financial Aid"];
-        else faList = [];
+        // if (funnelData["Financial Aid"]) faList = funnelData["Financial Aid"];
+        // else faList = [];
 
-        if (funnelData["Custom"]) customList = funnelData["Custom"];
-        else customList = [];
+        // if (funnelData["Custom"]) customList = funnelData["Custom"];
+        // else customList = [];
 
         // console.log(mandrList);
 
@@ -485,47 +510,57 @@ class ViewsManager extends React.Component {
         // console.log(customList);
 
         //splicing out things that aren't supposed to be in there. to double check
-        for (var i = mandrList.length - 1; i > -1; i--) {
-            if (mandrList[i][0] !== "Prospects" && mandrList[i][0] !== "High School Profiles") {
-                mandrList.splice(i, 1);
+        
+        for(let property in funnelData) {
+            new_funnel_data[property] = [];
+            if(property !== "Marketing and Recruiting" && property !== "Admissions" && property !== "Custom" && property !== "Financial Aid"){
+                for(let i = 0; i < funnelData[property].length; i++){
+                    new_funnel_data[property].push(funnelData[property][i]);
+                }
             }
         }
-        // console.log(mandrList);
-        for (var x = admList.length - 1; x > -1; x--) {
-            if (admList[x][0] !== "Current Year RC with Prior Year Admits" && 
-            admList[x][0] !== "Global Admissions" && admList[x][0] !== "Applicants" 
-            && admList[x][0] !== "Applicants by High School" && admList[x][0] !== "Review Committee") {
-                admList.splice(x, 1);
+        
+
+        if(funnelData['Marketing and Recruiting']){
+            for (let z = 0; z < funnelData['Marketing and Recruiting'].length; z++) {
+                if (funnelData['Marketing and Recruiting'][z][0] == "Prospects" || funnelData['Marketing and Recruiting'][z][0] == "High School Profiles") {
+                    new_funnel_data['Marketing and Recruiting'].push(funnelData['Marketing and Recruiting'][z]);
+                }
             }
         }
-        // console.log(admList);
+        
 
-        faList = [];
-
-        /*
-        for (var i = faList.length - 1; i > -1; i--) {
-            if (faList[i][0] != "" && faList[i][0] != "" && faList[i][0] != "") {
-                faList.splice(i, 1);
+        if(funnelData['Admissions']){
+            for (let x = 0; x < funnelData['Admissions'].length; x++) {
+                if (funnelData['Admissions'][x][0] == "Current Year RC with Prior Year Admits" ||
+                funnelData['Admissions'][x][0] == "Global Admissions" || funnelData['Admissions'][x][0] == "Applicants" 
+                || funnelData['Admissions'][x][0] == "Applicants by High School" || funnelData['Admissions'][x][0] == "Review Committee") {
+                    new_funnel_data['Admissions'].push(funnelData['Admissions'][x]);
+                }
             }
         }
 
-        console.log(faList);
-        */
-
-        for (var j = customList.length - 1; j > -1; j--) {
-            if (customList[j][0] !== "Applicants" && customList[j][0] !== "Pre-College" &&
-             customList[j][0] !== "Adversity" && customList[j][0] !== "First Source" && 
-             customList[j][0] !== "Retention Geo" && customList[j][0] !== "Retention Non Geo") {
-                customList.splice(j, 1);
+        // for (var i = funnelData['Financial Aid'].length - 1; i > -1; i--) {
+        //     if (funnelData['Financial Aid'][i][0] != "" && faList[i][0] != "" && faList[i][0] != "") {
+        //         faList.splice(i, 1);
+        //     }
+        // }
+        if(funnelData['Custom']){
+            for (let j = 0; j < funnelData['Custom'].length; j++) {
+                if (funnelData['Custom'][j][0] == "Applicants" || funnelData['Custom'][j][0] == "Pre-College" ||
+                funnelData['Custom'][j][0] == "Adversity" || funnelData['Custom'][j][0] == "First Source" || 
+                funnelData['Custom'][j][0] == "Retention Geo" || funnelData['Custom'][j][0] == "Retention Non Geo") {
+                    new_funnel_data['Custom'].push(funnelData['Custom'][j]);
+                }
             }
-        }
-        // console.log(customList);
+        }  
+        console.log(new_funnel_data)
 
-        for (var k = mandrList.length - 1; k > -1; k--) {
-            if (mandrList[k][0] !== "Prospects" && mandrList[k][0] !== "High School Profiles") {
-                mandrList.splice(k, 1);
-            }
-        }
+        // for (var k = mandrList.length - 1; k > -1; k--) {
+        //     if (mandrList[k][0] !== "Prospects" && mandrList[k][0] !== "High School Profiles") {
+        //         mandrList.splice(k, 1);
+        //     }
+        // }
 
         const styleForFirstViewSelect = {
             fontSize:"1.877vh", 
@@ -565,67 +600,67 @@ class ViewsManager extends React.Component {
             outline: "none"
         };
         
-        var marketingAndRecruiting = mandrList.map( function(title) {
-            return (
-                <option
-                    // containerStyle = {{ padding: "0px" }} 
-                    style = {styleForSecViewSelect} 
-                    key = { title }
-                    className = "noselect second-view-selection"
-                    value = { title }
-                >
-                    {/* <div
-                        style = { subContents }
-                        className = "noselect second-view-selection light"
-                        onClick = { (e) => {
-                            context.handleViewSelect(title);
-                            context.unHighlightInquiryRows();
-                            context.highlightInquirySelectedRow(e.target.innerHTML); } }
-                    > */}
-                        {title[0]}
-                    {/* </div> */}
-                </option>
-            )
-        });
+        // var marketingAndRecruiting = mandrList.map( function(title) {
+        //     return (
+        //         <option
+        //             // containerStyle = {{ padding: "0px" }} 
+        //             style = {styleForSecViewSelect} 
+        //             key = { title }
+        //             className = "noselect second-view-selection"
+        //             value = { title }
+        //         >
+        //             {/* <div
+        //                 style = { subContents }
+        //                 className = "noselect second-view-selection light"
+        //                 onClick = { (e) => {
+        //                     context.handleViewSelect(title);
+        //                     context.unHighlightInquiryRows();
+        //                     context.highlightInquirySelectedRow(e.target.innerHTML); } }
+        //             > */}
+        //                 {title[0]}
+        //             {/* </div> */}
+        //         </option>
+        //     )
+        // });
 
-        var admissions = admList.map( function(title) {
-            return (
-                <option
-                    style = {styleForSecViewSelect} 
-                    key = { title } 
-                    className = "noselect second-view-selection"
-                    value = { title }
-                >
-                    {title[0]}
-                </option>
-            )
-        });
+        // var admissions = admList.map( function(title) {
+        //     return (
+        //         <option
+        //             style = {styleForSecViewSelect} 
+        //             key = { title } 
+        //             className = "noselect second-view-selection"
+        //             value = { title }
+        //         >
+        //             {title[0]}
+        //         </option>
+        //     )
+        // });
 
-        var financialAid = faList.map( function(title) {
-            return (
-                <option
-                    style = {styleForSecViewSelect} 
-                    key = { title } 
-                    className = "noselect second-view-selection"
-                    value = { title }
-                >
-                    {title[0]}
-                </option>
-            )
-        });
+        // var financialAid = faList.map( function(title) {
+        //     return (
+        //         <option
+        //             style = {styleForSecViewSelect} 
+        //             key = { title } 
+        //             className = "noselect second-view-selection"
+        //             value = { title }
+        //         >
+        //             {title[0]}
+        //         </option>
+        //     )
+        // });
 
-        var custom = customList.map( function(title) {
-            return (
-                <option
-                    style = {styleForSecViewSelect} 
-                    key = { title } 
-                    className = "noselect second-view-selection"
-                    value = { title }
-                >
-                    {title[0]}
-                </option>
-            )
-        });
+        // var custom = customList.map( function(title) {
+        //     return (
+        //         <option
+        //             style = {styleForSecViewSelect} 
+        //             key = { title } 
+        //             className = "noselect second-view-selection"
+        //             value = { title }
+        //         >
+        //             {title[0]}
+        //         </option>
+        //     )
+        // });
         
        /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
@@ -709,10 +744,10 @@ class ViewsManager extends React.Component {
                                             className="custom-select" 
                                             id="custom-select" 
                                             style={dropDownSize} 
-                                            onChange={e => {this.selectTopic(e.target.value, mandrList, admList, faList, customList)}}
+                                            onChange={e => {this.selectTopic(e.target.value)}}
                                         >
                                             <option style={styleForFirstViewSelect}>Select A Topic</option>
-                                            <option
+                                            {/* <option
                                             // onClick = { (e) => {
                                             //     this.flip("MarketingAndRecruiting", mandrList.length);
                                             //     this.unHighlightTopicRows();
@@ -751,7 +786,15 @@ class ViewsManager extends React.Component {
                                                 value="Custom" 
                                             >
                                             Custom
-                                            </option>
+                                            </option> */}
+                                            {Object.keys(this.props.funnelData).map((t,i) => 
+                                                <option 
+                                                className = "main-category-select"
+                                                className = { `${(this.props.funnelData[t].length > 0 ? "noselect" : "cursorDefault noselect")} 
+                                                main-category-select light`}
+                                                style={styleForFirstViewSelect}
+                                                key={i} value={t}>{t}</option>)
+                                            }
                                         </select>
 
                                     </div>
@@ -774,18 +817,21 @@ class ViewsManager extends React.Component {
                                         </h3>
                                         <br/>
                                         <Flexbox>
-                                        {this.state.type === "MarketingAndRecruiting" ? 
-                                        <select className="custom-select" id="custom-select" style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{marketingAndRecruiting} </select>
-                                            /* {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div>  */
-                                                : (this.state.type === "Admissions" ? 
-                                                <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{admissions} </select> 
-                                                    : (this.state.type === "FinancialAid" ? 
-                                                    <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{financialAid} </select> 
-                                                        : (this.state.type === "Custom" ? 
-                                                        <select style={dropDownSize} onChange={(e => this.selectInquiry(e.target.value))}> {this.injectOption()}{custom} </select> : 
-                                                            <select disabled style={dropDownSize}><option>—</option></select>)
-                                                    )
-                                                )
+                                       
+                                            {
+                                                this.state.type !== "Funnel" ? 
+                                                    (<select 
+                                                        style={dropDownSize} 
+                                                        onChange={(e => this.selectInquiry(e.target.value))}
+                                                        > {this.injectOption()}
+                                                            {new_funnel_data[this.state.type].map((t) => 
+                                                                <option 
+                                                                className = "noselect second-view-selection"
+                                                                style = {styleForSecViewSelect} 
+                                                                key={t} value={t}>{t[0]}</option>)}
+                                                    </select>)
+                                                   
+                                                    : <select disabled style={dropDownSize}><option>—</option></select>
                                             }
                                         </Flexbox>
                                     </div>

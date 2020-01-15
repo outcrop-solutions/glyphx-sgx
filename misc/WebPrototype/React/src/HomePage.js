@@ -507,6 +507,7 @@ class HomePage extends React.Component {
                                                         float: "right", 
                                                         margin: "1.668vh 1.460vh 0px 0px", 
                                                         cursor: "pointer",
+                                                        display: (this.props.legend_url_arr.length ? "block" : "none")
                                                 }}>
                                                     <img alt="Enlarge" style={{height: "1.98vh"}} src='./Res/Img/Enlarge@2x.png'/>
                                                 </div>
