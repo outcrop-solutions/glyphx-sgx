@@ -38,7 +38,8 @@ namespace SynGlyphX {
 		GlyphGraph();
 		GlyphGraph(const Glyph& rootGlyph);
 		GlyphGraph(const GlyphGraph& graph);
-		~GlyphGraph();
+		//~GlyphGraph();
+		virtual ~GlyphGraph();
 
 		void AllocateChildSubtree(const std::vector<Glyph>& templates, const std::vector<unsigned int> instances, const GlyphGraph::GlyphIterator& parent);
 

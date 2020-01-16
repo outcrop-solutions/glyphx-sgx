@@ -50,7 +50,7 @@ void NetworkDownloader::ReadSettings() {
     QSettings settings("SynGlyphX", "MapDownloading");
     settings.beginGroup(mqKeySettingName.c_str());
 
-    m_mapQuestOpenKey = settings.value("AppKey", "").toString();
+	m_mapQuestOpenKey = settings.value("AppKey", "pba2AzAMjfkGrvf7GUuA2nWX9RHclALU").toString();
 
     //m_showPointsInMap = settings.value("AddPOIs", false).toBool();
     settings.endGroup();

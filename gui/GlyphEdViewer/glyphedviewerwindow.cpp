@@ -377,6 +377,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 
 	QString text;
 	if (type == "LAUNCH"){
+		//QMessageBox::information(this, tr("Server message"), message);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		zero_results = false;
 		QString sdt = "https" + message.split(QChar(':')).at(3).split(QChar('"')).at(0);
@@ -477,6 +478,7 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 
 	QJsonObject body;
 	body.insert("query", query.mid(1, query.length() - 3).replace("\\", ""));
+	//QMessageBox::information(this, tr("Server message"), query.mid(1, query.length() - 3).replace("\\", ""));
 
 	QNetworkAccessManager nam;
 	QNetworkReply *reply = nam.post(request, QJsonDocument(body).toJson());
@@ -531,6 +533,7 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	m_mappingModel->LoadDataTransformFile(filename);
 	std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 
+	//QMessageBox::information(this, tr("Server message"), QString::number(data.size()));
 	SqliteWriter* sql_writer = new SqliteWriter();
 	QString ret_query = sql_writer->WriteDatabase(cache_location, data, sdt_split.at(sdt_split.size() - 1), table_name);
 
@@ -547,7 +550,6 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	}
 
 	compass = ge.getCompassValues();
-	//QMessageBox::information(this, tr("Server message"), QString::fromStdString(compass.at(0)) + " | " + QString::fromStdString(compass.at(1)) + " | " + QString::fromStdString(compass.at(2)));
 
 	bool show = true;
 	for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
