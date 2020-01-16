@@ -53,12 +53,9 @@ class FilterSideBar extends React.Component {
         // this.props.VizParams;
 
         // debugger;
-        let start = Date.now();
-        let end;
+
         makeServerCall('loadVisualization',
             function(res,b,c) {
-                end = Date.now();
-                console.log(end-start + "milliseconds");
             // Hide the loadmask.
                 
                 if (typeof res === 'string') {

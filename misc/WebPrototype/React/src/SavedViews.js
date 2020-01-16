@@ -108,7 +108,8 @@ class SavedViews extends React.Component {
 
                             context.props.webSocket.send(JSON.stringify({
                                 url_uid: context.props.uid,
-                                sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${index}`,
+                                //CHANGING INSTITUTION
+                                sdt: `https://viz-group-glyphed-demo-source.s3.us-east-2.amazonaws.com/${index}`,
                                 legendURLArr: response.body.imgArr,
                                 query,
                                 launch: true

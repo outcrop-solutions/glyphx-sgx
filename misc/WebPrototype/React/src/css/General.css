@@ -343,6 +343,10 @@ td:last-child{
   text-align: center !important;
 }
 
+.launch_button{
+  cursor: pointer;
+}
+
 .launch_button:active{
   transform: translateY(4px);
 }

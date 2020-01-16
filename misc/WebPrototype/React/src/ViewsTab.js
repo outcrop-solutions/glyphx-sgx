@@ -253,28 +253,38 @@ class ViewsTab extends React.Component {
         //     "Allowed COlmn list:",filterAllowedColumnList, 
         //     "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
 
-        var data = frontEndFilters.slice();
+        let data; 
+       
         var outerIndex;
-        let query = "SELECT * FROM " + tableName + " WHERE ";
+        let query;
+        if(frontEndFilters.length > 0){
+            query = "SELECT * FROM " + tableName + " WHERE ";
+        }
+        else {
+            query = "SELECT * FROM " + tableName + ";";
+        }
         
         // 2D Array
         //[[],[],[]]
-        for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
-            var dataItem = data[outerIndex].slice();
-            var columnName = dataItem[0];
+        if(frontEndFilters.length > 0){
+            data = frontEndFilters.slice();
+            for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
+                var dataItem = data[outerIndex].slice();
+                var columnName = dataItem[0];
 
-            // Removes the 1st element that is the name.
-            dataItem.shift(); 
+                // Removes the 1st element that is the name.
+                dataItem.shift(); 
 
-            var values = '("' + dataItem.toString() + '")';
-            query = query + columnName + " IN " + values.replace(/,/g , '","');
-            
-            if (outerIndex != data.length-1) {
-                query = query + " AND ";
-            }
+                var values = '("' + dataItem.toString() + '")';
+                query = query + columnName + " IN " + values.replace(/,/g , '","');
+                
+                if (outerIndex != data.length-1) {
+                    query = query + " AND ";
+                }
 
-            else {
-                query = query + ";";
+                else {
+                    query = query + ";";
+                }
             }
         }
 
@@ -335,7 +345,8 @@ class ViewsTab extends React.Component {
 
                     context.props.webSocket.send(JSON.stringify({
                         url_uid: context.props.uid,
-                        sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${index}`,
+                        //CHANGING INSTITUTION
+                        sdt: `https://viz-group-glyphed-demo-source.s3.us-east-2.amazonaws.com/${index}`,
                         legendURLArr: response.body.imgArr,
                         query,
                         launch: true

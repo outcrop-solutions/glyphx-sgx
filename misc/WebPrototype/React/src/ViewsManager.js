@@ -418,7 +418,7 @@ class ViewsManager extends React.Component {
     }
 
     selectTopic(val){
-        console.log(val, this.props.funnelData[val])
+        // console.log(val, this.props.funnelData[val])
         // if(val === "MarketingAndRecruiting"){
         //     this.flip(val, mandrList.length);
         // }
@@ -437,7 +437,7 @@ class ViewsManager extends React.Component {
     }
 
     selectInquiry(str){
-        console.log(str)
+        // console.log(str)
         if(str.length > 0 && str.indexOf(',') > 0){
             let val = str.slice(0, str.indexOf(','));
             let url = str.slice(str.indexOf(',') + 1);
@@ -554,7 +554,7 @@ class ViewsManager extends React.Component {
                 }
             }
         }  
-        console.log(new_funnel_data)
+        // console.log(new_funnel_data)
 
         // for (var k = mandrList.length - 1; k > -1; k--) {
         //     if (mandrList[k][0] !== "Prospects" && mandrList[k][0] !== "High School Profiles") {

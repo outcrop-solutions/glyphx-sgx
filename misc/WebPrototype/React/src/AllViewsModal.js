@@ -218,10 +218,9 @@ class allViewsModal extends React.Component {
 			// );	
 				makeServerCall('frontEndFiltersEC2', 
 				function(responseText) {
-					// console.log(typeof responseText)
 					// let megaArr = [];
 					let response = JSON.parse(responseText);
-					console.log(response.body, /* response.statusCode */);
+					console.log(response.body, response);
 					/*
 					*RESPONSE BODY STRUCTURE
 					*{
@@ -519,7 +518,8 @@ class allViewsModal extends React.Component {
 	/**
 	 * Determines if the launch button should be disabled or not
 	 */
-	shouldLaunchBeDisabled() {
+	shouldLaunchBeDisabled(data) {
+		if(data.length === 0) return false;
 		var i;
 		var selectAll = this.state.selectAll;
 		var sList = this.state.selectionList;
@@ -936,7 +936,7 @@ class allViewsModal extends React.Component {
 			else if(data.length === 0 && this.state.loadDone === true){
 				return(
 					<div className= "no-results" style={{textAlign: "center", fontSize: "22px"}}>
-						<h3 style={{paddingTop: "3.650vh"}}>No Filter Options Available. Please Select Another Query.</h3>
+						<h3 style={{paddingTop: "3.650vh"}}>No Filter Options Available.</h3>
 					</div>
 				);
 			}
@@ -944,32 +944,43 @@ class allViewsModal extends React.Component {
 	}
 
 	wbSocketFxn(){
-		var data = this.state.selectionList.slice();
+		let data, query;
 		var outerIndex;
-		var query = "SELECT * FROM " + this.state.table + " WHERE ";
-	
-		for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
-			var dataItem = data[outerIndex].slice();
-			var columnName = dataItem[0];
 
-			// Removes the 1st element that is the name.
-			dataItem.shift(); 
+		if(this.state.selectionList.length > 0){
+			query = "SELECT * FROM " + this.state.table + " WHERE ";
+		}
+		else {
+			query = "SELECT * FROM " + this.state.table + ";";
+		}
 
-			var values = '("' + dataItem.toString() + '")';
-			query = query + columnName + " IN " + values.replace(/,/g , '","');
-			
-			if (outerIndex != data.length-1) {
-				query = query + " AND ";
-			}
+		if(this.state.selectionList.length > 0){
+			data = this.state.selectionList.slice();
+			for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
+				var dataItem = data[outerIndex].slice();
+				var columnName = dataItem[0];
 
-			else {
-				query = query + ";";
+				// Removes the 1st element that is the name.
+				dataItem.shift(); 
+
+				var values = '("' + dataItem.toString() + '")';
+				query = query + columnName + " IN " + values.replace(/,/g , '","');
+				
+				if (outerIndex != data.length-1) {
+					query = query + " AND ";
+				}
+
+				else {
+					query = query + ";";
+				}
 			}
 		}
+
 		if(query.indexOf(';') && this.props.legend_url_arr){
 			this.props.webSocket.send(JSON.stringify({
 				url_uid: this.props.uid,
-				sdt: `https://viz-group-notredame-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
+				//CHANGING INSTITUTION
+				sdt: `https://viz-group-glyphed-demo-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
 				legendURLArr: this.props.legend_url_arr,
 				query,
 				launch: true
@@ -1094,7 +1105,10 @@ class allViewsModal extends React.Component {
 					padding: "0px 2.920vh 0px 2.711vh" }} 
 				>
 
-					<div style={{float: 'right', /* padding: "10px 0px 6px 0px", */ display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+					<div style={{
+						float: 'right', 
+						marginBottom: "0.834vh",
+						display: ((this.state.loadMask === false && this.state.loadDone && data.length > 0) ? "" : "none")}}>
 					
 						{/*<RaisedButton 
 							label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
@@ -1138,7 +1152,7 @@ class allViewsModal extends React.Component {
 							fontFamily: "ITCFranklinGothicStd-Med", 
 							fontSize: "1.877vh", 
 							verticalAlign: "text-bottom",
-							margin: "0px 0.834vh 0px 0.834vh"}}>|</span>
+							/* margin: "0px 0.834vh 0px 0.834vh" */}}>|</span>
 
 						<RaisedButton
 							buttonStyle = {{
@@ -1150,7 +1164,6 @@ class allViewsModal extends React.Component {
 								fontFamily: "ITCFranklinGothicStd-Med",
 								borderRadius: "0",
 								border: "1px solid black",
-								marginBottom: "0.834vh"
 							}} 
 							labelStyle = {{
 								textAlign: "center",
@@ -1234,7 +1247,7 @@ class allViewsModal extends React.Component {
 									id = "launch_button"
 									className="launch_button"
 									alt = "GlyphIT Logo Launch Button"
-									src={(this.shouldLaunchBeDisabled() ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
+									src={(this.shouldLaunchBeDisabled(data) ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
 									style={{
 										width: "33.09%", 
 										height: "100%",
@@ -1242,7 +1255,7 @@ class allViewsModal extends React.Component {
 										border: "1px solid black",
 										boxShadow: "0.36496vh 0.36496vh 0.36496vh"}}
 									onClick={() => {
-										(this.shouldLaunchBeDisabled() ? 
+										(this.shouldLaunchBeDisabled(data) ? 
 											null :
 											(this.props.onLaunch({
 												tableName:this.state.table,

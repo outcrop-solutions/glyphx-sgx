@@ -53,36 +53,37 @@ class XYZRemapModal extends React.Component {
             var XVals = [];
             var YVals = [];
             var ZVals = [];
-
-            for (var i = 0; i < this.props.VizParams.filterAllowedColumnList.length; i++) {
-                if (this.props.VizParams.filterAllowedColumnList[i].toLowerCase().indexOf("geo") !== -1) {
-                    XVals.push({ label: "longitude", value: "longitude" });
-                    YVals.push({ label: "latitude", value: "latitude" });
-                    break;
+            if(list){
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].toLowerCase().indexOf("geo") !== -1) {
+                        XVals.push({ label: "longitude", value: "longitude" });
+                        YVals.push({ label: "latitude", value: "latitude" });
+                        break;
+                    }
                 }
-            }
 
-            for (var i = 0; i < list.length; i++) {
-                XVals.push({ label: list[i], value: list[i] });
-                YVals.push({ label: list[i], value: list[i] });
-                ZVals.push({ label: list[i], value: list[i] });
-            }
+                for (var i = 0; i < list.length; i++) {
+                    XVals.push({ label: list[i], value: list[i] });
+                    YVals.push({ label: list[i], value: list[i] });
+                    ZVals.push({ label: list[i], value: list[i] });
+                }
 
-            /*
-            console.log("X");
-            console.log(XVals);
-            console.log("Y");
-            console.log(YVals);
-            console.log("Z");
-            console.log(ZVals);
-            */
-            
-            this.setState({ 
-                XVals: XVals,
-                YVals: YVals,
-                ZVals: ZVals
-            });
-        
+                /*
+                console.log("X");
+                console.log(XVals);
+                console.log("Y");
+                console.log(YVals);
+                console.log("Z");
+                console.log(ZVals);
+                */
+                
+                this.setState({ 
+                    XVals: XVals,
+                    YVals: YVals,
+                    ZVals: ZVals
+                });
+
+            }
         }
     }
 
