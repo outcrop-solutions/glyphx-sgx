@@ -19,10 +19,14 @@ SqliteWriter::~SqliteWriter()
 QString SqliteWriter::WriteDatabase(QString location, QJsonArray data, QString sdt, QString table_name) {
 
 	sdt_name = sdt;
-	QString tableName = table_name;
+	QString tableName = table_name.split(";")[0];
 	QString queryStr = GetCreateTableStatement(location, data, tableName);
 
 	const QString DRIVER("QSQLITE");
+
+	/*QMessageBox qmb;
+	qmb.setText(queryStr);
+	qmb.exec();*/
 
 	if (QSqlDatabase::isDriverAvailable(DRIVER)){
 
@@ -82,10 +86,10 @@ QString SqliteWriter::GetCreateTableStatement(QString location, QJsonArray data,
 
 	foreach(const QString & field, qsl) {
 		if (fields.contains(field)){
-			query += field + " " + fields[field].toUpper() + ",";
+			query += "`" + field + "` " + fields[field].toUpper() + ",";
 		}
 		else
-			query += field + " TEXT ,";
+			query += "`" + field + "` TEXT ,";
 	}
 
 	return query.left(query.length()-1) + ")";
