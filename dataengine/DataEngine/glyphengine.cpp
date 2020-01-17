@@ -384,7 +384,17 @@ namespace DataEngine
 
 		}
 		if (err_code == 1){
-			throw std::runtime_error("Failed to generate glyphs");
+			//throw std::runtime_error("Failed to generate glyphs");
+            SynGlyphX::Application::restoreOverrideCursor();
+            QMessageBox warning_error(QMessageBox::Warning, mainWindow->tr("Failed To Open Project"), mainWindow->tr("Visualization failed to load properly"), QMessageBox::Ok, mainWindow);
+            warning_error.setDetailedText(JavaErrors());
+            warning_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
+            warning_error.setStandardButtons(QMessageBox::Ok);
+            warning_error.setDefaultButton(QMessageBox::Ok);
+            warning_error.setEscapeButton(QMessageBox::Ok);
+            warning_error.exec();
+            ClearJavaErrors();
+            SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		}
 		else if (err_code == 2){
 			SynGlyphX::Application::restoreOverrideCursor();

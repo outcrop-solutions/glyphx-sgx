@@ -246,8 +246,8 @@ namespace SynGlyphX
 
 		resetCamera();
 
-		auto scene_ptr = scene;
-		scene->enumGroups([&, scene_ptr](const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx) {
+		//auto scene_ptr = scene;
+		scene->enumGroups([&](const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx) {
 			auto pos = nodes[0]->getCachedPosition();
 			float radius = nodes[0]->getCachedCombinedBound().get_radius();
 			group_manager->create(group_idx, pos, radius);
@@ -929,7 +929,7 @@ namespace SynGlyphX
 
 					bool exploded = scene->getActiveGroup() > 0.f && scene->getGroupStatus() > 0.f;
 
-					scene->enumGlyphs([this, event, alt, exploded](const Glyph3DNode& node) {
+					scene->enumGlyphs([this, alt, exploded](const Glyph3DNode& node) {
 						auto pos = scene->getExplodedPosition(&node);
 						auto pos2d = camera->world_pt_to_window_pt(pos);
 						if (pos2d.x > std::min(drag_info(button::left).drag_start_x, mouse_x)

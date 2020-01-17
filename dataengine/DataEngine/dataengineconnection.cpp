@@ -23,12 +23,12 @@ namespace DataEngine
 	}
 
 	void DataEngineConnection::createJVM(){
-        
+        //"../Frameworks/jdk-13.0.1.jdk/Contents/Home/lib/server/libjvm.dylib";
         std::string jre_name =
 #ifdef WIN32
         ".\\jre\\bin\\server\\jvm.dll";
 #elif __APPLE__
-        "../Frameworks/jdk-13.0.1.jdk/Contents/Home/lib/server/libjvm.dylib";
+        "../Frameworks/jdk-13.0.1.jdk/Contents/MacOS/libjli.dylib";
 #endif
         
         std::ifstream jre(jre_name);

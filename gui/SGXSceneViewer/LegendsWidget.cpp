@@ -1,4 +1,4 @@
-#include "legendswidget.h"
+#include "LegendsWidget.h"
 #include <QtWidgets/QVBoxLayout>
 #include "ResizeableImageLabel.h"
 
