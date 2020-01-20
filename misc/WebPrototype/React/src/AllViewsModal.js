@@ -18,6 +18,17 @@ import './css/General.css';
  * @param type: string name of the selection made
  * @param typeURL: URL corresponding with the type to make backend call
  */
+
+const tip_arr = [
+	"Don't forget to click on a Glyph before zooming!",
+	"Use the pushpin icon to save your most frequently used filters at the top of your filter pane.",
+	"Trying to apply a range filter? Don't forget to turn on the slider bar next to your max value once your range selections are made.",
+	"Hold down shift & left click on your mouse to lasso a group of Glyphs in the scene.",
+	"The view button is where you can choose to show your filtered or underlying data.",
+	"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
+	"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
+];
+
 class allViewsModal extends React.Component {
 
 	state = {
@@ -33,15 +44,6 @@ class allViewsModal extends React.Component {
 		loadDone: false,
 		selectAll500: false,
 		sdtUrl: "",
-		tip_arr: [
-			"Don't forget to click on a Glyph before zooming!",
-			"Use the pushpin icon to save your most frequently used filters at the top of your filter pane.",
-			"Trying to apply a range filter? Don't forget to turn on the slider bar next to your max value once your range selections are made.",
-			"Hold down shift & left click on your mouse to lasso a group of Glyphs in the scene.",
-			"The view button is where you can choose to show your filtered or underlying data.",
-			"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
-			"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
-		],
 	}
 	constructor(props){
 		super(props);
@@ -84,8 +86,22 @@ class allViewsModal extends React.Component {
 		});
 		// this.props.dispatch(setSocket(socket));
 
+		
 		//intial tip generate
-		document.getElementById('tip_gen').innerHTML = this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
+		let previous_tip;
+		document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
+
+		this.timer = setInterval(() => {
+			if(document.getElementById('tip_gen')){
+				let new_tip = Math.floor(Math.random() * tip_arr.length);
+				if(previous_tip === new_tip){
+					new_tip = Math.floor(Math.random() * tip_arr.length);
+				}
+				
+				document.getElementById('tip_gen').innerHTML = tip_arr[new_tip];
+				previous_tip = new_tip;
+			}
+		}, 10000);
 
 	}
 	
@@ -96,6 +112,7 @@ class allViewsModal extends React.Component {
 	componentWillUnmount() {
 		// Removing listener so it doesnt linger across the site
 		window.onmouseup = null;
+		clearInterval(this.timer);
 	}
 
 
@@ -829,6 +846,27 @@ class allViewsModal extends React.Component {
 										float: "right", 
 										margin: "0px 1.877vh 0px 0px", 
 										fontSize: "1.877vh" }} > 
+									<div style = {{ 
+									// position: "absolute", 
+									// width: "46.36vw",
+									float: "left",
+									margin: "-4px 15px 0 0",
+									backgroundColor: "white" }} >
+										<SearchBox 
+											ref = "SearchBox"
+											settings = {{
+												SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+												searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
+												overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
+												overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
+												tableSelectColor: context.props.settings.colors.tableSelectColor.background
+											}}
+											onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
+											id = { "tf-" + col[0] }
+											collapseButton = { false }
+											shouldOnBlur = { col.length > 500 ? true : false }
+										/>
+									</div>
 									<span
 									// className = "fa fa-check" 
 										style = {{ 
@@ -877,7 +915,7 @@ class allViewsModal extends React.Component {
 									borderBottom: "1px solid black",
 									overflowY: "scroll"	
 							}}>
-								<div style = {{ 
+								{/* <div style = {{ 
 										position: "absolute", 
 										width: "46.36vw",
 										backgroundColor: "white" }} >
@@ -895,9 +933,9 @@ class allViewsModal extends React.Component {
 										collapseButton = { false }
 										shouldOnBlur = { col.length > 500 ? true : false }
 									/>
-								</div>
+								</div> */}
 
-								<div /* className = "customScroll" */ id = { col[0] } style = {{ overflow: "auto", marginTop: "3.128vh" }} >
+								<div /* className = "customScroll" */ id = { col[0] } style = {{ overflow: "auto", /* marginTop: "3.128vh" */ }} >
 
 									{ (col.length > 500 ? 
 										<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
@@ -988,14 +1026,6 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	rdmnTip(){
-		window.setInterval(() => {
-			if(document.getElementById('tip_gen')){
-				document.getElementById('tip_gen').innerHTML = this.state.tip_arr[Math.floor(Math.random() * this.state.tip_arr.length)];
-			}
-		}, 12000);
-	}
-
 	expandCollapseTable(target, name){
 		console.log(name)
 		let substring = target.slice(target.indexOf('collapse10481')+13);
@@ -1070,14 +1100,11 @@ class allViewsModal extends React.Component {
 
 					<br/>
 
-					{this.rdmnTip()}
-
 					<div style={{
 						wordBreak: "break-word", 
 						padding: "1.877vh 6.257vh 0px 6.257vh",
 						height: "19.812vh"}} 
 					id="tip_gen">
-						
 					</div>
 
 					<span 

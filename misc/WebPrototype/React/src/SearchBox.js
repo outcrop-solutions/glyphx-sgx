@@ -69,7 +69,7 @@ class SearchBox extends React.Component {
         return (
             <Flexbox flexDirection = "row" >
                 <Flexbox style = {{ 
-                    width: "99.9%", 
+                    width: "100%", 
                     borderRadius: "0.521vh", 
                     // backgroundColor: this.props.settings.tableSelectColor 
                     }} > 

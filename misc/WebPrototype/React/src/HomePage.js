@@ -566,22 +566,33 @@ class HomePage extends React.Component {
                                                 </Dialog>
 
                                             </div>
-                                            
-                                            <div style={{display: "block", textAlign: "center", height: "22.05vh"}}>
-                                                {<img style={{
-                                                        width: "100%", 
-                                                        height: "22.05vh",  
-                                                        padding: (this.props.legend_url_arr.length ? "" : "3.1vh")}}
-                                                    alt="Glyph Key/ Institution Logo"
-                                                    src={
-                                                        (this.props.legend_url_arr.length ? 
-                                                        'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
-                                                        window.encodeURIComponent(this.props.legend_url_arr[0]) :
-                                                        imgsrc
-                                                        )
-                                                    } 
-                                                />}
-                                            </div>
+                                            {this.props.legend_url_arr.length ?
+                                                <div style={{display: "block", textAlign: "center", height: "22.05vh"}}>
+                                                    {<img style={{
+                                                            width: "100%", 
+                                                            height: "22.05vh",  
+                                                            padding: (this.props.legend_url_arr.length ? "" : "3.1vh")}}
+                                                        alt="Glyph Key"
+                                                        src={
+                                                            // (this.props.legend_url_arr.length ? 
+                                                            // 'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
+                                                            // window.encodeURIComponent(this.props.legend_url_arr[0]) :
+                                                            // imgsrc
+                                                            // )
+                                                            'http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/'+
+                                                            window.encodeURIComponent(this.props.legend_url_arr[0])
+                                                        } 
+                                                    />}
+                                                </div> 
+                                                : 
+                                                <div style={{
+                                                    fontSize: "20px",
+                                                    margin: "57px 25px 0 17px",
+                                                    fontFamily: "ITCFranklinGothicStd-Med"
+                                                }}>
+                                                    Fact/tip about data comprehension or data visualization/key.
+                                                </div>
+                                            }
                                         </div>       
 
                                         <ViewsTab loadRecentView={(rowObj) => {this.loadRecentView(rowObj); console.log(rowObj, 'rowObj');}}/>

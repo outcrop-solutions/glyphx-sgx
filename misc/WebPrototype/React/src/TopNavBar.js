@@ -133,7 +133,7 @@ class TopNavBar extends React.Component {
             var iframe = document.getElementById('GlyphViewer').contentWindow;
             iframe.closeSceneView();
         }
-        
+        this.props.dispatch(legendArrClear());
         this.props.history.push('/home')
     }
 
@@ -212,6 +212,7 @@ class TopNavBar extends React.Component {
 
 
     render() {
+        let customer_icon = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.vizParams);
         return(
             <Toolbar 
@@ -481,8 +482,9 @@ class TopNavBar extends React.Component {
                             disabled = { false }
                             leftAvatar = {
                                 <Avatar
-                                    //src="./Res/Img/x.png"
+                                    src={customer_icon}
                                     style= {{ 
+                                        backgroundColor: "white",
                                         fontSize: "2.064vh", 
                                         height: "4.128vh",
                                         width: "4.128vh",
@@ -491,7 +493,7 @@ class TopNavBar extends React.Component {
                                         backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                     }}
                                 >
-                                    { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" }
+                                    {/* { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" } */}
                                 </Avatar>
                             }
                             innerDivStyle = {{padding: "2.064vh 1.651vh 2.064vh 7.43vh"}}
@@ -538,6 +540,10 @@ export const editModalDisplay = (settingsModal, alertsModal, helpModal, adminMod
     alertsModal,
     helpModal,
     adminModal
+});
+
+export const legendArrClear = () => ({
+    type: 'CLEAR_LEGEND_URL_ARR',
 });
 
 export const logoutClear = () => ({

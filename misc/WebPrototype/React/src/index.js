@@ -696,6 +696,11 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 legend_url_arr: action.arr
+            }  
+        case 'CLEAR_LEGEND_URL_ARR':
+            return {
+                ...state,
+                legend_url_arr: []
             }   
         /**
          * Shouldn't reach here unless theres a typo in the action
