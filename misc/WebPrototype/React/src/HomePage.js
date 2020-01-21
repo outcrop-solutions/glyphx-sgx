@@ -586,11 +586,20 @@ class HomePage extends React.Component {
                                                 </div> 
                                                 : 
                                                 <div style={{
-                                                    fontSize: "20px",
-                                                    margin: "57px 25px 0 17px",
-                                                    fontFamily: "ITCFranklinGothicStd-Med"
+                                                    fontSize: "2.086vh",
+                                                    display: "flex",
+                                                    margin: "auto",
+                                                    fontFamily: "ITCFranklinGothicStd-Med",
+                                                    height: "22.05vh"
                                                 }}>
-                                                    Fact/tip about data comprehension or data visualization/key.
+                                                    {/* <div style={{margin: "auto 2.294vh auto 1.668vh", wordBreak: "break-word"}}>Fact/tip about data comprehension or data visualization/key.</div> */}
+                                                    <img style={{
+                                                            width: "100%", 
+                                                            height: "22.05vh",  
+                                                            padding: (this.props.legend_url_arr.length ? "" : "0 3.1vh 0 3.1vh")}}
+                                                        alt="Glyph Key"
+                                                        src='./Res/Img/datavizpc.png'
+                                                    />
                                                 </div>
                                             }
                                         </div>       

@@ -1,3 +1,4 @@
+/*eslint-env jquery*/
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -35,8 +36,8 @@ class TopNavBar extends React.Component {
         userProfileMenuOpen: false,
         userInfoAnchorEl: {},
         displayAlertsCheckbox: true,
-        imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '10.07vw' }} alt = "GlyphEd" className = "noselect" draggable = { false } />
-
+        imgLogoSrc: <img src = "./Res/Img/GlyphED-wht-3.png" style = {{ width: '10.07vw' }} alt = "GlyphEd" className = "noselect" draggable = { false } />,
+        toggle_profile: false
     };
 
     /**
@@ -101,24 +102,6 @@ class TopNavBar extends React.Component {
             // gv.style.width = "100%";
         }
     }
-
-
-    /**
-	 * Toggles the visibility of the user menu.
-	 * @param {object} e: event object.
-	 */
-    ToggleUserInfoMenu = (e) => {
-        // This prevents ghost click.
-        if (e && e.preventDefault) {
-            e.preventDefault();
-            this.setState({ userProfileMenuOpen : !this.state.userProfileMenuOpen, userInfoAnchorEl: e.currentTarget });
-        }
-
-        else {
-            this.setState({ userProfileMenuOpen : !this.state.userProfileMenuOpen });
-        }
-    }
-
 
     /**
 	 * Displays the alerts modal
@@ -212,7 +195,14 @@ class TopNavBar extends React.Component {
 
 
     render() {
-        let customer_icon = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
+        let customer_icon;
+        if(this.props.userInfo.institutionDir){
+            customer_icon =  window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
+        }
+         else {
+            customer_icon = (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0));
+         }
+        
         // console.log(this.props.vizParams);
         return(
             <Toolbar 
@@ -249,7 +239,7 @@ class TopNavBar extends React.Component {
                     </Tooltip>}
 
                     <IconButton 
-                        onClick = { (event) => this.ToggleUserInfoMenu(event) } 
+                        onClick = {() => this.setState({toggle_profile: true})}
                         style = {{
                             height: "5.005vh",
                             width: "2.010vw", 
@@ -275,6 +265,44 @@ class TopNavBar extends React.Component {
                             }} />
                         </Tooltip>
                     </IconButton>
+                    <div
+                        onMouseLeave = {() => this.setState({toggle_profile : false})} 
+                        id="myDropdown" className="dropdown-content" style={{
+                            display : (this.state.toggle_profile ? 'block' : 'none'),
+                            position: 'absolute',
+                            backgroundColor: '#f1f1f1',
+                            minWidth: '10.885vw',
+                            overflow: 'auto',
+                            boxShadow: '0px 0.826vh 1.651vh 0px rgba(0,0,0,0.2)',
+                            zIndex: '1',
+                            top: "5.263vh",
+                            fontSize: "2.064vh",
+                            left: "0.206vh"
+                    }}>
+                        <div style={{height: "5.779vh", fontSize: "1.98vh"}} className="show">
+                                <img style={{
+                                    margin: "auto 1.032vh auto 1.032vh",
+                                    borderRadius: "50%",
+                                    fontSize: "2.064vh", 
+                                    height: "4.128vh",
+                                    width: "4.128vh",
+                                    top: "0.826vh",
+                                    left: "1.651vh",
+                                    wordBreak: "break-word"
+                                }} alt="User Profile Icon" src={customer_icon} />
+                                <span style={{margin: "auto auto auto 0"}}>
+                                    { this.props.userInfo ? this.props.userInfo.Name : ""}
+                                </span>
+                        </div>
+                        <div 
+                            style={{height: "3.096vh", fontSize: "1.651vh", cursor: "pointer"}} 
+                            className="show"  
+                            onClick = {() => {this.logout(); this.webSocketSend("logout");} } >
+                                <span style={{margin: "auto 0 auto 1.032vh"}}>
+                                    SIGN OUT
+                                </span>
+                        </div>
+                    </div>
                     
                     {this.props.homePage ? <div style={{
                         color: "white",
@@ -469,7 +497,7 @@ class TopNavBar extends React.Component {
                 </ToolbarGroup>
 
                 {/* User Icon Popover */}
-                <Popover
+                {/* <Popover
                     canAutoPosition= { false }
                     open = { this.state.userProfileMenuOpen }
                     anchorEl = { this.state.userInfoAnchorEl }
@@ -493,7 +521,7 @@ class TopNavBar extends React.Component {
                                         backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                     }}
                                 >
-                                    {/* { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" } */}
+                                    { this.props.userInfo ? (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0)) : "" }
                                 </Avatar>
                             }
                             innerDivStyle = {{padding: "2.064vh 1.651vh 2.064vh 7.43vh"}}
@@ -503,9 +531,9 @@ class TopNavBar extends React.Component {
                             primaryText = { this.props.userInfo ? this.props.userInfo.Name : ""}
                         />
 
-                        {/* <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" /> */}
-                        {/* {this.props.userInfo.admin ? show : dont} */}
-                        {/* <MenuItem className = "menuItemStyling" primaryText = "User Settings" /> */}
+                        <MenuItem onClick = { () => this.openAdminWizard() } className = "menuItemStyling" primaryText = "Admin Wizard" />
+                        {this.props.userInfo.admin ? show : dont}
+                        <MenuItem className = "menuItemStyling" primaryText = "User Settings" />
                         <MenuItem 
                             onClick = {() => {this.logout(); this.webSocketSend("logout");} } 
                             className = "menuItemStyling" 
@@ -515,7 +543,7 @@ class TopNavBar extends React.Component {
                         
                         
                     </List>
-                </Popover>
+                </Popover> */}
 
                 {/* Modals */}
                 <SettingsModal homePage = { this.props.homePage } />

@@ -850,7 +850,7 @@ class allViewsModal extends React.Component {
 									// position: "absolute", 
 									// width: "46.36vw",
 									float: "left",
-									margin: "-4px 15px 0 0",
+									margin: "-0.413vh 1.548vh 0 0",
 									backgroundColor: "white" }} >
 										<SearchBox 
 											ref = "SearchBox"

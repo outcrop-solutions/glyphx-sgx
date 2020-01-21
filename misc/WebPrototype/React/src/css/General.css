@@ -356,6 +356,11 @@ input.selectAllCheck{
   height: 1.356vh;
 }
 
+.show {
+  display: flex;
+  font-family: "ITCFranklinGothicStd-Med";
+}
+
 .ReactVirtualized__Table__row{
   padding-right: 1.754vh !important;
 }
