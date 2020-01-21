@@ -1540,19 +1540,19 @@ class FilterSideBarTopView extends React.Component {
                     style = {{ margin: this.state.multiTable ? "0.521vh 0px" : "0.521vh 0px -0.417vh" }} >
                     <Flexbox style = {{ width: "30%" }} > 
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            placement = 'top'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    Clears all filters currently applied
+                                <div style={{fontSize: "1.548vh"}}> 
+                                    Clear Current Filters
                                 </div> 
                             }
                         >
                             <RaisedButton 
-                                label = "Clear"
+                                label = "Clear All"
                                 style = {{
                                     width: "100%",
                                     minWidth: "0px"
@@ -1584,14 +1584,14 @@ class FilterSideBarTopView extends React.Component {
 
                     <Flexbox style = {{ width: "30%" }} >
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            placement = 'top'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    { this.state.hideShowButtonTextFlag ? "Show All Glyphs" : "Only show Non-Filtered Glyphs." }
+                                <div style={{fontSize: "1.548vh"}}> 
+                                    { this.state.hideShowButtonTextFlag ? "Show all Glyphs" : "Only Show Non-Filtered Glyphs." }
                                 </div> 
                             }
                         >
@@ -1629,14 +1629,14 @@ class FilterSideBarTopView extends React.Component {
 
                     <Flexbox style = {{ width: "30%" }} >
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            placement = 'top'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    Click to view a list of options
+                                <div style={{fontSize: "1.548vh"}}>  
+                                    View List of Options
                                 </div> 
                             }
                         >

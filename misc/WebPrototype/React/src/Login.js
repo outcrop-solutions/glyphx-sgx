@@ -1,3 +1,4 @@
+/*eslint-env jquery*/
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -48,6 +49,11 @@ class Login extends React.Component {
         // Add event listeners for using the enter key to login
         document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
         document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+
+        document.querySelector("#UserText").addEventListener('keyup', this.capsLockCheck);
+        document.querySelector("#PassText").addEventListener('keyup', this.capsLockCheck);
+        document.querySelector("#UserText").addEventListener('mousedown', this.capsLockCheck);
+        document.querySelector("#PassText").addEventListener('mousedown', this.capsLockCheck);
         
         document.title = "GlyphEd - Login";
     }
@@ -63,6 +69,18 @@ class Login extends React.Component {
         document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
 	}
 
+
+    /**
+     * Checks for Caps Lock when logging in
+     * @param e event instance 
+     */
+
+    capsLockCheck(e) {
+        let caps_lock_on = e.getModifierState('CapsLock');
+    
+        if(caps_lock_on) $('#caps_lock_ux').css('display', 'block');
+        else if(!caps_lock_on) $('#caps_lock_ux').css('display', 'none');
+    }
 
     /**
 	 * Calls the code to login when the enter key is pressed
@@ -280,17 +298,6 @@ class Login extends React.Component {
 
 
     render() {
-
-        let styleForInput = {
-            width: "85%",
-            borderColor: "#d9d9d9 #ccc #b3b3b3",
-            // borderRadius: '5px',
-            border: "1px solid #ccc",
-            height: "4.15vh",
-            overflow: 'hidden',
-            backgroundColor: "white"
-        };
-
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
                 <video playsInline autoPlay loop muted 
@@ -310,7 +317,7 @@ class Login extends React.Component {
                             backgroundColor: 'rgba(75, 38, 38, 0.50)', 
                             fontSize: "2.50vh",
                             width: '17vw', 
-                            height: '33.5vh', 
+                            height: 'fit-content', 
                             borderRadius: "3px"}} >
 
                             <div className = "loginFormOtherElements" style = {{ textAlign: 'center', paddingBottom: '0px'}} >
@@ -322,7 +329,14 @@ class Login extends React.Component {
                             <Flexbox 
                                 flexDirection = "row" 
                                 className = "loginFormOtherElements"
-                                style = {styleForInput}
+                                style = {{
+                                    width: "85%",
+                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                    border: "1px solid #ccc",
+                                    height: "4.15vh",
+                                    overflow: 'hidden',
+                                    backgroundColor: "white"
+                                }}
                             >
                                 <div style = {{ width: "1.9vw" }} >
                                     <i 
@@ -355,7 +369,15 @@ class Login extends React.Component {
                             <Flexbox 
                                 flexDirection = "row" 
                                 className = "loginFormOtherElements"
-                                style = {styleForInput}
+                                style = {{
+                                    width: "85%",
+                                    borderColor: "#d9d9d9 #ccc #b3b3b3",
+                                    border: "1px solid #ccc",
+                                    height: "4.15vh",
+                                    overflow: 'hidden',
+                                    backgroundColor: "white",
+                                    marginBottom: "1.031vh"
+                                }}
                             >
 
                                 <div style = {{ width: "1.9vw" }} >
@@ -384,6 +406,31 @@ class Login extends React.Component {
                                 />
                             </Flexbox>
 
+                            <div id="caps_lock_ux" style={{
+                                    display: "none", 
+                                    color: "red", 
+                                    backgroundColor: "white",
+                                    letterSpacing: "0.5px",
+                                    fontSize: "2.19vh", 
+                                    width: "14.5vw",
+                                    fontFamily: "ITCFranklinGothicStd-DmCd"}}>
+                                Caps Lock On
+                            </div>
+
+                            <div
+                                className = "loginFormOtherElements" 
+                                id = "errPass" 
+                                style = {{ 
+                                    color: 'red',
+                                    width: "14.5vw",
+                                    backgroundColor: "white",
+                                    fontFamily: "ITCFranklinGothicStd-DmCd",
+                                    marginTop: "3px",
+                                    letterSpacing: "0.5px",
+                                    fontSize: "2.19vh" }}  
+                            >
+                            </div>
+
                             <div style = {{ /* margin: "-4px 0px -16px 0px" */ }} >
                                 <label className = "loginFormOtherElements" id = "forgotPass" style = {{ /* fontSize: '12px', */ color: "#fff" }} >
                                     <a 
@@ -399,16 +446,6 @@ class Login extends React.Component {
                                     </a>
                                 </label>
                             </div>
-                            
-                            <label 
-                                className = "loginFormOtherElements" 
-                                id = "errPass" 
-                                style = {{ 
-                                    color: 'red',
-                                    fontFamily: "ITCFranklinGothicStd-Med",
-                                    letterSpacing: "0.5px",
-                                    fontSize: "2.19vh" }}  
-                            />
 
                             <br/>
 

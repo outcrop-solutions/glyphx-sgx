@@ -115,26 +115,26 @@ class PinningViewsModal extends React.Component {
     render() {
         return (
             <div>
-                <div style = {{ width: (this.props.fullWidth ? "100%" : "72%"), margin: "0 auto 3px" }} >
+                <div style = {{ width: (this.props.fullWidth ? "100%" : "72%"), margin: "0 auto 0.310vh" }} >
                     <RaisedButton
                         primary = { true } 
                         label = "Pin Filters"
                         style = {{
                             width: "100%",
-                            margin: "0px 0px 2px"
+                            margin: "0px 0px 0.206vh"
                         }}
                         buttonStyle = {{
-                            height: '28px',
-                            lineHeight: '28px',
+                            height: '2.890vh',
+                            lineHeight: '2.890vh',
                             backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                         }} 
                         labelStyle = {{
-                            fontSize: '13px',
+                            fontSize: '1.341vh',
                             color: this.props.settings.colors.overviewButtonsColor.text
                         }}
                         overlayStyle = {{
-                            height: '28px',
-                            lineHeight: '28px'
+                            height: '2.890vh',
+                            lineHeight: '2.890vh'
                         }}
                         onClick = { () => this.handlePinDialogOpenClose(true) }
                         icon = {
@@ -142,8 +142,8 @@ class PinningViewsModal extends React.Component {
                                 className = "fa fa-plus"
                                 style = {{ 
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    fontSize: "20px",
-                                    margin: "0px 0px 1px 14px"
+                                    fontSize: "2.064vh",
+                                    margin: "0px 0px 0.103vh 1.445vh"
                                 }}
                             />
                         }
@@ -154,7 +154,9 @@ class PinningViewsModal extends React.Component {
                     title = { <div> <FontIcon className = "fa fa-thumb-tack fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Pin Filters </div> }
                     modal = { true }
                     open = { this.state.pinDailog.open } 
-				    titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
+				    titleStyle = {{ 
+                        backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, 
+                        color: "#ffffff", lineHeight: "1.238vh", padding: "1.032vh 3.096vh 1.445vh"}}
                     actions = {
                         [
                             <FlatButton
@@ -172,7 +174,7 @@ class PinningViewsModal extends React.Component {
                         ]
                     }
                 >
-                    <div style = {{ margin: "20px 0px 0px" }} >
+                    <div style = {{ margin: "2.064vh 0px 0px" }} >
                         <DualListBox
                             canFilter
                             preserveSelectOrder 

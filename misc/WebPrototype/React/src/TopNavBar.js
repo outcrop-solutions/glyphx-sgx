@@ -216,14 +216,14 @@ class TopNavBar extends React.Component {
                             this.returnHome(); 
                             this.webSocketSend("home");
                         }}
-                        placement = 'left'
+                        placement = 'bottomLeft'
                         mouseEnterDelay = { 0.15 }
                         mouseLeaveDelay = { 0.15 }
                         destroyTooltipOnHide = { false }
                         trigger = { Object.keys( {hover: 1} ) }
                         overlay = { 
                             <div style={{height: "1.877vh", width: "1.9vw", fontSize:"1.460vh"}}> 
-                                Return to Home Page
+                                Home
                             </div> 
                         }
                     >
@@ -248,7 +248,7 @@ class TopNavBar extends React.Component {
                         className = { (this.props.tutorialStage === 7 ? "pulse" : "") }
                     >
                         <Tooltip
-                            placement = 'left'
+                            placement = {(this.props.homePage ? "right" : "bottomLeft")}
                             mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
@@ -270,12 +270,12 @@ class TopNavBar extends React.Component {
                         id="myDropdown" className="dropdown-content" style={{
                             display : (this.state.toggle_profile ? 'block' : 'none'),
                             position: 'absolute',
-                            backgroundColor: '#f1f1f1',
+                            backgroundColor: 'white',
                             minWidth: '10.885vw',
                             overflow: 'auto',
                             boxShadow: '0px 0.826vh 1.651vh 0px rgba(0,0,0,0.2)',
                             zIndex: '1',
-                            top: "5.263vh",
+                            top: (this.props.homePage ? "5.263vh" : "3.863vh"),
                             fontSize: "2.064vh",
                             left: "0.206vh"
                     }}>
@@ -347,8 +347,8 @@ class TopNavBar extends React.Component {
                         className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
                     >
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.3 }
+                            placement = 'bottomRight'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
@@ -407,7 +407,7 @@ class TopNavBar extends React.Component {
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
-                            placement = 'left'
+                            placement = 'bottomRight'
                             mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
@@ -436,8 +436,8 @@ class TopNavBar extends React.Component {
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.3 }
+                            placement = 'bottomRight'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
@@ -470,8 +470,8 @@ class TopNavBar extends React.Component {
                     {/*<IconButton onClick = { this.toggleNav.bind(this) } style = {{ margin: "0px 0px 0px -5px", display: (this.props.homePage ? "none" : "") }} >*/}
                         {/*<FontIcon className = "fa fa-caret-up fa-2x" color = '#ffffff' style = {{ transform: 'rotateZ(90deg)', margin: "0px 0px 0px 4px" }} />*/}
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.3 }
+                            placement = 'bottomRight'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }

@@ -630,7 +630,7 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox style={{ marginTop: "0.5214vh" }}>
+                <Flexbox style={{ margin: "0.5214vh 0.619vh 0 0.619vh" }}>
                     <Table
                         // wrapperStyle = {{border: "1px solid grey"}}
                         className = {this.props.id}
