@@ -130,6 +130,9 @@ namespace SynGlyphX
 		void setHiddenElementMode(GlyphRenderer::HiddenElementMode mode) { glyph_renderer->setHiddenElementMode(mode); }
 		void setResetPulseAnimOnSelectionChange(bool v) { glyph_renderer->setResetPulseAnimOnSelectionChange(v); }
 
+	signals:
+		void interactiveLegendToggled();
+
 	protected:
 		enum class CenterMode
 		{
