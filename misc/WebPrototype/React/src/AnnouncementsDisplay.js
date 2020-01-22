@@ -112,7 +112,8 @@ class AnnouncementsDisplay extends React.Component {
                 <div style={{
                     height: "5.2vh",
                     width: "25vw",
-                    backgroundColor: "#0c1836"
+                    backgroundColor: "#0c1836",
+                    display: "flex"
                 }}>
                     <h2
                         className='noselect'
@@ -124,7 +125,7 @@ class AnnouncementsDisplay extends React.Component {
                             margin: "0px",
                             fontSize: "2.294vh",
                             textTransform: "uppercase",
-                            padding: "1.251vh 0px 1.043vh 1.877vh",
+                            margin: "auto auto auto 1.877vh"
                         }}
                         >Annoucements
                     </h2>
@@ -132,11 +133,12 @@ class AnnouncementsDisplay extends React.Component {
                         onClick={() => this.setState({allAnnouncements: true})}
                         style={{
                             color: "white", 
-                            fontSize: "1.877vh", 
+                            fontSize: "2vh", 
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            margin: "1.60vh 1.460vh 0px 0px"}}
+                            margin: "auto 1.4vh auto auto"
+                            }}
                     >
                         See All&ensp;>
                     </span>

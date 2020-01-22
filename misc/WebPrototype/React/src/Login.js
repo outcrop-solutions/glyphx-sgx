@@ -50,10 +50,10 @@ class Login extends React.Component {
         document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
         document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
 
-        document.querySelector("#UserText").addEventListener('keyup', this.capsLockCheck);
-        document.querySelector("#PassText").addEventListener('keyup', this.capsLockCheck);
-        document.querySelector("#UserText").addEventListener('mousedown', this.capsLockCheck);
-        document.querySelector("#PassText").addEventListener('mousedown', this.capsLockCheck);
+        document.getElementById("UserText").addEventListener('keyup', this.capsLockCheck);
+        document.getElementById("PassText").addEventListener('keyup', this.capsLockCheck);
+        document.getElementById("UserText").addEventListener('mousedown', this.capsLockCheck);
+        document.getElementById("PassText").addEventListener('mousedown', this.capsLockCheck);
         
         document.title = "GlyphEd - Login";
     }
@@ -67,6 +67,11 @@ class Login extends React.Component {
         // Remove event listeners for using the enter key to login
         document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
         document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
+
+        document.getElementById("UserText").removeEventListener('keyup', this.capsLockCheck);
+        document.getElementById("PassText").removeEventListener('keyup', this.capsLockCheck);
+        document.getElementById("UserText").removeEventListener('mousedown', this.capsLockCheck);
+        document.getElementById("PassText").removeEventListener('mousedown', this.capsLockCheck);
 	}
 
 

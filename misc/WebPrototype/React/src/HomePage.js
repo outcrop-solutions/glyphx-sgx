@@ -484,7 +484,8 @@ class HomePage extends React.Component {
                                             <div style={{
                                                 height: "5.2vh",
                                                 width: "25vw",
-                                                backgroundColor: "#0c1836"
+                                                backgroundColor: "#0c1836",
+                                                display: "flex"
                                             }}>
                                                 <h2
                                                     className='noselect'
@@ -496,7 +497,7 @@ class HomePage extends React.Component {
                                                         margin: "0px",
                                                         fontSize: "1.2vw",
                                                         textTransform: "uppercase",
-                                                        padding: "1.25vh 0px 1.04vh 1.88vh",
+                                                        margin: "auto auto auto 1.877vh"
                                                     }}
                                                     >Glyph Key
                                                 </h2>
@@ -505,7 +506,7 @@ class HomePage extends React.Component {
                                                     onClick={() => (this.props.legend_url_arr.length ? this.setState({enlarge: true}) : null)}
                                                     style={{
                                                         float: "right", 
-                                                        margin: "1.668vh 1.460vh 0px 0px", 
+                                                        margin: "1.754vh 1.4vh auto auto",
                                                         cursor: "pointer",
                                                         display: (this.props.legend_url_arr.length ? "block" : "none")
                                                 }}>

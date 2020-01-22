@@ -137,8 +137,8 @@ class SearchBox extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    Close all open columns
+                                <div style={{fontSize: "1.548vh"}}> 
+                                    Close All Open Columns
                                 </div> 
                             }
                         >
