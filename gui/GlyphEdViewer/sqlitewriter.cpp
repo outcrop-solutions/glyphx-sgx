@@ -24,10 +24,6 @@ QString SqliteWriter::WriteDatabase(QString location, QJsonArray data, QString s
 
 	const QString DRIVER("QSQLITE");
 
-	/*QMessageBox qmb;
-	qmb.setText(queryStr);
-	qmb.exec();*/
-
 	if (QSqlDatabase::isDriverAvailable(DRIVER)){
 
 		QSqlDatabase db = QSqlDatabase::addDatabase(DRIVER);

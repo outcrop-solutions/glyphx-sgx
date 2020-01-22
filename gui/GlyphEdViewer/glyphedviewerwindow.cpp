@@ -36,6 +36,7 @@
 #include "version.h"
 #include "S3FileManager.h"
 #include "selecteddatawidget.h"
+#include "interactivelegendwindow.h"
 
 GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -45,7 +46,6 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 {
 	SGX_PROFILE_SCOPE
 	CreateMenus();
-	CreateDockWidgets();
 
 	menuBar()->hide();
 
@@ -53,6 +53,8 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
+
+	CreateDockWidgets();
 
 	centerWidgetsContainer = new QStackedWidget(this);
 	centerWidgetsContainer->setContentsMargins(0, 0, 0, 0);
@@ -77,6 +79,8 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	m_viewer->setFilteredResultsDisplayMode(SynGlyphX::FilteredResultsDisplayMode::HideUnfiltered);
 	m_viewer->setGeometry(0, 0, width, height);
 	m_viewer->hide();
+
+	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphEdViewerWindow::ToggleInteractiveLegend);
 
 	//CONTEXT MENU
 	m_enableDisableFlyToObjectAction = new QAction(tr("Enable/Disable Fly-to-Object"), this);
@@ -352,6 +356,13 @@ void GlyphEdViewerWindow::CreateDockWidgets() {
 	m_viewMenu->addAction(act);
 	//m_showHideToolbar->addAction(act);
 	m_rightDockWidget->hide();
+
+	m_interactiveLegend = new InteractiveLegendWindow(this, m_mappingModel->GetDataMapping());
+	m_interactiveLegendDock = new QDockWidget(tr("Interactive Legend"), this);
+	m_interactiveLegendDock->hide();
+	m_interactiveLegendDock->setFloating(true);
+	m_interactiveLegendDock->setWidget(m_interactiveLegend);
+	m_interactiveLegendAction = m_interactiveLegendDock->toggleViewAction();
 }
 
 void GlyphEdViewerWindow::OnSocketConnect() {
@@ -827,5 +838,21 @@ QString GlyphEdViewerWindow::GetApplicationDisplayName() const {
 	else {
 
 		return SynGlyphX::Application::organizationName() + " " + SynGlyphX::Application::applicationName();
+	}
+}
+
+void GlyphEdViewerWindow::ToggleInteractiveLegend()
+{
+	
+	if (m_interactiveLegendDock->isVisible())
+	{
+		m_interactiveLegendDock->hide();
+	}
+	else
+	{
+		m_interactiveLegend->setPrimaryViewer(m_viewer);
+		addDockWidget(Qt::DockWidgetArea::NoDockWidgetArea, m_interactiveLegendDock);
+		m_interactiveLegendDock->resize(m_interactiveLegend->size());
+		m_interactiveLegendDock->show();
 	}
 }

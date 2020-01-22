@@ -35,6 +35,7 @@
 #include <QtWebSockets/QWebSocket>
 #include <QtCore/QFile>
 
+class InteractiveLegendWindow;
 namespace SynGlyphX
 {
 	class SceneViewer;
@@ -72,6 +73,7 @@ private slots:
 	void OnSocketConnect();
 	void OnSocketLaunch(QString message);
 	void OnSocketClosed();
+	void ToggleInteractiveLegend();
 
 private:
 	class HUDGenerationInfo {
@@ -122,6 +124,7 @@ private:
 	QAction* m_clearSelectionAction;
 	QAction* m_resetCameraToDefaultPosition;
 	QAction* m_enableDisableSelEffectActionMenu;
+	QAction* m_interactiveLegendAction;
 	QList<QAction*> m_loadedVisualizationDependentActions;
 
 	QAction* m_showHideHUDAxisAction;
@@ -135,6 +138,8 @@ private:
 
 	QStackedWidget* centerWidgetsContainer;
 	LegendsDisplayWidget* m_legendsWidget;
+	QDockWidget* m_interactiveLegendDock = nullptr;
+	InteractiveLegendWindow* m_interactiveLegend = nullptr;
 	QDockWidget* m_legendsDockWidget;
 	QDockWidget* m_rightDockWidget;
 

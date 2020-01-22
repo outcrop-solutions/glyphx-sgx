@@ -173,6 +173,17 @@ namespace SynGlyphX
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
 			camButton->move(QPoint(0, 140));
 
+			QToolButton* intLegendButton = new QToolButton(this);
+			intLegendButton->setAttribute(Qt::WA_TranslucentBackground);
+			intLegendButton->setStyleSheet(style);
+			QIcon intLegendIcon;
+			intLegendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(30, 30), QIcon::Normal, QIcon::Off);
+			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			intLegendButton->setIcon(legendIcon);
+			intLegendButton->setToolTip("Show/Hide Interactive Legend");
+			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
+			intLegendButton->move(QPoint(0, 180));
+
 		}
 		else
 		{
