@@ -53,7 +53,7 @@ namespace SynGlyphX {
 
 			if (m_fixedImageRatio) {
 
-				QSize pixmapSize;
+				//QSize pixmapSize;
 				double widgetAspectRatio = boundingSize.height() / static_cast<double>(boundingSize.width());
 				if (widgetAspectRatio < m_imageRatio) {
 

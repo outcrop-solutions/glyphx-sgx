@@ -18,7 +18,7 @@ cd $script_path
 
 build=None
 app=None
-java=8
+java=13
 qt=5.6
 appcount=0
 do_build=0
@@ -171,6 +171,18 @@ if [ $java = 8 ]; then
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_131.jdk/Contents/Home/bin
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_131.jdk/Contents/Home/lib
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk1.8.0_131.jdk/Contents/Home/include
+fi
+
+if [ $java = 13 ]; then
+	echo Deploying Java VM 13.0.1...
+	# todo - don't hardcode JDK version number
+	cp -R /Library/Java/JavaVirtualMachines/jdk-13.0.1.jdk ../../bin/OSX64/$build/$app.app/Contents/Frameworks
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/src.zip
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/man
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/db
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/bin
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/lib
+	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/include
 fi
 
 #echo Deploying Data Engine...

@@ -83,7 +83,7 @@ else:
 	os.chdir(outpath)
 	
 	if sys.argv[1] == 'run':
-		command = "java -classpath "+classpath+" UserAccessControls"
+		command = "java -classpath "+classpath+" GlyphEngine"
 		print(command)
 		os.system(command)
 
