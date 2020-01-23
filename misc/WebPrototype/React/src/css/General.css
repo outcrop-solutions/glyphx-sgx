@@ -366,11 +366,22 @@ input.selectAllCheck{
 }
 
 .auth0-lock-header-logo {
-  width: 250px !important;
+  width: 13.021vw !important;
+  height: 5.986vh !important; 
+  margin: 0 0 1.135vh !important;
+}
+
+.centered {
+  padding: 1.032vh 1.548vh !important;
+}
+
+.auth0-lock-header-logo.centered{
+  margin-top: 2.064vh !important;
 }
 
 .auth0-lock-header {
   background-color: black !important;
+  padding: 1.135vh !important;
 }
 
 .auth0-lock-overlay{
@@ -378,11 +389,71 @@ input.selectAllCheck{
 }
 
 .auth0-lock-submit {
-  font-size: 18px !important;
+  font-size: 1.858vh !important;
+  padding: 1.445vh !important;
 }
 
 .auth0-lock-name {
-  color: white;
+  color: white !important;
+}
+
+.auth0-lock-alternative-link {
+  font-size: 1.548vh !important; 
+}
+
+.auth0-lock-widget {
+  width: 18.229vw !important;
+}
+
+.auth0-lock-input {
+  font-size: 1.651vh !important;
+  height: 4.128vh !important;
+  padding: 0 1.445vh !important;
+}
+
+.auth0-lock-icon {
+  width: 0.990vw !important; 
+  height: 2.374vh !important;
+  bottom: 0.826vh !important;
+  left: 1.032vh !important; 
+}
+
+.auth0-lock-icon-box:last-of-type {
+  bottom: 1.032vh !important;
+}
+
+.auth0-lock-alternative {
+  margin-top: 2.064vh !important;
+}
+
+.auth0-lock-form p {
+  font-size: 1.342vh !important;
+}
+
+.auth0-lock-show-password {
+  top: 1.445vh !important;
+  right: 1.238vh !important; 
+  width: 1.042vw !important;
+  height: 1.445vh !important;
+}
+
+.auth0-lock-input-show-password .auth0-lock-show-password input[type=checkbox] + label{
+  background-repeat: no-repeat;
+  width: 1.042vw !important;
+  height: 1.445vh !important;
+
+}
+
+@media only screen and (min-width: 481px){
+  .auth0-lock.auth0-lock .auth0-lock-input-block {
+    margin-bottom: 1.032vh !important;
+  }
+}
+
+@media only screen and (min-width: 481px){
+  .auth0-lock.auth0-lock .auth0-lock-cred-pane-internal-wrapper {
+    max-height: calc(100vh - 4.128vh) !important;
+  }
 }
 
 @media only screen and (min-width: 481px){
