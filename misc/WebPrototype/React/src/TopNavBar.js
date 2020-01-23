@@ -279,7 +279,7 @@ class TopNavBar extends React.Component {
                             fontSize: "2.064vh",
                             left: "0.206vh"
                     }}>
-                        <div style={{height: "5.779vh", fontSize: "1.98vh"}} className="show">
+                        <div style={{height: "5.779vh", fontSize: "1.98vh"}} className="showUserMenu">
                                 <img style={{
                                     margin: "auto 1.032vh auto 1.032vh",
                                     borderRadius: "50%",
@@ -296,7 +296,7 @@ class TopNavBar extends React.Component {
                         </div>
                         <div 
                             style={{height: "3.096vh", fontSize: "1.651vh", cursor: "pointer"}} 
-                            className="show"  
+                            className="showUserMenu signoutUser"  
                             onClick = {() => {this.logout(); this.webSocketSend("logout");} } >
                                 <span style={{margin: "auto 0 auto 1.032vh"}}>
                                     SIGN OUT

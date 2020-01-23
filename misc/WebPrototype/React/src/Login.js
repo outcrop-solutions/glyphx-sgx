@@ -10,6 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/FontIcon';
+import Auth0Lock from 'auth0-lock';
 import './css/General.css';
 
 
@@ -37,24 +38,74 @@ class Login extends React.Component {
 
         // Initial stuff for positioning the login button
         hideSplashScreen();
-        this.calcLoginButtonPosition();
+        // this.calcLoginButtonPosition();
 
         var context = this;
 
         // Open the modal so it transitions up as soon as you land
-        setTimeout(function () {
-            context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
-        }, 500);
+        // setTimeout(function () {
+        //     context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
+        // }, 500);
 
         // Add event listeners for using the enter key to login
-        document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
-        document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+        // document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+        // document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
 
-        document.getElementById("UserText").addEventListener('keyup', this.capsLockCheck);
-        document.getElementById("PassText").addEventListener('keyup', this.capsLockCheck);
-        document.getElementById("UserText").addEventListener('mousedown', this.capsLockCheck);
-        document.getElementById("PassText").addEventListener('mousedown', this.capsLockCheck);
-        
+        // document.getElementById("UserText").addEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("PassText").addEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("UserText").addEventListener('mousedown', this.capsLockCheck);
+        // document.getElementById("PassText").addEventListener('mousedown', this.capsLockCheck);
+        let global_state = this;
+        this.lock = new Auth0Lock(
+            'uBNTH9cfu4EGpULIaJkmU6wrEhxyBrdJ',
+            'dev-hms318g3.auth0.com',
+            {
+                // allowedConnections: ["Username-Password-Authentication","google-oauth2"],
+                autofocus: true,
+                rememberLastLogin: false,
+                socialButtonStyle: "big",
+                languageDictionary: {"title":""},
+                allowShowPassword: true,
+                language: "en",
+                closable: false,
+                auth: {redirect : false},
+                theme: {
+                    primaryColor: "#3A99D8",
+                    logo: './Res/Img/sgx_inside.png',
+                }
+            }
+        );
+
+        this.lock.on("authenticated", function(authResult) {
+            console.log(authResult, global_state)
+            if(authResult.accessToken){
+                // console.log('yes')
+                let url = 'login?username=' + 'glypheddemo' + "&password=" + 'glypheddemo';
+                makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
+            }
+            // Use the token in authResult to getUserInfo() and save it if necessary
+            this.getUserInfo(authResult.accessToken, function(error, profile) {
+              if (error) {
+                // Handle error
+                return;
+              }
+              else {
+                  console.log(profile.email);
+              }
+            });
+      
+              //we recommend not storing Access Tokens unless absolutely necessary
+            //   wm.set(privateStore, {
+            //     accessToken: authResult.accessToken
+            //   });
+      
+            //   wm.set(privateStore, {
+            //     profile: profile
+            //   });
+      
+            // });
+        });
+        this.lock.show();
         document.title = "GlyphEd - Login";
     }
 
@@ -65,13 +116,14 @@ class Login extends React.Component {
 	componentWillUnmount() {
 
         // Remove event listeners for using the enter key to login
-        document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
-        document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
+        // document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
+        // document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
 
-        document.getElementById("UserText").removeEventListener('keyup', this.capsLockCheck);
-        document.getElementById("PassText").removeEventListener('keyup', this.capsLockCheck);
-        document.getElementById("UserText").removeEventListener('mousedown', this.capsLockCheck);
-        document.getElementById("PassText").removeEventListener('mousedown', this.capsLockCheck);
+        // document.getElementById("UserText").removeEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("PassText").removeEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("UserText").removeEventListener('mousedown', this.capsLockCheck);
+        // document.getElementById("PassText").removeEventListener('mousedown', this.capsLockCheck);
+        this.lock.hide();
 	}
 
 
@@ -91,31 +143,31 @@ class Login extends React.Component {
 	 * Calls the code to login when the enter key is pressed
      * @param e: event instance which contains information about what caused the event
 	 */
-    enterKeyToLogin(e) {
-        e.preventDefault();
-        if (e.keyCode === 13) {
-            this.buttonClick();
-        }
-    }
+    // enterKeyToLogin(e) {
+    //     e.preventDefault();
+    //     if (e.keyCode === 13) {
+    //         this.buttonClick();
+    //     }
+    // }
 
 
     /**
      * Caculates the position of the login button to be initially.
      **/
-    calcLoginButtonPosition() {
-        var ycalc = 0;
-        var docHeight = document.body.offsetHeight;
+    // calcLoginButtonPosition() {
+    //     var ycalc = 0;
+    //     var docHeight = document.body.offsetHeight;
 
-        var loginButton = document.getElementById('loginButton');
-        var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
+    //     var loginButton = document.getElementById('loginButton');
+    //     var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
         
-        //var translate = 'translate(0px,' + ycalc + 'px)';
-        ycalc = docHeight - loginButtonBottom - 65;
+    //     //var translate = 'translate(0px,' + ycalc + 'px)';
+    //     ycalc = docHeight - loginButtonBottom - 65;
 
-        this.setState({ loginButtonBottomTranslateCalc: ycalc });
+    //     this.setState({ loginButtonBottomTranslateCalc: ycalc });
 
-        this.toggleLoginForm(ycalc);
-    }
+    //     this.toggleLoginForm(ycalc);
+    // }
 
 
     /**
@@ -132,27 +184,27 @@ class Login extends React.Component {
      * @param evt: -ADCMT
      * @param context: -ADCMT
      **/
-    authenticate = (evt, context) => {
-        var username = document.getElementById('UserText').value;
-        var password = document.getElementById('PassText').value;
-        var url = 'login?username=' + username + "&password=" + password;
-        showLoadMask();
+    // authenticate = (evt, context) => {
+    //     var username = document.getElementById('UserText').value;
+    //     var password = document.getElementById('PassText').value;
+    //     var url = 'login?username=' + username + "&password=" + password;
+    //     showLoadMask();
         
-        var lblErrPass = document.getElementById('errPass');
-        lblErrPass.innerText = "";
-        lblErrPass.hidden = true;
+    //     var lblErrPass = document.getElementById('errPass');
+    //     lblErrPass.innerText = "";
+    //     lblErrPass.hidden = true;
         
-        // Server call to check user/pass and update state.
-        makeServerCall(url, context.onServerResponse, {onServerCallError: context.showMaintanencePage} );
-    }
+    //     // Server call to check user/pass and update state.
+    //     makeServerCall(url, context.onServerResponse, {onServerCallError: context.showMaintanencePage} );
+    // }
 
 
-    /**
-     * Reroutes to maintanance page (not redundant, used for "makeServerCall" in authenticate)
-     **/
-    showMaintanencePage = () => {
-        this.navigate('/maintenance');
-    };
+    // /**
+    //  * Reroutes to maintanance page (not redundant, used for "makeServerCall" in authenticate)
+    //  **/
+    // showMaintanencePage = () => {
+    //     this.navigate('/maintenance');
+    // };
 
 
     /**
@@ -161,6 +213,7 @@ class Login extends React.Component {
      * @param options: -ADCMT
      **/
     onServerResponse = (response, options) => {
+        console.log(JSON.parse(response), typeof response)
         var result; 
         
         try {
@@ -230,53 +283,53 @@ class Login extends React.Component {
      * -ADCMT
      * @param ycalc: -ADCMT
      **/
-    toggleLoginForm = (ycalc) => {
-        var loginForm = document.getElementById('loginForm');
-        var loginOverlay = document.getElementById('loginOverlay');
-        var elements = document.getElementsByClassName('loginFormOtherElements');
-        var userText = document.getElementById('UserText');
-        var visibility = '';
+    // toggleLoginForm = (ycalc) => {
+    //     var loginForm = document.getElementById('loginForm');
+    //     var loginOverlay = document.getElementById('loginOverlay');
+    //     var elements = document.getElementsByClassName('loginFormOtherElements');
+    //     var userText = document.getElementById('UserText');
+    //     var visibility = '';
 
-        if (this.state.loginVisible) {
-            loginForm.style.transform = "translate(0px, " + ycalc + "px)";
+    //     if (this.state.loginVisible) {
+    //         loginForm.style.transform = "translate(0px, " + ycalc + "px)";
            
-            // Hide other elements
-            visibility = 'hidden';
-            loginOverlay.classList.remove('loginOverlayCSS');
-            loginForm.style.backgroundColor = "transparent";
-        }
+    //         // Hide other elements
+    //         visibility = 'hidden';
+    //         loginOverlay.classList.remove('loginOverlayCSS');
+    //         loginForm.style.backgroundColor = "transparent";
+    //     }
 
-        else {
-            loginForm.style.transform = "translate(0px, 0px)";
-            loginOverlay.classList.add('loginOverlayCSS');
+    //     else {
+    //         loginForm.style.transform = "translate(0px, 0px)";
+    //         loginOverlay.classList.add('loginOverlayCSS');
             
-            // Show other elements
-            visibility = '';
-            loginForm.style.backgroundColor = 'rgba(97, 97, 97, 0.5)';
-        }
+    //         // Show other elements
+    //         visibility = '';
+    //         loginForm.style.backgroundColor = 'rgba(97, 97, 97, 0.5)';
+    //     }
 
-        for (var index = 0; index < elements.length; index++) {
-            elements[index].style.visibility = visibility;
-        }
+    //     for (var index = 0; index < elements.length; index++) {
+    //         elements[index].style.visibility = visibility;
+    //     }
 
-        userText.focus();
-        this.setState({ loginVisible: !this.state.loginVisible });
-    }
+    //     userText.focus();
+    //     this.setState({ loginVisible: !this.state.loginVisible });
+    // }
 
 
     /**
      * -ADCMT
      * @param evt: -ADCMT
      **/
-    buttonClick = (evt) => {
-        if (this.state.loginVisible) {
-            this.authenticate(evt, this);
-        }
+    // buttonClick = (evt) => {
+    //     if (this.state.loginVisible) {
+    //         this.authenticate(evt, this);
+    //     }
         
-        else {
-            this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc);
-        }
-    }
+    //     else {
+    //         this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc);
+    //     }
+    // }
 
 
     /**
@@ -315,7 +368,7 @@ class Login extends React.Component {
                     Your browser does not support the video tag.
                 </video>
                 
-                <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
+                {/* <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
 
                         <Paper  id = "loginForm" style = {{ 
@@ -436,10 +489,9 @@ class Login extends React.Component {
                             >
                             </div>
 
-                            <div style = {{ /* margin: "-4px 0px -16px 0px" */ }} >
-                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ /* fontSize: '12px', */ color: "#fff" }} >
+                            <div>
+                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ color: "#fff" }} >
                                     <a 
-                                    onClick = { () => /* window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank')  */ 
                                         this.setState({openForgotPasswordDialog: true})} 
                                     style = {{ 
                                         cursor: "pointer", 
@@ -471,11 +523,9 @@ class Login extends React.Component {
                                 }}
                             />
 
-                            {/*
                             <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '16px' }}>
                                 <a onClick = { () => this.setState({ openForgotPasswordDialog: true }) } style = {{ color: '#b3b3b3', cursor: 'pointer' }} ><u> forgot password? </u></a>
                             </label>
-                            */}
 
                             <label className = "loginFormOtherElements" id = "forgotPass" style = {{ 
                                 fontSize: '12px', 
@@ -484,7 +534,7 @@ class Login extends React.Component {
                                 By logging in, you agree to the &nbsp;
                                 <a 
                                     onClick = { () => this.setState({ openTermsAndConditionsDialog: true }) } 
-                                    style = {{ /* color: '#1d3ad8', */ cursor: 'pointer' }} ><u>Terms and Conditions.</u>
+                                    style = {{cursor: 'pointer' }} ><u>Terms and Conditions.</u>
                                 </a>
                             </label>
 
@@ -654,7 +704,7 @@ class Login extends React.Component {
                             <br />This EULA is the entire agreement between Licensee and GlyphEd relating to the Software Product and it supersedes all prior or contemporaneous oral or written communications, proposals, and representations with respect to the Software Product or any other subject matter covered by this EULA. If any provision of this EULA is held by a court of competent jurisdiction to be contrary to law, such provision shall be changed and interpreted so as to best accomplish the original provision’s objectives to the fullest extent allowed by law, and the remaining provisions of the EULA will remain in full force and effect.
                         </div>
                     </Dialog>
-                </div>
+                </div> */}
             </Flexbox>
         );
     }

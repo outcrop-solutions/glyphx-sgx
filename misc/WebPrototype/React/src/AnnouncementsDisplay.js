@@ -1,3 +1,4 @@
+ /*eslint-env jquery*/
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
@@ -26,6 +27,17 @@ class AnnouncementsDisplay extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
 	componentDidMount() {
+
+        // $.get('https://www.glyphed.com/news?format=rss', function (data) {
+        //     $(data).find("item").each(function () { // or "item" or whatever suits your feed
+        //         var el = $(this);
+        
+        //         console.log("------------------------");
+        //         console.log("title      : " + el.find("title").text());
+        //         console.log("author     : " + el.find("author").text());
+        //         console.log("description: " + el.find("description").text());
+        //     });
+        // });
 
         //if (this.props.adminEdit) {
             //this.setState({ loadMask: false, announcements: this.props.announcementList });

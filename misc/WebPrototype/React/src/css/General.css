@@ -356,9 +356,39 @@ input.selectAllCheck{
   height: 1.356vh;
 }
 
-.show {
+.showUserMenu {
   display: flex;
   font-family: "ITCFranklinGothicStd-Med";
+}
+
+.signoutUser:hover{
+  background-color: lightgrey;
+}
+
+.auth0-lock-header-logo {
+  width: 250px !important;
+}
+
+.auth0-lock-header {
+  background-color: black !important;
+}
+
+.auth0-lock-overlay{
+  opacity: 0.7 !important;
+}
+
+.auth0-lock-submit {
+  font-size: 18px !important;
+}
+
+.auth0-lock-name {
+  color: white;
+}
+
+@media only screen and (min-width: 481px){
+  .auth0-lock.auth0-lock .auth0-lock-header-bg {
+    background: none !important;
+  }
 }
 
 .ReactVirtualized__Table__row{
