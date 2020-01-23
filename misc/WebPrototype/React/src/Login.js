@@ -60,8 +60,9 @@ class Login extends React.Component {
             'uBNTH9cfu4EGpULIaJkmU6wrEhxyBrdJ',
             'dev-hms318g3.auth0.com',
             {
-                // allowedConnections: ["Username-Password-Authentication","google-oauth2"],
+                allowedConnections: ["Username-Password-Authentication"/* ,"google-oauth2" */],
                 autofocus: true,
+                allowSignUp: false,
                 rememberLastLogin: false,
                 socialButtonStyle: "big",
                 languageDictionary: {"title":""},
