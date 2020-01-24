@@ -459,9 +459,9 @@ input.selectAllCheck{
   width: 13.958vw !important;
 }
 
-.auth0-lock-input-wrap {
+/* .auth0-lock-input-wrap {
   border: 0.103vh solid #C0C0C0 !important;
-}
+} */
 
 .auth0-lock-input-wrap.auth0-lock-focused {
   border-color: black !important;
@@ -490,7 +490,8 @@ input.selectAllCheck{
 .auth0-lock.auth0-lock .auth0-lock-confirmation .checkmark {
   width: 2.9167vw !important;
   height: 5.779vh !important;
-  animation: fill 0.4s ease-in-out 0.7s forwards/* scale 0.3s ease-in-out 1.1s both */ !important;
+  animation: scale 0.3s ease-in-out .7s both !important;
+  background-color: #7ac142 !important;
 }
 
 .auth0-lock.auth0-lock .auth0-lock-back-button {

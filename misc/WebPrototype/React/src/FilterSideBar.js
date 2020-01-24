@@ -226,21 +226,21 @@ class FilterSideBar extends React.Component {
                     }
                 }
             );
-            makeServerCall(URL2, 
-                function(responseText) {
-                    if(typeof responseText === 'string'){
-                        responseText = JSON.parse(responseText);
-                    }
-                    if(responseText){
-                        console.log(responseText.body);
-                    }
-                },
-                {
-                  post: true,
-                  data: {
-                      query: query.replace(/"/g, "'")
-                  }  
-                })
+            // makeServerCall(URL2, 
+            //     function(responseText) {
+            //         if(typeof responseText === 'string'){
+            //             responseText = JSON.parse(responseText);
+            //         }
+            //         if(responseText){
+            //             console.log(responseText.body);
+            //         }
+            //     },
+            //     {
+            //       post: true,
+            //       data: {
+            //           query: query.replace(/"/g, "'")
+            //       }  
+            //     })
         });
    }
 
