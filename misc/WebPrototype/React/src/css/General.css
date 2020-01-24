@@ -411,6 +411,8 @@ input.selectAllCheck{
   height: 4.128vh !important;
   padding: 0 1.445vh !important;
   width: 11.6667vw !important;
+  border: .1px solid grey !important;
+  border-radius: .5px !important;
 }
 
 .auth0-lock-input-email input{
@@ -459,9 +461,9 @@ input.selectAllCheck{
   width: 13.958vw !important;
 }
 
-/* .auth0-lock-input-wrap {
+.auth0-lock-input-wrap {
   border: 0.103vh solid #C0C0C0 !important;
-} */
+}
 
 .auth0-lock-input-wrap.auth0-lock-focused {
   border-color: black !important;
