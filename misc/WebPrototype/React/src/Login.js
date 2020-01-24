@@ -65,7 +65,7 @@ class Login extends React.Component {
                 allowSignUp: false,
                 rememberLastLogin: false,
                 socialButtonStyle: "big",
-                languageDictionary: { success: {logIn: 'Successful! Logging in to GlyphED...'}, "title":""},
+                languageDictionary: { success: {logIn: 'Successful! Logging in to GlyphEd...'}, "title":""},
                 allowShowPassword: true,
                 language: "en",
                 closable: false,
@@ -80,7 +80,6 @@ class Login extends React.Component {
         this.lock.on("authenticated", function(authResult) {
             console.log(authResult, global_state)
             if(authResult.accessToken){
-                // console.log('yes')
                 let url = 'login?username=' + 'glypheddemo' + "&password=" + 'glypheddemo';
 
                 window.setTimeout(() => {

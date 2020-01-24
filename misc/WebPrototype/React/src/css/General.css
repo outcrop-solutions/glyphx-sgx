@@ -413,9 +413,9 @@ input.selectAllCheck{
   width: 11.6667vw !important;
 }
 
-/* .auth0-lock-input-email input{
+.auth0-lock-input-email input{
   width: 100% !important;
-} */
+}
 
 .auth0-lock-icon {
   width: 0.990vw !important; 
@@ -452,6 +452,7 @@ input.selectAllCheck{
 
 .auth0-lock.auth0-lock .auth0-lock-input-wrap.auth0-lock-input-wrap-with-icon {
   padding-left: 4.128vh !important;
+  width: 13.958vw !important;
 }
 
 .auth0-lock-input-wrap {
@@ -496,6 +497,11 @@ input.selectAllCheck{
   width: 0.521vw !important;
   top: 1.445vh !important;
   right: 1.445vh !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-submit span {
+  height: 4.334vh !important;
+  line-height: 4.334vh !important;
 }
 
 @media only screen and (min-width: 481px){
