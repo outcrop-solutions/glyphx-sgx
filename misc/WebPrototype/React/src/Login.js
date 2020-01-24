@@ -65,7 +65,7 @@ class Login extends React.Component {
                 allowSignUp: false,
                 rememberLastLogin: false,
                 socialButtonStyle: "big",
-                languageDictionary: {"title":""},
+                languageDictionary: { success: {logIn: 'Successful! Logging in to GlyphED...'}, "title":""},
                 allowShowPassword: true,
                 language: "en",
                 closable: false,
@@ -82,7 +82,10 @@ class Login extends React.Component {
             if(authResult.accessToken){
                 // console.log('yes')
                 let url = 'login?username=' + 'glypheddemo' + "&password=" + 'glypheddemo';
-                makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
+
+                window.setTimeout(() => {
+                    makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
+                }, 2500);
             }
             // Use the token in authResult to getUserInfo() and save it if necessary
             this.getUserInfo(authResult.accessToken, function(error, profile) {

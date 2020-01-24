@@ -391,6 +391,7 @@ input.selectAllCheck{
 .auth0-lock-submit {
   font-size: 1.858vh !important;
   padding: 1.445vh !important;
+  height: 7.121vh !important;
 }
 
 .auth0-lock-name {
@@ -409,12 +410,12 @@ input.selectAllCheck{
   font-size: 1.651vh !important;
   height: 4.128vh !important;
   padding: 0 1.445vh !important;
-  width: auto !important;
+  width: 11.6667vw !important;
 }
 
-.auth0-lock-input-email input{
+/* .auth0-lock-input-email input{
   width: 100% !important;
-}
+} */
 
 .auth0-lock-icon {
   width: 0.990vw !important; 
@@ -446,7 +447,7 @@ input.selectAllCheck{
   background-repeat: no-repeat;
   width: 1.042vw !important;
   height: 1.445vh !important;
-
+  background-size: 1.06vw !important;
 }
 
 .auth0-lock.auth0-lock .auth0-lock-input-wrap.auth0-lock-input-wrap-with-icon {
@@ -469,6 +470,32 @@ input.selectAllCheck{
 
 .auth0-lock.auth0-lock .auth0-lock-badge-bottom .auth0-lock-badge {
   font-size: 1.548vh !important;
+}
+
+.auth0-lock-badge-bottom svg {
+  width: 3.021vw !important;
+  height: 2.167vh !important;
+  margin: 0 0.413vh !important;
+}
+
+.auth0-lock-confirmation {
+  font-size: 1.961vh !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-confirmation .checkmark {
+  width: 2.9167vw !important;
+  height: 5.779vh !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-back-button {
+  left: 1.445vh !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-close-button, .auth0-lock.auth0-lock .auth0-lock-back-button {
+  height: 1.032vh !important;
+  width: 0.521vw !important;
+  top: 1.445vh !important;
+  right: 1.445vh !important;
 }
 
 @media only screen and (min-width: 481px){
