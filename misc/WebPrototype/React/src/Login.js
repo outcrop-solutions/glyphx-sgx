@@ -107,6 +107,7 @@ class Login extends React.Component {
             // });
         });
         this.lock.show();
+
         document.title = "GlyphEd - Login";
     }
 

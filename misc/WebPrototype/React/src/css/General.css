@@ -409,6 +409,11 @@ input.selectAllCheck{
   font-size: 1.651vh !important;
   height: 4.128vh !important;
   padding: 0 1.445vh !important;
+  width: auto !important;
+}
+
+.auth0-lock-input-email input{
+  width: 100% !important;
 }
 
 .auth0-lock-icon {
@@ -442,6 +447,28 @@ input.selectAllCheck{
   width: 1.042vw !important;
   height: 1.445vh !important;
 
+}
+
+.auth0-lock.auth0-lock .auth0-lock-input-wrap.auth0-lock-input-wrap-with-icon {
+  padding-left: 4.128vh !important;
+}
+
+.auth0-lock-input-wrap {
+  border: 0.103vh solid #C0C0C0 !important;
+}
+
+.auth0-lock-input-wrap.auth0-lock-focused {
+  border-color: black !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-badge-bottom {
+  bottom: 1.548vh !important;
+  left: 1.548vh !important;
+  padding: 0.619vh 1.032vh !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-badge-bottom .auth0-lock-badge {
+  font-size: 1.548vh !important;
 }
 
 @media only screen and (min-width: 481px){
