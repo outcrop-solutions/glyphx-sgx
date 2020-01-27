@@ -638,10 +638,11 @@ class ViewsTab extends React.Component {
                     }} >
                         {this.state.recents.length === 0 ? 
                         <div style = {{ 
-                            margin: "3.128vh 0px 1.564vh 0px", 
-                            fontSize: "1.877vh", 
+                            margin: "auto", 
+                            fontSize: "2.5vh", 
                             textAlign: "center",
-                            fontFamily: "ITCFranklinGothicStd-Med"
+                            fontFamily: "ITCFranklinGothicStd-Med",
+                            paddingTop: "11.352vh",
                         }}> No Recent Views </div> 
                         : recentViews}
                     </div>

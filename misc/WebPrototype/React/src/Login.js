@@ -80,20 +80,26 @@ class Login extends React.Component {
         this.lock.on("authenticated", function(authResult) {
             console.log(authResult, global_state)
             if(authResult.accessToken){
-                let url = 'login?username=' + 'glypheddemo' + "&password=" + 'glypheddemo';
+                // let url = 'login?username=' + 'glypheddemo' + "&password=" + 'glypheddemo';
 
-                window.setTimeout(() => {
-                    makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
-                }, 2500);
+                // window.setTimeout(() => {
+                //     makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
+                // }, 2500);
+                // console.log('done')
             }
             // Use the token in authResult to getUserInfo() and save it if necessary
             this.getUserInfo(authResult.accessToken, function(error, profile) {
               if (error) {
                 // Handle error
+                console.log('ERROR WITH GET USER INFO', error)
                 return;
               }
               else {
                   console.log(profile.email);
+                  window.setTimeout(() => {
+                    let url = 'loginTwo?username=' + profile.email;
+                    makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
+                }, 2200);
               }
             });
       
@@ -365,7 +371,7 @@ class Login extends React.Component {
                 <video playsInline autoPlay loop muted 
                     poster = "./Res/Img/synglyphx_bio.png" 
                     id = "bgvid"
-                    onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
+                    // onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
                 >
                     {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
                     <source src = "./Res/Vid/GlyphEd.mp4" type = "video/mp4" />

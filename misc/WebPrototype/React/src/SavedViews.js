@@ -612,7 +612,19 @@ class SimpleTable extends React.Component {
 
         return (
             <div>
-                <div style = {{ margin: "0.1042vh 0.7042vh -0.938vh", backgroundColor: "white"}}  >
+
+                <div style={{
+                    display: (rows.length > 0 ? "none" : ""),
+                    margin: "auto", 
+                    fontSize: "2.5vh", 
+                    textAlign: "center",
+                    fontFamily: "ITCFranklinGothicStd-Med",
+                    paddingTop: "10.752vh",
+                }}>
+                    No Saved Views
+                </div>
+
+                <div style = {{ margin: "0.1042vh 0.7042vh -0.938vh", backgroundColor: "white", display: (rows.length > 0 ? "" : "none")}}  >
                     <SearchBox
                         ref = "SearchBox"
                         id = { "tf-" + this.props.id }
@@ -630,7 +642,7 @@ class SimpleTable extends React.Component {
                 </div>
 
                 <br/>
-                <Flexbox style={{ margin: "0.5214vh 0.619vh 0 0.619vh" }}>
+                <Flexbox style={{ margin: "0.5214vh 0.619vh 0 0.619vh", display: (rows.length > 0 ? "" : "none") }}>
                     <Table
                         // wrapperStyle = {{border: "1px solid grey"}}
                         className = {this.props.id}
@@ -638,7 +650,7 @@ class SimpleTable extends React.Component {
                         fixedFooter = { true }
                         onRowSelection = { (row) => this.handleRowSelection(row) } 
                         width = "100%"
-                        style= {{backgroundColor: (rows.length > 0 ? "white" : "rgb(230, 231, 232)")}}
+                        style= {{backgroundColor: "white"}}
                         /* wrapperStyle = {{ borderRadius: "4px", /* fontSize: "14px" }}*/
                         //onRowSelection = { () => console.log("row selected") }
                     >
