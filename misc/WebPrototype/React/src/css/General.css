@@ -466,7 +466,7 @@ input.selectAllCheck{
 }
 
 .auth0-lock-input-wrap.auth0-lock-focused {
-  border-color: black !important;
+  border-color: none !important;
 }
 
 /* .auth0-lock-input-wrap.auth0-lock-focused input{
@@ -482,9 +482,9 @@ input.selectAllCheck{
  }
 
  /* this needs to be right after border-bottom #C0C0C0 border-bottom password input */
- .auth0-lock-input-wrap.auth0-lock-focused input {
+ /* .auth0-lock-input-wrap.auth0-lock-focused input {
   border-bottom-color: black !important;
-}
+} */
  
 .auth0-lock.auth0-lock .auth0-lock-badge-bottom {
   bottom: 1.548vh !important;
@@ -527,6 +527,10 @@ input.selectAllCheck{
 .auth0-lock.auth0-lock .auth0-lock-submit span {
   height: 4.334vh !important;
   line-height: 4.334vh !important;
+}
+
+.auth0-lock-form span {
+  font-size: 1.651vh !important;
 }
 
 @media only screen and (min-width: 481px){
