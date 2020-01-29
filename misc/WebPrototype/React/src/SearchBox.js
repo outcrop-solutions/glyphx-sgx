@@ -104,7 +104,7 @@ class SearchBox extends React.Component {
                         onChange = { this.onChange } 
                         onKeyPress = { (e) => this.blurOnEnter(e, this.props.id) }
                         hintText = {
-                            <span style = {{ fontSize: 'inherit', color: 'rgba(0, 0, 0, 0.5)', fontSize: "1.668vh" }} >
+                            <span style = {{color: 'rgba(0, 0, 0, 0.5)', fontSize: "1.668vh" }} >
                                 <FontIcon
                                     className = "fa fa-search" 
                                     style = {{

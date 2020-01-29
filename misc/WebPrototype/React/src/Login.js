@@ -2,14 +2,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { hideSplashScreen, showLoadMask, hideLoadMask } from './LoadMaskHelper.js';
+import { hideSplashScreen, /* showLoadMask, */ hideLoadMask } from './LoadMaskHelper.js';
 import { makeServerCall } from './ServerCallHelper.js';
-import Dialog from 'material-ui/Dialog';
+// import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
-import RaisedButton from 'material-ui/RaisedButton';
-import IconButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
-import Paper from 'material-ui/FontIcon';
+// import RaisedButton from 'material-ui/RaisedButton';
+// import IconButton from 'material-ui/IconButton';
+// import Snackbar from 'material-ui/Snackbar';
+// import Paper from 'material-ui/FontIcon';
 import Auth0Lock from 'auth0-lock';
 import './css/General.css';
 
@@ -78,14 +78,8 @@ class Login extends React.Component {
 
         this.lock.on("authenticated", function(authResult) {
             console.log(authResult, global_state)
-            if(authResult.accessToken){
-                // let url = 'login?username=' + 'glypheddemo' + "&password=" + 'glypheddemo';
-
-                // window.setTimeout(() => {
-                //     makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
-                // }, 2500);
-                // console.log('done')
-            }
+            // if(authResult.accessToken){
+            // }
             // Use the token in authResult to getUserInfo() and save it if necessary
             this.getUserInfo(authResult.accessToken, function(error, profile) {
               if (error) {
@@ -98,7 +92,7 @@ class Login extends React.Component {
                   window.setTimeout(() => {
                     let url = 'loginTwo?username=' + profile.email;
                     makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
-                }, 2200);
+                }, 2000);
               }
             });
       
@@ -141,12 +135,12 @@ class Login extends React.Component {
      * @param e event instance 
      */
 
-    capsLockCheck(e) {
-        let caps_lock_on = e.getModifierState('CapsLock');
+    // capsLockCheck(e) {
+    //     let caps_lock_on = e.getModifierState('CapsLock');
     
-        if(caps_lock_on) $('#caps_lock_ux').css('display', 'block');
-        else if(!caps_lock_on) $('#caps_lock_ux').css('display', 'none');
-    }
+    //     if(caps_lock_on) $('#caps_lock_ux').css('display', 'block');
+    //     else if(!caps_lock_on) $('#caps_lock_ux').css('display', 'none');
+    // }
 
     /**
 	 * Calls the code to login when the enter key is pressed
@@ -177,16 +171,6 @@ class Login extends React.Component {
 
     //     this.toggleLoginForm(ycalc);
     // }
-
-
-    /**
-     * Redirects to a target path
-     * @param str: target path
-     **/
-    navigate = (str) => {
-        this.props.history.push(str);
-    }
-
 
     /**
      * -ADCMT
@@ -258,7 +242,7 @@ class Login extends React.Component {
         }
 
         else {
-            this.navigate("/maintenance");
+            this.props.history.push("/maintenance");
         }
 
         hideLoadMask();
@@ -284,7 +268,7 @@ class Login extends React.Component {
         //setCookie(getLoginCookieName(), 1,0.5);
 
         // Redirect to home page.
-        this.navigate("/home");
+        this.props.history.push("/home");
     }
 
 
@@ -344,24 +328,24 @@ class Login extends React.Component {
     /**
      * Closes the forgot password modal through the local state
      **/
-    handleCloseForgotPassDialog = () => {
-        this.setState({ openForgotPasswordDialog: false, snackbar: false});
-    };
+    // handleCloseForgotPassDialog = () => {
+    //     this.setState({ openForgotPasswordDialog: false, snackbar: false});
+    // };
 
 
     /**
      * -ADCMT
      **/
-    handleForgotPassSubmit(){
+    // handleForgotPassSubmit(){
         // var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
-        this.handleCloseForgotPassDialog();
+        // this.handleCloseForgotPassDialog();
 
         // Send server call to email password recovery link.
-        this.setState({ snackbar: true });
+        // this.setState({ snackbar: true });
 
         // let text = document.getElementsByClassName("retrieve-Pass-Text");
         // console.log('text', text);
-    }
+    // }
 
 
     render() {

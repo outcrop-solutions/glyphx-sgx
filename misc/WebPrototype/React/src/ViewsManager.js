@@ -419,18 +419,6 @@ class ViewsManager extends React.Component {
 
     selectTopic(val){
         // console.log(val, this.props.funnelData[val])
-        // if(val === "MarketingAndRecruiting"){
-        //     this.flip(val, mandrList.length);
-        // }
-        // else if(val === "Admissions"){
-        //     this.flip(val, admList.length);
-        // }
-        // else if(val === "FinancialAid"){
-        //     this.flip(val, faList.length);
-        // }
-        // else if(val === "Custom"){
-        //     this.flip(val, customList.length);
-        // }
         if(this.props.funnelData[val].length > 0){
             this.flip(val, this.props.funnelData[val].length);
         }
@@ -452,23 +440,6 @@ class ViewsManager extends React.Component {
             });
         }
     }
-
-    // topicRender(styleForFirstViewSelect){
-    //     let funnelData = this.props.funnelData;
-    //     console.log(funnelData)
-    //     if(Object.keys(funnelData).length > 0){
-    //         Object.keys(funnelData).map((property) => {
-    //             console.log(property)
-    //             return(
-    //                 <div className = "main-category-select"
-    //                 >
-    //                 {property}
-    //                 </div>
-    //             );
-            
-    //         })
-    //     }
-    // }
     
     injectOption(){
         return (
@@ -480,34 +451,10 @@ class ViewsManager extends React.Component {
 
     render() {
         let context = this;
-        /* console.log(this) */
         var funnelData = this.props.funnelData;
         let new_funnel_data = {};
         let wholeList = [];
         // console.log(funnelData);
-        // var mandrList, admList, faList, customList /* retentionList */;
-
-        //checking to see if its there and if it is, copy and put it in a new array
-        // if (funnelData["Marketing and Recruiting"]) mandrList = funnelData["Marketing and Recruiting"];
-        // else mandrList = [];
-        
-
-        // if (funnelData["Admissions"]) admList = funnelData["Admissions"];
-        // else admList = [];
-
-        // if (funnelData["Financial Aid"]) faList = funnelData["Financial Aid"];
-        // else faList = [];
-
-        // if (funnelData["Custom"]) customList = funnelData["Custom"];
-        // else customList = [];
-
-        // console.log(mandrList);
-
-        // console.log(admList);
-
-        // console.log(faList);
-
-        // console.log(customList);
 
         //splicing out things that aren't supposed to be in there. to double check
         
@@ -540,11 +487,6 @@ class ViewsManager extends React.Component {
             }
         }
 
-        // for (var i = funnelData['Financial Aid'].length - 1; i > -1; i--) {
-        //     if (funnelData['Financial Aid'][i][0] != "" && faList[i][0] != "" && faList[i][0] != "") {
-        //         faList.splice(i, 1);
-        //     }
-        // }
         if(funnelData['Custom']){
             for (let j = 0; j < funnelData['Custom'].length; j++) {
                 if (funnelData['Custom'][j][0] == "Applicants" || funnelData['Custom'][j][0] == "Pre-College" ||
@@ -556,19 +498,11 @@ class ViewsManager extends React.Component {
         }  
         // console.log(new_funnel_data)
 
-        // for (var k = mandrList.length - 1; k > -1; k--) {
-        //     if (mandrList[k][0] !== "Prospects" && mandrList[k][0] !== "High School Profiles") {
-        //         mandrList.splice(k, 1);
-        //     }
-        // }
-
         const styleForFirstViewSelect = {
             fontSize:"1.877vh", 
             padding: "7px",
             fontFamily: "ITCFranklinGothicStd-Med",
             letterSpacing: "0.5px",
-            /* borderBottom: "1px solid black" */
-            /* backgroundColor: "white" */
         };
 
         const styleForSecViewSelect = {
@@ -581,11 +515,19 @@ class ViewsManager extends React.Component {
             whiteSpace: "nowrap", 
             overflow: "hidden", 
             textOverflow: "ellipsis",
-            /* backgroundColor: "white", */
-            /* borderBottom: "1px solid black"  */
         };
 
         const h3TableHeader = {
+            fontSize: "2.086vh", 
+            fontFamily: "ITCFranklinGothicStd-DmCd",
+            margin: "0px",
+            fontWeight: "300",
+            textTransform: "uppercase",
+            letterSpacing: "1px"
+        };
+
+        const h3TableHeader_2 = {
+            color: (this.state.type !== "Funnel" ? "black" : "lightgrey"),
             fontSize: "2.086vh", 
             fontFamily: "ITCFranklinGothicStd-DmCd",
             margin: "0px",
@@ -606,68 +548,6 @@ class ViewsManager extends React.Component {
             outline: "none",
             cursor: "not-allowed"
         };
-        
-        // var marketingAndRecruiting = mandrList.map( function(title) {
-        //     return (
-        //         <option
-        //             // containerStyle = {{ padding: "0px" }} 
-        //             style = {styleForSecViewSelect} 
-        //             key = { title }
-        //             className = "noselect second-view-selection"
-        //             value = { title }
-        //         >
-        //             {/* <div
-        //                 style = { subContents }
-        //                 className = "noselect second-view-selection light"
-        //                 onClick = { (e) => {
-        //                     context.handleViewSelect(title);
-        //                     context.unHighlightInquiryRows();
-        //                     context.highlightInquirySelectedRow(e.target.innerHTML); } }
-        //             > */}
-        //                 {title[0]}
-        //             {/* </div> */}
-        //         </option>
-        //     )
-        // });
-
-        // var admissions = admList.map( function(title) {
-        //     return (
-        //         <option
-        //             style = {styleForSecViewSelect} 
-        //             key = { title } 
-        //             className = "noselect second-view-selection"
-        //             value = { title }
-        //         >
-        //             {title[0]}
-        //         </option>
-        //     )
-        // });
-
-        // var financialAid = faList.map( function(title) {
-        //     return (
-        //         <option
-        //             style = {styleForSecViewSelect} 
-        //             key = { title } 
-        //             className = "noselect second-view-selection"
-        //             value = { title }
-        //         >
-        //             {title[0]}
-        //         </option>
-        //     )
-        // });
-
-        // var custom = customList.map( function(title) {
-        //     return (
-        //         <option
-        //             style = {styleForSecViewSelect} 
-        //             key = { title } 
-        //             className = "noselect second-view-selection"
-        //             value = { title }
-        //         >
-        //             {title[0]}
-        //         </option>
-        //     )
-        // });
         
        /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
@@ -700,23 +580,6 @@ class ViewsManager extends React.Component {
 
         return(
             <div style={{height:"100%", overflowY: "hidden"}}>
-                {/* <div>
-                    <h2
-                        className='noselect'
-                        style={{
-                            color: this.props.settings.colors.overviewButtonsColor.text,
-                            backgroundColor: '#018cbb', 
-                            borderRadius: "2px", 
-                            paddingBottom: "4px", 
-                            margin: "auto auto 12px auto", 
-                            padding: "10px 0 8px 0",
-                            fontSize: "21px",
-                            letterSpacing: "0.14em",
-                            textTransform: "uppercase",
-                            textAlign: "center"}}
-                        >Visualization Manager
-                    </h2>
-                </div> */}
 
                     {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
                 <Flexbox style={{/*height: "117vh", display: "inline-flex" */backgroundColor: "#e6e7e8", paddingLeft: "25px"}}>
@@ -754,46 +617,7 @@ class ViewsManager extends React.Component {
                                             onChange={e => {this.selectTopic(e.target.value)}}
                                         >
                                             <option style={styleForFirstViewSelect}>Select A Topic</option>
-                                            {/* <option
-                                            // onClick = { (e) => {
-                                            //     this.flip("MarketingAndRecruiting", mandrList.length);
-                                            //     this.unHighlightTopicRows();
-                                            //     this.highlightTopicSelectedRow(e.target.innerHTML);
-                                            // }} 
-                                                className = { `${(mandrList.length > 0 ? "noselect" : "cursorDefault noselect")} 
-                                                main-category-select light` } 
-                                                id="topic-defaultOpen"
-                                                style = {styleForFirstViewSelect} 
-                                                value="MarketingAndRecruiting"
-                                            >
-                                            Marketing and Recruiting
-                                            </option>
-
-                                            <option className = "main-category-select"
-                                                className = { `${(admList.length > 0 ? "noselect" : "cursorDefault noselect")} 
-                                                main-category-select light`}
-                                                style={styleForFirstViewSelect}
-                                                value="Admissions" 
-                                            >
-                                            Admissions
-                                            </option>
-
-                                            <option className = "main-category-select"
-                                                className = { `${(faList.length > 0 ? "noselect" : "cursorDefault noselect")} 
-                                                main-category-select light`}
-                                                style={styleForFirstViewSelect}
-                                                value="FinancialAid"  
-                                            >
-                                            Financial Aid
-                                            </option>
-
-                                            <option className = "main-category-select"
-                                                className = { `${(customList.length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
-                                                style={styleForFirstViewSelect} 
-                                                value="Custom" 
-                                            >
-                                            Custom
-                                            </option> */}
+            
                                             {Object.keys(this.props.funnelData).map((t,i) => 
                                                 <option 
                                                 className = "main-category-select"
@@ -814,7 +638,7 @@ class ViewsManager extends React.Component {
                                             backgroundColor: "#e6e7e8",
                                             padding: "2.7vh 0px 2.4vh 0px"
                                     }}>
-                                        <h3 style={h3TableHeader}>
+                                        <h3 style={h3TableHeader_2}>
                                             <img style={{
                                                 verticalAlign: "middle", 
                                                 marginRight: "1.043vh",

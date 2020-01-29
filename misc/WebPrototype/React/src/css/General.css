@@ -384,6 +384,11 @@ input.selectAllCheck{
   padding: 1.135vh !important;
 }
 
+.auth0-lock.auth0-lock.auth0-lock-opened .auth0-lock-header-bg .auth0-lock-header-bg-blur {
+  opacity: 0 !important;
+  transition: none !important;
+}
+
 .auth0-lock-firstname {
   color: white !important;
   font-size: 2.064vh !important;

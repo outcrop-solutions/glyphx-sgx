@@ -974,7 +974,7 @@ class allViewsModal extends React.Component {
 			else if(data.length === 0 && this.state.loadDone === true){
 				return(
 					<div className= "no-results" style={{textAlign: "center", fontSize: "22px"}}>
-						<h3 style={{paddingTop: "3.650vh"}}>No Filter Options Available.</h3>
+						<h3 style={{paddingTop: "3.650vh", fontFamily: "ITCFranklinGothicStd-Demi"}}>No Filter Options Available.</h3>
 					</div>
 				);
 			}
