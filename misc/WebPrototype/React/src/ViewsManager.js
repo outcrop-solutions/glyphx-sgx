@@ -599,6 +599,13 @@ class ViewsManager extends React.Component {
             minWidth: "17.2vw",
             outline: "none"
         };
+
+        const cursor_no = {
+            minHeight: "5.4vh",
+            minWidth: "17.2vw",
+            outline: "none",
+            cursor: "not-allowed"
+        };
         
         // var marketingAndRecruiting = mandrList.map( function(title) {
         //     return (
@@ -831,7 +838,7 @@ class ViewsManager extends React.Component {
                                                                 key={t} value={t}>{t[0]}</option>)}
                                                     </select>)
                                                    
-                                                    : <select disabled style={dropDownSize}><option>—</option></select>
+                                            : <select disabled style={cursor_no}><option>—</option></select>
                                             }
                                         </Flexbox>
                                     </div>

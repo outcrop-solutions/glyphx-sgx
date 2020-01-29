@@ -384,6 +384,20 @@ input.selectAllCheck{
   padding: 1.135vh !important;
 }
 
+.auth0-lock-firstname {
+  color: white !important;
+  font-size: 2.064vh !important;
+  margin-top: 6.605vh !important;
+  padding-top: 2.064vh !important;
+}
+
+.auth0-lock.auth0-lock .auth0-lock-header-avatar {
+  height: 10.320vh !important;
+  width: 5.208vw !important;
+  margin: -1.651vh auto 0 !important;
+  box-shadow: 0 0.103vh 0.206vh rgba(0, 0, 0, 0.4) !important;
+}
+
 .auth0-lock-overlay{
   opacity: 0.7 !important;
 }

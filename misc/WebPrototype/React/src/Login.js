@@ -57,8 +57,8 @@ class Login extends React.Component {
         // document.getElementById("PassText").addEventListener('mousedown', this.capsLockCheck);
         let global_state = this;
         this.lock = new Auth0Lock(
-            'uBNTH9cfu4EGpULIaJkmU6wrEhxyBrdJ',
-            'dev-hms318g3.auth0.com',
+            'cxwxfRdxL87RtbTOFmRq3BTnOxZyaiu4',
+            'dev-py87y21x.auth0.com',
             {
                 allowedConnections: ["Username-Password-Authentication"/* ,"google-oauth2" */],
                 autofocus: true,
@@ -67,7 +67,6 @@ class Login extends React.Component {
                 socialButtonStyle: "big",
                 languageDictionary: { success: {logIn: 'Successful! Logging in to GlyphEd...'}, "title":""},
                 allowShowPassword: true,
-                language: "en",
                 closable: false,
                 auth: {redirect : false},
                 theme: {
@@ -368,15 +367,14 @@ class Login extends React.Component {
     render() {
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
-                <video playsInline autoPlay loop muted 
+                {/* <video playsInline autoPlay loop muted 
                     poster = "./Res/Img/synglyphx_bio.png" 
                     id = "bgvid"
                     // onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
                 >
-                    {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
                     <source src = "./Res/Vid/GlyphEd.mp4" type = "video/mp4" />
                     Your browser does not support the video tag.
-                </video>
+                </video> */}
                 
                 {/* <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
