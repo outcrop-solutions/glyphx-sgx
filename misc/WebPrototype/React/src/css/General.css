@@ -485,7 +485,7 @@ input.selectAllCheck{
 }
 
 .auth0-lock-input-wrap.auth0-lock-focused {
-  border-color: none !important;
+  border-color: black !important;
 }
 
 /* .auth0-lock-input-wrap.auth0-lock-focused input{
@@ -495,10 +495,6 @@ input.selectAllCheck{
 /* .auth0-lock.auth0-lock .auth0-lock-input-block input {
   border-bottom: 1px solid #C0C0C0 !important;
 } */
-
-.auth0-lock-input-block .auth0-lock-input-password input {
-  border-bottom: 1px solid #C0C0C0 !important;
- }
 
  /* this needs to be right after border-bottom #C0C0C0 border-bottom password input */
  /* .auth0-lock-input-wrap.auth0-lock-focused input {
