@@ -481,11 +481,11 @@ input.selectAllCheck{
 }
 
 .auth0-lock-input-wrap {
-  border: 1px solid #C0C0C0 !important;
+  border: 0.20639834881320948vh solid #C0C0C0 !important;
 }
 
 .auth0-lock-input-wrap.auth0-lock-focused {
-  border-color: black !important;
+  border-color: rgba(0, 0, 0, 0.479) !important;
 }
 
 /* .auth0-lock-input-wrap.auth0-lock-focused input{
@@ -548,6 +548,8 @@ input.selectAllCheck{
   top: 0.41280vh !important;
   width: 1.5625vw !important;
   height: 3.0960vh !important;
+  border-radius: 2.0640vh !important;
+  border-width: 0.2064vh !important;
 }
 
 .auth0-lock-form span {
