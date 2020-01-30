@@ -420,6 +420,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 	else if (type == "HOME" || type == "LOGOUT"){
 		text = "Received launch response from server. \n Home " + uid;
 		m_viewer->hide();
+		m_interactiveLegend->reset();
 	}
 	else if (type == "VFILTERS LOAD DONE"){
 		text = "Received launch response from server. \n Load Done " + uid;
