@@ -163,7 +163,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 
 	if (reply->error() != QNetworkReply::NoError) {
 		qDebug() << (reply->errorString().toStdString()).c_str();
-		std::cout << "Network Error: " << reply->errorString().toStdString() << std::endl;
+		//std::cout << "Network Error: " << reply->errorString().toStdString() << std::endl;
 		throw DownloadException(("Network Error: "+ reply->errorString().toStdString()).c_str());
 	}
 
