@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 		w.show();
 
 		return a.exec();
-		w.closeJVM();
+		//w.closeJVM();
 	}
 	catch (const std::exception& e) {
 

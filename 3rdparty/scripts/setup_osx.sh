@@ -177,7 +177,6 @@ if [ $java = 13 ]; then
 	echo Deploying Java VM 13.0.1...
 	# todo - don't hardcode JDK version number
 	cp -R /Library/Java/JavaVirtualMachines/jdk-13.0.1.jdk ../../bin/OSX64/$build/$app.app/Contents/Frameworks
-	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/src.zip
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/man
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/db
 	rm -rf ../../bin/OSX64/$build/$app.app/Contents/Frameworks/jdk-13.0.1.jdk/Contents/Home/bin

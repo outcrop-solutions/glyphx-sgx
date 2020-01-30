@@ -44,7 +44,7 @@ InteractiveLegendWindow::InteractiveLegendWindow(QWidget *parent, SynGlyphX::Dat
 	QObject::connect(toggle, &QPushButton::clicked, this, [this]() {
 		// gather selection
 		std::unordered_set<uint32_t> selected;
-		viewer->getScene().enumSelected([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
+        viewer->getScene().enumSelected([ &selected](const SynGlyphX::Glyph3DNode& glyph) {
 			selected.insert(glyph.getLabel());
 		});
 
@@ -84,9 +84,9 @@ InteractiveLegendWindow::InteractiveLegendWindow(QWidget *parent, SynGlyphX::Dat
 	QObject::connect(branch, &QPushButton::clicked, this, [this]() {
 		// gather selection
 		std::unordered_set<uint32_t> selected;
-		viewer->getScene().enumSelected([this, &selected](const SynGlyphX::Glyph3DNode& glyph) {
+        viewer->getScene().enumSelected([ &selected](const SynGlyphX::Glyph3DNode& glyph) {
 			selected.insert(glyph.getLabel());
-			glyph.enumNodes([this, &selected](const SynGlyphX::Glyph3DNode& child) {
+            glyph.enumNodes([ &selected](const SynGlyphX::Glyph3DNode& child) {
 				selected.insert(child.getLabel());
 				return true;
 			});
