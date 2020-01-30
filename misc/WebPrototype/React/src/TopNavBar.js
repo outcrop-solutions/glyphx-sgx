@@ -190,6 +190,12 @@ class TopNavBar extends React.Component {
                     url_uid: this.props.uid, 
                     settings_modal: true}))
             }
+            else if(type === "help"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid, 
+                    help_url: "https://desk.zoho.com/portal/synglyphx/home",
+                    help: true}))
+            }
 		}
     }
 
@@ -337,7 +343,8 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
-                        onClick = { () => window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') }
+                        onClick = { () => /* window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') */
+                            this.props.uid ? this.webSocketSend("help") : null}
                         style = {{ 
                             height: "5.005vh",
                             width: "2.010vw", 

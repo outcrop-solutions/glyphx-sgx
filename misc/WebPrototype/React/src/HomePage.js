@@ -405,6 +405,18 @@ class HomePage extends React.Component {
     //     }
     // }
 
+    webSocketSend(type){
+        if(this.props.uid){
+            if(type === "tutorial"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid,
+                    tutorial_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html",
+                    tutorial: true
+                }));
+            }
+		}
+    }
+
     render() {
         var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
@@ -635,7 +647,8 @@ class HomePage extends React.Component {
                                             cursor: "pointer",
                                             outline: "none"
                                         }}
-                                        onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}>
+                                        onClick={() => /* window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank') */
+                                            this.props.uid ? this.webSocketSend("tutorial") : null}>
                                             See Tutorials
                                         </button>
 
@@ -667,7 +680,9 @@ const mapStateToProps = function(state){
 	storedViews: state.filterState.StoredViews,
     funnelData: state.filterState.FunnelData,
     timeoutTimer: state.filterState.TimeoutTimer,
-    legend_url_arr: state.filterState.legend_url_arr
+    legend_url_arr: state.filterState.legend_url_arr,
+    webSocket: state.filterState.webSocket,
+    uid: state.filterState.uid
   }
 }
 

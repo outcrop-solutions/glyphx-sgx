@@ -8,18 +8,78 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import VotingModal from './VotingModal.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
+import { guidGenerator } from './GeneralFunctions.js';
 import './css/General.css';
 
 
 /**
  * -ADCMT
  */
+
+let announcementList = [
+    {
+        type: "Release",
+        id: "a1",
+        content: {
+            release: "1.0.0",
+            features: [
+                    "New 'Filter Overview' section located in the top of the filter side panel allows for easy monitoring and clearing of applied filters per column. You can also quickly navigate to an applied filter by clicking on the elastic or range icons.",
+                    "Small objects on glyphs are hidden depending on the zoom level, the distance can be adjusted from floating toolbar.",
+                    "Statistics can now be monitored per numeric column and will update each time a filter is applied.",
+                    "Undo and Redo filter functionality.",
+                    "Ranges can be disabled without being deleted allowing to toggle quickly between different ranges.",
+                    "More than one range per column can be applied.",
+                    "Text ranges have a variety of types to choose from.",
+                    "Ability to pin filter columns and view separately.",
+                    "Changes made to a visualization can be saved and loaded from the View Manager on the Home Page, or the view drop-down from within a visualization.",
+                    "Change axes has been remodeled and now takes about one second without having to reload the visualization.",
+                    "Userfeed section has been added to the Home Page allowing for communication within your institution.",
+                    "Announcements section added to Home Page to keep users up to date on our progress.",
+                    "More options available for front-end filters such as select all and deselect all."
+                    ],
+            bugfixes: []
+        },
+        postDate: "5/15/2018"
+    },
+    {
+        type: "Shout",
+        id: "a2",
+        content: {
+            message: "GlyphEd has been selected to speak with John Carroll University at Ruffalo Noel Levitz National Conference this summer.",
+            linkType: "text",
+            link: ""
+        },
+        postDate: "3/20/2018"
+    },
+    {
+        type: "Shout",
+        id: "a3",
+        content: {
+            message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd. Click to learn more.",
+            linkType: "link",
+            link: "https://s3.amazonaws.com/sgxshared/gannon-case-study.pdf"
+        },
+        postDate: "1/12/2018"
+    },
+    {
+        type: "Shout",
+        id: "a4",
+        content: {
+            message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept. Click to learn more.",
+            linkType: "link",
+            link: "http://www.globenewswire.com/news-release/2017/10/03/1140109/0/en/Kent-State-University-to-use-GlyphEd-to-Discover-Insights-in-Freshman-Student-Data.html"
+        },
+        postDate: "10/3/2017"
+    }
+];
+
 class AnnouncementsDisplay extends React.Component {
 
     state = {
         loadMask: true,
         announcements: [], //restructure announcements to be = [{date: date, type: type, message: message}, ...]
-        allAnnouncements: false
+        allAnnouncements: false,
+        announcementsAppended: []
     }
 
 
@@ -27,34 +87,38 @@ class AnnouncementsDisplay extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
 	componentDidMount() {
+        let context = this;
+        $.ajax({
+            type: "GET",
+            url: "https://api.rss2json.com/v1/api.json?rss_url=" + "https://www.glyphed.com/news?format=rss",
+            dataType: 'jsonp',
+            success: function(result) {
+                let news_arr = result.items;
+                let arr = [];
 
-        // $.get('https://www.glyphed.com/news?format=rss', function (data) {
-        //     $(data).find("item").each(function () { // or "item" or whatever suits your feed
-        //         var el = $(this);
-        
-        //         console.log("------------------------");
-        //         console.log("title      : " + el.find("title").text());
-        //         console.log("author     : " + el.find("author").text());
-        //         console.log("description: " + el.find("description").text());
-        //     });
-        // });
+                for(let i = 0; i < news_arr.length; i++){
+                    let publish_date = news_arr[i].pubDate.slice(0, 10);
+                    publish_date = publish_date.slice(5) + "/" + publish_date.slice(0,4);
+                    let article_content = news_arr[i].title + ' - ' + news_arr[i].description;
 
-        // $.ajax({
-        //     xhrFields: {
-        //         withCredentials: true
-        //     },
-        //     type: "GET",
-        //     url: "https://www.glyphed.com/news?format=rss"
-        // }).done(function (data) {
-        //     $(data).find('item').each(() => {
-        //         let el = $(this);
-        //         console.log("------------------------");
-        //         console.log("title      : " + el.find("title").text());
-        //         console.log("author     : " + el.find("author").text());
-        //         console.log("description: " + el.find("description").text());
-        //     })
-        // });
+                    if(article_content.length > 150) article_content = article_content.substring(0, 147) + "...";
 
+                    let obj = {
+                        type: "Shout",
+                        id: guidGenerator(),
+                        content: {
+                            message: article_content,
+                            linkType: "link",
+                            link: news_arr[i].link
+                        },
+                        postDate: publish_date.replace('-', '/')
+                    };
+                    arr.push(obj);
+                }
+                announcementList = arr.concat(announcementList);
+                context.annoucementUpdate();
+              }
+        });
         //if (this.props.adminEdit) {
             //this.setState({ loadMask: false, announcements: this.props.announcementList });
         //}
@@ -83,11 +147,9 @@ class AnnouncementsDisplay extends React.Component {
         this.setState({ announcements: nextProps.announcementList });
     }
 
-    
-    render() {
-        var context = this;
-
-        var announcements = announcementList.map( 
+    annoucementUpdate(){
+        let context = this;
+        let announcements = announcementList.map( 
             function(announcement) {
                 return (
                     (announcement.type === "Maintenance" ? 
@@ -134,6 +196,12 @@ class AnnouncementsDisplay extends React.Component {
                 )
             }
         );
+        context.setState({announcementsAppended: announcements})
+    }
+
+    
+    render() {
+        var context = this;
 
         return (
             <div style = {{height: "27.45vh", display: "block"}}> 
@@ -155,7 +223,7 @@ class AnnouncementsDisplay extends React.Component {
                             textTransform: "uppercase",
                             margin: "auto auto auto 1.877vh"
                         }}
-                        >Annoucements
+                        >Announcements
                     </h2>
                     <span 
                         onClick={() => this.setState({allAnnouncements: true})}
@@ -180,7 +248,7 @@ class AnnouncementsDisplay extends React.Component {
                             fontSize: "1.682vh", 
                             maxHeight: "74.974vh", 
                             padding: "0px 2.524vh 2.524vh"}}
-                        title = { <div style = {{ fontWeight: "bold" }} > All Annoucements <Divider /></div> }
+                        title = { <div style = {{ fontWeight: "bold" }} > All Announcements <Divider /></div> }
                         modal = { true }
                         open = { this.state.allAnnouncements }
                         actions = {
@@ -215,7 +283,7 @@ class AnnouncementsDisplay extends React.Component {
                                 </ul> */}
                                     <div style = {{ display: (this.state.loadMask ? "none" : "") }} >
                                     <div style = {{ borderRadius: "3px", width: "37vw" }}>
-                                        {announcements}
+                                        {this.state.announcementsAppended ? this.state.announcementsAppended : null}
                                     </div>
                                 </div>
                             </Flexbox>
@@ -247,8 +315,8 @@ class AnnouncementsDisplay extends React.Component {
                             overflowY: "auto",
                             width: "25vw"
                         }} 
-                            className = "customScroll" >
-                            {announcements}
+                            className = "customScroll">
+                           {this.state.announcementsAppended ? this.state.announcementsAppended.slice(0,5) : null}
                         </div>
                     </div>
 
@@ -720,67 +788,6 @@ const mapStateToProps = function(state) {
  * Connects the redux store to get access to global states.
  **/
 export default connect(mapStateToProps)(AnnouncementsDisplay);
-
-
-var announcementList = [
-    {
-        type: "Release",
-        id: "a1",
-        content: {
-            release: "1.0.0",
-            features: [
-                    "New 'Filter Overview' section located in the top of the filter side panel allows for easy monitoring and clearing of applied filters per column. You can also quickly navigate to an applied filter by clicking on the elastic or range icons.",
-                    "Small objects on glyphs are hidden depending on the zoom level, the distance can be adjusted from floating toolbar.",
-                    "Statistics can now be monitored per numeric column and will update each time a filter is applied.",
-                    "Undo and Redo filter functionality.",
-                    "Ranges can be disabled without being deleted allowing to toggle quickly between different ranges.",
-                    "More than one range per column can be applied.",
-                    "Text ranges have a variety of types to choose from.",
-                    "Ability to pin filter columns and view separately.",
-                    "Changes made to a visualization can be saved and loaded from the View Manager on the Home Page, or the view drop-down from within a visualization.",
-                    "Change axes has been remodeled and now takes about one second without having to reload the visualization.",
-                    "Userfeed section has been added to the Home Page allowing for communication within your institution.",
-                    "Announcements section added to Home Page to keep users up to date on our progress.",
-                    "More options available for front-end filters such as select all and deselect all."
-                    ],
-            bugfixes: []
-        },
-        postDate: "5/15/2018"
-    },
-    {
-        type: "Shout",
-        id: "a2",
-        content: {
-            message: "GlyphEd has been selected to speak with John Carroll University at Ruffalo Noel Levitz National Conference this summer.",
-            linkType: "text",
-            link: ""
-        },
-        postDate: "3/20/2018"
-    },
-    {
-        type: "Shout",
-        id: "a3",
-        content: {
-            message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd. Click to learn more.",
-            linkType: "link",
-            link: "https://s3.amazonaws.com/sgxshared/gannon-case-study.pdf"
-        },
-        postDate: "1/12/2018"
-    },
-    {
-        type: "Shout",
-        id: "a4",
-        content: {
-            message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept. Click to learn more.",
-            linkType: "link",
-            link: "http://www.globenewswire.com/news-release/2017/10/03/1140109/0/en/Kent-State-University-to-use-GlyphEd-to-Discover-Insights-in-Freshman-Student-Data.html"
-        },
-        postDate: "10/3/2017"
-    }
-
-
-    
-];
 
 /*
 var announcementList = [
