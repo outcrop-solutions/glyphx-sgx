@@ -20,13 +20,13 @@ import './css/General.css';
  */
 
 const tip_arr = [
-	"Don't forget to click on a Glyph before zooming!",
-	"Use the pushpin icon to save your most frequently used filters at the top of your filter pane.",
-	"Trying to apply a range filter? Don't forget to turn on the slider bar next to your max value once your range selections are made.",
-	"Hold down shift & left click on your mouse to lasso a group of Glyphs in the scene.",
-	"The view button is where you can choose to show your filtered or underlying data.",
-	"Axis bars getting in the way? Turn them off under the settings icon on your filter pane.",
-	"Like the view you're currently in? Use the menu button on your filter pane to save your view to access again at a later time.",
+	"./Res/Img/Tip1.png",
+	"./Res/Img/Tip2.png",
+	"./Res/Img/Tip3.png",
+	"./Res/Img/Tip4.png",
+	"./Res/Img/Tip5.png",
+	"./Res/Img/Tip6.png",
+	"./Res/Img/Tip7.png",
 ];
 
 class allViewsModal extends React.Component {
@@ -89,7 +89,7 @@ class allViewsModal extends React.Component {
 		
 		//intial tip generate
 		let previous_tip;
-		document.getElementById('tip_gen').innerHTML = tip_arr[Math.floor(Math.random() * tip_arr.length)];
+		document.getElementById('tip_gen').src = tip_arr[Math.floor(Math.random() * tip_arr.length)];
 
 		this.timer = setInterval(() => {
 			if(document.getElementById('tip_gen')){
@@ -98,7 +98,7 @@ class allViewsModal extends React.Component {
 					new_tip = Math.floor(Math.random() * tip_arr.length);
 				}
 				
-				document.getElementById('tip_gen').innerHTML = tip_arr[new_tip];
+				document.getElementById('tip_gen').src = tip_arr[new_tip];
 				previous_tip = new_tip;
 			}
 		}, 10000);
@@ -1087,38 +1087,43 @@ class allViewsModal extends React.Component {
 				</h3>
 
 				<div style = {{ 
-					height: "96.3vh", 
+					height: "96.32vh", 
 					fontSize: "3.858vh", 
 					textAlign: "center",
 					fontFamily: "ITCFranklinGothicStd-DmCd",
-					backgroundColor: "lightgrey",
-					color: "lightslategrey",
-					paddingTop: "15.120vh",
+					backgroundColor: "rgb(5, 25, 101)",
+					color: "white",
+					paddingTop: "1.35vh",
 					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
 
-					TIP:
+					{/* TIP: */}
 
 					<br/>
 
-					<div style={{
+					{/* <div style={{
 						wordBreak: "break-word", 
 						padding: "1.877vh 6.257vh 0px 6.257vh",
 						height: "19.812vh"}} 
-					id="tip_gen">
-					</div>
+					> */}
 
-					<span 
-						style={{
-							color: "darkblue", 
-							textDecoration: "underline",
-							cursor: "pointer",
-							fontSize: "2.294vh",
-							textTransform: "uppercase",
-						}} 
-						onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
-					>
-						See tutorials to learn more.
-					</span>
+					<img style={{width: "50vw"}} id="tip_gen" alt="GlyphEd Tip"/>
+
+					{/* </div> */}
+					<div style={{marginTop: "-5.160vh"}}>
+						<span 
+							style={{
+								// color: "darkblue", 
+								color: "white",
+								textDecoration: "underline",
+								cursor: "pointer",
+								fontSize: "2.294vh",
+								textTransform: "uppercase",
+							}} 
+							onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
+						>
+							See tutorials to learn more.
+						</span>
+					</div>
 
 				</div>
 

@@ -544,6 +544,12 @@ input.selectAllCheck{
   line-height: 4.334vh !important;
 }
 
+.auth0-lock.auth0-lock .auth0-loading-container .auth0-loading {
+  top: 0.41280vh !important;
+  width: 1.5625vw !important;
+  height: 3.0960vh !important;
+}
+
 .auth0-lock-form span {
   font-size: 1.651vh !important;
 }

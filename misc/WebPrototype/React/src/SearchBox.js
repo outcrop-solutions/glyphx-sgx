@@ -82,7 +82,7 @@ class SearchBox extends React.Component {
                         style = {{
                             // borderColor: "#d9d9d9 #ccc #b3b3b3",
                             // borderRadius: "4px",
-                            border: "1px solid #ccc",
+                            // border: "1px solid #ccc",
                             width: "100%",
                             height: "3.1vh",
                             fontSize: "1.668vh",
@@ -99,6 +99,7 @@ class SearchBox extends React.Component {
                         underlineStyle = {{
                             borderColor: "rgb(245, 245, 255)",
                             margin: "0px 0px -0.834vh",
+                            bottom: "0.82559vh",
                         }}
                         
                         onChange = { this.onChange } 
@@ -118,10 +119,10 @@ class SearchBox extends React.Component {
                                 {this.props.hintText}
                             </span>
                         }
-                        underlineFocusStyle = {{ 
-                            borderColor: this.props.settings.searchBoxUnderline, 
-                            margin: "0px 0px -1.034vh 0px",
-                        }}
+                        // underlineFocusStyle = {{ 
+                        //     borderColor: this.props.settings.searchBoxUnderline, 
+                        //     margin: "0px 0px -1.034vh 0px",
+                        // }}
                         onBlur = { this.props.shouldOnBlur ? (evt) => this.props.onTextFieldValueChange(evt,this.props.pinned) : null }
                     /> 
 
