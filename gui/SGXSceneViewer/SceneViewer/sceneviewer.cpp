@@ -129,60 +129,80 @@ namespace SynGlyphX
 				"    color: grey; "
 				"}");
 
+			QString style_red = QString("QToolButton {"
+				"    border: 1px;"
+				"    width: 36px; min-width: 36px; max-width: 36px;"
+				"    height: 36px; min-height: 36px; max-height: 36px;"
+				"    border-radius: 18px;"
+				"    background-color: red;"
+				"    color: white;"
+				"    padding: 0;"
+				"    margin: 0;"
+				"    font-size: 12px;"
+				"    font-family: Arial;"
+				"}"
+				"QToolButton:checked {"
+				"    border: 2px solid white; "
+				"}"
+				"QToolButton:disabled {"
+				"    background-color: red; "
+				"    color: grey; "
+				"}");
+
 			QToolButton* legendButton = new QToolButton(this);
 			legendButton->setAttribute(Qt::WA_TranslucentBackground);
 			legendButton->setStyleSheet(style);
 			QIcon legendIcon;
-			legendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(30,30), QIcon::Normal, QIcon::Off);
+			legendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
 			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			legendButton->setIcon(legendIcon);
 			legendButton->setToolTip("Show/Hide Legends");
 			QObject::connect(legendButton, &QToolButton::pressed, this, [this]() { legendsWidget->setVisible(!legendsWidget->isVisible()); });
 			legendButton->move(QPoint(0, 20));
 
+			QToolButton* intLegendButton = new QToolButton(this);
+			intLegendButton->setAttribute(Qt::WA_TranslucentBackground);
+			intLegendButton->setStyleSheet(style);
+			QIcon intLegendIcon;
+			intLegendIcon.addFile(":SGXGUI/Resources/Icons/int_legend_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
+			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			intLegendButton->setIcon(legendIcon);
+			intLegendButton->setToolTip("Show/Hide Interactive Legend");
+			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
+			intLegendButton->move(QPoint(0, 60));
+
 			QToolButton* axesButton = new QToolButton(this);
 			axesButton->setAttribute(Qt::WA_TranslucentBackground);
 			axesButton->setStyleSheet(style);
 			QIcon axesIcon;
-			axesIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(30,30), QIcon::Normal, QIcon::Off);
+			axesIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
 			//axesIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			axesButton->setIcon(axesIcon);
 			axesButton->setToolTip("Show/Hide Axes");
 			QObject::connect(axesButton, &QToolButton::pressed, this, [this]() { enableSceneAxes(!sceneAxesEnabled()); });
-			axesButton->move(QPoint(0, 60));
+			axesButton->move(QPoint(0, 100));
 
 			QToolButton* hudButton = new QToolButton(this);
 			hudButton->setAttribute(Qt::WA_TranslucentBackground);
 			hudButton->setStyleSheet(style);
 			QIcon hudIcon;
-			hudIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(30, 30), QIcon::Normal, QIcon::Off);
+			hudIcon.addFile(":SGXGUI/Resources/Icons/compass_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			hudButton->setIcon(hudIcon);
 			hudButton->setToolTip("Show/Hide Compass");
 			QObject::connect(hudButton, &QToolButton::pressed, this, [this]() { enableHUDAxes(!hudAxesEnabled()); });
-			hudButton->move(QPoint(0, 100));
+			hudButton->move(QPoint(0, 140));
 
 			QToolButton* camButton = new QToolButton(this);
 			camButton->setAttribute(Qt::WA_TranslucentBackground);
-			camButton->setStyleSheet(style);
+			camButton->setStyleSheet(style_red);
 			QIcon camIcon;
-			camIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(30,30), QIcon::Normal, QIcon::Off);
+			camIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			camButton->setIcon(camIcon);
 			camButton->setToolTip("Reset Camera Position");
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
-			camButton->move(QPoint(0, 140));
-
-			QToolButton* intLegendButton = new QToolButton(this);
-			intLegendButton->setAttribute(Qt::WA_TranslucentBackground);
-			intLegendButton->setStyleSheet(style);
-			QIcon intLegendIcon;
-			intLegendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(30, 30), QIcon::Normal, QIcon::Off);
-			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
-			intLegendButton->setIcon(legendIcon);
-			intLegendButton->setToolTip("Show/Hide Interactive Legend");
-			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
-			intLegendButton->move(QPoint(0, 180));
+			camButton->move(QPoint(0, 180));
 
 		}
 		else
