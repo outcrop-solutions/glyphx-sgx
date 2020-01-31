@@ -105,11 +105,14 @@ class SavedViews extends React.Component {
                         if(response.body){
                             var index = sdtPath.replace(/\\/g, "/");;
                             console.log(response.body.imgArr,'imgPath');
+                            let instit = context.props.userInfo.institutionDir.slice(25, context.props.userInfo.institutionDir.length-1);
+                            if(instit === 'glyphed_demo') instit = 'glyphed-demo-source';
+                            if(instit === 'notredame') instit = 'notredame-source';
 
                             context.props.webSocket.send(JSON.stringify({
                                 url_uid: context.props.uid,
                                 //CHANGING INSTITUTION
-                                sdt: `https://viz-group-glyphed-demo-source.s3.us-east-2.amazonaws.com/${index}`,
+                                sdt: `https://viz-group-${instit}.s3.us-east-2.amazonaws.com/${index}`,
                                 legendURLArr: response.body.imgArr,
                                 query,
                                 launch: true

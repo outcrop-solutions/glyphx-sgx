@@ -193,8 +193,7 @@ class TopNavBar extends React.Component {
             else if(type === "help"){
                 this.props.webSocket.send(JSON.stringify({
                     url_uid: this.props.uid, 
-                    help_url: "https://desk.zoho.com/portal/synglyphx/home",
-                    help: true}))
+                    open_url: "https://desk.zoho.com/portal/synglyphx/home"}))
             }
 		}
     }
@@ -409,7 +408,7 @@ class TopNavBar extends React.Component {
                             height: "5.005vh",
                             width: "2.010vw", 
                             zIndex: (this.props.tutorialStage === 5 ? "300" : "5"), 
-                            marginRight: "1.043vh", 
+                            marginRight: (this.props.homePage ? "2.043vh" : "1.043vh"), 
                             padding: "1.251vh" }}
                         className = { (this.props.tutorialStage === 5 ? "pulse" : "") }
                     >
@@ -432,7 +431,7 @@ class TopNavBar extends React.Component {
                         </Tooltip>
                     </IconButton>
 
-                    <IconButton 
+                    {/* <IconButton 
                         // onClick = { () => this.props.dispatch(editModalDisplay(true, null, null, null)) } 
                         style = {{ 
                             height: "5.005vh",
@@ -461,7 +460,7 @@ class TopNavBar extends React.Component {
                             </FontIcon>
                         </Tooltip>
                     </IconButton>
-                    
+                     */}
 
                     {/*
                     <IconButton  

@@ -1015,10 +1015,13 @@ class allViewsModal extends React.Component {
 		}
 
 		if(query.indexOf(';') && this.props.legend_url_arr){
+			let instit = this.props.userInfo.institutionDir.slice(25, this.props.userInfo.institutionDir.length-1);
+			if(instit === 'glyphed_demo') instit = 'glyphed-demo-source';
+			if(instit === 'notredame') instit = 'notredame-source';
 			this.props.webSocket.send(JSON.stringify({
 				url_uid: this.props.uid,
 				//CHANGING INSTITUTION
-				sdt: `https://viz-group-glyphed-demo-source.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
+				sdt: `https://viz-group-${instit}.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
 				legendURLArr: this.props.legend_url_arr,
 				query,
 				launch: true
@@ -1045,10 +1048,22 @@ class allViewsModal extends React.Component {
 		}
 	}
 
+	webSocketSend(type){
+        if(this.props.uid){
+            if(type === "tutorial"){
+                this.props.webSocket.send(JSON.stringify({
+                    url_uid: this.props.uid,
+                    open_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html"}));
+            }
+		}
+    }
+
 	render() {
 		var data = this.state.data;
 		var context = this;
 		
+		let instit = this.props.userInfo.institutionDir.slice(25, this.props.userInfo.institutionDir.length-1);
+		// console.log(instit);
 		return(
 			<div style={{height: "100%", minHeight: "102vh"}}
 				/*title = { this.props.type }
@@ -1113,13 +1128,15 @@ class allViewsModal extends React.Component {
 						<span 
 							style={{
 								// color: "darkblue", 
-								color: "white",
+								color: "rgb(3, 26, 114)",
 								textDecoration: "underline",
 								cursor: "pointer",
 								fontSize: "2.294vh",
 								textTransform: "uppercase",
+								fontFamily: "ITCFranklinGothicStd-Demi"
 							}} 
-							onClick={() => window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank')}
+							onClick={() => /* window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank') */
+							this.props.uid ? this.webSocketSend('tutorial') : ""}
 						>
 							See tutorials to learn more.
 						</span>
@@ -1404,7 +1421,10 @@ const mapStateToProps = function(state){
 	uid: state.filterState.uid,
 	webSocket: state.filterState.webSocket,
 	legend_url_arr: state.filterState.legend_url_arr,
-	VizParams: state.filterState.VizParams
+	VizParams: state.filterState.VizParams,
+	webSocket: state.filterState.webSocket,
+	uid: state.filterState.uid,
+	userInfo: state.filterState.UserInfo
   }
 }
 

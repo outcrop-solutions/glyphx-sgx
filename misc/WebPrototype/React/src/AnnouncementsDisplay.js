@@ -181,6 +181,8 @@ class AnnouncementsDisplay extends React.Component {
                                 /> :
                                 (announcement.type === "Shout" ? 
                                     <ShoutAnnouncement 
+                                        uid = {context.props.uid}
+                                        webSocket = {context.props.webSocket}
                                         announcement = { announcement } 
                                         settings = { context.props.settings } 
                                         key = { announcement.id } 
@@ -673,7 +675,16 @@ class PollAnnouncement extends React.Component {
 
 class ShoutAnnouncement extends React.Component {
 
+    webSocketSend(link){
+        if(this.props.uid){ 
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                open_url: link}));
+		}
+    }
+
     render() {
+        let context = this;
         return (
             <Flexbox flexDirection = "row" style = {{ marginBottom: (this.props.last ? "0.730vh" : "0px") }} >
                 {this.props.adminEdit? 
@@ -717,7 +728,8 @@ class ShoutAnnouncement extends React.Component {
                         }}
                         className = "cursorHand"
                         onClick = { () => this.props.announcement.content.linkType === "link" ? 
-                        window.open(this.props.announcement.content.link) : null }
+                        (this.props.uid ? this.webSocketSend(this.props.announcement.content.link) 
+                            : window.open(this.props.announcement.content.link)) : null }
                     >
 
                         <Flexbox flexDirection = "row" className = "noselect" >
@@ -779,7 +791,9 @@ export const setTimer = (timeoutTimer) => ({
 const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
-    userInfo: state.filterState.UserInfo
+    userInfo: state.filterState.UserInfo,
+    webSocket: state.filterState.webSocket,
+    uid: state.filterState.uid,
   }
 }
 

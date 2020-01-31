@@ -556,6 +556,10 @@ input.selectAllCheck{
   font-size: 1.651vh !important;
 }
 
+.auth0-lock-error-invalid-hint {
+  font-size: 1.238vh !important;
+}
+
 @media only screen and (min-width: 481px){
   .auth0-lock.auth0-lock .auth0-lock-input-block {
     margin-bottom: 1.032vh !important;

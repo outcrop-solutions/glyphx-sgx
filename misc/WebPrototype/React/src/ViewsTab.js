@@ -341,12 +341,14 @@ class ViewsTab extends React.Component {
                 let response;
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
                 if(response.body){
+                    let instit = context.props.userInfo.institutionDir.slice(25, context.props.userInfo.institutionDir.length-1);
+                    if(instit === 'glyphed_demo') instit = 'glyphed-demo-source';
+                    if(instit === 'notredame') instit = 'notredame-source';
                     console.log(response.body.imgArr,'imgPath');
-
                     context.props.webSocket.send(JSON.stringify({
                         url_uid: context.props.uid,
                         //CHANGING INSTITUTION
-                        sdt: `https://viz-group-glyphed-demo-source.s3.us-east-2.amazonaws.com/${index}`,
+                        sdt: `https://viz-group-${instit}.s3.us-east-2.amazonaws.com/${index}`,
                         legendURLArr: response.body.imgArr,
                         query,
                         launch: true

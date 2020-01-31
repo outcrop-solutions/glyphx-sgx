@@ -410,9 +410,7 @@ class HomePage extends React.Component {
             if(type === "tutorial"){
                 this.props.webSocket.send(JSON.stringify({
                     url_uid: this.props.uid,
-                    tutorial_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html",
-                    tutorial: true
-                }));
+                    open_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html"}));
             }
 		}
     }
