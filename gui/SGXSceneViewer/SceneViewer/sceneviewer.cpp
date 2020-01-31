@@ -5,6 +5,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <QtCore/QDebug>
 #include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QFont>
 #include <QtGui/QPainter>
@@ -63,6 +64,13 @@ namespace SynGlyphX
 		setMouseTracking(true);
 		setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 
+		mult = 1;
+		QScreen* screen = QGuiApplication::primaryScreen();
+		QRect screenGeometry = screen->geometry();
+		if (screenGeometry.width() == 3840) {
+			mult = 2;
+		}
+
 		legendsWidget = new LegendsWidget(this);
 		legendsWidget->resize(400, 280);
 		legendsWidget->hide();
@@ -110,19 +118,19 @@ namespace SynGlyphX
 			QObject::connect(m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move(camera->get_world_up(), -buttonMoveUpDownRate); });
 
 			QString style = QString("QToolButton {"
-				"    border: 1px;"
-				"    width: 36px; min-width: 36px; max-width: 36px;"
-				"    height: 36px; min-height: 36px; max-height: 36px;"
-				"    border-radius: 18px;"
+				"    border: " + QString::number(1 * mult) + "px;"
+				"    width: " + QString::number(36 * mult) + "px; min-width: " + QString::number(36 * mult) + "px; max-width: " + QString::number(36 * mult) + "px;"
+				"    height: " + QString::number(36 * mult) + "px; min-height: " + QString::number(36 * mult) + "px; max-height: " + QString::number(36 * mult) + "px;"
+				"    border-radius: " + QString::number(18 * mult) + "px;"
 				"    background-color: rgb(45, 48, 145);"
 				"    color: white;"
 				"    padding: 0;"
 				"    margin: 0;"
-				"    font-size: 12px;"
+				"    font-size: " + QString::number(12*mult) + "px;"
 				"    font-family: Arial;"
 				"}"
 				"QToolButton:checked {"
-				"    border: 2px solid white; "
+				"    border: " + QString::number(2 * mult) + "px solid white; "
 				"}"
 				"QToolButton:disabled {"
 				"    background-color: rgb(45, 48, 145); "
@@ -130,19 +138,19 @@ namespace SynGlyphX
 				"}");
 
 			QString style_red = QString("QToolButton {"
-				"    border: 1px;"
-				"    width: 36px; min-width: 36px; max-width: 36px;"
-				"    height: 36px; min-height: 36px; max-height: 36px;"
-				"    border-radius: 18px;"
+				"    border: " + QString::number(1 * mult) + "px;"
+				"    width: " + QString::number(36 * mult) + "px; min-width: " + QString::number(36 * mult) + "px; max-width: " + QString::number(36 * mult) + "px;"
+				"    height: " + QString::number(36 * mult) + "px; min-height: " + QString::number(36 * mult) + "px; max-height: " + QString::number(36 * mult) + "px;"
+				"    border-radius: " + QString::number(18 * mult) + "px;"
 				"    background-color: red;"
 				"    color: white;"
 				"    padding: 0;"
 				"    margin: 0;"
-				"    font-size: 12px;"
+				"    font-size: " + QString::number(12 * mult) + "px;"
 				"    font-family: Arial;"
 				"}"
 				"QToolButton:checked {"
-				"    border: 2px solid white; "
+				"    border: " + QString::number(2 * mult) + "px solid white; "
 				"}"
 				"QToolButton:disabled {"
 				"    background-color: red; "
@@ -153,56 +161,61 @@ namespace SynGlyphX
 			legendButton->setAttribute(Qt::WA_TranslucentBackground);
 			legendButton->setStyleSheet(style);
 			QIcon legendIcon;
-			legendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
+			legendIcon.addFile(":SGXGUI/Resources/Icons/legend_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			legendButton->setIcon(legendIcon);
+			legendButton->setIconSize(QSize(24 * mult, 24 * mult));
 			legendButton->setToolTip("Show/Hide Legends");
 			QObject::connect(legendButton, &QToolButton::pressed, this, [this]() { legendsWidget->setVisible(!legendsWidget->isVisible()); });
-			legendButton->move(QPoint(0, 20));
+			legendButton->move(QPoint(0, 20 * mult));
 
 			QToolButton* intLegendButton = new QToolButton(this);
 			intLegendButton->setAttribute(Qt::WA_TranslucentBackground);
 			intLegendButton->setStyleSheet(style);
 			QIcon intLegendIcon;
-			intLegendIcon.addFile(":SGXGUI/Resources/Icons/int_legend_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
+			intLegendIcon.addFile(":SGXGUI/Resources/Icons/int_legend_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
-			intLegendButton->setIcon(legendIcon);
+			intLegendButton->setIcon(intLegendIcon);
+			intLegendButton->setIconSize(QSize(24 * mult, 24 * mult));
 			intLegendButton->setToolTip("Show/Hide Interactive Legend");
 			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
-			intLegendButton->move(QPoint(0, 60));
+			intLegendButton->move(QPoint(0, 60 * mult));
 
 			QToolButton* axesButton = new QToolButton(this);
 			axesButton->setAttribute(Qt::WA_TranslucentBackground);
 			axesButton->setStyleSheet(style);
 			QIcon axesIcon;
-			axesIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
+			axesIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//axesIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			axesButton->setIcon(axesIcon);
+			axesButton->setIconSize(QSize(24 * mult, 24 * mult));
 			axesButton->setToolTip("Show/Hide Axes");
 			QObject::connect(axesButton, &QToolButton::pressed, this, [this]() { enableSceneAxes(!sceneAxesEnabled()); });
-			axesButton->move(QPoint(0, 100));
+			axesButton->move(QPoint(0, 100 * mult));
 
 			QToolButton* hudButton = new QToolButton(this);
 			hudButton->setAttribute(Qt::WA_TranslucentBackground);
 			hudButton->setStyleSheet(style);
 			QIcon hudIcon;
-			hudIcon.addFile(":SGXGUI/Resources/Icons/compass_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
+			hudIcon.addFile(":SGXGUI/Resources/Icons/compass_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			hudButton->setIcon(hudIcon);
+			hudButton->setIconSize(QSize(24 * mult, 24 * mult));
 			hudButton->setToolTip("Show/Hide Compass");
 			QObject::connect(hudButton, &QToolButton::pressed, this, [this]() { enableHUDAxes(!hudAxesEnabled()); });
-			hudButton->move(QPoint(0, 140));
+			hudButton->move(QPoint(0, 140 * mult));
 
 			QToolButton* camButton = new QToolButton(this);
 			camButton->setAttribute(Qt::WA_TranslucentBackground);
 			camButton->setStyleSheet(style_red);
 			QIcon camIcon;
-			camIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(60,60), QIcon::Normal, QIcon::Off);
+			camIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			camButton->setIcon(camIcon);
+			camButton->setIconSize(QSize(24 * mult, 24 * mult));
 			camButton->setToolTip("Reset Camera Position");
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
-			camButton->move(QPoint(0, 180));
+			camButton->move(QPoint(0, 180 * mult));
 
 		}
 		else
@@ -310,7 +323,7 @@ namespace SynGlyphX
 	QToolButton* SceneViewer::CreateNavigationButton(const QString& toolTip, bool autoRepeat) {
 
 		QToolButton* navButton = new QToolButton(this);
-		QSize icon_size(navigationButtonSize, navigationButtonSize);
+		QSize icon_size(navigationButtonSize*mult, navigationButtonSize*mult);
 		navButton->setFixedSize(icon_size.width(), icon_size.height());
 		navButton->setAutoRepeat(autoRepeat);
 		navButton->setToolTip(toolTip);
@@ -415,7 +428,7 @@ namespace SynGlyphX
 
 		initialized = true;
 
-		hud_font = hal::device::load_font("fonts/OpenSans-Regular.ttf", 16);
+		hud_font = hal::device::load_font("fonts/OpenSans-Regular.ttf", 16*mult);
 
 		group_manager = new SuperimposedGroupManager(*scene);
 
@@ -449,17 +462,17 @@ namespace SynGlyphX
 			auto logo_h = logo_size.height();//hal::device::get_texture_height( sgx_logo );
 
 			auto logo_rotate = glm::rotate(glm::mat4(), glm::half_pi<float>(), glm::vec3(1.f, 0.f, 0.f));
-			auto logo_translate = glm::translate(glm::mat4(), glm::vec3(float(w - logo_w), float(logo_h), 0.f));
-			auto logo_scale = glm::scale(glm::mat4(), glm::vec3(logo_w, logo_h, 1.f));
+			auto logo_translate = glm::translate(glm::mat4(), glm::vec3(float(w - logo_w*mult), float(logo_h*mult), 0.f));
+			auto logo_scale = glm::scale(glm::mat4(), glm::vec3(logo_w*mult, logo_h*mult, 1.f));
 			auto logo_transform = logo_translate * logo_scale * logo_rotate;
 			logo->set_transform(logo_transform);
 
 			checkErrors();
 
-			unsigned int nav_button_size = QSize(navigationButtonSize, navigationButtonSize).width();
+			unsigned int nav_button_size = QSize(navigationButtonSize*mult, navigationButtonSize*mult).width();
 
 			unsigned int leftPosOfButtonsInHCenter = w - 10 - (2 * nav_button_size);
-			unsigned int topPositionOfButton = logo_h + (2 * 10);
+			unsigned int topPositionOfButton = logo_h*mult + (2 * 10);
 
 			m_upRotateButton->move(QPoint(leftPosOfButtonsInHCenter, topPositionOfButton));
 
@@ -498,7 +511,7 @@ namespace SynGlyphX
 
 	glm::vec3 SceneViewer::compute_hud_axis_origin()
 	{
-		const glm::vec3 hud_axes_offset(100.f, 100.f, 0.f);
+		const glm::vec3 hud_axes_offset(100.f*mult, 100.f*mult, 0.f);
 		glm::vec3 pos = hud_axes_offset;
 		if (hud_axes_location == HUDAxesLocation::BottomLeft || hud_axes_location == HUDAxesLocation::BottomRight) pos.y = height() - hud_axes_offset.y;
 		if (hud_axes_location == HUDAxesLocation::BottomRight) pos.x = width() - hud_axes_offset.x;
@@ -567,9 +580,9 @@ namespace SynGlyphX
 			{
 				context->set_depth_state(hal::depth_state::read_write);
 				axis_renderer->set_scales(2.f, glm::vec3(8.f, 8.f, 12.f));
-				axis_renderer->draw_axis(context, ui_camera, render::color::red(), AxisDirection::X, hud_axes_origin, hud_axes_size, hud_axes_rotation, true);
-				axis_renderer->draw_axis(context, ui_camera, render::color::blue(), AxisDirection::Y, hud_axes_origin, hud_axes_size, hud_axes_rotation, true);
-				axis_renderer->draw_axis(context, ui_camera, render::color::green(), AxisDirection::Z, hud_axes_origin, hud_axes_size, hud_axes_rotation, true);
+				axis_renderer->draw_axis(context, ui_camera, render::color::red(), AxisDirection::X, hud_axes_origin, hud_axes_size*mult, hud_axes_rotation, true);
+				axis_renderer->draw_axis(context, ui_camera, render::color::blue(), AxisDirection::Y, hud_axes_origin, hud_axes_size*mult, hud_axes_rotation, true);
+				axis_renderer->draw_axis(context, ui_camera, render::color::green(), AxisDirection::Z, hud_axes_origin, hud_axes_size*mult, hud_axes_rotation, true);
 			}
 
 			glyph_renderer->render_blended(context, camera, float(elapsed_timer.elapsed()) / 1000.f);

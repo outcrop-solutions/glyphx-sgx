@@ -34,6 +34,7 @@
 #include <QtWidgets/QStackedWidget>
 #include <QtWebSockets/QWebSocket>
 #include <QtCore/QFile>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 class InteractiveLegendWindow;
 namespace SynGlyphX
@@ -158,6 +159,7 @@ private:
 	bool collapsed;
 	QString table_name;
 	QStringList filter_ids;
+	QWebEngineView* dlg;
 
 	LinkedWidgetsManager* m_linkedWidgetsManager;
 

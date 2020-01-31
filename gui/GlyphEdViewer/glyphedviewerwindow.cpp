@@ -28,7 +28,6 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "Profiler.h"
 #include <hal/hal.h>
-#include <QtWebEngineWidgets/QWebEngineView>
 #include <QtCore/QUuid>
 #include <QtGui/QScreen>
 //#include <QtNetwork>
@@ -64,7 +63,7 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	uid = QUuid::createUuid().toString();
 	uid.remove(QChar('{'));
 	uid.remove(QChar('}'));
-	QWebEngineView* dlg = new QWebEngineView(this);
+	dlg = new QWebEngineView(this);
 	//dlg->setMinimumSize(width, height);
 	//dlg->load(QUrl("https://viewer.glyphed.com"));
 	dlg->load(QUrl("http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5000?uid="+uid));
@@ -72,9 +71,11 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	QScreen *screen = QGuiApplication::primaryScreen();
 	QRect screenGeometry = screen->geometry();
+	if (screenGeometry.width() == 3840) {
+		dlg->setZoomFactor(2);
+	}
 	int width = screenGeometry.width() - (screenGeometry.width()*0.235);//450;
 	int height = screenGeometry.height() - 83;
-
 	m_viewer = new SynGlyphX::SceneViewer(this, SynGlyphX::ViewerMode::Full);
 	m_viewer->setFilteredResultsDisplayMode(SynGlyphX::FilteredResultsDisplayMode::HideUnfiltered);
 	m_viewer->setGeometry(0, 0, width, height);

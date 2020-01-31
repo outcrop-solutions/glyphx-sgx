@@ -163,6 +163,7 @@ namespace SynGlyphX
 		// Logo texture.
 		std::string logo_file;
 		hal::texture* sgx_logo;
+		int mult;
 
 		// Input handling.
 		static const unsigned int key_states_size = 256u;
