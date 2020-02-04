@@ -8,6 +8,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
+#include <QtGui/QDesktopServices>
 #include <QtWidgets/QDockWidget>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QFileDialog>
@@ -60,13 +61,28 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setCentralWidget(centerWidgetsContainer);
 
+	QString server_addr;
+	QFile serverFile("server.txt");
+	if (serverFile.open(QIODevice::ReadOnly))
+	{
+		QTextStream in(&serverFile);
+		while (!in.atEnd())
+		{
+			server_addr = in.readLine();
+			break;
+		}
+		serverFile.close();
+	}
+	if (!server_addr.startsWith('e') || !server_addr.endsWith('m')) {
+		server_addr = "ec2-52-41-239-60.us-west-2.compute.amazonaws.com";
+	}
+	//QMessageBox::information(this, tr("Server message"), server_addr);
+
 	uid = QUuid::createUuid().toString();
 	uid.remove(QChar('{'));
 	uid.remove(QChar('}'));
 	dlg = new QWebEngineView(this);
-	//dlg->setMinimumSize(width, height);
-	//dlg->load(QUrl("https://viewer.glyphed.com"));
-	dlg->load(QUrl("http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5000?uid="+uid));
+	dlg->load(QUrl("http://" + server_addr + ":5000?uid=" + uid));
 	centerWidgetsContainer->addWidget(dlg);
 
 	QScreen *screen = QGuiApplication::primaryScreen();
@@ -183,18 +199,19 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	std::vector<std::string> images;
 
-	file.setFileName("qLog.txt");
+	/*file.setFileName("qLog.txt");
 	file.open(QIODevice::WriteOnly);
 	QTextStream out(&file);
 	out << "Initiating Socket \n" << endl;
-	out << uid << endl;
+	out << uid << endl;*/
 
 	//EchoClient client(QUrl(QStringLiteral("ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001")), false);
 	//connect(&client, &EchoClient::setLaunch, this, &GlyphEdViewerWindow::OnLaunch);
 	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
 	QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &GlyphEdViewerWindow::OnSocketLaunch);
 	QObject::connect(&m_webSocket, &QWebSocket::close, this, &GlyphEdViewerWindow::OnSocketClosed);
-	m_webSocket.open(QUrl(QStringLiteral("ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001")));
+	QString ws_addr("ws://" + server_addr + ":5001");
+	m_webSocket.open(QUrl(ws_addr));
 
 }
 
@@ -376,20 +393,18 @@ m_webSocket.sendTextMessage(toSend);
 }
 
 void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
-	//qDebug() << "Message to launch received";
-	//centerWidgetsContainer->setCurrentIndex(1);
-	QTextStream out(&file);
-	out << "Message received: " << message << endl;
+	
+	//QTextStream out(&file);
+	//out << "Message received: " << message << endl;
 
 	QStringList qsl = message.split(QChar(','));
 	QString type = qsl.at(0).split(QChar(':')).at(1);
 	type.remove(QChar('"'));
 	type.remove(QChar('}'));
-	out << "{{" + type + "}}" << endl;
+	//out << "{{" + type + "}}" << endl;
 
 	QString text;
 	if (type == "LAUNCH"){
-		//QMessageBox::information(this, tr("Server message"), message);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 		zero_results = false;
 		QString sdt = "https" + message.split(QChar(':')).at(3).split(QChar('"')).at(0);
@@ -405,7 +420,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 			m_viewer->setAxisNames(compass.at(0).c_str(), compass.at(1).c_str(), compass.at(2).c_str());
 		}
 		SynGlyphX::Application::restoreOverrideCursor();
-		//QMessageBox::information(this, tr("Server message"), sdt);
+		//QMessageBox::information(this, tr("Server message"), message);
 	}
 	else if (type == "FILTER"){
 		QString ids = message.split(QChar('[')).at(1).split(QChar(']')).at(0);
@@ -422,6 +437,15 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		text = "Received launch response from server. \n Home " + uid;
 		m_viewer->hide();
 		m_interactiveLegend->reset();
+	}
+	else if (type == "OPEN_URL") {
+		try {
+			QString url = message.split("open_url\":")[1].split("\"")[1];
+			QDesktopServices::openUrl(QUrl(url));
+		}
+		catch (...) {
+			QMessageBox::information(this, tr("Server message"), "Failed to load the associated url.");
+		}
 	}
 	else if (type == "VFILTERS LOAD DONE"){
 		text = "Received launch response from server. \n Load Done " + uid;
@@ -577,13 +601,13 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 
 void GlyphEdViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 
-	QTextStream out(&file);
-	out << "{{DBI Start}}" << endl;
+	//QTextStream out(&file);
+	//out << "{{DBI Start}}" << endl;
 
 	try {
 
 		const std::vector<SynGlyphX::BaseImage>& bis = m_mappingModel->GetDataMapping().get()->GetBaseObjects();
-		out << "{{DBI BIS returned}}" << bis.size() << endl;
+		//out << "{{DBI BIS returned}}" << bis.size() << endl;
 		ge.getDownloadedBaseImage(bis);
 	}
 	catch (const DownloadException& e) {
