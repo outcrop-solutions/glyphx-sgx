@@ -2,7 +2,7 @@
   "name": "prototype",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001/",
+  "proxy": "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/",
   "dependencies": {
     "auth0-lock": "^11.20.3",
     "aws-sdk": "^2.441.0",

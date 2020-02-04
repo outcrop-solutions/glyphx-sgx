@@ -15,6 +15,7 @@ import OldSelect from 'react-select';
 import Select from 'react-select'
 import Snackbar from 'material-ui/Snackbar';
 import { makeServerCall } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
 import FilterSummaryView from './FilterSummaryView.js';
 import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
 import XYZRemapModal from './XYZRemapModal.js';
@@ -518,8 +519,8 @@ class FilterSideBarTopView extends React.Component {
                 var resultJson = JSON.parse(result);
                 // debugger;
                 console.log(resultJson, 'applyFilters');
-                var data = resultJson.data;
-                var tempRowIds = [];
+                // var data = resultJson.data;
+                // var tempRowIds = [];
                 
 				// if (data && Array.isArray(data)) {
 				// 	if (data.length > 0) {							
@@ -1125,39 +1126,6 @@ class FilterSideBarTopView extends React.Component {
         }
     }
 
-    webSocketSend(type){
-        if(type === "save-viz"){
-            this.props.webSocket.send(JSON.stringify({
-                url_uid: this.props.uid,
-                save_viz: true 
-            }));
-        }
-        else if(type === "save-as-viz"){
-            this.props.webSocket.send(JSON.stringify({
-                url_uid: this.props.uid,
-                save_as_viz: true 
-            }));
-        }
-        else if(type === "view-stats"){
-            this.props.webSocket.send(JSON.stringify({
-                url_uid: this.props.uid,
-                view_stats: true 
-            }));
-        }
-        else if(type === "view-selected"){
-            this.props.webSocket.send(JSON.stringify({
-                url_uid: this.props.uid,
-                view_selected: true 
-            }));
-        }
-        else if(type === "view-filtered"){
-            this.props.webSocket.send(JSON.stringify({
-                url_uid: this.props.uid,
-                view_filtered: true 
-            }));
-        }
-    }
-
 	render = () => {
         
         //var statisticStatSelectItems = ["Count", "Min", "Max", "Mean", "Median", "Mode", "Sum", "Range", "St. Dev.", "Variance", "Skewness", "Kurtosis"];
@@ -1377,12 +1345,12 @@ class FilterSideBarTopView extends React.Component {
                                         primaryText = "Save" 
                                         className = "menuItemStyling" 
                                         onClick = {() => (this.props.uid ? 
-                                                this.webSocketSend("save-viz") : this.onMenuSaveClick()) }/>
+                                                webSocketSend(this.props.webSocket, this.props.uid, "save-viz") : this.onMenuSaveClick()) }/>
                                     <MenuItem 
                                         primaryText = "Save As" 
                                         className = "menuItemStyling" 
                                         onClick = {() => (this.props.uid ? 
-                                                this.webSocketSend("save-as-viz") : this.onMenuSaveAsClick()) }/>
+                                                webSocketSend(this.props.webSocket, this.props.uid, "save-as-viz") : this.onMenuSaveAsClick()) }/>
                                     <MenuItem 
                                         primaryText = "Delete" 
                                         className = "menuItemStyling" 
@@ -1411,7 +1379,7 @@ class FilterSideBarTopView extends React.Component {
                                         }
                                     >
                                         <MenuItem primaryText = "Statistics" className = "menuItemStyling" 
-                                            onClick = { () => (this.props.uid ? this.webSocketSend("view-stats") : 
+                                            onClick = { () => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-stats") : 
                                                 this.handleOpenClose('statistics', true)) } />
                                     </Tooltip>
 
@@ -1428,7 +1396,7 @@ class FilterSideBarTopView extends React.Component {
                                         }
                                     >
                                         <MenuItem primaryText = "Selected Data" className = "menuItemStyling" 
-                                            onClick = {() => (this.props.uid ? this.webSocketSend("view-selected") : 
+                                            onClick = {() => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-selected") : 
                                                 this.onSelectedDataClick.bind(this) )} />
                                     </Tooltip>
                                     <Tooltip
@@ -1444,7 +1412,7 @@ class FilterSideBarTopView extends React.Component {
                                         }
                                     >
                                         <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" 
-                                        onClick = {() => (this.props.uid ? this.webSocketSend("view-filtered") : 
+                                        onClick = {() => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-filtered") : 
                                             this.onFilteredDataClick.bind(this)) } />
                                     </Tooltip>
                                 </Menu>
@@ -1573,7 +1541,7 @@ class FilterSideBarTopView extends React.Component {
                                     height: '2.607vh',
                                     lineHeight: '2.607vh'
                                 }}
-                                onClick = { () => {this.onClearAllFilters(), this.desktopClearFilters() }}
+                                onClick = { () => {this.onClearAllFilters(); this.desktopClearFilters() }}
                                 primary = { true } 
                             />
                         </Tooltip>

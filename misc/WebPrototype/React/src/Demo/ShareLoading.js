@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hideSplashScreen, showLoadMask, hideLoadMask } from '../LoadMaskHelper.js';
+import { hideSplashScreen, /* showLoadMask, */ hideLoadMask } from '../LoadMaskHelper.js';
 import { makeServerCall } from '../ServerCallHelper.js';
 import { withRouter } from 'react-router-dom';
 import 'rc-tooltip/assets/bootstrap.css';
@@ -48,7 +48,7 @@ class ShareLoading extends React.Component {
 
         window.setTimeout(() => {
             if(this.props.sharedLinkStatus && this.state.done === true && this.state.status === true){
-                let url = 'login?username=' + "Guest1" + "&password=" + "e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48";
+                let url = 'login?username=Guest1&password=e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48';
 
                 makeServerCall(url, (response) => {
         

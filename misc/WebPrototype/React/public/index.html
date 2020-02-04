@@ -171,55 +171,14 @@
               border-radius: 1.858vh !important;
           }
 
-          /* .win_close .sqico-larrow {
-              height: 4.954vh !important;
-              width: 2.5vw !important;
-              margin-bottom: 1.238vh !important;
-              border-radius: 5.160vh !important;
-              right: 0.5160vh !important;
-          } */
-
-          /* .siqembed header {
-              height: 11.352vh !important;
-          } */
-
-          /* header {
-              padding: 0 1.238vh !important;
-          } */
-
-          /* .content .chtanim .siq_content{
-              border-radius: 1.032vh 1.032vh 0 0 !important;
-              padding-top: 1.548vh !important;
-          } */
-
-          /* .bsnshrs a, .captcha, .cmtbx textarea, .content, .content .sqico-drpdwn a, .fileattch code, .infomsg.ackrate p, .mraction li:before, footer .floatrg {
-              font-size: 1.548vh !important;
-          } */
-
           .zls-prelative {
               height: 58.824vh !important;
               margin-top: 9.804vh !important;
           }
 
           #siqiframe {
-              /* height: 58.824vh !important; */
               width: 20.365vw !important;
           }
-
-          /* .zls-sptwndw .siqembed .siqtrans .zsiq-mobhgt .zsiq-newtheme .siq_rht .zsiq_size2 .siqanim{
-              height: 510px !important;
-          }
-
-          .siqembed.zsiq-newtheme {
-              width: 310px !important;
-          } */
-
-          /* @media only screen and (max-height: 5000px) and (min-height: 750px){
-            .zsiq_size2.zsiq-newtheme[embedtheme] {
-                height: 510px !important;
-            }
-          } */
-
 
           @keyframes App-logo-spin {
               from { transform: rotate(0deg); }
@@ -291,8 +250,11 @@
             if(window.location.hostname.includes('ec2-34-215-50-82')){
               window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/";
             }
+            else if(window.location.hostname.includes('ec2-52-41-239-60')){
+              window.SERVER_URL = "http://ec2-52-41-239-60.us-west-2.compute.amazonaws.com:5001/";
+            }
             else if(window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-221-39-241')){
-              window.SERVER_URL = "http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001/";
+              window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/";
             }
             else{
               window.SERVER_URL = "https://"+window.location.hostname + ":5001/";

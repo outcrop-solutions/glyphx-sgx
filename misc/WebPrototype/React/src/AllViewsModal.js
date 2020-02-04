@@ -8,6 +8,7 @@ import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
 // import Divider from 'material-ui/Divider';
 import { makeServerCall } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
 import './css/General.css';
@@ -66,7 +67,7 @@ class allViewsModal extends React.Component {
 					window.location.href.indexOf('#'))));
 		}
 
-		const socket = new WebSocket('ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001');
+		const socket = new WebSocket(`ws://${window.SERVER_URL.slice(7, window.SERVER_URL.length-1)}`);
 		console.log(socket)
 		this.props.dispatch(setSocket(socket));
 		// listening
@@ -1048,16 +1049,6 @@ class allViewsModal extends React.Component {
 		}
 	}
 
-	webSocketSend(type){
-        if(this.props.uid){
-            if(type === "tutorial"){
-                this.props.webSocket.send(JSON.stringify({
-                    url_uid: this.props.uid,
-                    open_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html"}));
-            }
-		}
-    }
-
 	render() {
 		var data = this.state.data;
 		var context = this;
@@ -1136,7 +1127,7 @@ class allViewsModal extends React.Component {
 								fontFamily: "ITCFranklinGothicStd-Demi"
 							}} 
 							onClick={() => /* window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank') */
-							this.props.uid ? this.webSocketSend('tutorial') : ""}
+							this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, 'tutorial') : ""}
 						>
 							See tutorials to learn more.
 						</span>

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
 import { deleteCookie, getLoginCookieName, makeServerCall, /* makeAWSCall, */ } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -71,7 +72,8 @@ class HomePage extends React.Component {
     componentDidMount() {
 
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
-        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
+        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1
+        && window.location.href.indexOf("ec2-52-41-239-60") === -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
 
@@ -405,18 +407,8 @@ class HomePage extends React.Component {
     //     }
     // }
 
-    webSocketSend(type){
-        if(this.props.uid){
-            if(type === "tutorial"){
-                this.props.webSocket.send(JSON.stringify({
-                    url_uid: this.props.uid,
-                    open_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html"}));
-            }
-		}
-    }
-
     render() {
-        var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
+        // var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
 		// var context = this;
         return (
@@ -646,7 +638,7 @@ class HomePage extends React.Component {
                                             outline: "none"
                                         }}
                                         onClick={() => /* window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank') */
-                                            this.props.uid ? this.webSocketSend("tutorial") : null}>
+                                            this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "tutorial") : null}>
                                             See Tutorials
                                         </button>
 

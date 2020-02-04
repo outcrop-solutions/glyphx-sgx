@@ -188,7 +188,7 @@ class FilterSideBar extends React.Component {
         }
 
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
-        let URL2 = "fetchSelectedRowDataEC2";
+        // let URL2 = "fetchSelectedRowDataEC2";
         // let originalQuery = context.props.VizParams.query;
         console.log(query, context.props.VizParams.query, "URL")
         

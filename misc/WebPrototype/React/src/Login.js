@@ -32,7 +32,8 @@ class Login extends React.Component {
         // console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
         
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
-        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1) {
+        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1
+         && window.location.href.indexOf("ec2-52-41-239-60") === -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
 

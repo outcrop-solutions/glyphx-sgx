@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
 import { withRouter } from 'react-router';
 import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -286,17 +287,6 @@ class VisualizationView extends React.Component {
         this.props.history.push('/home')
     }
 
-    webSocketSend(type){
-        if(this.props.uid){
-            if(type === "expand_sidenav"){
-                this.props.webSocket.send(JSON.stringify({
-                    url_uid: this.props.uid, 
-                    expand_sidenav: true}))
-            }
-		}
-    }
-
-
     render() {
         return (
             <MuiThemeProvider>
@@ -370,7 +360,7 @@ class VisualizationView extends React.Component {
                                 }}
                                 mini = { true }
                                 //iconStyle = {{ height: "36px", width: "36px" }}
-                                onClick = { () => {this.toggleNav(); this.webSocketSend("expand_sidenav"); } }
+                                onClick = { () => {this.toggleNav(); webSocketSend(this.props.webSocket, this.props.uid, "expand_sidenav"); } }
                             >
                                 <i 
                                     className = "fa fa-caret-down" 
