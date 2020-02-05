@@ -12,18 +12,18 @@ export function webSocketSend(webSocket, uid, type){
                 url_uid: uid,
                 open_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html"}));
         }
-        else if(type === "save-viz"){
-            webSocket.send(JSON.stringify({
-                url_uid: uid,
-                save_viz: true 
-            }));
-        }
-        else if(type === "save-as-viz"){
-            webSocket.send(JSON.stringify({
-                url_uid: uid,
-                save_as_viz: true 
-            }));
-        }
+        // else if(type === "save-viz"){
+        //     webSocket.send(JSON.stringify({
+        //         url_uid: uid,
+        //         save_viz: true 
+        //     }));
+        // }
+        // else if(type === "save-as-viz"){
+        //     webSocket.send(JSON.stringify({
+        //         url_uid: uid,
+        //         save_as_viz: true 
+        //     }));
+        // }
         else if(type === "view-stats"){
             webSocket.send(JSON.stringify({
                 url_uid: uid,

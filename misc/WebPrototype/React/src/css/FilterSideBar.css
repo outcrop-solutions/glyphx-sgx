@@ -80,25 +80,25 @@
 .Collapsible__contentInner p:last-child {
     margin-bottom: 0; 
 }
-
+/* 
 .Collapsible__trigger {
-    display: block;
-    text-decoration: none;
-    position: relative;
-    border: 1px solid white;
-    padding: 1.564vh;
-    color: white; 
-    font-size: 1.668vh;
-}
+    display: block !important;
+    text-decoration: none !important;
+    position: relative !important;
+    border: 1px solid white !important;
+    padding: 15px !important;
+    color: white !important; 
+    font-size: 1rem !important;
+} */
 
 .Collapsible__trigger:after {
     font-family: "FontAwesome";
     content: "\f107";
     position: absolute;
-    right: 1.564vh;
-    top: 1.460vh;
+    right: 15px;
+    top: 14px;
     display: block;
-    font-size: 1.668vh;
+    font-size: 1rem;
     transition: transform 300ms;
     color: var(--collapsible-text-color-main);
 }

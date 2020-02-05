@@ -119,6 +119,45 @@ class AnnouncementsDisplay extends React.Component {
                 context.annoucementUpdate();
               }
         });
+
+        $.ajax({
+            type: "GET",
+            url: "https://api.rss2json.com/v1/api.json?rss_url=" + "https://www.glyphed.com/blog?format=rss",
+            dataType: 'jsonp',
+            success: function(result) {
+                let blog_arr = result.items;
+                let arr = [];
+
+                for(let i = 0; i < blog_arr.length; i++){
+                    let publish_date = blog_arr[i].pubDate.slice(0, 10);
+                    publish_date = publish_date.slice(5) + "/" + publish_date.slice(0,4);
+                    let article_content = blog_arr[i].title + ' - ' + blog_arr[i].description;
+                    if(article_content.length > 150) article_content = article_content.substring(0, 147) + "...";
+
+                    let obj = {
+                        type: "Shout",
+                        id: guidGenerator(),
+                        content: {
+                            message: article_content,
+                            linkType: "link",
+                            link: blog_arr[i].link
+                        },
+                        postDate: publish_date.replace('-', '/')
+                    };
+                    arr.push(obj);
+                }
+                announcementList = arr.concat(announcementList);
+                announcementList.sort((a,b) => {
+                    return new Date(b.postDate.slice(b.postDate.lastIndexOf('/') + 1), 
+                        b.postDate.slice(0, b.postDate.indexOf('/')), 
+                        b.postDate.slice(b.postDate.indexOf('/') + 1, b.postDate.lastIndexOf('/'))) 
+                        - new Date(a.postDate.slice(a.postDate.lastIndexOf('/') + 1), 
+                        a.postDate.slice(0, a.postDate.indexOf('/')), 
+                        a.postDate.slice(a.postDate.indexOf('/') + 1, a.postDate.lastIndexOf('/')));
+                });
+                context.annoucementUpdate();
+              }
+        });
         //if (this.props.adminEdit) {
             //this.setState({ loadMask: false, announcements: this.props.announcementList });
         //}

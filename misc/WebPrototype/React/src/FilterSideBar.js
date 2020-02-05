@@ -163,6 +163,13 @@ class FilterSideBar extends React.Component {
    
    refreshTableDataOnRowSelection = (colName, selections) => {
         var fcolList = this.props.VizParams.filterAllowedColumnList.toString();
+        if(fcolList.length === 0) {
+            let allCols = [];
+            for(let col in this.props.stats){
+                allCols.push('`' + col + '`');
+            }
+            fcolList = allCols.toString();
+        }
         var query = "SELECT rowid," + fcolList + " from " + this.props.VizParams.tableName;
         
         var context = this;
@@ -171,7 +178,7 @@ class FilterSideBar extends React.Component {
 
         // Create the query to pass
         var filterObj = this.props.filterObj;
-        console.log(filterObj);
+
         for (var column in filterObj) {
             if (filterObj[column].selectedValues.length > 0) {
                 if (flag) {
@@ -182,7 +189,7 @@ class FilterSideBar extends React.Component {
                 }
                 temp = JSON.stringify(filterObj[column].selectedValues);
                 temp = temp.replace('[', '(').replace(/]$/, ")");
-                query += column + " IN " + temp;
+                query += '`' + column + '`' + " IN " + temp;
                 flag = true;
             }
         }
@@ -210,10 +217,23 @@ class FilterSideBar extends React.Component {
                     if (typeof responseText === 'string') {
                         response = JSON.parse(response);
                     }
+                    let ids = [];
+                    // console.log(response)
+
+                    for(let z = 0; z < response.data.length; z++){
+                        if(response.data[z].rowid) ids.push({rowid: response.data[z].rowid}) 
+                    }
+                    // console.log(ids)
+                    
+                    if(context.props.uid){
+                        context.props.webSocket.send(JSON.stringify({
+                            url_uid: context.props.uid,
+                            filters: ids
+                        }));
+                    }
                     // debugger;
                     if (response.data.length > 0) {
                         var result = context.convertToCompatibleDataObject(response.data);
-
                         for (var i = 0; i < context.props.ShowAllTables.length; i++) {
                             result[context.props.ShowAllTables[i]] = context.props.UndoRedoHistory.history[0].tableData[context.props.ShowAllTables[i]];
                         }
@@ -654,7 +674,8 @@ const mapStateToProps = function(state){
     initialY: state.filterState.initialVizY,
     initialZ: state.filterState.initialVizZ,
     uid: state.filterState.uid,
-    webSocket: state.filterState.webSocket
+    webSocket: state.filterState.webSocket,
+    stats: state.filterState.StatisticsData
   }
 };
 

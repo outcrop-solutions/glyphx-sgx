@@ -899,7 +899,7 @@ class allViewsModal extends React.Component {
 											fontSize: "3.754vh", 
 											margin: "-0.834vh 0px 0px 2.503vh",
 											cursor: "pointer"}} 
-										className="fa fa-caret-up"
+										className= { context.state.data[0][0] === col[0] ? "fa fa-caret-up" : "fa fa-caret-down"}
 									/>
 								</div>
 
@@ -911,6 +911,7 @@ class allViewsModal extends React.Component {
 								id = {'expand' + col[0]} 
 								className = "customScroll"
 								style={{
+									display: (context.state.data[0][0] === col[0] ? "" : "none"),
 									border: "1px solid",
 									borderLeft: "1px solid black",
 									borderBottom: "1px solid black",
@@ -1031,7 +1032,6 @@ class allViewsModal extends React.Component {
 	}
 
 	expandCollapseTable(target, name){
-		console.log(name)
 		let substring = target.slice(target.indexOf('collapse10481')+13);
 		let id = 'expand' + substring;
 

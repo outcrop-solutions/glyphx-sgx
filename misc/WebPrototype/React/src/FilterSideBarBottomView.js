@@ -172,7 +172,7 @@ class FilterSideBarBottomView extends React.Component {
                                 }}
                             >   
                                 {/* The name of the filter tab */}
-                                {config.displayName}
+                                {config.displayName.length > 33 ? config.displayName.substring(0, 30) + "..." : config.displayName}
                             </span>
                         </div>
                     } 

@@ -1344,13 +1344,11 @@ class FilterSideBarTopView extends React.Component {
                                     <MenuItem 
                                         primaryText = "Save" 
                                         className = "menuItemStyling" 
-                                        onClick = {() => (this.props.uid ? 
-                                                webSocketSend(this.props.webSocket, this.props.uid, "save-viz") : this.onMenuSaveClick()) }/>
+                                        onClick = {() => this.onMenuSaveClick() }/>
                                     <MenuItem 
                                         primaryText = "Save As" 
                                         className = "menuItemStyling" 
-                                        onClick = {() => (this.props.uid ? 
-                                                webSocketSend(this.props.webSocket, this.props.uid, "save-as-viz") : this.onMenuSaveAsClick()) }/>
+                                        onClick = {() => this.onMenuSaveAsClick() }/>
                                     <MenuItem 
                                         primaryText = "Delete" 
                                         className = "menuItemStyling" 
@@ -1366,7 +1364,7 @@ class FilterSideBarTopView extends React.Component {
                                 style = {{ fontSize: '1.360vh' }}
                             >
                                 <Menu>
-                                    <Tooltip
+                                    {/* <Tooltip
                                         placement = 'left'
                                         mouseEnterDelay = { 0.5 }
                                         mouseLeaveDelay = { 0.15 }
@@ -1381,7 +1379,7 @@ class FilterSideBarTopView extends React.Component {
                                         <MenuItem primaryText = "Statistics" className = "menuItemStyling" 
                                             onClick = { () => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-stats") : 
                                                 this.handleOpenClose('statistics', true)) } />
-                                    </Tooltip>
+                                    </Tooltip> */}
 
                                     <Tooltip
                                         placement = 'left'
@@ -1391,7 +1389,7 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                View Data of Selected Glyphs in Table Format
+                                                View Data of Selected Glyphs
                                             </div> 
                                         }
                                     >
@@ -1407,7 +1405,7 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                View Data of Currently Visible Glyphs in Table Format
+                                                View Data of Currently Visible Glyphs
                                             </div> 
                                         }
                                     >
@@ -1434,6 +1432,8 @@ class FilterSideBarTopView extends React.Component {
 
                             <Dialog
                                 title = "Save View"
+                                style = {{ marginTop: "-170px"}}
+                                contentStyle = {{ float: "right", maxWidth: "400px", margin: "0 31px 0 0"}}
                                 modal = { true }
                                 open = { this.state.saveDailogOpen }
                                 actions = {
@@ -1508,7 +1508,7 @@ class FilterSideBarTopView extends React.Component {
                     style = {{ margin: this.state.multiTable ? "0.521vh 0px" : "0.521vh 0px -0.417vh" }} >
                     <Flexbox style = {{ width: "30%" }} > 
                         <Tooltip
-                            placement = 'top'
+                            placement = 'bottom'
                             mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
@@ -1552,7 +1552,7 @@ class FilterSideBarTopView extends React.Component {
 
                     <Flexbox style = {{ width: "30%" }} >
                         <Tooltip
-                            placement = 'top'
+                            placement = 'bottom'
                             mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
@@ -1597,7 +1597,7 @@ class FilterSideBarTopView extends React.Component {
 
                     <Flexbox style = {{ width: "30%" }} >
                         <Tooltip
-                            placement = 'top'
+                            placement = 'bottom'
                             mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }

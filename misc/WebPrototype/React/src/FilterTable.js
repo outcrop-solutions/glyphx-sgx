@@ -224,12 +224,12 @@ class FilterTable extends React.Component {
                 var data = resultJson.data;
                 var tempRowIds = [];
 
-                if(context.props.uid){
-                    context.props.webSocket.send(JSON.stringify({
-                        url_uid: context.props.uid,
-                        filters: data
-                    }));
-                }
+                // if(context.props.uid){
+                //     context.props.webSocket.send(JSON.stringify({
+                //         url_uid: context.props.uid,
+                //         filters: data
+                //     }));
+                // }
                 if(!context.props.uid){
                     if (data && Array.isArray(data)) {
                         if (data.length > 0) {							
