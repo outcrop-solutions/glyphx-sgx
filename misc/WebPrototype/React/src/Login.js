@@ -70,6 +70,7 @@ class Login extends React.Component {
                 allowShowPassword: true,
                 closable: false,
                 auth: {redirect : false},
+                avatar: null,
                 theme: {
                     primaryColor: "#3A99D8",
                     logo: './Res/Img/sgx_inside.png',
@@ -89,12 +90,11 @@ class Login extends React.Component {
                 return;
               }
               else {
-                  console.log(user, user.email_verified);
-                  if(user.email_verified) console.log('yes')
+                  console.log(user);
                   window.setTimeout(() => {
                     let url = 'loginTwo?username=' + user.email;
                     makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
-                }, 2000);
+                }, 1800);
               }
             });
       
