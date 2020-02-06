@@ -410,8 +410,9 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		QString sdt = "https" + message.split(QChar(':')).at(3).split(QChar('"')).at(0);
 		QString query = message.split(QChar(':')).at(4).split(QChar(';')).at(0) + ";\"";
 		QStringList legends = message.split("\"legendURLArr\":[").at(1).split(QChar(']')).at(0).split(QChar(','));
+		QString inst = message.split("\"institution\":")[1].split(QChar('"')).at(1);
 		//text = "Received launch response from server. \n Launch " + query;
-		std::vector<std::string> bimgs = MakeDataRequest(query, sdt, legends);
+		std::vector<std::string> bimgs = MakeDataRequest(query, sdt, legends, inst);
 		if (!zero_results){
 			QSize size = this->size();
 			m_viewer->resize(size.width() - (size.width()*0.235), size.height() - 20);
@@ -423,6 +424,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		//QMessageBox::information(this, tr("Server message"), message);
 	}
 	else if (type == "FILTER"){
+		QMessageBox::information(this, tr("Server message"), message);
 		QString ids = message.split(QChar('[')).at(1).split(QChar(']')).at(0);
 		SynGlyphX::IndexSet myset = parseFilters(ids);
 		filter_ids.clear();
@@ -508,13 +510,14 @@ void GlyphEdViewerWindow::OnSocketClosed() {
 	QMessageBox::information(this, tr("Server message"), "Socket closed.");
 }
 
-std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QString sdt, QStringList legends) {
+std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QString sdt, QStringList legends, QString inst) {
 
 	QNetworkRequest request(QUrl("http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/fetchall"));
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
 	QJsonObject body;
 	body.insert("query", query.mid(1, query.length() - 3).replace("\\", ""));
+	body.insert("institution", inst);
 	//QMessageBox::information(this, tr("Server message"), query.mid(1, query.length() - 3).replace("\\", ""));
 
 	QNetworkAccessManager nam;
@@ -640,6 +643,7 @@ void GlyphEdViewerWindow::resizeEvent(QResizeEvent* event) {
 SynGlyphX::IndexSet GlyphEdViewerWindow::parseFilters(QString response) {
 	//typedef std::set<unsigned long> IndexSet;
 	QStringList rowids = response.split(QChar(','));
+	//QMessageBox::information(this, tr("Server message"), rowids.join(','));
 	SynGlyphX::IndexSet is;
 	for (QString row : rowids){
 		is.insert(row.split(QChar(':')).at(1).split(QChar('}')).at(0).toInt()-1);

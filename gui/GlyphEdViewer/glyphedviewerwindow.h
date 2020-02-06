@@ -109,7 +109,7 @@ private:
 	void CreateExportToPortableVisualizationSubmenu();
 	void CreateInteractionToolbar();
 	SynGlyphX::IndexSet parseFilters(QString response);
-	std::vector<std::string> MakeDataRequest(QString query, QString sdt, QStringList legends);
+	std::vector<std::string> MakeDataRequest(QString query, QString sdt, QStringList legends, QString inst);
 	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 
 	QMenu* m_fileMenu;
