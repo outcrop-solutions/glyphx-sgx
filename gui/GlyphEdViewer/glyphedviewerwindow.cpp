@@ -288,9 +288,9 @@ void GlyphEdViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
-	m_showAnimation->setCheckable(true);
-	m_showAnimation->setChecked(true);
+	//m_showAnimation = m_viewMenu->addAction(tr("Show Animation"));
+	//m_showAnimation->setCheckable(true);
+	//m_showAnimation->setChecked(true);
 
 	m_viewMenu->addSeparator();
 
@@ -371,7 +371,7 @@ void GlyphEdViewerWindow::CreateDockWidgets() {
 	filterIcon.addPixmap(filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
 	filterIcon.addPixmap(filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
 	act->setIcon(filterIcon);
-	m_viewMenu->addAction(act);
+	//m_viewMenu->addAction(act);
 	//m_showHideToolbar->addAction(act);
 	m_rightDockWidget->hide();
 
