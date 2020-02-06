@@ -189,7 +189,7 @@ class FilterSideBar extends React.Component {
                 }
                 temp = JSON.stringify(filterObj[column].selectedValues);
                 temp = temp.replace('[', '(').replace(/]$/, ")");
-                query += '`' + column + '`' + " IN " + temp;
+                query += '`' + column + "` IN " + temp;
                 flag = true;
             }
         }

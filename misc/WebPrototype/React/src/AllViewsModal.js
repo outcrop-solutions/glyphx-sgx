@@ -1018,14 +1018,16 @@ class allViewsModal extends React.Component {
 
 		if(query.indexOf(';') && this.props.legend_url_arr){
 			let instit = this.props.userInfo.institutionDir.slice(25, this.props.userInfo.institutionDir.length-1);
-			if(instit === 'glyphed_demo') instit = 'glyphed-demo-source';
-			if(instit === 'notredame') instit = 'notredame-source';
+			let instit_new;
+			if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
+			if(instit === 'notredame') instit_new = 'notredame-source';
 			this.props.webSocket.send(JSON.stringify({
 				url_uid: this.props.uid,
 				//CHANGING INSTITUTION
-				sdt: `https://viz-group-${instit}.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
+				sdt: `https://viz-group-${instit_new}.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
 				legendURLArr: this.props.legend_url_arr,
 				query,
+				institution: instit,
 				launch: true
 			}));
 		}

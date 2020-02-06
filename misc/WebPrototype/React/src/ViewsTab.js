@@ -334,7 +334,7 @@ class ViewsTab extends React.Component {
     }
 
     proceedToViz(query, sdt, context){
-        var index = sdt.replace(/\\/g, "/");;
+        var index = sdt.replace(/\\/g, "/");
         
         makeServerCall(window.encodeURI('getLegendURL/' + sdt),
             function (responseText) { 
@@ -342,18 +342,19 @@ class ViewsTab extends React.Component {
                 if(typeof responseText === 'string') response = JSON.parse(responseText);
                 if(response.body){
                     let instit = context.props.userInfo.institutionDir.slice(25, context.props.userInfo.institutionDir.length-1);
-                    if(instit === 'glyphed_demo') instit = 'glyphed-demo-source';
-                    if(instit === 'notredame') instit = 'notredame-source';
+                    let instit_new;
+                    if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
+                    if(instit === 'notredame') instit_new = 'notredame-source';
                     console.log(response.body.imgArr,'imgPath');
                     context.props.webSocket.send(JSON.stringify({
                         url_uid: context.props.uid,
                         //CHANGING INSTITUTION
-                        sdt: `https://viz-group-${instit}.s3.us-east-2.amazonaws.com/${index}`,
+                        sdt: `https://viz-group-${instit_new}.s3.us-east-2.amazonaws.com/${index}`,
                         legendURLArr: response.body.imgArr,
                         query,
+                        institution: instit,
                         launch: true
                     }));
-                
                 }
             }
         );

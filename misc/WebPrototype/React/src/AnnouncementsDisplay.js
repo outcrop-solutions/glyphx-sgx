@@ -17,60 +17,60 @@ import './css/General.css';
  */
 
 let announcementList = [
-    {
-        type: "Release",
-        id: "a1",
-        content: {
-            release: "1.0.0",
-            features: [
-                    "New 'Filter Overview' section located in the top of the filter side panel allows for easy monitoring and clearing of applied filters per column. You can also quickly navigate to an applied filter by clicking on the elastic or range icons.",
-                    "Small objects on glyphs are hidden depending on the zoom level, the distance can be adjusted from floating toolbar.",
-                    "Statistics can now be monitored per numeric column and will update each time a filter is applied.",
-                    "Undo and Redo filter functionality.",
-                    "Ranges can be disabled without being deleted allowing to toggle quickly between different ranges.",
-                    "More than one range per column can be applied.",
-                    "Text ranges have a variety of types to choose from.",
-                    "Ability to pin filter columns and view separately.",
-                    "Changes made to a visualization can be saved and loaded from the View Manager on the Home Page, or the view drop-down from within a visualization.",
-                    "Change axes has been remodeled and now takes about one second without having to reload the visualization.",
-                    "Userfeed section has been added to the Home Page allowing for communication within your institution.",
-                    "Announcements section added to Home Page to keep users up to date on our progress.",
-                    "More options available for front-end filters such as select all and deselect all."
-                    ],
-            bugfixes: []
-        },
-        postDate: "5/15/2018"
-    },
-    {
-        type: "Shout",
-        id: "a2",
-        content: {
-            message: "GlyphEd has been selected to speak with John Carroll University at Ruffalo Noel Levitz National Conference this summer.",
-            linkType: "text",
-            link: ""
-        },
-        postDate: "3/20/2018"
-    },
-    {
-        type: "Shout",
-        id: "a3",
-        content: {
-            message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd. Click to learn more.",
-            linkType: "link",
-            link: "https://s3.amazonaws.com/sgxshared/gannon-case-study.pdf"
-        },
-        postDate: "1/12/2018"
-    },
-    {
-        type: "Shout",
-        id: "a4",
-        content: {
-            message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept. Click to learn more.",
-            linkType: "link",
-            link: "http://www.globenewswire.com/news-release/2017/10/03/1140109/0/en/Kent-State-University-to-use-GlyphEd-to-Discover-Insights-in-Freshman-Student-Data.html"
-        },
-        postDate: "10/3/2017"
-    }
+    // {
+    //     type: "Release",
+    //     id: "a1",
+    //     content: {
+    //         release: "1.0.0",
+    //         features: [
+    //                 "New 'Filter Overview' section located in the top of the filter side panel allows for easy monitoring and clearing of applied filters per column. You can also quickly navigate to an applied filter by clicking on the elastic or range icons.",
+    //                 "Small objects on glyphs are hidden depending on the zoom level, the distance can be adjusted from floating toolbar.",
+    //                 "Statistics can now be monitored per numeric column and will update each time a filter is applied.",
+    //                 "Undo and Redo filter functionality.",
+    //                 "Ranges can be disabled without being deleted allowing to toggle quickly between different ranges.",
+    //                 "More than one range per column can be applied.",
+    //                 "Text ranges have a variety of types to choose from.",
+    //                 "Ability to pin filter columns and view separately.",
+    //                 "Changes made to a visualization can be saved and loaded from the View Manager on the Home Page, or the view drop-down from within a visualization.",
+    //                 "Change axes has been remodeled and now takes about one second without having to reload the visualization.",
+    //                 "Userfeed section has been added to the Home Page allowing for communication within your institution.",
+    //                 "Announcements section added to Home Page to keep users up to date on our progress.",
+    //                 "More options available for front-end filters such as select all and deselect all."
+    //                 ],
+    //         bugfixes: []
+    //     },
+    //     postDate: "5/15/2018"
+    // },
+    // {
+    //     type: "Shout",
+    //     id: "a2",
+    //     content: {
+    //         message: "GlyphEd has been selected to speak with John Carroll University at Ruffalo Noel Levitz National Conference this summer.",
+    //         linkType: "text",
+    //         link: ""
+    //     },
+    //     postDate: "3/20/2018"
+    // },
+    // {
+    //     type: "Shout",
+    //     id: "a3",
+    //     content: {
+    //         message: "Gannon University improves their retention rate by 5% in under a year using GlyphEd. Click to learn more.",
+    //         linkType: "link",
+    //         link: "https://s3.amazonaws.com/sgxshared/gannon-case-study.pdf"
+    //     },
+    //     postDate: "1/12/2018"
+    // },
+    // {
+    //     type: "Shout",
+    //     id: "a4",
+    //     content: {
+    //         message: "Kent state chooses GlyphEd to explore insights in it's freshman class data in an innovative new proof of concept. Click to learn more.",
+    //         linkType: "link",
+    //         link: "http://www.globenewswire.com/news-release/2017/10/03/1140109/0/en/Kent-State-University-to-use-GlyphEd-to-Discover-Insights-in-Freshman-Student-Data.html"
+    //     },
+    //     postDate: "10/3/2017"
+    // }
 ];
 
 class AnnouncementsDisplay extends React.Component {

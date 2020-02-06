@@ -58,8 +58,8 @@ class Login extends React.Component {
         // document.getElementById("PassText").addEventListener('mousedown', this.capsLockCheck);
         let global_state = this;
         this.lock = new Auth0Lock(
-            'cxwxfRdxL87RtbTOFmRq3BTnOxZyaiu4',
-            'dev-py87y21x.auth0.com',
+            'tEK0nmyA6Dj84oTEyYJw15FBl3X4BWd2',
+            'synglyphxinside.auth0.com',
             {
                 allowedConnections: ["Username-Password-Authentication"/* ,"google-oauth2" */],
                 autofocus: true,
@@ -82,16 +82,17 @@ class Login extends React.Component {
             // if(authResult.accessToken){
             // }
             // Use the token in authResult to getUserInfo() and save it if necessary
-            this.getUserInfo(authResult.accessToken, function(error, profile) {
+            this.getUserInfo(authResult.accessToken, function(error, user) {
               if (error) {
                 // Handle error
                 console.log('ERROR WITH GET USER INFO', error)
                 return;
               }
               else {
-                  console.log(profile.email);
+                  console.log(user, user.email_verified);
+                  if(user.email_verified) console.log('yes')
                   window.setTimeout(() => {
-                    let url = 'loginTwo?username=' + profile.email;
+                    let url = 'loginTwo?username=' + user.email;
                     makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
                 }, 2000);
               }
