@@ -41,7 +41,7 @@ class Login extends React.Component {
         hideSplashScreen();
         // this.calcLoginButtonPosition();
 
-        var context = this;
+        // var context = this;
 
         // Open the modal so it transitions up as soon as you land
         // setTimeout(function () {
@@ -208,7 +208,7 @@ class Login extends React.Component {
      * @param options: -ADCMT
      **/
     onServerResponse = (response, options) => {
-        console.log(JSON.parse(response), typeof response)
+        console.log(JSON.parse(response))
         var result; 
         
         try {

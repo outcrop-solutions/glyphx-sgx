@@ -9,9 +9,9 @@ export function hideSplashScreen() {
     
     if (lm) {
         setTimeout(() => {
-            (lm ? lm.classList.add('available') : null);
+            if(lm) lm.classList.add('available');
             setTimeout(() => {
-                (lm ? (lm.parentElement ? lm.outerHTML = '' : null) : null);
+                if(lm && lm.parentElement) lm.outerHTML = '';
             }, 2000)
         }, 1000)
     }

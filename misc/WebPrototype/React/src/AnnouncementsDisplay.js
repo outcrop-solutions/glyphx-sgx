@@ -116,7 +116,7 @@ class AnnouncementsDisplay extends React.Component {
                     arr.push(obj);
                 }
                 announcementList = arr.concat(announcementList);
-                context.annoucementUpdate();
+                // context.annoucementUpdate();
               }
         });
 
@@ -288,7 +288,7 @@ class AnnouncementsDisplay extends React.Component {
                             overflowY: "auto", 
                             fontSize: "1.682vh", 
                             maxHeight: "74.974vh", 
-                            padding: "0px 2.524vh 2.524vh"}}
+                            padding: "0px 1.824vh 1.524vh"}}
                         title = { <div style = {{ fontWeight: "bold" }} > All Announcements <Divider /></div> }
                         modal = { true }
                         open = { this.state.allAnnouncements }
