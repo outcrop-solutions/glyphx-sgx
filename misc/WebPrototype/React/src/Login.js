@@ -29,6 +29,15 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
+        function listCookies() {
+            var theCookies = document.cookie.split(';');
+            var aString = '';
+            for (var i = 1 ; i <= theCookies.length; i++) {
+                aString += i + ' ' + theCookies[i-1] + "\n";
+            }
+            return aString;
+        }
+        console.log('COOKIES: ',listCookies())
         // console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
         
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 

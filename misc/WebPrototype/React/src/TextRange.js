@@ -477,6 +477,7 @@ class TextRangeRow extends React.Component {
      **/
     onToggle(e) {
         var epoch = (new Date()).getTime();
+        let context = this;
         if (epoch > this.state.epoch + 300) {
             if (e.target.checked) {
                 var min = null;
@@ -494,7 +495,7 @@ class TextRangeRow extends React.Component {
 
                 this.props.setFilterBusy(true);
 
-                var context = this;
+                // var context = this;
                 let pom = new Promise(function (resolve, reject) {
                     // debugger;
                     context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
@@ -520,7 +521,7 @@ class TextRangeRow extends React.Component {
 
                 this.props.setFilterBusy(true);
 
-                var context = this;
+                // var context = this;
                 let pom = new Promise(function (resolve, reject) {
                     context.props.updateStore(null, null, context.props.range[2], false, null, null);
                     resolve('done');

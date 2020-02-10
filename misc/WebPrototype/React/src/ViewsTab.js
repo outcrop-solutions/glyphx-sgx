@@ -524,10 +524,8 @@ class ViewsTab extends React.Component {
                             fontFamily: "ITCFranklinGothicStd-Demi",
                             letterSpacing: "0.92px",
                             color: "white",
-                            margin: "0px",
                             fontSize: "2.294vh",
                             textTransform: "uppercase",
-                            // padding: "1.251vh 0px 1.043vh 1.877vh",
                             margin: "auto auto auto 1.877vh"
                         }}
                         >My Views
@@ -540,7 +538,6 @@ class ViewsTab extends React.Component {
                             float: "right", 
                             fontFamily: "ITCFranklinGothicStd-DmCd",
                             cursor: "pointer",
-                            // margin: "1.60vh 1.460vh 0px 0px",
                             margin: "auto 1.4vh auto auto"
                         }}
                     >

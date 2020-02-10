@@ -90,7 +90,7 @@ class AnnouncementsDisplay extends React.Component {
         let context = this;
         $.ajax({
             type: "GET",
-            url: "https://api.rss2json.com/v1/api.json?rss_url=" + "https://www.glyphed.com/news?format=rss",
+            url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.glyphed.com/news?format=rss",
             dataType: 'jsonp',
             success: function(result) {
                 let news_arr = result.items;
@@ -122,7 +122,7 @@ class AnnouncementsDisplay extends React.Component {
 
         $.ajax({
             type: "GET",
-            url: "https://api.rss2json.com/v1/api.json?rss_url=" + "https://www.glyphed.com/blog?format=rss",
+            url: "https://api.rss2json.com/v1/api.json?rss_url=https://www.glyphed.com/blog?format=rss",
             dataType: 'jsonp',
             success: function(result) {
                 let blog_arr = result.items;
@@ -259,7 +259,6 @@ class AnnouncementsDisplay extends React.Component {
                             fontFamily: "ITCFranklinGothicStd-Demi",
                             letterSpacing: "0.92px",
                             color: "white",
-                            margin: "0px",
                             fontSize: "2.294vh",
                             textTransform: "uppercase",
                             margin: "auto auto auto 1.877vh"
@@ -346,7 +345,7 @@ class AnnouncementsDisplay extends React.Component {
                 {/* body */}
                 <Flexbox flexGrow = {1} style = {{ height: "22.2vh", display: "block" }} >
                     
-                    <div style = {{ width: "100%", display: (this.state.loadMask ? "" : "none") }} >
+                    <div style = {{ width: "100%", marginTop: "60px", display: (this.state.loadMask ? "" : "none") }} >
                         <ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
                     </div>
 

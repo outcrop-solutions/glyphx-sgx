@@ -876,7 +876,7 @@ class allViewsModal extends React.Component {
 											color: (context.state.selectAll[col[0]] === 'true' ? "white" : "darkgrey") }}
 										// title= "Select All" 
 										onClick = { () => {
-											context.selectDeselectCol(col, "select"), 
+											context.selectDeselectCol(col, "select"); 
 											context.setState({selectAll500: true}) }} 
 									> 
 										Select All
@@ -885,7 +885,7 @@ class allViewsModal extends React.Component {
 										style = {{cursor: "pointer"}}
 										// className = "fa fa-times" 
 										onClick = { () => {
-											context.selectDeselectCol(col, "deselect"), 
+											context.selectDeselectCol(col, "deselect"); 
 											context.setState({selectAll500: false}) }} 
 									>
 										Clear
@@ -1006,7 +1006,8 @@ class allViewsModal extends React.Component {
 				var values = '("' + dataItem.toString() + '")';
 				query = query + columnName + " IN " + values.replace(/,/g , '","');
 				
-				if (outerIndex != data.length-1) {
+				//was !=
+				if (outerIndex !== data.length-1) {
 					query = query + " AND ";
 				}
 
@@ -1054,9 +1055,7 @@ class allViewsModal extends React.Component {
 	render() {
 		var data = this.state.data;
 		var context = this;
-		
-		let instit = this.props.userInfo.institutionDir.slice(25, this.props.userInfo.institutionDir.length-1);
-		// console.log(instit);
+	
 		return(
 			<div style={{height: "100%", minHeight: "102vh"}}
 				/*title = { this.props.type }
@@ -1090,7 +1089,9 @@ class allViewsModal extends React.Component {
 					letterSpacing: "1px",
 					color: ((this.state.loadMask === true || this.state.loadDone === true) ? "black" : "lightgrey")
 				}}>  
-					<img style={{verticalAlign: "middle", marginRight: "1.043vh", height: "3.024vh"}} src="./Res/Img/3@2x.png"/> 
+					<img style={{verticalAlign: "middle", marginRight: "1.043vh", height: "3.024vh"}} 
+						alt="Third Step"
+						src="./Res/Img/3@2x.png"/> 
 					Select Additional Filter(s)
 				</h3>
 
@@ -1194,7 +1195,7 @@ class allViewsModal extends React.Component {
 							fontFamily: "ITCFranklinGothicStd-Med", 
 							fontSize: "1.877vh", 
 							verticalAlign: "text-bottom",
-							/* margin: "0px 0.834vh 0px 0.834vh" */}}>|</span>
+							padding: "0 0.619vh"}}></span>
 
 						<RaisedButton
 							buttonStyle = {{
@@ -1415,8 +1416,6 @@ const mapStateToProps = function(state){
 	webSocket: state.filterState.webSocket,
 	legend_url_arr: state.filterState.legend_url_arr,
 	VizParams: state.filterState.VizParams,
-	webSocket: state.filterState.webSocket,
-	uid: state.filterState.uid,
 	userInfo: state.filterState.UserInfo
   }
 }

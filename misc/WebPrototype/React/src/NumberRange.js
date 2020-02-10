@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
-import { makeServerCall } from './ServerCallHelper.js';
+// import { makeServerCall } from './ServerCallHelper.js';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
 import FontIcon from 'material-ui/FontIcon';
@@ -472,7 +472,7 @@ class NumberRangeRow extends React.Component {
      **/
     onToggle(e) {
         var epoch = (new Date()).getTime();
-
+        let context = this;
         if (epoch > this.state.epoch + 300) {
             if (e.target.checked) {
                 var min = null;
@@ -490,7 +490,7 @@ class NumberRangeRow extends React.Component {
 
                 this.props.setFilterBusy(true);
 
-                var context = this;
+                // var context = this;
                 let pom = new Promise(function (resolve, reject) {
                     // debugger;
                     context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
@@ -516,7 +516,7 @@ class NumberRangeRow extends React.Component {
 
                 this.props.setFilterBusy(true);
 
-                var context = this;
+                // var context = this;
                 let pom = new Promise(function (resolve, reject) {
                     context.props.updateStore(context.props.range[2], null, null, false);
                     resolve('done');

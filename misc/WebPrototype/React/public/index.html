@@ -292,7 +292,17 @@
             t=d.getElementsByTagName("script")[0];
             t.parentNode.insertBefore(s,t);
             d.write("<div id='zsiqwidget'></div>");
-            $zoho.salesiq.ready=function(){$zoho.salesiq.floatbutton.position("bottomleft");}
+            $zoho.salesiq.ready=function(){$zoho.salesiq.floatbutton.position("bottomleft"); 
+                var S4 = function() {
+                    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+                };
+                $zoho.salesiq.tracking.on();
+                $zoho.salesiq.visitor.id(("_" + S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4()));
+                $zoho.salesiq.visitor.chat(function(visitid,data)
+                {
+                    console.log(data.name,data.email,data.question,data.visitid);
+                });            
+            }
         </script>
     </head>
   

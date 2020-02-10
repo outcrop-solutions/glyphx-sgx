@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { /* Router, */ Route, Switch, Redirect, HashRouter } from 'react-router-dom';
-import { checkUserLoggedIn, makeServerCall } from './ServerCallHelper.js';
+import { checkUserLoggedIn, /* makeServerCall */ } from './ServerCallHelper.js';
 /* import createHistory from 'history/createBrowserHistory'; */
 import Login from './Login.js';
 import HomePage from './HomePage.js';
@@ -10,7 +10,7 @@ import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
 import Maintenance from './Maintenance.js';
 import ShareLoading from './Demo/ShareLoading.js';
-import EmptyDiv from './Demo/EmptyDiv.js';
+// import EmptyDiv from './Demo/EmptyDiv.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 

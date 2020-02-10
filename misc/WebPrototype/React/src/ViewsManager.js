@@ -450,10 +450,9 @@ class ViewsManager extends React.Component {
     }
 
     render() {
-        let context = this;
+        // let context = this;
         var funnelData = this.props.funnelData;
         let new_funnel_data = {};
-        let wholeList = [];
         // console.log(funnelData);
 
         //splicing out things that aren't supposed to be in there. to double check
@@ -470,7 +469,7 @@ class ViewsManager extends React.Component {
 
         if(funnelData['Marketing and Recruiting']){
             for (let z = 0; z < funnelData['Marketing and Recruiting'].length; z++) {
-                if (funnelData['Marketing and Recruiting'][z][0] == "Prospects" || funnelData['Marketing and Recruiting'][z][0] == "High School Profiles") {
+                if (funnelData['Marketing and Recruiting'][z][0] === "Prospects" || funnelData['Marketing and Recruiting'][z][0] === "High School Profiles") {
                     new_funnel_data['Marketing and Recruiting'].push(funnelData['Marketing and Recruiting'][z]);
                 }
             }
@@ -479,9 +478,9 @@ class ViewsManager extends React.Component {
 
         if(funnelData['Admissions']){
             for (let x = 0; x < funnelData['Admissions'].length; x++) {
-                if (funnelData['Admissions'][x][0] == "Current Year RC with Prior Year Admits" ||
-                funnelData['Admissions'][x][0] == "Global Admissions" || funnelData['Admissions'][x][0] == "Applicants" 
-                || funnelData['Admissions'][x][0] == "Applicants by High School" || funnelData['Admissions'][x][0] == "Review Committee") {
+                if (funnelData['Admissions'][x][0] === "Current Year RC with Prior Year Admits" ||
+                funnelData['Admissions'][x][0] === "Global Admissions" || funnelData['Admissions'][x][0] === "Applicants" 
+                || funnelData['Admissions'][x][0] === "Applicants by High School" || funnelData['Admissions'][x][0] === "Review Committee") {
                     new_funnel_data['Admissions'].push(funnelData['Admissions'][x]);
                 }
             }
@@ -489,9 +488,9 @@ class ViewsManager extends React.Component {
 
         if(funnelData['Custom']){
             for (let j = 0; j < funnelData['Custom'].length; j++) {
-                if (funnelData['Custom'][j][0] == "Applicants" || funnelData['Custom'][j][0] == "Pre-College" ||
-                funnelData['Custom'][j][0] == "Adversity" || funnelData['Custom'][j][0] == "First Source" || 
-                funnelData['Custom'][j][0] == "Retention Geo" || funnelData['Custom'][j][0] == "Retention Non Geo") {
+                if (funnelData['Custom'][j][0] === "Applicants" || funnelData['Custom'][j][0] === "Pre-College" ||
+                funnelData['Custom'][j][0] === "Adversity" || funnelData['Custom'][j][0] === "First Source" || 
+                funnelData['Custom'][j][0] === "Retention Geo" || funnelData['Custom'][j][0] === "Retention Non Geo") {
                     new_funnel_data['Custom'].push(funnelData['Custom'][j]);
                 }
             }
@@ -606,6 +605,7 @@ class ViewsManager extends React.Component {
                                                 verticalAlign: "middle", 
                                                 marginRight: "1.043vh", 
                                                 height: "3.024vh"}} 
+                                            alt="First Step"
                                             src="./Res/Img/1@2x.png"/>
                                             Choose A Topic
                                         </h3>
@@ -620,9 +620,8 @@ class ViewsManager extends React.Component {
             
                                             {Object.keys(this.props.funnelData).map((t,i) => 
                                                 <option 
-                                                className = "main-category-select"
-                                                className = { `${(this.props.funnelData[t].length > 0 ? "noselect" : "cursorDefault noselect")} 
-                                                main-category-select light`}
+                                                className = {
+                                                    `${(this.props.funnelData[t].length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
                                                 style={styleForFirstViewSelect}
                                                 key={i} value={t}>{t}</option>)
                                             }
@@ -642,7 +641,8 @@ class ViewsManager extends React.Component {
                                             <img style={{
                                                 verticalAlign: "middle", 
                                                 marginRight: "1.043vh",
-                                                height: "3.024vh"}} 
+                                                height: "3.024vh"}}
+                                            alt="Second Step" 
                                             src="./Res/Img/2@2x.png"/> 
                                             Choose An Inquiry
                                         </h3>

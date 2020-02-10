@@ -496,7 +496,6 @@ class HomePage extends React.Component {
                                                         fontFamily: "ITCFranklinGothicStd-Demi",
                                                         letterSpacing: "0.92px",
                                                         color: "white",
-                                                        margin: "0px",
                                                         fontSize: "1.2vw",
                                                         textTransform: "uppercase",
                                                         margin: "auto auto auto 1.877vh"

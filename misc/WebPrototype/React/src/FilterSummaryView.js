@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
-import { makeServerCall } from './ServerCallHelper.js';
+// import { makeServerCall } from './ServerCallHelper.js';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Badge from 'material-ui/Badge';

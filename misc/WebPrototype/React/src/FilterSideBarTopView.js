@@ -1306,7 +1306,7 @@ class FilterSideBarTopView extends React.Component {
                                 }
                             >
                                 <RaisedButton
-                                    onClick = { (evt) => this.handleOpenClose('menu', true, evt) }
+                                    onClick = { (evt) => {this.handleOpenClose('menu', true, evt); window.setTimeout(() => this.handleOpenClose('menu', false, evt), 12000)} }
                                     label = "Menu"
                                     style = {{
                                         margin: "0.417vh 0px 1.147vh 0.417vh",
