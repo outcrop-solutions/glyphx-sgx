@@ -13,6 +13,7 @@
 #include <QtCore/QDateTime>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QColorDialog>
+#include <QtWebEngineWidgets/QWebEngineProfile>
 #include "glyphbuilderapplication.h"
 //#include "glyphviewerantztransformer.h"
 #include "changedatasourcefiledialog.h"
@@ -37,6 +38,8 @@
 #include "S3FileManager.h"
 #include "selecteddatawidget.h"
 #include "interactivelegendwindow.h"
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QGroupBox>
 
 GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
@@ -82,6 +85,8 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	uid.remove(QChar('{'));
 	uid.remove(QChar('}'));
 	dlg = new QWebEngineView(this);
+	auto wep = dlg->page()->profile();
+	wep->setHttpAcceptLanguage("en-US,en;q=0.9");
 	dlg->load(QUrl("http://" + server_addr + ":5000?uid=" + uid));
 	centerWidgetsContainer->addWidget(dlg);
 
@@ -424,7 +429,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		//QMessageBox::information(this, tr("Server message"), message);
 	}
 	else if (type == "FILTER"){
-		QMessageBox::information(this, tr("Server message"), message);
+		//QMessageBox::information(this, tr("Server message"), message);
 		QString ids = message.split(QChar('[')).at(1).split(QChar(']')).at(0);
 		SynGlyphX::IndexSet myset = parseFilters(ids);
 		filter_ids.clear();
@@ -494,7 +499,40 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		collapsed = false;
 	}
 	else if (type == "SETTINGS_MODAL"){
-		QMessageBox::information(this, tr("Server message"), "SETTINGS_MODAL");
+		//QMessageBox::information(this, tr("Server message"), "SETTINGS_MODAL");
+		QDialog* settings_modal = new QDialog(this);
+		settings_modal->setWindowTitle("Settings");
+
+		QVBoxLayout* settingsLayout = new QVBoxLayout(settings_modal);
+		QGroupBox* settingsGroupBox = new QGroupBox(tr("Settings"), settings_modal);
+
+		QVBoxLayout* settingsInnerLayout = new QVBoxLayout(settings_modal);
+
+		QCheckBox* m_enableFlyToCheckBox = new QCheckBox(tr("Enable/Disable Fly-to-Object"), settings_modal);
+		m_enableFlyToCheckBox->setCheckState(m_enableDisableFlyToObjectAction->isChecked() ? Qt::Checked : Qt::Unchecked);
+		settingsInnerLayout->addWidget(m_enableFlyToCheckBox);
+		QObject::connect(m_enableFlyToCheckBox, &QCheckBox::toggled, m_enableDisableFlyToObjectAction, &QAction::toggle);
+
+		QCheckBox* m_enableOrbitCheckBox = new QCheckBox(tr("Enable/Disable Orbit Selection"), settings_modal);
+		m_enableOrbitCheckBox->setCheckState(m_enableDisableFreeSelectionCameraAction->isChecked() ? Qt::Checked : Qt::Unchecked);
+		settingsInnerLayout->addWidget(m_enableOrbitCheckBox);
+		QObject::connect(m_enableOrbitCheckBox, &QCheckBox::toggled, m_enableDisableFreeSelectionCameraAction, &QAction::toggle);
+
+		QCheckBox* m_enableSelectionCheckBox = new QCheckBox(tr("Enable/Disable Selection Effect"), settings_modal);
+		m_enableSelectionCheckBox->setCheckState(m_enableDisableSelEffectActionMenu->isChecked() ? Qt::Checked : Qt::Unchecked);
+		settingsInnerLayout->addWidget(m_enableSelectionCheckBox);
+		QObject::connect(m_enableSelectionCheckBox, &QCheckBox::toggled, m_enableDisableSelEffectActionMenu, &QAction::toggle);
+
+		QCheckBox* m_enableGroupCheckBox = new QCheckBox(tr("Enable/Disable Overlapping Group Indicators"), settings_modal);
+		m_enableGroupCheckBox->setCheckState(m_enableDisableSuperimposedGlyphGadgets->isChecked() ? Qt::Checked : Qt::Unchecked);
+		settingsInnerLayout->addWidget(m_enableGroupCheckBox);
+		QObject::connect(m_enableGroupCheckBox, &QCheckBox::toggled, m_enableDisableSuperimposedGlyphGadgets, &QAction::toggle);
+
+		settingsGroupBox->setLayout(settingsInnerLayout);
+		settingsLayout->addWidget(settingsGroupBox);
+		settings_modal->setLayout(settingsLayout);
+	
+		settings_modal->exec();
 	}
 
 	//QMessageBox::information(this, tr("Server message"), text);
