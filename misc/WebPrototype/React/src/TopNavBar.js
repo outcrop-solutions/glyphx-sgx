@@ -169,9 +169,10 @@ class TopNavBar extends React.Component {
     }
 
     render() {
+
         let customer_icon;
         if(this.props.userInfo.institutionDir){
-            // customer_icon = 'data:image/png;base64,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'
+
             customer_icon =  window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         }
          else {
@@ -313,6 +314,39 @@ class TopNavBar extends React.Component {
                     <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
                         onClick = { () => /* window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') */
+                        document.getElementsByClassName('zsiq_flt_rel')[0] && document.getElementsByClassName('zsiq_flt_rel')[0].style.display === 'block' ? 
+                            $('.zsiq_flt_rel').css('display', 'none') : 
+                                $('.zsiq_flt_rel').css('display', 'block')}
+                        style = {{ 
+                            height: "5.005vh",
+                            width: "2.010vw", 
+                            marginRight: "1.25vh", 
+                            zIndex: (this.props.tutorialStage === 4 ? "300" : "5"), 
+                            padding: "1.251vh" }}
+                        className = { (this.props.tutorialStage === 4 ? "pulse" : "") }
+                    >
+                        <Tooltip
+                            placement = 'bottomRight'
+                            mouseEnterDelay = { 0.15 }
+                            mouseLeaveDelay = { 0.15 }
+                            destroyTooltipOnHide = { false }
+                            trigger = { Object.keys( {hover: 1} ) }
+                            overlay = { 
+                                <div style={{height: "6.477vh", width: "2.4vw", fontSize:"1.460vh"}}> 
+                                    Toggle Live Chat
+                                </div> 
+                            }
+                        >
+                            <FontIcon className = "fa fa-comment" color = 'white' 
+                                style={{
+                                    fontSize: (this.props.homePage ? "2.920vh" : "2.50vh")
+                            }} />
+                        </Tooltip>
+                    </IconButton>
+
+                    <IconButton 
+                        //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
+                        onClick = { () => /* window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') */
                             this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "help") : null}
                         style = {{ 
                             height: "5.005vh",
@@ -329,7 +363,7 @@ class TopNavBar extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div style={{height: "1.877vh", width: "1.35vw", fontSize:"1.460vh"}}> 
+                                <div style={{height: "1.877vh", width: "1.45vw", fontSize:"1.460vh"}}> 
                                     Help
                                 </div> 
                             }
@@ -389,7 +423,7 @@ class TopNavBar extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div style={{height: "1.877vh", width: "2.2vw", fontSize:"1.460vh"}}> 
+                                <div style={{height: "1.877vh", width: "2.4vw", fontSize:"1.460vh"}}> 
                                     Settings
                                 </div> 
                             }

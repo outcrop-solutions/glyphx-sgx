@@ -29,15 +29,15 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
-        function listCookies() {
-            var theCookies = document.cookie.split(';');
-            var aString = '';
-            for (var i = 1 ; i <= theCookies.length; i++) {
-                aString += i + ' ' + theCookies[i-1] + "\n";
-            }
-            return aString;
-        }
-        console.log('COOKIES: ',listCookies())
+        // function listCookies() {
+        //     var theCookies = document.cookie.split(';');
+        //     var aString = '';
+        //     for (var i = 1 ; i <= theCookies.length; i++) {
+        //         aString += i + ' ' + theCookies[i-1] + "\n";
+        //     }
+        //     return aString;
+        // }
+        // console.log('COOKIES: ',listCookies())
         // console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
         
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
@@ -101,8 +101,17 @@ class Login extends React.Component {
               else {
                   console.log(user);
                   window.setTimeout(() => {
-                    let url = 'loginTwo?username=' + user.email;
-                    makeServerCall(url, global_state.onServerResponse, {onServerCallError: global_state.showMaintanencePage});
+                    makeServerCall('loginThree', global_state.onServerResponse, 
+                        {
+                            post: true,
+                            onServerCallError: global_state.showMaintanencePage,
+                            data: {
+                                username: user.name,
+                                token: authResult.accessToken
+                            }
+                        }
+                    );
+
                 }, 1800);
               }
             });
@@ -206,9 +215,9 @@ class Login extends React.Component {
     // /**
     //  * Reroutes to maintanance page (not redundant, used for "makeServerCall" in authenticate)
     //  **/
-    // showMaintanencePage = () => {
-    //     this.navigate('/maintenance');
-    // };
+    showMaintanencePage = () => {
+        this.navigate('/maintenance');
+    };
 
 
     /**
