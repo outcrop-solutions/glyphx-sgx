@@ -106,7 +106,7 @@ class Login extends React.Component {
                             post: true,
                             onServerCallError: global_state.showMaintanencePage,
                             data: {
-                                username: user.name,
+                                user_email: user.email,
                                 token: authResult.accessToken
                             }
                         }
