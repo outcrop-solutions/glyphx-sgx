@@ -49,6 +49,7 @@ class Login extends React.Component {
         // Initial stuff for positioning the login button
         hideSplashScreen();
 
+        //makes sure to display zoho dialog bubble
         window.setTimeout(() => {if(document.getElementById('titlediv')){
             $('#titlediv').css('display', 'block');
         }}, 1000);

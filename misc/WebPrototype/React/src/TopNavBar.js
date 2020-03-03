@@ -42,11 +42,13 @@ class TopNavBar extends React.Component {
     };
 
     componentDidMount(){
+        //zoho chat dialog bubble
         window.setTimeout(() => {if(document.getElementById('titlediv')){
             $('#titlediv').css('display', 'block');
         }}, 1000);
 
         if(!this.props.homePage){
+            //turn off chat if in viz page
             this.toggleLiveChat();
         }
         else {
@@ -185,6 +187,9 @@ class TopNavBar extends React.Component {
         else return "Guest";
     }
 
+    /**
+     * Toggles Zoho Live Chat
+     */
     toggleLiveChat(){
         // console.log(document.getElementById('zsiq_float').style.display)
         if(document.getElementById('zsiq_float') && (document.getElementById('zsiq_float').style.display === 'inline-block' || 
