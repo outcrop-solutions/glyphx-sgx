@@ -10,7 +10,7 @@ export function webSocketSend(webSocket, uid, type){
         if(type === "tutorial"){
             webSocket.send(JSON.stringify({
                 url_uid: uid,
-                open_url: "https://s3.amazonaws.com/synglyphx/tutorials/home.html"}));
+                open_url: "https://glyphed.s3.amazonaws.com/tutorials/home.html"}));
         }
         // else if(type === "save-viz"){
         //     webSocket.send(JSON.stringify({
