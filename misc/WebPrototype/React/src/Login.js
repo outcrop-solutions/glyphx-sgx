@@ -48,6 +48,10 @@ class Login extends React.Component {
 
         // Initial stuff for positioning the login button
         hideSplashScreen();
+
+        window.setTimeout(() => {if(document.getElementById('titlediv')){
+            $('#titlediv').css('display', 'block');
+        }}, 1000);
         // this.calcLoginButtonPosition();
 
         // var context = this;

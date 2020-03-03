@@ -41,6 +41,23 @@ class TopNavBar extends React.Component {
         toggle_profile: false
     };
 
+    componentDidMount(){
+        window.setTimeout(() => {if(document.getElementById('titlediv')){
+            $('#titlediv').css('display', 'block');
+        }}, 1000);
+
+        if(!this.props.homePage){
+            this.toggleLiveChat();
+        }
+        else {
+            window.setTimeout(() => { 
+                if(document.getElementById('zsiq_float')){
+                    $('#zsiq_float').css('display', 'block');
+                }
+            }, 1000);
+        }
+    }
+
     /**
      * Performs a logout by redirecting the site to the loagout page
      **/
@@ -166,6 +183,18 @@ class TopNavBar extends React.Component {
             else return this.props.userInfo.Name;
         }
         else return "Guest";
+    }
+
+    toggleLiveChat(){
+        // console.log(document.getElementById('zsiq_float').style.display)
+        if(document.getElementById('zsiq_float') && (document.getElementById('zsiq_float').style.display === 'inline-block' || 
+            document.getElementById('zsiq_float').style.display === 'block')){
+            $('#zsiq_float').css('display', 'none');
+        
+        } else if(document.getElementById('zsiq_float') && document.getElementById('zsiq_float').style.display === 'none'){
+            $('#zsiq_float').css('display', 'block');
+            $('#titlediv').css('display', 'block');
+        }
     }
 
     render() {
@@ -313,10 +342,7 @@ class TopNavBar extends React.Component {
 
                     <IconButton 
                         //onClick = { () => this.props.dispatch(editModalDisplay(null, null, true, null)) } 
-                        onClick = { () => /* window.open("https://desk.zoho.com/portal/synglyphx/home", '_blank') */
-                        document.getElementsByClassName('zsiq_flt_rel')[0] && document.getElementsByClassName('zsiq_flt_rel')[0].style.display === 'block' ? 
-                            $('.zsiq_flt_rel').css('display', 'none') : 
-                                $('.zsiq_flt_rel').css('display', 'block')}
+                        onClick = { () => this.toggleLiveChat()}
                         style = {{ 
                             height: "5.005vh",
                             width: "2.010vw", 
