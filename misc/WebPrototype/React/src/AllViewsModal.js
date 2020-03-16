@@ -803,7 +803,6 @@ class allViewsModal extends React.Component {
 		if(data){
 			if(data.length && this.state.loadDone){
 				return this.state.data.map( function(col) {
-					console.log(document.getElementById('expand'+col[0]))
 					return (
 						<Flexbox 
 							flexDirection = "column" 
@@ -865,8 +864,17 @@ class allViewsModal extends React.Component {
 												tableSelectColor: context.props.settings.colors.tableSelectColor.background
 											}}
 											onTextFieldValueChange = { col.length > 500 ? 
-												(evt) => { context.onBlurMultiSearch(context, col[0]); document.getElementById('expand'+col[0]).style.display = ""; } : 
-													(evt) => { context.onKeyUpMultiSearch(context, col[0]); document.getElementById('expand'+col[0]).style.display = ""; } }
+												(evt) => { 
+													context.onBlurMultiSearch(context, col[0]); 
+													document.getElementById('expand'+col[0]).style.display = ""; 
+													document.getElementById('collapse10481'+ col[0]).className = "fa fa-caret-up";
+												} : 
+												(evt) => { 
+													context.onKeyUpMultiSearch(context, col[0]); 
+													document.getElementById('expand'+col[0]).style.display = ""; 
+													document.getElementById('collapse10481'+ col[0]).className = "fa fa-caret-up";
+												} 
+											}
 											id = { "tf-" + col[0] }
 											collapseButton = { false }
 											shouldOnBlur = { col.length > 500 ? true : false }
