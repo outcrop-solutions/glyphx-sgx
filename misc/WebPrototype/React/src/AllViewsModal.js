@@ -799,9 +799,11 @@ class allViewsModal extends React.Component {
 
 	dataFunc(data){
 		var context = this;
+		
 		if(data){
 			if(data.length && this.state.loadDone){
 				return this.state.data.map( function(col) {
+					console.log(document.getElementById('expand'+col[0]))
 					return (
 						<Flexbox 
 							flexDirection = "column" 
@@ -862,7 +864,9 @@ class allViewsModal extends React.Component {
 												overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
 												tableSelectColor: context.props.settings.colors.tableSelectColor.background
 											}}
-											onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
+											onTextFieldValueChange = { col.length > 500 ? 
+												(evt) => { context.onBlurMultiSearch(context, col[0]); document.getElementById('expand'+col[0]).style.display = ""; } : 
+													(evt) => { context.onKeyUpMultiSearch(context, col[0]); document.getElementById('expand'+col[0]).style.display = ""; } }
 											id = { "tf-" + col[0] }
 											collapseButton = { false }
 											shouldOnBlur = { col.length > 500 ? true : false }
