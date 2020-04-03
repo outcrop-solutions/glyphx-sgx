@@ -538,6 +538,10 @@ input.selectAllCheck{
   font-size: 1.238vh !important;
 }
 
+.auth0-lock .auth0-sso-notice-container .auth0-lock-icon {
+  margin-right: 15px;
+}
+
 @media only screen and (min-width: 481px){
   .auth0-lock.auth0-lock .auth0-lock-input-block {
     margin-bottom: 1.032vh !important;

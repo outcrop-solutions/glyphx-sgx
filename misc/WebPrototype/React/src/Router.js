@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { /* Router, */ Route, Switch, Redirect, HashRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect, /* HashRouter */} from 'react-router-dom';
 import { checkUserLoggedIn, /* makeServerCall */ } from './ServerCallHelper.js';
 /* import createHistory from 'history/createBrowserHistory'; */
 import Login from './Login.js';
@@ -81,7 +81,7 @@ class ApplicationRouter extends React.Component{
         // console.log(this.props.sharedLinkStatus);
         return (
             <MuiThemeProvider>
-                <HashRouter >
+                <BrowserRouter>
                     <Switch>
                         <Route exact path = "/login" component = { this.LoginForm } />
 
@@ -105,7 +105,7 @@ class ApplicationRouter extends React.Component{
 
                         <Route path = "*" component = { NotFoundPage } />
                   </Switch>
-              </HashRouter>
+              </BrowserRouter>
           </MuiThemeProvider>
       );
   };  

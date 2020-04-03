@@ -75,7 +75,7 @@ class Login extends React.Component {
             'tEK0nmyA6Dj84oTEyYJw15FBl3X4BWd2',
             'synglyphxinside.auth0.com',
             {
-                allowedConnections: ["Username-Password-Authentication"/* ,"google-oauth2" */],
+                // allowedConnections: ["Username-Password-Authentication"/* ,"google-oauth2" */],
                 autofocus: true,
                 allowSignUp: false,
                 rememberLastLogin: false,
@@ -132,6 +132,7 @@ class Login extends React.Component {
       
             // });
         });
+        
         this.lock.show();
 
         document.title = "GlyphEd - Login";

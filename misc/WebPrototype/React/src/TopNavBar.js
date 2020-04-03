@@ -73,7 +73,7 @@ class TopNavBar extends React.Component {
         );
         }).then(res =>{
             if(res === true){
-                window.location.reload();
+                // window.location.reload();
                 context.props.dispatch(logoutClear());
                 deleteCookie(getLoginCookieName());
                 hideSplashScreen();
