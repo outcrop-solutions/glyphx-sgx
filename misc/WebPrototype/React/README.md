@@ -1,18 +1,18 @@
 Table of Contents
 
 [File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
-[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-1-to-1-chat)<br>
-[How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-add-a-new-viz-to-the-allowed-list)<br>
-[How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-make-a-new-build-and-push-to-server)<br>
-[How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-hook-up-announcements-to-backend)<br>
-[Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-implementation-ideas-for-standalone-vizs)<br>
-[Process to change the views manager funnel for viewer.synglyphx.com](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-change-the-funnel-for-viewersynglyphxcom)<br>
-[Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-important-note)
+[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#1-to-1-chat)<br>
+[How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list)<br>
+[How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-make-a-new-build-and-push-to-server)<br>
+[How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-hook-up-announcements-to-backend)<br>
+[Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
+[Process to change the views manager funnel for viewer.synglyphx.com](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-change-the-funnel-for-viewersynglyphxcom)<br>
+[Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#important-note)
 
 
 ## FILE DICTIONARY (Each file will have more documentation in the form of comments)
-
-    ### AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
+``
+    AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
     - AdminWizardModal.js - Encapsulates the Editor and has multiple tabs to allow for easy addition of new features
     - AlertsModal.js - This is hidden and not shown because it was never finished. Would be opened from the alert bell in the topnavbar and would have information about the users chat and lisence experation date.
     - AllViewsModal.js - This is where the front-end filters are displayed.
@@ -61,7 +61,7 @@ Table of Contents
     - VisualizationView - Visualization Master Component.
     - VotingModal.js - Modal which opens when a poll announcement is clicked.
     - XYZRemapModal.js - Modal which allows for changing of xyz fields.
-
+``
 ## 1-TO-1 CHAT
 
     login for twilio.com: user: marwane@synglyphx.com pass: SynGlyphX2013SGX!
