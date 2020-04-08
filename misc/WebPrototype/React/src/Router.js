@@ -42,10 +42,6 @@ class ApplicationRouter extends React.Component{
     }
   }
 
-  componentDidMount(){
-    console.log('ROUTER MOUNT')
-  }
-
   onServerError() {
     maintenance = true;
   }
@@ -82,7 +78,6 @@ class ApplicationRouter extends React.Component{
   }
 
     render() {
-        console.log('ROUTER RENDER');
         return (
             <MuiThemeProvider>
                 <BrowserRouter>

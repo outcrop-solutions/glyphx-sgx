@@ -29,7 +29,6 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
-        console.log('TEST MOUNT')
         // function listCookies() {
         //     var theCookies = document.cookie.split(';');
         //     var aString = '';
@@ -391,7 +390,6 @@ class Login extends React.Component {
 
 
     render() {
-        console.log('TEST RENDER')
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
                 {/* <video playsInline autoPlay loop muted 

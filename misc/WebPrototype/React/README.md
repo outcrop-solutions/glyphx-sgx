@@ -109,11 +109,12 @@ INDEX:
                 } 
             }
         }
-    );```
+    );
+    ```
 
-
-    Poll Creation.
-    ```makeServerCall("manageAnnouncements",
+    Poll Creation
+    ```
+    makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -131,10 +132,12 @@ INDEX:
                 } 
             }
         }
-    );```
+    );
+    ```
 
-    delete
-    ```makeServerCall("manageAnnouncements",
+    Delete
+    ```
+    makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -150,10 +153,12 @@ INDEX:
                 } 
             }
         }
-    );```
+    );
+    ```
 
-    pollresult with save of user selection.
-    ```makeServerCall("manageAnnouncements",
+    Poll result with save of user selection
+    ```
+    makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -170,7 +175,8 @@ INDEX:
                 } 
             }
         }
-    );```
+    );
+    ```
 
 6. IMPLEMENTATION IDEAS FOR STANDALONE VIZS
     - This entirely depends if you want people to be able to select front end filters.
@@ -187,11 +193,12 @@ INDEX:
     - So to change the funnel these two aspects are all that need to remain constant and the rest wil continue to work.
 
 8. IMPORTANT NOTE
-    - When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA).
+    - When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.
 
     On lines 390 to 397 of the serve package in node_modules, uncomment the code inside the if-statement but not the statement itself:
 
-    ```if (args['--single']) {
+    ```
+    if (args['--single']) {
 		const {rewrites} = config;
 		const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
 
@@ -200,6 +207,7 @@ INDEX:
 			source: '**',
 			destination: '/index.html'
 		}, ...existingRewrites];
-	}```
+	}
+    ```
 
         
