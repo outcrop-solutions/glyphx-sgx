@@ -1,24 +1,18 @@
 Table of Contents
 
 [File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#1-file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
-
-[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-2-1-TO-1-CHAT)<br>
-
+[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#2-1-to-1-chat)<br>
 [How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#3-how-to-add-a-new-viz-to-the-allowed-list)<br>
-
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#4-how-to-make-a-new-build-and-push-to-server)<br>
-
 [How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#5-how-to-hook-up-announcements-to-backend)<br>
-
 [Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#6-implementation-ideas-for-standalone-vizs)<br>
-
 [Process to change the views manager funnel for viewer.synglyphx.com](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#7-how-to-change-the-funnel-for-viewersynglyphxcom)<br>
-
 [Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#8-important-note)
 
 
 
 ## 1. FILE DICTIONARY (Each file will have more documentation in the form of comments)
+
     ### AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
     - AdminWizardModal.js - Encapsulates the Editor and has multiple tabs to allow for easy addition of new features
     - AlertsModal.js - This is hidden and not shown because it was never finished. Would be opened from the alert bell in the topnavbar and would have information about the users chat and lisence experation date.
@@ -69,7 +63,8 @@ Table of Contents
     - VotingModal.js - Modal which opens when a poll announcement is clicked.
     - XYZRemapModal.js - Modal which allows for changing of xyz fields.
 
-### 2. 1-TO-1 CHAT
+## 2. 1-TO-1 CHAT
+
     login for twilio.com: user: marwane@synglyphx.com pass: SynGlyphX2013SGX!
     First the front-end will need to adapt keeping in mind that there might be more than 50 users. So group chats at the top and users below based on most recent contact.
     Refer to UserFeed.js to see how the twilio JS API is used.
@@ -78,11 +73,13 @@ Table of Contents
     open a new chat with the corresponding sid when their user name is clicked if one does not already exist from the front-end list
 
 ## 3. HOW TO ADD A NEW VIZ TO THE ALLOWED LIST
+
     * There is a better way to go about doing this than the way it is currently but but since it was temporary I chose a way that would edit the lists before they are sent to be mapped than add conditions while mapping.
     *Near the top of the render method of ViewsManager.js, I parse through each fo the four lists and splice out any values that dont get matched to approved values.
     * To add a new exception just add a check for it.
 
 ## 4. HOW TO MAKE A NEW BUILD AND PUSH TO SERVER
+
     - Using cmd navigate to the path of the package.json of the react project you wish to build and run "npm run build"
     - After the build is completed it will appear as a folder in the same location as package.json named "build", update the viz folder if necessary located build/Res/Viz
     - Rename build to WebViewerApp
@@ -94,6 +91,7 @@ Table of Contents
     - Run ./webViewerServer.sh -p to ensure that everything started properly
 
 ## 5. HOW TO HOOK UP ANNOUNCEMENTS TO BACKEND
+
     - Below are some sample server calls highlighting how this can be done
 
     Fetch Announcements.
@@ -187,12 +185,14 @@ Table of Contents
     ```
 
 ## 6. IMPLEMENTATION IDEAS FOR STANDALONE VIZS
+
     This entirely depends if you want people to be able to select front end filters.
     For both you would need to build a new backend to host it.
     If you want front-end filters/are allowing, then you need a landing page for that selection and you would need to use Aditya's multiple login for same user 'bucket' fix to store the subset databases in to prevent clashes.
     If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
 
 ## 7. HOW TO CHANGE THE FUNNEL FOR VIEWER.SYNGLYPHX.COM
+
     - In order for AllViewsModal.js (front-end filter selection Modal) to do its magic it requires two pieces of information for any given selection: Name + sdt Path
     - Sample: Global Admissions, C:\ProgramData\SynGlyphX\GlyphEd\Dev\Global Admissions\Global Admissions.sdt
     - The backend call made by AllViewsModal will take care of adjusting the desktop path to work for the ec2 server.
@@ -201,6 +201,7 @@ Table of Contents
     - So to change the funnel these two aspects are all that need to remain constant and the rest wil continue to work.
 
 ## 8. IMPORTANT NOTE
+
     - When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.
 
     On lines 390 to 397 of the serve package in node_modules, uncomment the code inside the if-statement but not the statement itself:
