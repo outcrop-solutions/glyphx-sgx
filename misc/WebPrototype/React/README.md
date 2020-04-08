@@ -6,6 +6,7 @@ INDEX:
 5) How to hook up announcements to backend
 6) Implementation ideas for creating standalone vizs without a login
 7) Process to change the views manager funnel for viewer.synglyphx.com
+8) Important Note
 
 
 
@@ -87,8 +88,8 @@ INDEX:
 5. HOW TO HOOK UP ANNOUNCEMENTS TO BACKEND
     - Below are some sample server calls highlighting how this can be done
 
-    //Fetch Announcements.
-    makeServerCall("manageAnnouncements",
+    Fetch Announcements.
+    ```makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -108,11 +109,11 @@ INDEX:
                 } 
             }
         }
-    );
+    );```
 
 
-    //Poll Creation.
-    makeServerCall("manageAnnouncements",
+    Poll Creation.
+    ```makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -130,10 +131,10 @@ INDEX:
                 } 
             }
         }
-    );
+    );```
 
-    //delete
-    makeServerCall("manageAnnouncements",
+    delete
+    ```makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -149,10 +150,10 @@ INDEX:
                 } 
             }
         }
-    );
+    );```
 
-    //pollresult with save of user selection.
-    makeServerCall("manageAnnouncements",
+    pollresult with save of user selection.
+    ```makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -169,7 +170,7 @@ INDEX:
                 } 
             }
         }
-    );
+    );```
 
 6. IMPLEMENTATION IDEAS FOR STANDALONE VIZS
     - This entirely depends if you want people to be able to select front end filters.
@@ -184,4 +185,21 @@ INDEX:
     - These two data elements are set as such within ViewsManager.js: this.setState({ selectionType: type[0], selectionTypeURL: type[1] })
     - Then to display the AllViewsModal all it takes is (the redux action for this is defined at the bottom of ViewsManager.js): this.props.dispatch(editModalDisplay(true))
     - So to change the funnel these two aspects are all that need to remain constant and the rest wil continue to work.
+
+8. IMPORTANT NOTE
+    - When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA).
+
+    On lines 390 to 397 of the serve package in node_modules, uncomment the code inside the if-statement but not the statement itself:
+
+    ```if (args['--single']) {
+		const {rewrites} = config;
+		const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
+
+		// As the first rewrite rule, make `--single` work
+		config.rewrites = [{
+			source: '**',
+			destination: '/index.html'
+		}, ...existingRewrites];
+	}```
+
         
