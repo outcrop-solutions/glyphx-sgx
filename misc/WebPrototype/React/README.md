@@ -1,12 +1,12 @@
 Table of Contents
 
-File Dictionary]
-1-to-1 chat
-How to add a new viz to allowed list
-How to make a new build and push to server
-How to hook up announcements to backend
-Implementation ideas for creating standalone vizs without a login
-Process to change the views manager funnel for viewer.synglyphx.com
+File Dictionary <br>
+1-to-1 chat<br>
+How to add a new viz to allowed list<br>
+How to make a new build and push to server<br>
+How to hook up announcements to backend<br>
+Implementation ideas for creating standalone vizs without a login<br>
+Process to change the views manager funnel for viewer.synglyphx.com<br>
 Important Note
 
 
