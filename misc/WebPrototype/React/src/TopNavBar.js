@@ -76,7 +76,7 @@ class TopNavBar extends React.Component {
                 // window.location.reload();
                 context.props.dispatch(logoutClear());
                 deleteCookie(getLoginCookieName());
-                hideSplashScreen();
+                // hideSplashScreen();
             }
         }).catch(err =>{
             // console.log(err);
@@ -178,7 +178,7 @@ class TopNavBar extends React.Component {
     }
 
     showName () {
-        if(this.props.userInfo.Name.length > 0){
+        if(!jQuery.isEmptyObject(this.props.userInfo) && this.props.userInfo.Name.length > 0){
             if(this.props.userInfo.Name.indexOf(' ') > 0) {
                 return this.props.userInfo.Name.slice(0, this.props.userInfo.Name.indexOf(' '));
             }
@@ -203,14 +203,16 @@ class TopNavBar extends React.Component {
     }
 
     render() {
-
+        
         let customer_icon;
         if(this.props.userInfo.institutionDir){
 
             customer_icon =  window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         }
-         else {
-            customer_icon = (this.props.userInfo.Name.includes(" ") ? this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : this.props.userInfo.Name.charAt(0));
+         else if(!jQuery.isEmptyObject(this.props.userInfo)){
+            customer_icon = (this.props.userInfo.Name.includes(" ") ? 
+                this.props.userInfo.Name.charAt(0) + this.props.userInfo.Name.charAt(this.props.userInfo.Name.indexOf(" ") + 1) : 
+                    this.props.userInfo.Name.charAt(0));
          }
         
         // console.log(this.props.vizParams);

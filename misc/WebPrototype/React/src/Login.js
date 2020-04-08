@@ -29,6 +29,7 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
+        console.log('TEST MOUNT')
         // function listCookies() {
         //     var theCookies = document.cookie.split(';');
         //     var aString = '';
@@ -83,7 +84,10 @@ class Login extends React.Component {
                 languageDictionary: { success: {logIn: 'Successful! Logging in to GlyphEd...'}, "title":""},
                 allowShowPassword: true,
                 closable: false,
-                auth: {redirect : false},
+                auth: {
+                    // redirect : false,
+                    // redirectUrl: "http://localhost:3000/home"
+                },
                 avatar: null,
                 theme: {
                     primaryColor: "#3A99D8",
@@ -104,7 +108,10 @@ class Login extends React.Component {
                 return;
               }
               else {
-                  console.log(user);
+
+                console.log(user, global_state.props);
+                // global_state.props.dispatch(logInGoAhead(user.email, authResult.accessToken));
+                // global_state.props.history.push('/home');
                   window.setTimeout(() => {
                     makeServerCall('loginThree', global_state.onServerResponse, 
                         {
@@ -118,7 +125,16 @@ class Login extends React.Component {
                     );
 
                 }, 1800);
-              }
+                // makeServerCall('loginThree', global_state.onServerResponse, 
+                //     {
+                //         post: true,
+                //         onServerCallError: global_state.showMaintanencePage,
+                //         data: {
+                //             user_email: user.email,
+                //             token: authResult.accessToken}
+                //     }
+                // );
+            }
             });
       
               //we recommend not storing Access Tokens unless absolutely necessary
@@ -375,6 +391,7 @@ class Login extends React.Component {
 
 
     render() {
+        console.log('TEST RENDER')
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
                 {/* <video playsInline autoPlay loop muted 
@@ -739,6 +756,12 @@ export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
     savedViews
 });
 
+export const logInGoAhead = (email,token) => ({
+    type: 'LOGGED_IN',
+    email,
+    token,
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -746,7 +769,8 @@ export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
  **/
 const mapStateToProps = function(state){
   return {
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    isUserLoggedIn: state.filterState.isUserLoggedIn
   }
 }
 

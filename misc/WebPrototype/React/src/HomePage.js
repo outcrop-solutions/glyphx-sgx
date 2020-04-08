@@ -1,6 +1,8 @@
+
+/*eslint-env jquery*/
 import React from 'react';
 import { connect } from 'react-redux';
-import { hideSplashScreen } from './LoadMaskHelper.js';
+import { hideSplashScreen, hideLoadMask } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
 import { deleteCookie, getLoginCookieName, makeServerCall, /* makeAWSCall, */ } from './ServerCallHelper.js';
 import { webSocketSend } from './GeneralFunctions.js';
@@ -81,6 +83,60 @@ class HomePage extends React.Component {
 
         // Removes the spinning load mask
         hideSplashScreen();
+        // console.log(this.props.isUserLoggedIn)
+        // if(jQuery.isEmptyObject(this.props.userInfo)){
+      
+        //     makeServerCall('loginThree', (response, options) => {
+        //     console.log(JSON.parse(response))
+        //     var result; 
+            
+        //     try {
+        //         result = JSON.parse(response);
+        //     }
+        //     catch(e) {
+        //         result = null;
+        //     }
+            
+        //     var lblErrPass = document.getElementById('errPass');
+    
+        //     if (result && result.status === 'success') { 
+        //         // Save the details to store
+        //         if (result.userInformation) {
+        //             result.userInformation.loggedInTime = new Date();
+        //             result.userInformation.idleTime = 0;
+        //         }
+    
+        //         console.log(result);
+        //         this.saveUserInfo(result.userInformation, result.funnelInfo, result.savedViews);
+        //     }
+    
+        //     else if (result && result.status === "failure") {
+        //         //console.log('Error');
+        //         lblErrPass.hidden = false;
+        //         lblErrPass.innerText = "Incorrect Username/Password";
+        //     }
+    
+        //     else if (result && result.status === "expired") {
+        //         //console.log('Error');
+        //         lblErrPass.hidden = false;
+        //         lblErrPass.innerText = "User License has expired";
+        //     }
+    
+        //     else {
+        //         this.props.history.push("/maintenance");
+        //     }
+    
+        //     hideLoadMask();
+        //     }, 
+        //     {
+        //         post: true,
+        //         onServerCallError: this.showMaintanencePage(),
+        //         data: {
+        //             user_email: this.props.temp.email,
+        //             token: this.props.temp.token}
+        //     }
+        // );
+        // }
 
         this.props.dispatch( setRecentVizDropdown( null ));
 
@@ -407,6 +463,27 @@ class HomePage extends React.Component {
     //     }
     // }
 
+    saveUserInfo = (userInfo, funnelInfo, savedViews) => {
+        //console.log('Success');
+        this.setState({ openPassword: false });
+        this.props.dispatch(saveUserInfo(userInfo, funnelInfo, savedViews));
+
+        // Call function post login if provided.
+        if (typeof this.props.doAfterLogin === 'function') {
+            this.props.doAfterLogin(userInfo);
+        }
+        
+        // Login cookie
+        //setCookie(getLoginCookieName(), 1,0.5);
+
+        // Redirect to home page.
+        this.props.history.push("/home");
+    }
+
+    showMaintanencePage(){
+        // this.props.history.push("/maintenance");
+    };
+
     render() {
         // var imgsrc = window.SERVER_URL + "customerImg/" + window.encodeURIComponent(this.props.userInfo.institutionDir);
         // console.log(this.props.settings.colors.homePageColors.headerBackground)
@@ -671,7 +748,9 @@ const mapStateToProps = function(state){
     timeoutTimer: state.filterState.TimeoutTimer,
     legend_url_arr: state.filterState.legend_url_arr,
     webSocket: state.filterState.webSocket,
-    uid: state.filterState.uid
+    uid: state.filterState.uid,
+    temp: state.filterState.temp,
+    isUserLoggedIn: state.filterState.isUserLoggedIn
   }
 }
 
@@ -697,6 +776,13 @@ export const editModalDisplay = (timeoutModal) => ({
 
 export const logoutClear = () => ({
     type: 'LOGOUT_CLEAR',
+});
+
+export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
+    type: 'SAVE_USER_INFO',
+    userInfo,
+    funnelInfo,
+    savedViews
 });
 
 

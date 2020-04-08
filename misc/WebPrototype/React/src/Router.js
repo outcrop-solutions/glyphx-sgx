@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { BrowserRouter, Route, Switch, Redirect, /* HashRouter */} from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect, HashRouter} from 'react-router-dom';
 import { checkUserLoggedIn, /* makeServerCall */ } from './ServerCallHelper.js';
 /* import createHistory from 'history/createBrowserHistory'; */
 import Login from './Login.js';
@@ -42,6 +42,10 @@ class ApplicationRouter extends React.Component{
     }
   }
 
+  componentDidMount(){
+    console.log('ROUTER MOUNT')
+  }
+
   onServerError() {
     maintenance = true;
   }
@@ -78,7 +82,7 @@ class ApplicationRouter extends React.Component{
   }
 
     render() {
-        // console.log(this.props.sharedLinkStatus);
+        console.log('ROUTER RENDER');
         return (
             <MuiThemeProvider>
                 <BrowserRouter>

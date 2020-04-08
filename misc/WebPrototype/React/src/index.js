@@ -56,7 +56,8 @@ const initialFilterState = {
     shareID: "",
     uid: "",
     webSocket: null,
-    legend_url_arr: []
+    legend_url_arr: [],
+    temp: {}
 };
 
 
@@ -701,7 +702,18 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 legend_url_arr: []
-            }   
+            }
+            
+        case 'LOGGED_IN':
+
+            return {
+                ...state,
+                isUserLoggedIn: true,
+                temp: {
+                    email: action.email,
+                    token: action.token
+                }
+            }
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/
