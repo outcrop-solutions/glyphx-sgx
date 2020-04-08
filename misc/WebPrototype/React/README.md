@@ -1,6 +1,6 @@
 Table of Contents
 
-[File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#1-file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
+[File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
 [1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#2-1-to-1-chat)<br>
 [How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#3-how-to-add-a-new-viz-to-the-allowed-list)<br>
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#4-how-to-make-a-new-build-and-push-to-server)<br>
@@ -11,7 +11,7 @@ Table of Contents
 
 
 
-## 1. FILE DICTIONARY (Each file will have more documentation in the form of comments)
+## FILE DICTIONARY (Each file will have more documentation in the form of comments)
 
     ### AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
     - AdminWizardModal.js - Encapsulates the Editor and has multiple tabs to allow for easy addition of new features
