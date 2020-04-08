@@ -1,18 +1,25 @@
 Table of Contents
 
-[File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#1-file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)
-[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-2-1-TO-1-CHAT)
-[How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#3-how-to-add-a-new-viz-to-the-allowed-list)
-[How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#4-how-to-make-a-new-build-and-push-to-server)
-[How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#5-how-to-hook-up-announcements-to-backend)
-[Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#6-implementation-ideas-for-standalone-vizs)
-[Process to change the views manager funnel for viewer.synglyphx.com](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#7-how-to-change-the-funnel-for-viewersynglyphxcom)
+[File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#1-file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
+
+[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-2-1-TO-1-CHAT)<br>
+
+[How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#3-how-to-add-a-new-viz-to-the-allowed-list)<br>
+
+[How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#4-how-to-make-a-new-build-and-push-to-server)<br>
+
+[How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#5-how-to-hook-up-announcements-to-backend)<br>
+
+[Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#6-implementation-ideas-for-standalone-vizs)<br>
+
+[Process to change the views manager funnel for viewer.synglyphx.com](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#7-how-to-change-the-funnel-for-viewersynglyphxcom)<br>
+
 [Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#8-important-note)
 
 
 
 ## 1. FILE DICTIONARY (Each file will have more documentation in the form of comments)
-    - AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
+    ### AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
     - AdminWizardModal.js - Encapsulates the Editor and has multiple tabs to allow for easy addition of new features
     - AlertsModal.js - This is hidden and not shown because it was never finished. Would be opened from the alert bell in the topnavbar and would have information about the users chat and lisence experation date.
     - AllViewsModal.js - This is where the front-end filters are displayed.
@@ -63,17 +70,17 @@ Table of Contents
     - XYZRemapModal.js - Modal which allows for changing of xyz fields.
 
 ### 2. 1-TO-1 CHAT
-    - login for twilio.com: user: marwane@synglyphx.com pass: SynGlyphX2013SGX!
-    - First the front-end will need to adapt keeping in mind that there might be more than 50 users. So group chats at the top and users below based on most recent contact.
-    - Refer to UserFeed.js to see how the twilio JS API is used.
-    - To get the data for this we first need to determine the user list for the given institution. Using the channel id of the channel which contains all the institution's users (channels('CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), or channels unique name (getChannelByUniqueName(name)), call the method which returns a user list, (.members.each(members => console.log(members.sid)) will log all the members's sids of that channel).
-    - Using this this populate the front-end with names and map their sids
-    - open a new chat with the corresponding sid when their user name is clicked if one does not already exist from the front-end list
+    login for twilio.com: user: marwane@synglyphx.com pass: SynGlyphX2013SGX!
+    First the front-end will need to adapt keeping in mind that there might be more than 50 users. So group chats at the top and users below based on most recent contact.
+    Refer to UserFeed.js to see how the twilio JS API is used.
+    To get the data for this we first need to determine the user list for the given institution. Using the channel id of the channel which contains all the institution's users (channels('CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), or channels unique name (getChannelByUniqueName(name)), call the method which returns a user list, (.members.each(members => console.log(members.sid)) will log all the members's sids of that channel).
+    Using this this populate the front-end with names and map their sids
+    open a new chat with the corresponding sid when their user name is clicked if one does not already exist from the front-end list
 
 ## 3. HOW TO ADD A NEW VIZ TO THE ALLOWED LIST
-    - There is a better way to go about doing this than the way it is currently but but since it was temporary I chose a way that would edit the lists before they are sent to be mapped than add conditions while mapping.
-    - Near the top of the render method of ViewsManager.js, I parse through each fo the four lists and splice out any values that dont get matched to approved values.
-    - To add a new exception just add a check for it.
+    * There is a better way to go about doing this than the way it is currently but but since it was temporary I chose a way that would edit the lists before they are sent to be mapped than add conditions while mapping.
+    *Near the top of the render method of ViewsManager.js, I parse through each fo the four lists and splice out any values that dont get matched to approved values.
+    * To add a new exception just add a check for it.
 
 ## 4. HOW TO MAKE A NEW BUILD AND PUSH TO SERVER
     - Using cmd navigate to the path of the package.json of the react project you wish to build and run "npm run build"
