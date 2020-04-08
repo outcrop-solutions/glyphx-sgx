@@ -11,8 +11,8 @@ Important Note
 
 
 
-1. FILE DICTIONARY (Each file will have more documentation in the form of comments)
-    - AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index).
+<h1> FILE DICTIONARY (Each file will have more documentation in the form of comments) </h1>
+    <li> AdminAnnouncementEditor.js - Renders the announcement list and allows for addition/deletion (not hooked up to backend, refer to 5 in index) </li>
     - AdminWizardModal.js - Encapsulates the Editor and has multiple tabs to allow for easy addition of new features
     - AlertsModal.js - This is hidden and not shown because it was never finished. Would be opened from the alert bell in the topnavbar and would have information about the users chat and lisence experation date.
     - AllViewsModal.js - This is where the front-end filters are displayed.
