@@ -83,60 +83,6 @@ class HomePage extends React.Component {
 
         // Removes the spinning load mask
         hideSplashScreen();
-        // console.log(this.props.isUserLoggedIn)
-        // if(jQuery.isEmptyObject(this.props.userInfo)){
-      
-        //     makeServerCall('loginThree', (response, options) => {
-        //     console.log(JSON.parse(response))
-        //     var result; 
-            
-        //     try {
-        //         result = JSON.parse(response);
-        //     }
-        //     catch(e) {
-        //         result = null;
-        //     }
-            
-        //     var lblErrPass = document.getElementById('errPass');
-    
-        //     if (result && result.status === 'success') { 
-        //         // Save the details to store
-        //         if (result.userInformation) {
-        //             result.userInformation.loggedInTime = new Date();
-        //             result.userInformation.idleTime = 0;
-        //         }
-    
-        //         console.log(result);
-        //         this.saveUserInfo(result.userInformation, result.funnelInfo, result.savedViews);
-        //     }
-    
-        //     else if (result && result.status === "failure") {
-        //         //console.log('Error');
-        //         lblErrPass.hidden = false;
-        //         lblErrPass.innerText = "Incorrect Username/Password";
-        //     }
-    
-        //     else if (result && result.status === "expired") {
-        //         //console.log('Error');
-        //         lblErrPass.hidden = false;
-        //         lblErrPass.innerText = "User License has expired";
-        //     }
-    
-        //     else {
-        //         this.props.history.push("/maintenance");
-        //     }
-    
-        //     hideLoadMask();
-        //     }, 
-        //     {
-        //         post: true,
-        //         onServerCallError: this.showMaintanencePage(),
-        //         data: {
-        //             user_email: this.props.temp.email,
-        //             token: this.props.temp.token}
-        //     }
-        // );
-        // }
 
         this.props.dispatch( setRecentVizDropdown( null ));
 
@@ -749,8 +695,6 @@ const mapStateToProps = function(state){
     legend_url_arr: state.filterState.legend_url_arr,
     webSocket: state.filterState.webSocket,
     uid: state.filterState.uid,
-    temp: state.filterState.temp,
-    isUserLoggedIn: state.filterState.isUserLoggedIn
   }
 }
 

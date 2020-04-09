@@ -1,12 +1,10 @@
 Table of Contents
 
 [File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
-[1-to-1 chat](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#1-to-1-chat)<br>
 [How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list)<br>
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-make-a-new-build-and-push-to-server)<br>
 [How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-hook-up-announcements-to-backend)<br>
 [Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
-[Process to change the views manager funnel for viewer.synglyphx.com](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-change-the-funnel-for-viewersynglyphxcom)<br>
 [Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#important-note)
 
 
@@ -61,14 +59,6 @@ Table of Contents
     <li>VotingModal.js - Modal which opens when a poll announcement is clicked.</li>
     <li>XYZRemapModal.js - Modal which allows for changing of xyz fields.</li>
 
-<h2> 1-TO-1 CHAT </h2>
-    <li>login for twilio.com: user: marwane@synglyphx.com pass: SynGlyphX2013SGX!</li>
-    <li>First the front-end will need to adapt keeping in mind that there might be more than 50 users. So group chats at the top and users below based on most recent contact.</li>
-    <li>Refer to UserFeed.js to see how the twilio JS API is used.</li>
-    <li>To get the data for this we first need to determine the user list for the given institution. Using the channel id of the channel which contains all the institution's users (channels('CHXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')), or channels unique name (getChannelByUniqueName(name)), call the method which returns a user list, (.members.each(members => console.log(members.sid)) will log all the members's sids of that channel).</li>
-    <li>Using this this populate the front-end with names and map their sids</li>
-    <li>open a new chat with the corresponding sid when their user name is clicked if one does not already exist from the front-end list</li>
-
 <h2>HOW TO ADD A NEW VIZ TO THE ALLOWED LIST</h2>
     <li>There is a better way to go about doing this than the way it is currently but but since it was temporary I chose a way that would edit the lists before they are sent to be mapped than add conditions while mapping.</li>
     <li>Near the top of the render method of ViewsManager.js, I parse through each fo the four lists and splice out any values that dont get matched to approved values.</li>
@@ -89,7 +79,7 @@ Table of Contents
     Below are some sample server calls highlighting how this can be done
 
     Fetch Announcements.
-    ```makeServerCall("manageAnnouncements",
+    makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
             debugger;
@@ -110,10 +100,8 @@ Table of Contents
             }
         }
     );
-    ```
 
     Poll Creation
-    ```
     makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
@@ -133,10 +121,8 @@ Table of Contents
             }
         }
     );
-    ```
 
     Delete
-    ```
     makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
@@ -154,10 +140,8 @@ Table of Contents
             }
         }
     );
-    ```
 
     Poll result with save of user selection
-    ```
     makeServerCall("manageAnnouncements",
         function (responseText) {
             var response = JSON.parse(responseText);
@@ -176,21 +160,12 @@ Table of Contents
             }
         }
     );
-    ```
 
 <h2>IMPLEMENTATION IDEAS FOR STANDALONE VIZS</h2>
     This entirely depends if you want people to be able to select front end filters.
     For both you would need to build a new backend to host it.
     If you want front-end filters/are allowing, then you need a landing page for that selection and you would need to use Aditya's multiple login for same user 'bucket' fix to store the subset databases in to prevent clashes.
     If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
-
-<h2>HOW TO CHANGE THE FUNNEL FOR VIEWER.SYNGLYPHX.COM</h2>
-    <li>In order for AllViewsModal.js (front-end filter selection Modal) to do its magic it requires two pieces of information for any given selection: Name + sdt Path</li>
-    <li>Sample: Global Admissions, C:\ProgramData\SynGlyphX\GlyphEd\Dev\Global Admissions\Global Admissions.sdt</li>
-    <li>The backend call made by AllViewsModal will take care of adjusting the desktop path to work for the ec2 server.</li>
-    <li>These two data elements are set as such within ViewsManager.js: this.setState({ selectionType: type[0], selectionTypeURL: type[1] })</li>
-    <li>Then to display the AllViewsModal all it takes is (the redux action for this is defined at the bottom of ViewsManager.js): this.props.dispatch(editModalDisplay(true))</li>
-    <li>So to change the funnel these two aspects are all that need to remain constant and the rest wil continue to work.</li>
 
 <h2>IMPORTANT NOTE</h2>
     <li>When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.</li>

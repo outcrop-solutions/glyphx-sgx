@@ -108,31 +108,31 @@ class Login extends React.Component {
               }
               else {
 
-                console.log(user, global_state.props);
+                console.log(user);
                 // global_state.props.dispatch(logInGoAhead(user.email, authResult.accessToken));
                 // global_state.props.history.push('/home');
-                  window.setTimeout(() => {
-                    makeServerCall('loginThree', global_state.onServerResponse, 
-                        {
-                            post: true,
-                            onServerCallError: global_state.showMaintanencePage,
-                            data: {
-                                user_email: user.email,
-                                token: authResult.accessToken
-                            }
-                        }
-                    );
+                //   window.setTimeout(() => {
+                //     makeServerCall('loginThree', global_state.onServerResponse, 
+                //         {
+                //             post: true,
+                //             onServerCallError: global_state.showMaintanencePage,
+                //             data: {
+                //                 user_email: user.email,
+                //                 token: authResult.accessToken
+                //             }
+                //         }
+                //     );
 
-                }, 1800);
-                // makeServerCall('loginThree', global_state.onServerResponse, 
-                //     {
-                //         post: true,
-                //         onServerCallError: global_state.showMaintanencePage,
-                //         data: {
-                //             user_email: user.email,
-                //             token: authResult.accessToken}
-                //     }
-                // );
+                // }, 1800);
+                makeServerCall('loginThree', global_state.onServerResponse, 
+                    {
+                        post: true,
+                        onServerCallError: global_state.showMaintanencePage,
+                        data: {
+                            user_email: user.email,
+                            token: authResult.accessToken}
+                    }
+                );
             }
             });
       
@@ -754,21 +754,13 @@ export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
     savedViews
 });
 
-export const logInGoAhead = (email,token) => ({
-    type: 'LOGGED_IN',
-    email,
-    token,
-});
-
-
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state){
   return {
-    settings: state.filterState.Settings,
-    isUserLoggedIn: state.filterState.isUserLoggedIn
+    settings: state.filterState.Settings
   }
 }
 
