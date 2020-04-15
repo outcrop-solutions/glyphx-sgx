@@ -31,7 +31,6 @@ class AlertsModal extends React.Component {
 	 * This function checks to see if there is any notification and hides/shows the icon.
 	 */
 	componentDidMount() {
-		console.log('asfdsdf')
 		var notificationBadge = document.getElementById('notificationBadge');
 		if (!this.state.shouldBeDisplayed && notificationBadge) {
 			notificationBadge.style.display = 'none';
