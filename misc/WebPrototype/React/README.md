@@ -170,7 +170,7 @@ Table of Contents
 <h2>IMPORTANT NOTE</h2>
     <li>When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.</li>
 
-    On lines 390 to 397 of the serve package in node_modules, uncomment the code inside the if-statement but not the statement itself:
+    On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
 
     ```
     if (args['--single']) {

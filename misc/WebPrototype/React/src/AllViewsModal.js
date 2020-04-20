@@ -59,17 +59,10 @@ class allViewsModal extends React.Component {
 		window.onmouseup = this.handleMouseUp.bind(this);
 		var context = this;
 
-		//for desktop side
-		if(window.location.href.indexOf('uid') > -1){
-			context.props.dispatch(
-				setUid(window.location.href.slice(
-					window.location.href.indexOf('uid')+4, 
-					window.location.href.indexOf('#'))));
-		}
-
 		const socket = new WebSocket(`ws://${window.SERVER_URL.slice(7, window.SERVER_URL.length-1)}`);
 		console.log(socket)
 		this.props.dispatch(setSocket(socket));
+
 		// listening
 		socket.addEventListener('message', function (event) {
 			let data;
@@ -1404,11 +1397,6 @@ export const setInitialXYZ = (X, Y, Z) => ({
 	X,
 	Y,
 	Z
-});
-
-export const setUid = (uid) => ({
-    type: 'SET_UID',
-    uid,
 });
 
 export const setSocket = (socket) => ({

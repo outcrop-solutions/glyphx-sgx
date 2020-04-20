@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { hideSplashScreen, hideLoadMask } from './LoadMaskHelper.js';
 import { withRouter } from 'react-router-dom';
 import { deleteCookie, getLoginCookieName, makeServerCall, /* makeAWSCall, */ } from './ServerCallHelper.js';
-import { webSocketSend } from './GeneralFunctions.js';
+import { webSocketSend, listCookies } from './GeneralFunctions.js';
 import Flexbox from 'flexbox-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TopNavBar from './TopNavBar.js';
@@ -198,6 +198,23 @@ class HomePage extends React.Component {
             else {
             this.setState({colMax: document.getElementById("left_col").clientHeight});
         }
+
+        makeServerCall('enableConnection', (responseText) => {
+                console.log(responseText);
+                let res = JSON.parse(responseText);
+                console.log(res);
+                if(res.uid && res.uid.length > 0){
+                        this.props.dispatch(setUid(res.uid));
+                }
+            }, 
+            {
+                post: true,
+                data: {
+                    reestablish: true,
+                    cookie: listCookies(getLoginCookieName())
+                }
+            }
+        );
            
     }
 
@@ -727,6 +744,11 @@ export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
     userInfo,
     funnelInfo,
     savedViews
+});
+
+export const setUid = (uid) => ({
+    type: 'SET_UID',
+    uid,
 });
 
 

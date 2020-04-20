@@ -41,7 +41,7 @@ class ApplicationRouter extends React.Component{
         // Handle error
     }
   }
-
+  
   onServerError() {
     maintenance = true;
   }
@@ -74,10 +74,28 @@ class ApplicationRouter extends React.Component{
    * We are checking both as the dispatch doesn't updates the store asynchronously and thus we have to set a flag in this class to true and check that.
    */
   getLoggedInStatus() {
-      return (this.props.isUserLoggedIn || isUserLoggedIn);
+    // Something wrong with keeping /path state when adding || isUserLoggedIn. Weird behavior.
+      return this.props.isUserLoggedIn;
   }
 
     render() {
+      // console.log('href: ',window.location.href)
+      // console.log("IF: ", window.location.href.indexOf('uid') > -1 ? 
+      // window.location.href.slice(
+      //     window.location.href.indexOf('uid')+4) : "test fail leone");
+      // console.log("NO IF: ", window.location.href.slice(
+      //   window.location.href.indexOf('uid')+4));
+
+      /**
+       * Used to take the uid pass from desktop side to save in web server-side and 
+       * re-save in redux once credentials are authenticated.
+       * Crucial.
+       */
+      if(window.location.href.indexOf('uid') > -1) {
+        this.props.dispatch(setUid(window.location.href.slice(
+          window.location.href.indexOf('uid')+4)));
+      }
+
         return (
             <MuiThemeProvider>
                 <BrowserRouter>
@@ -118,6 +136,11 @@ export const saveUserInfo = (userInfo, funnelInfo) => ({
     type: 'SAVE_USER_INFO',
     userInfo,
     funnelInfo
+});
+
+export const setUid = (uid) => ({
+  type: 'SET_UID',
+  uid,
 });
 
 

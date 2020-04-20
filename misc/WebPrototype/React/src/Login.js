@@ -3,7 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { hideSplashScreen, /* showLoadMask, */ hideLoadMask } from './LoadMaskHelper.js';
-import { makeServerCall } from './ServerCallHelper.js';
+import { makeServerCall, setCookie, getLoginCookieName } from './ServerCallHelper.js';
+import { guidGenerator, cookGenerator, listCookies } from './GeneralFunctions.js';
 // import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
 // import RaisedButton from 'material-ui/RaisedButton';
@@ -29,16 +30,41 @@ class Login extends React.Component {
 	 * React built-in which is called when component mounts
 	 */
     componentDidMount() {
-        // function listCookies() {
-        //     var theCookies = document.cookie.split(';');
-        //     var aString = '';
-        //     for (var i = 1 ; i <= theCookies.length; i++) {
-        //         aString += i + ' ' + theCookies[i-1] + "\n";
-        //     }
-        //     return aString;
-        // }
+        
         // console.log('COOKIES: ',listCookies())
-        // console.log(encodeURI("e755b8411d20f7fef458f43afe5eef07f7a44d32071a17df867028236d9e7a48"));
+        if(this.props.uid.length > 0){
+            if(listCookies(getLoginCookieName()) === false){
+                let content = cookGenerator();
+                setCookie(getLoginCookieName(), content, 0.5);
+    
+                makeServerCall('enableConnection', (responseText) => {
+                    // console.log(responseText);
+                }, 
+                    {
+                        post: true,
+                        data: {
+                            establish: true,
+                            cookie: content,
+                            uid: this.props.uid}
+                    }
+                );
+            }
+            else {
+                let content = listCookies(getLoginCookieName());
+                makeServerCall('enableConnection', (responseText) => {
+                    // console.log(responseText);
+                }, 
+                    {
+                        post: true,
+                        data: {
+                            establish: true,
+                            cookie: content,
+                            uid: this.props.uid}
+                    }
+                );
+    
+            }
+        }
         
         if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
         && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1
@@ -306,7 +332,7 @@ class Login extends React.Component {
         }
         
         // Login cookie
-        //setCookie(getLoginCookieName(), 1,0.5);
+        // setCookie(getLoginCookieName(), 1,0.5);
 
         // Redirect to home page.
         this.props.history.push("/home");
@@ -760,7 +786,8 @@ export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
  **/
 const mapStateToProps = function(state){
   return {
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    uid: state.filterState.uid,
   }
 }
 

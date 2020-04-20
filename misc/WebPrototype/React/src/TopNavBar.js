@@ -12,7 +12,7 @@ import FontIcon from 'material-ui/FontIcon';
 // import MenuItem from 'material-ui/MenuItem';
 // import Avatar from 'material-ui/Avatar';
 import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
-import { webSocketSend } from './GeneralFunctions.js';
+import { webSocketSend, listCookies } from './GeneralFunctions.js';
 import { hideSplashScreen } from './LoadMaskHelper.js';
 import SettingsModal from './SettingsModal.js';
 import AlertsModal from './AlertsModal.js'
@@ -66,16 +66,25 @@ class TopNavBar extends React.Component {
     logout(){    
         let context = this;
         return new Promise((resolve, reject) => {
-            makeServerCall("logout",
-            function (responseText) { 
-                resolve(true);
-            }
-        );
+            makeServerCall("logout", function (responseText) { 
+                    resolve(true);
+                }
+            );
         }).then(res =>{
             if(res === true){
                 // window.location.reload();
+                makeServerCall('enableConnection', (responseText) => {
+                    }, 
+                    {
+                        post: true,
+                        data: {
+                            disestablish: true,
+                            cookie: listCookies(getLoginCookieName())
+                        }
+                    }
+                );
                 context.props.dispatch(logoutClear());
-                deleteCookie(getLoginCookieName());
+                // deleteCookie(getLoginCookieName());
                 // hideSplashScreen();
             }
         }).catch(err =>{
