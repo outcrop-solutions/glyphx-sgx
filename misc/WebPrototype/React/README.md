@@ -168,7 +168,11 @@ Table of Contents
     If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
 
 <h2>IMPORTANT NOTE</h2>
-    <li>When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.</li>
+    When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.
+
+    The easiest way to upload a new version of the package is to go to the root, then go to the path: /usr/lib/node_modules/serve/bin/serve.js 
+
+    There, you can download and edit the file locally in your OS and reupload the file. Be sure to re-add execute permissions so that it can be run.
 
     On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
 

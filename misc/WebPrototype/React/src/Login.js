@@ -14,6 +14,14 @@ import Flexbox from 'flexbox-react';
 import Auth0Lock from 'auth0-lock';
 import './css/General.css';
 
+const login_arr = [
+	"./Res/Img/login1.png",
+    "./Res/Img/login2.png",
+    "./Res/Img/login3.png",
+    "./Res/Img/login4.png",
+    "./Res/Img/login5.png",
+    "./Res/Img/login6.png",
+];
 
 class Login extends React.Component {
 
@@ -177,6 +185,8 @@ class Login extends React.Component {
         this.lock.show();
 
         document.title = "GlyphEd - Login";
+
+        document.getElementById('login_gen').src = login_arr[Math.floor(Math.random() * login_arr.length)];
     }
 
 
@@ -426,6 +436,7 @@ class Login extends React.Component {
                     <source src = "./Res/Vid/GlyphEd.mp4" type = "video/mp4" />
                     Your browser does not support the video tag.
                 </video> */}
+                <img id="login_gen" alt="login image" style={{width: "100%"}}/>
                 
                 {/* <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
