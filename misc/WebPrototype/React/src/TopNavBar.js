@@ -149,42 +149,41 @@ class TopNavBar extends React.Component {
         this.props.history.push('/home')
     }
 
-    createShareLink(){
-        // console.log(this.props.vizParams);
-        makeServerCall('createShareLink',
-            function(res,b,c) {
-                if (typeof res === 'string') res = JSON.parse(res);
+    // createShareLink(){
+    //     makeServerCall('createShareLink',
+    //         function(res,b,c) {
+    //             if (typeof res === 'string') res = JSON.parse(res);
                 
-                // debugger;
-                console.log(res);
+    //             // debugger;
+    //             console.log(res);
 
-                // if (Array.isArray(res.body.data) && res.body.data.length > 0) {
-                //     // var result = context.convertToCompatibleDataObject(res.data);
-                //     // console.log(result);
-                //     // context.makeFilterStructure(result);
-                //     // context.setState({ tableData: result, loadingDone: true });
-                //     // context.props.dispatch(setStatData(result));
-                //     // context.props.updateViz(res.glyphViewerKey);
-                // }
-                // else {
-                //     // 0 records matched.
-                //     console.log('bad time');
-                // }
-            },
-            {
-                post: true, 
-                data:  { 
-                    sdtPath: this.props.vizParams.sdtPath,
-                    tableName: this.props.vizParams.tableName,
-                    query: this.props.vizParams.query,
-                    datasourceId: this.props.vizParams.datasourceId,
-                    filterAllowedColumnList: this.props.vizParams.filterAllowedColumnList,
-                    originalVizName: this.props.vizParams.originalVizName,
-                    frontEndFilters: this.props.vizParams.frontEndFilters ? this.props.vizParams.frontEndFilters : this.props.vizParams.frontEndFilterString
-                }
-            }
-        );
-    }
+    //             // if (Array.isArray(res.body.data) && res.body.data.length > 0) {
+    //             //     // var result = context.convertToCompatibleDataObject(res.data);
+    //             //     // console.log(result);
+    //             //     // context.makeFilterStructure(result);
+    //             //     // context.setState({ tableData: result, loadingDone: true });
+    //             //     // context.props.dispatch(setStatData(result));
+    //             //     // context.props.updateViz(res.glyphViewerKey);
+    //             // }
+    //             // else {
+    //             //     // 0 records matched.
+    //             //     console.log('bad time');
+    //             // }
+    //         },
+    //         {
+    //             post: true, 
+    //             data:  { 
+    //                 sdtPath: this.props.vizParams.sdtPath,
+    //                 tableName: this.props.vizParams.tableName,
+    //                 query: this.props.vizParams.query,
+    //                 datasourceId: this.props.vizParams.datasourceId,
+    //                 filterAllowedColumnList: this.props.vizParams.filterAllowedColumnList,
+    //                 originalVizName: this.props.vizParams.originalVizName,
+    //                 frontEndFilters: this.props.vizParams.frontEndFilters ? this.props.vizParams.frontEndFilters : this.props.vizParams.frontEndFilterString
+    //             }
+    //         }
+    //     );
+    // }
 
     showName () {
         if(!jQuery.isEmptyObject(this.props.userInfo) && this.props.userInfo.Name.length > 0){

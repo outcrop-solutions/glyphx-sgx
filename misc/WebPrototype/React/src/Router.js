@@ -9,7 +9,7 @@ import NotFoundPage from './NotFoundPage.js';
 import Logout from './Logout.js';
 import VisualizationView from './VisualizationView.js';
 import Maintenance from './Maintenance.js';
-import ShareLoading from './Demo/ShareLoading.js';
+// import ShareLoading from './Demo/ShareLoading.js';
 // import EmptyDiv from './Demo/EmptyDiv.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -108,11 +108,11 @@ class ApplicationRouter extends React.Component{
 
                         <Route exact path = "/glyph-viewer" component = { this.VisualizationWindow } />
 
-                        <Route exact path = "/shared/:id"
+                        {/* <Route exact path = "/shared/:id"
                                 render = {
                                     ({match}) => (
                                         <ShareLoading vars={match}/>)}
-                        />
+                        /> */}
 
                         <Route exact path = "/glyph-viewer/:id" component = { this.VisualizationWindow } />
 

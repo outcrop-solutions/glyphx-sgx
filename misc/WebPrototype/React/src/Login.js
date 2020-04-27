@@ -186,7 +186,8 @@ class Login extends React.Component {
 
         document.title = "GlyphEd - Login";
 
-        document.getElementById('login_gen').src = login_arr[Math.floor(Math.random() * login_arr.length)];
+        document.getElementById('login_gen').style.backgroundImage = 
+            `url(${login_arr[Math.floor(Math.random() * login_arr.length)]})`;
     }
 
 
@@ -205,19 +206,6 @@ class Login extends React.Component {
         // document.getElementById("PassText").removeEventListener('mousedown', this.capsLockCheck);
         this.lock.hide();
 	}
-
-
-    /**
-     * Checks for Caps Lock when logging in
-     * @param e event instance 
-     */
-
-    // capsLockCheck(e) {
-    //     let caps_lock_on = e.getModifierState('CapsLock');
-    
-    //     if(caps_lock_on) $('#caps_lock_ux').css('display', 'block');
-    //     else if(!caps_lock_on) $('#caps_lock_ux').css('display', 'none');
-    // }
 
     /**
 	 * Calls the code to login when the enter key is pressed
@@ -332,7 +320,6 @@ class Login extends React.Component {
      * @param funnelInfo: -ADCMT
      **/
     saveUserInfo = (userInfo, funnelInfo, savedViews) => {
-        //console.log('Success');
         this.setState({ openPassword: false });
         this.props.dispatch(saveUserInfo(userInfo, funnelInfo, savedViews));
 
@@ -401,30 +388,6 @@ class Login extends React.Component {
     //     }
     // }
 
-
-    /**
-     * Closes the forgot password modal through the local state
-     **/
-    // handleCloseForgotPassDialog = () => {
-    //     this.setState({ openForgotPasswordDialog: false, snackbar: false});
-    // };
-
-
-    /**
-     * -ADCMT
-     **/
-    // handleForgotPassSubmit(){
-        // var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
-        // this.handleCloseForgotPassDialog();
-
-        // Send server call to email password recovery link.
-        // this.setState({ snackbar: true });
-
-        // let text = document.getElementsByClassName("retrieve-Pass-Text");
-        // console.log('text', text);
-    // }
-
-
     render() {
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
@@ -436,7 +399,7 @@ class Login extends React.Component {
                     <source src = "./Res/Vid/GlyphEd.mp4" type = "video/mp4" />
                     Your browser does not support the video tag.
                 </video> */}
-                <img id="login_gen" alt="login image" style={{width: "100%"}}/>
+                <img id="login_gen" alt="login image" style={{width: "100%", backgroundSize: "100%"}}/>
                 
                 {/* <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
