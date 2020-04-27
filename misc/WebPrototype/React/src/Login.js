@@ -399,7 +399,7 @@ class Login extends React.Component {
                     <source src = "./Res/Vid/GlyphEd.mp4" type = "video/mp4" />
                     Your browser does not support the video tag.
                 </video> */}
-                <img id="login_gen" alt="login image" style={{width: "100%", backgroundSize: "100%"}}/>
+                <div id="login_gen" alt="login image" style={{width: "100%", backgroundSize: "100%"}}></div>
                 
                 {/* <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
