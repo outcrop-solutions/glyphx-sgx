@@ -183,7 +183,7 @@ The easiest way to upload a new version of the package is to go to the root, the
 
 There, you can download and edit the file locally in your OS and reupload the file. Be sure to re-add execute permissions so that it can be run.
 
-On lines 390 to 397 of the serve package in node_modules, comment out the if-statement so that the code always runs:
+On lines 390 to 397 of the serve package in node_modules, comment out the if-statement so that the code inside always runs:
 
 ```
 //if (args['--single']) {
