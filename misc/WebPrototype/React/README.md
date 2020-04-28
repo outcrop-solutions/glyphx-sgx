@@ -190,8 +190,7 @@ Table of Contents
     ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
-    Follow this PowerShell guide: 
-    [Guide](https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell)
+    Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide</a>
 
     Sample command: 
 
