@@ -190,11 +190,11 @@ Table of Contents
     ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
-    Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide</a>
+    Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">GUIDE</a>
 
     Sample command: 
 
-    New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress bryanholster@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
+    New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress example@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
 
 
         
