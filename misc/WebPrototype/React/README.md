@@ -168,25 +168,26 @@ Table of Contents
     If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
 
 <h2>SERVEJS NODE MODULE CONFIGURATION</h2>
-    When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.
 
-    The easiest way to upload a new version of the package is to go to the root, then go to the path: /usr/lib/node_modules/serve/bin/serve.js 
+When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.
 
-    There, you can download and edit the file locally in your OS and reupload the file. Be sure to re-add execute permissions so that it can be run.
+The easiest way to upload a new version of the package is to go to the root, then go to the path: /usr/lib/node_modules/serve/bin/serve.js 
 
-    On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
+There, you can download and edit the file locally in your OS and reupload the file. Be sure to re-add execute permissions so that it can be run.
 
-    ```if (args['--single']) {
-		const {rewrites} = config;
-		const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
+On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
 
-		// As the first rewrite rule, make `--single` work
-		config.rewrites = [{
-			source: '**',
-			destination: '/index.html'
-		}, ...existingRewrites];
-	}
-    ```
+```if (args['--single']) {
+    const {rewrites} = config;
+    const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
+
+    // As the first rewrite rule, make `--single` work
+    config.rewrites = [{
+        source: '**',
+        destination: '/index.html'
+    }, ...existingRewrites];
+}
+```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
     Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
