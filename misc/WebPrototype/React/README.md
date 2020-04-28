@@ -5,7 +5,7 @@ Table of Contents
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-make-a-new-build-and-push-to-server)<br>
 [How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-hook-up-announcements-to-backend)<br>
 [Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
-[ServerJS Node Module Configuration](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#servejs-node-module-configuration)
+[ServerJS Node Module Configuration](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#microsoft-azure-active-directory-ad-powershell-invitations)
 
 
 <h2> FILE DICTIONARY (Each file will have more documentation in the form of comments) </h2>
@@ -176,23 +176,16 @@ Table of Contents
 
     On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
 
-    ```
-    if (args['--single']) {
-		const {rewrites} = config;
-		const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
-
-		// As the first rewrite rule, make `--single` work
-		config.rewrites = [{
-			source: '**',
-			destination: '/index.html'
-		}, ...existingRewrites];
-	}
-    ```
-
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
-    Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">GUIDE</a>
+    Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
 
     Sample command: 
+
+
+
+
+
+
 
     New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress example@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
 
