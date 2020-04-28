@@ -162,10 +162,10 @@ Table of Contents
     );
 
 <h2>IMPLEMENTATION IDEAS FOR STANDALONE VIZS</h2>
-    This entirely depends if you want people to be able to select front end filters.
-    For both you would need to build a new backend to host it.
-    If you want front-end filters/are allowing, then you need a landing page for that selection and you would need to use Aditya's multiple login for same user 'bucket' fix to store the subset databases in to prevent clashes.
-    If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
+This entirely depends if you want people to be able to select front end filters.
+For both you would need to build a new backend to host it.
+If you want front-end filters/are allowing, then you need a landing page for that selection and you would need to use Aditya's multiple login for same user 'bucket' fix to store the subset databases in to prevent clashes.
+If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
 
 <h2>SERVEJS NODE MODULE CONFIGURATION</h2>
 
@@ -177,7 +177,8 @@ There, you can download and edit the file locally in your OS and reupload the fi
 
 On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
 
-```if (args['--single']) {
+```
+if (args['--single']) {
     const {rewrites} = config;
     const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
 
@@ -190,11 +191,13 @@ On lines 390 to 397 of the serve package in node_modules, uncomment the code the
 ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
-    Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
+Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
 
-    Sample command
+Sample command:
 
-    New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress example@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
+```
+New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress example@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
+```
 
 
         
