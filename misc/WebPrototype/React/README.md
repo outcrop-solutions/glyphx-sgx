@@ -5,7 +5,7 @@ Table of Contents
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-make-a-new-build-and-push-to-server)<br>
 [How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-hook-up-announcements-to-backend)<br>
 [Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
-[Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#important-note)
+[Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#servejs-node-module-configuration)
 
 
 <h2> FILE DICTIONARY (Each file will have more documentation in the form of comments) </h2>
@@ -167,7 +167,7 @@ Table of Contents
     If you want front-end filters/are allowing, then you need a landing page for that selection and you would need to use Aditya's multiple login for same user 'bucket' fix to store the subset databases in to prevent clashes.
     If you don't need front end filters or if there is only one viz then there is only one subset database and there will be no issues with clashes.
 
-<h2>IMPORTANT NOTE</h2>
+<h2>SERVEJS NODE MODULE CONFIGURATION</h2>
     When pushing a new build/instance of EC-2, make sure that the serve package is set to always serve the index.html file for a Single-Page Application (SPA) to account for server-side routing via BrowserRouter in React-Router-Dom.
 
     The easiest way to upload a new version of the package is to go to the root, then go to the path: /usr/lib/node_modules/serve/bin/serve.js 
@@ -188,5 +188,12 @@ Table of Contents
 		}, ...existingRewrites];
 	}
     ```
+
+<h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
+    Follow this PowerShell guide: [Guide](https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell)
+
+    Sample command: 
+    ``` New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress bryanholster@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true ```
+
 
         

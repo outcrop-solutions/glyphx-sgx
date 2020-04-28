@@ -87,6 +87,10 @@ class Login extends React.Component {
         window.setTimeout(() => {if(document.getElementById('titlediv')){
             $('#titlediv').css('display', 'block');
         }}, 1000);
+
+        //login img
+        document.getElementById('login_gen').style.backgroundImage = 
+            `url(${login_arr[Math.floor(Math.random() * login_arr.length)]})`;
         // this.calcLoginButtonPosition();
 
         // var context = this;
@@ -185,9 +189,6 @@ class Login extends React.Component {
         this.lock.show();
 
         document.title = "GlyphEd - Login";
-
-        document.getElementById('login_gen').style.backgroundImage = 
-            `url(${login_arr[Math.floor(Math.random() * login_arr.length)]})`;
     }
 
 
