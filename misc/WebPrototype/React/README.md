@@ -5,7 +5,7 @@ Table of Contents
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-make-a-new-build-and-push-to-server)<br>
 [How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-hook-up-announcements-to-backend)<br>
 [Implementation ideas for creating standalone vizs without a login](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
-[Important Note](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#servejs-node-module-configuration)
+[ServerJS Node Module Configuration](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#servejs-node-module-configuration)
 
 
 <h2> FILE DICTIONARY (Each file will have more documentation in the form of comments) </h2>
@@ -190,10 +190,12 @@ Table of Contents
     ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
-    Follow this PowerShell guide: [Guide](https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell)
+    Follow this PowerShell guide: 
+    [Guide](https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell)
 
     Sample command: 
-    ``` New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress bryanholster@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true ```
+
+    New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress bryanholster@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
 
 
         
