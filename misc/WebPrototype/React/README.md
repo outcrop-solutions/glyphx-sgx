@@ -176,7 +176,7 @@ Table of Contents
 
     On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
 
-    if (args['--single']) {
+    ```if (args['--single']) {
 		const {rewrites} = config;
 		const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
 
@@ -186,6 +186,7 @@ Table of Contents
 			destination: '/index.html'
 		}, ...existingRewrites];
 	}
+    ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
     Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
