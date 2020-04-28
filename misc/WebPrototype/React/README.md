@@ -1,4 +1,4 @@
-Table of Contents
+<h1>Table of Contents</h1>
 
 [File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
 [How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list)<br>
@@ -211,7 +211,7 @@ No results, then run
 Install-Module AzureADPreview
 ```
 
-If prompted to install dependencies, install those as well.
+If prompted to install dependencies, install those as well by pressing 'y'.
 
 
 If only AD module, run
@@ -231,7 +231,7 @@ Install-Module AzureADPreview
 Sample invitation command:
 
 ```
-New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" 
+New-AzureADMSInvitation -InvitedUserDisplayName "johndoe" 
 -InvitedUserEmailAddress example@gmail.com 
 -InviteRedirectURL https://glyphed.com 
 -SendInvitationMessage $true
