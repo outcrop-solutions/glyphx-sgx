@@ -1,6 +1,6 @@
 <h1>Table of Contents</h1>
 
-<h2><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments">File Dictionary</a></h2><br>
+<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments">File Dictionary</a></h3><br>
 [How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list)<br>
 [How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-make-a-new-build-and-push-to-server)<br>
 [How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-hook-up-announcements-to-backend)<br>
