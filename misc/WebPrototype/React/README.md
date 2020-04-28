@@ -76,90 +76,98 @@ Table of Contents
     <li>Run ./webViewerServer.sh -p to ensure that everything started properly</li>
 
 <h2> HOW TO HOOK UP ANNOUNCEMENTS TO BACKEND</h2>
-    Below are some sample server calls highlighting how this can be done
+Below are some sample server calls highlighting how this can be done
 
-    Fetch Announcements.
-    makeServerCall("manageAnnouncements",
-        function (responseText) {
-            var response = JSON.parse(responseText);
-            debugger;
-            //do-stuff
-            context.props.dispatch( setTimer(new Date().getTime()) );
-        },
-        {
-            post:true,
-            data: { 
-                operation:'fetch', //create/delete/fetch/pollResult
-                config:{
-                    //type: MultiPoll/SinglePoll/Release/Maintenance/Shout
-                    //content: {whatever to put in the description}
-                    //AnnouncementId: (if delete/pollResult request)
-                    //options:["",""...] options for poll
-                    //selectedOptionIds:[]
-                } 
-            }
+Fetch Announcements.
+```
+makeServerCall("manageAnnouncements",
+    function (responseText) {
+        var response = JSON.parse(responseText);
+        debugger;
+        //do-stuff
+        context.props.dispatch( setTimer(new Date().getTime()) );
+    },
+    {
+        post:true,
+        data: { 
+            operation:'fetch', //create/delete/fetch/pollResult
+            config:{
+                //type: MultiPoll/SinglePoll/Release/Maintenance/Shout
+                //content: {whatever to put in the description}
+                //AnnouncementId: (if delete/pollResult request)
+                //options:["",""...] options for poll
+                //selectedOptionIds:[]
+            } 
         }
-    );
+    }
+);
+```
 
-    Poll Creation
-    makeServerCall("manageAnnouncements",
-        function (responseText) {
-            var response = JSON.parse(responseText);
-            debugger;
-            //do-stuff
-            context.props.dispatch( setTimer(new Date().getTime()) );
-        },
-        {
-            post:true,
-            data: { 
-                operation:'create',
-                config:{
-                    type: 'SinglePoll',
-                    content: "Question1",
-                    options:["asdbc","asdfcv"]
-                } 
-            }
+Poll Creation
+```
+makeServerCall("manageAnnouncements",
+    function (responseText) {
+        var response = JSON.parse(responseText);
+        debugger;
+        //do-stuff
+        context.props.dispatch( setTimer(new Date().getTime()) );
+    },
+    {
+        post:true,
+        data: { 
+            operation:'create',
+            config:{
+                type: 'SinglePoll',
+                content: "Question1",
+                options:["asdbc","asdfcv"]
+            } 
         }
-    );
+    }
+);
+```
 
-    Delete
-    makeServerCall("manageAnnouncements",
-        function (responseText) {
-            var response = JSON.parse(responseText);
-            debugger;
-            //do-stuff
-            context.props.dispatch( setTimer(new Date().getTime()) );
-        },
-        {
-            post:true,
-            data: { 
-                operation:'delete',
-                config:{
-                    AnnouncementId:'13'
-                } 
-            }
+Delete
+```
+makeServerCall("manageAnnouncements",
+    function (responseText) {
+        var response = JSON.parse(responseText);
+        debugger;
+        //do-stuff
+        context.props.dispatch( setTimer(new Date().getTime()) );
+    },
+    {
+        post:true,
+        data: { 
+            operation:'delete',
+            config:{
+                AnnouncementId:'13'
+            } 
         }
-    );
+    }
+);
+```
 
-    Poll result with save of user selection
-    makeServerCall("manageAnnouncements",
-        function (responseText) {
-            var response = JSON.parse(responseText);
-            debugger;
-            //do-stuff
-            context.props.dispatch( setTimer(new Date().getTime()) );
-        },
-        {
-            post:true,
-            data: { 
-                operation:'pollResult',
-                config:{
-                    AnnouncementId:'12',
-                    selectedOptionIds:[4]
-                } 
-            }
+Poll result with save of user selection
+```
+makeServerCall("manageAnnouncements",
+    function (responseText) {
+        var response = JSON.parse(responseText);
+        debugger;
+        //do-stuff
+        context.props.dispatch( setTimer(new Date().getTime()) );
+    },
+    {
+        post:true,
+        data: { 
+            operation:'pollResult',
+            config:{
+                AnnouncementId:'12',
+                selectedOptionIds:[4]
+            } 
         }
-    );
+    }
+);
+```
 
 <h2>IMPLEMENTATION IDEAS FOR STANDALONE VIZS</h2>
 This entirely depends if you want people to be able to select front end filters.
@@ -191,13 +199,45 @@ if (args['--single']) {
 ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
-Follow this PowerShell guide: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
+Run PowerShell as Administrator.
 
-Sample command:
+Check for modules
+```
+Get-Module -ListAvailable AzureAD*
+```
+
+No results, then run
+```
+Install-Module AzureADPreview
+```
+
+If prompted to install dependencies, install those as well.
+
+
+If only AD module, run
+```
+Uninstall-Module AzureAD 
+Install-Module AzureADPreview 
+```
+
+If only AzureADPreview, run
 
 ```
-New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" -InvitedUserEmailAddress example@gmail.com -InviteRedirectURL https://glyphed.com -SendInvitationMessage $true
+Uninstall-Module AzureADPreview 
+Install-Module AzureADPreview 
 ```
+
+
+Sample invitation command:
+
+```
+New-AzureADMSInvitation -InvitedUserDisplayName "bryanholster" 
+-InvitedUserEmailAddress example@gmail.com 
+-InviteRedirectURL https://glyphed.com 
+-SendInvitationMessage $true
+```
+
+Based on this PowerShell guide by Microsoft: <a href="https://docs.microsoft.com/en-us/azure/active-directory/b2b/b2b-quickstart-invite-powershell">Guide here.</a>
 
 
         
