@@ -1,11 +1,11 @@
 <h1>Table of Contents</h1>
 
-<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments">File Dictionary</a></h3><br>
-<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list">How to add a new viz to allowed list</a></h3><br>
-<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-make-a-new-build-and-push-to-server">How to make a new build and push to server</a></h3><br>
-<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-hook-up-announcements-to-backend">How to hook up announcements to backend</a></h3><br>
-<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs">Implementation ideas for creating standalone vizs</a></h3><br>
-<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#microsoft-azure-active-directory-ad-powershell-invitations">ServerJS Node Module Configuration</a></h3><br>
+[File Dictionary](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments)<br>
+[How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list)<br>
+[How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-make-a-new-build-and-push-to-server)<br>
+[How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-hook-up-announcements-to-backend)<br>
+[Implementation ideas for creating standalone vizs](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
+[ServerJS Node Module Configuration](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#microsoft-azure-active-directory-ad-powershell-invitations)
 
 
 <h2> FILE DICTIONARY (Each file will have more documentation in the form of comments) </h2>
@@ -183,10 +183,10 @@ The easiest way to upload a new version of the package is to go to the root, the
 
 There, you can download and edit the file locally in your OS and reupload the file. Be sure to re-add execute permissions so that it can be run.
 
-On lines 390 to 397 of the serve package in node_modules, uncomment the code the if-statement so that the code always runs:
+On lines 390 to 397 of the serve package in node_modules, comment out the if-statement so that the code always runs:
 
 ```
-if (args['--single']) {
+//if (args['--single']) {
     const {rewrites} = config;
     const existingRewrites = Array.isArray(rewrites) ? rewrites : [];
 
@@ -195,7 +195,7 @@ if (args['--single']) {
         source: '**',
         destination: '/index.html'
     }, ...existingRewrites];
-}
+//}
 ```
 
 <h2>MICROSOFT AZURE ACTIVE DIRECTORY (AD) POWERSHELL INVITATIONS</h2>
