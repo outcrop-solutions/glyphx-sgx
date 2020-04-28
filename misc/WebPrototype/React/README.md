@@ -1,11 +1,11 @@
 <h1>Table of Contents</h1>
 
 <h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#file-dictionary-each-file-will-have-more-documentation-in-the-form-of-comments">File Dictionary</a></h3><br>
-[How to add a new viz to allowed list](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list)<br>
-[How to make a new build and push to server](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-make-a-new-build-and-push-to-server)<br>
-[How to hook up announcements to backend](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-hook-up-announcements-to-backend)<br>
-[Implementation ideas for creating standalone vizs](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs)<br>
-[ServerJS Node Module Configuration](https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#microsoft-azure-active-directory-ad-powershell-invitations)
+<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#how-to-add-a-new-viz-to-the-allowed-list">How to add a new viz to allowed list</a></h3><br>
+<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-make-a-new-build-and-push-to-server">How to make a new build and push to server</a></h3><br>
+<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#-how-to-hook-up-announcements-to-backend">How to hook up announcements to backend</a></h3><br>
+<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#implementation-ideas-for-standalone-vizs">Implementation ideas for creating standalone vizs</a></h3><br>
+<h3><a href="https://github.com/SynGlyphX/sgx/tree/kevin/ui-remodel/misc/WebPrototype/React#microsoft-azure-active-directory-ad-powershell-invitations">ServerJS Node Module Configuration</a></h3><br>
 
 
 <h2> FILE DICTIONARY (Each file will have more documentation in the form of comments) </h2>
