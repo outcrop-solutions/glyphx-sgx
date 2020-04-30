@@ -134,6 +134,7 @@ class Login extends React.Component {
         );
 
         this.lock.on("authenticated", function(authResult) {
+            global_state.lock.hide();
             console.log(authResult, global_state)
             // if(authResult.accessToken){
             // }
