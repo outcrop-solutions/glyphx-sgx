@@ -8,6 +8,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
+#include <QtCore/QProcessEnvironment>
 #include <QtGui/QDesktopServices>
 #include <QtWidgets/QDockWidget>
 #include <QtCore/QDateTime>
@@ -900,8 +901,9 @@ void GlyphEdViewerWindow::UpdateFilenameWindowTitle(const QString& title) {
 QString GlyphEdViewerWindow::GetApplicationDisplayName() const {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		return SynGlyphX::Application::applicationName() + " (SynGlyphX Inside) " + SynGlyphX::getFullVersionString().c_str();
+		QString userName = QProcessEnvironment::systemEnvironment().value("AppStream_UserName", "_");
+		QString sessId = QProcessEnvironment::systemEnvironment().value("AppStream_Session_ID", "_");
+		return SynGlyphX::Application::applicationName() + " (SynGlyphX Inside) " + SynGlyphX::getFullVersionString().c_str() + " | " + userName + " | " + sessId + " |";
 	}
 	else {
 
