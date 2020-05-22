@@ -469,7 +469,7 @@ class ViewsManager extends React.Component {
 
         if(funnelData['Marketing and Recruiting']){
             for (let z = 0; z < funnelData['Marketing and Recruiting'].length; z++) {
-                if (funnelData['Marketing and Recruiting'][z][0] === "Prospects" || funnelData['Marketing and Recruiting'][z][0] === "High School Profiles") {
+                if (funnelData['Marketing and Recruiting'][z][0] !== "Prospects and High Schools (Geospatial)") {
                     new_funnel_data['Marketing and Recruiting'].push(funnelData['Marketing and Recruiting'][z]);
                 }
             }
