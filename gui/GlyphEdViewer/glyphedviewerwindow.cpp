@@ -565,6 +565,8 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	{
 		qApp->processEvents();
 	}
+	//QMessageBox::information(this, tr("Server message"), "Received a reply.");
+
 	QByteArray response_data = reply->readAll();
 	QJsonDocument json = QJsonDocument::fromJson(response_data);
 	QJsonArray data = json.array();
@@ -591,7 +593,7 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	QStringList sdt_split = sdt.split(QChar('/'));
 	QString filename = cache_location + sdt_split.at(sdt_split.size() - 1);
 
-	//QMessageBox::information(this, tr("Server message"), filename);
+	//QMessageBox::information(this, tr("Server message"), legends.at(0));
 
 	table_name = query.split("FROM ").at(1).split(" ").at(0);
 
@@ -600,6 +602,11 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	//QMessageBox::information(this, tr("Server message"), bucket_name + " | " + key_name);
 	QStringList legend_list;
 	ge.DownloadFiles(bucket_name, key_name, cache_location);
+	for (int i = 0; i < legends.length(); i++) {
+		if (!legends.at(i).contains(".png") && !legends.at(i).contains(".jpg")) {
+			legends.removeAt(i);
+		}
+	}
 	for (QString legend : legends) {
 		QStringList legend_parts = legend.left(legend.length()-1).split(QChar('/'));
 		int legend_length = legend_parts.size();
@@ -612,7 +619,8 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	m_mappingModel->LoadDataTransformFile(filename);
 	std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 
-	//QMessageBox::information(this, tr("Server message"), QString::number(data.size()));
+	QMessageBox::information(this, tr("Server message"), QString::number(data.size()));
+
 	SqliteWriter* sql_writer = new SqliteWriter();
 	QString ret_query = sql_writer->WriteDatabase(cache_location, data, sdt_split.at(sdt_split.size() - 1), table_name);
 
