@@ -1,17 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
-import { Card, CardText } from 'material-ui/Card';
+// import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
+// import { Card, CardText } from 'material-ui/Card';
 import { makeServerCall } from './ServerCallHelper.js';
-import { withRouter } from 'react-router-dom';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import ExpandTransition from 'material-ui/internal/ExpandTransition';
+// import { withRouter } from 'react-router-dom';
+// import RaisedButton from 'material-ui/RaisedButton';
+// import FlatButton from 'material-ui/FlatButton';
+// import ExpandTransition from 'material-ui/internal/ExpandTransition';
 import AllViewsModal from './AllViewsModal.js';
-import MyViews from './MyViews.js';
+// import SavedViews from './SavedViews.js';
 import Flexbox from 'flexbox-react';
-import './ViewsManager.css';
-import './General.css';
+import './css/ViewsManager.css';
+import './css/General.css';
 
 
 /**
@@ -30,21 +30,36 @@ class ViewsManager extends React.Component {
 			selectionType: "",
 			selectionTypeURL: "",
 			flipped: false,
-			clicked: false
+            clicked: false,
+            legendPng: "",
+            topicArray: [],
+            //legendPng is legacy code
 		}
-	}
+    }
+    
+    // componentDidMount(){
+    //     if(document.getElementById("topic-defaultOpen")){
+    //         Promise.all([document.getElementById("topic-defaultOpen").click()])
+    //         .then(() => {
+    //             if(document.getElementById("inquiry-defaultOpen")){
+    //                 document.getElementById("inquiry-defaultOpen").firstChild.click();
+    //             }
+    //         });
+    //     }
+    // }
 
     /**
      * Enables transition pause when navigating from regular view to my views and vice versa
      */
-    dummyAsync = (cb) => {
-        this.setState({ loading: true }, () => {
-            this.asyncTimer = setTimeout(cb, 500);
+        dummyAsync = (cb) => {
+            this.setState({ loading: true }, () => {
+                this.asyncTimer = setTimeout(cb, 500);
         });
     };
 	
-	//Moving this here instead of MyViews.js due to refs problem
-	onSavedViewSelect(savedVizObj,callback,recentViewClick){
+	//Moving this here instead of SavedViews.js due to refs problem
+	onSavedViewSelect = (savedVizObj,callback,recentViewClick) => {
+        // console.log(savedVizObj, callback, recentViewClick, 'seeing what is passed in');
         var originalVizName = savedVizObj.OriginalVizName; 
         var query = savedVizObj.QueryString; 
         var funnelData;
@@ -56,10 +71,10 @@ class ViewsManager extends React.Component {
         for(var keyIndex=0;keyIndex<keys.length && flag;keyIndex++){
             funnelData = this.props.funnelData[keys[keyIndex]];
     
-            for(var index=0;index<funnelData.length;index++)
+            for(var i = 0;i < funnelData.length; i++)
             {
-                if(funnelData[index][0] == originalVizName){
-                    path = funnelData[index][1];
+                if(funnelData[i][0] === originalVizName){
+                    path = funnelData[i][1];
                     flag = false;
                     break;
                 }
@@ -100,17 +115,56 @@ class ViewsManager extends React.Component {
                     )
                 );
 
-                if(typeof callback == 'function'){
+                if(typeof callback === 'function'){
 					callback(true);
 					//context.props.history.push('/glyph-viewer');
 				}
 				
             }
         );
+
+        makeServerCall('frontEndFiltersEC2',
+            function (responseText) {
+                var response = JSON.parse(responseText);
+                console.log(response, 'response from fetch front filters ec2 in views manager');
+                // Post the new data to the state and hide the window load-mask
+                // context.props.dispatch(
+                //     setCurrentVizParams(
+                //         {
+                //             tableName: response.tableName,
+                //             datasourceId: response.datasourceId ,
+                //             query: query,
+                //             originalVizName:originalVizName,
+                //             filterAllowedColumnList:  response.filterAllowedColumnList,
+                //             sdtPath: sdtPath,
+                //             savedViz: true,
+                //             vizID:savedVizObj.ID,
+                //             savedVizName: savedVizObj.Name,
+                //             frontEndFilterString: savedVizObj.frontEndFilterString,
+                //             initialX: response.initialX,
+                //             initialY: response.initialY,
+                //             initialZ: response.initialZ
+                //         }
+                //     )
+                // );
+
+                // if(typeof callback === 'function'){
+				// 	callback(true);
+				// 	//context.props.history.push('/glyph-viewer');
+				// }
+				
+            }, {
+                post: true,
+                data: {
+                    key: tempPath
+                }
+            }
+        );
     }
 	
 	// Moving this here instead of AllViewsModal.js due to refs problem
-	onLaunch(extra, callback) {
+	onLaunch(extra, callback, callback_2) {
+        console.log(extra, callback_2);
         // Handle launch when no selections made on a column (select all unless its not allowed to select all)
 		var context = this;
 		var tableName;
@@ -143,8 +197,18 @@ class ViewsManager extends React.Component {
         }
 
         console.log("-----------------------Stage 2 reached");
+        var currentDate = new Date();
+        // console.log(
+        //     "TABLE:", tableName,
+        //     "TIME:",currentDate.getTime(),
+        //     "DATE:",currentDate.getTime(), 
+        //     "FRONT END FILTS:",frontEndFilters, 
+        //     "ORIGINAL VIZ NAME:",originalVizName, 
+        //     "DATA SOURCE ID:",datasourceId, 
+        //     "Allowed COlmn list:",filterAllowedColumnList, 
+        //     "SDT Path:",sdtPath, "FRONTENDFILERQUERY" )
 		
-		var currentDate = new Date(); //If you dont want it to update on 
+		 //If you dont want it to update on 
 		makeServerCall('checkFrontEndFilterQuery',
 			function(res){
                 res = JSON.parse(res);
@@ -152,7 +216,7 @@ class ViewsManager extends React.Component {
                 console.log("-----------------------Stage 3 reached");
 
 				// Check if match flag is true means that at least one row was returned using the query.
-				if (res.match == true || res.match == "true") {
+				if (res.match === true || res.match === "true") {
 					// Set the params to the store and then goto viz page.
 					context.props.dispatch(setCurrentVizParams({
 							originalVizName: originalVizName, 
@@ -167,7 +231,7 @@ class ViewsManager extends React.Component {
 					//
 				}
 				
-				if (typeof callback == 'function') {
+				if (typeof callback === 'function') {
 					callback(res.match);
                 }
             },
@@ -238,12 +302,17 @@ class ViewsManager extends React.Component {
      * Toggles flip from funnel view to sub-funnels and back
      * @param type: side that is being flipped to
      */
-    flip (type) {
+    flip (type, len) {
+        // console.log('called')
+        if(len > 0){
         this.setState({ flipped: !this.state.flipped, clicked: true });
         var context = this;
-        setTimeout(function () {
-            context.setState({ type: type });
-        }, 200);
+    
+        context.setState({ type: type });
+        }
+        else {
+            return null;
+        }
     }
 
 
@@ -251,194 +320,235 @@ class ViewsManager extends React.Component {
      * Toggles flip from funnel view to my view and back
      * @param type: side that is being flipped to
      */
-    handleViewSelect = (type) => {
+    handleViewSelect (type){
+
         this.props.dispatch(editModalDisplay(true));
-        this.setState({ selectionType: type[0], selectionTypeURL: type[1] });
+        console.log(type[0], type[1]);
+
+        return new Promise((resolve, reject) => {
+            this.setState({ selectionType: type[0], selectionTypeURL: type[1] });
+            resolve();
+        }).then(() => {
+            this.getLegend();
+        });
     }
 
+    /**
+     * 
+     * @param innerHtml added scalable clear - unHighlightTopicRows() & unHighlightInquieryRows() - 
+     * and highlight -highlightTopicSelectedRow & highlightInquirySelectedRows - for easy of highlighting for UI/UX
+     */
+
+    /* highlightTopicSelectedRow(innerHtml){
+        // console.log(document.getElementsByClassName('main-category-select'))
+        for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
+            if(document.getElementsByClassName('main-category-select')[i].innerHTML === innerHtml){
+                document.getElementsByClassName('main-category-select')[i].style.backgroundColor = '#ddd';
+            }
+        }
+    } */
+
+    // highlightTopicSelectedRow(innerHtml){
+    //     for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
+    //         if(document.getElementsByClassName('main-category-select')[i].innerHTML === innerHtml){
+    //             let str = document.getElementsByClassName('main-category-select')[i].className;
+    //             document.getElementsByClassName('main-category-select')[i].className = str.replace('light', 'dark');
+    //         }
+    //     }
+    // }
+
+    // unHighlightTopicRows(){
+    //     // console.log(document.getElementsByClassName('main-category-select'))
+    //     for(let i = 0; i < document.getElementsByClassName('main-category-select').length; i++){
+    //             let str = document.getElementsByClassName('main-category-select')[i].className;
+    //             document.getElementsByClassName('main-category-select')[i].className = str.replace('dark', 'light');
+    //     }
+    // }
+
+    // highlightInquirySelectedRow(innerHtml){
+    //     /* for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         if(document.getElementsByClassName('second-view-selection')[i].innerHTML === innerHtml){
+    //             document.getElementsByClassName('second-view-selection')[i].style.backgroundColor = '#ddd';
+    //         }
+    //     } */
+    //     for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         if(document.getElementsByClassName('second-view-selection')[i].innerHTML === innerHtml){
+    //             let str = document.getElementsByClassName('second-view-selection')[i].className;
+    //             document.getElementsByClassName('second-view-selection')[i].className = str.replace('light', 'dark');
+    //         }
+    //     }
+    // }
+
+    // unHighlightInquiryRows(){
+    //     /* for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         document.getElementsByClassName('second-view-selection')[i].style.backgroundColor = '#e7e7fd';
+    //     } */
+    //     for(let i = 0; i < document.getElementsByClassName('second-view-selection').length; i++){
+    //         let str = document.getElementsByClassName('second-view-selection')[i].className;
+    //         document.getElementsByClassName('second-view-selection')[i].className = str.replace('dark', 'light');
+    //     }
+    // }
+
+    getLegend() {
+        var context = this;
+        // let strArr = this.state.selectionType.split(" ");
+        // let firstWord = strArr[0];
+        
+        let index = context.state.selectionTypeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
+        let sdtPath = context.state.selectionTypeURL.substring(index + 1);
+        // console.log(sdtPath, 'sdtPath');
+        makeServerCall(window.encodeURI('getLegendURL/' + sdtPath),
+            function (responseText) { 
+                let response;
+                if(typeof responseText === 'string') response = JSON.parse(responseText);
+                // console.log(response)
+                if(response.body){
+                    let imgPath = response.body.legendUrl;
+                    console.log(response.body.legendUrl, response.body.imgArr,'imgPath');
+                    
+                    context.props.dispatch(setLegendUrlArr(response.body.imgArr));
+
+                    if (imgPath && imgPath.length > 0 && (imgPath.includes(context.state.selectionType) || imgPath.includes(context.state.type))) {
+                        context.setState({ legendPng: 
+                            `http://ec2-18-224-124-242.us-east-2.compute.amazonaws.com:8000/Legend/${window.encodeURIComponent(imgPath)}`});
+                    }
+                }
+            }
+        );
+    }
+
+    selectTopic(val){
+        // console.log(val, this.props.funnelData[val])
+        if(this.props.funnelData[val].length > 0){
+            this.flip(val, this.props.funnelData[val].length);
+        }
+    }
+
+    selectInquiry(str){
+        // console.log(str)
+        if(str.length > 0 && str.indexOf(',') > 0){
+            let val = str.slice(0, str.indexOf(','));
+            let url = str.slice(str.indexOf(',') + 1);
+            // console.log(val, url);
+            this.props.dispatch(editModalDisplay(true));
+    
+            return new Promise((resolve, reject) => {
+                this.setState({ selectionType: val, selectionTypeURL: url });
+                resolve();
+            }).then(() => {
+                this.getLegend();
+            });
+        }
+    }
+    
+    injectOption(){
+        return (
+        <option>
+            Select An Inquiry
+        </option>
+        );
+    }
 
     render() {
-        var context = this;
-        
+        // let context = this;
         var funnelData = this.props.funnelData;
-        var mandrList, admList, faList, customList, retentionList;
+        let new_funnel_data = {};
+        // console.log(funnelData);
 
-        if (funnelData["Marketing and Recruiting"]) {
-            mandrList = funnelData["Marketing and Recruiting"];
-        }
-        else {
-            mandrList = [];
-        }
-
-        if (funnelData["Admissions"]) {
-            admList = funnelData["Admissions"];
-        }
-        else {
-            admList = [];
-        }
-
-        if (funnelData["Financial Aid"]) {
-            faList = funnelData["Financial Aid"];
-        }
-        else {
-            faList = [];
-        }
-
-        if (funnelData["Custom"]) {
-            customList = funnelData["Custom"];
-        }
-        else {
-            customList = [];
-        }
-
-        /*
-        console.log(mandrList);
-
-        console.log(admList);
-
-        console.log(faList);
-
-        console.log(customList);
-        */
-
-
-        for (var i = mandrList.length - 1; i > -1; i--) {
-            if (mandrList[i][0] != "Prospects" && mandrList[i][0] != "High School Profiles") {
-                mandrList.splice(i, 1);
+        //splicing out things that aren't supposed to be in there. to double check
+        
+        for(let property in funnelData) {
+            new_funnel_data[property] = [];
+            if(property !== "Marketing and Recruiting" && property !== "Admissions" && property !== "Custom" && property !== "Financial Aid"){
+                for(let i = 0; i < funnelData[property].length; i++){
+                    new_funnel_data[property].push(funnelData[property][i]);
+                }
             }
         }
-        console.log(mandrList);
-        for (var i = admList.length - 1; i > -1; i--) {
-            if (admList[i][0] != "Current Year RC with Prior Year Admits" && admList[i][0] != "Global Admissions" && admList[i][0] != "Applicants" && admList[i][0] != "Applicants by High School" && admList[i][0] != "Review Committee") {
-                admList.splice(i, 1);
-            }
-        }
-        console.log(admList);
-
-        faList = [];
-
-        /*
-        for (var i = faList.length - 1; i > -1; i--) {
-            if (faList[i][0] != "" && faList[i][0] != "" && faList[i][0] != "") {
-                faList.splice(i, 1);
-            }
-        }
-
         
 
-        console.log(faList);
-        */
-
-        for (var i = customList.length - 1; i > -1; i--) {
-            if (customList[i][0] != "Applicants" && customList[i][0] != "Pre-College" && customList[i][0] != "Adversity" && customList[i][0] != "First Source" && customList[i][0] != "Retention Geo" && customList[i][0] != "Retention Non Geo") {
-                customList.splice(i, 1);
+        if(funnelData['Marketing and Recruiting']){
+            for (let z = 0; z < funnelData['Marketing and Recruiting'].length; z++) {
+                if (funnelData['Marketing and Recruiting'][z][0] !== "Prospects and High Schools (Geospatial)") {
+                    new_funnel_data['Marketing and Recruiting'].push(funnelData['Marketing and Recruiting'][z]);
+                }
             }
         }
-        console.log(customList);
+        
 
-        for (var i = mandrList.length - 1; i > -1; i--) {
-            if (mandrList[i][0] != "Prospects" && mandrList[i][0] != "High School Profiles") {
-                mandrList.splice(i, 1);
+        if(funnelData['Admissions']){
+            for (let x = 0; x < funnelData['Admissions'].length; x++) {
+                if (funnelData['Admissions'][x][0] === "Current Year RC with Prior Year Admits" ||
+                funnelData['Admissions'][x][0] === "Global Admissions" || funnelData['Admissions'][x][0] === "Applicants" 
+                || funnelData['Admissions'][x][0] === "Applicants by High School" || funnelData['Admissions'][x][0] === "Review Committee") {
+                    new_funnel_data['Admissions'].push(funnelData['Admissions'][x]);
+                }
             }
         }
 
-        var marketingAndRecruiting = mandrList.map( function(title) {
-            return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px", 
-                        margin: "0 auto", 
-                        height: "35px", 
-                        backgroundColor: context.props.settings.colors.homePageColors.funnelTopBody 
-                    }} 
-                    key = { title } 
-                >
-                    <CardText
-                        style = {{ padding: "7px" }}
-                        className = "funnel-top-body noselect"
-                        onClick = { context.handleViewSelect.bind(context, title) }
-                    >
-                        {title[0]}
-                    </CardText>
-                </Card>
-            )
-        });
+        if(funnelData['Custom']){
+            for (let j = 0; j < funnelData['Custom'].length; j++) {
+                if (funnelData['Custom'][j][0] === "Applicants" || funnelData['Custom'][j][0] === "Pre-College" ||
+                funnelData['Custom'][j][0] === "Adversity" || funnelData['Custom'][j][0] === "First Source" || 
+                funnelData['Custom'][j][0] === "Retention Geo" || funnelData['Custom'][j][0] === "Retention Non Geo") {
+                    new_funnel_data['Custom'].push(funnelData['Custom'][j]);
+                }
+            }
+        }  
+        // console.log(new_funnel_data)
 
-        var admissions = admList.map( function(title) {
-            return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px", 
-                        margin: "0 auto", 
-                        height: "35px", 
-                        backgroundColor: context.props.settings.colors.homePageColors.funnelMiddleBody 
-                    }} 
-                    key = { title } 
-                >
-                    <CardText
-                        style = {{ padding: "7px" }}
-                        className = "funnel-middle-body noselect"
-                        onClick = { context.handleViewSelect.bind(context, title) }
-                    >
-                        {title[0]}
-                    </CardText>
-                </Card>
-            )
-        });
+        const styleForFirstViewSelect = {
+            fontSize:"1.877vh", 
+            padding: "7px",
+            fontFamily: "ITCFranklinGothicStd-Med",
+            letterSpacing: "0.5px",
+        };
 
-        var financialAid = faList.map( function(title) {
-            return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px",
-                         margin: "0 auto", 
-                         height: "35px", 
-                         backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
-                        }} 
-                        key = { title } 
-                    >
-                    <CardText
-                        style = {{ padding: "7px" }}
-                        className = "funnel-bottom-body noselect"
-                        onClick = { context.handleViewSelect.bind(context, title) }
-                    >
-                        {title[0]}
-                    </CardText>
-                </Card>
-            )
-        });
+        const styleForSecViewSelect = {
+            width: "100%", 
+            margin: "0 auto", 
+            height: "3.650vh",
+            fontSize: "1.876vh", 
+            fontFamily: "ITCFranklinGothicStd-Med",
+            letterSpacing: "0.5px",
+            whiteSpace: "nowrap", 
+            overflow: "hidden", 
+            textOverflow: "ellipsis",
+        };
 
-        var custom = customList.map( function(title) {
-            return (
-                <Card 
-                    containerStyle = {{ padding: "0px" }} 
-                    style = {{ 
-                        width: "80%", 
-                        minWidth: "331px", 
-                        margin: "0 auto", 
-                        height: "35px", 
-                        backgroundColor: context.props.settings.colors.homePageColors.funnelBottomBody 
-                    }} 
-                    key = { title } 
-                >
-                    <CardText
-                        style = {{ padding: "7px" }}
-                        className = "funnel-bottom-body noselect"
-                        onClick = { context.handleViewSelect.bind(context, title) }
-                    >
-                        {title[0]}
-                    </CardText>
-                </Card>
-            )
-        });
+        const h3TableHeader = {
+            fontSize: "2.086vh", 
+            fontFamily: "ITCFranklinGothicStd-DmCd",
+            margin: "0px",
+            fontWeight: "300",
+            textTransform: "uppercase",
+            letterSpacing: "1px"
+        };
 
-        var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
+        const h3TableHeader_2 = {
+            color: (this.state.type !== "Funnel" ? "black" : "lightgrey"),
+            fontSize: "2.086vh", 
+            fontFamily: "ITCFranklinGothicStd-DmCd",
+            margin: "0px",
+            fontWeight: "300",
+            textTransform: "uppercase",
+            letterSpacing: "1px"
+        };
+
+        const dropDownSize = {
+            minHeight: "5.4vh",
+            minWidth: "17.2vw",
+            outline: "none"
+        };
+
+        const cursor_no = {
+            minHeight: "5.4vh",
+            minWidth: "17.2vw",
+            outline: "none",
+            cursor: "not-allowed"
+        };
+        
+       /*  var flippedCSS = (this.state.flipped ? " Card-Back-Flip" : " Card-Front-Flip");
         if (!this.state.clicked) flippedCSS =  "";
 
         var backButton = (
@@ -465,182 +575,105 @@ class ViewsManager extends React.Component {
                     lineHeight: '30px'
                 }}
             />
-        );
+        ); */
 
         return(
-            <div>
-                <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.headerBackground, marginBottom: "3px", borderRadius: "2px", paddingBottom: "4px" }} >
-                    <div 
-                        style = {{ 
-                            color: this.props.settings.colors.overviewButtonsColor.text, 
-                            margin: "0 auto",
-                            width: "128px", 
-                            paddingTop: "4px",
-                            fontSize: "18px"
-                        }}
-                        className = "noselect"
-                    > 
-                        Views Manager
-                    </div>
-                </div>
+            <div style={{height:"100%", overflowY: "hidden"}}>
 
-                <Stepper 
-                    activeStep = { this.state.stepIndex } 
-                    style = {{ 
-                        borderTopRightRadius: "3px", 
-                        borderTopLeftRadius: "3px", 
-                        height: "60px", 
-                        backgroundColor: this.props.settings.colors.homePageColors.subBackground 
-                    }} 
-                >
-                    <Step>
-                        <StepLabel
-                            icon = { 
-                                (this.state.stepIndex === 0 ?
-                                    <span className = "fa-stack fa-lg noselect">
-                                        <i 
-                                            className = "fa fa-circle fa-stack-2x" 
-                                            style = {{     
-                                                fontSize: "26px",
-                                                color: this.props.settings.colors.overviewButtonsColor.background,
-                                                margin: "5px 0px 0px 0px"
-                                            }} 
-                                        />
-                                        <div className = "fa-stack-1x" style = {{ fontSize: "14px", color: this.props.settings.colors.overviewButtonsColor.text, margin: "-1px 0px 0px" }} > 1 </div>
-                                    </span> 
-                                :
-                                    <span className = "fa-stack fa-lg noselect">
-                                        <i 
-                                            className = "fa fa-circle fa-stack-2x" 
-                                            style = {{ fontSize: "23px", color: "#ffffff", margin: "6px 0px 0px 0px" }} 
-                                        />
-                                        <i 
-                                            className = "fa fa-check-circle fa-stack-1x" 
-                                            style = {{     
-                                                fontSize: "27px",
-                                                color: this.props.settings.colors.overviewButtonsColor.background,
-                                                margin: "-1px 7px 0px 0px"
-                                            }} 
-                                        />
-                                    </span>
-                                )
-                            } 
-                    >
-                        <label className = "noselect" style = {{ color: "#ffffff" }} > Select a Category </label>
-                    </StepLabel>
-                    </Step>
+                    {/* <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} > */}
+                <Flexbox style={{/*height: "117vh", display: "inline-flex" */backgroundColor: "#e6e7e8", paddingLeft: "25px"}}>
+                        <div>
 
-                    <Step>
-                        <StepLabel
-                            icon = {
-                                <span className = "fa-stack fa-lg noselect">
-                                    <i 
-                                        className = "fa fa-circle fa-stack-2x" 
-                                        style = {{     
-                                            fontSize: "26px",
-                                            color: (this.state.stepIndex === 1 ? this.props.settings.colors.overviewButtonsColor.background : "grey" ),
-                                            margin: "5px 0px 0px 0px",
-                                        }} 
-                                    />
-                                    <div className = "fa-stack-1x" style = {{ fontSize: "14px", color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ), margin: "-1px 0px 0px" }} > 2 </div>
-                                </span> 
-                            }
-                            style = {{ marginRight: "8px" }}
-                        >
-                            <label className = "noselect" style = {{ color: ( this.state.stepIndex === 0 ? "#bdbdbd" : "#ffffff" ) }} > Select a View </label>
-                        </StepLabel>
-                    </Step>
-                </Stepper>
-
-                    <ExpandTransition loading = { this.state.loading } open = { true } style = {{ overflow: "auto", height: "100%" }} >
-
-                        <div style = {{ backgroundColor: this.props.settings.colors.homePageColors.subBackground, borderBottomRightRadius: "3px", borderBottomLeftRadius: "3px" }} >
-
-                            <div style = {{ height: (this.state.type === "My Views" ? "" : "350px") }} >
-                                <div 
-                                    className = "Card" 
+                            <div style = {{ clear: "both", height:"100%"/* (this.state.type === "My Views" ? "" : *//* ) */ /* , display: "block" */ }} >
+                               {/*  <div 
+                                    className = "Card column-left" 
                                     style = {{ 
-                                        marginBottom: "0px", 
-                                        width: "100%", 
                                         display: (this.state.stepIndex === 0 ? "" : "none"),
                                         //marginTop: (this.state.type === "MarketingAndRecruiting" || this.state.type === "Admissions" || this.state.type === "FinancialAid" || this.state.type === "Custom" ? "-250px" : "0px")
                                     }} 
-                                >
-                                    <div className = { "Card-Front" + flippedCSS } style = {{ width: "100%" }} > 
-
-                                        <div onClick = { (mandrList.length > 0 ? () => this.flip("MarketingAndRecruiting") : null) } className = { mandrList.length > 0 ? "noselect" : "cursorDefault noselect" } style = {{ marginTop: "20px" }} >
-                                            <img src = { (mandrList.length > 0 ? "./Res/Img/funnel-layer1-color.png" : "./Res/Img/funnel-layer1-grey.png") } alt = "MARKETING &amp; RECRUITING" className = "nodrag" draggable = { false } />
-                                        </div>
-
-                                        <div onClick = { (admList.length > 0 ? () => this.flip("Admissions") : null) } className = { admList.length > 0 ? "noselect" : "cursorDefault noselect"} >
-                                            <img src = { (admList.length > 0 ? "./Res/Img/funnel-layer2-color.png" : "./Res/Img/funnel-layer2-grey.png") } alt = "ADMISSIONS" className = "nodrag" draggable = { false } />
-                                        </div>
-
-                                        <div onClick = { (faList.length > 0 ? () => this.flip("FinancialAid") : null) } className = { faList.length > 0 ? "noselect" : "cursorDefault noselect"} >
-                                            <img src = { (faList.length > 0 ? "./Res/Img/funnel-layer3-color.png" : "./Res/Img/funnel-layer3-grey.png")  } alt = "FINANCIAL AID" className = "nodrag" draggable = { false } />
-                                        </div>
-
-                                        <div onClick = { (customList.length > 0 ? () => this.flip("Custom") : null) } className = { customList.length > 0 ? "noselect" : "cursorDefault noselect"} >
-                                            <img src = { (customList.length > 0 ? "./Res/Img/funnel-layer4-color.png" : "./Res/Img/funnel-layer4-grey.png") } alt = "CUSTOM" className = "nodrag" draggable = { false } />
-                                        </div>
+                                > */}
+                                    <div
+                                    id = "tabular-data"
+                                    style = {{ 
+                                        float: "left", 
+                                        backgroundColor: "#e6e7e8",
+                                        padding: "2.7vh 9.1vh 2.4vh 0px",
+                                        }} > 
+                                        <h3 style={h3TableHeader}>
+                                            <img 
+                                            style={{
+                                                verticalAlign: "middle", 
+                                                marginRight: "1.043vh", 
+                                                height: "3.024vh"}} 
+                                            alt="First Step"
+                                            src="./Res/Img/1@2x.png"/>
+                                            Choose A Topic
+                                        </h3>
+                                        <br/>
+                                        <select 
+                                            className="custom-select" 
+                                            id="custom-select" 
+                                            style={dropDownSize} 
+                                            onChange={e => {this.selectTopic(e.target.value)}}
+                                        >
+                                            <option style={styleForFirstViewSelect}>Select A Topic</option>
+            
+                                            {Object.keys(this.props.funnelData).map((t,i) => 
+                                                <option 
+                                                className = {
+                                                    `${(this.props.funnelData[t].length > 0 ? "noselect" : "cursorDefault noselect")} main-category-select light`}
+                                                style={styleForFirstViewSelect}
+                                                key={i} value={t}>{t}</option>)
+                                            }
+                                        </select>
 
                                     </div>
-                                    <div className = { "Card-Back" + flippedCSS } style = {{ padding: "0px 20px", marginTop: "-320px", height: "315px" }} >
 
-                                        <Flexbox flexDirection = "column" alignSelf = "center"  style = {{ height: "100%", width: "100%" }}>
-                                            <Flexbox style = {{ alignItems: "center", height: "100%", margin: "0 auto" }} >
-                                                {this.state.type === "MarketingAndRecruiting" ? <div> {marketingAndRecruiting} {backButton} </div> 
-                                                    : (this.state.type === "Admissions" ? <div> {admissions} {backButton} </div> 
-                                                        : (this.state.type === "FinancialAid" ? <div> {financialAid} {backButton} </div> 
-                                                            : (this.state.type === "Custom" ? <div> {custom} {backButton} </div> : null)
-                                                        )
-                                                    )
-                                                }
-                                            </Flexbox>
+                                    {/*this is where the 2nd modal pops up after initial selection */}
+                                    <div 
+                                        id = "tabular-data-2"
+                                        style = {{ 
+                                            float: "right",
+                                            backgroundColor: "#e6e7e8",
+                                            padding: "2.7vh 0px 2.4vh 0px"
+                                    }}>
+                                        <h3 style={h3TableHeader_2}>
+                                            <img style={{
+                                                verticalAlign: "middle", 
+                                                marginRight: "1.043vh",
+                                                height: "3.024vh"}}
+                                            alt="Second Step" 
+                                            src="./Res/Img/2@2x.png"/> 
+                                            Choose An Inquiry
+                                        </h3>
+                                        <br/>
+                                        <Flexbox>
+                                       
+                                            {
+                                                this.state.type !== "Funnel" ? 
+                                                    (<select 
+                                                        style={dropDownSize} 
+                                                        onChange={(e => this.selectInquiry(e.target.value))}
+                                                        > {this.injectOption()}
+                                                            {new_funnel_data[this.state.type].map((t) => 
+                                                                <option 
+                                                                className = "noselect second-view-selection"
+                                                                style = {styleForSecViewSelect} 
+                                                                key={t} value={t}>{t[0]}</option>)}
+                                                    </select>)
+                                                   
+                                            : <select disabled style={cursor_no}><option>—</option></select>
+                                            }
                                         </Flexbox>
                                     </div>
-
-                                </div>
                                 
-                                {this.state.type === "My Views" ? <MyViews onSavedViewSelect={(savedViewObj,callback) => this.onSavedViewSelect(savedViewObj,callback)}/> : null}
-
-                                <FlatButton
-                                    label = "Back"
-                                    backgroundColor = "#dcdcdc"
-                                    onClick = { this.handlePrev }
-                                    style = {{ display: (this.state.stepIndex === 1 && this.state.type === "My Views" ? "auto" : "none"), margin: "5px 12px 0px 11px", bottom: "10px" }}
-                                />
-
-                                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL } onLaunch={(extra,callback) => this.onLaunch(extra,callback) }/>
                             </div>
-
-                            {this.state.stepIndex === 0 ? 
-                                <div style = {{ margin: "0 auto", width: "70%" }} >
-                                    <RaisedButton 
-                                        label = "My Views"
-                                        style = {{ width: "100%", marginBottom: "17px" }}
-                                        buttonStyle = {{
-                                            height: '50px',
-                                            lineHeight: '50px',
-                                            backgroundColor: this.props.settings.colors.buttons.general
-                                        }} 
-                                        labelStyle = {{
-                                            fontSize: '14px',
-                                            color: this.props.settings.colors.overviewButtonsColor.text,
-                                            margin: "0px 0px 0px -3px",
-                                            paddingLeft: "0px",
-                                            paddingRight: "0px"
-                                        }}
-                                        overlayStyle = {{ height: '50px', lineHeight: '50px' }}
-                                        onClick = { this.handleNext.bind(this, "My Views") }
-                                        primary = { true } 
-                                    />
-                                </div>
-                                : 
-                                null
-                            }
                         </div>
-                    </ExpandTransition>
+                    
+                </Flexbox>
+                <AllViewsModal type = { this.state.selectionType } typeURL = { this.state.selectionTypeURL }
+                        onLaunch={(extra,callback) => {this.onLaunch(extra,callback)} }/>
+                    {/* </ExpandTransition> */}
             </div>
         );
     }
@@ -664,7 +697,8 @@ const mapStateToProps = function(state) {
   return {
     settings: state.filterState.Settings,
     funnelData: state.filterState.FunnelData,
-    storedViews: state.filterState.StoredViews
+    storedViews: state.filterState.StoredViews,
+    uid: state.filterState.uid
   }
 }
 
@@ -672,6 +706,11 @@ export const setCurrentVizParams = (vizParams) => ({
    type: 'SET_VIZ_PARAMS',
    vizParams,
 });
+
+export const setLegendUrlArr = (arr) => ({
+    type: 'SET_LEGEND_URL_ARR',
+    arr,
+ });
 
 
 /**

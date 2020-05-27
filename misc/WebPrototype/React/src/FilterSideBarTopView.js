@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
 import Promise from 'bluebird';
 import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
@@ -11,19 +10,19 @@ import Flexbox from 'flexbox-react';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import FilterSummaryView from './FilterSummaryView.js';
+import Tooltip from 'rc-tooltip';
 import OldSelect from 'react-select';
-import Select from 'react-styled-select'
+import Select from 'react-select'
 import Snackbar from 'material-ui/Snackbar';
+import { makeServerCall } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
+import FilterSummaryView from './FilterSummaryView.js';
 import SelectedAndFilteredDisplay from './SelectedAndFilteredDisplay.js';
 import XYZRemapModal from './XYZRemapModal.js';
-import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import './FilterSideBar.css';
 import 'react-select/dist/react-select.min.css';
-import './General.css';
-
-
+import './css/FilterSideBar.css';
+import './css/General.css';
 
 
 /**
@@ -38,7 +37,7 @@ class FilterSideBarTopView extends React.Component {
         super(props);
 
         var tableSelectItems = [];
-        if (typeof props.VizParams.tableName != 'array') {
+        if (!Array.isArray(props.VizParams.tableName)) {
             tableSelectItems.push({ label: props.VizParams.tableName, value: props.VizParams.tableName });
         }
         else {
@@ -66,13 +65,16 @@ class FilterSideBarTopView extends React.Component {
             deleteDailogOpen: false,
             deleteDialogLabel: 'Are you sure you want to delete ; ?',
             selectedData: [],
-            multiTable: false
+            multiTable: false,
+            statisticsSelectBoth: false
         };
     }
     
     componentWillReceiveProps(nextProps) {
-        debugger;
-        if (nextProps.storedViews.savedViews != this.props.storedViews.savedViews || nextProps.VizParams.query != nextProps.RecentVizDropdown.query || this.props.RecentVizDropdown != nextProps.RecentVizDropdown) {
+        // debugger;
+        if (nextProps.storedViews.savedViews !== this.props.storedViews.savedViews || 
+            nextProps.VizParams.query !== nextProps.RecentVizDropdown.query || 
+            this.props.RecentVizDropdown !== nextProps.RecentVizDropdown) {
             var convertedViewSelectItems = this.convertToSelectFormat(nextProps.storedViews.savedViews, nextProps.RecentVizDropdown);
             this.setState({ viewSelectItems: convertedViewSelectItems, tableSelectValues: [nextProps.VizParams.tableName] });
         }
@@ -86,17 +88,17 @@ class FilterSideBarTopView extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.state != nextState || 
-            this.props.initParams != nextProps.initParams || 
-            this.props.settings != nextProps.settings || 
-            this.props.filterIDs != nextProps.filterIDs || 
-            this.props.tableData != nextProps.tableData || 
-            this.props.statData != nextProps.statData || 
-            this.props.RecentVizDropdown != nextProps.RecentVizDropdown || 
-            this.props.statisticDisplay != nextProps.statisticDisplay || 
-            this.props.initialX != nextProps.initialX || 
-            this.props.initialY != nextProps.initialY || 
-            this.props.initialZ != nextProps.initialZ 
+        return (this.state !== nextState || 
+            this.props.initParams !== nextProps.initParams || 
+            this.props.settings !== nextProps.settings || 
+            this.props.filterIDs !== nextProps.filterIDs || 
+            this.props.tableData !== nextProps.tableData || 
+            this.props.statData !== nextProps.statData || 
+            this.props.RecentVizDropdown !== nextProps.RecentVizDropdown || 
+            this.props.statisticDisplay !== nextProps.statisticDisplay || 
+            this.props.initialX !== nextProps.initialX || 
+            this.props.initialY !== nextProps.initialY || 
+            this.props.initialZ !== nextProps.initialZ 
         );
         
         /*
@@ -122,9 +124,9 @@ class FilterSideBarTopView extends React.Component {
 	 */
     componentDidMount() {
 
-        debugger;
+        // debugger;
 
-        if (this.props.RecentVizDropdown == null || this.props.RecentVizDropdown == undefined) {
+        if (this.props.RecentVizDropdown === null || this.props.RecentVizDropdown === undefined) {
             this.props.dispatch( setRecentVizDropdown( this.props.VizParams ));
             this.setState({ viewSelectItems: this.convertToSelectFormat(this.props.storedViews.savedViews, this.props.VizParams) });
         }
@@ -133,7 +135,7 @@ class FilterSideBarTopView extends React.Component {
         }
 
 
-        if (this.state.tableSelectItems.length == 1) {
+        if (this.state.tableSelectItems.length === 1) {
             this.setState({
                 tableSelectValues: this.state.tableSelectItems[0].value
             });
@@ -162,26 +164,27 @@ class FilterSideBarTopView extends React.Component {
      * @param {array} obj: The object passed as prop containing the view select values;
      */
     convertToSelectFormat(arrViewSelect, recentVizDropdown) {
-        var viewSelectItems = [];
+        /* var viewSelectItems = []; */
         var arrReturn = [];
 
-        debugger;
+        // debugger;
 
-        if (this.props.RecentVizDropdown != this.props.VizParams && (this.props.RecentVizDropdown != null || this.props.RecentVizDropdown != undefined)) {
-            if (recentVizDropdown != null) {
+        if (this.props.RecentVizDropdown !== this.props.VizParams && 
+            (this.props.RecentVizDropdown !== null || this.props.RecentVizDropdown !== undefined)) {
+            if (recentVizDropdown !== null) {
                 arrReturn.push({label: "RECENT: " + recentVizDropdown.originalVizName, value: "RECENT_VIZ_DROPDOWN" });
-                debugger;
+                // debugger;
             }
             else {
                 arrReturn.push({label: "RECENT: " + this.props.RecentVizDropdown.originalVizName, value: "RECENT_VIZ_DROPDOWN" });
-                debugger;
+                // debugger;
             }
         }
 
         // Set the Saved Views data to the store.
         var savedViews = arrViewSelect ? arrViewSelect : [];
         for (var index = 0; index < savedViews.length; index++) {;
-            if (savedViews[index].OriginalVizName == this.props.VizParams.originalVizName) {
+            if (savedViews[index].OriginalVizName === this.props.VizParams.originalVizName) {
                 arrReturn.push(
                     {
                         label: savedViews[index].Name, value: savedViews[index].ID
@@ -290,7 +293,7 @@ class FilterSideBarTopView extends React.Component {
             // Check if same name view already exists
             context.state.viewSelectItems.forEach(
                 function(element) {
-                    if (element.label == viewName ) {
+                    if (element.label === viewName ) {
                         nameAlreadyExists = true;
                     }
                 }
@@ -304,7 +307,7 @@ class FilterSideBarTopView extends React.Component {
             else {
                 
                 // Save the view
-                var id = context.saveView(context,viewName,true);
+                context.saveView(context,viewName,true);
                 
             }
         }
@@ -329,7 +332,7 @@ class FilterSideBarTopView extends React.Component {
         var fef = this.props.VizParams.frontEndFilters;
         var filterObj = JSON.parse(JSON.stringify(this.props.filter));
         var colName = "";
-        var values;
+        /* var values; */
         var finalFilterObj={};
         
         var query = "SELECT * FROM " + this.props.VizParams.tableName + " WHERE ";
@@ -392,12 +395,13 @@ class FilterSideBarTopView extends React.Component {
             }
         }
 		
-		var currentDate = new Date();
+        var currentDate = new Date();
+        
         makeServerCall('saveView',
             function(res ,b, c) {
             // Hide the loadmask.
                 
-                if (typeof res == 'string') {
+                if (typeof res === 'string') {
                     res = JSON.parse(res);
                 }
                 
@@ -475,14 +479,15 @@ class FilterSideBarTopView extends React.Component {
      */
     applyFilter = () => {
         //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
+        if(!this.props.uid){
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -499,8 +504,7 @@ class FilterSideBarTopView extends React.Component {
 				}
 
                 context.props.setFilterIDs(tempRowIds);
-
-                iframe.filterGlyphs(tempRowIds);
+                if(!context.props.uid) iframe.filterGlyphs(tempRowIds);
 
                 context.props.dispatch( setTimer(new Date().getTime()) );
             },
@@ -509,6 +513,39 @@ class FilterSideBarTopView extends React.Component {
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
             }
         );
+        
+        makeServerCall('applyFiltersEC2',
+            function(result, b) {
+                var resultJson = JSON.parse(result);
+                // debugger;
+                console.log(resultJson, 'applyFilters');
+                // var data = resultJson.data;
+                // var tempRowIds = [];
+                
+				// if (data && Array.isArray(data)) {
+				// 	if (data.length > 0) {							
+				// 		for (var index = 0; index < data.length; index++) {
+				// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+				// 		}
+				// 	}
+				// 	else {
+				// 		// No data was matched.
+				// 		console.log('NO MATCH');
+				// 	}
+				// }
+
+                // context.props.setFilterIDs(tempRowIds);
+
+                // iframe.filterGlyphs(tempRowIds);
+
+                // context.props.dispatch( setTimer(new Date().getTime()) );
+            },
+            {
+                post: true, 
+                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filter } 
+            }
+            );
+        }
     };
 
 
@@ -518,9 +555,9 @@ class FilterSideBarTopView extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
-        if (!(JSON.stringify(undoRedoHistory.history[undoRedoHistory.history.length - 1]) == JSON.stringify({filterList: this.props.filter, tableData: this.props.tableData})) ) {
+        if (!(JSON.stringify(undoRedoHistory.history[undoRedoHistory.history.length - 1]) === JSON.stringify({filterList: this.props.filter, tableData: this.props.tableData})) ) {
 
             if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
                 undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -540,18 +577,18 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onSelectViewChange = (value) => {
 
-        debugger;
+        // debugger;
 
         this.setState({ viewSelectValue: value });
         //console.log(value);
 
-        if (value != "RECENT_VIZ_DROPDOWN") {
+        if (value !== "RECENT_VIZ_DROPDOWN") {
 
             // Load Filters!
             var savedVizObj;
 
             this.props.storedViews.savedViews.forEach(function(v) {
-                if (v.ID == value) {
+                if (v.ID === value) {
                     savedVizObj = v;
                 }
             })
@@ -569,13 +606,13 @@ class FilterSideBarTopView extends React.Component {
             var context = this;
             var flag = true;
 
-            debugger;
+            // debugger;
         
             for (var keyIndex = 0; keyIndex < keys.length && flag;keyIndex++) {
                 funnelData = this.props.funnelData[keys[keyIndex]];
         
                 for(var index = 0; index < funnelData.length; index++) {
-                    if (funnelData[index][0] == originalVizName) {
+                    if (funnelData[index][0] === originalVizName) {
                         path = funnelData[index][1];
                         flag = false;
                         break;
@@ -618,6 +655,44 @@ class FilterSideBarTopView extends React.Component {
 
                     // Hide mask
                     context.props.showHideLoadingMask(false);
+                }
+            );
+
+            makeServerCall('frontEndFiltersEC2',
+                function (responseText) {
+                    var response = JSON.parse(responseText);
+                    console.log(response, 'response from fetch ec2 sqlite filters in sidebar top view');
+                    // Post the new data to the state and hide the window load-mask
+                    // context.props.dispatch(
+                    //     setCurrentVizParams(
+                    //         {
+                    //             tableName: response.tableName,
+                    //             datasourceId: response.datasourceId ,
+                    //             query: query,
+                    //             originalVizName:originalVizName,
+                    //             filterAllowedColumnList:  response.filterAllowedColumnList,
+                    //             sdtPath: sdtPath,
+                    //             savedViz: true,
+                    //             vizID:savedVizObj.ID,
+                    //             savedVizName: savedVizObj.Name,
+                    //             frontEndFilterString: savedVizObj.frontEndFilterString
+                    //         }
+                    //     )
+                    // );
+
+                    // context.props.dispatch( setTimer(new Date().getTime()) );
+
+                    // //context.props.history.push('/glyph-viewer');
+                    // context.props.reloadParent();
+
+                    // // Hide mask
+                    // context.props.showHideLoadingMask(false);
+                },
+                {
+                    post: true,
+                    data: {
+                        key: sdtPath
+                    }
                 }
             );
         }
@@ -671,7 +746,7 @@ class FilterSideBarTopView extends React.Component {
     * @param value: - ADCMT
 	*/
     onSelectStatisticStatChange = (value) => {
-        this.setState({ statisticStatSelectValues: value });
+        this.setState({ statisticStatSelectValues: value, statisticsSelectBoth: false });
         //console.log(value);
 
         // Load Table Columns
@@ -683,7 +758,7 @@ class FilterSideBarTopView extends React.Component {
     * @param value: - ADCMT
 	*/
     onSelectStatisticColChange = (value) => {
-        this.setState({ statisticColSelectValues: value });
+        this.setState({ statisticColSelectValues: value, statisticsSelectBoth: false });
         //console.log(value);
 
         // Load Table Columns
@@ -700,10 +775,12 @@ class FilterSideBarTopView extends React.Component {
         var columnsFilterApplied = filterSummaryView.refs;
         //filterSummaryView.handleRowDel('StaffAssigned');
         
-		var iframe = document.getElementById('GlyphViewer').contentWindow;
+        var iframe;
+        if(!context.props.uid) {
+            iframe = document.getElementById('GlyphViewer').contentWindow;
+            iframe.filterGlyphs([]);
+        }
         //iframe.postMessage({action:'clear'}, '*');
-        iframe.filterGlyphs([]);
-
 
         // let pom = new Promise(function (resolve, reject) {
         //     for (var property in columnsFilterApplied) {
@@ -714,7 +791,7 @@ class FilterSideBarTopView extends React.Component {
 
         // pom.then(() => this.props.refreshParent());
 
-        debugger;
+        // debugger;
 
         let pom = new Promise(function (resolve, reject) {
                 for (var property in columnsFilterApplied) {
@@ -733,20 +810,23 @@ class FilterSideBarTopView extends React.Component {
     * @param event: - ADCMT
 	*/
     onHideFilteredData = (event) => {
-        debugger;
+        // debugger;
         if (this.props.filterIDs !== null) {
             var buttonState = !this.state.hideShowButtonTextFlag;
             this.setState({ hideShowButtonTextFlag: buttonState });
 
-            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            var iframe;
+            if(!this.props.uid){
+            iframe = document.getElementById('GlyphViewer').contentWindow;
             
             // If the flag true then hide
-            if (buttonState) {
-                iframe.filterGlyphs(this.props.filterIDs);
-            }
-            else {
-                // Show all the glyphs
-                iframe.filterGlyphs([]);
+                if (buttonState) {
+                    iframe.filterGlyphs(this.props.filterIDs);
+                }
+                else {
+                    // Show all the glyphs
+                    iframe.filterGlyphs([]);
+                }
             }
         }
     };
@@ -806,7 +886,7 @@ class FilterSideBarTopView extends React.Component {
         }
 
         this.state.viewSelectItems.forEach(function(v){
-            if(v.value == context.state.viewSelectValue)
+            if(v.value === context.state.viewSelectValue)
                 viewName = v.label;
         })
         
@@ -825,9 +905,10 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onSelectedDataClick = (event) => {
         //var IDs = document.getElementById("GlyphViewer").contentWindow.getSelectedGlyphIDs();
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
-        var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
-
+        if(!this.props.uid){
+            var iframe = document.getElementById('GlyphViewer').contentWindow;
+            var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
+        }
         var context = this;
 
         // Get the data corresponding to the URL
@@ -858,15 +939,15 @@ class FilterSideBarTopView extends React.Component {
 	*/
     onFilteredDataClick = (event) => {
         //var IDs = document.getElementById("GlyphViewer").contentWindow.getSelectedGlyphIDs();
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
-        var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
+        // var iframe = document.getElementById('GlyphViewer').contentWindow;
+        // var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + this.props.VizParams.tableName + "&rowIds=[" + iframe.getSelectedGlyphIDs().toString() + "]";
 
         var context = this;
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -884,7 +965,7 @@ class FilterSideBarTopView extends React.Component {
 
                 var selectedGlyphsURL = "fetchSelectedVizData?tableName=" + context.props.VizParams.tableName + "&rowIds=[" + tempRowIds.toString() + "]";
 
-                debugger;
+                // debugger;
 
                 //makeServerCall(window.encodeURI(selectedGlyphsURL),
                 makeServerCall(selectedGlyphsURL,
@@ -940,7 +1021,7 @@ class FilterSideBarTopView extends React.Component {
             position: this.props.UndoRedoHistory.position + 1,
         };
 
-        debugger;
+        // debugger;
         var context = this;
         
         if (newHistory.position < newHistory.history.length) {
@@ -971,7 +1052,7 @@ class FilterSideBarTopView extends React.Component {
             position: this.props.UndoRedoHistory.position - 1,
         };
 
-        debugger;
+        // debugger;
         var context = this;
         
         if (newHistory.position > -1) {
@@ -1036,7 +1117,15 @@ class FilterSideBarTopView extends React.Component {
         }
     }
 
-	
+    desktopClearFilters(){
+        if(this.props.uid){
+            this.props.webSocket.send(JSON.stringify({
+                url_uid: this.props.uid,
+                clear_all: true
+            }));
+        }
+    }
+
 	render = () => {
         
         //var statisticStatSelectItems = ["Count", "Min", "Max", "Mean", "Median", "Mode", "Sum", "Range", "St. Dev.", "Variance", "Skewness", "Kurtosis"];
@@ -1049,25 +1138,25 @@ class FilterSideBarTopView extends React.Component {
 			return({ label: value, value: value });
 		});
 
-        debugger;
+        // debugger;
 
         var statDataKeys = Object.keys(this.props.statData);
         var sameList = true;
 
-        if (statDataKeys.length != this.props.colList.length) {
+        if (statDataKeys.length !== this.props.colList.length) {
             sameList = false;
         }
         else {
             for (var i = 0; i < statDataKeys.length; i++) {
-                if (statDataKeys.indexOf(this.props.colList[i]) == -1) {
+                if (statDataKeys.indexOf(this.props.colList[i]) === -1) {
                     sameList = false;
                     break;
                 }
             }
         }
 
-        if (statDataKeys.length != 0 && sameList) {
-            debugger; //WOOOOOOOOOOOOOOOOO
+        if (statDataKeys.length !== 0 && sameList) {
+            // debugger; //WOOOOOOOOOOOOOOOOO
             for (var i = statisticColSelectItems.length -1; i > -1; i--) {
                 var colKeys = Object.keys(this.props.statData[statisticColSelectItems[i].value].values)
                 if (isNaN(this.props.statData[statisticColSelectItems[i].value].values[colKeys[0]].value)) {
@@ -1076,7 +1165,6 @@ class FilterSideBarTopView extends React.Component {
             }
         }
         
-		
 		return(
             <Flexbox flexDirection = "column" id = "TopView" style = {{ height: "100%" }}>
 
@@ -1098,8 +1186,8 @@ class FilterSideBarTopView extends React.Component {
                 />
 
                 {/* Row 1 */} 
-                <Flexbox flexDirection = "row" style = {{ margin: "-9px 0px -2px -1px" }} >
-                    <Flexbox style = {{ width: "55%", margin: "1px 6px 0px 0px" }} > 
+                <Flexbox flexDirection = "row" style = {{ margin: "-0.938vh 0px -0.209vh -0.104vh" }} >
+                    <Flexbox style = {{ width: "55%", margin: "0.104vh 0.626vh 0px 0px" }} > 
                         <Select 
                             className = "selectViewName dark-theme"
                             simpleValue
@@ -1107,14 +1195,11 @@ class FilterSideBarTopView extends React.Component {
                             placeholder = "Select a view" 
                             options = { this.state.viewSelectItems } 
                             onChange = { this.onSelectViewChange } 
-                            style = {{
-                                margin: "-11px 0px 0px 0px"
-                            }}
                             onOpen = { () => this.props.handleDraggableCorrection(true, true) }
                         />
                     </Flexbox>
                     
-                    <Flexbox style = {{ width: "45%", marginBottom: "-4px" }} >
+                    <Flexbox style = {{ width: "45%", marginBottom: "-0.417vh" }} >
 
                         {/*
 
@@ -1137,32 +1222,32 @@ class FilterSideBarTopView extends React.Component {
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
                                 <div> 
-                                    Undo Filter Action
+                                    Undo Filter
                                 </div> 
                             }
                         >
                             <RaisedButton
                                 onClick = { () => this.handleUndo() }
-                                label = { <i className = "fa fa-undo" style = {{ margin: "0px 0px 0px -3px" }} /> }
+                                label = { <i className = "fa fa-undo" style = {{ margin: "0px 0px 0px -0.313vh" }} /> }
                                 style = {{
-                                    margin: "4px 6px 11px -2px",
-                                    minWidth: "37px",
-                                    width: "37px",
-                                    height: "25px"
+                                    margin: "0.417vh 0.626vh 1.147vh -0.209vh",
+                                    minWidth: "1.9vw",
+                                    width: "1.9vw",
+                                    height: "2.607vh"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: "2.607vh",
+                                    lineHeight: "2.607vh",
                                     //backgroundColor: ( this.canUndoRedo("undo") ? this.props.settings.colors.collapsibleColor.subBackground : "#bebebe" )
                                     backgroundColor: this.props.settings.colors.collapsibleColor.subBackground
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '13px',
+                                    fontSize: "1.356vh",
                                     color: this.props.settings.colors.overviewButtonsColor.text
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                                 primary = { true }
                             />
@@ -1176,32 +1261,32 @@ class FilterSideBarTopView extends React.Component {
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
                                 <div> 
-                                    Redo Filter Action
+                                    Redo Filter
                                 </div> 
                             }
                         >
                             <RaisedButton
                                 onClick = { () => this.handleRedo() }
-                                label = { <i className = "fa fa-repeat" style = {{ margin: "0px 0px 0px -3px" }} /> }
+                                label = { <i className = "fa fa-repeat" style = {{ margin: "0px 0px 0px -0.313vh" }} /> }
                                 style = {{
-                                    margin: "4px 2px 0px 0px",
-                                    minWidth: "37px",
-                                    width: "37px",
-                                    height: "25px"
+                                    margin: "0.417vh 0.209vh 0px 0px",
+                                    minWidth: "1.9vw",
+                                    width: "1.9vw",
+                                    height: "2.607vh"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '35px',
+                                    height: '2.607vh',
+                                    lineHeight: '3.650vh',
                                     //backgroundColor: ( this.canUndoRedo("redo") ? this.props.settings.colors.collapsibleColor.subBackground : "#bebebe" )
                                     backgroundColor: this.props.settings.colors.collapsibleColor.subBackground
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '13px',
+                                    fontSize: '1.360vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: "2.607vh",
+                                    lineHeight: "2.607vh"
                                 }}
                                 primary = { true }
                             />
@@ -1221,25 +1306,25 @@ class FilterSideBarTopView extends React.Component {
                                 }
                             >
                                 <RaisedButton
-                                    onClick = { (evt) => this.handleOpenClose('menu', true, evt) }
+                                    onClick = { (evt) => {this.handleOpenClose('menu', true, evt); window.setTimeout(() => this.handleOpenClose('menu', false, evt), 12000)} }
                                     label = "Menu"
                                     style = {{
-                                        margin: "4px 0px 11px 4px",
-                                        minWidth: "112px",
-                                        width: "112px"
+                                        margin: "0.417vh 0px 1.147vh 0.417vh",
+                                        minWidth: "5.8vw",
+                                        width: "5.8vw"
                                     }}
                                     buttonStyle = {{
-                                        height: '25px',
-                                        lineHeight: '25px',
+                                        height: "2.607vh",
+                                        lineHeight: "2.607vh",
                                         backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                     }} 
                                     labelStyle = {{
-                                        fontSize: '13px',
+                                        fontSize: '1.360vh',
                                         color: this.props.settings.colors.overviewButtonsColor.text
                                     }}
                                     overlayStyle = {{
-                                        height: '25px',
-                                        lineHeight: '25px'
+                                        height: "2.607vh",
+                                        lineHeight: "2.607vh"
                                     }}
                                     primary = { true }
                                 />
@@ -1249,13 +1334,26 @@ class FilterSideBarTopView extends React.Component {
                                 open = { this.state.menu.open }
                                 anchorEl = { this.state.menu.anchorEl }
                                 onRequestClose = { (evt) => this.handleOpenClose('menu', false, evt) }
-                                style = {{ fontSize: '13px', width: "112px" }}
+                                style = {{ fontSize: '1.360vh', width: "11.691vw" }}
                             >
                                 <Menu>
-                                    <MenuItem primaryText = "New" className = "menuItemStyling" onClick = { this.onMenuNewClick }/>
-                                    <MenuItem primaryText = "Save" className = "menuItemStyling" onClick = { this.onMenuSaveClick }/>
-                                    <MenuItem primaryText = "Save As" className = "menuItemStyling" onClick = { this.onMenuSaveAsClick }/>
-                                    <MenuItem primaryText = "Delete" className = "menuItemStyling" onClick = { this.onMenuDeleteClick } disabled = {this.state.viewSelectValue === null || this.state.viewSelectValue === ""}/>
+                                    <MenuItem 
+                                        primaryText = "New" 
+                                        className = "menuItemStyling" 
+                                        onClick = { this.onMenuNewClick }/>
+                                    <MenuItem 
+                                        primaryText = "Save" 
+                                        className = "menuItemStyling" 
+                                        onClick = {() => this.onMenuSaveClick() }/>
+                                    <MenuItem 
+                                        primaryText = "Save As" 
+                                        className = "menuItemStyling" 
+                                        onClick = {() => this.onMenuSaveAsClick() }/>
+                                    <MenuItem 
+                                        primaryText = "Delete" 
+                                        className = "menuItemStyling" 
+                                        onClick = { this.onMenuDeleteClick } 
+                                        disabled = {this.state.viewSelectValue === null || this.state.viewSelectValue === ""}/>
                                 </Menu>
                             </Popover>
 
@@ -1263,10 +1361,10 @@ class FilterSideBarTopView extends React.Component {
                                 open = { this.state.menu.showOpen }
                                 anchorEl = { this.state.menu.showAnchorEl }
                                 onRequestClose = { (evt) => this.handleOpenClose('showMenu', false, evt) }
-                                style = {{ fontSize: '13px' }}
+                                style = {{ fontSize: '1.360vh' }}
                             >
                                 <Menu>
-                                    <Tooltip
+                                    {/* <Tooltip
                                         placement = 'left'
                                         mouseEnterDelay = { 0.5 }
                                         mouseLeaveDelay = { 0.15 }
@@ -1274,12 +1372,14 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                Select and monitor Statistics on Numeric Columns
+                                                Select and Monitor Statistics on Numeric Columns
                                             </div> 
                                         }
                                     >
-                                        <MenuItem primaryText = "Statistics" className = "menuItemStyling" onClick = { () => this.handleOpenClose('statistics', true) } />
-                                    </Tooltip>
+                                        <MenuItem primaryText = "Statistics" className = "menuItemStyling" 
+                                            onClick = { () => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-stats") : 
+                                                this.handleOpenClose('statistics', true)) } />
+                                    </Tooltip> */}
 
                                     <Tooltip
                                         placement = 'left'
@@ -1289,11 +1389,13 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                View data of Selected Glyphs in Table Format
+                                                View Data of Selected Glyphs
                                             </div> 
                                         }
                                     >
-                                        <MenuItem primaryText = "Selected Data" className = "menuItemStyling" onClick = { this.onSelectedDataClick.bind(this) } />
+                                        <MenuItem primaryText = "Selected Data" className = "menuItemStyling" 
+                                            onClick = {() => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-selected") : 
+                                                this.onSelectedDataClick.bind(this) )} />
                                     </Tooltip>
                                     <Tooltip
                                         placement = 'left'
@@ -1303,11 +1405,13 @@ class FilterSideBarTopView extends React.Component {
                                         trigger = { Object.keys( {hover: 1} ) }
                                         overlay = { 
                                             <div> 
-                                                View data of Currently Visible Glyphs in Table Format
+                                                View Data of Currently Visible Glyphs
                                             </div> 
                                         }
                                     >
-                                        <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" onClick = { this.onFilteredDataClick.bind(this) } />
+                                        <MenuItem primaryText = "Filtered Data" className = "menuItemStyling" 
+                                        onClick = {() => (this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, "view-filtered") : 
+                                            this.onFilteredDataClick.bind(this)) } />
                                     </Tooltip>
                                 </Menu>
                             </Popover>
@@ -1328,6 +1432,8 @@ class FilterSideBarTopView extends React.Component {
 
                             <Dialog
                                 title = "Save View"
+                                style = {{ marginTop: "-170px"}}
+                                contentStyle = {{ float: "right", maxWidth: "400px", margin: "0 31px 0 0"}}
                                 modal = { true }
                                 open = { this.state.saveDailogOpen }
                                 actions = {
@@ -1398,43 +1504,44 @@ class FilterSideBarTopView extends React.Component {
                 </Flexbox>
                 
                 {/* Row 3 */}
-                <Flexbox flexDirection = "row" alignContent = "space-between" style = {{ margin: this.state. multiTable ? "5px 0px" : "5px 0px -4px" }} >
+                <Flexbox flexDirection = "row" alignContent = "space-between" 
+                    style = {{ margin: this.state.multiTable ? "0.521vh 0px" : "0.521vh 0px -0.417vh" }} >
                     <Flexbox style = {{ width: "30%" }} > 
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            placement = 'bottom'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    Clears all filters currently applied
+                                <div style={{fontSize: "1.548vh"}}> 
+                                    Clear Current Filters
                                 </div> 
                             }
                         >
                             <RaisedButton 
-                                label = "Clear"
+                                label = "Clear All"
                                 style = {{
                                     width: "100%",
                                     minWidth: "0px"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh',
                                     backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '12px',
+                                    fontSize: '1.251vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
-                                    margin: "0px 0px 0px -3px",
+                                    margin: "0px 0px 0px -0.313vh",
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
-                                onClick = { this.onClearAllFilters }
+                                onClick = { () => {this.onClearAllFilters(); this.desktopClearFilters() }}
                                 primary = { true } 
                             />
                         </Tooltip>
@@ -1445,14 +1552,14 @@ class FilterSideBarTopView extends React.Component {
 
                     <Flexbox style = {{ width: "30%" }} >
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            placement = 'bottom'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    { this.state.hideShowButtonTextFlag ? "Show All Glyphs" : "Only show Non-Filtered Glyphs." }
+                                <div style={{fontSize: "1.548vh"}}> 
+                                    { this.state.hideShowButtonTextFlag ? "Show all Glyphs" : "Only Show Non-Filtered Glyphs." }
                                 </div> 
                             }
                         >
@@ -1464,20 +1571,20 @@ class FilterSideBarTopView extends React.Component {
                                     minWidth: "0px"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh',
                                     backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '12px',
+                                    fontSize: '1.251vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
 
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                                 onClick = { this.onHideFilteredData.bind(this) }
                                 primary = { true } 
@@ -1490,14 +1597,14 @@ class FilterSideBarTopView extends React.Component {
 
                     <Flexbox style = {{ width: "30%" }} >
                         <Tooltip
-                            placement = 'left'
-                            mouseEnterDelay = { 0.5 }
+                            placement = 'bottom'
+                            mouseEnterDelay = { 0.15 }
                             mouseLeaveDelay = { 0.15 }
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    Click to view a list of options
+                                <div style={{fontSize: "1.548vh"}}>  
+                                    View List of Options
                                 </div> 
                             }
                         >
@@ -1509,19 +1616,19 @@ class FilterSideBarTopView extends React.Component {
                                     minWidth: "0px"
                                 }}
                                 buttonStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px',
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh',
                                     backgroundColor: this.props.settings.colors.overviewButtonsColor.background
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '12px',
+                                    fontSize: '1.251vh',
                                     color: this.props.settings.colors.overviewButtonsColor.text,
                                     paddingLeft: "0px",
                                     paddingRight: "0px"
                                 }}
                                 overlayStyle = {{
-                                    height: '25px',
-                                    lineHeight: '25px'
+                                    height: '2.607vh',
+                                    lineHeight: '2.607vh'
                                 }}
                             />
                         </Tooltip>
@@ -1574,7 +1681,8 @@ class FilterSideBarTopView extends React.Component {
                             <FlatButton
                                 label = "Apply"
                                 primary = { true }
-                                onClick = { () => this.onApplyStatistics(this) }
+                                onClick = { () => {this.state.statisticColSelectValues && this.state.statisticStatSelectValues ? 
+                                    this.onApplyStatistics(this) : this.setState({statisticsSelectBoth: true}) }}
                                 style = {{ color: this.props.settings.colors.saveModalColor.saveButton }}
                             />,
                             <FlatButton
@@ -1587,7 +1695,7 @@ class FilterSideBarTopView extends React.Component {
                     } 
                 >
 
-                    <b>Select which columns to monitor:</b> <br />
+                    <b>Select which column(s) to monitor:</b> <br />
                     <OldSelect 
                         multi 
                         simpleValue
@@ -1600,7 +1708,7 @@ class FilterSideBarTopView extends React.Component {
                     <br />
                     <br />
 
-                    <b>Select which statistics to apply:</b> <br />
+                    <b>Select which statistic(s) to apply:</b> <br />
                     <OldSelect 
                         multi 
                         simpleValue
@@ -1609,16 +1717,21 @@ class FilterSideBarTopView extends React.Component {
                         options = { statisticStatSelectItems } 
                         onChange = { this.onSelectStatisticStatChange.bind(this) } 
                     />
+
+                    <div 
+                        style={{display: this.state.statisticsSelectBoth ? "" : "none"}}>
+                        <b>Select at least 1 column and statistic to apply.</b>
+                    </div>
                 </Dialog>
                 
                 {/* Row 4 */}
-                <Flexbox flexDirection = "row" style = {{ height: "31px", display: this.state.multiTable ? "" : "none" }} >
+                <Flexbox flexDirection = "row" style = {{ height: "3.233vh", display: this.state.multiTable ? "" : "none" }} >
                     <OldSelect 
                         multi 
                         className = "selectTableName dark-theme"
                         simpleValue
                         value = { this.state.tableSelectValues } 
-                        disabled = { this.state.tableSelectItems.length == 1 } 
+                        disabled = { this.state.tableSelectItems.length === 1 } 
                         placeholder = "Select your table(s)" 
                         options = { this.state.tableSelectItems } 
                         onChange = { this.onSelectTableChange.bind(this) } 
@@ -1686,7 +1799,9 @@ const mapStateToProps = function(state){
 	VizParams: state.filterState.VizParams,
     UndoRedoHistory: state.filterState.UndoRedoHistory,
     statData: state.filterState.StatisticsData,
-    RecentVizDropdown: state.filterState.RecentVizDropdown
+    RecentVizDropdown: state.filterState.RecentVizDropdown,
+    uid: state.filterState.uid,
+    webSocket: state.filterState.webSocket
   }
 };
 

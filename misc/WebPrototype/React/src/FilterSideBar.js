@@ -1,16 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
 import RaisedButton from 'material-ui/RaisedButton';
 import Flexbox from 'flexbox-react';
 import AlertContainer from 'react-alert';
 import Collapsible from 'react-collapsible';
+import { makeServerCall } from './ServerCallHelper.js';
 import FilterSideBarTopView from './FilterSideBarTopView.js';
 import FilterSideBarBottomView from './FilterSideBarBottomView.js';
-import UndoRedoChangeListener from './UndoRedoChangeListener.js';
+import ComponentLoadMask from './ComponentLoadMask.js';
+/* import UndoRedoChangeListener from './UndoRedoChangeListener.js'; */
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import './FilterSideBar.css';
+import './css/FilterSideBar.css';
 
 
 /**
@@ -31,15 +32,13 @@ class FilterSideBar extends React.Component {
 			},
             topViewVisible: true,
             filterIDs: null,
-            initialX: '',
-            initialY: '',
-            initialZ: ''
+            loadingDone: false
         };
     };
 
     componentDidMount() {
         var collapsibles = document.getElementsByClassName('Collapsible__trigger');
-        var context = this;
+        // var context = this;
         for (var i = 0; i < collapsibles.length; i++) {
             collapsibles[i].style.setProperty('--collapsible-text-color-main', this.props.settings.colors.collapsibleColor.mainText);
             collapsibles[i].style.setProperty('--collapsible-text-color-sub', this.props.settings.colors.collapsibleColor.subText);
@@ -51,40 +50,44 @@ class FilterSideBar extends React.Component {
    loadVisualization() {
         var context = this;
 
-        this.props.VizParams;
+        // this.props.VizParams;
 
-        debugger;
+        // debugger;
 
         makeServerCall('loadVisualization',
             function(res,b,c) {
             // Hide the loadmask.
                 
-                if (typeof res == 'string') {
+                if (typeof res === 'string') {
                     res = JSON.parse(res);
                 }
 
-                debugger;
-                
+                // debugger;
+                console.log(res.data, context.props.VizParams);
+                // if (result) console.log(result);
                 if (Array.isArray(res.data) && res.data.length > 0) {
                     var result = context.convertToCompatibleDataObject(res.data);
+                    console.log(result);
                     context.makeFilterStructure(result);
-                    context.setState({ tableData: result });
+                    context.setState({ tableData: result, loadingDone: true });
+                    if(context.props.uid) context.desktopFilterLoad();
                     context.props.dispatch(setStatData(result));
                     context.props.updateViz(res.glyphViewerKey);
 
-                    makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
-                        function (responseText) { 
-                            var response = JSON.parse(responseText);
+                    // makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
+                    //     function (responseText) { 
+                    //         var response = JSON.parse(responseText);
 
-                            debugger;
+                    //         // debugger;
 
-                            context.setState({ 
-                                initialX: response.initialX,
-                                initialY: response.initialY, 
-                                initialZ: response.initialZ,
-                            });
-                        }
-                    );
+                    //         context.setState({ 
+                    //             initialX: response.initialX,
+                    //             initialY: response.initialY, 
+                    //             initialZ: response.initialZ,
+                    //         });
+                    //     }
+                    // );
+                    // console.log(context.props.initialX, context.props.initialY, context.props.initialZ)
                     
                 }
                 else {
@@ -102,12 +105,71 @@ class FilterSideBar extends React.Component {
                     filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
                 }
             }
-        )
+        );
+
+        //NEW
+        // makeServerCall('loadVisualizationEC2',
+        //     function(res,b,c) {
+        //     // Hide the loadmask.
+                
+        //         if (typeof res === 'string') {
+        //             res = JSON.parse(res);
+        //         }
+
+        //         // debugger;
+        //         console.log(res, context.props.VizParams, 'new load viz ec2');
+        //         // if (result) console.log(result);
+        //         // if (Array.isArray(res.data) && res.data.length > 0) {
+        //         //     var result = context.convertToCompatibleDataObject(res.data);
+        //         //     context.makeFilterStructure(result);
+        //         //     context.setState({ tableData: result, loadingDone: true });
+        //         //     context.props.dispatch(setStatData(result));
+        //         //     context.props.updateViz(res.glyphViewerKey);
+
+        //         //     // makeServerCall(window.encodeURI('frontEndFilterData/' + context.props.VizParams.sdtPath ),
+        //         //     //     function (responseText) { 
+        //         //     //         var response = JSON.parse(responseText);
+
+        //         //     //         // debugger;
+
+        //         //     //         context.setState({ 
+        //         //     //             initialX: response.initialX,
+        //         //     //             initialY: response.initialY, 
+        //         //     //             initialZ: response.initialZ,
+        //         //     //         });
+        //         //     //     }
+        //         //     // );
+        //         //     // console.log(context.props.initialX, context.props.initialY, context.props.initialZ)
+                    
+        //         // }
+        //         // else {
+        //         //     // 0 records matched.
+        //         //     console.log('none matched');
+        //         // }
+        //     },
+        //     {
+        //         post: true, 
+        //         data:  { 
+        //             tableName: context.props.VizParams.tableName, 
+        //             query: context.props.VizParams.query, 
+        //             sdtPath: context.props.VizParams.sdtPath, 
+        //             datasourceId: context.props.VizParams.datasourceId ,
+        //             filterAllowedColumnList: context.props.VizParams.filterAllowedColumnList
+        //         }
+        //     }
+        // );
    }
 
    
    refreshTableDataOnRowSelection = (colName, selections) => {
         var fcolList = this.props.VizParams.filterAllowedColumnList.toString();
+        if(fcolList.length === 0) {
+            let allCols = [];
+            for(let col in this.props.stats){
+                allCols.push('`' + col + '`');
+            }
+            fcolList = allCols.toString();
+        }
         var query = "SELECT rowid," + fcolList + " from " + this.props.VizParams.tableName;
         
         var context = this;
@@ -116,6 +178,7 @@ class FilterSideBar extends React.Component {
 
         // Create the query to pass
         var filterObj = this.props.filterObj;
+
         for (var column in filterObj) {
             if (filterObj[column].selectedValues.length > 0) {
                 if (flag) {
@@ -126,16 +189,26 @@ class FilterSideBar extends React.Component {
                 }
                 temp = JSON.stringify(filterObj[column].selectedValues);
                 temp = temp.replace('[', '(').replace(/]$/, ")");
-                query += column + " IN " + temp;
+                query += '`' + column + "` IN " + temp;
                 flag = true;
             }
         }
 
         var URL = "fetchSelectedRowData?filterQuery=" + query; //"&selectedValues=" + sel
-        debugger;
-
+        // let URL2 = "fetchSelectedRowDataEC2";
+        // let originalQuery = context.props.VizParams.query;
+        console.log(query, context.props.VizParams.query, "URL")
+        
+        // let originalSlice = originalQuery.slice(originalQuery.indexOf("WHERE")).trim();
+        // console.log(originalSlice);
+        // debugger;
+        console.log(query.replace(/"/g, "'"));
+        // let concatStr = `${query} ${originalSlice}`;
+        // let quoteReplace = concatStr.replace(/"/g, "'");
+        // console.log(quoteReplace);
+        
         return new Promise(function(resolve, reject) {
-            var result = 'A is done'        
+           /*  var result = 'A is done'    */     
 
             // Get the data corresponding to the URL
             makeServerCall(URL,
@@ -144,10 +217,23 @@ class FilterSideBar extends React.Component {
                     if (typeof responseText === 'string') {
                         response = JSON.parse(response);
                     }
-                    debugger;
+                    let ids = [];
+                    // console.log(response)
+
+                    for(let z = 0; z < response.data.length; z++){
+                        if(response.data[z].rowid) ids.push({rowid: response.data[z].rowid}) 
+                    }
+                    // console.log(ids)
+                    
+                    if(context.props.uid){
+                        context.props.webSocket.send(JSON.stringify({
+                            url_uid: context.props.uid,
+                            filters: ids
+                        }));
+                    }
+                    // debugger;
                     if (response.data.length > 0) {
                         var result = context.convertToCompatibleDataObject(response.data);
-
                         for (var i = 0; i < context.props.ShowAllTables.length; i++) {
                             result[context.props.ShowAllTables[i]] = context.props.UndoRedoHistory.history[0].tableData[context.props.ShowAllTables[i]];
                         }
@@ -160,6 +246,21 @@ class FilterSideBar extends React.Component {
                     }
                 }
             );
+            // makeServerCall(URL2, 
+            //     function(responseText) {
+            //         if(typeof responseText === 'string'){
+            //             responseText = JSON.parse(responseText);
+            //         }
+            //         if(responseText){
+            //             console.log(responseText.body);
+            //         }
+            //     },
+            //     {
+            //       post: true,
+            //       data: {
+            //           query: query.replace(/"/g, "'")
+            //       }  
+            //     })
         });
    }
 
@@ -195,7 +296,7 @@ class FilterSideBar extends React.Component {
      * }
      */
     convertToCompatibleDataObject(obj) {
-        var resObj = (typeof obj == 'string' ? JSON.parse(obj) : obj);
+        var resObj = (typeof obj === 'string' ? JSON.parse(obj) : obj);
         var returnObj = {};
         var resObjLen = resObj.length;
         var columnObj = null;
@@ -204,7 +305,7 @@ class FilterSideBar extends React.Component {
         var value = "";
         var keys = Object.keys(resObj[0]);
 
-        debugger;
+        // debugger;
 
         var allowedColumns;
         
@@ -212,7 +313,8 @@ class FilterSideBar extends React.Component {
             allowedColumns = this.props.VizParams.filterAllowedColumnList;
         }
         else {
-            var allowedColumns = keys;
+            allowedColumns = keys;
+            //was a var allowCols here
             var rowidIndex = keys.indexOf("rowid");
 
             allowedColumns.splice(rowidIndex, 1);
@@ -271,7 +373,7 @@ class FilterSideBar extends React.Component {
             var columnName = property;
             var range;
             //var type = isNaN(columnObj.flatValues[0]) ||  columnObj.flatValues[0]=='' ? 'Text' : 'Number';
-            var type = typeof columnObj.flatValues[0] == 'string' ? 'Text' : 'Number';
+            var type = typeof columnObj.flatValues[0] === 'string' ? 'Text' : 'Number';
 
             if (type === "Number") {
                 var minMax = this.findMinMax( columnObj.flatValues );
@@ -377,17 +479,23 @@ class FilterSideBar extends React.Component {
     * @param {object} event: the event object.
 	*/
     toggleTopView = (event) => {
-		var collapseTopViewButton = document.getElementById("collapseTopViewButton");
+        var collapseTopViewButton_1 = document.getElementById("collapseTopViewButton1");
+        var collapseTopViewButton_2 = document.getElementById("collapseTopViewButton2");
 		
         if (this.refs['topCollapisble'].state.isClosed) {
-			collapseTopViewButton.style.transform = '';
+            collapseTopViewButton_1.style.transform = '';
+            collapseTopViewButton_2.style.transform = '';
+            document.getElementById("text-collapsible-viz").innerHTML = "HIDE";
 		    this.refs['topCollapisble'].openCollapsible();
 		}
 
         else {
-			collapseTopViewButton.style.transform = 'rotateZ(180deg)';
+            collapseTopViewButton_1.style.transform = 'rotateZ(180deg)';
+            collapseTopViewButton_2.style.transform = 'rotateZ(180deg)';
+            document.getElementById("text-collapsible-viz").innerHTML = "SHOW";
 		    this.refs['topCollapisble'].closeCollapsible();
-		}
+        }
+
     };
 
 
@@ -399,87 +507,138 @@ class FilterSideBar extends React.Component {
         this.setState({ tableData: tableData });
     }
 
+    desktopFilterLoad(){
+        let context = this;
+        if(context.state.loadingDone === true){
+            context.props.webSocket.send(JSON.stringify({
+                url_uid: context.props.uid,
+                load_done: true
+            }));
+        }
+    }
+
     render = () => {
         var colList = Object.keys(this.state.tableData);
         return (
-            <Flexbox 
-                flexDirection = "column"
-                flexGrow = {1}
-                id = "FilterWindowOuterContiner"
-                style = {{ 
-                    height: "100%",
-                    overflow:'hidden',
-                    transition: '1s'
-                }}
-            >
-                {/* TOP SECTION */}
-                <div>
-                    <AlertContainer ref = { a => this.msg = a } />
+            <div style = {{overflow: 'auto'}}>
+                {/* <div id = "darkLayer" 
+                className = "darkClass" 
+                style={{
+                    display: (this.state.loadingDone === true ? "none" : ""), 
+                    overflow: "hidden"}}>
+                </div> */}
+                <div 
+                    id = 'darkLayer'
+                    className = 'darkClass'
+                    style = {{ display: (this.state.loadingDone ? "none" : "")}}>
+                    <ComponentLoadMask 
+                        stopLoop = { this.state.loadingDone ? true : false } 
+                        bgColor = "#c6c6c6" 
+                        color = { this.props.settings.colors.buttons.general } />
                 </div>
 
-                {/*<UndoRedoChangeListener tableData = { this.state.tableData } /> */}
-
-                <Collapsible
-                    transitionTime = {200} 
-                    open = { true }
-                    triggerDisabled = { true }
-                    contentInnerClassName  = "Flex__layout-column topViewContent"
-                    ref = 'topCollapisble'
-                    triggerClassName = 'noHeaderTrigger cursorNormal'
-                    triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
-                    contentOuterClassName = "cursorNormal"
-                    overflowWhenOpen = "visible"
+                <Flexbox 
+                    flexDirection = "column"
+                    flexGrow = {1}
+                    id = "FilterWindowOuterContiner"
+                    style = {{ 
+                        height: "100%",
+                        overflow:'hidden',
+                        transition: '500ms',
+                        fontFamily: "ITCFranklinGothicStd-Med",
+                        letterSpacing: "1px"
+                    }}
                 >
+                    {/* TOP SECTION */}
+                    <div>
+                        <AlertContainer ref = { a => this.msg = a } />
+                    </div>
 
-                    <FilterSideBarTopView 
-                        initParams = { this.state.topViewInitParams } 
-                        colList = { colList } 
-                        showAlert = { (strMsg) => this.showAlert(strMsg) }
-                        reloadParent = { this.loadVisualization }
-                        refreshParent = { this.refreshTableDataOnRowSelection }
-                        showHideLoadingMask = { this.props.showHideLoadingMask }
-                        filterIDs = { this.state.filterIDs }
-                        setFilterIDs = { this.setFilterIDs.bind(this) }
+                    {/*<UndoRedoChangeListener tableData = { this.state.tableData } /> */}
+
+                    <Collapsible
+                        transitionTime = {200} 
+                        open = { true }
+                        triggerDisabled = { true }
+                        contentInnerClassName  = "Flex__layout-column topViewContent"
+                        ref = 'topCollapisble'
+                        triggerClassName = 'noHeaderTrigger cursorNormal'
+                        triggerOpenedClassName = 'noHeaderTrigger cursorNormal'
+                        contentOuterClassName = "cursorNormal"
+                        overflowWhenOpen = "visible"
+                    >
+
+                        <FilterSideBarTopView 
+                            initParams = { this.state.topViewInitParams } 
+                            colList = { colList } 
+                            showAlert = { (strMsg) => this.showAlert(strMsg) }
+                            reloadParent = { this.loadVisualization }
+                            refreshParent = { this.refreshTableDataOnRowSelection }
+                            showHideLoadingMask = { this.props.showHideLoadingMask }
+                            filterIDs = { this.state.filterIDs }
+                            setFilterIDs = { this.setFilterIDs.bind(this) }
+                            tableData = { this.state.tableData } 
+                            setTableData = { this.setTableData.bind(this) }
+                            handleDraggableCorrection = { this.props.handleDraggableCorrection }
+                            initialX = { this.props.initialX }
+                            initialY = { this.props.initialY }
+                            initialZ = { this.props.initialZ }
+                        />
+
+                    </Collapsible>
+                
+                    {/* COLLAPSE TOP SECTION BUTTON */}
+                    <RaisedButton 
+                        fullWidth = { true } 
+                        primary = { true } 
+                        onClick = { this.toggleTopView.bind(this) }
+                        buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "calc(100% - 0.209vw)" }}
+                        style = {{ height: '2.711vh', margin: "0.730vh 0px 0.730vh 0.104vh"}}
+                    >
+                        <i 
+                            id = "collapseTopViewButton1" 
+                            className = "fa fa-caret-up" 
+                            style = {{
+                                fontSize: '2.607vh',
+                                color: this.props.settings.colors.hideTopViewButtonColor.icon,
+                                transition: 'transform 100ms linear',
+                                verticalAlign: "sub"
+                        }}
+                        />   
+
+                        <span id="text-collapsible-viz" 
+                        style={{
+                            color: "white", 
+                            letterSpacing: ".2em", 
+                            padding: "0 1.043vh 0 1.043vh",
+                            fontSize: "1.460vh"}}>
+                        HIDE
+                        </span> 
+                        
+                        <i 
+                            id = "collapseTopViewButton2" 
+                            className = "fa fa-caret-up" 
+                            style = {{
+                                fontSize: "2.607vh",
+                                color: this.props.settings.colors.hideTopViewButtonColor.icon,
+                                transition: 'transform 100ms linear',
+                                verticalAlign: "sub"
+                        }}
+                        />
+                    </RaisedButton>
+
+                    {/* BOTTOM SECTION */}
+                    
+                    <FilterSideBarBottomView 
+                        ref = "bottom" 
                         tableData = { this.state.tableData } 
+                        refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} 
+                        setFilterIDs = { this.setFilterIDs.bind(this) }
                         setTableData = { this.setTableData.bind(this) }
-                        handleDraggableCorrection = { this.props.handleDraggableCorrection }
-                        initialX = { this.state.initialX }
-                        initialY = { this.state.initialY }
-                        initialZ = { this.state.initialZ }
                     />
 
-                </Collapsible>
-            
-                {/* COLLAPSE TOP SECTION BUTTON */}
-                <RaisedButton 
-                    fullWidth = { true } 
-                    primary = { true } 
-                    onClick = { this.toggleTopView.bind(this) }
-                    buttonStyle = {{ backgroundColor: this.props.settings.colors.hideTopViewButtonColor.background, width: "448px" }}
-                    style = {{ height: '20px', margin: "0px 0px 1px 1px" }}
-                >
-                    <i 
-                        id = "collapseTopViewButton" 
-                        className = "fa fa-caret-up" 
-                        style = {{
-                            fontSize: '1.6em',
-                            color: this.props.settings.colors.hideTopViewButtonColor.icon,
-                            transition: 'transform 500ms'
-                        }}
-                    /> 
-                </RaisedButton>
-
-                {/* BOTTOM SECTION */}
-                
-                <FilterSideBarBottomView 
-                    ref = "bottom" 
-                    tableData = { this.state.tableData } 
-                    refreshTableDataOnRowSelection={(colName,selections) => this.refreshTableDataOnRowSelection(colName,selections)} 
-                    setFilterIDs = { this.setFilterIDs.bind(this) }
-                    setTableData = { this.setTableData.bind(this) }
-                />
-
-            </Flexbox>
+                </Flexbox>
+            </div>
         );
     }
 }
@@ -510,7 +669,13 @@ const mapStateToProps = function(state){
     VizParams: state.filterState.VizParams,
     filterObj: state.filterState.Filter,
     UndoRedoHistory: state.filterState.UndoRedoHistory,
-    ShowAllTables: state.filterState.ShowAllTables
+    ShowAllTables: state.filterState.ShowAllTables,
+    initialX: state.filterState.initialVizX,
+    initialY: state.filterState.initialVizY,
+    initialZ: state.filterState.initialVizZ,
+    uid: state.filterState.uid,
+    webSocket: state.filterState.webSocket,
+    stats: state.filterState.StatisticsData
   }
 };
 

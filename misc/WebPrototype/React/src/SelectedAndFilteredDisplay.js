@@ -1,16 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
+/* import { makeServerCall } from './ServerCallHelper.js'; */
 import Dialog from 'material-ui/Dialog';
-import Flexbox from 'flexbox-react';
+/* import Flexbox from 'flexbox-react'; */
 import FlatButton from 'material-ui/FlatButton';
-import Snackbar from 'material-ui/Snackbar';
+/* import Snackbar from 'material-ui/Snackbar'; */
 import RaisedButton from 'material-ui/RaisedButton';
-import SearchBox from './SearchBox.js';
-import ComponentLoadMask from './ComponentLoadMask.js';
+/* import SearchBox from './SearchBox.js';
+import ComponentLoadMask from './ComponentLoadMask.js'; */
 import { guidGenerator } from './GeneralFunctions.js';
-import './General.css';
+import './css/General.css';
 
 
 /**
@@ -100,7 +100,7 @@ class SelectedAndFilteredDisplay extends React.Component {
 
 	render() {
 		var data = this.props.data;
-		var context = this;
+		// var context = this;
         var dataKeys;
 
         if (data[0]) {

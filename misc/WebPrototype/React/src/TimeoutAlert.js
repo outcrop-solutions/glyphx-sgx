@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Flexbox from 'flexbox-react';
+/* import Flexbox from 'flexbox-react'; */
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import FontIcon from 'material-ui/FontIcon';
+/* import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Select from 'react-select';
-import Tooltip from 'rc-tooltip';
+import Tooltip from 'rc-tooltip'; */
 import 'rc-tooltip/assets/bootstrap.css';
-import './SettingsModal.css';
+import './css/SettingsModal.css';
 
 
 /**

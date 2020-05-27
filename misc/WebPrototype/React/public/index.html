@@ -7,12 +7,22 @@
         <meta name = "theme-color" content = "#000000">
         <title>GlyphEd</title>
         <link rel = "stylesheet" href = "https://fonts.googleapis.com/css?family=Open+Sans" >
-    
         <style type = "text/css">
 
-          * {
-              font-family:  Helvetica, "Open Sans", sans-serif;
-          }
+        @font-face {
+            font-family: ITCFranklinGothicStd-Demi;
+            src: url("./Fonts/itcfranklingothicstd-demi.otf") format("opentype");
+        }
+
+        @font-face {
+            font-family: ITCFranklinGothicStd-Med;
+            src: url("./Fonts/ITCFranklinGothicStd-Med.otf") format("opentype");
+        }
+
+        @font-face {
+            font-family: ITCFranklinGothicStd-DmCd;
+            src: url("./Fonts/ITCFranklinGothicStd-DmCd.otf") format("opentype");
+        }
 
           html, body {
               font-weight: 300;
@@ -37,7 +47,7 @@
           }
 
           body {
-              font-size: 13px;
+              font-size: 1.3555787278415015vh;
               -webkit-font-smoothing: antialiased;
           }
 
@@ -124,6 +134,53 @@
               align-self: center;
           }
 
+          /* .zsiq-newtheme.zsiq_size2[embedtheme], .zsiq_size2[embedtheme] {
+            height: 60% !important;
+            float: left;
+            position: fixed;
+            left: 1.548vh !important;
+          }
+
+          .zsiq_theme1.zsiq_floatmain {
+              position: fixed;
+              float: left;
+              left: 0.722vh;
+              height: 6.192vh !important;
+              width: 3.125vw !important;
+              max-height: 6.192vh !important;
+              bottom: 1.032vh !important;
+              right: 1.032vh !important;
+          }
+
+          .zsiq_theme1 .zsiq_flt_rel {
+              padding: 0.30960vh !important;
+              width: 3.125vw !important;
+              height: 6.1920vh !important;
+              font-size: 1.445vh !important;
+              border-radius: 6.192vh !important;
+          }
+
+          .zsiq_theme1 .siqico-chat:before {
+              font-size: 2.786vh !important;
+              line-height: 6.192vh !important;
+          }
+
+          .siqembed {
+              height: 60.165vh !important;
+              width: 19.323vw !important;
+              border-radius: 1.858vh !important;
+          }
+          */
+
+          /* .zls-prelative {
+              height: 61.824vh !important;
+              margin-top: 6.804vh !important;
+          } */
+
+          /* #siqiframe {
+              width: 20.365vw !important;
+          } */
+
           @keyframes App-logo-spin {
               from { transform: rotate(0deg); }
               to { transform: rotate(360deg); }
@@ -169,7 +226,6 @@
           work correctly both with client-side routing and a non-root public URL.
           Learn how to configure a non-root public URL by running `npm run build`.
         -->
-
         <script>
 			var isIE = /*@cc_on!@*/false || !!document.documentMode;
 			
@@ -195,8 +251,11 @@
             if(window.location.hostname.includes('ec2-34-215-50-82')){
               window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/";
             }
+            else if(window.location.hostname.includes('ec2-52-41-239-60')){
+              window.SERVER_URL = "http://ec2-52-41-239-60.us-west-2.compute.amazonaws.com:5001/";
+            }
             else if(window.location.hostname.includes('localhost') || window.location.hostname.includes('ec2-34-221-39-241')){
-              window.SERVER_URL = "http://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001/";
+              window.SERVER_URL = "http://ec2-34-215-50-82.us-west-2.compute.amazonaws.com:5001/";
             }
             else{
               window.SERVER_URL = "https://"+window.location.hostname + ":5001/";
@@ -215,12 +274,39 @@
             }
             */
         </script>
-
+        
         <script src="https://media.twiliocdn.com/sdk/js/chat/v2.1/twilio-chat.min.js"></script>
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || {
+                widgetcode:"c4d9c8c152150cf6a2495ea3b2588348820b936ff8e704d8ddc3774abe8d62c2", 
+                values:{},
+                ready:function(){}
+            };
+            var d=document;
+            s=d.createElement("script");
+            s.type="text/javascript";
+            s.id="zsiqscript";
+            s.defer=true;
+            s.src="https://salesiq.zoho.com/widget";
+            t=d.getElementsByTagName("script")[0];
+            t.parentNode.insertBefore(s,t);
+            d.write("<div id='zsiqwidget'></div>");
+            $zoho.salesiq.ready=function(){$zoho.salesiq.floatbutton.position("bottomright"); 
+                // var S4 = function() {
+                //     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+                // };
+                // $zoho.salesiq.tracking.on();
+                // $zoho.salesiq.visitor.id(("_" + S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4()));
+                // $zoho.salesiq.visitor.chat(function(visitid,data)
+                // {
+                //     console.log(data.name,data.email,data.question,data.visitid);
+                // });            
+            }
+        </script>
     </head>
   
-    <body bgcolor = 'grey'>
+    <body>
         <noscript>
             You need to enable JavaScript to run this app.
         </noscript>
@@ -238,7 +324,7 @@
         </div>
 
         <!-- React Router swaps components into this root -->
-        <div id = "root"></div>
+        <div id = "root" bgcolor='#9ea3af'></div>
 
 
         

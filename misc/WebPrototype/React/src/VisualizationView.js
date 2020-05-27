@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { hideSplashScreen } from './LoadMaskHelper.js';
+import { deleteCookie, getLoginCookieName, makeServerCall } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
 import { withRouter } from 'react-router';
 import Flexbox from 'flexbox-react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -16,8 +18,8 @@ import ComponentLoadMask from './ComponentLoadMask.js';
 import Tooltip from 'rc-tooltip';
 import TimeoutAlert from './TimeoutAlert.js';
 import 'rc-tooltip/assets/bootstrap.css';
-import './topNav.css';
-import './General.css';
+import './css/TopNav.css';
+import './css/General.css';
 
 
 injectTapEventPlugin();
@@ -34,7 +36,8 @@ class VisualizationView extends React.Component {
         showCorrection: false,
         hideOnClick: false,
         setTimer: false,
-        vizKey: ''
+        vizKey: '',
+        sideBar: false
     };
 
 
@@ -44,24 +47,24 @@ class VisualizationView extends React.Component {
 	 */
     componentDidMount() {
 
-        debugger;
-        if (window.performance) {
-            if (performance.navigation.type === 1) {
-                this.props.history.push('/home');
-            }
-        }
+        // debugger;
+        // if (window.performance) {
+        //     if (performance.navigation.type === 1) {
+        //         this.props.history.push('/home');
+        //     }
+        // }
 
-        if (this.state.setTimer == false) {
+        // if (this.state.setTimer == false) {
 
-            this.setState({ setTimer: true });
+        //     this.setState({ setTimer: true });
 
-            var context = this;
+        //     var context = this;
             
-            var x = setInterval(function() {
-                context.setState(context.state);
-            }, 60000);
+        //     var x = setInterval(function() {
+        //         context.setState(context.state);
+        //     }, 60000);
 
-        }
+        // }
 
         this.init();
 
@@ -81,24 +84,25 @@ class VisualizationView extends React.Component {
 		// Add the <style> element to the page
 		document.head.appendChild(style);
 		
-		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; text-decoration: none; color: #333333; position: relative; border: none; padding: 8px; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
+		style.sheet.insertRule('.Collapsible__trigger { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; border-radius: 3px; display: block; text-decoration: none; color: #333333; position: relative; border: none; padding: 0.841vh; background: ' + this.props.settings.colors.collapsibleColor.mainBackground + '; color: white; font-size: 1rem; }', 0);
 		style.sheet.insertRule('.Collapsible__trigger.is-open { background: ' + this.props.settings.colors.collapsibleColor.mainCollapsed + '; }', 1);
 		style.sheet.insertRule('.Collapsible__trigger:hover { background: ' + this.props.settings.colors.collapsibleColor.mainHover + '; }', 2);
-		style.sheet.insertRule('.unpinned { font-size: 20px !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
-		style.sheet.insertRule('.pinned { font-size: 20px !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
-		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1rem !important; padding: 4px !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
+		style.sheet.insertRule('.unpinned { font-size: 2.103vh !important; transform: rotateZ(35deg) !important; color: ' + this.props.settings.colors.collapsibleColor.unpinned + '!important; }', 3);
+		style.sheet.insertRule('.pinned { font-size: 2.103vh !important; transform: rotateZ(0deg) !important; color: ' + this.props.settings.colors.collapsibleColor.pinned + '!important; }', 4);
+		style.sheet.insertRule('.columnNameHeader { -moz-transition: all .1s ease-in; -o-transition: all .1s ease-in; -webkit-transition: all .1s ease-in; font-size: 1.682vh !important; padding: 0.421vh !important; background: ' + this.props.settings.colors.collapsibleColor.subBackground + '!important; }', 5);
 		style.sheet.insertRule('.columnNameHeader.is-open { background: ' + this.props.settings.colors.collapsibleColor.subCollapsed + '!important; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; }', 6);
 		style.sheet.insertRule('.columnNameHeader:hover {  background: ' + this.props.settings.colors.collapsibleColor.subHover + '!important; }', 7);
 		
-		// For the selectboxes  
-		style.sheet.insertRule('.Select-placeholder {  color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
+        // For the selectboxes  
+        
+		style.sheet.insertRule('.Select-placeholder { color: ' + this.props.settings.colors.tableSelectColor.text + ' !important; }', 8);
 		style.sheet.insertRule('.Select-arrow {  border-color: ' + this.props.settings.colors.tableSelectColor.text + ' transparent transparent !important; }', 9);
-        style.sheet.insertRule('.Select-control { background-color: ' + "#ffffff" + '!important; }', 10);
-		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 13px !important;}', 11);
-		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 13px !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
+        style.sheet.insertRule('.Select-control { background-color: #ffffff !important; }', 10);
+		style.sheet.insertRule('.Select-value {  fill: ' + this.props.settings.colors.tableSelectColor.selectedText + '!important; font-size: 1.367vh !important;}', 11);
+		style.sheet.insertRule('.Select-option.is-selected {  background-color: ' +  this.props.settings.colors.tableSelectColor.selectedBackground + '!important; font-size: 1.367vh !important; color: ' +  this.props.settings.colors.tableSelectColor.selectedText +'}', 12);
 		style.sheet.insertRule('.Select-option.is-focused {  background-color: ' +  this.props.settings.colors.tableSelectColor.background + '!important; color: ' +  this.props.settings.colors.tableSelectColor.text + '}', 13);
         style.sheet.insertRule('.Select--multi .Select-value {  background-color: ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; border: 1px solid ' + this.props.settings.colors.tableSelectColor.chipBackground + ' !important; color: ' + this.props.settings.colors.tableSelectColor.selectedText + ' !important; margin: 3px 0px 0px 8px; height: 28px}', 14);
-		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.colors.tableSelectColor.deleteHover + ' !important; padding: 0px 3px 0px 3px; margin: 1px 0px 0px 0px; font-size: 18px;}', 15);
+		style.sheet.insertRule('.Select--multi .Select-value-icon {  border-right: 1px solid ' + this.props.settings.colors.tableSelectColor.deleteHover + ' !important; padding: 0px 0.315vh 0px 0.315vh; margin: 0.105vh 0px 0px 0px; font-size: 1.893vh;}', 15);
         style.sheet.insertRule('.Select--multi .Select-value-icon:hover, .Select--multi .Select-value-icon:focus { color: ' + this.props.settings.colors.tableSelectColor.deleteHover + '!important; }', 16);
 
         style.sheet.insertRule('.faqCollapse { background: #caccff !important; }', 17);
@@ -111,6 +115,9 @@ class VisualizationView extends React.Component {
 
         style.sheet.insertRule('html { overflow: hidden; }', 23);
 
+        // style.sheet.insertRule('.Select-control {height: 10px; min-height: 10px;}', 24);
+        // style.sheet.insertRule('.Select-input {height: 10px; min-height: 10px;}', 25);
+        // style.sheet.insertRule('.Select-value {height: 10px; min-height: 10px;}', 26);
 
 
         var sidebarButton = document.getElementById("showSideBar");
@@ -118,12 +125,12 @@ class VisualizationView extends React.Component {
 
 
         document.title = "GlyphEd - Viewer";
+
     }
 
     componentDidUpdate(){
         //debugger;
-        //console.log('update!');
-
+        // let context = this;
         var now = new Date().getTime();
         var distance = now - this.props.timeoutTimer;
 
@@ -131,17 +138,36 @@ class VisualizationView extends React.Component {
 
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
-        //console.log("VIZ-MINUTES: " + minutes);
-
-        if (minutes == 23) {
+        if (minutes === 23) {
             this.props.dispatch(editModalDisplay(true));
         }
 
         else if (minutes > 27) {
-            this.props.history.push("/logout");
-            alert("Your session has expired due to inactivity.");
+            let context = this;
+            return new Promise((resolve, reject) => {
+                makeServerCall("logout",
+                function (responseText) { 
+                    resolve(true);
+                }
+            );
+            }).then(res =>{
+                if(res === true){
+                    alert("Your session has expired due to inactivity.");
+                    window.location.reload();
+                    context.props.dispatch(logoutClear());
+                    deleteCookie(getLoginCookieName());
+                    hideSplashScreen();
+                }
+            }).catch(err =>{
+                // console.log(err);
+            });
         }
         
+    }
+
+    componentWillUnmount(){
+        this.props.dispatch(editModalDisplay_2(false));
+        this.props.dispatch(clearStatisticsData());
     }
 
     
@@ -179,7 +205,7 @@ class VisualizationView extends React.Component {
         this.setState({ vizKey: '' });
         
         var gv = document.getElementById('GlyphViewerContainer');
-        var filterNav = document.getElementById("filterNav");
+        /* var filterNav = document.getElementById("filterNav"); */
         var topNav = document.getElementById("TopNav");
 
         if (!this.props.settings.sideBarOverlap) {
@@ -220,10 +246,11 @@ class VisualizationView extends React.Component {
 	 * Hides the filter side nav by translating it off the screen so it doesnt resize and 
      * Wont have to be reloaded after it is "closed"
 	 */ 
-    toggleNav() {
+    toggleNav(){
+        // console.log('this one is being called2')
         var filterNav = document.getElementById("filterNav");
-        var filterNavOpen = filterNav.style.transform === "translate(460px, 0px)" ? false : true;
-        var gv = document.getElementById('GlyphViewerContainer');
+        var filterNavOpen = filterNav.style.transform === "translate(23.6vw, 0px)" ? false : true;
+        // var gv = document.getElementById('GlyphViewerContainer');
 
         var sidebarButton = document.getElementById("showSideBar");
         sidebarButton.style.display = "none";
@@ -231,18 +258,18 @@ class VisualizationView extends React.Component {
         if (!filterNavOpen) {
             //open the filterNav sidebar
             filterNav.style.transform = "translate(0px, 0px)";
-            if (!this.props.settings.sideBarOverlap) {
-                gv.style.width = "calc(100% - 450px)";
-            }
+            // if (!this.props.settings.sideBarOverlap) {
+            //     gv.style.width = "calc(100% - 23.5vw)";
+            // }
 
-            else {
-                gv.style.width = "100%";
-            }
+            // else {
+            //     gv.style.width = "100%";
+            // }
         }
 
         else {
-            filterNav.style.transform = "translate(460px, 0px)";
-            gv.style.width = "100%";
+            filterNav.style.transform = "translate(23.6vw, 0px)";
+            // gv.style.width = "100%";
         }
     }
 
@@ -256,10 +283,9 @@ class VisualizationView extends React.Component {
             var iframe = document.getElementById('GlyphViewer').contentWindow;
             iframe.closeSceneView();
         }
-        
+        this.props.dispatch(clearFilterOptions());
         this.props.history.push('/home')
     }
-
 
     render() {
         return (
@@ -293,9 +319,13 @@ class VisualizationView extends React.Component {
 
                     <TimeoutAlert />
 
-                    <div id  = "filterNav" className = "sidenav" style = {{ height: "100%" }} >
-                        <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
-                            <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '36px', transition: '0.37s' }}>
+                    <div id  = "filterNav" className = "sidenav" style = {{ height: "100%", overflow: "hidden" }} >
+                        <Flexbox 
+                            flexDirection = "column" 
+                            minHeight = "100vh" 
+                            style = {{ height: "100vh", overflow: "hidden",}}
+                        >
+                            <div className = "TopNav" id = "TopNav" style = {{ width: '100%', height: '3.754vh', transition: '0.37s' }}>
                                 <TopNavBar />
                             </div>
 
@@ -330,7 +360,7 @@ class VisualizationView extends React.Component {
                                 }}
                                 mini = { true }
                                 //iconStyle = {{ height: "36px", width: "36px" }}
-                                onClick = { () => this.toggleNav() }
+                                onClick = { () => {this.toggleNav(); webSocketSend(this.props.webSocket, this.props.uid, "expand_sidenav"); } }
                             >
                                 <i 
                                     className = "fa fa-caret-down" 
@@ -345,7 +375,8 @@ class VisualizationView extends React.Component {
                         </Tooltip>
                     </div>
 
-                    <Tooltip
+                    {/* Outdated Home button. Leaving here in case. */}
+                    {/* <Tooltip
                         placement = 'right'
                         mouseEnterDelay = { 0.5 }
                         mouseLeaveDelay = { 0.15 }
@@ -363,7 +394,8 @@ class VisualizationView extends React.Component {
                                 top: '5px',
                                 left: '5px',
                                 position: 'absolute',
-                                zIndex: '10'
+                                zIndex: '10',
+                                display: (this.props.uid ? "none" : "")
                             }}
                             mini = { true }
                             //iconStyle = {{ height: "36px", width: "36px" }}
@@ -377,14 +409,25 @@ class VisualizationView extends React.Component {
                                 }}
                             /> 
                         </FloatingActionButton>
-                    </Tooltip>
+                    </Tooltip> */}
 					
 					{/* Actual Application body that you see */}
-                    <Flexbox flexDirection = "column" minHeight = "100vh" style = {{ height: "100vh", overflow: 'hidden' }}>
+                    <Flexbox 
+                        flexDirection = "column" 
+                        minHeight = "100vh" 
+                        style = {{ 
+                            height: "100vh", 
+                            overflow: "hidden",
+                            background: "black" }}
+                    >
 
                         <Flexbox flexGrow = {1} id = "iframeDiv" style = {{ height: "100%", minHeight: "0", overflow: 'hidden' }} >
 
-                            <div id = "GlyphViewerContainer" style = {{ transition: '0.37s', width: '100%', height: '100%' }} >
+                            <div id = "GlyphViewerContainer" 
+                                style = {{ 
+                                    transition: '0.37s', 
+                                    width: '100%', 
+                                    height: '100%'}}>
 
                                 {/* Draggable windows */}
                                 <StatisticModal handleCorrection = { this.handleDraggableCorrection.bind(this) } />
@@ -397,29 +440,40 @@ class VisualizationView extends React.Component {
                                 />
 
 
-                                <div style = {{ width: "100%", height: "100%", display: (this.state.glyphViewLoaded ? "none" : "") }} >
-                                    <ComponentLoadMask stopLoop = {this.state.glyphViewLoaded ? true : false} bgColor = "#c6c6c6" color = { this.props.settings.colors.buttons.general } imgLink = "./Res/Img/GlyphED.png" />
+                                <div style = {{ 
+                                    width: "100%", 
+                                    height: "100%", 
+                                    display: ((this.state.glyphViewLoaded || this.props.uid )? "none" : "") 
+                                }} >
+                                    <ComponentLoadMask 
+                                        stopLoop = { this.state.glyphViewLoaded ? true : false } 
+                                        bgColor = "#c6c6c6" 
+                                        color = { this.props.settings.colors.buttons.general } 
+                                        imgLink = "./Res/Img/GlyphED.png" />
                                 </div>
 
-                                {this.state.vizKey == '' ? 
-                                    null 
+                                {(this.state.vizKey === '' || this.props.uid) ? 
+                                    <div style={{width: '100%', height: '100%', backgroundColor: 'black'}}></div>
                                     : 
                                     <iframe 
                                         id = "GlyphViewer" 
                                         onLoad = { this.onLoadGlyphView.bind(this) } 
                                         title = "3D rendering engine" 
-                                        style = {{ width:'100%', height:'100%', border: 'none' }} 
+                                        style = {{ 
+                                            width:'100%', 
+                                            height:'100%', 
+                                            border: 'none'}} 
                                         src = {"./Res/Viz/demo.html#" + this.state.vizKey}
                                     />
                                 } 
 
                             </div>
 
-                            <FloatingToggleButtons 
+                            {(!this.props.uid ? <FloatingToggleButtons
                                 iframeLoaded = { this.state.glyphViewLoaded } 
                                 topNavBarHeight = { this.state.topNavBarHeight } 
                                 handleDraggableCorrection = { this.handleDraggableCorrection.bind(this) } 
-                            /> 
+                            /> : null)}
 
                         </Flexbox>
                     </Flexbox>
@@ -436,6 +490,24 @@ export const editModalDisplay = (timeoutModal) => ({
     timeoutModal,
 });
 
+export const clearFilterOptions = () => ({
+    type: 'CLEAR_FILTER',
+    
+});
+
+export const editModalDisplay_2 = (legendModal) => ({
+    type: 'EDIT_MODAL_DISPLAY',
+    legendModal,
+});
+
+export const clearStatisticsData = () => ({
+    type: 'CLEAR_STATISTICS_DATA'
+});
+
+export const logoutClear = () => ({
+    type: 'LOGOUT_CLEAR',
+});
+
 
 /**
  * Maps portions of the store to props of your choosing
@@ -446,7 +518,9 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     userInfo: state.filterState.UserInfo,
     VizParams: state.filterState.VizParams,
-    timeoutTimer: state.filterState.TimeoutTimer
+    timeoutTimer: state.filterState.TimeoutTimer,
+    webSocket: state.filterState.webSocket,
+    uid: state.filterState.uid
   }
 }
 

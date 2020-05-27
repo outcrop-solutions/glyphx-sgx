@@ -1,16 +1,27 @@
+/*eslint-env jquery*/
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { hideSplashScreen, showLoadMask, hideLoadMask } from './LoadMaskHelper.js';
-import { makeServerCall } from './ServerCallHelper.js';
-import Dialog from 'material-ui/Dialog';
+import { hideSplashScreen, /* showLoadMask, */ hideLoadMask } from './LoadMaskHelper.js';
+import { makeServerCall, setCookie, getLoginCookieName } from './ServerCallHelper.js';
+import { guidGenerator, cookGenerator, listCookies } from './GeneralFunctions.js';
+// import Dialog from 'material-ui/Dialog';
 import Flexbox from 'flexbox-react';
-import RaisedButton from 'material-ui/RaisedButton';
-import IconButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
-import Paper from 'material-ui/FontIcon';
-import './General.css';
+// import RaisedButton from 'material-ui/RaisedButton';
+// import IconButton from 'material-ui/IconButton';
+// import Snackbar from 'material-ui/Snackbar';
+// import Paper from 'material-ui/FontIcon';
+import Auth0Lock from 'auth0-lock';
+import './css/General.css';
 
+const login_arr = [
+	"./Res/Img/login1.png",
+    "./Res/Img/login2.png",
+    "./Res/Img/login3.png",
+    "./Res/Img/login4.png",
+    "./Res/Img/login5.png",
+    "./Res/Img/login6.png",
+];
 
 class Login extends React.Component {
 
@@ -28,25 +39,156 @@ class Login extends React.Component {
 	 */
     componentDidMount() {
         
-        if (window.location.href.indexOf("http://") != -1 && window.location.href.indexOf("localhost") == -1 && window.location.href.indexOf("ec2-34-215-50-82") == -1 && window.location.href.indexOf("ec2-34-221-39-241") == -1) {
+        // console.log('COOKIES: ',listCookies())
+        if(this.props.uid.length > 0){
+            if(listCookies(getLoginCookieName()) === false){
+                let content = cookGenerator();
+                setCookie(getLoginCookieName(), content, 0.5);
+    
+                makeServerCall('enableConnection', (responseText) => {
+                    // console.log(responseText);
+                }, 
+                    {
+                        post: true,
+                        data: {
+                            establish: true,
+                            cookie: content,
+                            uid: this.props.uid}
+                    }
+                );
+            }
+            else {
+                let content = listCookies(getLoginCookieName());
+                makeServerCall('enableConnection', (responseText) => {
+                    // console.log(responseText);
+                }, 
+                    {
+                        post: true,
+                        data: {
+                            establish: true,
+                            cookie: content,
+                            uid: this.props.uid}
+                    }
+                );
+    
+            }
+        }
+        
+        if (window.location.href.indexOf("http://") !== -1 && window.location.href.indexOf("localhost") === -1 
+        && window.location.href.indexOf("ec2-34-215-50-82") === -1 && window.location.href.indexOf("ec2-34-221-39-241") === -1
+         && window.location.href.indexOf("ec2-52-41-239-60") === -1) {
             window.location.href = window.location.href.replace("http://", "https://");
         }
 
         // Initial stuff for positioning the login button
         hideSplashScreen();
-        this.calcLoginButtonPosition();
 
-        var context = this;
+        //makes sure to display zoho dialog bubble
+        window.setTimeout(() => {if(document.getElementById('titlediv')){
+            $('#titlediv').css('display', 'block');
+        }}, 1000);
+
+        //login img
+        document.getElementById('login_gen').style.backgroundImage = 
+            `url(${login_arr[Math.floor(Math.random() * login_arr.length)]})`;
+        // this.calcLoginButtonPosition();
+
+        // var context = this;
 
         // Open the modal so it transitions up as soon as you land
-        setTimeout(function () {
-            context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
-        }, 1000);
+        // setTimeout(function () {
+        //     context.toggleLoginForm(context.state.loginButtonBottomTranslateCalc);
+        // }, 500);
 
         // Add event listeners for using the enter key to login
-        document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
-        document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+        // document.getElementById("UserText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+        // document.getElementById("PassText").addEventListener("keyup", this.enterKeyToLogin.bind(context));
+
+        // document.getElementById("UserText").addEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("PassText").addEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("UserText").addEventListener('mousedown', this.capsLockCheck);
+        // document.getElementById("PassText").addEventListener('mousedown', this.capsLockCheck);
+        let global_state = this;
+        this.lock = new Auth0Lock(
+            'tEK0nmyA6Dj84oTEyYJw15FBl3X4BWd2',
+            'synglyphxinside.auth0.com',
+            {
+                // allowedConnections: ["Username-Password-Authentication"/* ,"google-oauth2" */],
+                autofocus: true,
+                allowSignUp: false,
+                rememberLastLogin: false,
+                socialButtonStyle: "big",
+                languageDictionary: { success: {logIn: 'Successful! Logging in to GlyphEd...'}, "title":""},
+                allowShowPassword: true,
+                closable: false,
+                auth: {
+                    // redirect : false,
+                    // redirectUrl: "http://localhost:3000/home"
+                },
+                avatar: null,
+                theme: {
+                    primaryColor: "#3A99D8",
+                    logo: './Res/Img/sgx_inside.png',
+                }
+            }
+        );
+
+        this.lock.on("authenticated", function(authResult) {
+            global_state.lock.hide();
+            console.log(authResult, global_state)
+            // if(authResult.accessToken){
+            // }
+            // Use the token in authResult to getUserInfo() and save it if necessary
+            this.getUserInfo(authResult.accessToken, function(error, user) {
+              if (error) {
+                // Handle error
+                console.log('ERROR WITH GET USER INFO', error)
+                return;
+              }
+              else {
+
+                console.log(user);
+                // global_state.props.dispatch(logInGoAhead(user.email, authResult.accessToken));
+                // global_state.props.history.push('/home');
+                //   window.setTimeout(() => {
+                //     makeServerCall('loginThree', global_state.onServerResponse, 
+                //         {
+                //             post: true,
+                //             onServerCallError: global_state.showMaintanencePage,
+                //             data: {
+                //                 user_email: user.email,
+                //                 token: authResult.accessToken
+                //             }
+                //         }
+                //     );
+
+                // }, 1800);
+                makeServerCall('loginThree', global_state.onServerResponse, 
+                    {
+                        post: true,
+                        onServerCallError: global_state.showMaintanencePage,
+                        data: {
+                            user_email: user.email,
+                            token: authResult.accessToken}
+                    }
+                );
+            }
+            });
+      
+              //we recommend not storing Access Tokens unless absolutely necessary
+            //   wm.set(privateStore, {
+            //     accessToken: authResult.accessToken
+            //   });
+      
+            //   wm.set(privateStore, {
+            //     profile: profile
+            //   });
+      
+            // });
+        });
         
+        this.lock.show();
+
         document.title = "GlyphEd - Login";
     }
 
@@ -57,74 +199,69 @@ class Login extends React.Component {
 	componentWillUnmount() {
 
         // Remove event listeners for using the enter key to login
-        document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
-        document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
-	}
+        // document.getElementById("UserText").removeEventListener("keyup", this.enterKeyToLogin);
+        // document.getElementById("PassText").removeEventListener("keyup", this.enterKeyToLogin);
 
+        // document.getElementById("UserText").removeEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("PassText").removeEventListener('keyup', this.capsLockCheck);
+        // document.getElementById("UserText").removeEventListener('mousedown', this.capsLockCheck);
+        // document.getElementById("PassText").removeEventListener('mousedown', this.capsLockCheck);
+        this.lock.hide();
+	}
 
     /**
 	 * Calls the code to login when the enter key is pressed
      * @param e: event instance which contains information about what caused the event
 	 */
-    enterKeyToLogin(e) {
-        e.preventDefault();
-        if (e.keyCode === 13) {
-            this.buttonClick();
-        }
-    }
+    // enterKeyToLogin(e) {
+    //     e.preventDefault();
+    //     if (e.keyCode === 13) {
+    //         this.buttonClick();
+    //     }
+    // }
 
 
     /**
      * Caculates the position of the login button to be initially.
      **/
-    calcLoginButtonPosition() {
-        var ycalc = 0;
-        var docHeight = document.body.offsetHeight;
+    // calcLoginButtonPosition() {
+    //     var ycalc = 0;
+    //     var docHeight = document.body.offsetHeight;
 
-        var loginButton = document.getElementById('loginButton');
-        var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
+    //     var loginButton = document.getElementById('loginButton');
+    //     var loginButtonBottom = loginButton.getBoundingClientRect().bottom;
         
-        //var translate = 'translate(0px,' + ycalc + 'px)';
-        ycalc = docHeight - loginButtonBottom - 65;
+    //     //var translate = 'translate(0px,' + ycalc + 'px)';
+    //     ycalc = docHeight - loginButtonBottom - 65;
 
-        this.setState({ loginButtonBottomTranslateCalc: ycalc });
+    //     this.setState({ loginButtonBottomTranslateCalc: ycalc });
 
-        this.toggleLoginForm(ycalc);
-    }
-
-
-    /**
-     * Redirects to a target path
-     * @param str: target path
-     **/
-    navigate = (str) => {
-        this.props.history.push(str);
-    }
-
+    //     this.toggleLoginForm(ycalc);
+    // }
 
     /**
      * -ADCMT
      * @param evt: -ADCMT
      * @param context: -ADCMT
      **/
-    authenticate = (evt, context) => {
-        var username = document.getElementById('UserText').value;
-        var password = document.getElementById('PassText').value;
-        var url = 'login?username=' + username + "&password=" + password;
-        showLoadMask();
+    // authenticate = (evt, context) => {
+    //     var username = document.getElementById('UserText').value;
+    //     var password = document.getElementById('PassText').value;
+    //     var url = 'login?username=' + username + "&password=" + password;
+    //     showLoadMask();
         
-        var lblErrPass = document.getElementById('errPass');
-        lblErrPass.innerText = "";
-        lblErrPass.hidden = true;
+    //     var lblErrPass = document.getElementById('errPass');
+    //     lblErrPass.innerText = "";
+    //     lblErrPass.hidden = true;
         
-        // Server call to check user/pass and update state.
-        makeServerCall(url, context.onServerResponse, {onServerCallError: context.showMaintanencePage} );
-    }
+    //     // Server call to check user/pass and update state.
+    //     makeServerCall(url, context.onServerResponse, {onServerCallError: context.showMaintanencePage} );
+    // }
 
 
-    /**
-     * Reroutes to maintanance page (not redundant, used for "makeServerCall" in authenticate)
-     **/
+    // /**
+    //  * Reroutes to maintanance page (not redundant, used for "makeServerCall" in authenticate)
+    //  **/
     showMaintanencePage = () => {
         this.navigate('/maintenance');
     };
@@ -136,6 +273,7 @@ class Login extends React.Component {
      * @param options: -ADCMT
      **/
     onServerResponse = (response, options) => {
+        console.log(JSON.parse(response))
         var result; 
         
         try {
@@ -147,7 +285,7 @@ class Login extends React.Component {
         
         var lblErrPass = document.getElementById('errPass');
 
-        if (result && result.status == 'success') { 
+        if (result && result.status === 'success') { 
             // Save the details to store
             if (result.userInformation) {
                 result.userInformation.loggedInTime = new Date();
@@ -158,20 +296,20 @@ class Login extends React.Component {
             this.saveUserInfo(result.userInformation, result.funnelInfo, result.savedViews);
         }
 
-        else if (result && result.status == "failure") {
+        else if (result && result.status === "failure") {
             //console.log('Error');
             lblErrPass.hidden = false;
             lblErrPass.innerText = "Incorrect Username/Password";
         }
 
-        else if (result && result.status == "expired") {
+        else if (result && result.status === "expired") {
             //console.log('Error');
             lblErrPass.hidden = false;
             lblErrPass.innerText = "User License has expired";
         }
 
         else {
-            this.navigate("/maintenance");
+            this.props.history.push("/maintenance");
         }
 
         hideLoadMask();
@@ -184,20 +322,19 @@ class Login extends React.Component {
      * @param funnelInfo: -ADCMT
      **/
     saveUserInfo = (userInfo, funnelInfo, savedViews) => {
-        //console.log('Success');
         this.setState({ openPassword: false });
         this.props.dispatch(saveUserInfo(userInfo, funnelInfo, savedViews));
 
         // Call function post login if provided.
-        if (typeof this.props.doAfterLogin == 'function') {
+        if (typeof this.props.doAfterLogin === 'function') {
             this.props.doAfterLogin(userInfo);
         }
         
         // Login cookie
-        //setCookie(getLoginCookieName(), 1,0.5);
+        // setCookie(getLoginCookieName(), 1,0.5);
 
         // Redirect to home page.
-        this.navigate("/home");
+        this.props.history.push("/home");
     }
 
 
@@ -205,96 +342,79 @@ class Login extends React.Component {
      * -ADCMT
      * @param ycalc: -ADCMT
      **/
-    toggleLoginForm = (ycalc) => {
-        var loginForm = document.getElementById('loginForm');
-        var loginOverlay = document.getElementById('loginOverlay');
-        var elements = document.getElementsByClassName('loginFormOtherElements');
-        var userText = document.getElementById('UserText');
-        var visibility = '';
+    // toggleLoginForm = (ycalc) => {
+    //     var loginForm = document.getElementById('loginForm');
+    //     var loginOverlay = document.getElementById('loginOverlay');
+    //     var elements = document.getElementsByClassName('loginFormOtherElements');
+    //     var userText = document.getElementById('UserText');
+    //     var visibility = '';
 
-        if (this.state.loginVisible) {
-            loginForm.style.transform = "translate(0px, " + ycalc + "px)";
+    //     if (this.state.loginVisible) {
+    //         loginForm.style.transform = "translate(0px, " + ycalc + "px)";
            
-            // Hide other elements
-            visibility = 'hidden';
-            loginOverlay.classList.remove('loginOverlayCSS');
-            loginForm.style.backgroundColor = "transparent";
-        }
+    //         // Hide other elements
+    //         visibility = 'hidden';
+    //         loginOverlay.classList.remove('loginOverlayCSS');
+    //         loginForm.style.backgroundColor = "transparent";
+    //     }
 
-        else {
-            loginForm.style.transform = "translate(0px, 0px)";
-            loginOverlay.classList.add('loginOverlayCSS');
+    //     else {
+    //         loginForm.style.transform = "translate(0px, 0px)";
+    //         loginOverlay.classList.add('loginOverlayCSS');
             
-            // Show other elements
-            visibility = '';
-            loginForm.style.backgroundColor = 'rgba(97, 97, 97, 0.5)';
-        }
+    //         // Show other elements
+    //         visibility = '';
+    //         loginForm.style.backgroundColor = 'rgba(97, 97, 97, 0.5)';
+    //     }
 
-        for (var index = 0; index < elements.length; index++) {
-            elements[index].style.visibility = visibility;
-        }
+    //     for (var index = 0; index < elements.length; index++) {
+    //         elements[index].style.visibility = visibility;
+    //     }
 
-        userText.focus();
-        this.setState({ loginVisible: !this.state.loginVisible });
-    }
+    //     userText.focus();
+    //     this.setState({ loginVisible: !this.state.loginVisible });
+    // }
 
 
     /**
      * -ADCMT
      * @param evt: -ADCMT
      **/
-    buttonClick = (evt) => {
-        if (this.state.loginVisible) {
-            this.authenticate(evt, this);
-        }
+    // buttonClick = (evt) => {
+    //     if (this.state.loginVisible) {
+    //         this.authenticate(evt, this);
+    //     }
         
-        else {
-            this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc);
-        }
-    }
-
-
-    /**
-     * Closes the forgot password modal through the local state
-     **/
-    handleCloseForgotPassDailog = () => {
-        this.setState({ openForgotPasswordDialog: false, snackbar: false });
-    };
-
-
-    /**
-     * -ADCMT
-     **/
-    handleForgotPassSubmit = () => {
-        var email = document.getElementById('ForgotUserText') ? document.getElementById('ForgotUserText').value : null;
-        //console.log(email);
-        this.handleCloseForgotPassDailog();
-
-        // Send server call to email password recovery link.
-        this.setState({ snackbar: true });
-    }
-
+    //     else {
+    //         this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc);
+    //     }
+    // }
 
     render() {
         return (
             <Flexbox style = {{ width: '100%', height: '100%' }} >
-                <video playsInline autoPlay loop muted 
+                {/* <video playsInline autoPlay loop muted 
                     poster = "./Res/Img/synglyphx_bio.png" 
                     id = "bgvid"
-                    onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
+                    // onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
                 >
-                    {/*<source src="./Res/Vid/GlyphEd.webm" type="video/webm" />*/}
                     <source src = "./Res/Vid/GlyphEd.mp4" type = "video/mp4" />
                     Your browser does not support the video tag.
-                </video>
+                </video> */}
+                <div id="login_gen" alt="login image" style={{width: "100%", backgroundSize: "100%"}}></div>
                 
-                <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
+                {/* <div id = "loginOverlay" style = {{ width: '100%', height: '100%', display: 'table', overflow: 'hidden' }} >
                     <center style = {{ display: 'table-cell', verticalAlign: 'middle' }} >
 
-                        <Paper  id = "loginForm" style = {{ backgroundColor: 'rgba(75, 38, 38, 0.50)', width: '310px', height: '327px', borderRadius: "3px"}} >
+                        <Paper  id = "loginForm" style = {{ 
+                            backgroundColor: 'rgba(75, 38, 38, 0.50)', 
+                            fontSize: "2.50vh",
+                            width: '17vw', 
+                            height: 'fit-content', 
+                            borderRadius: "3px"}} >
 
                             <div className = "loginFormOtherElements" style = {{ textAlign: 'center', paddingBottom: '0px'}} >
-                                <img src = "./Res/Img/sgx_inside.png" alt = "SynGlyphX" style = {{ width: "310px", marginTop: "25px" }} />
+                                <img src = "./Res/Img/sgx_inside.png" alt = "SynGlyphX" style = {{ width: "16.15vw", marginTop: "2.61vh" }} />
                             </div>
 
                             <br/>
@@ -303,20 +423,19 @@ class Login extends React.Component {
                                 flexDirection = "row" 
                                 className = "loginFormOtherElements"
                                 style = {{
-                                    width: "80%",
+                                    width: "85%",
                                     borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                    borderRadius: '5px',
                                     border: "1px solid #ccc",
-                                    height: "40px",
+                                    height: "4.15vh",
                                     overflow: 'hidden',
                                     backgroundColor: "white"
                                 }}
                             >
-                                <div style = {{ width: "36px" }} >
+                                <div style = {{ width: "1.9vw" }} >
                                     <i 
                                         className = "fa fa-user" 
                                         style = {{
-                                            fontSize: '2.25rem',
+                                            fontSize: '3.75vh',
                                             backgroundColor: 'white',
                                         }}
                                     />
@@ -332,8 +451,8 @@ class Login extends React.Component {
                                         borderLeft: '1px #b3b3b3 solid',
                                         float: 'right',
                                         outlineWidth: '0',
-                                        fontSize: '16px',
-                                        paddingLeft: "10px"
+                                        fontSize: '1.668vh',
+                                        paddingLeft: "1.043vh"
                                     }}
                                 />
                             </Flexbox>
@@ -344,21 +463,21 @@ class Login extends React.Component {
                                 flexDirection = "row" 
                                 className = "loginFormOtherElements"
                                 style = {{
-                                    width: "80%",
+                                    width: "85%",
                                     borderColor: "#d9d9d9 #ccc #b3b3b3",
-                                    borderRadius: '5px',
                                     border: "1px solid #ccc",
-                                    height: "40px",
+                                    height: "4.15vh",
                                     overflow: 'hidden',
-                                    backgroundColor: "white"
+                                    backgroundColor: "white",
+                                    marginBottom: "1.031vh"
                                 }}
                             >
 
-                                <div style = {{ width: "36px" }} >
+                                <div style = {{ width: "1.9vw" }} >
                                     <i 
                                         className = "fa fa-lock" 
                                         style = {{
-                                            fontSize: '2.25rem',
+                                            fontSize: '3.75vh',
                                             backgroundColor: 'white',
                                         }}
                                     />
@@ -374,19 +493,51 @@ class Login extends React.Component {
                                         width: '90%',
                                         float: 'right',
                                         outlineWidth: '0',
-                                        fontSize: '23px',
-                                        paddingLeft: "10px"
+                                        fontSize: '2.398vh',
+                                        paddingLeft: "1.043vh"
                                     }}
                                 />
                             </Flexbox>
 
-                            <div style = {{ margin: "-4px 0px -16px 0px" }} >
-                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
-                                    <a onClick = { () => window.open("https://synglyphx.atlassian.net/servicedesk/customer", '_blank') } style = {{ cursor: 'pointer' }} >Forgot password?</a>
+                            <div id="caps_lock_ux" style={{
+                                    display: "none", 
+                                    color: "red", 
+                                    backgroundColor: "white",
+                                    letterSpacing: "0.5px",
+                                    fontSize: "2.19vh", 
+                                    width: "14.5vw",
+                                    fontFamily: "ITCFranklinGothicStd-DmCd"}}>
+                                Caps Lock On
+                            </div>
+
+                            <div
+                                className = "loginFormOtherElements" 
+                                id = "errPass" 
+                                style = {{ 
+                                    color: 'red',
+                                    width: "14.5vw",
+                                    backgroundColor: "white",
+                                    fontFamily: "ITCFranklinGothicStd-DmCd",
+                                    marginTop: "3px",
+                                    letterSpacing: "0.5px",
+                                    fontSize: "2.19vh" }}  
+                            >
+                            </div>
+
+                            <div>
+                                <label className = "loginFormOtherElements" id = "forgotPass" style = {{ color: "#fff" }} >
+                                    <a 
+                                        this.setState({openForgotPasswordDialog: true})} 
+                                    style = {{ 
+                                        cursor: "pointer", 
+                                        fontFamily: "ITCFranklinGothicStd-DmCd", 
+                                        letterSpacing: "1px", 
+                                        fontSize: "1.67vh" }} 
+                                    >
+                                        Forgot password?
+                                    </a>
                                 </label>
                             </div>
-                            
-                            <label className = "loginFormOtherElements" id = "errPass" style = {{ color: 'red' }}  />
 
                             <br/>
 
@@ -395,32 +546,38 @@ class Login extends React.Component {
                                 label = "Login"
                                 secondary = { true }
                                 onClick = { (evt) => this.buttonClick(evt, this) }
-                                buttonStyle = {{ backgroundColor: this.props.settings.colors.buttons.general }}
-                                labelStyle = {{ fontSize: '20px' }}
+                                buttonStyle = {{ backgroundColor: this.props.settings.colors.buttons.general, height: "3.75vh" }}
+                                labelStyle = {{ fontSize: '2.08vh' }}
                                 style = {{ 
                                     position: 'relative', 
                                     width: "65%",
                                     display: 'block',
                                     borderRadius: '3px',
+                                    minWidth: "9.176vh",
                                     color: this.props.settings.colors.settingsModalColor.saveButton 
                                 }}
                             />
 
-                            {/*
                             <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '16px' }}>
                                 <a onClick = { () => this.setState({ openForgotPasswordDialog: true }) } style = {{ color: '#b3b3b3', cursor: 'pointer' }} ><u> forgot password? </u></a>
                             </label>
-                            */}
 
-                            <label className = "loginFormOtherElements" id = "forgotPass" style = {{ fontSize: '12px', color: "#fff" }} >
-                                By logging in you agree to the <a onClick = { () => this.setState({ openTermsAndConditionsDialog: true }) } style = {{ color: '#1d3ad8', cursor: 'pointer' }} ><u>Terms and Conditions </u></a>
+                            <label className = "loginFormOtherElements" id = "forgotPass" style = {{ 
+                                fontSize: '12px', 
+                                color: "#fff", 
+                                fontFamily: "ITCFranklinGothicStd-Med" }} >
+                                By logging in, you agree to the &nbsp;
+                                <a 
+                                    onClick = { () => this.setState({ openTermsAndConditionsDialog: true }) } 
+                                    style = {{cursor: 'pointer' }} ><u>Terms and Conditions.</u>
+                                </a>
                             </label>
 
                             <br />
 
                             <IconButton 
                                 iconClassName = "fa fa-arrow-circle-down" 
-                                iconStyle = {{ color: 'white' }}
+                                iconStyle = {{ color: 'white', fontSize: "2.502vh" }}
                                 onClick = { (evt) => this.toggleLoginForm(this.state.loginButtonBottomTranslateCalc) }
                             />
                         </ Paper>
@@ -428,28 +585,33 @@ class Login extends React.Component {
                     <br/>
                     
                     <Dialog
-                        title = "Forgot Password?"
+                        actionsContainerStyle = {{ marginLeft: "15px", textAlign: "left" }}
+                        titleStyle = {{ fontFamily: "ITCFranklinGothicStd-Med", fontSize: "26px", lineHeight: "normal" }}
+                        bodyStyle = {{ fontFamily: "ITCFranklinGothicStd-DmCd", fontSize: "20px" }}
+                        title = "Forgot Your Password?"
                         modal = { true }
                         open = { this.state.openForgotPasswordDialog }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
+                        onRequestClose = { this.handleCloseForgotPassDialog }
                         actions = {[
                             <RaisedButton
                                 label = "Submit"
                                 primary = { true }
-                                onClick = { this.handleForgotPassSubmit }
+                                onClick = {() => {this.handleForgotPassSubmit() } }
                             />,
                             <span> &nbsp; </span>,
                             <RaisedButton
                                 label = "Cancel"
                                 primary = { true }
-                                onClick = { this.handleCloseForgotPassDailog }
+                                onClick = {() => this.handleCloseForgotPassDialog() }
                             />
                         ]}
                     >
-                        Please Enter Your Email address associated with the account. <br/>
+                        Please Enter Your Email address associated with the account. <br/><br/>
                         <input 
                             type = "text"
                             id = "ForgotUserText"
+                            className = "retrieve-Pass-Text"
+                            placeholder = "example@email.com"
                             style = {{ height: 'inherit', border: '1px #b3b3b3 solid', outlineWidth: '0', fontSize: '20px' }}
                         />
                     </Dialog>
@@ -457,15 +619,15 @@ class Login extends React.Component {
                     <Snackbar
                         open = { this.state.snackbar }
                         message = "A link has been sent to your email address to reset the password."
-                        autoHideDuration = { 5000 }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
+                        autoHideDuration = { 3000 }
+                        onRequestClose = { this.handleCloseForgotPassDialog }
                     />
 
                     <Dialog
                         title = {<div style = {{ textAlign: "center", fontWeight: "bold" }} >END-USER LICENSE AGREEMENT (EULA) </div>}
                         modal = { true }
                         open = { this.state.openTermsAndConditionsDialog }
-                        onRequestClose = { this.handleCloseForgotPassDailog }
+                        onRequestClose = { this.handleCloseForgotPassDialog }
                         bodyStyle = {{ overflowY: "scroll" }}
                         actions = {[
                             <RaisedButton
@@ -577,7 +739,7 @@ class Login extends React.Component {
                             <br />This EULA is the entire agreement between Licensee and GlyphEd relating to the Software Product and it supersedes all prior or contemporaneous oral or written communications, proposals, and representations with respect to the Software Product or any other subject matter covered by this EULA. If any provision of this EULA is held by a court of competent jurisdiction to be contrary to law, such provision shall be changed and interpreted so as to best accomplish the original provision’s objectives to the fullest extent allowed by law, and the remaining provisions of the EULA will remain in full force and effect.
                         </div>
                     </Dialog>
-                </div>
+                </div> */}
             </Flexbox>
         );
     }
@@ -594,14 +756,14 @@ export const saveUserInfo = (userInfo, funnelInfo, savedViews) => ({
     savedViews
 });
 
-
 /**
  * Maps portions of the store to props of your choosing
  * @param state: passed down through react-redux's 'connect'
  **/
 const mapStateToProps = function(state){
   return {
-    settings: state.filterState.Settings
+    settings: state.filterState.Settings,
+    uid: state.filterState.uid,
   }
 }
 

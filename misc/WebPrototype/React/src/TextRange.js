@@ -10,7 +10,7 @@ import Range from 'rc-slider/lib/Range';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import 'rc-slider/assets/index.css';
-import './General.css';
+import './css/General.css';
 
 
 /**
@@ -49,7 +49,7 @@ class TextRangeTable extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -70,13 +70,13 @@ class TextRangeTable extends React.Component {
         var iframe = document.getElementById('GlyphViewer').contentWindow;
 
         var context = this;
-        this.props.rangeList;
-        debugger;
+        /* this.props.rangeList; */
+        // debugger;
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
                 
@@ -102,6 +102,37 @@ class TextRangeTable extends React.Component {
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
             }
         );
+
+        makeServerCall('applyFiltersEC2',
+        function(responseText, b) {
+            // var resultJson = JSON.parse(result);
+            // // debugger;
+            console.log(responseText, 'response from apply filts in text range');
+            // var data = resultJson.data;
+            // var tempRowIds = [];
+            
+            // if (data && Array.isArray(data)) {
+            //     if (data.length > 0) {							
+            //         for (var index = 0; index < data.length; index++) {
+            //             tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+            //         }
+            //     }
+            //     else {
+            //         // No data was matched.
+            //         console.log('NO MATCH');
+            //     }
+            // }
+            
+            // context.props.setFilterIDs(tempRowIds);
+            // iframe.filterGlyphs(tempRowIds);
+
+            // context.props.dispatch( setTimer(new Date().getTime()) );
+        },
+        {
+            post: true, 
+            data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+        }
+    );
     };
 
 
@@ -218,10 +249,10 @@ class TextRangeRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.range != nextProps.range || this.props.settings != nextProps.settings) {
+        if (this.props.range !== nextProps.range || this.props.settings !== nextProps.settings) {
             return true;
         }
-        if (this.state.min != nextState.min || this.state.max != nextState.max || this.state.text != nextState.text) {
+        if (this.state.min !== nextState.min || this.state.max !== nextState.max || this.state.text !== nextState.text) {
             return true;
         }
         return false;
@@ -263,7 +294,7 @@ class TextRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });
@@ -293,8 +324,8 @@ class TextRangeRow extends React.Component {
      **/
      onSliderTextChange(e) {
          if (e.target.value.length <= 1) {
-             if (e.target.value == "") {
-                 if (e.target.name == "min") {
+             if (e.target.value === "") {
+                 if (e.target.name === "min") {
                     this.setState({ min: "" });
                  }
 
@@ -306,8 +337,8 @@ class TextRangeRow extends React.Component {
              var value = e.target.value.toUpperCase();
              var index = alphabet.indexOf(value);
 
-             if (index != -1) {
-                 if (e.target.name == "min") {
+             if (index !== -1) {
+                 if (e.target.name === "min") {
                     this.setState({ min: index });
                  }
 
@@ -350,7 +381,7 @@ class TextRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });
@@ -446,16 +477,17 @@ class TextRangeRow extends React.Component {
      **/
     onToggle(e) {
         var epoch = (new Date()).getTime();
+        let context = this;
         if (epoch > this.state.epoch + 300) {
             if (e.target.checked) {
                 var min = null;
                 var max = null;
 
-                if (this.state.min == "") {
+                if (this.state.min === "") {
                     min = 0;
                 }
 
-                if (this.state.max == "") {
+                if (this.state.max === "") {
                     max = 25;
                 }
 
@@ -463,9 +495,9 @@ class TextRangeRow extends React.Component {
 
                 this.props.setFilterBusy(true);
 
-                var context = this;
+                // var context = this;
                 let pom = new Promise(function (resolve, reject) {
-                    debugger;
+                    // debugger;
                     context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                     resolve('done');
                 });
@@ -489,7 +521,7 @@ class TextRangeRow extends React.Component {
 
                 this.props.setFilterBusy(true);
 
-                var context = this;
+                // var context = this;
                 let pom = new Promise(function (resolve, reject) {
                     context.props.updateStore(null, null, context.props.range[2], false, null, null);
                     resolve('done');
@@ -570,7 +602,7 @@ class TextRangeRow extends React.Component {
 
             var context = this;
             let pom = new Promise(function (resolve, reject) {
-                debugger;
+                // debugger;
                 context.props.setTableData(context.props.UndoRedoHistory.history[0].tableData);
                 resolve('done');
             });

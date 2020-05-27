@@ -1,7 +1,7 @@
 import React from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import Flexbox from 'flexbox-react';
-import './General.css';
+import './css/General.css';
 
 var loadingMessages = [
     {text: "Hang on... We're beaming your data back down to earth...", textShadow: ""},
@@ -13,15 +13,15 @@ var loadingMessages = [
     {text: "PUT ON YOUR 3D GOGGLES NOW...", textShadow: "-0.12em 0 red, 0.12em 0 cyan"},
     {text: "Thank you for deleting your data! Just kidding...", textShadow: ""},
     {text: "This isn't exactly easy...", textShadow: ""},
-    {text: "Just a second we have to hand draw these...", textShadow: ""},
+    {text: "Just a second... these are hand-drawn you know...", textShadow: ""},
     {text: "Using Glyphs twice a day can make you fly... through data...", textShadow: ""},
     {text: "A Glyph a day keeps the spreadsheets away...", textShadow: ""},
     {text: "Knock knock... Who’s there... Glyphs hopefully...", textShadow: ""},
     {text: "We're stuck... Can you get out and push...", textShadow: ""},
-    {text: "Buckle up... Its going to get bumpy...", textShadow: ""},
+    {text: "Buckle up... It's going to get bumpy...", textShadow: ""},
     {text: "Hey, I'm still doing this faster than you...", textShadow: ""},
-    {text: "Our Glyph artist is on coffee break, please wait...", textShadow: ""},
-    {text: "Dont refresh, I'm trying my best...", textShadow: ""},
+    {text: "Our Glyph artist is on coffee break. Please wait...", textShadow: ""},
+    {text: "Don't refresh! I'm trying my best...", textShadow: ""},
     {text: "Hang on a sec, I know your data is here somewhere...", textShadow: ""},
     {text: "Its raining Glyphs! Hallelujah!", textShadow: ""}
 
@@ -41,27 +41,28 @@ class ComponentLoadMask extends React.Component {
 
     componentDidMount() {
         if (this.props.imgLink) {
+            // console.log(this.props.imgLink, 'imgLink props');
             for (let i = loadingMessages.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [loadingMessages[i], loadingMessages[j]] = [loadingMessages[j], loadingMessages[i]];
             }
 
-            var context = this;
+            // var context = this;
 
-            var loopVar = setInterval(function() {
-                if (context.props.stopLoop) {
-                    clearInterval(loopVar);
-                }
-                else {
-                    var currentPosition = context.state.position;
-                    if (currentPosition + 1 > loadingMessages.length - 1) {
-                        currentPosition = -1;
-                    }
+            // var loopVar = setInterval(function() {
+            //     if (context.props.stopLoop) {
+            //         clearInterval(loopVar);
+            //     }
+            //     else {
+            //         var currentPosition = context.state.position;
+            //         if (currentPosition + 1 > loadingMessages.length - 1) {
+            //             currentPosition = -1;
+            //         }
                     
-                    context.setState({ position: ++currentPosition });
-                }
+            //         context.setState({ position: ++currentPosition });
+            //     }
                 
-            }, 8000);
+            // }, 8000);
         }
     }
 

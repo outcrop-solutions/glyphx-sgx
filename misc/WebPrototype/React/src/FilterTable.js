@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import { Column, Table } from 'react-virtualized';
 //import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import { TableRow, TableRowColumn } from 'material-ui/Table';
-import { guidGenerator } from './GeneralFunctions.js';
+/* import { guidGenerator } from './GeneralFunctions.js'; */
 import { makeServerCall } from './ServerCallHelper.js';
 import Checkbox from 'material-ui/Checkbox';
 import Promise from 'bluebird';
 import ScrollIntoView from 'scroll-into-view-if-needed';
-import SearchBox from './SearchBox.js';
+/* import SearchBox from './SearchBox.js'; */
 import Flexbox from 'flexbox-react';
 import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import './General.css';
+import './css/General.css';
 import 'react-virtualized/styles.css';
 
 
@@ -61,7 +61,7 @@ function CustomRowRendererComponent({
         }
     }
 
-    if (selectedData.indexOf(rowData.value) != -1) {
+    if (selectedData.indexOf(rowData.value) !== -1) {
         style.backgroundColor = "#e0e0e0";
     }
 
@@ -104,12 +104,12 @@ class FilterTable extends React.Component {
             flatData: [],
             indexColumnToSearch: (props.columnToSearch ? props.columnToSearch : 1),
             searchTerm: "",
-            height: 350
+            height: document.documentElement.clientHeight * .361197
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.tableData != nextProps.tableData) {
+        if (this.props.tableData !== nextProps.tableData) {
             this.setState({ tableData: nextProps.tableData, flatData: [] });
             this.refresh = true;
         }
@@ -123,13 +123,13 @@ class FilterTable extends React.Component {
      **/
     shouldComponentUpdate(nextProps, nextState) {
 
-        return (this.props.tableState[this.props.id].selectedValues != nextProps.tableState[this.props.id].selectedValues || 
-                this.props.settings != nextProps.settings ||
-                this.state.flatData != nextState.flatData ||
-                this.state.searchTerm != nextState.searchTerm ||
-                this.props.tableData != nextProps.tableData ||
-                this.props.ShowAllTables != nextProps.ShowAllTables ||
-                this.state.height != nextState.height
+        return (this.props.tableState[this.props.id].selectedValues !== nextProps.tableState[this.props.id].selectedValues || 
+                this.props.settings !== nextProps.settings ||
+                this.state.flatData !== nextState.flatData ||
+                this.state.searchTerm !== nextState.searchTerm ||
+                this.props.tableData !== nextProps.tableData ||
+                this.props.ShowAllTables !== nextProps.ShowAllTables ||
+                this.state.height !== nextState.height
                 );
 
         /*
@@ -169,10 +169,10 @@ class FilterTable extends React.Component {
     componentDidMount() {
         this.componentDidUpdate();
 
-        var undoRedoHistory = {
-            history: [{filterList: this.props.tableState, tableData: this.props.fullTableData}],
-            position: 0
-        }
+        // var undoRedoHistory = {
+        //     history: [{filterList: this.props.tableState, tableData: this.props.fullTableData}],
+        //     position: 0
+        // }
 
         //this.props.dispatch(editUndoRedoHistory(undoRedoHistory));
         
@@ -209,33 +209,45 @@ class FilterTable extends React.Component {
      */
     applyFilter = () => {
         //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
-
         var context = this;
+        var iframe;
+        if(!context.props.uid){
+            iframe = document.getElementById('GlyphViewer').contentWindow;
+            console.log(iframe);
+        }
 
         makeServerCall('applyFilters',
             function(result, b) {
                 var resultJson = JSON.parse(result);
-                debugger;
+                console.log(resultJson);
+                // debugger;
                 var data = resultJson.data;
                 var tempRowIds = [];
-                
-				if (data && Array.isArray(data)) {
-					if (data.length > 0) {							
-						for (var index = 0; index < data.length; index++) {
-							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-						}
-					}
-					else {
-						// No data was matched.
-						console.log('NO MATCH');
-					}
-				}
-				
-                context.props.setFilterIDs(tempRowIds);
-                iframe.filterGlyphs(tempRowIds);
 
-                debugger;
+                // if(context.props.uid){
+                //     context.props.webSocket.send(JSON.stringify({
+                //         url_uid: context.props.uid,
+                //         filters: data
+                //     }));
+                // }
+                if(!context.props.uid){
+                    if (data && Array.isArray(data)) {
+                        if (data.length > 0) {							
+                            for (var index = 0; index < data.length; index++) {
+                                tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+                            }
+                        }
+                        else {
+                            // No data was matched.
+                            console.log('NO MATCH');
+                        }
+                    }
+                    console.log(tempRowIds);
+                    context.props.setFilterIDs(tempRowIds);
+                    iframe.filterGlyphs(tempRowIds);
+                }
+
+                // debugger;
                 
                 context.props.setFilterBusy(false);
 
@@ -246,6 +258,17 @@ class FilterTable extends React.Component {
                 data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState } 
             }
         );
+
+        // makeServerCall('applyFiltersEC2',
+        //     function(responseText) {
+        //         console.log(JSON.parse(responseText), 'response from apply filts on filt table');
+
+
+        //     },
+        //     {
+        //         post: true,
+        //         data: { tableName: this.props.VizParams.tableName, filterObj: this.props.tableState}
+        //     });
     };
 
 
@@ -265,13 +288,13 @@ class FilterTable extends React.Component {
         var checked = false;
 
         for (var i = 0; i < selectedValues.length; i++) {
-            if (selectedValues[i] == e.rowData.value) {
+            if (selectedValues[i] === e.rowData.value) {
                 checked = true;
             }
         }
 
 
-        debugger;
+        // debugger;
         
 
         if (!checked) {
@@ -321,7 +344,7 @@ class FilterTable extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -590,13 +613,17 @@ class FilterTable extends React.Component {
 
         for (var i in this.state.tableData.values) {
 
-            if (sTerm != "") {
-                if (this.state.tableData.values[i].value.toString().toLowerCase().indexOf(sTerm.toLowerCase()) != -1) {
-                    rows.push({ value: this.state.tableData.values[i].value, count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
+            if (sTerm !== "") {
+                if (this.state.tableData.values[i].value.toString().toLowerCase().indexOf(sTerm.toLowerCase()) !== -1) {
+                    rows.push({ 
+                        value: this.state.tableData.values[i].value, 
+                        count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
                 }
             }
             else {
-                rows.push({ value: this.state.tableData.values[i].value, count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
+                rows.push({ 
+                    value: this.state.tableData.values[i].value, 
+                    count: this.state.tableData.values[i].count + " (" + ((this.state.tableData.values[i].count/this.state.tableData.totalCount) * 100).toFixed(2) + "%)" });
             }
         }
 
@@ -610,7 +637,7 @@ class FilterTable extends React.Component {
      * @param {String/Object} element: this is the name of the column
      */
     scroll = (element) => {
-        if (typeof element == 'string') {
+        if (typeof element === 'string') {
             element = document.getElementById(element);
         }
 
@@ -638,7 +665,7 @@ class FilterTable extends React.Component {
 
         var index = list.indexOf(col);
 
-        if (index == -1) {
+        if (index === -1) {
             list.push(col);
             var tableData = this.props.fullTableData;
             tableData[col] = this.props.UndoRedoHistory.history[0].tableData[col];
@@ -654,17 +681,19 @@ class FilterTable extends React.Component {
 
 
     render() {
-        var id = this.props.id;
+/*         var id = this.props.id;
         var internalColName = this.props.internalColName;
-        var tableBodyHeight = (300 - 32) + "px";
+        var tableBodyHeight = (300 - 32) + "px"; */
+        //creating the rows
         var rows = this.createRows();
-
+        // console.log(rows);
+        // console.log(document.documentElement.clientHeight, document.documentElement.clientWidth)
         return (
 
             <div style = {{ height: "inherit" }} >
                 <br/>
 
-                <div style = {{ margin: "-11px 15px -12px" }} >
+                <div style = {{ margin: "-1.157vh 1.577vh -1.262vh" }} >
 
                     <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
                         <Flexbox style = {{ width: "100%", borderRadius: "5px", backgroundColor: this.props.settings.colors.tableSelectColor.background }} > 
@@ -678,18 +707,20 @@ class FilterTable extends React.Component {
                                     borderRadius: "4px",
                                     border: "1px solid #ccc",
                                     width: "100%",
-                                    height: "30px"
+                                    height: "3.155vh",
+                                    lineHeight: "2.524vh",
+                                    fontSize: "1.682vh"
                                 }}
                                 inputStyle = {{
-                                    paddingLeft:"5px",
-                                    paddingRight:"5px"
+                                    paddingLeft:"0.526vh",
+                                    paddingRight:"0.526vh"
                                 }}
                                 hintStyle = {{
-                                    paddingLeft:"7px",
-                                    bottom: "-1px"
+                                    paddingLeft:"0.736vh",
+                                    bottom: "-0.105vh"
                                 }}
                                 underlineStyle = {{
-                                    margin: "0px 0px -8px"
+                                    margin: "0px 0px -0.841vh"
                                 }}
                                 onChange = { (e) => this.onSearchChange(e) } 
                                 hintText = {
@@ -698,8 +729,8 @@ class FilterTable extends React.Component {
                                             className = "fa fa-search" 
                                             style = {{
                                                 padding: '0px', 
-                                                width: '24px',
-                                                height: '24px',
+                                                width: '2.524vh',
+                                                height: '2.524vh',
                                                 fontSize: 'inherit',
                                                 color: 'inherit'
                                             }}
@@ -715,18 +746,30 @@ class FilterTable extends React.Component {
                             <div 
                                 style = {{ 
                                     backgroundColor: this.props.settings.colors.tableSelectColor.background, 
-                                    margin: "0px 0px 0px 12px", 
+                                    margin: "0px 0px 0px 1.262vh", 
                                     //borderColor: "#d9d9d9 #ccc #b3b3b3",
                                     borderRadius: "4px",
+                                    height: "3.096vh",
                                     //border: "1px solid #ccc", 
+                                    width: "4.427vw"
                                 }} 
                             >
                                 <Checkbox
                                     label = "Show All"
-                                    checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) != -1 ? true : false }
+                                    style = {{width: "110%"}}
+                                    checked = { this.props.ShowAllTables.indexOf(this.props.internalColName.replace("_pinned", "")) !== -1 ? true : false }
                                     onCheck = { () => this.updateCheck(this.props.internalColName.replace("_pinned", "")) }
-                                    iconStyle = {{ fill: 'rgba(0, 0, 0, 0.6)', margin: "2px 2px 0px 0px" }}
-                                    labelStyle = {{ width: "100%", margin: "5px 5px 0px 0px", color: 'rgba(0, 0, 0, 0.6)' }}
+                                    iconStyle = {{ 
+                                        width: "2.524vh",
+                                        height: "2.524vh",
+                                        fill: 'rgba(0, 0, 0, 0.6)', 
+                                        margin: "0.210vh 0.210vh 0px 0px" }}
+                                    labelStyle = {{ 
+                                        width: "100%", 
+                                        lineHeight: "2.524vh",
+                                        fontSize: "1.2vh",
+                                        margin: "0.516vh 0.916vh 0px 0px", 
+                                        color: 'rgba(0, 0, 0, 0.6)' }}
                                 />
                             </div>
                            
@@ -737,24 +780,31 @@ class FilterTable extends React.Component {
 
 				<br/>
 				
-                <div style = {{ padding: "0px 15px" }} >
+                <div style = {{ padding: "0 1.577vh 0 1.577vh" }} >
                     <div 
                         style = {{ 
-                            //borderBottomRightRadius: "5px",
-                            //borderBottomLeftRadius: "5px", 
+                            // height: "38.486vh !important",
+                            width: "19vw",
                             overflow: "hidden" ,
-                            height: (24 * (rows.length + 1) > this.state.height ? this.state.height + 16 : 24 * (rows.length + 1))
+                            height: (document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
+                                this.state.height + (document.documentElement.clientHeight * .016512) : document.documentElement.clientHeight * .02477 * (rows.length + 1))
                         }} 
                         onMouseEnter = { this.mouseIn } 
                         onMouseLeave = { this.mouseOut } >
                         
 
                         <Table
-                            width = { 365 }
-                            height = { 24 * (rows.length + 1) > this.state.height ? this.state.height : 24 * (rows.length + 1) }
-                            headerHeight = { 24 }
-                            rowHeight = { 24 }
-                            gridStyle = {{ backgroundColor: "white", color: "black", marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > this.state.height ? "0" : "-10px" }}
+                            width = { document.documentElement.clientWidth * 0.1901041666666667 }
+                            height = { 
+                                document.documentElement.clientHeight * .02477 * (rows.length + 1) > this.state.height ? 
+                                    this.state.height : document.documentElement.clientHeight * .02477 * (rows.length + 1) }
+                            headerHeight = { document.documentElement.clientHeight * .02477 }
+                            rowHeight = { document.documentElement.clientHeight * .02477 }
+                            gridStyle = {{ 
+                                backgroundColor: "white", 
+                                color: "black", 
+                                marginBottom: 24 * (Object.keys(this.state.tableData.values).length + 1) > this.state.height ? 
+                                    "0" : "-1.051vh" }}
                             headerStyle = {{ color: "black" }}
                             rowStyle = {{ borderBottom: "solid 1px #d3d3d3" }}
                             rowCount = { rows.length }
@@ -765,10 +815,10 @@ class FilterTable extends React.Component {
                             <Column
                                 label = 'Value'
                                 dataKey ='value'
-                                width = { 250 }
+                                width = { document.documentElement.clientWidth * 0.1302083333333333 }
                             />
                             <Column
-                                width = { 100 }
+                                width = { document.documentElement.clientWidth * 0.0520833333333333 }
                                 label = 'Count'
                                 dataKey = 'count'
                             />
@@ -776,15 +826,16 @@ class FilterTable extends React.Component {
 
                         <RaisedButton 
                             primary = { true } 
-                            onClick = { () => this.setState({ height: this.state.height == 350 ? 600 : 350 }) }
-                            buttonStyle = {{ backgroundColor: "#b6b6b5", width: "364px" }}
-                            style = {{ height: '16px', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
+                            onClick = { () => this.setState({ height: this.state.height === (document.documentElement.clientHeight * .361197) ? 
+                                    (document.documentElement.clientHeight * .619195) : (document.documentElement.clientHeight * .361197) }) }
+                            buttonStyle = {{ backgroundColor: "#b6b6b5", width: "19vw" }}
+                            style = {{ height: '1.682vh', display: (24 * (rows.length + 1) > this.state.height ? "" : "none") }}
                         >
                             <i 
-                                className = { this.state.height == 350 ? "fa fa-caret-down" : "fa fa-caret-up" }
+                                className = { this.state.height === (document.documentElement.clientHeight * .361197) ? "fa fa-caret-down" : "fa fa-caret-up" }
                                 style = {{
-                                    fontSize: '1.6em',
-                                    margin: "-2px 0px 0px 0px",
+                                    fontSize: '2.208vh',
+                                    margin: "-0.210vh 0px 0px 0px",
                                     color: "#000",
                                 }}
                             /> 
@@ -889,7 +940,10 @@ class FilterRow extends React.Component {
      * @returns: true if it should render and false if it shouldn't
      **/
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.checked !== nextProps.checked || this.props.settings != nextProps.settings || this.props.value != nextProps.value || this.props.percentStr != nextProps.percentStr);
+        return (this.props.checked !== nextProps.checked || 
+            this.props.settings !== nextProps.settings || 
+            this.props.value !== nextProps.value || 
+            this.props.percentStr !== nextProps.percentStr);
     }
 
 
@@ -948,7 +1002,9 @@ const mapStateToProps = function(state){
     settings: state.filterState.Settings,
     VizParams: state.filterState.VizParams,
     UndoRedoHistory: state.filterState.UndoRedoHistory,
-    ShowAllTables: state.filterState.ShowAllTables
+    ShowAllTables: state.filterState.ShowAllTables,
+    webSocket: state.filterState.webSocket,
+    uid: state.filterState.uid
   }
 };
 

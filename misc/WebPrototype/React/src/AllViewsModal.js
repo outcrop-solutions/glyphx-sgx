@@ -1,15 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { makeServerCall } from './ServerCallHelper.js';
-import Dialog from 'material-ui/Dialog';
+/* import Dialog from 'material-ui/Dialog'; */
 import Flexbox from 'flexbox-react';
-import FlatButton from 'material-ui/FlatButton';
+/* import FlatButton from 'material-ui/FlatButton'; */
 import Snackbar from 'material-ui/Snackbar';
 import RaisedButton from 'material-ui/RaisedButton';
+// import Divider from 'material-ui/Divider';
+import { makeServerCall } from './ServerCallHelper.js';
+import { webSocketSend } from './GeneralFunctions.js';
 import SearchBox from './SearchBox.js';
 import ComponentLoadMask from './ComponentLoadMask.js';
-import './General.css';
+import './css/General.css';
 
 
 /**
@@ -17,6 +19,17 @@ import './General.css';
  * @param type: string name of the selection made
  * @param typeURL: URL corresponding with the type to make backend call
  */
+
+const tip_arr = [
+	"./Res/Img/Tip1.png",
+	"./Res/Img/Tip2.png",
+	"./Res/Img/Tip3.png",
+	"./Res/Img/Tip4.png",
+	"./Res/Img/Tip5.png",
+	"./Res/Img/Tip6.png",
+	"./Res/Img/Tip7.png",
+];
+
 class allViewsModal extends React.Component {
 
 	state = {
@@ -28,7 +41,10 @@ class allViewsModal extends React.Component {
 		selection: "",
 		mouseup: true,
 		selectAll: [],
-		loadMask: true
+		loadMask: false,
+		loadDone: false,
+		selectAll500: false,
+		sdtUrl: "",
 	}
 	constructor(props){
 		super(props);
@@ -41,6 +57,46 @@ class allViewsModal extends React.Component {
 	componentDidMount() {
 		// Mouseup listener used to handle click drag selection
 		window.onmouseup = this.handleMouseUp.bind(this);
+		var context = this;
+
+		const socket = new WebSocket(`ws://${window.SERVER_URL.slice(7, window.SERVER_URL.length-1)}`);
+		console.log(socket)
+		this.props.dispatch(setSocket(socket));
+
+		// listening
+		socket.addEventListener('message', function (event) {
+			let data;
+			console.log(event);
+			if(event.data.length > 0){
+				data = JSON.parse(event.data);
+				if(event.data.indexOf('{') > -1) {
+					console.log(event.data)
+					// console.log('Placeholder.')
+				}
+				else if(event.data.launch === true){
+					console.log('yes launch');
+				}
+			}
+		});
+		// this.props.dispatch(setSocket(socket));
+
+		
+		//intial tip generate
+		let previous_tip;
+		document.getElementById('tip_gen').src = tip_arr[Math.floor(Math.random() * tip_arr.length)];
+
+		this.timer = setInterval(() => {
+			if(document.getElementById('tip_gen')){
+				let new_tip = Math.floor(Math.random() * tip_arr.length);
+				if(previous_tip === new_tip){
+					new_tip = Math.floor(Math.random() * tip_arr.length);
+				}
+				
+				document.getElementById('tip_gen').src = tip_arr[new_tip];
+				previous_tip = new_tip;
+			}
+		}, 10000);
+
 	}
 	
 
@@ -50,6 +106,7 @@ class allViewsModal extends React.Component {
 	componentWillUnmount() {
 		// Removing listener so it doesnt linger across the site
 		window.onmouseup = null;
+		clearInterval(this.timer);
 	}
 
 
@@ -61,11 +118,12 @@ class allViewsModal extends React.Component {
      **/
     shouldComponentUpdate(nextProps, nextState) {
 		return (this.state.selectionList !== nextState.selectionList || this.state.data !== nextState.data 
-			|| this.props.allViewsDisplay !== nextProps.allViewsDisplay || this.state.snackbarVisible !== nextState.snackbarVisible
+			|| this.props.allViewsDisplay !== nextProps.allViewsDisplay || 
+			this.state.snackbarVisible !== nextState.snackbarVisible
 		);
 
-		/*
-        if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
+		
+        /* if (this.state.selectionList != nextState.selectionList || this.state.data != nextState.data) {
             return true;
         }
 
@@ -73,8 +131,8 @@ class allViewsModal extends React.Component {
 			return true;
 		}
 
-        return false;
-		*/
+        return false; */
+		
     };
 
 
@@ -83,70 +141,135 @@ class allViewsModal extends React.Component {
      * @param nextProps: The props the component would have after the change
      **/
 	componentWillReceiveProps(nextProps) {
-
+		
 		// Only care if URL changes because then new data needs to be loaded
         if (nextProps.typeURL !== this.props.typeURL) {
+			
 
 			// Show the window load-mask as backend call is being made
-			this.setState({ loadMask: true });
+			this.props.dispatch(editModalDisplay(false, null));
+			this.setState({ loadMask: true, loadDone: false, data: [] });
 
             var context = this;
 			var index = nextProps.typeURL.replace(/\\([^\\]*)$/,'!!!!$1').lastIndexOf("\\");
 
+			// console.log(nextProps.typeURL.substring(index + 1));
+			let str = nextProps.typeURL.substring(index + 1).replace("\\", "/");
+			context.setState({sdtUrl: str});
+			console.log(str);
+			// console.log(nextProps.typeURL.substring(index + 1), 'whats going on')
 			//debugger;
 
 			// Get the data corresponding to the URL
-			debugger;
-			makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
-				function (responseText) { 
-					var response = JSON.parse(responseText);
-					var preData = response.frontEndFilterData; 
-					var data = [];
-					var selectAll = {};
-					var keyArray = Object.keys(preData);
-					var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+			// debugger;
+			// let startTime = window.performance.now();
+			// let endTime;
+			// makeServerCall(window.encodeURI('frontEndFilterData/' + nextProps.typeURL.substring(index + 1) ),
+			// 	function (responseText) { 
+			// 		endTime = window.performance.now();
+			// 		var response = JSON.parse(responseText);
+			// 		var preData = response.frontEndFilterData; 
+			// 		var data = [];
+			// 		var selectAll = {};
+			// 		var keyArray = Object.keys(preData);
+			// 		console.log(preData, keyArray, endTime-startTime)
+			// 		var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
-					debugger;
+			// 		// debugger;
 
-					//console.log(response);
+			// 		//console.log(response);
 
+			// 		context.props.dispatch(updateFilterFromSnapshot({}));
+
+			// 		// Seperate and store the actual data and the selectAll boolean of each column
+			// 		for (var i = 0; i < keyArray.length; i++) {
+			// 			var dataCol = [];
+			// 			selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
+
+			// 			for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
+			// 				dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
+			// 			}
+
+			// 			if (isNaN(dataCol[0])) {
+			// 				dataCol.sort(collator.compare);
+			// 			}
+
+			// 			else {
+			// 				dataCol.sort(
+			// 					function (a, b) {
+			// 						return a - b;
+			// 					}
+			// 				);
+			// 			}
+
+			// 			dataCol.unshift(keyArray[i]);
+
+			// 			//debugger;
+			// 			data.push(dataCol);
+			// 		}
+			// 		console.log(selectAll, typeof selectAll);
+
+			// 		// debugger;
+
+			// 		// Post the new data to the state and hide the window load-mask
+			// 		// setTimeout(function(){
+			// 		context.setState({ 
+			// 			// data: data, 
+			// 			// table: response.tableName, 
+			// 			selectAll: selectAll, 
+			// 			// filterAllowedColumnList: response.filterAllowedColumnList, 
+			// 			// selectionList: [], 
+			// 			// loadMask: false,
+			// 			// loadDone: true, 
+			// 			// datasourceId: response.datasourceId });
+			// 		});
+			// 		context.props.dispatch( setTimer(new Date().getTime()) );
+			// 		context.props.dispatch(editModalDisplay(true));
+			// 	}		
+			// );	
+				makeServerCall('frontEndFiltersEC2', 
+				function(responseText) {
+					// let megaArr = [];
+					let response = JSON.parse(responseText);
+					console.log(response.body, response);
+					/*
+					*RESPONSE BODY STRUCTURE
+					*{
+					*statusCode: #
+					*	body: {
+					*		filters: [ [], [] ...],
+					*		tableName: "",
+					*		datasourceId: "",
+					*       selectAll: {},
+					*		filterAllowedColumnList: [],
+					*		initialX: "",
+					*		initialY: "",
+					*		initialZ: ""
+					*}	
+					*}
+					*/
 					context.props.dispatch(updateFilterFromSnapshot({}));
-
-					// Seperate and store the actual data and the selectAll boolean of each column
-					for (var i = 0; i < keyArray.length; i++) {
-						var dataCol = [];
-						selectAll[keyArray[i]] = preData[keyArray[i]]["selectAll"];
-
-						for (var j = 0; j < preData[keyArray[i]]["values"].length; j++) {
-							dataCol.push(preData[keyArray[i]]["values"][j][keyArray[i]]);
-						}
-
-						if (isNaN(dataCol[0])) {
-							dataCol.sort(collator.compare);
-						}
-
-						else {
-							dataCol.sort(
-								function (a, b) {
-									return a - b;
-								}
-							);
-						}
-
-						dataCol.unshift(keyArray[i]);
-
-						//debugger;
-						data.push(dataCol);
+					if(response && response.statusCode === 200){
+						let results = response.body;
+						context.setState({
+							table: results.tableName,
+							data: results.filters,
+							selectAll: results.selectAll, 
+							filterAllowedColumnList: results.filterAllowedColumnList,
+							datasourceId: results.datasourceId,
+							loadMask: false,
+							loadDone: true,
+							selectionList: [] });
+						context.props.dispatch(setInitialXYZ(results.initialX, results.initialY, results.initialZ));
+						context.props.dispatch( setTimer(new Date().getTime()) );
+						context.props.dispatch(editModalDisplay(true));
 					}
-
-					debugger;
-
-					// Post the new data to the state and hide the window load-mask
-					context.setState({ data: data, table: response.tableName, selectAll: selectAll, filterAllowedColumnList: response.filterAllowedColumnList, selectionList: [], loadMask: false, datasourceId: response.datasourceId });
-					context.props.dispatch( setTimer(new Date().getTime()) );
-				}
-			);
-        }
+				}, {
+					post: true,
+					data: {key: nextProps.typeURL.substring(index + 1)}
+				});
+		}
+		
     }
 
 
@@ -163,9 +286,9 @@ class allViewsModal extends React.Component {
 	/**
 	 * Closes the modal through the redux store
 	 */
-	handleBackClick = () => {
-		this.props.dispatch(editModalDisplay(false, null));
-	}
+	// handleBackClick = () => {
+	// 	this.props.dispatch(editModalDisplay(false, null));
+	// }
 
 
 	/**
@@ -372,7 +495,7 @@ class allViewsModal extends React.Component {
 		for (var i = 0; i < sList.length; i++) {
 			if (sList[i][0] === array[0]) {
 				var index = sList[i].indexOf(array[1]);
-				if (index !== -1) {
+				if (index !== -1) {	
 					return [i, index];
 				}
 				else {
@@ -406,7 +529,8 @@ class allViewsModal extends React.Component {
 	/**
 	 * Determines if the launch button should be disabled or not
 	 */
-	shouldLaunchBeDisabled() {
+	shouldLaunchBeDisabled(data) {
+		if(data.length === 0) return false;
 		var i;
 		var selectAll = this.state.selectAll;
 		var sList = this.state.selectionList;
@@ -425,19 +549,28 @@ class allViewsModal extends React.Component {
 				for (var j = 0; j < sList.length; j++) {
 					if (notSelectAll[i] === sList[j][0]) {
 						shouldBeDisabled = false;
+						document.getElementById("launch_button").style.cursor = "pointer";
 						break;
 					}
 				}
 				if (shouldBeDisabled) {
+					if(document.getElementById("launch_button")){
+						document.getElementById("launch_button").className = "launch_button_null";
+						document.getElementById("launch_button").style.cursor = "not-allowed";
+					} 
 					return true;
 				}
 			}
 		}
 
 		if (sList.length === 0) {
+			if(document.getElementById("launch_button")){
+				document.getElementById("launch_button").className = "launch_button_null";
+				document.getElementById("launch_button").style.cursor = "not-allowed";
+			} 
 			return true;
 		}
-
+		document.getElementById("launch_button").style.cursor = "pointer";
 		return false;
 	}
 
@@ -657,94 +790,280 @@ class allViewsModal extends React.Component {
 		}
 	}
 
+	dataFunc(data){
+		var context = this;
+		
+		if(data){
+			if(data.length && this.state.loadDone){
+				return this.state.data.map( function(col) {
+					return (
+						<Flexbox 
+							flexDirection = "column" 
+							key = { col } 
+							style = {{ 
+								width: "100%", 
+								maxHeight: "25.8vh", 
+								marginBottom: "1.043vh"
+								// borderLeft: (col === data[0] ? "1px solid" : "none"),
+								// borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
+								// borderTopLeftRadius: (col === data[0] ? "3px" : ""),
+								// borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
+								// borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
+							}} 
+						>
+							<div 
+								className = "noselect" 
+								style = {{ 
+									backgroundColor: "#0c1836", 
+									padding: "1.356vh 0px 0.938vh 1.877vh",
+									color: "#ffffff",
+									fontSize: "1.877vh",
+									fontFamily: "ITCFranklinGothicStd-DmCd",
+									minHeight: "4.8vh",
+									letterSpacing: "0.5px"
+								}} 
+							> 
+
+								{/* <div style = {{ fontSize: "18px", letterSpacing: "0.5px" }} >  */}
+									{/* {col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]}  */}
+									{col[0]}
+								{/* </div> */}
+								{/* <span
+
+									// onClick= {col[0] => context.expandCollapseTable(e.target.innerText)}
+								> 
+								<i className = "fa fa-caret-down" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} />
+								</span> */}
+								{/* <img src="./Res/Img/Enlarge.png"/> */}
+
+								<div style = {{ 
+										display: "inline-block", 
+										float: "right", 
+										margin: "0px 1.877vh 0px 0px", 
+										fontSize: "1.877vh" }} > 
+									<div style = {{ 
+									// position: "absolute", 
+									// width: "46.36vw",
+									float: "left",
+									margin: "-0.413vh 1.548vh 0 0",
+									backgroundColor: "white" }} >
+										<SearchBox 
+											ref = "SearchBox"
+											settings = {{
+												SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+												searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
+												overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
+												overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
+												tableSelectColor: context.props.settings.colors.tableSelectColor.background
+											}}
+											onTextFieldValueChange = { col.length > 500 ? 
+												(evt) => { 
+													context.onBlurMultiSearch(context, col[0]); 
+													document.getElementById('expand'+col[0]).style.display = ""; 
+													document.getElementById('collapse10481'+ col[0]).className = "fa fa-caret-up";
+												} : 
+												(evt) => { 
+													context.onKeyUpMultiSearch(context, col[0]); 
+													document.getElementById('expand'+col[0]).style.display = ""; 
+													document.getElementById('collapse10481'+ col[0]).className = "fa fa-caret-up";
+												} 
+											}
+											id = { "tf-" + col[0] }
+											collapseButton = { false }
+											shouldOnBlur = { col.length > 500 ? true : false }
+										/>
+									</div>
+									<span
+									// className = "fa fa-check" 
+										style = {{ 
+											marginRight: "2.086vh", 
+											cursor: (context.state.selectAll[col[0]] === 'true'? "pointer" : "not-allowed"),
+											color: (context.state.selectAll[col[0]] === 'true' ? "white" : "darkgrey") }}
+										// title= "Select All" 
+										onClick = { () => {
+											context.selectDeselectCol(col, "select"); 
+											context.setState({selectAll500: true}) }} 
+									> 
+										Select All
+									</span> 
+									<span
+										style = {{cursor: "pointer"}}
+										// className = "fa fa-times" 
+										onClick = { () => {
+											context.selectDeselectCol(col, "deselect"); 
+											context.setState({selectAll500: false}) }} 
+									>
+										Clear
+									</span> 
+								
+									<i 
+										id = {'collapse10481' + col[0]}
+										onClick={(e) => context.expandCollapseTable(e.target.id, e.target.className)}
+										style={{
+											verticalAlign: "sub",
+											fontSize: "3.754vh", 
+											margin: "-0.834vh 0px 0px 2.503vh",
+											cursor: "pointer"}} 
+										className= { context.state.data[0][0] === col[0] ? "fa fa-caret-up" : "fa fa-caret-down"}
+									/>
+								</div>
+
+								
+
+							</div>
+
+							<div
+								id = {'expand' + col[0]} 
+								className = "customScroll"
+								style={{
+									display: (context.state.data[0][0] === col[0] ? "" : "none"),
+									border: "1px solid",
+									borderLeft: "1px solid black",
+									borderBottom: "1px solid black",
+									overflowY: "scroll"	
+							}}>
+								{/* <div style = {{ 
+										position: "absolute", 
+										width: "46.36vw",
+										backgroundColor: "white" }} >
+									<SearchBox 
+										ref = "SearchBox"
+										settings = {{
+											SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
+											searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
+											overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
+											overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
+											tableSelectColor: context.props.settings.colors.tableSelectColor.background
+										}}
+										onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
+										id = { "tf-" + col[0] }
+										collapseButton = { false }
+										shouldOnBlur = { col.length > 500 ? true : false }
+									/>
+								</div> */}
+
+								<div /* className = "customScroll" */ id = { col[0] } style = {{ overflow: "auto", /* marginTop: "3.128vh" */ }} >
+
+									{ (col.length > 500 ? 
+										<div className = {`${context.state.selectAll500 ? "high-count-div dark-color" : "high-count-div light-color"}`} 
+											id = { "st-" + col[0] } 
+											> 
+											500+ Results Returned. <br/> Search to Filter and View. <br /> <br /> Results: {col.length - 1} 
+										</div> : null) }
+
+									<div id = { "se-" + col[0] } style = {{ margin: "1.043vh 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
+
+									{col.map( function(elem) {
+										return (
+											(elem !== col[0] ? 
+												<div
+													key = { col[0] + elem } 
+													onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
+													onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
+													style = {{ 
+														display: (col.length > 500 ? "none" : "")
+													}}
+												>
+													<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
+														{elem.toString()} 
+													</AllViewsRow>
+												</div> : ""
+											)
+										)
+									})}
+
+								</div>
+							</div>
+						</Flexbox>
+					)
+				});
+			}
+			else if(data.length === 0 && this.state.loadDone === true){
+				return(
+					<div className= "no-results" style={{textAlign: "center", fontSize: "22px"}}>
+						<h3 style={{paddingTop: "3.650vh", fontFamily: "ITCFranklinGothicStd-Demi"}}>No Filter Options Available.</h3>
+					</div>
+				);
+			}
+		}
+	}
+
+	wbSocketFxn(){
+		let data, query;
+		var outerIndex;
+
+		if(this.state.selectionList.length > 0){
+			query = "SELECT * FROM " + this.state.table + " WHERE ";
+		}
+		else {
+			query = "SELECT * FROM " + this.state.table + ";";
+		}
+
+		if(this.state.selectionList.length > 0){
+			data = this.state.selectionList.slice();
+			for (outerIndex = 0; outerIndex < data.length; outerIndex++) {
+				var dataItem = data[outerIndex].slice();
+				var columnName = dataItem[0];
+
+				// Removes the 1st element that is the name.
+				dataItem.shift(); 
+
+				var values = '("' + dataItem.toString() + '")';
+				query = query + columnName + " IN " + values.replace(/,/g , '","');
+				
+				//was !=
+				if (outerIndex !== data.length-1) {
+					query = query + " AND ";
+				}
+
+				else {
+					query = query + ";";
+				}
+			}
+		}
+
+		if(query.indexOf(';') && this.props.legend_url_arr){
+			let instit = this.props.userInfo.institutionDir.slice(25, this.props.userInfo.institutionDir.length-1);
+			let instit_new;
+			if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
+			if(instit === 'notredame') instit_new = 'notredame-source';
+			this.props.webSocket.send(JSON.stringify({
+				url_uid: this.props.uid,
+				//CHANGING INSTITUTION
+				sdt: `https://viz-group-${instit_new}.s3.us-east-2.amazonaws.com/${this.state.sdtUrl}`,
+				legendURLArr: this.props.legend_url_arr,
+				query,
+				institution: instit,
+				launch: true
+			}));
+		}
+	}
+
+	expandCollapseTable(target, name){
+		let substring = target.slice(target.indexOf('collapse10481')+13);
+		let id = 'expand' + substring;
+
+		if(name === 'fa fa-caret-down') {
+			document.getElementById(target).className = 'fa fa-caret-up';
+		}
+		else document.getElementById(target).className = 'fa fa-caret-down';
+
+		if(document.getElementById(id)){
+			if(document.getElementById(id).style.display === "none"){
+				// console.log('what? 1')
+				document.getElementById(id).style.display = "block";
+			}
+			else document.getElementById(id).style.display = "none";
+		}
+	}
+
 	render() {
 		var data = this.state.data;
 		var context = this;
-
-		var displayData = this.state.data.map( function(col) {
-			return (
-				<Flexbox 
-					flexDirection = "column" 
-					key = { col } 
-					style = {{ 
-						width: "100%", 
-						border: "1px solid", 
-						borderLeft: (col === data[0] ? "1px solid" : "none"),
-						borderBottomLeftRadius: (col === data[0] ? "3px" : ""),
-						borderTopLeftRadius: (col === data[0] ? "3px" : ""),
-						borderBottomRightRadius: (col === data[data.length - 1] ? "3px" : ""),
-						borderTopRightRadius: (col === data[data.length - 1] ? "3px" : "")
-					}} 
-				>
-					<div 
-						className = "noselect" 
-						style = {{ 
-							backgroundColor: "#42459c", 
-							color: "#ffffff", 
-							height: "30px",
-    						fontSize: "21px",
-							textAlign: "center"
-						}} 
-					> 
-						<div style = {{ textAlign: "left", marginTop: "2px", marginLeft: "5px", fontSize: "18px" }} > 
-							<i className = "fa fa-check" style = {{ marginRight: "3px" }} onClick = { () => context.selectDeselectCol(col, "select") } /> 
-							<i className = "fa fa-times" onClick = { () => context.selectDeselectCol(col, "deselect") } /> 
-						</div>
-
-						<div style = {{ marginTop: "-16px", paddingBottom: "4px", fontSize: "14px" }} > 
-							{col[0].length > 16 ? col[0].substring(0,15) + "..." : col[0]} 
-						</div>
-					</div>
-
-					<div style = {{ margin: "1px 1px 0px 0px" }} >
-						<SearchBox 
-							ref = "SearchBox"
-							settings = {{
-								SearchBoxClearHover: context.props.settings.colors.pinFilterColor.SearchBoxClearHover, 
-								searchBoxUnderline: context.props.settings.colors.pinFilterColor.searchBoxUnderline,
-								overviewButtonsColorBg: context.props.settings.colors.overviewButtonsColor.background,
-								overviewButtonsColorText: context.props.settings.colors.overviewButtonsColor.text,
-								tableSelectColor: context.props.settings.colors.tableSelectColor.background
-							}}
-							onTextFieldValueChange = { col.length > 500 ? (evt) => context.onBlurMultiSearch(context, col[0]) : (evt) => context.onKeyUpMultiSearch(context, col[0]) }
-							id = { "tf-" + col[0] }
-							collapseButton = { false }
-							shouldOnBlur = { col.length > 500 ? true : false }
-						/>
-					</div>
-
-					<div id = { col[0] } style = {{ overflow: "auto" }} >
-
-						{ (col.length > 500 ? <div id = { "st-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center" }} > Search to view. <br /> Count: {col.length - 1} </div> : null) }
-						<div id = { "se-" + col[0] } style = {{ margin: "10px 0px 0px", textAlign: "center", display: "none" }} > Please refine the search. </div>
-
-						{col.map( function(elem) {
-							return (
-								(elem !== col[0] ? 
-									<div
-										key = { col[0] + elem } 
-										onMouseDown = { (e) => context.toggleSelection([col[0], elem], e) }
-										onMouseEnter = { (e) => (e.buttons > 0 ? context.toggleDragSelection([col[0], elem]) : null ) }
-										style = {{ 
-											display: (col.length > 500 ? "none" : "")
-										 }}
-									>
-										<AllViewsRow selected = { context.checkSelectedDisplay([col[0], elem], context.state.selectionList) } >
-											{elem} 
-										</AllViewsRow>
-									</div> : ""
-								)
-							)
-						})}
-
-					</div>
-				</Flexbox>
-			)
-		});
-
+	
 		return(
-			<Dialog
-				title = { this.props.type }
+			<div style={{height: "100%", minHeight: "102vh"}}
+				/*title = { this.props.type }
 				contentStyle = {{ width: "95%", maxWidth: "none", backgroundColor: "#c5c5f7" }}
 				bodyStyle = {{ backgroundColor: "#c5c5f7" }}
 				actionsContainerStyle = {{ backgroundColor: "#c5c5f7" }}
@@ -758,17 +1077,96 @@ class allViewsModal extends React.Component {
 							primary = { true }
 							onClick = { this.handleBackClick }
 							style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
-						/>,
-						<RaisedButton 
-							label = { "Launch" }
+						/>
+					]
+				} */
+			>
+
+				<h3 style={{ 
+					height: "6vh",
+					paddingTop: "1.043vh",
+					padding: "1.877vh 0px 1.043vh 2.607vh",
+					fontSize: "2.086vh", 
+					fontFamily: "ITCFranklinGothicStd-DmCd",
+					margin: "0px",
+					fontWeight: "300",
+					textTransform: "uppercase",
+					letterSpacing: "1px",
+					color: ((this.state.loadMask === true || this.state.loadDone === true) ? "black" : "lightgrey")
+				}}>  
+					<img style={{verticalAlign: "middle", marginRight: "1.043vh", height: "3.024vh"}} 
+						alt="Third Step"
+						src="./Res/Img/3@2x.png"/> 
+					Select Additional Filter(s)
+				</h3>
+
+				<div style = {{ 
+					height: "96.32vh", 
+					fontSize: "3.858vh", 
+					textAlign: "center",
+					fontFamily: "ITCFranklinGothicStd-DmCd",
+					backgroundColor: "lightgrey",
+					color: "white",
+					paddingTop: "1.37vh",
+					display: ((this.state.loadMask === false && !this.state.loadDone) ? "block" : "none") }}>
+
+					{/* TIP: */}
+
+					<br/>
+
+					{/* <div style={{
+						wordBreak: "break-word", 
+						padding: "1.877vh 6.257vh 0px 6.257vh",
+						height: "19.812vh"}} 
+					> */}
+
+					<img style={{width: "50vw"}} id="tip_gen" alt="GlyphEd Tip"/>
+
+					{/* </div> */}
+					<div style={{marginTop: "-5.160vh"}}>
+						<span 
+							style={{
+								// color: "darkblue", 
+								color: "rgb(3, 26, 114)",
+								textDecoration: "underline",
+								cursor: "pointer",
+								fontSize: "2.294vh",
+								textTransform: "uppercase",
+								fontFamily: "ITCFranklinGothicStd-Demi"
+							}} 
+							onClick={() => /* window.open('https://s3.amazonaws.com/synglyphx/tutorials/home.html', '_blank') */
+							this.props.uid ? webSocketSend(this.props.webSocket, this.props.uid, 'tutorial') : ""}
+						>
+							See tutorials to learn more.
+						</span>
+					</div>
+
+				</div>
+
+				<div style = {{ height: "80vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
+					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
+				</div> 
+
+				<div style = {{ 
+					minHeight: "97.5vh",
+					display: ((this.state.loadMask === false && this.state.loadDone) ? "block" : "none"), 
+					padding: "0px 2.920vh 0px 2.711vh" }} 
+				>
+
+					<div style={{
+						float: 'right', 
+						marginBottom: "0.834vh",
+						display: ((this.state.loadMask === false && this.state.loadDone && data.length > 0) ? "" : "none")}}>
+					
+						{/*<RaisedButton 
+							label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
 							style = {{
-								width: "112px",
-								margin: "0px 10px 9px 0px"
+								width: "135px"
 							}}
 							buttonStyle = {{
 								height: '35px',
 								lineHeight: '35px',
-								backgroundColor: (this.shouldLaunchBeDisabled() ? "grey" : this.props.settings.colors.buttons.general)
+								backgroundColor: this.props.settings.colors.buttons.general
 							}} 
 							labelStyle = {{
 								fontSize: '12px',
@@ -782,90 +1180,148 @@ class allViewsModal extends React.Component {
 								height: '35px',
 								lineHeight: '35px',
 							}}
-							disabled = { this.shouldLaunchBeDisabled() }
-							onClick = { () => this.props.onLaunch({
-								tableName:this.state.table,
-								frontEndFilters: this.state.selectionList,
-								originalVizName: this.props.type,
-								datasourceId: this.state.datasourceId,
-								filterAllowedColumnList: this.state.filterAllowedColumnList,
-							},this.onLaunchResultCallback) }
-							primary = {true } 
-						/>
-					]
-				}
-			>
-				<div style = {{ marginTop: "5vh", height: "55vh", width: "100%", display: (this.state.loadMask ? "" : "none") }} > 
-					<ComponentLoadMask color = { this.props.settings.colors.buttons.general } />
-				</div>
+							onClick = { () => {this.selectDesectAll(data, "deselect")} }
+							primary = { true } 
+						/> */}
 
-				<div style = {{ height: "60vh", paddingBottom: "30px", display: (this.state.loadMask ? "none" : "") }} >
-					<RaisedButton 
-						label = { <span> <i className = "fa fa-check" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Select All </span> }
-						style = {{
-							width: "121px",
-							margin: "8px 10px 9px 0px"
-						}}
-						buttonStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-							backgroundColor: this.props.settings.colors.buttons.general
-						}} 
-						labelStyle = {{
-							fontSize: '12px',
-							textAlign: "center",
-							color: this.props.settings.colors.overviewButtonsColor.text,
-							margin: "0px 0px 0px -3px",
-							paddingLeft: "0px",
-							paddingRight: "0px"
-						}}
-						overlayStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-						}}
-						onClick = { () => this.selectDesectAll(data, "select") }
-						primary = { true } 
-					/>
+						<label style={{fontFamily: "ITCFranklinGothicStd-Med", fontSize: "1.877vh"}}> 
+							<input 
+								type="checkbox"
+								className = "selectAllCheck"
+								style={{marginBottom: "1.564vh", cursor: "pointer"}}
+								onChange = {(e) => (
+									e.target.checked === true ? this.selectDesectAll(data, "select") : 
+										this.selectDesectAll(data, "deselect") )}
+							/>
+							Select All
+						</label>
+						
+						<span style={{
+							fontFamily: "ITCFranklinGothicStd-Med", 
+							fontSize: "1.877vh", 
+							verticalAlign: "text-bottom",
+							padding: "0 0.619vh"}}></span>
 
-					<RaisedButton 
-						label = { <span> <i className = "fa fa-times" style = {{ fontSize: "22px", margin: "1px 0px 0px" }} /> Deselect All </span> }
-						style = {{
-							width: "135px"
-						}}
-						buttonStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-							backgroundColor: this.props.settings.colors.buttons.general
-						}} 
-						labelStyle = {{
-							fontSize: '12px',
-							textAlign: "center",
-							color: this.props.settings.colors.overviewButtonsColor.text,
-							margin: "0px 0px 0px -3px",
-							paddingLeft: "0px",
-							paddingRight: "0px"
-						}}
-						overlayStyle = {{
-							height: '35px',
-							lineHeight: '35px',
-						}}
-						onClick = { () => this.selectDesectAll(data, "deselect") }
-						primary = { true } 
-					/>
+						<RaisedButton
+							buttonStyle = {{
+								height: '3.650vh',
+								lineHeight: '3.650vh',
+								backgroundColor: "white",
+								color: "black",
+								fontSize: "1.877vh",
+								fontFamily: "ITCFranklinGothicStd-Med",
+								borderRadius: "0",
+								border: "1px solid black",
+							}} 
+							labelStyle = {{
+								textAlign: "center",
+								color: "white",
+								margin: "0px 0px 0px -0.313vh",
+								paddingLeft: "0px",
+								paddingRight: "0px",
+							}}
+							overlayStyle = {{
+								height: '3.650vh',
+								lineHeight: '3.650vh',
+								width: "4.8vw"
+							}}
+							onClick={() => this.selectDesectAll(data, "deselect")}
+							style={{}}> 
+							Clear All 
+						</RaisedButton>
 
-					<Flexbox flexDirection = "row" style = {{ backgroundColor: "#ffffff", height: "100%" }} >
-						{displayData}
+						
+					</div>
+
+					{/* the data table*/}
+
+					<Flexbox flexDirection = "column" style = {{ backgroundColor: "#ffffff", clear: "both" }} >
+						{data ? context.dataFunc(data) : ""}
 					</Flexbox>
-
+					<br/>
 					<Snackbar
 						open = { this.state.snackbarVisible }
 						message = "No matches for the selected values"
 						autoHideDuration = { 2000 }
 						onRequestClose = { () => this.setState({ snackbarVisible: false }) }
 					/>
+					<div>
+						
+						<div style={{/* float: "right",*/ 
+							padding: "0px 0px 2.086vh 0px", 
+							display: ((this.state.loadMask === false && this.state.loadDone) ? "" : "none")}}>
+							{/* <FlatButton
+								label = "Back"
+								primary = { true }
+								onClick = { this.handleBackClick }
+								style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton"black", backgroundColor: "#efefef" }}
+							/> */}
+							<Flexbox>
 
+								{/* <RaisedButton 
+									label = { "Launch Viewer" }
+									style = {{
+										height: '60px',
+										width: '350px',
+										boxShadow: "0",
+										margin: "auto",
+									}}
+									buttonStyle = {{
+										backgroundColor: (this.shouldLaunchBeDisabled() ? "darkgrey" : "#fdc743")
+									}} 
+									labelStyle = {{
+										fontSize: "20px",
+										fontFamily: "ITCFranklinGothicStd-Demi",
+										color: "#0c1836",
+										letterSpacing: "1px",
+										lineHeight: "58px",
+										margin: "0px 0px 0px -3px",
+										paddingLeft: "0px",
+										paddingRight: "0px"
+									}}
+									disabled = { this.shouldLaunchBeDisabled() }
+									onClick = { () => {
+										this.props.onLaunch({
+										tableName:this.state.table,
+										frontEndFilters: this.state.selectionList,
+										originalVizName: this.props.type,
+										datasourceId: this.state.datasourceId,
+										filterAllowedColumnList: this.state.filterAllowedColumnList,
+									},this.onLaunchResultCallback), this.wbSocketFxn();
+									}}
+									primary = {true } 
+								/> */}
+								<img
+									id = "launch_button"
+									className="launch_button"
+									alt = "GlyphIT Logo Launch Button"
+									src={(this.shouldLaunchBeDisabled(data) ? "./Res/Img/GlyphIT-gray.png" : "./Res/Img/GlyphIT.png")}
+									style={{
+										width: "33.09%", 
+										height: "100%",
+										margin: "auto", 
+										border: "1px solid black",
+										boxShadow: "0.36496vh 0.36496vh 0.36496vh"}}
+									onClick={() => {
+										(this.shouldLaunchBeDisabled(data) ? 
+											null :
+											(this.props.onLaunch({
+												tableName:this.state.table,
+												frontEndFilters: this.state.selectionList,
+												originalVizName: this.props.type,
+												datasourceId: this.state.datasourceId,
+												filterAllowedColumnList: this.state.filterAllowedColumnList,
+											},this.onLaunchResultCallback), this.wbSocketFxn()
+											)
+										)
+									}}
+								/>
+							</Flexbox>
+						</div>
+					</div>
 				</div>
-			</Dialog>
+
+			</div>
 		);
 	}
 }
@@ -902,10 +1358,12 @@ class AllViewsRow extends React.Component {
 			<p
 				className = {this.props.selected ? "noselect darkHover" : "noselect lightHover" }
 				style = {{ 
-					backgroundColor: ( this.props.selected ? "#7c78a0" : "white" ), 
-					textAlign: "center",
-					padding: "2px",
-					margin: "0"
+					backgroundColor: ( this.props.selected ? "#bfbfbf" : "white" ), 
+					padding: "0.626vh 0.626vh 0.626vh 1.564vh",
+					margin: "0px",
+					fontSize: "1.668vh",
+					fontFamily: "ITCFranklinGothicStd-Med",
+					display: (this.props.children.length)
 				}} 
 			> 
 				{this.props.children}
@@ -934,6 +1392,17 @@ export const setTimer = (timeoutTimer) => ({
     timeoutTimer,
 });
 
+export const setInitialXYZ = (X, Y, Z) => ({
+    type: 'SET_INITIAL_XYZ',
+	X,
+	Y,
+	Z
+});
+
+export const setSocket = (socket) => ({
+    type: 'SET_SOCKET',
+    socket,
+});
 
 /**
  * Maps portions of the store to props of your choosing
@@ -943,6 +1412,11 @@ const mapStateToProps = function(state){
   return {
     settings: state.filterState.Settings,
 	allViewsDisplay: state.filterState.ModalDisplay.allViewsModal,
+	uid: state.filterState.uid,
+	webSocket: state.filterState.webSocket,
+	legend_url_arr: state.filterState.legend_url_arr,
+	VizParams: state.filterState.VizParams,
+	userInfo: state.filterState.UserInfo
   }
 }
 

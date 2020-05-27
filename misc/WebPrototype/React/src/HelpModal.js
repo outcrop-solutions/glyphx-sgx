@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import Flexbox from 'flexbox-react';
+/* import Flexbox from 'flexbox-react'; */
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+/* import TextField from 'material-ui/TextField'; */
 import Divider from 'material-ui/Divider';
 import FontIcon from 'material-ui/FontIcon';
-import Collapsible from 'react-collapsible';
-import SearchBox from './SearchBox.js';
-import './General.css';
+/* import Collapsible from 'react-collapsible';
+import SearchBox from './SearchBox.js'; */
+import './css/General.css';
 
 
 /**

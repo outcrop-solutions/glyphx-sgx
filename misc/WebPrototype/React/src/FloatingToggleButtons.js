@@ -226,14 +226,14 @@ class FloatingToggleButtons extends React.Component {
                         position: "absolute", 
                         backgroundColor: "#fff", 
                         width: "175px", 
-                        height: "38px", 
-                        top: "257px", 
-                        left: "55px", 
+                        height: "3.962vh", 
+                        top: "26.799vh", 
+                        left: "5.735vh", 
                         borderRadius: "5px" 
                     }} 
                     containerStyle = {{ padding: "0px", borderRadius: "5px" }}
                 >
-                    <CardText style = {{ padding: "3px 8px", borderRadius: "5px" }} >
+                    <CardText style = {{ padding: "0.313vh 0.834vh", borderRadius: "5px" }} >
                         <div>
                             <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
                                 <Flexbox style = {{ width: "40%", margin: "4px 0px 0px -9px" }} >
@@ -286,7 +286,7 @@ class FloatingToggleButtons extends React.Component {
                         id = "collapsibleFloatingButton"
                         backgroundColor = { this.props.settings.colors.overviewButtonsColor.background }
                         style = {{
-                            top: '56px',
+                            top: '8px',
                             left: '5px',
                             position: 'absolute',
                             zIndex: '10',
@@ -327,7 +327,7 @@ class FloatingToggleButtons extends React.Component {
                         mini = { true }
                         onClick = { this.toggleFullScreenMode.bind(this) }
                     >
-                        <i className = "fa fa-arrows-alt" style = {{ fontSize: '1rem', color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                        <i className = "fa fa-arrows-alt" style = {{ fontSize: "1.668vh", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                     </FloatingActionButton>
                 </Tooltip>
 
@@ -354,7 +354,7 @@ class FloatingToggleButtons extends React.Component {
                             <i className = "fa fa-cube fa-stack-2x" style = {{ fontSize: '1.2rem', margin: "11px 0px 0px 0px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                             <i 
                                 className = { this.props.legendDisplay ? "fa fa-search-minus fa-stack-1x" : "fa fa-search-plus fa-stack-1x" } 
-                                style = {{ fontSize: '1rem', margin: "-10px 0px 0px 8px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                                style = {{ fontSize: "1.668vh", margin: "-10px 0px 0px 8px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
                             />
                         </span>
                     </FloatingActionButton>
@@ -410,10 +410,10 @@ class FloatingToggleButtons extends React.Component {
                         onClick = { () => this.setState({ smallObjectWindow: !this.state.smallObjectWindow }) }
                     >
                         <span className = "fa-stack fa-lg noselect" style = {{ margin: "2px 0px 0px -3px" }} >
-                            <i className = "fa fa-cubes fa-stack-2x" style = {{ fontSize: '1rem', margin: "9px 0px 0px -2px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
+                            <i className = "fa fa-cubes fa-stack-2x" style = {{ fontSize: '1.668vh', margin: "9px 0px 0px -2px", color: this.props.settings.colors.collapsibleColor.mainIcon }} />
                             <i 
                                 className = "fa fa-arrows-v fa-stack-1x"
-                                style = {{ fontSize: '1rem', margin: "-3px 0px 0px 12px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
+                                style = {{ fontSize: "1.668vh", margin: "-3px 0px 0px 12px", color: this.props.settings.colors.collapsibleColor.mainIcon }} 
                             />
                         </span>
                     </FloatingActionButton>

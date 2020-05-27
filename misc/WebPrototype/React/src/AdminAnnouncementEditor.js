@@ -2,21 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import { guidGenerator } from './GeneralFunctions.js';
-import Flexbox from 'flexbox-react';
-import VotingModal from './VotingModal.js';
-import ComponentLoadMask from './ComponentLoadMask.js';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
-import SwipeableViews from 'react-swipeable-views';
-import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import SwipeableViews from 'react-swipeable-views';
+import Flexbox from 'flexbox-react';
+import { guidGenerator } from './GeneralFunctions.js';
+import VotingModal from './VotingModal.js';
+import ComponentLoadMask from './ComponentLoadMask.js';
+import AnnouncementsDisplay from './AnnouncementsDisplay.js';
 import PieChart from './PieChart.js';
-import './General.css';
+import './css/General.css';
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const months = ["January", "February", "March", "April", "May", "August", "June", "July", "September", "October", "November", "December"];
@@ -296,7 +296,7 @@ class AdminAnnouncementEditor extends React.Component {
         var pDate = new Date();
         var postDate = (pDate.getMonth() + 1) + "/" + pDate.getDate() + "/" + pDate.getFullYear();
 
-        debugger;
+        // debugger;
 
         if (this.state.announcementSelection === 0) {
             var content = {};

@@ -8,7 +8,7 @@ import Divider from 'material-ui/Divider';
 import Select from 'react-select';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import './SettingsModal.css';
+import './css/SettingsModal.css';
 
 
 /**
@@ -56,7 +56,7 @@ class SettingsModal extends React.Component {
      **/
     onSettingsSave() {
 
-        if (this.state.axesVisibilityTempSelection != this.state.axesVisibilitySelection) {
+        if (this.state.axesVisibilityTempSelection !== this.state.axesVisibilitySelection) {
             if (document.getElementById('GlyphViewer')) {
                 document.getElementById('GlyphViewer').contentWindow.postMessage({action: 'toggleAxis'}, '*');
                 this.state.axisVisible ? this.setState({ axisVisible: false }) : this.setState({ axisVisible: true });
@@ -120,40 +120,71 @@ class SettingsModal extends React.Component {
 			return({ label: value, value: value });
 		});
 
-        var colorThemes = this.state.colorThemes.map(function(value) {
-			return({ label: value, value: value });
-		});
+        // var colorThemes = this.state.colorThemes.map(function(value) {
+		// 	return({ label: value, value: value });
+		// });
 
         return(
             <Dialog
-				title = { <div> <FontIcon className = "fa fa-cogs fa-2x" color = '#ffffff' /> &nbsp;&nbsp;Settings </div> }
+                contentStyle = {{ maxWidth: "40vw" }}
+				title = { 
+                    <div style={{
+                        fontSize: "2.270vh",
+                        lineHeight: "1.238vh"
+                    }}> 
+                        <FontIcon style={{ fontSize: "2.477vh" }}
+                            className = "fa fa-cogs fa-2x" color = '#ffffff' 
+                        /> 
+                        &nbsp;&nbsp;Settings 
+                    </div> }
                 ref = "Settings"
                 modal = { true }
 				open = { this.props.settingsDisplay }
-				bodyStyle = {{ padding: "0px 24px 10px" }}
-				titleStyle = {{ backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, color: "#ffffff", lineHeight: "12px", padding: "10px 30px 14px"}}
+				bodyStyle = {{ padding: "0px 2.477vh 1.032vh", fontSize: "1.651vh" }}
+				titleStyle = {{ 
+                    backgroundColor: this.props.settings.colors.collapsibleColor.mainCollapsed, 
+                    color: "#ffffff", 
+                    lineHeight: "12px", 
+                    padding: "1.032vh 3.096vh 1.445vh"}}
 				actions = {
 					[
 						<FlatButton
                             label = "Save"
                             primary = { true }
                             onClick = { () => this.onSettingsSave() }
-                            style = {{ color: this.props.settings.colors.settingsModalColor.saveButton }}
+                            style = {{ 
+                                height: "3.785vh", 
+                                lineHeight: "3.785vh", 
+                                minWidth: "7vw", 
+                                color: this.props.settings.colors.settingsModalColor.saveButton }}
+                            labelStyle = {{ lineHeight: "4.171vh", fontSize: "1.472vh" }}
                         />,
                         <FlatButton
                             label = "Cancel"
                             primary = { true }
                             onClick = { () => this.onSettingsCancel() }
-                            style = {{ color: this.props.settings.colors.settingsModalColor.cancelButton }}
+                            style = {{ 
+                                height: "3.785vh", 
+                                lineHeight: "3.785vh", 
+                                minWidth: "7vw", 
+                                color: this.props.settings.colors.settingsModalColor.cancelButton }}
+                            labelStyle = {{ lineHeight: "4.171vh", fontSize: "1.472vh" }}
                         />
 					]
 				}
 			>
 
-                <div style = {{ margin: "20px 0px 3px", color: "#000000", fontSize: "20px", fontWeight: "bold" }} > General </div>
+                <div style = {{ 
+                    margin: "2.064vh 0px 0.310vh", 
+                    color: "#000000", 
+                    fontSize: "2.064vh", 
+                    fontWeight: "bold" }} 
+                > 
+                    General 
+                </div>
 
-                <div style = {{ marginBottom: "20px" }} >
-                    <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
+                <div style = {{ marginBottom: "2.064vh" }} >
+                    <Divider style = {{ backgroundColor: "#acacac", height: "0.206vh" }} />
                 </div>
 
                 {/*
@@ -204,28 +235,37 @@ class SettingsModal extends React.Component {
                             </div> 
                         }
                     >
-                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px", color: "#535353" }} className = "fa fa-question-circle" color = '#000000' />
+                        <FontIcon style = {{ 
+                            margin: "5px -6px 0px 0px", 
+                            fontSize: "2.270vh",
+                            height: "2.270vh", 
+                            color: "#535353" }} className = "fa fa-question-circle" color = '#000000' />
                     </Tooltip>
 
-                    <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Axes Visibility </h4></label>
+                    <label style = {{ margin: "-1.342vh 16.2vh 0px 1.548vh" }} ><h4> Axes Visibility </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 300px", position: "fixed", zIndex: "2001" }} >
+                    <div >
                         <Select 
                             simpleValue
                             value = { this.state.axesVisibilityTempSelection } 
                             placeholder = "Select" 
                             options = { axesSelectItems } 
                             onChange = { (value) => this.setState({ axesVisibilityTempSelection: value }) } 
-                            style = {{  width: "150px" }}
+                            style = {{  width: "7.8125vw" }}
                             clearable = { false }
                         />
                     </div>
                 </Flexbox>
 
-                <div style = {{ margin: "20px 0px 3px", color: "#000000", fontSize: "20px",fontWeight: "bold" }} > Filter Sidebar </div>
+                <div style = {{ 
+                    margin: "2.064vh 0px 0.310vh", 
+                    color: "#000000", 
+                    fontSize: "2.064vh",
+                    fontWeight: "bold" }} 
+                > Filter Sidebar </div>
 
-                <div style = {{ marginBottom: "20px" }} >
-                    <Divider style = {{ backgroundColor: "#acacac", height: "2px" }} />
+                <div style = {{ marginBottom: "2.064vh" }} >
+                    <Divider style = {{ backgroundColor: "#acacac", height: "0.206vh" }} />
                 </div>
 
                 <Flexbox flexDirection = "row" >
@@ -236,7 +276,7 @@ class SettingsModal extends React.Component {
                         mouseLeaveDelay = { 0.15 }
                         destroyTooltipOnHide = { false }
                         trigger = { Object.keys( {hover: 1} ) }
-                        overlayStyle = {{ marginTop: "-100px" }}
+                        overlayStyle = {{ marginTop: "-10.320vh" }}
                         overlay = { 
                             <div> 
                                 When set to yes, the filter sidebar will 
@@ -244,19 +284,23 @@ class SettingsModal extends React.Component {
                             </div> 
                         }
                     >
-                        <FontIcon style = {{ margin: "5px -6px 0px 0px", fontSize: "22px", height: "22px", color: "#535353" }} className = "fa fa-question-circle" />
+                        <FontIcon style = {{ 
+                            margin: "0.516vh -0.619vh 0px 0px", 
+                            fontSize: "2.270vh", 
+                            height: "2.270vh", 
+                            color: "#535353" }} className = "fa fa-question-circle" />
                     </Tooltip>
 
-                    <label style = {{ margin: "-13px 0px 0px 15px" }} ><h4> Overlap Glyph Viewer </h4></label>
+                    <label style = {{ margin: "-1.342vh 10.320vh 0px 1.548vh" }} ><h4> Overlap Glyph Viewer </h4></label>
 
-                    <div style = {{  margin: "0px 0px 0px 300px", position: "fixed", zIndex: "2002" }} >
+                    <div>
                         <Select 
                             simpleValue
                             value = { this.state.overlapTempSelection } 
                             placeholder = "Select" 
                             options = { yesNoSelectItems } 
                             onChange = { (value) => this.setState({ overlapTempSelection: value }) } 
-                            style = {{  width: "150px" }}
+                            style = {{  width: "7.8125vw" }}
                             clearable = { false }
                         />
                     </div>

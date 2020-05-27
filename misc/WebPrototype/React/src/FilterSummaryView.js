@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
-import { makeServerCall } from './ServerCallHelper.js';
+// import { makeServerCall } from './ServerCallHelper.js';
 import FontIcon from 'material-ui/FontIcon';
 import Divider from 'material-ui/Divider';
 import Badge from 'material-ui/Badge';
@@ -9,7 +9,7 @@ import Flexbox from 'flexbox-react';
 import Tooltip from 'rc-tooltip';
 import Promise from 'bluebird';
 import 'rc-tooltip/assets/bootstrap.css';
-import './General.css';
+import './css/General.css';
 
 
 /**
@@ -24,20 +24,26 @@ class FilterSummaryView extends React.Component {
      * @param nextState: The state the component would have after the change
      * @returns: true if it should render and false if it shouldn't
      **/
-    shouldComponentUpdate(nextProps, nextState) {
-        for (var colName in this.props.filterList) {
-            debugger;
-            if (this.props.filterList[colName].selectedValues != nextProps.filterList[colName].selectedValues || this.props.filterList[colName].rangeList != nextProps.filterList[colName].rangeList) {
-                return true;
-            }
-        }
-        if (this.props.settings != nextProps.settings || this.props.tableData != nextProps.tableData) {
-            return true;
-        }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     for (var colName in this.props.filterList) {
+    //         console.log(nextProps.filterList[colName],'filter list in filterSummaryView', colName, 
+    //         'filter list in filterSummaryView',nextProps.filterList[colName].selectedValues,
+    //              'filter list in filterSummaryView');
+    //         // debugger;
+    //             if ((this.props.filterList[colName].selectedValues) != 
+    //             (nextProps.filterList[colName].selectedValues) 
+    //             || (this.props.filterList[colName].rangeList) != 
+    //             (nextProps.filterList[colName].rangeList)) {
+    //                 return true;
+    //             }
+    //     }
+    //     if (this.props.settings != nextProps.settings || this.props.tableData != nextProps.tableData) {
+    //         return true;
+    //     }
         
         
-        return false;
-    }
+    //     return false;
+    // }
 
 
     /**
@@ -61,7 +67,10 @@ class FilterSummaryView extends React.Component {
                 resolve('done');
         });
 
-        pom.then(() => context.props.refreshParent()).then(() => context.applyFilter()).then(() => context.addToHistory());
+        pom
+        .then(() => context.props.refreshParent())
+        // .then(() => context.applyFilter())
+        .then(() => context.addToHistory());
     };
 
 
@@ -80,7 +89,7 @@ class FilterSummaryView extends React.Component {
             position: this.props.UndoRedoHistory.position
         }
 
-        debugger;
+        // debugger;
 
         if (undoRedoHistory.position !== undoRedoHistory.history.length - 1) {
             undoRedoHistory.history = undoRedoHistory.history.slice(0, undoRedoHistory.position + 1);
@@ -96,43 +105,75 @@ class FilterSummaryView extends React.Component {
     /**
      * - ADCMT
      */
-    applyFilter = () => {
-        //console.log('Filter Applied');
-        var iframe = document.getElementById('GlyphViewer').contentWindow;
+    // applyFilter = () => {
+    //     //console.log('Filter Applied');
+    //     var iframe = document.getElementById('GlyphViewer').contentWindow;
 
-        var context = this;
+    //     var context = this;
 
-        makeServerCall('applyFilters',
-            function(result, b) {
-                var resultJson = JSON.parse(result);
-                debugger;
-                var data = resultJson.data;
-                var tempRowIds = [];
+    //     makeServerCall('applyFilters',
+    //         function(result, b) {
+    //             var resultJson = JSON.parse(result);
+    //             // debugger;
+    //             var data = resultJson.data;
+    //             var tempRowIds = [];
                 
-				if (data && Array.isArray(data)) {
-					if (data.length > 0) {							
-						for (var index = 0; index < data.length; index++) {
-							tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
-						}
-					}
-					else {
-						// No data was matched.
-						console.log('NO MATCH');
-					}
-				}
+	// 			if (data && Array.isArray(data)) {
+	// 				if (data.length > 0) {							
+	// 					for (var index = 0; index < data.length; index++) {
+	// 						tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+	// 					}
+	// 				}
+	// 				else {
+	// 					// No data was matched.
+	// 					console.log('NO MATCH');
+	// 				}
+	// 			}
 				
-                // Change this to be located in the store
-                //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+    //             // Change this to be located in the store
+    //             //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
 
-                iframe.filterGlyphs(tempRowIds);
+    //             iframe.filterGlyphs(tempRowIds);
 
-                context.props.dispatch( setTimer(new Date().getTime()) );
-            },
-            {post: true, 
-                data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
-            }
-        );
-    };
+    //             context.props.dispatch( setTimer(new Date().getTime()) );
+    //         },
+    //         {post: true, 
+    //             data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+    //         }
+    //     );
+
+    //     makeServerCall('applyFiltersEC2',
+    //         function(responseText, b) {
+    //             console.log(responseText, 'response from apply filts in filt summary view');
+    //             // var resultJson = JSON.parse(result);
+    //             // // debugger;
+    //             // var data = resultJson.data;
+    //             // var tempRowIds = [];
+                
+	// 			// if (data && Array.isArray(data)) {
+	// 			// 	if (data.length > 0) {							
+	// 			// 		for (var index = 0; index < data.length; index++) {
+	// 			// 			tempRowIds.push(parseInt(Object.values(data[index]).toString(), 10));
+	// 			// 		}
+	// 			// 	}
+	// 			// 	else {
+	// 			// 		// No data was matched.
+	// 			// 		console.log('NO MATCH');
+	// 			// 	}
+	// 			// }
+				
+    //             // // Change this to be located in the store
+    //             // //context.setState({ filterIDs: tempRowIds, hideShowButtonTextFlag: true });
+
+    //             // iframe.filterGlyphs(tempRowIds);
+
+    //             // context.props.dispatch( setTimer(new Date().getTime()) );
+    //         },
+    //         {post: true, 
+    //             data: { tableName: this.props.VizParams.tableName, filterObj: this.props.filterList } 
+    //         }
+    //     );
+    // };
 
 
     render() {
@@ -227,19 +268,19 @@ class FilterSummaryView extends React.Component {
         });
 
         return (
-            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:'200px', borderRadius: "5px" }} containerStyle = {{ padding: "0px", borderRadius: "5px" }}>
-                <CardText style = {{ padding: "3px 8px", borderRadius: "5px" }} >
+            <Card style = {{ overflow: 'auto', width: '100%', padding: "0px", maxHeight:"20.855vh", borderRadius: "5px" }} containerStyle = {{ padding: "0px", borderRadius: "5px" }}>
+                <CardText style = {{ padding: "0.313vh 0.834vh", borderRadius: "5px", fontSize: "1.460vh" }} >
                     <div>
 
                         <Flexbox flexDirection = "row" >
                             <Flexbox style = {{ width: "100%" }} > 
-                                <span style = {{ color: "#000000", width: "123px" }} > Options </span>
+                                <span style = {{ color: "#000000", width: "6.44vw" }} > Options </span>
                             </Flexbox>
                             <Flexbox style = {{ width: "100%" }} > 
-                                <span style = {{ color: "#000000", width: "106px"}} > Filter </span>
+                                <span style = {{ color: "#000000", width: "5.53vw"}} > Filter </span>
                             </Flexbox>
                             <Flexbox style = {{ width: "100%" }} > 
-                                <span style = {{ color: "#000000", width: "84px" }} > Min </span>
+                                <span style = {{ color: "#000000", width: "4.388vw" }} > Min </span>
                             </Flexbox>
                             <Flexbox style = {{ width: "100%" }} > 
                                 <span style = {{ color: "#000000" }} > Max </span>
@@ -249,7 +290,12 @@ class FilterSummaryView extends React.Component {
                         <Divider style = {{ marginBottom: "0px", backgroundColor: "#000000" }} />
 
                         {/* Displays the mapped views*/}
-                        {view.length > 0 ? view : <div className = "centerText cursorNormal"><h3 style = {{ margin: "13px 0px 12px" }} > No Filters Selected </h3></div>}
+                        {view.length > 0 ? view : 
+                            <div className = "centerText cursorNormal">
+                                <h3 style = {{ margin: "1.356vh 0px 1.251vh", fontSize: "1.721vh" }} > 
+                                    No Filters Selected 
+                                </h3>
+                            </div>}
 
                     </div>
                 </CardText>
@@ -309,9 +355,9 @@ class FilterViewRow extends React.Component {
 
         return (
             <div >
-                <Flexbox flexDirection = "row" style = {{ minHeight: "32px", marginTop: "11.5px" }} >
+                <Flexbox flexDirection = "row" style = {{ minHeight: "3.337vh", marginTop: "1.199vh" }} >
 
-                        <div style = {{ width: "31px" }} >
+                        <div style = {{ width: "1.63vw" }} >
                             <FontIcon
                                 onClick = { this.onDelEvent.bind(this) }
                                 className = "fa fa-trash cursorHand"
@@ -319,16 +365,16 @@ class FilterViewRow extends React.Component {
                             />
                         </div>
 
-                    <div style = {{ width: "41px" }} >
+                    <div style = {{ width: "2.13vw" }} >
                         <Badge
                             badgeContent = { this.props.view[4] }
                             primary = { true }
                             style = {{ padding: "0px 0px 0px 0px" }}
                             badgeStyle = {{ 
-                                width: "20px", 
-                                height: "20px", 
-                                top: "-10px", 
-                                right: "-13px", 
+                                width: /*20*/"1.088vw", 
+                                height: "2.086vh", 
+                                top: "-1.043vh", 
+                                right: "-1.356vh", 
                                 backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, 
                                 color: this.props.settings.colors.filterOverviewColor.badgeText 
                             }}
@@ -341,16 +387,16 @@ class FilterViewRow extends React.Component {
                         </Badge>
                     </div>
 
-                    <div style = {{ width: "51px" }} >
+                    <div style = {{ width: "2.63vw" }} >
                         <Badge
                             badgeContent = { this.props.view[5] }
                             primary = { true }
                             style = {{ padding: "0px 0px 0px 0px" }}
                             badgeStyle = {{ 
-                                width: "20px", 
-                                height: "20px", 
-                                top: "-10px", 
-                                right: "-13px", 
+                                width: /*20*/"1.088vw", 
+                                height: "2.086vh", 
+                                top: "-1.043vh", 
+                                right: "-1.356vh", 
                                 backgroundColor: this.props.settings.colors.filterOverviewColor.badgeBackground, 
                                 color: this.props.settings.colors.filterOverviewColor.badgeText 
                             }}
@@ -363,7 +409,7 @@ class FilterViewRow extends React.Component {
                         </Badge>
                     </div>
 
-                    <div style = {{ width: "106px" }} >
+                    <div style = {{ width: "5.56vw" }} >
                         <Tooltip
                             placement = 'bottom'
                             mouseEnterDelay = { 0.5 }
@@ -378,7 +424,7 @@ class FilterViewRow extends React.Component {
                         </Tooltip>
                     </div>
 
-                   <div style = {{ width: "92.5px" }} >
+                   <div style = {{ width: "4.83vw" }} >
                         <Tooltip
                             placement = 'bottom'
                             mouseEnterDelay = { 0.5 }

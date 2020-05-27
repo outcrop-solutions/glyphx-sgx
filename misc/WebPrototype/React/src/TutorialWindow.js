@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 import Flexbox from 'flexbox-react';
-import './General.css';
+import './css/General.css';
  
 
 /**

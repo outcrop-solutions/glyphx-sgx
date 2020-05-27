@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import themeSettingColors from './ColorThemes.js';
 import RedirectRouter from './Router.js';
 import 'font-awesome/css/font-awesome.min.css';
-import './General.css';
+import './css/General.css';
 
 
 /**
@@ -48,7 +48,15 @@ const initialFilterState = {
     },
     TimeoutTimer: null,
     ShowAllTables: [],
-    RecentVizDropdown: null
+    RecentVizDropdown: null,
+    initialVizX: null,
+    initialVizY: null,
+    initialVizZ: null,
+    sharedLinkStatus: null,
+    shareID: "",
+    uid: "",
+    webSocket: null,
+    legend_url_arr: [],
 };
 
 
@@ -59,7 +67,6 @@ const initialFilterState = {
  **/
 const filterReducer = function(state = initialFilterState, action) {
     var stateVal, previousRange, selected, display, i;
-    
     switch (action.type) {
         /**
          * Initializes the Filter structure
@@ -69,6 +76,14 @@ const filterReducer = function(state = initialFilterState, action) {
             return {
                 ...state,
                 Filter: action.storeFilterStruc,
+            }
+
+        case 'CLEAR_FILTER':
+
+            return {
+                ...state,
+                Filter: {},
+                LatestFilterChange: "none",
             }
 
 
@@ -592,13 +607,19 @@ const filterReducer = function(state = initialFilterState, action) {
 			return {
                 ...state,
                 VizParams: action.vizParams
-			}
+            }
 
         case 'SET_STATISTICS_DATA':
             return {
                 ...state,
                 StatisticsData: action.statData
-			}
+            }
+            
+        case 'CLEAR_STATISTICS_DATA':
+        return {
+            ...state,
+            StatisticsData: {}
+        }
         
         case 'SET_TIMEOUT_TIMER':
             return {
@@ -617,8 +638,71 @@ const filterReducer = function(state = initialFilterState, action) {
                 ...state,
                 ShowAllTables: action.showAllTables
             }
+        
+        case 'SET_INITIAL_XYZ':
+            return {
+                ...state,
+                initialVizX: action.X,
+                initialVizY: action.Y,
+                initialVizZ: action.Z
+            }
 
-		
+        case 'SHARE_LINK_REDIRECT':
+            return {
+                ...state,
+                sharedLinkStatus: action.t_Or_F
+            }
+
+        case 'RESET_LINK_REDIRECT':
+            return {
+                ...state,
+                sharedLinkStatus: null,
+                shareID: ""
+            }
+            
+
+        case 'SET_SHARE_ID':
+            return {
+                ...state,
+                shareID: action.id
+            }
+
+        case 'SAVE_USER_INFO_ONLY':
+
+            return {
+                ...state,
+                UserInfo: action.userInfo,
+                isUserLoggedIn: true,
+            }
+
+        case 'SET_UID':
+            return {
+                ...state,
+                uid: action.uid
+            }
+        
+        case 'LOGOUT_CLEAR':
+            return {
+                ...initialFilterState,
+                uid: state.uid
+            }
+
+        case 'SET_SOCKET':
+            return {
+                ...state,
+                webSocket: action.socket
+            }    
+        case 'SET_LEGEND_URL_ARR':
+            return {
+                ...state,
+                legend_url_arr: action.arr
+            }  
+        case 'CLEAR_LEGEND_URL_ARR':
+            return {
+                ...state,
+                legend_url_arr: []
+            }
+            
         /**
          * Shouldn't reach here unless theres a typo in the action
          **/
@@ -639,6 +723,8 @@ const reducers = combineReducers({
   dummyState: dummyReducer
 });
 
-let store = createStore(reducers);
+let store = createStore(reducers, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
 
 ReactDOM.render(<Provider store = { store }><RedirectRouter /></Provider>, document.getElementById('root'));

@@ -5,6 +5,7 @@ import FontIcon from 'material-ui/FontIcon';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
+import './css/SearchBox.css';
 
 
 /**
@@ -66,8 +67,12 @@ class SearchBox extends React.Component {
 
     render() {
         return (
-            <Flexbox flexDirection = "row" style = {{ width: "100%" }} >
-                <Flexbox style = {{ width: "100%", borderRadius: "5px", backgroundColor: this.props.settings.tableSelectColor }} > 
+            <Flexbox flexDirection = "row" >
+                <Flexbox style = {{ 
+                    width: "100%", 
+                    borderRadius: "0.521vh", 
+                    // backgroundColor: this.props.settings.tableSelectColor 
+                    }} > 
 
                     <TextField
                         id = { this.props.id }
@@ -75,33 +80,38 @@ class SearchBox extends React.Component {
                         ref = "SearchTextField"
                         value = { this.state.textFieldValue }
                         style = {{
-                            borderColor: "#d9d9d9 #ccc #b3b3b3",
-                            borderRadius: "4px",
-                            border: "1px solid #ccc",
+                            // borderColor: "#d9d9d9 #ccc #b3b3b3",
+                            // borderRadius: "4px",
+                            // border: "1px solid #ccc",
                             width: "100%",
-                            height: "30px"
+                            height: "3.1vh",
+                            fontSize: "1.668vh",
+                            lineHeight: "2.503vh"
+                            // fontFamily: "ITCFranklinGothicStd-Med"
                         }}
                         inputStyle = {{
-                            paddingLeft:"5px",
-                            paddingRight:"5px"
+                            padding: "0px 0.521vh 0px 0.521vh",
                         }}
                         hintStyle = {{
-                            paddingLeft:"7px",
-                            bottom: "-1px"
+                            paddingLeft:"0.730vh",
+                            bottom: "-0.104vh",
                         }}
                         underlineStyle = {{
-                            margin: "0px 0px -8px"
+                            borderColor: "rgb(245, 245, 255)",
+                            margin: "0px 0px -0.834vh",
+                            bottom: "0.82559vh",
                         }}
+                        
                         onChange = { this.onChange } 
                         onKeyPress = { (e) => this.blurOnEnter(e, this.props.id) }
                         hintText = {
-                            <span style = {{ fontSize: 'inherit', color: 'rgba(0, 0, 0, 0.5)' }} >
+                            <span style = {{color: 'rgba(0, 0, 0, 0.5)', fontSize: "1.668vh" }} >
                                 <FontIcon
                                     className = "fa fa-search" 
                                     style = {{
                                         padding: '0px', 
-                                        width: '24px',
-                                        height: '24px',
+                                        width: '2.505vw',
+                                        height: '2.503vh',
                                         fontSize: 'inherit',
                                         color: 'inherit'
                                     }}
@@ -109,14 +119,18 @@ class SearchBox extends React.Component {
                                 {this.props.hintText}
                             </span>
                         }
-                        underlineFocusStyle = {{ borderColor: this.props.settings.searchBoxUnderline, margin: "0px 0px -8px 0px" }}
+                        // underlineFocusStyle = {{ 
+                        //     borderColor: this.props.settings.searchBoxUnderline, 
+                        //     margin: "0px 0px -1.034vh 0px",
+                        // }}
                         onBlur = { this.props.shouldOnBlur ? (evt) => this.props.onTextFieldValueChange(evt,this.props.pinned) : null }
                     /> 
+
                 </Flexbox>
 
                 {/* Conditionally renders the collapse button */}
                 {this.props.collapseButton ? 
-                    <Flexbox style = {{ width: "25%", margin: "0px 4px 0px 9px" }} > 
+                    <Flexbox style = {{ width: "25%", margin: "0px 0.417vh 0px 0.938vh" }} > 
                         <Tooltip
                             placement = 'left'
                             mouseEnterDelay = { 0.5 }
@@ -124,8 +138,8 @@ class SearchBox extends React.Component {
                             destroyTooltipOnHide = { false }
                             trigger = { Object.keys( {hover: 1} ) }
                             overlay = { 
-                                <div> 
-                                    Close all open columns
+                                <div style={{fontSize: "1.548vh"}}> 
+                                    Close All Open Columns
                                 </div> 
                             }
                         >
@@ -133,17 +147,17 @@ class SearchBox extends React.Component {
                                 label = "Collapse" 
                                 primary = { true } 
                                 buttonStyle = {{
-                                    height: '30px',
-                                    lineHeight: '30px',
+                                    height: "3.128vh",
+                                    lineHeight: "3.128vh",
                                     backgroundColor: this.props.settings.overviewButtonsColorBg,
                                 }} 
                                 labelStyle = {{
-                                    fontSize: '13px',
+                                    fontSize: "1.356vh",
                                     color: this.props.settings.overviewButtonsColorText
                                 }}
                                 overlayStyle = {{
-                                    height: '30px',
-                                    lineHeight: '30px',
+                                    height: "3.128vh",
+                                    lineHeight: "3.128vh",
                                 }}
                                 onClick = { (evt) => this.props.onCollapseAllClick(evt,this.props.pinned) }
                             />

@@ -9,9 +9,9 @@ export function hideSplashScreen() {
     
     if (lm) {
         setTimeout(() => {
-            (lm ? lm.classList.add('available') : null);
+            if(lm) lm.classList.add('available');
             setTimeout(() => {
-                (lm ? (lm.parentElement ? lm.outerHTML = '' : null) : null);
+                if(lm && lm.parentElement) lm.outerHTML = '';
             }, 2000)
         }, 1000)
     }
@@ -22,7 +22,7 @@ export function hideSplashScreen() {
  * This function shows the in app loadmask(cicular waiting).
  */
 export function showLoadMask(){
-    //document.getElementById("LoadMask").style.visibility = "visible";
+    // document.getElementById("LoadingIconMask").style.visibility = "visible";
 };
 
 
