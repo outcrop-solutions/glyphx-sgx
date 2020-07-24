@@ -110,9 +110,10 @@ router.post('/frontEndFiltersEC2', function (req, res) {
 	let newKey = rawS3Key.replace("\\", "/");
 	console.log('Front End Filters EC2 Key:' + newKey);
 	let instit = req.session.user.institutionDir.slice(25, req.session.user.institutionDir.length-1);
-	let instit_new;
-	if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
-	if(instit === 'notredame') instit_new = 'notredame-source';
+	let instit_new = instit.replace("_", "-") + '-source';
+	console.log("instit_new "+instit_new);
+	//if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
+	//if(instit === 'notredame') instit_new = 'notredame-source';
 	let frontEndFiltsArr = [],
 	fieldListArr = [],
 	inputIDs = [],

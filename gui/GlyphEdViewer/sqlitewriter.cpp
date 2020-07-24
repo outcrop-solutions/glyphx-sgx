@@ -49,7 +49,7 @@ QString SqliteWriter::WriteDatabase(QString location, QJsonArray data, QString s
 					row += QString::number(value.toDouble()) + ",";
 				}
 				else {
-					row += "\"" + value.toString() + "\",";
+					row += "\"" + value.toString().replace("\"","'") + "\",";
 				}
 			}
 			rows.append(row.left(row.length() - 1) + ")");

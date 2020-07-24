@@ -418,6 +418,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		QStringList legends = message.split("\"legendURLArr\":[").at(1).split(QChar(']')).at(0).split(QChar(','));
 		QString inst = message.split("\"institution\":")[1].split(QChar('"')).at(1);
 		//text = "Received launch response from server. \n Launch " + query;
+		//QMessageBox::information(this, tr("Server message"), message);
 		std::vector<std::string> bimgs = MakeDataRequest(query, sdt, legends, inst);
 		if (!zero_results){
 			QSize size = this->size();
@@ -619,7 +620,7 @@ std::vector<std::string> GlyphEdViewerWindow::MakeDataRequest(QString query, QSt
 	m_mappingModel->LoadDataTransformFile(filename);
 	std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
 
-	QMessageBox::information(this, tr("Server message"), QString::number(data.size()));
+	//QMessageBox::information(this, tr("Server message"), QString::number(data.size()));
 
 	SqliteWriter* sql_writer = new SqliteWriter();
 	QString ret_query = sql_writer->WriteDatabase(cache_location, data, sdt_split.at(sdt_split.size() - 1), table_name);
@@ -909,9 +910,10 @@ void GlyphEdViewerWindow::UpdateFilenameWindowTitle(const QString& title) {
 QString GlyphEdViewerWindow::GetApplicationDisplayName() const {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-		QString userName = QProcessEnvironment::systemEnvironment().value("AppStream_UserName", "_");
-		QString sessId = QProcessEnvironment::systemEnvironment().value("AppStream_Session_ID", "_");
-		return SynGlyphX::Application::applicationName() + " (SynGlyphX Inside) " + SynGlyphX::getFullVersionString().c_str() + " | " + userName + " | " + sessId + " |";
+		//QString userName = QProcessEnvironment::systemEnvironment().value("AppStream_UserName", "_");
+		//QString sessId = QProcessEnvironment::systemEnvironment().value("AppStream_Session_ID", "_");
+		return SynGlyphX::Application::applicationName() + " (SynGlyphX Inside) " + SynGlyphX::getFullVersionString().c_str();
+		//return SynGlyphX::Application::applicationName() + " (SynGlyphX Inside) " + SynGlyphX::getFullVersionString().c_str() + " | " + userName + " | " + sessId + " |";
 	}
 	else {
 

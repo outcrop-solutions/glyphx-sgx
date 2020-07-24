@@ -156,7 +156,7 @@ class allViewsModal extends React.Component {
 			// console.log(nextProps.typeURL.substring(index + 1));
 			let str = nextProps.typeURL.substring(index + 1).replace("\\", "/");
 			context.setState({sdtUrl: str});
-			console.log(str);
+			console.log("componentWillReceiveProps: "+str);
 			// console.log(nextProps.typeURL.substring(index + 1), 'whats going on')
 			//debugger;
 
@@ -1024,9 +1024,9 @@ class allViewsModal extends React.Component {
 
 		if(query.indexOf(';') && this.props.legend_url_arr){
 			let instit = this.props.userInfo.institutionDir.slice(25, this.props.userInfo.institutionDir.length-1);
-			let instit_new;
-			if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
-			if(instit === 'notredame') instit_new = 'notredame-source';
+			let instit_new = instit.replace("_", "-") + '-source';
+			//if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
+			//if(instit === 'notredame') instit_new = 'notredame-source';
 			this.props.webSocket.send(JSON.stringify({
 				url_uid: this.props.uid,
 				//CHANGING INSTITUTION

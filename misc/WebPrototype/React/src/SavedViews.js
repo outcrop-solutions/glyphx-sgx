@@ -106,9 +106,9 @@ class SavedViews extends React.Component {
                             var index = sdtPath.replace(/\\/g, "/");;
                             console.log(response.body.imgArr,'imgPath');
                             let instit = context.props.userInfo.institutionDir.slice(25, context.props.userInfo.institutionDir.length-1);
-                            let instit_new;
-                            if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
-                            if(instit === 'notredame') instit_new = 'notredame-source';
+                            let instit_new = instit.replace("_", "-") + '-source';
+                            //if(instit === 'glyphed_demo') instit_new = 'glyphed-demo-source';
+                            //if(instit === 'notredame') instit_new = 'notredame-source';
 
                             context.props.webSocket.send(JSON.stringify({
                                 url_uid: context.props.uid,
