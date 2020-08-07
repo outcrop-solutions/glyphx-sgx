@@ -15,7 +15,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-import "./RecentViews.css";
+import "./LoadData.css";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -87,19 +87,19 @@ function createData(name, datetime) {
 }
 
 const rows = [
-  createData('File Name 1', '2011-11-04 05:23'),
-  createData('File Name 2', '2011-11-04 06:23'),
-  createData('File Name 3', '2011-11-04 07:23'),
-  createData('File Name 4', '2011-11-04 08:23'),
-  createData('File Name 5', '2011-11-04 09:23'),
-  createData('File Name 6', '2011-11-03 05:23'),
-  createData('File Name 7', '2011-11-03 06:23'),
-  createData('File Name 8', '2011-11-03 07:23'),
-  createData('File Name 9', '2011-11-03 08:23'),
-  createData('File Name 10', '2011-11-03 09:23'),
-  createData('File Name 11', '2011-11-02 05:23'),
-  createData('File Name 12', '2011-11-02 06:23'),
-  createData('File Name 13', '2011-11-02 07:23'),
+  createData('Data Source 1', '2011-11-04 05:23'),
+  createData('Data Source 2', '2011-11-04 06:23'),
+  createData('Data Source 3', '2011-11-04 07:23'),
+  createData('Data Source 4', '2011-11-04 08:23'),
+  createData('Data Source 5', '2011-11-04 09:23'),
+  createData('Data Source 6', '2011-11-03 05:23'),
+  createData('Data Source 7', '2011-11-03 06:23'),
+  createData('Data Source 8', '2011-11-03 07:23'),
+  createData('Data Source 9', '2011-11-03 08:23'),
+  createData('Data Source 10', '2011-11-03 09:23'),
+  createData('Data Source 11', '2011-11-02 05:23'),
+  createData('Data Source 12', '2011-11-02 06:23'),
+  createData('Data Source 13', '2011-11-02 07:23'),
 ].sort((a, b) => (a.datetime > b.datetime ? -1 : 1));
 
 const useStyles2 = makeStyles({
@@ -136,7 +136,7 @@ export default function CustomPaginationActionsTable() {
         <TableHead>
           <TableRow>
             <TableCell align="center" colSpan={4} style={{ fontSize: '2rem'}}>
-              RECENT VIEWS
+                START VIZ / LOAD DATA
             </TableCell>
           </TableRow>
         </TableHead>
