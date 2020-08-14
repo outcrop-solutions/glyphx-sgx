@@ -18,39 +18,17 @@ const columns = [
   { id: 'countd', label: 'Count (Distinct)', minWidth: 170, align: 'right', format: (value) => value.toFixed(2) },
 ];
 
-function createData(fieldname, type, min, max, countnn, countd) {
-  return { fieldname, type, min, max, countnn, countd };
-}
-
-const rows = [
-  createData('Month1', 'real', 1, 5, 18816, 5),
-  createData('Month2', 'real', 1, 5, 18816, 5),
-  createData('Month3', 'real', 1, 5, 18816, 5),
-  createData('Month4', 'real', 1, 5, 18816, 5),
-  createData('Month5', 'real', 1, 5, 18816, 5),
-  createData('Month6', 'real', 1, 5, 18816, 5),
-  createData('Month7', 'real', 1, 5, 18816, 5),
-  createData('Month8', 'real', 1, 5, 18816, 5),
-  createData('Month9', 'real', 1, 5, 18816, 5),
-  createData('Month10', 'real', 1, 5, 18816, 5),
-  createData('Month11', 'real', 1, 5, 18816, 5),
-  createData('Month12', 'real', 1, 5, 18816, 5),
-  createData('Month13', 'real', 1, 5, 18816, 5),
-  createData('Month14', 'real', 1, 5, 18816, 5),
-  createData('Month15', 'real', 1, 5, 18816, 5),
-  createData('Month16', 'real', 1, 5, 18816, 5),
-];
-
 const useStyles = makeStyles({
   root: {
     width: '100%',
+    height: window.innerHeight-180,
   },
   container: {
-    maxHeight: 500,
+    maxHeight: window.innerHeight-230,
   },
 });
 
-export default function StickyHeadTable() {
+export default function MapperData(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(100);
@@ -82,7 +60,7 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+            {props.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.fieldname}>
                   {columns.map((column) => {
@@ -102,7 +80,7 @@ export default function StickyHeadTable() {
       <TablePagination
         rowsPerPageOptions={[100]}
         component="div"
-        count={rows.length}
+        count={props.data.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}

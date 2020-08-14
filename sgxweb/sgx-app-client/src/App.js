@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { Glyphicon} from "react-bootstrap";
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { AppContext } from "./libs/contextLib";
@@ -39,7 +39,7 @@ function App() {
 
   useEffect(() => {
     onLoad();
-  }, []);
+  });
   
   async function onLoad() {
     try {
@@ -80,7 +80,7 @@ function App() {
           <AppBar position="static">
             <Toolbar style={{minHeight: 58}}>
               <Typography variant="h4" className={classes.title}>
-                <Link to='/'><img src={logo} /></Link>
+                <Link to='/'><img style={{marginTop: 10}} alt="Logo" src={logo} /></Link>
               </Typography>
                 <div>
                   <IconButton
@@ -96,18 +96,18 @@ function App() {
                     id="menu-appbar"
                     anchorEl={anchorEl}
                     anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
+                      vertical: 'bottom',
+                      horizontal: 'left',
                     }}
                     keepMounted
                     transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
+                      vertical: 'bottom',
+                      horizontal: 'left',
                     }}
                     open={open}
                     onClose={handleClose}
                   >
-                    <MenuItem onClick={handleLogout} className="menu-account"><Glyphicon glyph="log-out" className="logout"/>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout} className="menu-account"><ExitToAppOutlinedIcon/>Logout</MenuItem>
                   </Menu>
                 </div>
             </Toolbar>

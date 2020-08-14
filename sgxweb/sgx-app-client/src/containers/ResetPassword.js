@@ -1,18 +1,41 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import { Link } from "react-router-dom";
-import {
-  HelpBlock,
-  FormGroup,
-  Glyphicon,
-  FormControl,
-  ControlLabel,
-} from "react-bootstrap";
-import LoaderButton from "../components/LoaderButton";
+//import LoaderButton from "../components/LoaderButton";
 import { useFormFields } from "../libs/hooksLib";
 import { onError } from "../libs/errorLib";
 import logo from "../images/synglyphx_logo_large.png";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
 import "./ResetPassword.css";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  help: {
+    marginTop: 0,
+    fontSize: '0.85rem',
+    color: 'gray',
+  },
+}));
 
 export default function ResetPassword() {
   const [fields, handleFieldChange] = useFormFields({
@@ -21,10 +44,11 @@ export default function ResetPassword() {
     password: "",
     confirmPassword: "",
   });
+  const classes = useStyles();
   const [codeSent, setCodeSent] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const [isConfirming, setIsConfirming] = useState(false);
-  const [isSendingCode, setIsSendingCode] = useState(false);
+  //const [isConfirming, setIsConfirming] = useState(false);
+  //const [isSendingCode, setIsSendingCode] = useState(false);
 
   function validateCodeForm() {
     return fields.email.length > 0;
@@ -41,21 +65,21 @@ export default function ResetPassword() {
   async function handleSendCodeClick(event) {
     event.preventDefault();
 
-    setIsSendingCode(true);
+    //setIsSendingCode(true);
 
     try {
       await Auth.forgotPassword(fields.email);
       setCodeSent(true);
     } catch (error) {
       onError(error);
-      setIsSendingCode(false);
+      //setIsSendingCode(false);
     }
   }
 
   async function handleConfirmClick(event) {
     event.preventDefault();
 
-    setIsConfirming(true);
+    //setIsConfirming(true);
 
     try {
       await Auth.forgotPasswordSubmit(
@@ -66,76 +90,97 @@ export default function ResetPassword() {
       setConfirmed(true);
     } catch (error) {
       onError(error);
-      setIsConfirming(false);
+      //setIsConfirming(false);
     }
   }
 
   function renderRequestCodeForm() {
     return (
-      <form onSubmit={handleSendCodeClick}>
-        <FormGroup bsSize="large" controlId="email">
-          <ControlLabel>Email</ControlLabel>
-          <FormControl
+      <form className={classes.form} onSubmit={handleSendCodeClick} noValidate>
+        <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
             autoFocus
-            type="email"
             value={fields.email}
             onChange={handleFieldChange}
           />
-        </FormGroup>
-        <LoaderButton
-          block
+        <Button
           type="submit"
-          bsSize="large"
-          isLoading={isSendingCode}
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          //isLoading={isSendingCode}
           disabled={!validateCodeForm()}
         >
           Send Confirmation
-        </LoaderButton>
+        </Button>
       </form>
     );
   }
 
   function renderConfirmationForm() {
     return (
-      <form onSubmit={handleConfirmClick}>
-        <FormGroup bsSize="large" controlId="code">
-          <ControlLabel>Confirmation Code</ControlLabel>
-          <FormControl
-            autoFocus
+      <form className={classes.form} onSubmit={handleConfirmClick} noValidate>
+        <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="code"
+            label="Confirmation Code"
             type="tel"
+            name="code"
+            autoComplete="one-time-code"
+            autoFocus
             value={fields.code}
             onChange={handleFieldChange}
           />
-          <HelpBlock>
-            Please check your email ({fields.email}) for the confirmation code.
-          </HelpBlock>
-        </FormGroup>
+        <p className={classes.help}>Please check your email ({fields.email}) for the confirmation code.</p>
         <hr />
-        <FormGroup bsSize="large" controlId="password">
-          <ControlLabel>New Password</ControlLabel>
-          <FormControl
+        <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="New Password"
             type="password"
+            id="password"
+            autoComplete="new-password"
             value={fields.password}
             onChange={handleFieldChange}
           />
-        </FormGroup>
-        <FormGroup bsSize="large" controlId="confirmPassword">
-          <ControlLabel>Confirm Password</ControlLabel>
-          <FormControl
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="confirmPassword"
+            label="Confirm Password"
             type="password"
+            id="confirmPassword"
+            autoComplete="new-password"
             value={fields.confirmPassword}
             onChange={handleFieldChange}
           />
-        </FormGroup>
-        <LoaderButton
-          block
+        <Button
           type="submit"
-          bsSize="large"
-          isLoading={isConfirming}
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          //isLoading={isConfirming}
           disabled={!validateResetForm()}
         >
           Confirm
-        </LoaderButton>
+        </Button>
       </form>
     );
   }
@@ -143,7 +188,7 @@ export default function ResetPassword() {
   function renderSuccessMessage() {
     return (
       <div className="success">
-        <Glyphicon glyph="ok" />
+        <CheckCircleOutlinedIcon style={{fill: 'green', width: '2em', height: '2em'}} />
         <p>Your password has been reset.</p>
         <p>
           <Link to="/login">
@@ -155,15 +200,19 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="ResetPassword">
-      <div className="Logo">
-            <img src={logo} alt="Logo" />
+    <Container component="main" maxWidth="xs">
+      <div className={classes.paper}>
+        <div className="ResetPassword">
+          <div className="Logo">
+                <img src={logo} alt="Logo" />
+            </div>
+          {!codeSent
+            ? renderRequestCodeForm()
+            : !confirmed
+            ? renderConfirmationForm()
+            : renderSuccessMessage()}
         </div>
-      {!codeSent
-        ? renderRequestCodeForm()
-        : !confirmed
-        ? renderConfirmationForm()
-        : renderSuccessMessage()}
-    </div>
+      </div>
+    </Container>
   );
 }

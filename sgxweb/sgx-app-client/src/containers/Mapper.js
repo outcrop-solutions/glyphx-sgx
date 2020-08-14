@@ -30,7 +30,7 @@ function TabPanel(props) {
         {...other}
       >
         {value === index && (
-          <Box p={index == 0 ? 1 : 3} height='100%'>
+          <Box p={index === 0 ? 1 : 3} height='100%'>
             {children}
           </Box>
         )}
@@ -50,11 +50,35 @@ function TabPanel(props) {
       'aria-controls': `full-width-tabpanel-${index}`,
     };
   }
+
+  function createData(fieldname, type, min, max, countnn, countd) {
+    return { fieldname, type, min, max, countnn, countd };
+  }
+
+  const rows = [
+    createData('Month1', 'real', 1, 5, 18816, 5),
+    createData('Month2', 'real', 1, 5, 18816, 5),
+    createData('Month3', 'real', 1, 5, 18816, 5),
+    createData('Month4', 'real', 1, 5, 18816, 5),
+    createData('Month5', 'real', 1, 5, 18816, 5),
+    createData('Month6', 'real', 1, 5, 18816, 5),
+    createData('Month7', 'real', 1, 5, 18816, 5),
+    createData('Month8', 'real', 1, 5, 18816, 5),
+    createData('Month9', 'real', 1, 5, 18816, 5),
+    createData('Month10', 'real', 1, 5, 18816, 5),
+    createData('Month11', 'real', 1, 5, 18816, 5),
+    createData('Month12', 'real', 1, 5, 18816, 5),
+    createData('Month13', 'real', 1, 5, 18816, 5),
+    createData('Month14', 'real', 1, 5, 18816, 5),
+    createData('Month15', 'real', 1, 5, 18816, 5),
+    createData('Month16', 'real', 1, 5, 18816, 5),
+  ];
   
   const useStyles = makeStyles((theme) => ({
     root: {
       backgroundColor: theme.palette.background.paper,
       width: '100%',
+      height: window.innerHeight-60,
     },
     tab: {
         minWidth: '8.33%',
@@ -62,6 +86,9 @@ function TabPanel(props) {
     button: {
         margin: theme.spacing(1),
         color: '#3f51b5',
+    },
+    view: {
+        height: window.innerHeight-115,
     },
   }));
 
@@ -78,6 +105,10 @@ export default function Mapper() {
     const handleChangeIndex = (index) => {
         setValue(index);
     };
+
+    async function handleRun() {
+      history.push("/visualization");
+    }
     
   return (
     <div className="Mapper">
@@ -112,21 +143,22 @@ export default function Mapper() {
                     <Button color="default" className={classes.button} startIcon={<EditIcon />}>
                         Edit
                     </Button>
-                    <Button color="default" className={classes.button} startIcon={<PlayArrowIcon />}>
+                    <Button color="default" className={classes.button} startIcon={<PlayArrowIcon />} onClick={handleRun}>
                         Run
                     </Button>
                 </div>
             </AppBar>
             <SwipeableViews
+                className={classes.view}
                 axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                 index={value}
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                <MapperProperties />
+                <MapperProperties data={rows}/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                <MapperData />
+                <MapperData data={rows}/>
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
                 Advanced Pane

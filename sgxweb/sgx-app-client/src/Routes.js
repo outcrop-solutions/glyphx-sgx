@@ -5,6 +5,7 @@ import Login from "./containers/Login";
 import ResetPassword from "./containers/ResetPassword";
 import Signup from "./containers/Signup";
 import Mapper from "./containers/Mapper";
+import Visualization from "./containers/Visualization";
 import NotFound from "./containers/NotFound";
 
 export default function Routes() {
@@ -24,6 +25,9 @@ export default function Routes() {
         </Route>
         <Route exact path="/mapper">
             <Mapper />
+        </Route>
+        <Route exact path="/visualization">
+            <Visualization />
         </Route>
         {/* Finally, catch all unmatched routes */}
         <Route>

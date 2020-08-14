@@ -12,9 +12,10 @@ const useStyles = makeStyles((theme) => ({
     width: '90%',
     margin: 'auto',
     backgroundColor: theme.palette.background.paper,
+    paddingTop: 5,
   },
   text: {
-    fontSize: '1.25rem',
+    fontSize: '1rem',
   },
 }));
 
@@ -23,7 +24,6 @@ const announcements = [
     {'text': 'Announcement numero dos', 'value': 2},
     {'text': 'Announcement numero tres', 'value': 3},
     {'text': 'Announcement numero quatro', 'value': 4},
-    {'text': 'Announcement numero cinco', 'value': 5},
 ]
 
 export default function CheckboxList() {

@@ -13,6 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RecentViews from "../components/RecentViews";
 import LoadData from "../components/LoadData";
 import Announcements from "../components/Announcements";
+import Education from "../components/Education";
 import "./Home.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,18 +23,19 @@ const useStyles = makeStyles((theme) => ({
     paper: {
       textAlign: 'center',
       color: theme.palette.text.secondary,
-      height: theme.spacing(42),
+      height: theme.spacing(50),
     },
     paper_row_two: {
       textAlign: 'center',
       color: theme.palette.text.secondary,
-      height: theme.spacing(30),
+      //height: theme.spacing(35),
+      height: window.innerHeight*0.33,
     },
     circle_button: {
-        fontSize: '1.25rem', 
+        fontSize: '0.875rem', 
         position: 'absolute', 
-        bottom: 30, 
-        right: 30, 
+        bottom: 18, 
+        right: 18, 
         backgroundColor: 'rgb(63,81,181)',
         color: 'white',
         '&:hover': {
@@ -72,7 +74,7 @@ export default function Home() {
                         <Table className={classes.table} aria-label="custom pagination table">
                             <TableHead>
                             <TableRow>
-                                <TableCell align="center" colSpan={4} style={{ fontSize: '2rem'}}>
+                                <TableCell align="center" colSpan={4} style={{ fontSize: '1.5rem'}}>
                                 ANNOUNCEMENTS
                                 </TableCell>
                             </TableRow>
@@ -84,17 +86,7 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={6}>
                 <Paper className={classes.paper_row_two} elevation={3}>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table className={classes.table} aria-label="custom pagination table">
-                            <TableHead>
-                            <TableRow>
-                                <TableCell align="center" colSpan={4} style={{ fontSize: '2rem'}}>
-                                EDUCATION
-                                </TableCell>
-                            </TableRow>
-                            </TableHead>
-                        </Table>
-                    </TableContainer>
+                    <Education />
                 </Paper>
                 </Grid>
             </Grid>

@@ -131,11 +131,11 @@ export default function CustomPaginationActionsTable() {
   };
 
   return (
-    <TableContainer component={Paper} elevation={3} style={{ height: 336 }}>
+    <TableContainer component={Paper} elevation={3} style={{ height: 350 }}>
       <Table className={classes.table} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <TableCell align="center" colSpan={4} style={{ fontSize: '2rem'}}>
+            <TableCell align="center" colSpan={4} style={{ fontSize: '1.5rem'}}>
                 START VIZ / LOAD DATA
             </TableCell>
           </TableRow>
@@ -146,10 +146,10 @@ export default function CustomPaginationActionsTable() {
             : rows
           ).map((row) => (
             <TableRow hover key={row.name}>
-              <TableCell component="th" scope="row" style={{ fontSize: '1.25rem', padding: 12, paddingLeft: 32 }}>
+              <TableCell component="th" scope="row" style={{ fontSize: '0.875rem', padding: 12, paddingLeft: 32 }}>
                 {row.name}
               </TableCell>
-              <TableCell style={{ width: 160, fontSize: '1.25rem', padding: 12, paddingRight: 32 }} align="right">
+              <TableCell style={{ width: 160, fontSize: '0.875rem', padding: 12, paddingRight: 32 }} align="right">
                 {row.datetime}
               </TableCell>
             </TableRow>
