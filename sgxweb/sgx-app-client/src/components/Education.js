@@ -21,6 +21,7 @@ const useStyles = makeStyles({
     paddingTop: window.innerHeight*0.035 , 
     paddingLeft: '2.5%',
     paddingRight: '2.5%',
+    paddingBottom: 12
   },
 });
 
@@ -35,10 +36,10 @@ export default function ImgMediaCard() {
           alt="Glyph"
           image={Lizard}
           title="Glyph"
-          style={{width: '100%', height: window.innerHeight*0.33}}
+          style={{width: '100%', height: window.innerHeight*0.37}}
         />
       </CardActionArea>
-      <CardContent className={classes.content}>
+      <CardContent className={classes.content} >
           <Typography gutterBottom variant="h5" component="h2">
             Lizard
           </Typography>
@@ -47,7 +48,7 @@ export default function ImgMediaCard() {
             across all continents except Antarctica
           </Typography>
         </CardContent>
-      <CardActions style={{display:'block'}}>
+      <CardActions style={{display:'block', padding: 0}}>
         <Button size="small" color="primary">
           Share
         </Button>

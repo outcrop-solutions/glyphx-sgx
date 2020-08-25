@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -17,23 +16,21 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   paper: {
-    height: window.innerHeight-230,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    paddingTop: window.innerHeight*0.07,
-    paddingBottom: theme.spacing(4),
+    height: window.innerHeight-135,
+    borderRight: '1px solid lightgray'
   },
   field: {
-    float: 'left',
-    width: '65%', 
-    marginBottom: window.innerHeight*0.025,
+    width: (window.innerWidth*0.25)/2, 
   },
   images: {
-    float: 'left', 
     width: 40, 
     height: 40, 
     marginLeft: theme.spacing(4), 
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    marginBottom: theme.spacing(0.5),
+  },
+  prop_container: {
+    paddingTop: window.innerHeight*0.025
   }
 }));
 
@@ -52,15 +49,15 @@ export default function MapperProperties(props) {
   return (
     <div className={classes.root}>
       <Grid container spacing={0}>
-        <Grid item xs={3}>
-          <Paper className={classes.paper}>
+        <Grid item xs={3} className={classes.paper}>
             {labels.map((row) => {
                 return (
                     <div key={"input"+row.index}>
-                        <Grid item xs={3}>
+                      <Grid container spacing={1} alignItems="flex-end" className={classes.prop_container}>
+                        <Grid item>
                             <img alt={"mapimg"+row.index} src={row.image} className={classes.images}/>
                         </Grid>
-                        <Grid item xs={9}>
+                        <Grid item>
                             <Autocomplete
                                 className={classes.field}
                                 id={"combo-box-demo"+row.index}
@@ -69,9 +66,9 @@ export default function MapperProperties(props) {
                                 renderInput={(params) => <TextField {...params} label={row.label} variant="outlined" />}
                             />
                         </Grid>
+                      </Grid>
                     </div>
             );})}
-          </Paper>
         </Grid>
         <Grid item xs={9} style={{textAlign:'center'}}>
             <div style={{textAlign: 'center'}}>

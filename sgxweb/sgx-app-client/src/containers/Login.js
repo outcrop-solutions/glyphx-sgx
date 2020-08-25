@@ -34,18 +34,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login() {
-    const history = useHistory();
-    const classes = useStyles();
-    const { userHasAuthenticated } = useAppContext();
-    //const [isLoading, setIsLoading] = useState(false);
-    const [fields, handleFieldChange] = useFormFields({
-      email: "",
-      password: ""
-    });
+  const history = useHistory();
+  const classes = useStyles();
+  const { userHasAuthenticated } = useAppContext();
+  //const [isLoading, setIsLoading] = useState(false);
+  const [fields, handleFieldChange] = useFormFields({
+    email: "",
+    password: ""
+  });
 
-    function validateForm() {
-        return fields.email.length > 0 && fields.password.length > 0;
-    }
+  function validateForm() {
+      return fields.email.length > 0 && fields.password.length > 0;
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();

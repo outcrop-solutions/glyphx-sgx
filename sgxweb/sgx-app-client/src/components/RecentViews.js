@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -116,6 +117,7 @@ const useStyles2 = makeStyles({
 
 export default function CustomPaginationActionsTable() {
   const classes = useStyles2();
+  const history = useHistory();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -130,12 +132,17 @@ export default function CustomPaginationActionsTable() {
     setPage(0);
   };
 
+  function handleDataSelect(name) {
+    //console.log(name);
+    history.push({pathname:"/mapper", data: name});
+  }
+
   return (
-    <TableContainer component={Paper} elevation={3} style={{ height: 350 }}>
+    <TableContainer component={Paper} elevation={3} style={{ height: 330 }}>
       <Table className={classes.table} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
-            <TableCell align="center" colSpan={4} style={{ fontSize: '1.5rem'}}>
+            <TableCell align="center" colSpan={4} style={{ fontSize: '1.25rem', padding: 10}}>
               RECENT VIEWS
             </TableCell>
           </TableRow>
@@ -145,7 +152,7 @@ export default function CustomPaginationActionsTable() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow hover key={row.name}>
+            <TableRow hover key={row.name} onClick={() => handleDataSelect(row.name)} style={{cursor: 'pointer'}}>
               <TableCell component="th" scope="row" style={{ fontSize: '0.875rem', padding: 12, paddingLeft: 32 }}>
                 {row.name}
               </TableCell>

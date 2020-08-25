@@ -1,5 +1,6 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
+import { Storage } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
@@ -28,14 +29,14 @@ const useStyles = makeStyles((theme) => ({
     paper_row_two: {
       textAlign: 'center',
       color: theme.palette.text.secondary,
-      //height: theme.spacing(35),
-      height: window.innerHeight*0.33,
+      //height: theme.spacing(3),
+      height: window.innerHeight*0.37,
     },
     circle_button: {
         fontSize: '0.875rem', 
         position: 'absolute', 
-        bottom: 18, 
-        right: 18, 
+        bottom: 12, 
+        right: 12, 
         backgroundColor: 'rgb(63,81,181)',
         color: 'white',
         '&:hover': {
@@ -46,7 +47,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
     const classes = useStyles();
-    const history = useHistory();
+    //const history = useHistory();
+
+    async function handleFileChange(event) {
+        var name = document.getElementById('icon-button-file'); 
+        var file = name.files.item(0);
+
+        /*const stored = Storage.put(name.files.item(0), 'Hello')
+        .then (result => console.log(result))
+        .catch(err => console.log(err));*/
+
+        if(file.name != null){
+            const stored = await Storage.vault.put(file.name, file, {
+                contentType: file.type,
+            });
+            console.log(stored.key);
+        }
+    }
+    
 
   return (
     <div className="Home">
@@ -55,15 +73,18 @@ export default function Home() {
                 <Grid item xs={6}>
                     <LoadData />
                     <div style={{ position: 'relative' }}>
-                        <IconButton onClick={() => { history.push("/mapper"); }} color="default" className={classes.circle_button}>
-                            <AddIcon/>
-                        </IconButton>
+                        <input accept=".csv" id="icon-button-file" type="file" onChange={handleFileChange} hidden />
+                        <label htmlFor="icon-button-file">
+                            <IconButton color="default" className={classes.circle_button} component="span">
+                                <AddIcon />
+                            </IconButton>
+                        </label>
                     </div>
                 </Grid>
                 <Grid item xs={6}>
                 <RecentViews />
                 <div style={{ position: 'relative' }}>
-                    <IconButton onClick={() => { history.push("/mapper"); }} color="default" className={classes.circle_button}>
+                    <IconButton onClick={() => { /*history.push("/mapper");*/ }} color="default" className={classes.circle_button}>
                         <AddIcon/>
                     </IconButton>
                 </div>
@@ -74,7 +95,7 @@ export default function Home() {
                         <Table className={classes.table} aria-label="custom pagination table">
                             <TableHead>
                             <TableRow>
-                                <TableCell align="center" colSpan={4} style={{ fontSize: '1.5rem'}}>
+                                <TableCell align="center" colSpan={4} style={{ fontSize: '1.25rem', padding: 10}}>
                                 ANNOUNCEMENTS
                                 </TableCell>
                             </TableRow>

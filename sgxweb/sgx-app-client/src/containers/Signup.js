@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Auth } from "aws-amplify";
+import { Auth, API } from "aws-amplify";
 //import LoaderButton from "../components/LoaderButton";
 import { useAppContext } from "../libs/contextLib";
 import { useFormFields } from "../libs/hooksLib";
@@ -84,13 +84,22 @@ export default function Signup() {
     try {
       await Auth.confirmSignUp(fields.email, fields.confirmationCode);
       await Auth.signIn(fields.email, fields.password);
-  
+      let cred = await Auth.currentCredentials();
+      createUserStorage(cred);
+
       userHasAuthenticated(true);
       history.push("/");
     } catch (e) {
       onError(e);
       //setIsLoading(false);
     }
+  }
+
+  function createUserStorage(identity) {
+    console.log(identity.identityId);
+    return API.post("sgx", "/create-user-storage", {
+      body: "{\"identity\":\""+identity.identityId+"\"}"
+    });
   }
 
   function renderConfirmationForm() {

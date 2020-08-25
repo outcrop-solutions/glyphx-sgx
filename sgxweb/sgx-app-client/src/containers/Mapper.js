@@ -109,7 +109,9 @@ export default function Mapper() {
     async function handleRun() {
       history.push("/visualization");
     }
-    
+
+  //console.log(history.location.data);
+  
   return (
     <div className="Mapper">
         <div className={classes.root}>

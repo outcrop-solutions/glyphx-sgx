@@ -39,11 +39,13 @@ function App() {
 
   useEffect(() => {
     onLoad();
-  });
+  }, []);
   
   async function onLoad() {
     try {
-      await Auth.currentSession();
+      let result = await Auth.currentSession();
+      
+      //console.log(result.getAccessToken());
       userHasAuthenticated(true);
     }
     catch(e) {
