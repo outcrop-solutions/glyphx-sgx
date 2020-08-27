@@ -2,6 +2,7 @@ import React from "react";
 //import { useHistory } from "react-router-dom";
 import { Storage } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
+import { Auth } from "aws-amplify";
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
@@ -47,15 +48,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
     const classes = useStyles();
-    //const history = useHistory();
-
+    
     async function handleFileChange(event) {
         var name = document.getElementById('icon-button-file'); 
         var file = name.files.item(0);
-
-        /*const stored = Storage.put(name.files.item(0), 'Hello')
-        .then (result => console.log(result))
-        .catch(err => console.log(err));*/
 
         if(file.name != null){
             const stored = await Storage.vault.put(file.name, file, {
@@ -64,14 +60,23 @@ export default function Home() {
             console.log(stored.key);
         }
     }
-    
+
+    async function getDataSources() {
+        try {
+            let cred = await Auth.currentCredentials();
+            return cred.identityId;
+        }
+        catch(e){
+            return 0;
+        }
+    }
 
   return (
     <div className="Home">
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
-                    <LoadData />
+                    <LoadData data={getDataSources()}/>
                     <div style={{ position: 'relative' }}>
                         <input accept=".csv" id="icon-button-file" type="file" onChange={handleFileChange} hidden />
                         <label htmlFor="icon-button-file">
@@ -84,7 +89,7 @@ export default function Home() {
                 <Grid item xs={6}>
                 <RecentViews />
                 <div style={{ position: 'relative' }}>
-                    <IconButton onClick={() => { /*history.push("/mapper");*/ }} color="default" className={classes.circle_button}>
+                    <IconButton onClick={() => { }} color="default" className={classes.circle_button}>
                         <AddIcon/>
                     </IconButton>
                 </div>

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { API } from "aws-amplify";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,6 +17,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import "./LoadData.css";
 
 const useStyles1 = makeStyles((theme) => ({
@@ -83,26 +85,6 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function createData(name, datetime) {
-  return { name, datetime };
-}
-
-const rows = [
-  createData('Data Source 1', '2011-11-04 05:23'),
-  createData('Data Source 2', '2011-11-04 06:23'),
-  createData('Data Source 3', '2011-11-04 07:23'),
-  createData('Data Source 4', '2011-11-04 08:23'),
-  createData('Data Source 5', '2011-11-04 09:23'),
-  createData('Data Source 6', '2011-11-03 05:23'),
-  createData('Data Source 7', '2011-11-03 06:23'),
-  createData('Data Source 8', '2011-11-03 07:23'),
-  createData('Data Source 9', '2011-11-03 08:23'),
-  createData('Data Source 10', '2011-11-03 09:23'),
-  createData('Data Source 11', '2011-11-02 05:23'),
-  createData('Data Source 12', '2011-11-02 06:23'),
-  createData('Data Source 13', '2011-11-02 07:23'),
-].sort((a, b) => (a.datetime > b.datetime ? -1 : 1));
-
 const useStyles2 = makeStyles({
   table: {
     minWidth: 500,
@@ -115,13 +97,59 @@ const useStyles2 = makeStyles({
   },
 });
 
-export default function CustomPaginationActionsTable() {
+export default function LoadData({data}) {
   const classes = useStyles2();
   const history = useHistory();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState([])
+  const [rowLength, setRowLength] = React.useState(null);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowLength - page * rowsPerPage);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const fetchData = async () => { 
+    await data.then(fetched => {
+      return fetched;
+    }).then(result => setRows(loadData(fetchDataSources(result))));
+  };
+
+  useEffect(() => {
+    fetchData();
+    const timer = setInterval(() => {
+      if(rowLength !== rows.length){
+        setRowLength(rows.length);
+      }
+    }, 1000);
+    return function cleanup() {
+      clearInterval(timer);
+    }
+  }, []);
+
+  function fetchDataSources(identityId) {
+    return API.post("sgx", "/get-data-sources", {
+    body: "{\"identity\":\""+identityId+"\"}"
+    });
+  }
+
+  function createData(name, datetime) {
+      return { name, datetime };
+  }
+
+  function loadData(d) {
+      var rs = [];
+      d.then(response => {
+        let body = JSON.parse(response.body);
+        body.forEach(function(element) {
+          let ele = JSON.parse(element);
+          let keyArr = ele.Key.split("/");
+          let file = keyArr[keyArr.length - 1];
+          if(file !== ''){
+            rows.push(createData(file, ele.LastModified.split("+")[0]));
+          }
+        });
+      });
+      rs.sort((a, b) => (a.datetime > b.datetime ? -1 : 1));
+      return rows;
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -133,12 +161,53 @@ export default function CustomPaginationActionsTable() {
   };
 
   function handleDataSelect(name) {
-    //console.log(name);
     history.push({pathname:"/mapper", data: name});
   }
 
-  return (
-    <TableContainer component={Paper} elevation={3} style={{ height: 330 }}>
+  function renderSpinnerPage() {
+    return (
+      <Table className={classes.table} aria-label="custom pagination table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="center" colSpan={4} style={{ fontSize: '1.25rem', padding: 10}}>
+                START VIZ / LOAD DATA
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        <TableRow>
+            <TableCell align="center" colSpan={4} style={{ fontSize: '1rem', padding: '15%' }}>
+              <CircularProgress />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+  }
+
+  function renderDefaultPage() {
+    return (
+      <Table className={classes.table} aria-label="custom pagination table">
+        <TableHead>
+          <TableRow>
+            <TableCell align="center" colSpan={4} style={{ fontSize: '1.25rem', padding: 10}}>
+                START VIZ / LOAD DATA
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        <TableRow>
+            <TableCell align="center" colSpan={4} style={{ fontSize: '1rem', padding: '15%' }}>
+              Upload data to get started!
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    );
+  }
+
+  function renderTableBody() {
+    return (
       <Table className={classes.table} aria-label="custom pagination table">
         <TableHead>
           <TableRow>
@@ -156,7 +225,7 @@ export default function CustomPaginationActionsTable() {
               <TableCell component="th" scope="row" style={{ fontSize: '0.875rem', padding: 12, paddingLeft: 32 }}>
                 {row.name}
               </TableCell>
-              <TableCell style={{ width: 160, fontSize: '0.875rem', padding: 12, paddingRight: 32 }} align="right">
+              <TableCell style={{ width: '50%', fontSize: '0.875rem', padding: 12, paddingRight: 32 }} align="right">
                 {row.datetime}
               </TableCell>
             </TableRow>
@@ -174,7 +243,7 @@ export default function CustomPaginationActionsTable() {
               classes={{toolbar: classes.pagination_toolbar}}
               rowsPerPageOptions={[5]}
               colSpan={2}
-              count={rows.length}
+              count={rowLength}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
@@ -188,6 +257,12 @@ export default function CustomPaginationActionsTable() {
           </TableRow>
         </TableFooter>
       </Table>
+    );
+  }
+
+  return (
+    <TableContainer component={Paper} elevation={3} style={{ height: 330 }}>
+      {rowLength === null ? renderSpinnerPage() : rowLength === 0 ? renderDefaultPage() : renderTableBody()}
     </TableContainer>
   );
 }

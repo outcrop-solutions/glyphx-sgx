@@ -43,9 +43,8 @@ function App() {
   
   async function onLoad() {
     try {
-      let result = await Auth.currentSession();
+      await Auth.currentSession();
       
-      //console.log(result.getAccessToken());
       userHasAuthenticated(true);
     }
     catch(e) {
@@ -97,10 +96,6 @@ function App() {
                   <Menu
                     id="menu-appbar"
                     anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
                     keepMounted
                     transformOrigin={{
                       vertical: 'bottom',
