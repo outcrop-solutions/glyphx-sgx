@@ -2,7 +2,7 @@ import React from "react";
 //import { useHistory } from "react-router-dom";
 import { Storage } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
-import { Auth } from "aws-amplify";
+import { Auth, API } from "aws-amplify";
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
@@ -52,16 +52,60 @@ export default function Home() {
     async function handleFileChange(event) {
         var name = document.getElementById('icon-button-file'); 
         var file = name.files.item(0);
+        var directory = file.name.split(".csv")[0];
+        var filename = directory+ "/" + file.name;
 
         if(file.name != null){
-            const stored = await Storage.vault.put(file.name, file, {
+            const stored = await Storage.vault.put(filename, file, {
                 contentType: file.type,
             });
             console.log(stored.key);
+            
+            let identity = await getIdentityId();
+            let cgc_output = await createGlueCrawler(identity, directory);
+            console.log("createGlueCrawler", cgc_output);
+            let sgc_output = await startGlueCrawler(identity);
+            console.log("startGlueCrawler", sgc_output);
+            let timer = setInterval(async function(){
+                let ctl_output = await getCrawlerTimeLeft(identity);
+                let body = JSON.parse(ctl_output["body"]);
+                let tablesCreated = body.split(":")[2].split("}")[0];
+                //console.log("getCrawlerTimerLeft", tablesCreated);
+                if(tablesCreated == 1){
+                    clearInterval(timer);
+                    let cmt_output = await createMetadataTable(identity, directory);
+                    console.log("createMetadataTable", cmt_output);
+                }
+            }, 2000);
+ 
         }
     }
 
-    async function getDataSources() {
+    function createGlueCrawler(identity, directory) {
+        return API.post("sgx", "/create-glue-crawler", {
+          body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
+        });
+    }
+
+    function startGlueCrawler(identity) {
+        return API.post("sgx", "/start-glue-crawler", {
+          body: "{\"identity\":\""+identity+"\"}"
+        });
+    }
+
+    function getCrawlerTimeLeft(identity) {
+        return API.post("sgx", "/get-crawler-time-left", {
+          body: "{\"identity\":\""+identity+"\"}"
+        });
+    }
+
+    function createMetadataTable(identity, directory) {
+        return API.post("sgx", "/create-metadata-table", {
+          body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
+        });
+    }
+
+    async function getIdentityId() {
         try {
             let cred = await Auth.currentCredentials();
             return cred.identityId;
@@ -76,7 +120,7 @@ export default function Home() {
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
-                    <LoadData data={getDataSources()}/>
+                    <LoadData data={getIdentityId()}/>
                     <div style={{ position: 'relative' }}>
                         <input accept=".csv" id="icon-button-file" type="file" onChange={handleFileChange} hidden />
                         <label htmlFor="icon-button-file">

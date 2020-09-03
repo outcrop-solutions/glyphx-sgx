@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { Storage } from "aws-amplify";
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -55,25 +56,6 @@ function TabPanel(props) {
     return { fieldname, type, min, max, countnn, countd };
   }
 
-  const rows = [
-    createData('Month1', 'real', 1, 5, 18816, 5),
-    createData('Month2', 'real', 1, 5, 18816, 5),
-    createData('Month3', 'real', 1, 5, 18816, 5),
-    createData('Month4', 'real', 1, 5, 18816, 5),
-    createData('Month5', 'real', 1, 5, 18816, 5),
-    createData('Month6', 'real', 1, 5, 18816, 5),
-    createData('Month7', 'real', 1, 5, 18816, 5),
-    createData('Month8', 'real', 1, 5, 18816, 5),
-    createData('Month9', 'real', 1, 5, 18816, 5),
-    createData('Month10', 'real', 1, 5, 18816, 5),
-    createData('Month11', 'real', 1, 5, 18816, 5),
-    createData('Month12', 'real', 1, 5, 18816, 5),
-    createData('Month13', 'real', 1, 5, 18816, 5),
-    createData('Month14', 'real', 1, 5, 18816, 5),
-    createData('Month15', 'real', 1, 5, 18816, 5),
-    createData('Month16', 'real', 1, 5, 18816, 5),
-  ];
-  
   const useStyles = makeStyles((theme) => ({
     root: {
       backgroundColor: theme.palette.background.paper,
@@ -97,6 +79,38 @@ export default function Mapper() {
     const classes = useStyles();
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
+    const [rows, setRows] = React.useState([])
+
+    useEffect(() => {
+
+      if(typeof history.location.data !== "undefined"){
+
+        let prefix = history.location.data.split(".csv")[0];
+        var filename = prefix + "/" + prefix + ".json";
+        //console.log(filename);
+        Storage.vault.get(filename, { download: true })
+          .then(result => {
+            result.Body.text().then(contents => {
+              let fields = JSON.parse(contents);
+              let temp_rows = [];
+              for(let x in fields){
+                let row = fields[x];
+                temp_rows.push(createData(row["fieldname"], row["type"], row["min"], row["max"], row["count"], row["distinct"]));
+              }
+              setRows(temp_rows);
+              //console.log(temp_rows);
+            });
+          })
+          .catch(err => {
+              console.log('error axios');
+              console.log(err)
+          });
+
+      }else{
+        history.push("/");
+      }
+
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -109,8 +123,6 @@ export default function Mapper() {
     async function handleRun() {
       history.push("/visualization");
     }
-
-  //console.log(history.location.data);
   
   return (
     <div className="Mapper">

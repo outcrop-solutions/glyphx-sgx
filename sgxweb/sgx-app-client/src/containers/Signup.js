@@ -86,6 +86,7 @@ export default function Signup() {
       await Auth.signIn(fields.email, fields.password);
       let cred = await Auth.currentCredentials();
       createUserStorage(cred);
+      createGlueDatabase(cred);
 
       userHasAuthenticated(true);
       history.push("/");
@@ -96,8 +97,13 @@ export default function Signup() {
   }
 
   function createUserStorage(identity) {
-    console.log(identity.identityId);
     return API.post("sgx", "/create-user-storage", {
+      body: "{\"identity\":\""+identity.identityId+"\"}"
+    });
+  }
+
+  function createGlueDatabase(identity) {
+    return API.post("sgx", "/create-glue-database", {
       body: "{\"identity\":\""+identity.identityId+"\"}"
     });
   }
