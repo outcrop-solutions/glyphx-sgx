@@ -1,5 +1,5 @@
 import React from "react";
-//import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Storage } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
 import { Auth, API } from "aws-amplify";
@@ -12,10 +12,13 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import TableHead from '@material-ui/core/TableHead';
 import AddIcon from '@material-ui/icons/Add';
+import Modal from '@material-ui/core/Modal';
 import RecentViews from "../components/RecentViews";
 import LoadData from "../components/LoadData";
 import Announcements from "../components/Announcements";
 import Education from "../components/Education";
+//import CircularStatic from "../components/CircularStatic";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import "./Home.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,10 +47,23 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: 'rgb(45, 48, 145)',
          },
     },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modal_paper: {
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    },
 }));
 
 export default function Home() {
     const classes = useStyles();
+    const history = useHistory();
+    const [open, setOpen] = React.useState(false);
     
     async function handleFileChange(event) {
         var name = document.getElementById('icon-button-file'); 
@@ -56,18 +72,23 @@ export default function Home() {
         var filename = directory+ "/" + file.name;
 
         if(file.name != null){
+            setOpen(true);
             const stored = await Storage.vault.put(filename, file, {
                 contentType: file.type,
             });
             console.log(stored.key);
             
             let identity = await getIdentityId();
-            let cgc_output = await createGlueCrawler(identity, directory);
+            //let crawlerId = identity+"_"+directory;
+            /*let cgc_output = await createGlueCrawler(identity, directory);
             console.log("createGlueCrawler", cgc_output);
-            let sgc_output = await startGlueCrawler(identity);
-            console.log("startGlueCrawler", sgc_output);
+            let sgc_output = await startGlueCrawler(crawlerId);
+            console.log("startGlueCrawler", sgc_output);*/
+            let cta_output = await addCSVtoAthena(identity, directory);
+            let queryId = cta_output.body.replaceAll('"','');
+            console.log("addCSVtoAthena", queryId);
             let timer = setInterval(async function(){
-                let ctl_output = await getCrawlerTimeLeft(identity);
+                /*let ctl_output = await getCrawlerTimeLeft(crawlerId);
                 let body = JSON.parse(ctl_output["body"]);
                 let tablesCreated = body.split(":")[2].split("}")[0];
                 //console.log("getCrawlerTimerLeft", tablesCreated);
@@ -75,12 +96,23 @@ export default function Home() {
                     clearInterval(timer);
                     let cmt_output = await createMetadataTable(identity, directory);
                     console.log("createMetadataTable", cmt_output);
+                    setOpen(false);
+                    history.push({pathname:"/mapper", data: file.name});
+                }*/
+                let gqs_output = await getQueryStatus(queryId);
+                let status = gqs_output.body.replaceAll('"','');
+                console.log(status);
+                if(status == "SUCCEEDED"){
+                    clearInterval(timer);
+                    let cmt_output = await createMetadataTable(identity, directory);
+                    console.log("createMetadataTable", cmt_output);
+                    setOpen(false);
+                    history.push({pathname:"/mapper", data: file.name});
                 }
-            }, 2000);
- 
+            }, 2500);
         }
     }
-
+/*
     function createGlueCrawler(identity, directory) {
         return API.post("sgx", "/create-glue-crawler", {
           body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
@@ -98,10 +130,22 @@ export default function Home() {
           body: "{\"identity\":\""+identity+"\"}"
         });
     }
-
+*/
     function createMetadataTable(identity, directory) {
         return API.post("sgx", "/create-metadata-table", {
           body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
+        });
+    }
+
+    function addCSVtoAthena(identity, directory) {
+        return API.post("sgx", "/csv-to-athena", {
+          body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
+        });
+    }
+
+    function getQueryStatus(queryId) {
+        return API.post("sgx", "/get-query-status", {
+          body: "{\"queryId\":\""+queryId+"\"}"
         });
     }
 
@@ -114,6 +158,15 @@ export default function Home() {
             return 0;
         }
     }
+
+    const body = (
+        <div className={classes.modal_paper}>
+            <h2 id="simple-modal-title">Uploading your data</h2>
+            <div style={{textAlign:"center", padding: 20}}>
+                <CircularProgress />
+            </div>
+        </div>
+    );
 
   return (
     <div className="Home">
@@ -161,6 +214,14 @@ export default function Home() {
                 </Grid>
             </Grid>
         </div>
+        <Modal
+            open={open}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            className={classes.modal}
+        >
+            {body}
+        </Modal>
     </div>
   );
 }

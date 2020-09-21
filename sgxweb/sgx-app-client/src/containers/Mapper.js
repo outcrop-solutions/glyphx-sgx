@@ -85,9 +85,9 @@ export default function Mapper() {
 
       if(typeof history.location.data !== "undefined"){
 
+        console.log(history.location.data);
         let prefix = history.location.data.split(".csv")[0];
         var filename = prefix + "/" + prefix + ".json";
-        //console.log(filename);
         Storage.vault.get(filename, { download: true })
           .then(result => {
             result.Body.text().then(contents => {
