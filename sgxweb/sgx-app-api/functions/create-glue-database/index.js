@@ -1,20 +1,22 @@
 const AWS = require('aws-sdk');
 
-const s3 = new AWS.S3();
+const glue = new AWS.Glue();
 
 // get reference to S3 client
 exports.handler = async (event) => {
 
     const identity = JSON.parse(event).identity;
+    //const identity = "us-east-1:d7424e02-fae8-449f-af16-39c4bbb27456";
     
     var params = {
-      Bucket: "sgx-app-user-storage", 
-      Key: "private/"+identity+"/"
+      DatabaseInput: { /* required */
+        Name: identity, /* required */
+      }
     };
     
-    await s3.putObject(params, function(err, data) {
-       if (err) console.log(err, err.stack); // an error occurred
-       else     console.log(data);           // successful response
+    let data = await glue.createDatabase(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
     }).promise();
     
     // TODO implement
@@ -25,8 +27,7 @@ exports.handler = async (event) => {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "OPTIONS,POST"
         },
-        body: JSON.stringify('Success! '+identity),
+        body: JSON.stringify(data),
     };
     return response;
 };
-
