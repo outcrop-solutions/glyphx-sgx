@@ -17,7 +17,6 @@ import RecentViews from "../components/RecentViews";
 import LoadData from "../components/LoadData";
 import Announcements from "../components/Announcements";
 import Education from "../components/Education";
-//import CircularStatic from "../components/CircularStatic";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import "./Home.css";
 
@@ -79,26 +78,10 @@ export default function Home() {
             console.log(stored.key);
             
             let identity = await getIdentityId();
-            //let crawlerId = identity+"_"+directory;
-            /*let cgc_output = await createGlueCrawler(identity, directory);
-            console.log("createGlueCrawler", cgc_output);
-            let sgc_output = await startGlueCrawler(crawlerId);
-            console.log("startGlueCrawler", sgc_output);*/
             let cta_output = await addCSVtoAthena(identity, directory);
             let queryId = cta_output.body.replaceAll('"','');
             console.log("addCSVtoAthena", queryId);
             let timer = setInterval(async function(){
-                /*let ctl_output = await getCrawlerTimeLeft(crawlerId);
-                let body = JSON.parse(ctl_output["body"]);
-                let tablesCreated = body.split(":")[2].split("}")[0];
-                //console.log("getCrawlerTimerLeft", tablesCreated);
-                if(tablesCreated == 1){
-                    clearInterval(timer);
-                    let cmt_output = await createMetadataTable(identity, directory);
-                    console.log("createMetadataTable", cmt_output);
-                    setOpen(false);
-                    history.push({pathname:"/mapper", data: file.name});
-                }*/
                 let gqs_output = await getQueryStatus(queryId);
                 let status = gqs_output.body.replaceAll('"','');
                 console.log(status);
@@ -112,25 +95,7 @@ export default function Home() {
             }, 2500);
         }
     }
-/*
-    function createGlueCrawler(identity, directory) {
-        return API.post("sgx", "/create-glue-crawler", {
-          body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
-        });
-    }
 
-    function startGlueCrawler(identity) {
-        return API.post("sgx", "/start-glue-crawler", {
-          body: "{\"identity\":\""+identity+"\"}"
-        });
-    }
-
-    function getCrawlerTimeLeft(identity) {
-        return API.post("sgx", "/get-crawler-time-left", {
-          body: "{\"identity\":\""+identity+"\"}"
-        });
-    }
-*/
     function createMetadataTable(identity, directory) {
         return API.post("sgx", "/create-metadata-table", {
           body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
