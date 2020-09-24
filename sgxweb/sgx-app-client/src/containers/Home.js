@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
     circle_button: {
         fontSize: '0.875rem', 
         position: 'absolute', 
-        bottom: 12, 
-        right: 12, 
+        bottom: 10, 
+        right: 10, 
         backgroundColor: 'rgb(63,81,181)',
         color: 'white',
         '&:hover': {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -45,6 +45,22 @@ const labels = [
 
 export default function MapperProperties(props) {
   const classes = useStyles();
+  const [isActive, isFieldActive] = useState(false);
+
+  function propertyChanged(event, value) {
+    let total = 0;
+    total += document.getElementById("combo-box-demo1").value !== "" ? 1 : 0;
+    total += document.getElementById("combo-box-demo2").value !== "" ? 1 : 0;
+    total += document.getElementById("combo-box-demo3").value !== "" ? 1 : 0;
+    total += document.getElementById("combo-box-demo4").value !== "" ? 1 : 0;
+    total += document.getElementById("combo-box-demo5").value !== "" ? 1 : 0;
+    total += document.getElementById("combo-box-demo6").value !== "" ? 1 : 0;
+    total += value !== "" ? 1 : -1;
+    if(total > 0)
+      isFieldActive(true);
+    else
+      isFieldActive(false);
+  }
 
   return (
     <div className={classes.root}>
@@ -63,6 +79,7 @@ export default function MapperProperties(props) {
                                 id={"combo-box-demo"+row.index}
                                 options={props.data}
                                 getOptionLabel={(option) => option.fieldname}
+                                onInputChange={propertyChanged}
                                 renderInput={(params) => <TextField {...params} label={row.label} variant="outlined" />}
                             />
                         </Grid>
@@ -71,12 +88,17 @@ export default function MapperProperties(props) {
             );})}
         </Grid>
         <Grid item xs={9} style={{textAlign:'center'}}>
+            {isActive
+            ? 
+            <div>Preview window will be here.</div>
+            :
             <div style={{textAlign: 'center'}}>
                 <img src={EmptyGlyph} alt="EmptyGlyph" style={{maxWidth: 225, marginTop: '15%'}}/>
                 <div style={{color: 'gray', maxWidth: 250, margin: 'auto', fontSize: '1rem'}}>
                     Select data headers from dropdowns to start exploring your data.
                 </div>
             </div>
+            }
         </Grid>
       </Grid>
     </div>

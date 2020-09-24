@@ -9,6 +9,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
 import SaveIcon from '@material-ui/icons/Save';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
@@ -72,6 +73,17 @@ function TabPanel(props) {
     view: {
         height: window.innerHeight-115,
     },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    modal_paper: {
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    }
   }));
 
 export default function Mapper() {
@@ -80,6 +92,8 @@ export default function Mapper() {
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
     const [rows, setRows] = React.useState([])
+    const [open, setOpen] = React.useState(false);
+    const [title, setTitle] = React.useState("");
 
     useEffect(() => {
 
@@ -120,9 +134,44 @@ export default function Mapper() {
         setValue(index);
     };
 
+    const handleOpen = () => {
+      setTitle("Open");
+      setOpen(true);
+    };
+
+    const handleNew = () => {
+      setTitle("New");
+      setOpen(true);
+    };
+
+    const handleSave = () => {
+      setTitle("Save");
+      setOpen(true);
+    };
+
+    const handleSaveAs = () => {
+      setTitle("Save As");
+      setOpen(true);
+    };
+
+    const handleEdit = () => {
+      setTitle("Edit");
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+
     async function handleRun() {
       history.push("/visualization");
     }
+
+    const body = (
+      <div className={classes.modal_paper}>
+          <h2 id="simple-modal-title">{title}</h2>
+      </div>
+    );
   
   return (
     <div className="Mapper">
@@ -142,19 +191,19 @@ export default function Mapper() {
                 <Tab className={classes.tab} label="Advanced" {...a11yProps(2)} />
                 </Tabs>
                 <div style={{margin: 'auto'}}>
-                    <Button color="default" className={classes.button} startIcon={<FolderOpenIcon />}>
+                    <Button color="default" className={classes.button} startIcon={<FolderOpenIcon />} onClick={handleOpen}>
                         Open
                     </Button>
-                    <Button color="default" className={classes.button} startIcon={<CreateNewFolderIcon />}>
+                    <Button color="default" className={classes.button} startIcon={<CreateNewFolderIcon />} onClick={handleNew}>
                         New
                     </Button>
-                    <Button color="default" className={classes.button} startIcon={<SaveOutlinedIcon />}>
+                    <Button color="default" className={classes.button} startIcon={<SaveOutlinedIcon />} onClick={handleSave}>
                         Save
                     </Button>
-                    <Button color="default" className={classes.button} startIcon={<SaveIcon />}>
+                    <Button color="default" className={classes.button} startIcon={<SaveIcon />} onClick={handleSaveAs}>
                         Save As
                     </Button>
-                    <Button color="default" className={classes.button} startIcon={<EditIcon />}>
+                    <Button color="default" className={classes.button} startIcon={<EditIcon />} onClick={handleEdit}>
                         Edit
                     </Button>
                     <Button color="default" className={classes.button} startIcon={<PlayArrowIcon />} onClick={handleRun}>
@@ -179,6 +228,15 @@ export default function Mapper() {
                 </TabPanel>
             </SwipeableViews>
         </div>
+        <Modal
+            open={open}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            className={classes.modal}
+            onClose={handleClose}
+        >
+            {body}
+        </Modal>
     </div>
   );
 }
