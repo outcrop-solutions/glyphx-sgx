@@ -10,6 +10,7 @@ import ZAxisImg from '../images/z-axis.png';
 import ColorImg from '../images/color.png';
 import SizeImg from '../images/size.png';
 import TypeImg from '../images/type.png';
+import Preview from './Preview';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,7 +91,7 @@ export default function MapperProperties(props) {
         <Grid item xs={9} style={{textAlign:'center'}}>
             {isActive
             ? 
-            <div>Preview window will be here.</div>
+            <Preview />
             :
             <div style={{textAlign: 'center'}}>
                 <img src={EmptyGlyph} alt="EmptyGlyph" style={{maxWidth: 225, marginTop: '15%'}}/>
