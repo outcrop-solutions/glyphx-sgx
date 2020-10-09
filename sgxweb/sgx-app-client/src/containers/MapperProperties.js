@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -44,9 +44,24 @@ const labels = [
     {label: 'Glyph Type', index: 6, image: TypeImg}
 ];
 
+let fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
+
 export default function MapperProperties(props) {
   const classes = useStyles();
   const [isActive, isFieldActive] = useState(false);
+  //const [fieldnames, setFieldnames] = useState(fields);
+  const [vizId, setVizId] = useState(0);
+
+  useEffect(() => {
+    //going to have to use a viz id to reset this on each iteration
+    //console.log(props.id);
+    if(vizId !== props.id){
+      setVizId(props.id);
+      fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
+      //setFieldnames(fields);
+      //console.log(fieldnames);
+    }
+  });
 
   function propertyChanged(event, value) {
     let total = 0;
@@ -57,10 +72,42 @@ export default function MapperProperties(props) {
     total += document.getElementById("combo-box-demo5").value !== "" ? 1 : 0;
     total += document.getElementById("combo-box-demo6").value !== "" ? 1 : 0;
     total += value !== "" ? 1 : -1;
-    if(total > 0)
+    if(total > 0){
       isFieldActive(true);
-    else
+    }else{
       isFieldActive(false);
+    }
+    switch(event.target.id.split("-option")[0].split("demo")[1]-1){
+      case 0:
+        //setxAxis(value);
+        fields['xAxis'] = value;
+        break;
+      case 1:
+        //setyAxis(value);
+        fields['yAxis'] = value;
+        break;
+      case 2:
+        //setzAxis(value);
+        fields['zAxis'] = value;
+        break;
+      case 3:
+        //setgColor(value);
+        fields['gColor'] = value;
+        break;
+      case 4:
+        //setgSize(value);
+        fields['gSize'] = value;
+        break;
+      case 5:
+        //setgType(value);
+        fields['gType'] = value;
+        break;
+      default:
+        //nothing
+    }
+    //setFieldnames(fields);
+    //setFields({xAxis,yAxis,zAxis,gColor,gSize,gType});
+    //console.log(fields);
   }
 
   return (
@@ -91,7 +138,7 @@ export default function MapperProperties(props) {
         <Grid item xs={9} style={{textAlign:'center'}}>
             {isActive
             ? 
-            <Preview />
+            <Preview data={props.data} subset={props.subset} fields={fields}/>
             :
             <div style={{textAlign: 'center'}}>
                 <img src={EmptyGlyph} alt="EmptyGlyph" style={{maxWidth: 225, marginTop: '15%'}}/>

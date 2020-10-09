@@ -104,6 +104,7 @@ export default function LoadData({data}) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([])
   const [rowLength, setRowLength] = React.useState(null);
+  const [identity, setIdentity] = React.useState('');
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rowLength - page * rowsPerPage);
 
   const fetchData = async () => { 
@@ -125,6 +126,7 @@ export default function LoadData({data}) {
   }, []);
 
   function fetchDataSources(identityId) {
+    setIdentity(identityId);
     return API.post("sgx", "/get-data-sources", {
     body: "{\"identity\":\""+identityId+"\"}"
     });
@@ -161,7 +163,8 @@ export default function LoadData({data}) {
   };
 
   function handleDataSelect(name) {
-    history.push({pathname:"/mapper", data: name});
+    let timestamp = new Date().getTime();
+    history.push({pathname:"/mapper", data: {name, identity, timestamp}});
   }
 
   function renderSpinnerPage() {

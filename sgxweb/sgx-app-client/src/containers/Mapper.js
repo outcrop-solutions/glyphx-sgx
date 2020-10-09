@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Storage } from "aws-amplify";
+import { API, Storage } from "aws-amplify";
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -94,13 +94,16 @@ export default function Mapper() {
     const [rows, setRows] = React.useState([])
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState("");
+    const [subset, setSubset] = React.useState(null);
+    const [id, setId] = React.useState(null);
 
     useEffect(() => {
 
       if(typeof history.location.data !== "undefined"){
 
-        console.log(history.location.data);
-        let prefix = history.location.data.split(".csv")[0];
+        //console.log(history.location.data);
+        setId(history.location.data.timestamp);
+        let prefix = history.location.data.name.split(".csv")[0];
         var filename = prefix + "/" + prefix + ".json";
         Storage.vault.get(filename, { download: true })
           .then(result => {
@@ -120,11 +123,24 @@ export default function Mapper() {
               console.log(err)
           });
 
+          let tablename = prefix.toLowerCase().split(" ").join("_");
+          let identity = history.location.data.identity;
+          let query = "SELECT * FROM "+tablename+" LIMIT 500";
+          //let query = "SELECT * FROM "+tablename+" ORDER BY RAND() LIMIT 100";
+          fetchSubset(identity, query);
+
       }else{
         history.push("/");
       }
 
     }, []);
+
+    async function fetchSubset(identity, query){
+      await getQueryResults(identity, query).then(result => {
+        //console.log(result['body']);
+        setSubset(result['body']);
+      });
+    }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -165,6 +181,12 @@ export default function Mapper() {
 
     async function handleRun() {
       history.push("/visualization");
+    }
+
+    function getQueryResults(identityId, query) {
+      return API.post("sgx", "/get-query-results", {
+        body: "{\"identity\":\""+identityId+"\", \"query\":\""+query+"\"}"
+      });
     }
 
     const body = (
@@ -218,7 +240,7 @@ export default function Mapper() {
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                <MapperProperties data={rows}/>
+                <MapperProperties data={rows} subset={subset} id={id}/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
                 <MapperData data={rows}/>

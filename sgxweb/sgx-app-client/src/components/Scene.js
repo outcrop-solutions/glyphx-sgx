@@ -29,16 +29,17 @@ export default (props) => {
             const engine = new Engine(reactCanvas.current, antialias, engineOptions, adaptToDeviceRatio);
             const scene = new Scene(engine, sceneOptions);
             setScene(scene);
-            if (scene.isReady()) {
-                props.onSceneReady(scene)
-            } else {
-                scene.onReadyObservable.addOnce(scene => props.onSceneReady(scene));
-            }
 
+            if (scene.isReady()) {
+                props.onSceneReady(scene, props.data);
+            } else {
+                scene.onReadyObservable.addOnce(scene => props.onSceneReady(scene, props.data));
+            }
+            
             engine.runRenderLoop(() => {
-                if (typeof onRender === 'function') {
+                /*if (typeof onRender === 'function') {
                     onRender(scene);
-                }
+                }*/
                 scene.render();
             })
         }

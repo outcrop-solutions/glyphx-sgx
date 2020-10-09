@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-    },
+    }
 }));
 
 export default function Home() {
@@ -72,10 +72,11 @@ export default function Home() {
 
         if(file.name != null){
             setOpen(true);
+            console.log("filename:",filename);
             const stored = await Storage.vault.put(filename, file, {
                 contentType: file.type,
             });
-            console.log(stored.key);
+            console.log("key:",stored.key);
             
             let identity = await getIdentityId();
             let cta_output = await addCSVtoAthena(identity, directory);
@@ -85,7 +86,7 @@ export default function Home() {
                 let gqs_output = await getQueryStatus(queryId);
                 let status = gqs_output.body.replaceAll('"','');
                 console.log(status);
-                if(status == "SUCCEEDED"){
+                if(status === "SUCCEEDED"){
                     clearInterval(timer);
                     let cmt_output = await createMetadataTable(identity, directory);
                     console.log("createMetadataTable", cmt_output);
