@@ -1,4 +1,5 @@
 import React, { useEffect }  from 'react';
+import { API } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
 import { ArcRotateCamera, Vector3, Color3, HemisphericLight, MeshBuilder, StandardMaterial } from '@babylonjs/core';
 import SceneComponent from '../components/Scene'; // ^^ point to file we created above or 'babylonjs-hook' NPM.
@@ -58,7 +59,7 @@ const onSceneReady = (scene, data) => {
 
     //x1 min, x3, max, y1 min, y3 max, x2 data value
     function linearInterpolation(x1, x3, y1, y3, x2){
-		if(x3-x1 == 0){
+		if(x3-x1 === 0){
 			if(x2 >= y1 && x2 <= y3){
 				return x2;
 			}else{
@@ -66,32 +67,61 @@ const onSceneReady = (scene, data) => {
 			}
 		}
 		return (((x2-x1)*(y3-y1))/(x3-x1))+y1;
-	}
+    }
+
+    let sorted = {};
+    function textInterpolation(field, y1, y3, x2_str, sub){
+        let dataCpy;
+        if(field in sorted){
+            dataCpy = sorted[field];
+        }
+        else{
+            dataCpy = [...sub[field]];
+            dataCpy.sort();
+            sorted[field] = dataCpy;
+        }
+
+        let x1 = 0;
+        let x3 = dataCpy.length;
+        let x2 = dataCpy.indexOf(x2_str);
+        return linearInterpolation(x1, x3, y1, y3, x2);
+    }
 
     function updateScene() {
         //console.log(subset);
-        if(subset === null){
+        if(subset === null || subset === undefined || subset === {}){
             //console.log("Subset is still null.");
             let timer = setInterval(function(){
-                if(subset !== null){
+                //console.log("Subset is still null. inner");
+                console.log(subset);
+                if(subset !== null && subset !== undefined && subset !== {}){
                     processSubset();
+                    console.log("Processed subset.");
                     clearInterval(timer);
                 }
             },1000);
         }
         else{
             processSubset();
+            console.log("Processed subset.");
         }
     }
 
     let last_fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
-    //console.log(data);
+    console.log("Running...");
     interval = setInterval(function(){
         if(testObjEquality(fields, last_fields)){
+            try{
+                updateScene();
+                last_fields = Object.assign({}, fields);
+                console.log("Scene updated.")
+            }
+            catch(err){
+                console.log(err.message);
+            }
             //console.log(fields);
             //console.log(last_fields);
-            last_fields = Object.assign({}, fields);
-            updateScene();
+            //console.log(subset);
         }
     },1000);
 
@@ -122,25 +152,59 @@ const onSceneReady = (scene, data) => {
                     }
                 }
                 if(fields['xAxis'] !== ""){
-                    glyph.position.x = linearInterpolation(field_data[fields['xAxis']]["min"], field_data[fields['xAxis']]["max"], -20, 20, sub[fields['xAxis']][i]);
+                    let f = field_data[fields['xAxis']];
+                    if(field_data[fields['xAxis']]["type"] !== "string"){
+                        glyph.position.x = linearInterpolation(f["min"], f["max"], -20, 20, sub[fields['xAxis']][i]);
+                    }
+                    else{
+                        glyph.position.x = textInterpolation(fields['xAxis'], -20, 20, sub[fields['xAxis']][i], sub);
+                    }
                 }
                 if(fields['yAxis'] !== ""){
-                    glyph.position.z = linearInterpolation(field_data[fields['yAxis']]["min"], field_data[fields['yAxis']]["max"], -10, 10, sub[fields['yAxis']][i]);
+                    let f = field_data[fields['yAxis']];
+                    if(field_data[fields['yAxis']]["type"] !== "string"){
+                        glyph.position.z = linearInterpolation(f["min"], f["max"], -10, 10, sub[fields['yAxis']][i]);
+                    }
+                    else{
+                        glyph.position.z = textInterpolation(fields['yAxis'], -10, 10, sub[fields['yAxis']][i], sub);
+                    }
                 }
                 if(fields['zAxis'] !== ""){
-                    glyph.position.y = linearInterpolation(field_data[fields['zAxis']]["min"], field_data[fields['zAxis']]["max"], -10, 10, sub[fields['zAxis']][i]);
+                    let f = field_data[fields['zAxis']];
+                    if(field_data[fields['zAxis']]["type"] !== "string"){
+                        glyph.position.y = linearInterpolation(f["min"], f["max"], -10, 10, sub[fields['zAxis']][i]);
+                    }
+                    else{
+                        glyph.position.y = textInterpolation(fields['zAxis'], -10, 10, sub[fields['zAxis']][i], sub);
+                    }
                 }
                 if(fields['gColor'] !== ""){
+                    let f = field_data[fields['gColor']];
                     let mat = new StandardMaterial("sm", scene);
-                    let r = linearInterpolation(field_data[fields['gColor']]["min"], field_data[fields['gColor']]["max"], 1, 0, sub[fields['gColor']][i]);
-                    let g = linearInterpolation(field_data[fields['gColor']]["min"], field_data[fields['gColor']]["max"], 0, 0.5, sub[fields['gColor']][i]);
-                    let b = linearInterpolation(field_data[fields['gColor']]["min"], field_data[fields['gColor']]["max"], 0, 0, sub[fields['gColor']][i]);
+                    let r, g, b;
+                    if(field_data[fields['gColor']]["type"] !== "string"){
+                        r = linearInterpolation(f["min"], f["max"], 1, 0, sub[fields['gColor']][i]);
+                        g = linearInterpolation(f["min"], f["max"], 0, 0.5, sub[fields['gColor']][i]);
+                        b = linearInterpolation(f["min"], f["max"], 0, 0, sub[fields['gColor']][i]);
+                    }
+                    else{
+                        r = textInterpolation(fields['gColor'], 1, 0, sub[fields['gColor']][i], sub);
+                        g = textInterpolation(fields['gColor'], 0, 0.5, sub[fields['gColor']][i], sub);
+                        b = textInterpolation(fields['gColor'], 0, 0, sub[fields['gColor']][i], sub);
+                    }
                     mat.emissiveColor = new Color3(r, g, b);
                     mat.diffuseColor = new Color3(r, g, b);
                     glyph.material = mat;
                 }
                 if(fields['gSize'] !== ""){
-                    let value = linearInterpolation(field_data[fields['gSize']]["min"], field_data[fields['gSize']]["max"], 0.5, 1, sub[fields['gSize']][i]);
+                    let f = field_data[fields['gSize']];
+                    let value;
+                    if(field_data[fields['gSize']]["type"] !== "string"){
+                        value = linearInterpolation(f["min"], f["max"], 0.5, 1, sub[fields['gSize']][i]);
+                    }
+                    else{
+                        value = textInterpolation(fields['gSize'], 0.5, 1, sub[fields['gSize']][i], sub);
+                    }
                     glyph.scaling = new Vector3(value, value, value);
                 }
                 //console.log(glyph.position);
@@ -180,17 +244,38 @@ export default function Preview(props) {
     useEffect(() => {
         //console.log("prop.fields",props.fields);
         //console.log("fields", fields);
-        subset = props.subset;
         fields = props.fields; 
+
+        let tablename = props.tablename;
+        let identity = props.identity;
+        let query = "SELECT * FROM "+tablename+" LIMIT 500";
+        //let query = "SELECT * FROM "+tablename+" ORDER BY RAND() LIMIT 100";
+        fetchSubset(identity, query);
         
         return function cleanup() {
             for(let i in glyphs){
                 glyphs[i].dispose();
             }
             glyphs = [];
+            subset = {};
             clearInterval(interval);
         };
     });
+
+    async function fetchSubset(identity, query){
+        await getQueryResults(identity, query).then(result => {
+          //console.log(result['body']);
+          subset = result['body'];
+          //console.log(subset);
+          console.log("Subset fetched.");
+        });
+    }
+
+    function getQueryResults(identityId, query) {
+        return API.post("sgx", "/get-query-results", {
+          body: "{\"identity\":\""+identityId+"\", \"query\":\""+query+"\"}"
+        });
+    }
 
     return (
         <div>

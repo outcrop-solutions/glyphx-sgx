@@ -138,7 +138,7 @@ export default function MapperProperties(props) {
         <Grid item xs={9} style={{textAlign:'center'}}>
             {isActive
             ? 
-            <Preview data={props.data} subset={props.subset} fields={fields}/>
+            <Preview data={props.data} tablename={props.tablename} identity={props.identity}  fields={fields}/>
             :
             <div style={{textAlign: 'center'}}>
                 <img src={EmptyGlyph} alt="EmptyGlyph" style={{maxWidth: 225, marginTop: '15%'}}/>

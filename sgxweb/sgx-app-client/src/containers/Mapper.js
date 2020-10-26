@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { API, Storage } from "aws-amplify";
+import { Storage } from "aws-amplify";
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -94,8 +94,10 @@ export default function Mapper() {
     const [rows, setRows] = React.useState([])
     const [open, setOpen] = React.useState(false);
     const [title, setTitle] = React.useState("");
-    const [subset, setSubset] = React.useState(null);
+    //const [subset, setSubset] = React.useState(null);
     const [id, setId] = React.useState(null);
+    const [tablename, setTablename] = React.useState(null);
+    const [identity, setIdentity] = React.useState(null);
 
     useEffect(() => {
 
@@ -112,7 +114,9 @@ export default function Mapper() {
               let temp_rows = [];
               for(let x in fields){
                 let row = fields[x];
-                temp_rows.push(createData(row["fieldname"], row["type"], row["min"], row["max"], row["count"], row["distinct"]));
+                //if(row["type"] !== "string"){
+                  temp_rows.push(createData(row["fieldname"], row["type"], row["min"], row["max"], row["count"], row["distinct"]));
+                //}
               }
               setRows(temp_rows);
               //console.log(temp_rows);
@@ -123,25 +127,26 @@ export default function Mapper() {
               console.log(err)
           });
 
-          let tablename = prefix.toLowerCase().split(" ").join("_");
-          let identity = history.location.data.identity;
-          let query = "SELECT * FROM "+tablename+" LIMIT 500";
+          setTablename(prefix.toLowerCase().split(" ").join("_"));
+          setIdentity(history.location.data.identity);
+          //let tablename = prefix.toLowerCase().split(" ").join("_");
+          //let identity = history.location.data.identity;
+          //let query = "SELECT * FROM "+tablename+" LIMIT 500";
           //let query = "SELECT * FROM "+tablename+" ORDER BY RAND() LIMIT 100";
-          fetchSubset(identity, query);
+          //fetchSubset(identity, query);
 
       }else{
         history.push("/");
       }
 
     }, []);
-
+/*
     async function fetchSubset(identity, query){
       await getQueryResults(identity, query).then(result => {
-        //console.log(result['body']);
         setSubset(result['body']);
       });
     }
-
+*/
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -182,13 +187,13 @@ export default function Mapper() {
     async function handleRun() {
       history.push("/visualization");
     }
-
+/*
     function getQueryResults(identityId, query) {
       return API.post("sgx", "/get-query-results", {
         body: "{\"identity\":\""+identityId+"\", \"query\":\""+query+"\"}"
       });
     }
-
+*/
     const body = (
       <div className={classes.modal_paper}>
           <h2 id="simple-modal-title">{title}</h2>
@@ -240,7 +245,7 @@ export default function Mapper() {
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                <MapperProperties data={rows} subset={subset} id={id}/>
+                <MapperProperties data={rows} tablename={tablename} identity={identity} id={id}/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
                 <MapperData data={rows}/>
