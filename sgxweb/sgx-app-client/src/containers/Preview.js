@@ -1,21 +1,29 @@
-import React, { useEffect }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import { API } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
-import { ArcRotateCamera, Vector3, Color3, HemisphericLight, MeshBuilder, StandardMaterial } from '@babylonjs/core';
+import { ArcRotateCamera, Vector3, Color3, DirectionalLight, MeshBuilder, StandardMaterial, Texture } from '@babylonjs/core';
 import SceneComponent from '../components/Scene'; // ^^ point to file we created above or 'babylonjs-hook' NPM.
+import { GetZoomLevel } from '../libs/utils.js';
+import CircularProgress from '@material-ui/core/CircularProgress';
 //import './App.css';
 
 const useStyles = makeStyles((theme) => ({ 
     scene: {
         width: '100%',
-        height: window.innerHeight-135
+        height: window.innerHeight-135,
     }
   }));
 
 let glyphs = [];
 let subset = {};
-let interval;
+let interval_to_run = null;
+let isSceneLoaded = false;
 let fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
+let last_fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
+let needsMap = true;
+let xInt = 35, yInt = 15, zInt = 10; //Default interpolation values
+let identity;
+let query;
 
 const onSceneReady = (scene, data) => {
 
@@ -36,16 +44,19 @@ const onSceneReady = (scene, data) => {
     camera.setTarget(Vector3.Zero());
 
     const canvas = scene.getEngine().getRenderingCanvas();
-
+    
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
 
-    var light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+    var light = new DirectionalLight("Dir0", new Vector3(1, -1, 1), scene);
 
     // Default intensity is 1. Let's dim the light a small amount
-    light.intensity = 0.7;
+    light.specular = new Color3(0, 0, 0);
+    light.intensity = 0.6;
+    light.parent = camera;
 
     scene.clearColor = Color3.White();
+    
 
     function testObjEquality(a, b){
         if(a['xAxis'] !== b['xAxis']) return true;
@@ -87,29 +98,9 @@ const onSceneReady = (scene, data) => {
         return linearInterpolation(x1, x3, y1, y3, x2);
     }
 
-    function updateScene() {
-        //console.log(subset);
-        if(subset === null || subset === undefined || subset === {}){
-            //console.log("Subset is still null.");
-            let timer = setInterval(function(){
-                //console.log("Subset is still null. inner");
-                console.log(subset);
-                if(subset !== null && subset !== undefined && subset !== {}){
-                    processSubset();
-                    console.log("Processed subset.");
-                    clearInterval(timer);
-                }
-            },1000);
-        }
-        else{
-            processSubset();
-            console.log("Processed subset.");
-        }
-    }
-
-    let last_fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
     console.log("Running...");
-    interval = setInterval(function(){
+    clearInterval(interval_to_run);
+    interval_to_run = setInterval(function(){
         if(testObjEquality(fields, last_fields)){
             try{
                 updateScene();
@@ -119,11 +110,29 @@ const onSceneReady = (scene, data) => {
             catch(err){
                 console.log(err.message);
             }
-            //console.log(fields);
-            //console.log(last_fields);
-            //console.log(subset);
         }
-    },1000);
+    }, 1000);
+
+    async function updateScene() {
+        //console.log(subset);
+        if(Object.keys(subset).length === 0){
+            subset = await fetchSubset(identity, query);
+        }
+        processSubset();
+        isSceneLoaded = true;
+    }
+
+    async function fetchSubset(identity, query){
+        return getQueryResults(identity, query).then(result => {
+            return result['body'];
+        });
+    }
+
+    function getQueryResults(identityId, query) {
+        return API.post("sgx", "/get-query-results", {
+          body: "{\"identity\":\""+identityId+"\", \"query\":\""+query+"\"}"
+        });
+    }
 
     function processSubset() {
         let sub = JSON.parse(subset);
@@ -132,9 +141,69 @@ const onSceneReady = (scene, data) => {
             console.log(glyphs.length, total_count);
             for(let i = 0; i < total_count; i++){
                 let glyph;
+
+                if(needsMap){
+                    if(fields['xAxis'].toLowerCase().includes('long') &&
+                        fields['yAxis'].toLowerCase().includes('lat')) {
+
+                        let x = field_data[fields['xAxis']];
+                        let y = field_data[fields['yAxis']];
+                        let minX = parseFloat(x['min']), maxX = parseFloat(x['max']);
+                        let minY = parseFloat(y['min']), maxY = parseFloat(y['max']);
+                        let centerX = ((minX + maxX) / 2.0);
+                        let centerY = ((minY + maxY) / 2.0);
+                        let center = centerY + "," + centerX;
+                        console.log("Zoom:", GetZoomLevel(minX, maxX, minY, maxY, centerX, centerY, true));
+                        let gzl = GetZoomLevel(minX, maxX, minY, maxY, centerX, centerY, true);
+                        let zoom = gzl[0];
+                        let mapWidth = gzl[1], mapHeight = gzl[2];
+                        //let mapWidth = 2048, mapHeight = 1024;
+                        let size = mapWidth+","+mapHeight;
+                        let groundWidth = mapWidth/25, groundHeight = mapHeight/25;
+
+                        //let apiKey = "AIzaSyDPO-xd-zLjtZ4-dYkGrU-qE7NvmTMM52s";
+                        //let mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+center+"&zoom="+zoom+"&size="+size+"&key="+apiKey;
+                        let map = false, satellite = false;
+                        let apiKey = "pba2AzAMjfkGrvf7GUuA2nWX9RHclALU";
+                        let mapUrl = "http://open.mapquestapi.com/staticmap/v4/getmap?key=" + apiKey;
+                        mapUrl += "&center=" + center;
+                        mapUrl += "&zoom=" + zoom + "&size=" + size;
+                        mapUrl += "&type=";
+                        if (map) {
+                            mapUrl += "map";
+                        }
+                        else if (satellite) {
+                            mapUrl += "sat";
+                        }
+                        else {
+                            mapUrl += "hyb";
+                        }
+                        mapUrl += "&imagetype=png";
+                        mapUrl += "&pois=";
+                        console.log(mapUrl);
+
+                        var base_image_light = new DirectionalLight("Dir0", new Vector3(0, -1, 0), scene);
+                        base_image_light.specular = new Color3(0, 0, 0);
+                        base_image_light.intensity = 1.0;
+
+                        var baseImage = new StandardMaterial("ground", scene);
+                        baseImage.diffuseTexture = new Texture(mapUrl, scene);
+
+                        let ground = MeshBuilder.CreateGround("ground", {width: groundWidth, height: groundHeight}, scene);
+                        ground.position.y = -1;
+                        ground.material = baseImage;
+                        var bbMax = ground.getBoundingInfo().boundingBox.maximum;
+                        xInt = bbMax.x;
+                        yInt = bbMax.z;
+                        console.log(xInt, yInt);
+                        base_image_light.includedOnlyMeshes.push(ground);
+
+                        needsMap = false;
+                    }
+                }
                 // Our built-in 'box' shape.
                 if(glyphs.length !== total_count){
-                    glyph = MeshBuilder.CreateBox("box", {size: 2}, scene);
+                    glyph = MeshBuilder.CreateBox("box", {size: 0.5}, scene);
                     glyphs.push(glyph);
                 }
                 else{
@@ -146,7 +215,7 @@ const onSceneReady = (scene, data) => {
                     if(toChange === 1){
                         let mat = glyph.material;
                         glyph.dispose();
-                        glyph = MeshBuilder.CreateSphere("Sphere", {segments: 16, diameter: 2}, scene);
+                        glyph = MeshBuilder.CreateSphere("Sphere", {segments: 16, diameter: 1}, scene);
                         glyphs[i] = glyph;
                         glyph.material = mat;
                     }
@@ -154,28 +223,28 @@ const onSceneReady = (scene, data) => {
                 if(fields['xAxis'] !== ""){
                     let f = field_data[fields['xAxis']];
                     if(field_data[fields['xAxis']]["type"] !== "string"){
-                        glyph.position.x = linearInterpolation(f["min"], f["max"], -20, 20, sub[fields['xAxis']][i]);
+                        glyph.position.x = linearInterpolation(f["min"], f["max"], xInt*-1, xInt, sub[fields['xAxis']][i]);
                     }
                     else{
-                        glyph.position.x = textInterpolation(fields['xAxis'], -20, 20, sub[fields['xAxis']][i], sub);
+                        glyph.position.x = textInterpolation(fields['xAxis'], xInt*-1, xInt, sub[fields['xAxis']][i], sub);
                     }
                 }
                 if(fields['yAxis'] !== ""){
                     let f = field_data[fields['yAxis']];
                     if(field_data[fields['yAxis']]["type"] !== "string"){
-                        glyph.position.z = linearInterpolation(f["min"], f["max"], -10, 10, sub[fields['yAxis']][i]);
+                        glyph.position.z = linearInterpolation(f["min"], f["max"], yInt*-1, yInt, sub[fields['yAxis']][i]);
                     }
                     else{
-                        glyph.position.z = textInterpolation(fields['yAxis'], -10, 10, sub[fields['yAxis']][i], sub);
+                        glyph.position.z = textInterpolation(fields['yAxis'], yInt*-1, yInt, sub[fields['yAxis']][i], sub);
                     }
                 }
                 if(fields['zAxis'] !== ""){
                     let f = field_data[fields['zAxis']];
                     if(field_data[fields['zAxis']]["type"] !== "string"){
-                        glyph.position.y = linearInterpolation(f["min"], f["max"], -10, 10, sub[fields['zAxis']][i]);
+                        glyph.position.y = linearInterpolation(f["min"], f["max"], 0, zInt, sub[fields['zAxis']][i]);
                     }
                     else{
-                        glyph.position.y = textInterpolation(fields['zAxis'], -10, 10, sub[fields['zAxis']][i], sub);
+                        glyph.position.y = textInterpolation(fields['zAxis'], 0, zInt, sub[fields['zAxis']][i], sub);
                     }
                 }
                 if(fields['gColor'] !== ""){
@@ -207,8 +276,9 @@ const onSceneReady = (scene, data) => {
                     }
                     glyph.scaling = new Vector3(value, value, value);
                 }
-                //console.log(glyph.position);
             }
+            console.log(fields);
+            console.log(scene.getNodes().length);
         }else{
             //let box;
             // Our built-in 'box' shape.
@@ -223,6 +293,7 @@ const onSceneReady = (scene, data) => {
 
             //glyphs.push(box);
         }
+
     }
 }
 /**
@@ -230,55 +301,71 @@ const onSceneReady = (scene, data) => {
  */
 
 const onRender = scene => {
-  /*if (glyphs[0] !== undefined) {
-    var deltaTimeInMillis = scene.getEngine().getDeltaTime();
-
-    const rpm = 10;
-    glyphs[0].rotation.y += ((rpm / 60) * Math.PI * 2 * (deltaTimeInMillis / 1000));
-  }*/
+    /*if (glyphs[0] !== undefined) {
+      var deltaTimeInMillis = scene.getEngine().getDeltaTime();
+  
+      const rpm = 10;
+      glyphs[0].rotation.y += ((rpm / 60) * Math.PI * 2 * (deltaTimeInMillis / 1000));
+    }*/
 }
 
 export default function Preview(props) {
     const classes = useStyles();
+    const [isLoading, isLoadingScene] = useState(true);
+    //const [loaded, setLoaded] = useState(false);
+    const [vizId, setVizId] = useState(0);
 
     useEffect(() => {
         //console.log("prop.fields",props.fields);
         //console.log("fields", fields);
-        fields = props.fields; 
-
-        let tablename = props.tablename;
-        let identity = props.identity;
-        let query = "SELECT * FROM "+tablename+" LIMIT 500";
-        //let query = "SELECT * FROM "+tablename+" ORDER BY RAND() LIMIT 100";
-        fetchSubset(identity, query);
-        
-        return function cleanup() {
+        //console.log("loaded =", loaded);
+        //console.log('vizId =', vizId);
+        //console.log('props =', props.vizId);
+        if(vizId != props.vizId){
+            //setLoaded(true);
             for(let i in glyphs){
                 glyphs[i].dispose();
             }
             glyphs = [];
             subset = {};
-            clearInterval(interval);
-        };
+            needsMap = true;
+        
+            console.log("needsMap =", needsMap);
+            console.log("numGlyphs =", glyphs.length);
+
+            let tablename = props.tablename;
+            identity = props.identity;
+            query = "SELECT * FROM "+tablename+" LIMIT 500";
+            //let query = "SELECT * FROM "+tablename+" ORDER BY RAND() LIMIT 100";
+     
+        }
+
+        fields = props.fields; 
+
+        setVizId(props.vizId);
+
     });
 
-    async function fetchSubset(identity, query){
-        await getQueryResults(identity, query).then(result => {
-          //console.log(result['body']);
-          subset = result['body'];
-          //console.log(subset);
-          console.log("Subset fetched.");
-        });
-    }
+    useEffect(() => {
 
-    function getQueryResults(identityId, query) {
-        return API.post("sgx", "/get-query-results", {
-          body: "{\"identity\":\""+identityId+"\", \"query\":\""+query+"\"}"
-        });
-    }
+        let loading_interval = setInterval(function(){
+            props.setIsDisabled(false);
+            isLoadingScene(false);
+            clearInterval(loading_interval);
+        }, 3000);
+
+    });
 
     return (
         <div>
+            {isLoading
+            ? 
+            <div style={{textAlign: 'center', position: 'absolute', left: '62%', top: '45%'}}>
+            <   CircularProgress />
+            </div>
+            :
+            <></>
+            }
             <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} data={props.data} id='my-canvas' className={classes.scene}/>
         </div>
     );

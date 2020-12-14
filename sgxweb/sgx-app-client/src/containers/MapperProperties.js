@@ -50,6 +50,7 @@ export default function MapperProperties(props) {
   const classes = useStyles();
   const [isActive, isFieldActive] = useState(false);
   //const [fieldnames, setFieldnames] = useState(fields);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [vizId, setVizId] = useState(0);
 
   useEffect(() => {
@@ -64,6 +65,8 @@ export default function MapperProperties(props) {
   });
 
   function propertyChanged(event, value) {
+
+    setIsDisabled(true);
     let total = 0;
     total += document.getElementById("combo-box-demo1").value !== "" ? 1 : 0;
     total += document.getElementById("combo-box-demo2").value !== "" ? 1 : 0;
@@ -128,6 +131,7 @@ export default function MapperProperties(props) {
                                 options={props.data}
                                 getOptionLabel={(option) => option.fieldname}
                                 onInputChange={propertyChanged}
+                                disabled={isDisabled}
                                 renderInput={(params) => <TextField {...params} label={row.label} variant="outlined" />}
                             />
                         </Grid>
@@ -138,7 +142,7 @@ export default function MapperProperties(props) {
         <Grid item xs={9} style={{textAlign:'center'}}>
             {isActive
             ? 
-            <Preview data={props.data} tablename={props.tablename} identity={props.identity}  fields={fields}/>
+            <Preview data={props.data} vizId={props.id} tablename={props.tablename} identity={props.identity} setIsDisabled={setIsDisabled} fields={fields}/>
             :
             <div style={{textAlign: 'center'}}>
                 <img src={EmptyGlyph} alt="EmptyGlyph" style={{maxWidth: 225, marginTop: '15%'}}/>

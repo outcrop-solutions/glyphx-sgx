@@ -32,7 +32,7 @@ function TabPanel(props) {
         {...other}
       >
         {value === index && (
-          <Box p={index === 0 ? 1 : 3} height='100%'>
+          <Box p={index === 0 ? 0 : 3} height='100%'>
             {children}
           </Box>
         )}
@@ -64,7 +64,10 @@ function TabPanel(props) {
       height: window.innerHeight-60,
     },
     tab: {
-        minWidth: '8.33%',
+      minWidth: '8.33%',
+    },
+    tabPanel: {
+      paddingTop: '8px',
     },
     button: {
         margin: theme.spacing(1),
@@ -244,14 +247,14 @@ export default function Mapper() {
                 index={value}
                 onChangeIndex={handleChangeIndex}
             >
-                <TabPanel value={value} index={0} dir={theme.direction}>
-                <MapperProperties data={rows} tablename={tablename} identity={identity} id={id}/>
+                <TabPanel className={classes.tabPanel} value={value} index={0} dir={theme.direction}>
+                  <MapperProperties data={rows} tablename={tablename} identity={identity} id={id}/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                <MapperData data={rows}/>
+                  <MapperData data={rows}/>
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
-                Advanced Pane
+                  Advanced Pane
                 </TabPanel>
             </SwipeableViews>
         </div>
