@@ -41,7 +41,7 @@ export default function ImgMediaCard() {
       </CardActionArea>
       <CardContent className={classes.content} >
           <Typography gutterBottom variant="h5" component="h2">
-            Lizard
+            Education Pane
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging

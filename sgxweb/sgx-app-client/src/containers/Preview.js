@@ -341,6 +341,7 @@ export default function Preview(props) {
         }
 
         fields = props.fields; 
+        console.log(fields);
 
         setVizId(props.vizId);
 

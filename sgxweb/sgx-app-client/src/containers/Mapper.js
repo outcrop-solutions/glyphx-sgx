@@ -4,18 +4,21 @@ import { Storage } from "aws-amplify";
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useFormFields } from "../libs/hooksLib";
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
+import Grid from '@material-ui/core/Grid';
 import SaveIcon from '@material-ui/icons/Save';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import TextField from '@material-ui/core/TextField';
 import MapperProperties from './MapperProperties';
 import MapperData from './MapperData';
 import "./Mapper.css";
@@ -67,7 +70,8 @@ function TabPanel(props) {
       minWidth: '8.33%',
     },
     tabPanel: {
-      paddingTop: '8px',
+      //paddingTop: '8px',
+
     },
     button: {
         margin: theme.spacing(1),
@@ -86,7 +90,10 @@ function TabPanel(props) {
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-    }
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
   }));
 
 export default function Mapper() {
@@ -96,20 +103,33 @@ export default function Mapper() {
     const [value, setValue] = React.useState(0);
     const [rows, setRows] = React.useState([])
     const [open, setOpen] = React.useState(false);
+    const [saveOpen, setSaveOpen] = React.useState(false);
     const [title, setTitle] = React.useState("");
     //const [subset, setSubset] = React.useState(null);
     const [id, setId] = React.useState(null);
     const [tablename, setTablename] = React.useState(null);
     const [identity, setIdentity] = React.useState(null);
+    const [fields, setFields] = React.useState(null);
+    const [formfields, handleFieldChange] = useFormFields({
+      filename: ""
+    });
 
     useEffect(() => {
 
       if(typeof history.location.data !== "undefined"){
 
-        //console.log(history.location.data);
+        console.log(history.location.data);
         setId(history.location.data.timestamp);
-        let prefix = history.location.data.name.split(".csv")[0];
-        var filename = prefix + "/" + prefix + ".json";
+        let prefix = null;
+        if(history.location.data.name == null){
+          prefix = history.location.data.contents.name;
+        }
+        else{
+          prefix = history.location.data.name.split(".parquet")[0];
+        }
+
+        var filename = "metadata/" + prefix + ".json";
+        console.log(filename);
         Storage.vault.get(filename, { download: true })
           .then(result => {
             result.Body.text().then(contents => {
@@ -170,12 +190,13 @@ export default function Mapper() {
 
     const handleSave = () => {
       setTitle("Save");
-      setOpen(true);
+      setSaveOpen(true);
+      //saveState();
     };
 
     const handleSaveAs = () => {
       setTitle("Save As");
-      setOpen(true);
+      setSaveOpen(true);
     };
 
     const handleEdit = () => {
@@ -185,6 +206,10 @@ export default function Mapper() {
   
     const handleClose = () => {
       setOpen(false);
+    };
+
+    const handleSaveClose = () => {
+      setSaveOpen(false);
     };
 
     async function handleRun() {
@@ -197,9 +222,103 @@ export default function Mapper() {
       });
     }
 */
+    const saveState = (name) => {
+      let data = {
+        name: history.location.data.name.split(".csv")[0],
+        properties: {
+          xaxis: {
+            fieldname: fields['xAxis'],
+            props: {}
+          },
+          yaxis: {
+            fieldname: fields['yAxis'],
+            props: {}
+          },
+          zaxis: {
+            fieldname: fields['zAxis'],
+            props: {}
+          },
+          gcolor: {
+            fieldname: fields['gColor'],
+            props: {}
+          },
+          gsize: {
+            fieldname: fields['gSize'],
+            props: {}
+          },
+          gtype: {
+            fieldname: fields['gType'],
+            props: {}
+          }
+        }
+      };
+      console.log(  
+        JSON.stringify(data, null, 2)
+      );
+
+      let filename = "Saved/"+name+".json";
+
+      const stored = Storage.vault.put(filename, JSON.stringify(data, null, 2), {
+        contentType: "json",
+      });
+      //console.log("key:", stored.key);
+
+    };
+
+    const getData = (val) => {
+      setFields(val);
+    };
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      //setIsLoading(true);
+    
+      saveState(formfields.filename);
+      //console.log(formfields.filename);
+      setSaveOpen(false);
+    }
+
     const body = (
       <div className={classes.modal_paper}>
           <h2 id="simple-modal-title">{title}</h2>
+      </div>
+    );
+
+    const saveas = (
+      <div className={classes.modal_paper}>
+        <h2 id="simple-modal-title">{title}</h2>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
+          <TextField 
+            required 
+            id="filename" 
+            label="File name" 
+            variant="outlined" 
+            value={formfields.filename} 
+            onChange={handleFieldChange}
+          />
+          <Grid container>
+            <Grid item xs>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Save As
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="default"
+                className={classes.submit}
+                onClick={() => {setSaveOpen(false)}}
+              >
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
       </div>
     );
   
@@ -248,7 +367,7 @@ export default function Mapper() {
                 onChangeIndex={handleChangeIndex}
             >
                 <TabPanel className={classes.tabPanel} value={value} index={0} dir={theme.direction}>
-                  <MapperProperties data={rows} tablename={tablename} identity={identity} id={id}/>
+                  <MapperProperties data={rows} tablename={tablename} identity={identity} id={id} sendData={getData} hist={history.location.data}/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
                   <MapperData data={rows}/>
@@ -266,6 +385,15 @@ export default function Mapper() {
             onClose={handleClose}
         >
             {body}
+        </Modal>
+        <Modal
+            open={saveOpen}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            className={classes.modal}
+            onClose={handleSaveClose}
+        >
+            {saveas}
         </Modal>
     </div>
   );

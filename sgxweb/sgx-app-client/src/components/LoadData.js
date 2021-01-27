@@ -164,6 +164,7 @@ export default function LoadData({data}) {
 
   function handleDataSelect(name) {
     let timestamp = new Date().getTime();
+    //console.log("Name:", name);
     history.push({pathname:"/mapper", data: {name, identity, timestamp}});
   }
 

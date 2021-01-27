@@ -52,65 +52,98 @@ export default function MapperProperties(props) {
   //const [fieldnames, setFieldnames] = useState(fields);
   const [isDisabled, setIsDisabled] = useState(false);
   const [vizId, setVizId] = useState(0);
+  const [xAxis, setXAxis] = useState('');
+  const [yAxis, setYAxis] = useState('');
+  const [zAxis, setZAxis] = useState('');
+  const [gColor, setGColor] = useState('');
+  const [gSize, setGSize] = useState('');
+  const [gType, setGType] = useState('');
+  const indexer = [xAxis, yAxis, zAxis, gColor, gSize, gType];
 
   useEffect(() => {
     //going to have to use a viz id to reset this on each iteration
     //console.log(props.id);
     if(vizId !== props.id){
+
       setVizId(props.id);
-      fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
+      if(props.hist !== undefined && props.hist.contents !== undefined){
+        let prps = props.hist.contents.properties;
+        fields = {'xAxis': prps.xaxis.fieldname,'yAxis': prps.yaxis.fieldname,'zAxis': prps.zaxis.fieldname,'gColor': prps.gcolor.fieldname,'gSize': prps.gsize.fieldname,'gType': prps.gtype.fieldname};
+        //console.log(props.data[0].fieldname == prps.yaxis.fieldname);
+
+      }
+      else{
+        fields = {'xAxis': '','yAxis': '','zAxis': '','gColor': '','gSize': '','gType': ''};
+      }
+      console.log(fields);
       //setFieldnames(fields);
       //console.log(fieldnames);
+      props.sendData(fields);
+    }
+    if(props.data[0] != undefined){
+      setXAxis(props.data[1].fieldname == fields['xAxis'] ? fields['xAxis'] : '');
+      setYAxis(props.data[0].fieldname == fields['yAxis'] ? fields['yAxis'] : '');
+      if(props.data.contents)
+        isFieldActive(true);
     }
   });
 
   function propertyChanged(event, value) {
 
-    setIsDisabled(true);
-    let total = 0;
-    total += document.getElementById("combo-box-demo1").value !== "" ? 1 : 0;
-    total += document.getElementById("combo-box-demo2").value !== "" ? 1 : 0;
-    total += document.getElementById("combo-box-demo3").value !== "" ? 1 : 0;
-    total += document.getElementById("combo-box-demo4").value !== "" ? 1 : 0;
-    total += document.getElementById("combo-box-demo5").value !== "" ? 1 : 0;
-    total += document.getElementById("combo-box-demo6").value !== "" ? 1 : 0;
-    total += value !== "" ? 1 : -1;
-    if(total > 0){
-      isFieldActive(true);
-    }else{
-      isFieldActive(false);
+    if(event){
+      setIsDisabled(true);
+      let total = 0;
+      total += document.getElementById("combo-box-demo1").value !== "" ? 1 : 0;
+      total += document.getElementById("combo-box-demo2").value !== "" ? 1 : 0;
+      total += document.getElementById("combo-box-demo3").value !== "" ? 1 : 0;
+      total += document.getElementById("combo-box-demo4").value !== "" ? 1 : 0;
+      total += document.getElementById("combo-box-demo5").value !== "" ? 1 : 0;
+      total += document.getElementById("combo-box-demo6").value !== "" ? 1 : 0;
+      total += value !== "" ? 1 : -1;
+      if(total > 0){
+        isFieldActive(true);
+      }else{
+        isFieldActive(false);
+      }
+      switch(event.target.id.split("-option")[0].split("demo")[1]-1){
+        case 0:
+          //setxAxis(value);
+          fields['xAxis'] = value;
+          setXAxis(value);
+          break;
+        case 1:
+          //setyAxis(value);
+          fields['yAxis'] = value;
+          setYAxis(value);
+          break;
+        case 2:
+          //setzAxis(value);
+          fields['zAxis'] = value;
+          setZAxis(value);
+          break;
+        case 3:
+          //setgColor(value);
+          fields['gColor'] = value;
+          setGColor(value);
+          break;
+        case 4:
+          //setgSize(value);
+          fields['gSize'] = value;
+          setGSize(value);
+          break;
+        case 5:
+          //setgType(value);
+          fields['gType'] = value;
+          setGType(value);
+          break;
+        default:
+          //nothing
+      }
+      //setFieldnames(fields);
+      //setFields({xAxis,yAxis,zAxis,gColor,gSize,gType});
+      //console.log(fields);
+      props.sendData(fields);
     }
-    switch(event.target.id.split("-option")[0].split("demo")[1]-1){
-      case 0:
-        //setxAxis(value);
-        fields['xAxis'] = value;
-        break;
-      case 1:
-        //setyAxis(value);
-        fields['yAxis'] = value;
-        break;
-      case 2:
-        //setzAxis(value);
-        fields['zAxis'] = value;
-        break;
-      case 3:
-        //setgColor(value);
-        fields['gColor'] = value;
-        break;
-      case 4:
-        //setgSize(value);
-        fields['gSize'] = value;
-        break;
-      case 5:
-        //setgType(value);
-        fields['gType'] = value;
-        break;
-      default:
-        //nothing
-    }
-    //setFieldnames(fields);
-    //setFields({xAxis,yAxis,zAxis,gColor,gSize,gType});
-    //console.log(fields);
   }
 
   return (
@@ -130,6 +163,7 @@ export default function MapperProperties(props) {
                                 id={"combo-box-demo"+row.index}
                                 options={props.data}
                                 getOptionLabel={(option) => option.fieldname}
+                                value={{fieldname: indexer[row.index-1]}}
                                 onInputChange={propertyChanged}
                                 disabled={isDisabled}
                                 renderInput={(params) => <TextField {...params} label={row.label} variant="outlined" />}

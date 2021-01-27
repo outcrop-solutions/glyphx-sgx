@@ -79,6 +79,8 @@ export default function Home() {
             console.log("key:",stored.key);
             
             let identity = await getIdentityId();
+            let ctp_output = await convertToParquet(identity, directory);
+            console.log("convertToParquet", ctp_output);
             let cta_output = await addCSVtoAthena(identity, directory);
             let queryId = cta_output.body.replaceAll('"','');
             console.log("addCSVtoAthena", queryId);
@@ -91,7 +93,9 @@ export default function Home() {
                     let cmt_output = await createMetadataTable(identity, directory);
                     console.log("createMetadataTable", cmt_output);
                     setOpen(false);
-                    history.push({pathname:"/mapper", data: file.name});
+                    let name = directory+".parquet";
+                    let timestamp = new Date().getTime();
+                    history.push({pathname:"/mapper", data: {name, identity, timestamp}});
                 }
             }, 2500);
         }
@@ -99,6 +103,12 @@ export default function Home() {
 
     function createMetadataTable(identity, directory) {
         return API.post("sgx", "/create-metadata-table", {
+          body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
+        });
+    }
+
+    function convertToParquet(identity, directory) {
+        return API.post("sgx", "/convert-to-parquet", {
           body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
         });
     }
@@ -150,7 +160,7 @@ export default function Home() {
                     </div>
                 </Grid>
                 <Grid item xs={6}>
-                <RecentViews />
+                <RecentViews data={getIdentityId()}/>
                 <div style={{ position: 'relative' }}>
                     <IconButton onClick={() => { }} color="default" className={classes.circle_button}>
                         <AddIcon/>
