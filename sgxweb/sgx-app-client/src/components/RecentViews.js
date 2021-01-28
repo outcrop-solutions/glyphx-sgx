@@ -245,7 +245,7 @@ export default function RecentViews({data}) {
           ).map((row) => (
             <TableRow hover key={row.name} onClick={() => handleDataSelect(row.name)} style={{cursor: 'pointer'}}>
               <TableCell component="th" scope="row" style={{ fontSize: '0.875rem', padding: 12, paddingLeft: 32 }}>
-                {row.name}
+                {row.name.split('.json')[0]}
               </TableCell>
               <TableCell style={{ width: '50%', fontSize: '0.875rem', padding: 12, paddingRight: 32 }} align="right">
                 {row.datetime}
