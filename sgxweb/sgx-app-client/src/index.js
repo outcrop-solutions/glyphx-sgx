@@ -1,11 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Amplify } from 'aws-amplify';
 import config from './config';
+
+const font = "'Montserrat', san-serif";
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: font,
+  }
+});
 
 Amplify.configure({
   Auth: {
@@ -32,9 +41,11 @@ Amplify.configure({
 });
 
 ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
+  <MuiThemeProvider theme={theme}>
+    <Router>
+      <App />
+    </Router>
+  </MuiThemeProvider>,
   document.getElementById('root')
 );
 

@@ -337,24 +337,24 @@ export default function Mapper() {
                 >
                 <Tab className={classes.tab} label="Properties" {...a11yProps(0)} />
                 <Tab className={classes.tab} label="Data" {...a11yProps(1)} />
-                <Tab className={classes.tab} label="Advanced" {...a11yProps(2)} />
+                {/*<Tab className={classes.tab} label="Advanced" {...a11yProps(2)} />*/}
                 </Tabs>
                 <div style={{margin: 'auto'}}>
-                    <Button color="default" className={classes.button} startIcon={<FolderOpenIcon />} onClick={handleOpen}>
+                    {/*<Button color="default" className={classes.button} startIcon={<FolderOpenIcon />} onClick={handleOpen}>
                         Open
                     </Button>
                     <Button color="default" className={classes.button} startIcon={<CreateNewFolderIcon />} onClick={handleNew}>
                         New
-                    </Button>
+                    </Button>*/}
                     <Button color="default" className={classes.button} startIcon={<SaveOutlinedIcon />} onClick={handleSave}>
                         Save
                     </Button>
                     <Button color="default" className={classes.button} startIcon={<SaveIcon />} onClick={handleSaveAs}>
                         Save As
                     </Button>
-                    <Button color="default" className={classes.button} startIcon={<EditIcon />} onClick={handleEdit}>
+                    {/*<Button color="default" className={classes.button} startIcon={<EditIcon />} onClick={handleEdit}>
                         Edit
-                    </Button>
+                    </Button>*/}
                     <Button color="default" className={classes.button} startIcon={<PlayArrowIcon />} onClick={handleRun}>
                         Run
                     </Button>
