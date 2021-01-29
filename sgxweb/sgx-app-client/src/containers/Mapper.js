@@ -113,6 +113,9 @@ export default function Mapper() {
     const [formfields, handleFieldChange] = useFormFields({
       filename: ""
     });
+    const [saved, setSaved] = React.useState(false);
+    const [saveFile, setSaveFile] = React.useState(false);
+    const [fileName, setFileName] = React.useState(null);
 
     useEffect(() => {
 
@@ -123,10 +126,13 @@ export default function Mapper() {
         let prefix = null;
         if(history.location.data.name == null){
           prefix = history.location.data.contents.name;
+          setSaved(true);
+          setSaveFile(history.location.data.saveFile.split('.json')[0]);
         }
         else{
           prefix = history.location.data.name.split(".parquet")[0];
         }
+        setFileName(prefix);
 
         var filename = "metadata/" + prefix + ".json";
         console.log(filename);
@@ -189,9 +195,13 @@ export default function Mapper() {
     };
 
     const handleSave = () => {
-      setTitle("Save");
-      setSaveOpen(true);
-      //saveState();
+      if(!saved) {
+        setTitle("Save");
+        setSaveOpen(true);
+      }else{
+        console.log(saveFile);
+        saveState(saveFile);
+      }
     };
 
     const handleSaveAs = () => {
@@ -224,7 +234,7 @@ export default function Mapper() {
 */
     const saveState = (name) => {
       let data = {
-        name: history.location.data.name.split(".csv")[0],
+        name: fileName,
         properties: {
           xaxis: {
             fieldname: fields['xAxis'],
@@ -262,6 +272,7 @@ export default function Mapper() {
         contentType: "json",
       });
       //console.log("key:", stored.key);
+      setSaved(true);
 
     };
 
@@ -274,6 +285,7 @@ export default function Mapper() {
       //setIsLoading(true);
     
       saveState(formfields.filename);
+      setSaveFile(formfields.filename);
       //console.log(formfields.filename);
       setSaveOpen(false);
     }

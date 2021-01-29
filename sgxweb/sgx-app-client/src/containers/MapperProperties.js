@@ -81,11 +81,19 @@ export default function MapperProperties(props) {
       props.sendData(fields);
     }
     if(props.data[0] != undefined){
-      setXAxis(props.data[1].fieldname == fields['xAxis'] ? fields['xAxis'] : '');
-      setYAxis(props.data[0].fieldname == fields['yAxis'] ? fields['yAxis'] : '');
-      if(props.data.contents)
+      setXAxis(fields['xAxis']);
+      setYAxis(fields['yAxis']);
+      setZAxis(fields['zAxis']);
+      setGColor(fields['gColor']);
+      setGSize(fields['gSize']);
+      setGType(fields['gType']);
+      console.log(props.hist.contents);
+      if(props.hist.contents){
+        console.log(true);
         isFieldActive(true);
+      }
     }
+    //console.log(indexer);
   });
 
   function propertyChanged(event, value) {

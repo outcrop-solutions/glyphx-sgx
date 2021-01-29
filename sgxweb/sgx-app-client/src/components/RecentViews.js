@@ -165,17 +165,17 @@ export default function RecentViews({data}) {
     setPage(0);
   };
 
-  function handleDataSelect(name) {
+  function handleDataSelect(saveFile) {
     let timestamp = new Date().getTime();
     //console.log(name, identity, timestamp);
-    let filename = "Saved/" + name;
+    let filename = "Saved/" + saveFile;
     Storage.vault.get(filename, { download: true })
     .then(result => {
       result.Body.text().then(conts => {
         let contents = JSON.parse(conts);
         let name = null;
         //console.log(name, identity, timestamp);
-        history.push({pathname:"/mapper", data: {name, identity, timestamp, contents}});
+        history.push({pathname:"/mapper", data: {name, identity, timestamp, contents, saveFile}});
       });
     })
     .catch(err => {
