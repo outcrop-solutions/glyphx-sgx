@@ -87,7 +87,7 @@ export default function MapperProperties(props) {
       setGColor(fields['gColor']);
       setGSize(fields['gSize']);
       setGType(fields['gType']);
-      console.log(props.hist.contents);
+      //console.log(props.hist.contents);
       if(props.hist.contents){
         console.log(true);
         isFieldActive(true);

@@ -17,7 +17,11 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "react-swipeable-views": "^0.13.9"
+    "react-swipeable-views": "^0.13.9",
+    "react-alert": "^2.1.1",
+    "react-collapsible": "^2.0.4",
+    "react-virtualized": "^9.18.0",
+    "flexbox-react": "^4.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

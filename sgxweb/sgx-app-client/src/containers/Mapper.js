@@ -266,7 +266,7 @@ export default function Mapper() {
         JSON.stringify(data, null, 2)
       );
 
-      let filename = "Saved/"+name+".json";
+      let filename = "saved/"+name+".json";
 
       const stored = Storage.vault.put(filename, JSON.stringify(data, null, 2), {
         contentType: "json",

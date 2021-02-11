@@ -168,7 +168,7 @@ export default function RecentViews({data}) {
   function handleDataSelect(saveFile) {
     let timestamp = new Date().getTime();
     //console.log(name, identity, timestamp);
-    let filename = "Saved/" + saveFile;
+    let filename = "saved/" + saveFile;
     Storage.vault.get(filename, { download: true })
     .then(result => {
       result.Body.text().then(conts => {

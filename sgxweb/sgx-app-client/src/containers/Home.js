@@ -68,7 +68,7 @@ export default function Home() {
         var name = document.getElementById('icon-button-file'); 
         var file = name.files.item(0);
         var directory = file.name.split(".csv")[0];
-        var filename = directory+ "/" + file.name;
+        var filename = "data/" + directory + "/" + file.name;
 
         if(file.name != null){
             setOpen(true);
