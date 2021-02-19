@@ -223,7 +223,7 @@ export default function Mapper() {
     };
 
     async function handleRun() {
-      history.push("/visualization");
+      history.push({pathname:"/visualization", data: {identity, tablename, rows, saveFile, id}});
     }
 /*
     function getQueryResults(identityId, query) {

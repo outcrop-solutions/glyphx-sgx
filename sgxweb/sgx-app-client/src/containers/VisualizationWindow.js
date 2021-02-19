@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API } from "aws-amplify";
+import { Storage } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { ArcRotateCamera, Vector3, Color3, DirectionalLight } from '@babylonjs/core';
@@ -12,7 +12,7 @@ import "./NotFound.css"
 const useStyles = makeStyles((theme) => ({ 
     scene: {
         width: '100%',
-        height: window.innerHeight-5,
+        height: window.innerHeight-65,
     }
 }));
 
@@ -26,33 +26,37 @@ let xInt = 35, yInt = 15, zInt = 10; //Default interpolation values
 let identity;
 let query;
 let field_data = {};
+let metadata = {};
 
 const onSceneReady = (scene, data) => {
 
-    data.then(function(result){
-        let contents = JSON.parse(result.body);
-        identity = contents.identity;
-        let name = contents.name;
-        let prps = contents.properties;
-        console.log(identity);
-        console.log(name);
-        console.log(prps);
-        fields = {'xAxis': prps.xaxis.fieldname,'yAxis': prps.yaxis.fieldname,'zAxis': prps.zaxis.fieldname,'gColor': prps.gcolor.fieldname,'gSize': prps.gsize.fieldname,'gType': prps.gtype.fieldname};
-        getShareableMetadata(identity, name).then(function(result) {
-            let data = JSON.parse(result.body);
-            console.log(data);
-            for(let i in data){
-                let type = data[i]["type"];
-                let min = data[i]["min"];
-                let max = data[i]["max"];
-                field_data[data[i]["fieldname"]] = {"type": type, "min": min, "max": max};
-            }
-            let tablename = name.toLowerCase().split(" ").join("_");
-            query = "SELECT * FROM "+tablename+" LIMIT 500";
+    data.then(result => {
+        result.Body.text().then(conts => {
+            let contents = JSON.parse(conts);
+            let name = contents.name;
+            let prps = contents.properties;
+            console.log(name);
+            console.log(prps);
+            fields = {'xAxis': prps.xaxis.fieldname,'yAxis': prps.yaxis.fieldname,'zAxis': prps.zaxis.fieldname,'gColor': prps.gcolor.fieldname,'gSize': prps.gsize.fieldname,'gType': prps.gtype.fieldname};
 
-            updateScene();
+            console.log(metadata);
+            for(let i in metadata){
+                let type = metadata[i]["type"];
+                let min = metadata[i]["min"];
+                let max = metadata[i]["max"];
+                field_data[metadata[i]["fieldname"]] = {"type": type, "min": min, "max": max};
+            }
+            console.log("subset:",subset);
+            subset.then(results => {
+                subset = results;
+                updateScene();
+            });
         });
-    });
+      })
+      .catch(err => {
+          console.log('error axios');
+          console.log(err)
+      });
 
     // This creates and positions a free camera (non-mesh)
     var camera = new ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 3, 50, Vector3.Zero(), scene);
@@ -76,33 +80,9 @@ const onSceneReady = (scene, data) => {
     scene.clearColor = Color3.White();
 
     async function updateScene() {
-
-        if(Object.keys(subset).length === 0){
-            let sub = new Promise((resolve, reject) => {
-                resolve(fetchSubset(identity, query));
-            });
-            sub.then(results => {
-                subset = results;
-                ProcessSubset(scene, subset, fields, field_data, sorted, glyphs, xInt, yInt, zInt, needsMap)
-                isSceneLoaded = true;
-            })
-        }
-        else{
-            ProcessSubset(scene, subset, fields, field_data, sorted, glyphs, xInt, yInt, zInt, needsMap)
-            isSceneLoaded = true;
-        }
-    }
-
-    async function fetchSubset(identity, query){
-        return getQueryResults(identity, query).then(result => {
-            return result['body'];
-        });
-    }
-
-    function getQueryResults(identityId, query) {
-        return API.post("sgx", "/get-query-results", {
-          body: "{\"identity\":\""+identityId+"\", \"query\":\""+query+"\"}"
-        });
+  
+        ProcessSubset(scene, subset, fields, field_data, sorted, glyphs, xInt, yInt, zInt, needsMap);
+        isSceneLoaded = true;
     }
 
 }
@@ -119,14 +99,7 @@ const onRender = scene => {
     }*/
 }
 
-function getShareableMetadata(identity, name) {
-    return API.post("sgx", "/get-shareable-metadata", {
-      body: "{\"identity\":\""+identity+"\", \"name\":\""+name+"\"}"
-    });
-}
-
-
-export default function Shareable(props) {
+export default function VisualizationWindow(props) {
     const classes = useStyles();
     const history = useHistory();
     const [isActive, setIsActive] = useState(false);
@@ -134,15 +107,17 @@ export default function Shareable(props) {
     const [isLoading, isLoadingScene] = useState(true);
 
     useEffect(() => {
-        if(history.location.data !== 0){
-            setIsActive(true);
-            if(vizId != history.location.data){
+
+        if(props.id !== 0){
+            if(vizId != props.id){
                 //setLoaded(true);
                 for(let i in glyphs){
                     glyphs[i].dispose();
                 }
                 glyphs = [];
-                subset = {};
+                subset = props.data;
+                console.log(subset);
+                metadata = props.metadata;
                 sorted = {};
                 needsMap = true;
             
@@ -159,16 +134,10 @@ export default function Shareable(props) {
             //fields = props.fields; 
             //console.log(fields);
 
-            setVizId(history.location.data);
-
+            setVizId(props.id);
+            setIsActive(true);
         }
     });
-
-    async function getShareableById(id) {
-        return API.post("sgx", "/get-shareable-by-id", {
-          body: "{\"id\":\""+id+"\"}"
-        });
-    }
 
     useEffect(() => {
 
@@ -179,19 +148,23 @@ export default function Shareable(props) {
 
     });
 
+    async function getSaveFile(name) {
+        return Storage.vault.get("saved/" + name + ".json", { download: true });
+    }
+
     return (
         <div>
             {isActive
                 ?  
                 [(isLoading
                 ? 
-                <div key='0' style={{textAlign: 'center', position: 'absolute', left: '49%', top: '49%'}}>
+                <div key='0' style={{textAlign: 'center', position: 'absolute', left: '40%', top: '49%'}}>
                 <   CircularProgress />
                 </div>
                 :
                 null
                 ),
-                <SceneComponent key='1' antialias onSceneReady={onSceneReady} onRender={onRender} data={getShareableById(history.location.data)} id='my-canvas' className={classes.scene}/>
+                <SceneComponent key='1' antialias onSceneReady={onSceneReady} onRender={onRender} data={getSaveFile(props.name)} id='my-canvas' className={classes.scene}/>
                 ]
                 :
                 <div style={{textAlign: 'center'}}>
