@@ -161,11 +161,11 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={6}>
                 <RecentViews data={getIdentityId()}/>
-                <div style={{ position: 'relative' }}>
+                {/*<div style={{ position: 'relative' }}>
                     <IconButton onClick={() => { }} color="default" className={classes.circle_button}>
                         <AddIcon/>
                     </IconButton>
-                </div>
+                </div>*/}
                 </Grid>
                 <Grid item xs={6}>
                 <Paper className={classes.paper_row_two} elevation={3}>
@@ -174,7 +174,7 @@ export default function Home() {
                             <TableHead>
                             <TableRow>
                                 <TableCell align="center" colSpan={4} style={{ fontSize: '1.25rem', padding: 10}}>
-                                ANNOUNCEMENTS
+                                BLOG POSTS
                                 </TableCell>
                             </TableRow>
                             </TableHead>
