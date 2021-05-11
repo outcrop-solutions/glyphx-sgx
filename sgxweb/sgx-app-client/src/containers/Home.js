@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.secondary,
       //height: theme.spacing(3),
       height: window.innerHeight*0.37,
+      minHeight: 250,
     },
     circle_button: {
         fontSize: '0.875rem', 

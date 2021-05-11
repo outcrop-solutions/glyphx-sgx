@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   root: {
     width: '100%',
     float: 'left',
-    maxHeight: window.innerHeight*0.37,
+    height: '100%',
     position: 'relative',
     borderBottomWidth: 0,
   },

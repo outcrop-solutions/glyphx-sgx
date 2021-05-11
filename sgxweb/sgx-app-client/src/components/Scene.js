@@ -24,7 +24,6 @@ export default (props) => {
     }, [scene]);
 
     useEffect(() => {
-        console.log("LOADED", scene);
         if (!loaded) {
             setLoaded(true);
             const engine = new Engine(reactCanvas.current, antialias, engineOptions, adaptToDeviceRatio);

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 5,
   },
   text: {
-    fontSize: '1rem',
+    fontSize: window.innerHeight * 0.013,
   },
 }));
 
@@ -48,6 +48,7 @@ export default function CheckboxList() {
         list.push(createData(jsonData.items[i].title, i+1, jsonData.items[i].link));
       }
       setAnnouncements(list);
+      console.log(window.innerHeight);
     })
     .catch((error) => {
       // handle your errors here
