@@ -1,0 +1,221 @@
+
+:root {
+    --collapsible-text-color-main:  white; /* the default */
+    --collapsible-text-color-sub:   white; /* the default */
+}
+
+.Collapsible__contentInner {
+    padding: 0.8342022940563086vh !important;
+}
+
+.animate-close {
+    overflow: hidden;
+    -webkit-transition: height 0.3s ease-in;
+    -moz-transition:    height 0.3s ease-in;
+    -o-transition:      height 0.3s ease-in;
+    -ms-transition:     height 0.3s ease-in;
+    transition:         height 0.3s ease-in;
+}
+
+.menuItemStyling {
+    font-size:      1.668vh !important;
+    min-height:     0px !important;
+    height:         2.607vh !important;
+    line-height:    3.128vh !important;
+    text-transform: uppercase; 
+    font-family: ITCFranklinGothicStd-Med !important;
+}
+
+.cancelIconStyle {
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.hideTopView {
+    -webkit-transform:  translate(0px, -300px);
+    -moz-transform:     translate(0px, -300px);
+    -ms-transform:      translate(0px, -300px);
+    -o-transform:       translate(0px, -300px);
+    transform:          translate(0px, -300px);
+    -webkit-transition: 1s;
+    transition:         1s;
+}
+
+.collapsibleHeader {
+    padding: 16px;
+    box-sizing: border-box;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+    color: white; 
+    display: block; 
+    font-size: 15px;
+}
+
+.trig {
+    width: 100%;
+    padding-bottom: 13px;
+}
+
+.collapsibleBody {
+    background-color: white;
+}
+
+.Collapsible {
+    cursor: pointer;
+}
+
+.Collapsible__contentInner {
+    padding: 1.043vh;
+    border: 1px solid #ebebeb;
+    border-top: 0; 
+}
+  
+.Collapsible__contentInner p {
+    margin-bottom: 1.043vh;
+    font-size: 1.460vh;
+    line-height: 2.085vh; 
+}
+    
+.Collapsible__contentInner p:last-child {
+    margin-bottom: 0; 
+}
+/* 
+.Collapsible__trigger {
+    display: block !important;
+    text-decoration: none !important;
+    position: relative !important;
+    border: 1px solid white !important;
+    padding: 15px !important;
+    color: white !important; 
+    font-size: 1rem !important;
+} */
+
+.Collapsible__trigger:after {
+    font-family: "FontAwesome";
+    content: "\f107";
+    position: absolute;
+    right: 15px;
+    top: 14px;
+    display: block;
+    font-size: 1rem;
+    transition: transform 300ms;
+    color: var(--collapsible-text-color-main);
+}
+
+
+  
+.Collapsible__trigger.is-open:after {
+    transform: rotateZ(180deg); 
+}
+  
+.Collapsible__trigger.is-disabled {
+    opacity: 0.5;
+    background-color: grey; 
+}
+
+.CustomTriggerCSS {
+    background-color: lightcoral;
+    transition: background-color 200ms ease; 
+}
+
+.CustomTriggerCSS--open {
+    background-color: darkslateblue; 
+}
+
+
+.columnNameHeader.Collapsible__trigger:after {
+    right: 1.564vh;
+     top: 0.834vh;
+     color: var(--collapsible-text-color-sub);
+}
+
+.noHeaderTrigger{
+	background-color: white !important;
+	font-size: 0rem !important;
+    padding: 0px !important;
+}
+.centerText {
+    display: block;
+    text-align: center;
+    cursor: normal;
+}
+
+.cursorNormal {
+    cursor: default;
+}
+
+.selectViewName {
+    margin-top: 0.258vh;
+    width:100%;
+    z-index: 3;
+    font-size: 1.356vh;
+}
+
+.selectTableName {
+    width:100%;
+    z-index: 2;
+    font-size: 1.356vh;
+}
+
+.cursorHand:Hover {
+    cursor: pointer
+}
+
+.Select-menu-outer {
+    z-index: 2;
+}
+
+.notificationBadge {
+	color: red !important;
+    font-size: 1.877vh !important;
+    top: -2.920vh;
+    left: 0.938vh;
+}
+
+.Select-menu-outer {
+    z-index: 2 !important;
+}
+
+.darkClass {
+    background-color: white;
+    filter:alpha(opacity=50); 
+    opacity: 0.5; 
+    -moz-opacity:0.50;
+    z-index: 20;
+    height: 100%;
+    width: 100%;
+    background-repeat:no-repeat;
+    background-position:center;
+    position:absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.Select, .Select div{
+    height: 2.580vh;
+}
+
+.Select{
+    color: rgb(87, 93, 94);
+}
+
+.Select-input, .Select-placeholder{
+    margin-top: -0.103vh;
+    /* font-family: ITCFranklinGothicStd-Med; */
+    line-height: 2.890vh;
+    letter-spacing: 0.5px;
+    font-size: 1.451vh;
+    padding-left: 1.032vh;
+    padding-right: 1.032vh;
+    text-transform: uppercase;
+}
+
+.Select-arrow-zone{
+    padding-top: 0.310vh;
+    width: 1.302vw;
+}
+
+.Select-arrow{
+    border-width: 0.516vh 0.516vh 0.258vh;
+}

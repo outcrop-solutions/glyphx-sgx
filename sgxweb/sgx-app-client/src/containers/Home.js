@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.secondary,
       //height: theme.spacing(3),
       height: window.innerHeight*0.37,
+      minHeight: 250,
     },
     circle_button: {
         fontSize: '0.875rem', 
@@ -68,7 +69,7 @@ export default function Home() {
         var name = document.getElementById('icon-button-file'); 
         var file = name.files.item(0);
         var directory = file.name.split(".csv")[0];
-        var filename = directory+ "/" + file.name;
+        var filename = "data/" + directory + "/" + file.name;
 
         if(file.name != null){
             setOpen(true);
@@ -79,6 +80,8 @@ export default function Home() {
             console.log("key:",stored.key);
             
             let identity = await getIdentityId();
+            let ctp_output = await convertToParquet(identity, directory);
+            console.log("convertToParquet", ctp_output);
             let cta_output = await addCSVtoAthena(identity, directory);
             let queryId = cta_output.body.replaceAll('"','');
             console.log("addCSVtoAthena", queryId);
@@ -91,7 +94,9 @@ export default function Home() {
                     let cmt_output = await createMetadataTable(identity, directory);
                     console.log("createMetadataTable", cmt_output);
                     setOpen(false);
-                    history.push({pathname:"/mapper", data: file.name});
+                    let name = directory+".parquet";
+                    let timestamp = new Date().getTime();
+                    history.push({pathname:"/mapper", data: {name, identity, timestamp}});
                 }
             }, 2500);
         }
@@ -99,6 +104,12 @@ export default function Home() {
 
     function createMetadataTable(identity, directory) {
         return API.post("sgx", "/create-metadata-table", {
+          body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
+        });
+    }
+
+    function convertToParquet(identity, directory) {
+        return API.post("sgx", "/convert-to-parquet", {
           body: "{\"identity\":\""+identity+"\", \"directory\":\""+directory+"\"}"
         });
     }
@@ -150,12 +161,12 @@ export default function Home() {
                     </div>
                 </Grid>
                 <Grid item xs={6}>
-                <RecentViews />
-                <div style={{ position: 'relative' }}>
+                <RecentViews data={getIdentityId()}/>
+                {/*<div style={{ position: 'relative' }}>
                     <IconButton onClick={() => { }} color="default" className={classes.circle_button}>
                         <AddIcon/>
                     </IconButton>
-                </div>
+                </div>*/}
                 </Grid>
                 <Grid item xs={6}>
                 <Paper className={classes.paper_row_two} elevation={3}>
@@ -164,7 +175,7 @@ export default function Home() {
                             <TableHead>
                             <TableRow>
                                 <TableCell align="center" colSpan={4} style={{ fontSize: '1.25rem', padding: 10}}>
-                                ANNOUNCEMENTS
+                                BLOG POSTS
                                 </TableCell>
                             </TableRow>
                             </TableHead>

@@ -42,18 +42,27 @@ function App() {
   }, []);
   
   async function onLoad() {
-    try {
-      await Auth.currentSession();
-      
-      userHasAuthenticated(true);
+
+    if(window.location.href.includes('?')) {
+
+      let id = 0;
+      if(window.location.href.includes('?'))
+        id = window.location.href.split('?')[1].split('=')[1];
+      history.push({pathname:"/shareable", data: id});
     }
-    catch(e) {
-      history.push("/login");
-      if (e !== 'No current user') {
-        onError(e);
+    else {
+      try {
+        await Auth.currentSession();
+        
+        userHasAuthenticated(true);
+      }
+      catch(e) {
+        history.push("/login");
+        if (e !== 'No current user') {
+          onError(e);
+        }
       }
     }
-  
     setIsAuthenticating(false);
   }
 

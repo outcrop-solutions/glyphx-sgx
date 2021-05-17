@@ -6,6 +6,8 @@ import ResetPassword from "./containers/ResetPassword";
 import Signup from "./containers/Signup";
 import Mapper from "./containers/Mapper";
 import Visualization from "./containers/Visualization";
+import Shareable from "./containers/Shareable";
+import Cross from "./containers/Cross";
 import NotFound from "./containers/NotFound";
 
 export default function Routes() {
@@ -28,6 +30,12 @@ export default function Routes() {
         </Route>
         <Route exact path="/visualization">
             <Visualization />
+        </Route>
+        <Route exact path="/shareable">
+            <Shareable />
+        </Route>
+        <Route exact path="/cross">
+            <Cross />
         </Route>
         {/* Finally, catch all unmatched routes */}
         <Route>

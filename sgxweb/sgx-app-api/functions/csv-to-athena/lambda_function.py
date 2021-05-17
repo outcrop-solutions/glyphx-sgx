@@ -26,17 +26,16 @@ def lambda_handler(event, context):
             fields.append({'field': name, 'type': 'bigint'})
         else:
             fields.append({'field': name, 'type': 'string'})
-            
+    #print(fields)
     tablename = directory.lower().replace(" ", "_")
     query = "CREATE EXTERNAL TABLE IF NOT EXISTS `"+identity+"`.`"+tablename+"` ("
-    query += ''.join(e for e in fields[0]["field"].replace(" ", "_") if e.isalnum() or e == '_').lower()+" "+fields[0]["type"]
+    query += "`" + ''.join(e for e in str(fields[0]["field"]).replace(" ", "_") if e.isalnum() or e == '_').lower()+"` "+fields[0]["type"]
     for i in range(1, len(fields)):
-        query += ", "+''.join(e for e in fields[i]["field"].replace(" ", "_") if e.isalnum() or e == '_').lower()+" "+fields[i]["type"]
+        query += ", `"+''.join(e for e in str(fields[i]["field"]).replace(" ", "_") if e.isalnum() or e == '_').lower()+"` "+fields[i]["type"]
     query += ') '
-    query += "ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde' "
-    query += "WITH SERDEPROPERTIES ( 'quoteChar' = '\\\"', 'separatorChar'=',', 'escapeChar'='\\\\' ) "  
+    query += "STORED AS PARQUET "
     query += "LOCATION 's3://sgx-app-user-storage/private/"+identity+"/"+directory+"/' "
-    query += "TBLPROPERTIES ('has_encrypted_data'='false','skip.header.line.count'='1');" 
+    query += "TBLPROPERTIES ('parquet.compression'='GZIP');" 
     
     output = 's3://sgx-athena-query-output-log/'+identity+'/';
     #return { 'statusCode': 200, 'body': query } 
@@ -51,6 +50,8 @@ def lambda_handler(event, context):
         }
     )
 
+    #Only needed the CSV up until table is created. All data will be read from the parquet file from here
+    remove_response = s3.delete_object(Bucket='sgx-app-user-storage', Key='private/'+identity+filename)
+    
     #context.succeed(fields)
     return { 'statusCode': 200, 'body': json.dumps(response['QueryExecutionId']) } 
-

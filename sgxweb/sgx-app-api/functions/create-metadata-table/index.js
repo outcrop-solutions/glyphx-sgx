@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
     var s3_params = {
       Body: JSON.stringify(fields), 
       Bucket: "sgx-app-user-storage", 
-      Key: "private/"+identity+"/"+directory+"/"+directory+".json"
+      Key: "private/"+identity+"/metadata/"+directory+".json"
      };
      let id = await s3.putObject(s3_params, function(err, data) {
        if (err) console.log(err, err.stack); // an error occurred

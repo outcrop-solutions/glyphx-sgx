@@ -164,6 +164,7 @@ export default function LoadData({data}) {
 
   function handleDataSelect(name) {
     let timestamp = new Date().getTime();
+    //console.log("Name:", name);
     history.push({pathname:"/mapper", data: {name, identity, timestamp}});
   }
 
@@ -226,7 +227,7 @@ export default function LoadData({data}) {
           ).map((row) => (
             <TableRow hover key={row.name} onClick={() => handleDataSelect(row.name)} style={{cursor: 'pointer'}}>
               <TableCell component="th" scope="row" style={{ fontSize: '0.875rem', padding: 12, paddingLeft: 32 }}>
-                {row.name}
+                {row.name.split('.parquet')[0]}
               </TableCell>
               <TableCell style={{ width: '50%', fontSize: '0.875rem', padding: 12, paddingRight: 32 }} align="right">
                 {row.datetime}
