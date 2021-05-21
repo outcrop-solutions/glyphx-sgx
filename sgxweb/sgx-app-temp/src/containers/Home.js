@@ -70,15 +70,21 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Home() {
+export default function Home(props) {
     const classes = useStyles();
     //const history = useHistory();
     const [userName, setUserName] = useState("");
-    const [currentFrame, setCurrentFrame] = useState(<HomeFrame />);
+    const [currentFrame, setCurrentFrame] = useState(null);
 
     useEffect(() => {
         setUserName("Robert Smith");
+        changeFrame('Home');
     }, []);
+
+    useEffect(() => {
+        if(props.client && props.server)
+            changeFrame('Home');
+    }, [props.client, props.server]);
 
     const getIcon = (index) => {
 
@@ -103,7 +109,7 @@ export default function Home() {
                 setCurrentFrame(<UserFrame />);
                 break;
             case 'Home':
-                setCurrentFrame(<HomeFrame />);
+                setCurrentFrame(<HomeFrame client={props.client} server={props.server} sendMessage={props.sendMessage}/>);
                 break;
             case 'Drafts':
                 setCurrentFrame(<DraftsFrame />);

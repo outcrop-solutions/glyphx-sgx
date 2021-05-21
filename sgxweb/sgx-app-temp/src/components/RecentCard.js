@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SimplePaper(props) {
+export default function RecentCard(props) {
     const classes = useStyles();
     const [lastViewed, setLastViewed] = useState(null);
 
@@ -73,10 +73,15 @@ export default function SimplePaper(props) {
         {'icon': IconFive, 'color': 'rgb(0, 88, 216)'}
     ];
 
+    const modelClicked = (title) => {
+        if(props.server)
+            props.sendMessage('{"action" : "OnMessage" , "connectionId": "'+props.server+'", "message" : "'+title+'"}');
+    };
+
     const thumbnails = [ThumbnailOne, ThumbnailTwo, ThumbnailThree, ThumbnailFour];
 
     return (
-        <Paper className={classes.root}>
+        <Paper className={classes.root} onClick={() => modelClicked(props.data.title)}>
             <div className={classes.head} style={{backgroundImage: 'url('+thumbnails[props.data.thumbnail]+')'}}>
                 <div className={classes.typeIndicator} style={{backgroundColor: icons[props.data.type].color, backgroundImage: 'url('+icons[props.data.type].icon+')'}}></div>
             </div>

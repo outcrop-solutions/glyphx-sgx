@@ -6,11 +6,11 @@ import ResetPassword from "./containers/ResetPassword";
 import Signup from "./containers/Signup";
 import NotFound from "./containers/NotFound";
 
-export default function Routes() {
+export default function Routes(props) {
   return (
     <Switch>
         <Route exact path="/">
-            <Home />
+            <Home client={props.client} server={props.server} sendMessage={props.sendMessage}/>
         </Route>
         <Route exact path="/login">
             <Login />

@@ -73,6 +73,7 @@ private slots:
 	void OnEnableDisableSuperimposedGadgets( bool enable );
 	void OnSocketConnect();
 	void OnSocketLaunch(QString message);
+	void OnSocketSslErrors(const QList<QSslError> &errors);
 	void OnSocketClosed();
 	void ToggleInteractiveLegend();
 

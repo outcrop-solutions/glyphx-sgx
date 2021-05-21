@@ -80,6 +80,7 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	if (!server_addr.startsWith('e') || !server_addr.endsWith('m')) {
 		server_addr = "ec2-52-41-239-60.us-west-2.compute.amazonaws.com";
 	}
+	QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com/";
 	//QMessageBox::information(this, tr("Server message"), server_addr);
 
 	uid = QUuid::createUuid().toString();
@@ -88,7 +89,7 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	dlg = new QWebEngineView(this);
 	auto wep = dlg->page()->profile();
 	wep->setHttpAcceptLanguage("en-US,en;q=0.9");
-	dlg->load(QUrl("http://" + server_addr + ":5000?uid=" + uid));
+	//dlg->load(QUrl(address));
 	centerWidgetsContainer->addWidget(dlg);
 
 	QScreen *screen = QGuiApplication::primaryScreen();
@@ -205,19 +206,37 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 
 	std::vector<std::string> images;
 
-	/*file.setFileName("qLog.txt");
+	file.setFileName("qLog.txt");
 	file.open(QIODevice::WriteOnly);
 	QTextStream out(&file);
 	out << "Initiating Socket \n" << endl;
-	out << uid << endl;*/
+	//out << uid << endl;
 
 	//EchoClient client(QUrl(QStringLiteral("ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001")), false);
 	//connect(&client, &EchoClient::setLaunch, this, &GlyphEdViewerWindow::OnLaunch);
-	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
+	/*QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
 	QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &GlyphEdViewerWindow::OnSocketLaunch);
+	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),[=](QAbstractSocket::SocketError error) { 
+		QTextStream out(&file);
+		out << error << endl;
+	});
+	QObject::connect(&m_webSocket, &QWebSocket::sslErrors, this, &GlyphEdViewerWindow::OnSocketSslErrors);
 	QObject::connect(&m_webSocket, &QWebSocket::close, this, &GlyphEdViewerWindow::OnSocketClosed);
-	QString ws_addr("ws://" + server_addr + ":5001");
-	m_webSocket.open(QUrl(ws_addr));
+	QString ws_addr("unsafe:wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production");
+
+	QList<QSslCertificate> cert = QSslCertificate::fromPath(QLatin1String("server-certificate.pem"));
+	QSslConfiguration config;
+	config.setCaCertificates(cert);
+	m_webSocket.setSslConfiguration(config);
+	m_webSocket.open(QUrl(ws_addr));*/
+
+	connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
+	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), [=](QAbstractSocket::SocketError error) {
+		QTextStream out(&file);
+		out << error << endl;
+	});
+	m_webSocket.open(QUrl("wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production"));
+
 
 }
 
@@ -391,24 +410,56 @@ void GlyphEdViewerWindow::CreateDockWidgets() {
 
 void GlyphEdViewerWindow::OnSocketConnect() {
 
-QTextStream out(&file);
-out << "Socket opened" << endl;
+	QTextStream out(&file);
+	out << "Socket opened" << endl;
 
-QString toSend("uid=" + uid);
-m_webSocket.sendTextMessage(toSend);
+	//QString toSend("{ \"action\" : \"OnMessage\" , \"connectionId\" : \"\", \"message\" : \"\" }");
+	//m_webSocket.sendTextMessage(toSend);
+
+	connect(&m_webSocket, &QWebSocket::textMessageReceived,
+		this, &GlyphEdViewerWindow::OnSocketLaunch);
+	m_webSocket.sendTextMessage(QStringLiteral("{\"action\" : \"OnMessage\" , \"connectionId\": \"\", \"message\" : \"\"}"));
+}
+
+void GlyphEdViewerWindow::OnSocketSslErrors(const QList<QSslError> &errors) {
+	QTextStream out(&file);
+	for (int i = 0; i < errors.size(); i++) {
+		out << errors[i].errorString() << endl;
+	}
 }
 
 void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 	
-	//QTextStream out(&file);
-	//out << "Message received: " << message << endl;
+	QString json = message;
+	json.remove(QChar('{'));
+	json.remove(QChar('}'));
+	json.remove(QChar('"'));
+	QStringList jsonList = json.split(QChar(','));
+	QMap<QString, QString> jsonMap;
+	for (int i = 0; i < jsonList.size(); i++) {
+		QStringList var = jsonList.at(i).split(':');
+		jsonMap.insert(var.at(0), var.at(1));
+	}
 
-	QStringList qsl = message.split(QChar(','));
-	QString type = qsl.at(0).split(QChar(':')).at(1);
-	type.remove(QChar('"'));
-	type.remove(QChar('}'));
-	//out << "{{" + type + "}}" << endl;
+	if (jsonMap["type"] == "id") {
+		QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com/?server=" + jsonMap["message"];
+		dlg->load(QUrl(address));
+	}
+	else if (jsonMap["type"] == "code") {
 
+		QMessageBox::information(this, tr("Server message"), jsonMap["message"]);
+
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+		QSize size = this->size();
+		m_viewer->resize(size.width() - (size.width()*0.235), size.height() - 20);
+		m_viewer->show();
+		SynGlyphX::Application::restoreOverrideCursor();
+	}
+	else {
+		QMessageBox::information(this, tr("Server message"), jsonMap["message"]);
+	}
+
+/*
 	QString text;
 	if (type == "LAUNCH"){
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
@@ -535,7 +586,7 @@ void GlyphEdViewerWindow::OnSocketLaunch(QString message) {
 		settings_modal->setLayout(settingsLayout);
 	
 		settings_modal->exec();
-	}
+	}*/
 
 	//QMessageBox::information(this, tr("Server message"), text);
 

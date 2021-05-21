@@ -1,4 +1,4 @@
-import React, { /*useState, useEffect*/ } from "react";
+import React, { useState, useEffect } from "react";
 //import { useHistory } from "react-router-dom";
 //import { Storage } from "aws-amplify";
 import { makeStyles, fade } from '@material-ui/core/styles';
@@ -34,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: fade(theme.palette.common.white, 0.25),
          },
-    }
+    },
 }));
 
-export default function HomeFrame() {
+export default function HomeFrame(props) {
     const classes = useStyles();
     //const history = useHistory();
 
@@ -77,7 +77,7 @@ export default function HomeFrame() {
                             <div style={{color: 'white', marginTop: 20}}>New Model</div>
                         </div>
                         {[0, 1, 2, 3].map((text, index) => (
-                            <RecentCard data={data()} key={index}/>
+                            <RecentCard data={data()} key={index} client={props.client} server={props.server} sendMessage={props.sendMessage}/>
                         ))}
                     </div>
                 </div>
@@ -85,7 +85,7 @@ export default function HomeFrame() {
                     <h2 style={{color: 'white', textAlign: 'left', fontWeight: 'normal'}}>RECENTLY VIEWED MODELS</h2>
                     <div className={classes.recentRow}>
                         {[0, 1, 2, 3, 4].map((text, index) => (
-                            <RecentCard data={data()} key={index}/>
+                            <RecentCard data={data()} key={index} client={props.client} server={props.server} sendMessage={props.sendMessage}/>
                         ))}
                     </div>
                 </div>
