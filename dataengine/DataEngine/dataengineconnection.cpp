@@ -690,4 +690,22 @@ namespace DataEngine
 		return glyphEdPath;
 	}
 
+	bool DataEngineConnection::UnZipFile(QString file) {
+
+		bool unzipped = true;
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"unZipFile", "(Ljava/lang/String;)Z");
+
+		if (methodId != NULL) {
+			jstring q = jniEnv->NewStringUTF(file.toStdString().c_str());
+			unzipped = jniEnv->CallStaticBooleanMethod(jcls, methodId, q);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+
+		}
+		return unzipped;
+	}
+
 }

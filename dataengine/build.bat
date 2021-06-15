@@ -41,7 +41,6 @@ if not exist %package%\util mkdir %package%\util
 if not exist %package%\user mkdir %package%\user
 
 
-
 %jcmd%\javac -d %outpath% %jp%\DataEngine.java
 
 %jcmd%\javac -d %outpath% %jp%\GlyphEngine.java

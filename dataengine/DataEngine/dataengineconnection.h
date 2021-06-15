@@ -93,6 +93,8 @@ namespace DataEngine
 
 		static QString CreateInnerJoinQueryFromForiegnKeys(const QString& mainTable, const ForiegnKeyVector& foriegnKeyTables);
 
+		bool UnZipFile(QString file);
+
 	private:
 		QString m_openConnection;
 		JavaVM *javaVM;

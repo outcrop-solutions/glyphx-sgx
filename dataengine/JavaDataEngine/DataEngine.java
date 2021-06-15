@@ -8,6 +8,7 @@ import synglyphx.jdbc.Database;
 import synglyphx.io.Logger;
 import synglyphx.util.AESencrp;
 import synglyphx.util.ErrorHandler;
+import synglyphx.user.UnzipUtility;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -209,6 +210,18 @@ public class DataEngine {
 		JDBCLoader.getInstance().closeConnection();
 	}
 //JDBC END
+
+	public static boolean unZipFile(String file) {
+		try{
+			UnzipUtility.unzip(file, file.split(".zip")[0]);
+			UnzipUtility.delete(file);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
 	
 	public static void main(String [] args){
 

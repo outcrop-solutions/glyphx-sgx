@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../GUI/SGXDataTransformGUI
 							../../GUI/MapDownloading
 							../../DataEngine/DataEngine
+							${AWS_INCLUDE_DIR}
 							${JAVA_INCLUDE_DIRS})
 							
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
@@ -57,6 +58,7 @@ TARGET_LINK_LIBRARIES(GlyphEd ${Boost_LIBRARIES}
 									Qt5::Gui 
 									Qt5::OpenGL 
 									Qt5::Widgets 
+									Qt5::WebSockets
 									Qt5::Sql
 									ANTzCore 
 									ANTzBridge 
@@ -71,6 +73,12 @@ TARGET_LINK_LIBRARIES(GlyphEd ${Boost_LIBRARIES}
 									SGXGraphics
 									SGXSceneViewer
 									MapDownloading
+									aws-cpp-sdk-core
+							  		aws-cpp-sdk-s3
+									aws-crt-cpp
+									aws-c-common
+									aws-c-io
+									aws-c-mqtt
 									DataEngine)
 
 IF (${BREAKPAD_FOUND})

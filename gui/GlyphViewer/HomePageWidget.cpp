@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include "AnnouncementDialog.h"
-#include "S3FileManager.h"
+//#include "S3FileManager.h"
 #include "GroupSelectionDialog.h"
 #include "version.h"
 
@@ -93,7 +93,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	m_optionsButtonGroup->button(0)->setChecked(true);
 	OnNewOptionSelected(0);
 
-	s3Manager = new DataEngine::S3FileManager();
+	//s3Manager = new DataEngine::S3FileManager();
 	CheckForNewRelease();
 
 	if (loggedOn){
@@ -1027,7 +1027,7 @@ void HomePageWidget::CheckForNewRelease() {
 #elif __APPLE__
 		"releases/mac";
 #endif
-
+	/*
 	bool isGlyphIt = QFile("DataMapper.exe").exists();
 	QString appName = (QFileInfo(QCoreApplication::applicationFilePath()).fileName().toLower().replace(".exe","") == "glyphed") ? "glyphed" : "glyphit";
 	std::vector<DataEngine::S3File*> files = s3Manager->GetFilesFromDirectory(appName.toStdString(), os_path.toStdString().c_str());
@@ -1052,5 +1052,5 @@ void HomePageWidget::CheckForNewRelease() {
 				}
 			}
 		}
-	}
+	}*/
 }

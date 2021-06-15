@@ -48,5 +48,4 @@ else()
 	set(PYTHON_CMD python)
 endif()
 
-add_custom_command(TARGET DataEngine PRE_BUILD COMMAND ${PYTHON_CMD} ${DEVELOPMENT_TOP_DIR}/dataengine/build.py WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)
 add_custom_command(TARGET DataEngine POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${DEVELOPMENT_TOP_DIR}/classes/dataengine.jar" $<TARGET_FILE_DIR:DataEngine> WORKING_DIRECTORY ${DEVELOPMENT_TOP_DIR}/dataengine)

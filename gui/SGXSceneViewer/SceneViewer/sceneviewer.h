@@ -132,6 +132,7 @@ namespace SynGlyphX
 
 	signals:
 		void interactiveLegendToggled();
+		void closeVisualization();
 
 	protected:
 		enum class CenterMode

@@ -29,7 +29,7 @@ namespace DataEngine
 
 	S3FileManager::S3FileManager(){
 
-		Aws::SDKOptions options;
+		/*Aws::SDKOptions options;
 		Aws::InitAPI(options);
 
 		Aws::Auth::AWSCredentials credentials;
@@ -41,7 +41,7 @@ namespace DataEngine
 		clientConfig.connectTimeoutMs = 10000;
 		clientConfig.requestTimeoutMs = 120000;
 
-		s3Client = new Aws::S3::S3Client(credentials, clientConfig);
+		s3Client = new Aws::S3::S3Client(credentials, clientConfig);*/
 		
 	}
 
@@ -52,7 +52,7 @@ namespace DataEngine
 	std::vector<S3File*> S3FileManager::GetFilesFromDirectory(std::string bucket, const char* directory){
 
 		std::vector<S3File*> results;
-
+		/*
 		Aws::S3::Model::ListObjectsRequest* listObject = new Aws::S3::Model::ListObjectsRequest();
 		Aws::S3::Model::ListObjectsOutcome objects = s3Client->ListObjects(listObject->WithBucket(bucket.c_str()));
 
@@ -66,7 +66,7 @@ namespace DataEngine
 			if (found && name.find('.') != Aws::String::npos){
 				results.push_back(new S3File(bucket, object));
 			}
-		}
+		}*/
 		return results;
 	}
 

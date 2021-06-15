@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Signup() {
   const [fields, handleFieldChange] = useFormFields({
+    first: "",
+    last: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -55,6 +57,8 @@ export default function Signup() {
 
   function validateForm() {
     return (
+      fields.first.length > 0 &&
+      fields.last.length > 0 &&
       fields.email.length > 0 &&
       fields.password.length > 0 &&
       fields.password === fields.confirmPassword
@@ -74,6 +78,10 @@ export default function Signup() {
       const newUser = await Auth.signUp({
         username: fields.email,
         password: fields.password,
+        attributes: {
+          given_name: fields.first,
+          family_name: fields.last
+        }
       });
       //setIsLoading(false);
       setNewUser(newUser);
@@ -93,7 +101,7 @@ export default function Signup() {
       await Auth.signIn(fields.email, fields.password);
       let cred = await Auth.currentCredentials();
       createUserStorage(cred);
-      createGlueDatabase(cred);
+      //createGlueDatabase(cred);
 
       userHasAuthenticated(true);
       history.push("/");
@@ -108,13 +116,13 @@ export default function Signup() {
       body: "{\"identity\":\""+identity.identityId+"\"}"
     });
   }
-
+/*
   function createGlueDatabase(identity) {
     return API.post("sgx", "/create-glue-database", {
       body: "{\"identity\":\""+identity.identityId+"\"}"
     });
   }
-
+*/
   function renderConfirmationForm() {
     return (
       <form className={classes.form} onSubmit={handleConfirmationSubmit} noValidate>
@@ -148,6 +156,38 @@ export default function Signup() {
   function renderForm() {
     return (
       <form className={classes.form} onSubmit={handleSubmit} noValidate>
+        <Grid container>
+            <Grid item xs>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="first"
+                label="First"
+                name="first_name"
+                autoComplete="given-name"
+                autoFocus
+                value={fields.first}
+                onChange={handleFieldChange}
+              />
+            </Grid>
+            <Grid item xs>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="last"
+              label="Last"
+              name="email"
+              autoComplete="family-name"
+              autoFocus
+              value={fields.last}
+              onChange={handleFieldChange}
+            />
+            </Grid>
+          </Grid>
           <TextField
             variant="outlined"
             margin="normal"

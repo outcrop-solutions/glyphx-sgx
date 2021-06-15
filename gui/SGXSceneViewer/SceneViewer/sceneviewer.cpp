@@ -157,6 +157,18 @@ namespace SynGlyphX
 				"    color: grey; "
 				"}");
 
+			QToolButton* homeButton = new QToolButton(this);
+			homeButton->setAttribute(Qt::WA_TranslucentBackground);
+			homeButton->setStyleSheet(style);
+			QIcon homeIcon;
+			homeIcon.addFile(":SGXGUI/Resources/Icons/home_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
+			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			homeButton->setIcon(homeIcon);
+			homeButton->setIconSize(QSize(24 * mult, 24 * mult));
+			homeButton->setToolTip("Home");
+			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { emit closeVisualization(); });
+			homeButton->move(QPoint(0, 20 * mult));
+
 			QToolButton* legendButton = new QToolButton(this);
 			legendButton->setAttribute(Qt::WA_TranslucentBackground);
 			legendButton->setStyleSheet(style);
@@ -167,7 +179,7 @@ namespace SynGlyphX
 			legendButton->setIconSize(QSize(24 * mult, 24 * mult));
 			legendButton->setToolTip("Show/Hide Legends");
 			QObject::connect(legendButton, &QToolButton::pressed, this, [this]() { legendsWidget->setVisible(!legendsWidget->isVisible()); });
-			legendButton->move(QPoint(0, 20 * mult));
+			legendButton->move(QPoint(0, 60 * mult));
 
 			QToolButton* intLegendButton = new QToolButton(this);
 			intLegendButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -179,7 +191,7 @@ namespace SynGlyphX
 			intLegendButton->setIconSize(QSize(24 * mult, 24 * mult));
 			intLegendButton->setToolTip("Show/Hide Interactive Legend");
 			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
-			intLegendButton->move(QPoint(0, 60 * mult));
+			intLegendButton->move(QPoint(0, 100 * mult));
 
 			QToolButton* axesButton = new QToolButton(this);
 			axesButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -191,7 +203,7 @@ namespace SynGlyphX
 			axesButton->setIconSize(QSize(24 * mult, 24 * mult));
 			axesButton->setToolTip("Show/Hide Axes");
 			QObject::connect(axesButton, &QToolButton::pressed, this, [this]() { enableSceneAxes(!sceneAxesEnabled()); });
-			axesButton->move(QPoint(0, 100 * mult));
+			axesButton->move(QPoint(0, 140 * mult));
 
 			QToolButton* hudButton = new QToolButton(this);
 			hudButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -203,7 +215,7 @@ namespace SynGlyphX
 			hudButton->setIconSize(QSize(24 * mult, 24 * mult));
 			hudButton->setToolTip("Show/Hide Compass");
 			QObject::connect(hudButton, &QToolButton::pressed, this, [this]() { enableHUDAxes(!hudAxesEnabled()); });
-			hudButton->move(QPoint(0, 140 * mult));
+			hudButton->move(QPoint(0, 180 * mult));
 
 			QToolButton* camButton = new QToolButton(this);
 			camButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -215,7 +227,7 @@ namespace SynGlyphX
 			camButton->setIconSize(QSize(24 * mult, 24 * mult));
 			camButton->setToolTip("Reset Camera Position");
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
-			camButton->move(QPoint(0, 180 * mult));
+			camButton->move(QPoint(0, 220 * mult));
 
 		}
 		else

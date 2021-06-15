@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 //import { useHistory } from "react-router-dom";
 //import { Storage } from "aws-amplify";
 import { makeStyles } from '@material-ui/core/styles';
-//import { Auth, API } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -75,16 +75,28 @@ export default function Home(props) {
     //const history = useHistory();
     const [userName, setUserName] = useState("");
     const [currentFrame, setCurrentFrame] = useState(null);
+    const [institution, setInstitution] = useState(null);
 
     useEffect(() => {
-        setUserName("Robert Smith");
-        changeFrame('Home');
+        onLoad();
     }, []);
+
+    useEffect(() => {
+        if(institution)
+            changeFrame('Home');
+    }, [institution]);
 
     useEffect(() => {
         if(props.client && props.server)
             changeFrame('Home');
     }, [props.client, props.server]);
+
+    async function onLoad() {
+        let info = await Auth.currentUserInfo();
+        let attr = info.attributes;
+        setInstitution(attr.email.split('@')[1]);
+        setUserName(attr.given_name + " " + attr.family_name);
+    }
 
     const getIcon = (index) => {
 
@@ -109,7 +121,7 @@ export default function Home(props) {
                 setCurrentFrame(<UserFrame />);
                 break;
             case 'Home':
-                setCurrentFrame(<HomeFrame client={props.client} server={props.server} sendMessage={props.sendMessage}/>);
+                setCurrentFrame(<HomeFrame client={props.client} server={props.server} sendMessage={props.sendMessage} institution={institution}/>);
                 break;
             case 'Drafts':
                 setCurrentFrame(<DraftsFrame />);

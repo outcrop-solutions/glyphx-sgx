@@ -60,7 +60,7 @@ void SelectedSourceDataWidget::OnSelectionChanged(const QItemSelection& selected
 	if (!selection.isEmpty()) {
 
 		SynGlyphX::IndexSet rootIndexRows = SynGlyphX::ItemFocusSelectionModel::GetRootRows(selection.indexes());
-		QMessageBox::information(this, tr("Server message"), "VIEW_SELECTED " + QString::number(rootIndexRows.size()));
+		//QMessageBox::information(this, tr("Server message"), "VIEW_SELECTED " + QString::number(rootIndexRows.size()));
 
 		SynGlyphX::IndexSet::iterator startOfTableRange = rootIndexRows.begin();
 		for (const auto& range : m_glyphTemplateRangeToTableMap) {

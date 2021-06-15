@@ -36,6 +36,8 @@
 #include "legendsdisplaywidget.h"
 #include "DistinctValueFilteringParameters.h"
 #include "SettingsStoredFileList.h"
+#include <QtWebSockets/QWebSocket>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 class HomePageWidget;
 class FrontEndFilterListWidget; 
@@ -105,6 +107,10 @@ private slots:
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
 	void SwitchVisualizationGroup();
+	void OnSocketConnect();
+	void OnSocketLaunch(QString message);
+	void OnSocketSslErrors(const QList<QSslError> &errors);
+	void OnSocketClosed();
 
 private:
 	class HUDGenerationInfo {
@@ -142,6 +148,7 @@ private:
 	void CreateLoadingScreen();
 	void CreateInteractionToolbar();
 	void UpdateAxisNamesAndSourceDataPosition();
+	QString findSdtInDirectory(const QString& directory);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -205,6 +212,7 @@ private:
 	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
+	QWebEngineView* dlg;
 
 	HomePageWidget* m_homePage;
 
@@ -214,6 +222,9 @@ private:
 
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
+
+	QWebSocket m_webSocket;
+	int counter;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

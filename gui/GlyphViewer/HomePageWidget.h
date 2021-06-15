@@ -22,7 +22,7 @@
 #include "dataengineconnection.h"
 #include "userlogindialog.h"
 #include "glyphviewerwindow.h"
-#include "S3FileManager.h"
+//#include "S3FileManager.h"
 
 class QStackedWidget;
 class QStackedLayout;
@@ -109,7 +109,7 @@ private:
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;
 
-	DataEngine::S3FileManager* s3Manager;
+	//DataEngine::S3FileManager* s3Manager;
 	std::shared_ptr<SynGlyphX::AnnouncementDialog> releaseDialog;
 	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 

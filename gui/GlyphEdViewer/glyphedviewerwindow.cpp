@@ -36,7 +36,7 @@
 //#include <QtNetwork>
 #include "sqlitewriter.h"
 #include "version.h"
-#include "S3FileManager.h"
+//#include "S3FileManager.h"
 #include "selecteddatawidget.h"
 #include "interactivelegendwindow.h"
 #include <QtWidgets/QVBoxLayout>
@@ -65,31 +65,9 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setCentralWidget(centerWidgetsContainer);
 
-	QString server_addr;
-	QFile serverFile("server.txt");
-	if (serverFile.open(QIODevice::ReadOnly))
-	{
-		QTextStream in(&serverFile);
-		while (!in.atEnd())
-		{
-			server_addr = in.readLine();
-			break;
-		}
-		serverFile.close();
-	}
-	if (!server_addr.startsWith('e') || !server_addr.endsWith('m')) {
-		server_addr = "ec2-52-41-239-60.us-west-2.compute.amazonaws.com";
-	}
-	QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com/";
-	//QMessageBox::information(this, tr("Server message"), server_addr);
-
-	uid = QUuid::createUuid().toString();
-	uid.remove(QChar('{'));
-	uid.remove(QChar('}'));
 	dlg = new QWebEngineView(this);
 	auto wep = dlg->page()->profile();
 	wep->setHttpAcceptLanguage("en-US,en;q=0.9");
-	//dlg->load(QUrl(address));
 	centerWidgetsContainer->addWidget(dlg);
 
 	QScreen *screen = QGuiApplication::primaryScreen();
@@ -210,25 +188,6 @@ GlyphEdViewerWindow::GlyphEdViewerWindow(QWidget *parent)
 	file.open(QIODevice::WriteOnly);
 	QTextStream out(&file);
 	out << "Initiating Socket \n" << endl;
-	//out << uid << endl;
-
-	//EchoClient client(QUrl(QStringLiteral("ws://ec2-34-221-39-241.us-west-2.compute.amazonaws.com:5001")), false);
-	//connect(&client, &EchoClient::setLaunch, this, &GlyphEdViewerWindow::OnLaunch);
-	/*QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
-	QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &GlyphEdViewerWindow::OnSocketLaunch);
-	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),[=](QAbstractSocket::SocketError error) { 
-		QTextStream out(&file);
-		out << error << endl;
-	});
-	QObject::connect(&m_webSocket, &QWebSocket::sslErrors, this, &GlyphEdViewerWindow::OnSocketSslErrors);
-	QObject::connect(&m_webSocket, &QWebSocket::close, this, &GlyphEdViewerWindow::OnSocketClosed);
-	QString ws_addr("unsafe:wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production");
-
-	QList<QSslCertificate> cert = QSslCertificate::fromPath(QLatin1String("server-certificate.pem"));
-	QSslConfiguration config;
-	config.setCaCertificates(cert);
-	m_webSocket.setSslConfiguration(config);
-	m_webSocket.open(QUrl(ws_addr));*/
 
 	connect(&m_webSocket, &QWebSocket::connected, this, &GlyphEdViewerWindow::OnSocketConnect);
 	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), [=](QAbstractSocket::SocketError error) {
@@ -412,9 +371,6 @@ void GlyphEdViewerWindow::OnSocketConnect() {
 
 	QTextStream out(&file);
 	out << "Socket opened" << endl;
-
-	//QString toSend("{ \"action\" : \"OnMessage\" , \"connectionId\" : \"\", \"message\" : \"\" }");
-	//m_webSocket.sendTextMessage(toSend);
 
 	connect(&m_webSocket, &QWebSocket::textMessageReceived,
 		this, &GlyphEdViewerWindow::OnSocketLaunch);

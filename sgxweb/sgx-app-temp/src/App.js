@@ -15,6 +15,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+var refWebSocket = null;
+
 function App() {
 
   const [isAuthenticating, setIsAuthenticating] = useState(true);
@@ -24,7 +26,6 @@ function App() {
   const [needsWebSocket, setNeedsWebSocket] = useState(false);
   const [client, setClient] = useState(null);
   const [server, setServer] = useState(null);
-  var refWebSocket = null;
 
   useEffect(() => {
     onLoad();
@@ -34,7 +35,6 @@ function App() {
 
     try {
       await Auth.currentSession();
-      
       userHasAuthenticated(true);
     }
     catch(e) {
@@ -75,6 +75,7 @@ function App() {
   }
 
   function sendMessage(message) {
+    console.log(refWebSocket);
     if(refWebSocket)
       refWebSocket.sendMessage(message);
   }

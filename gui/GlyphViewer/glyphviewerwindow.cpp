@@ -10,6 +10,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QSettings>
+#include <QtCore/QDirIterator>
 #include <QtWidgets/QDockWidget>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QFileDialog>
@@ -49,6 +50,8 @@
 #include "FieldProperties.h"
 #include "version.h"
 #include "filesystem.h"
+#include <QtWebEngineWidgets/QWebEngineProfile>
+#include "DownloadManager.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -133,6 +136,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 		throw;
 	}
 
+	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::closeVisualization, this, &GlyphViewerWindow::CloseVisualization);
+	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
+
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
@@ -146,6 +152,20 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	EnableLoadedVisualizationDependentActions( false );
 
 	UpdateFilenameWindowTitle(s_noFileName);
+
+	m_fileToolbar->hide();
+	m_showHideToolbar->hide();
+	m_showHideToolbar->setVisible(false);
+	m_interactionToolbar->hide();
+	menuBar()->hide();
+
+	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
+	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), [=](QAbstractSocket::SocketError error) {
+		QMessageBox::information(this, tr("Server message"), QString(error));
+	});
+	m_webSocket.open(QUrl("wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production"));
+
+	counter = 1;
 }
 
 GlyphViewerWindow::~GlyphViewerWindow()
@@ -158,15 +178,121 @@ void GlyphViewerWindow::closeJVM(){
 	m_dataEngineConnection->destroyJVM();
 }
 
+void GlyphViewerWindow::OnSocketConnect() {
+
+	QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived,
+		this, &GlyphViewerWindow::OnSocketLaunch);
+	m_webSocket.sendTextMessage(QStringLiteral("{\"action\" : \"OnMessage\" , \"connectionId\": \"\", \"message\" : \"\"}"));
+}
+
+void GlyphViewerWindow::OnSocketSslErrors(const QList<QSslError> &errors) {
+	for (int i = 0; i < errors.size(); i++) {
+		QMessageBox::information(this, tr("Server message"), errors[i].errorString());
+	}
+}
+
+void GlyphViewerWindow::OnSocketLaunch(QString message) {
+
+	QMap<QString, QString> jsonMap;
+	QString json = message;
+	QString type = message.split(',')[0].split(":")[1].remove('"');
+	jsonMap.insert("type", type);
+	QString m = message.split("\"message\":\"")[1];
+	m.chop(2);
+	jsonMap.insert("message", m);
+
+	if (jsonMap["type"] == "id") {
+		QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com/?server=" + jsonMap["message"];
+		dlg->load(QUrl(address));
+	}
+	else if (jsonMap["type"] == "code") {
+
+		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+		QMap<QString, QString> jMap;
+		QString j = jsonMap["message"];
+		j.remove(QChar('{'));
+		j.remove(QChar('}'));
+		j.remove(QChar('"'));
+		QStringList jsonList = j.split(QChar(','));
+		for (int i = 0; i < jsonList.size(); i++) {
+			int index = jsonList.at(i).indexOf(':');
+			QString key = jsonList.at(i).mid(0, index);
+			QString value = jsonList.at(i).mid(index + 1);
+			jMap.insert(key, value);
+		}
+
+		QString filename = jsonMap["message"].split('/')[5].split('?')[0];
+		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+
+		QFile dir(location + filename.split(".zip")[0]);
+
+		if (!dir.exists()) {
+			DownloadManager downloadManager(m_dataEngineConnection);
+			downloadManager.DownloadFile(jMap["URL"], location + filename);
+		}
+		else {
+			QFileInfo info(dir);
+
+			qint64 lastMod = jMap["LastModified"].toLongLong();
+			qint64 mod = info.lastModified().toSecsSinceEpoch();
+
+			if ((lastMod - mod) > 0) {
+				QDir d(location + filename.split(".zip")[0]);
+				d.removeRecursively();
+				DownloadManager downloadManager(m_dataEngineConnection);
+				downloadManager.DownloadFile(jMap["URL"], location + filename);
+			}
+				
+		}
+
+		QString m_currentFilename = findSdtInDirectory(location + filename.split(".zip")[0]);
+
+		if (m_currentFilename != "None") {
+			LoadNewVisualization(m_currentFilename);
+		}
+
+		SynGlyphX::Application::restoreOverrideCursor();
+	}
+	else {
+		//QMessageBox::information(this, tr("Server message"), jsonMap["type"] + ", " + jsonMap["message"]);
+	}
+
+}
+
+void GlyphViewerWindow::OnSocketClosed() {
+
+	QMessageBox::information(this, tr("Server message"), "Socket closed.");
+}
+
+QString GlyphViewerWindow::findSdtInDirectory(const QString& directory) {
+
+	QDirIterator it(directory, QDirIterator::Subdirectories);
+	while (it.hasNext()) {
+		QFile f(it.next());
+		if (f.fileName().endsWith(".sdt")) {
+			return f.fileName();
+		}
+	}
+	return "None";
+}
+
 void GlyphViewerWindow::CreateLoadingScreen() {
 
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
-	m_homePage = new HomePageWidget(this, m_dataEngineConnection, centerWidgetsContainer);
+	dlg = new QWebEngineView(this);
+	auto wep = dlg->page()->profile();
+	wep->setHttpAcceptLanguage("en-US,en;q=0.9");
+	centerWidgetsContainer->addWidget(dlg);
+	//QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com";
+	//dlg->load(QUrl(address));
+
+	/*m_homePage = new HomePageWidget(this, m_dataEngineConnection, centerWidgetsContainer);
 	m_homePage->setObjectName("home_page");
 	centerWidgetsContainer->addWidget(m_homePage);
 	QObject::connect(m_homePage, &HomePageWidget::LoadRecentFile, this, &GlyphViewerWindow::LoadRecentFile);
-	QObject::connect(m_homePage, &HomePageWidget::LoadVisualization, this, &GlyphViewerWindow::LoadNewVisualization);
+	QObject::connect(m_homePage, &HomePageWidget::LoadVisualization, this, &GlyphViewerWindow::LoadNewVisualization);*/
 }
 
 void GlyphViewerWindow::CreateSceneViewer() {
@@ -323,9 +449,9 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbars");
-	m_toolbarsSubMenu->addAction(m_fileToolbar->toggleViewAction());
-	m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
+	//m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbars");
+	//m_toolbarsSubMenu->addAction(m_fileToolbar->toggleViewAction());
+	//m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
 
 	m_viewMenu->addSeparator();
 
@@ -505,7 +631,11 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_showHideToolbar->addAction(act);
 
 	QObject::connect(m_columnsModel, &SourceDataInfoModel::modelReset, m_pseudoTimeFilterWidget, &PseudoTimeFilterWidget::ResetForNewVisualization);
-	m_bottomDockWidget->hide();}
+	m_bottomDockWidget->hide();
+
+}
+
+
 
 void GlyphViewerWindow::OpenProject() {
 	QString openFile = GetFileNameOpenDialog("ProjectDir", tr("Open Project"), "", tr("SynGlyphX Project Files (*.xdt)"));
@@ -901,7 +1031,7 @@ void GlyphViewerWindow::LoadVisualization(const QString& filename, const MultiTa
 
 bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTableDistinctValueFilteringParameters filters, bool useFEFilterList) {
 
-	if (HasValidLicense()){
+	//if (HasValidLicense()){
 
 		SGX_PROFILE_SCOPE
 		QString nativeFilename = QDir::toNativeSeparators(filename);
@@ -953,7 +1083,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTable
 
 		statusBar()->showMessage("Visualization successfully opened", 3000);
 		return true;
-	}
+	/*}
 	else
 	{
 		//QString contact = SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? "<a href=\"mailto:mark@GlyphEd.co\">Mark@GlyphEd.co</a>" : "<a href=\"mailto:mark@synglyphx.com\">Mark@SynGlyphX.com</a>";
@@ -963,7 +1093,7 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTable
 			L"<p>To obtain an account, or to renew your license please contact " + contact.toStdWString() + L".</p>"),
 			QMessageBox::Ok);
 		return true;
-	}
+	}*/
 }
 
 bool GlyphViewerWindow::LoadRecentFile(const QString& filename) {
@@ -1080,11 +1210,11 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 			}
 		}
 
-		if (ge.IsUpdateNeeded()){
+		//if (ge.IsUpdateNeeded()){
 
-			DownloadBaseImages(ge);
-			ge.generateGlyphs(this);
-		}
+		DownloadBaseImages(ge);
+		ge.generateGlyphs(this);
+		//}
 		std::vector<std::string> images = ge.getBaseImages();
 		for (const auto& image : images){
 			m_currentBaseImages << QString::fromStdString(image);
@@ -1830,7 +1960,8 @@ void GlyphViewerWindow::CreateInteractionToolbar() {
 	m_interactionToolbar->addWidget(m_hideFilteredCheckBox);
 	m_linkedWidgetsManager->AddFilterViewCheckbox(m_hideFilteredCheckBox);
 
-	m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
+	//m_toolbarsSubMenu->addAction(m_interactionToolbar->toggleViewAction());
+
 }
 
 void GlyphViewerWindow::OnStereoSetup(bool stereoEnabled) {

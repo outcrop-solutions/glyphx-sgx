@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 //import { useHistory } from "react-router-dom";
 //import { Storage } from "aws-amplify";
 import { makeStyles, fade } from '@material-ui/core/styles';
-//import { Auth, API } from "aws-amplify";
+import { Auth, API } from "aws-amplify";
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import AddIcon from '@material-ui/icons/Add';
@@ -40,8 +40,30 @@ const useStyles = makeStyles((theme) => ({
 export default function HomeFrame(props) {
     const classes = useStyles();
     //const history = useHistory();
+    //const [institution, setInstitution] = useState(null);
+    const [recentViews, setRecentViews] = useState(null);
+    const [loadView, setLoadView] = useState(false);
 
-    const names = ['Purchasing Raw Materials China', 'Shipping Spend UPS', 'Manufacturing Production Asia', 'Purchasing Raw Materials Brazil', 'Shipping Spend Fedex', 'Warehouse Draper UT'];
+    useEffect(() => {
+        //console.log(props.institution);
+        if(props.institution)
+            getRecent(props.institution);
+    }, [props.institution]);
+
+    useEffect(() => {
+        if(recentViews)
+            setLoadView(true);
+    }, [recentViews]);
+
+    useEffect(() => {
+        setInterval(function ping() {
+            props.sendMessage('{"action" : "OnMessage" , "connectionId": "'+props.server+'", "message" : "ping"}');
+            console.log("ping");
+        }, 60000);
+    }, [])
+
+
+    /*const names = ['Purchasing Raw Materials China', 'Shipping Spend UPS', 'Manufacturing Production Asia', 'Purchasing Raw Materials Brazil', 'Shipping Spend Fedex', 'Warehouse Draper UT'];
 
     const data = () => {
         return {
@@ -51,7 +73,26 @@ export default function HomeFrame(props) {
             'thumbnail': Math.floor(Math.random() * 3),
             'type': Math.floor(Math.random() * 4)
         };
-    };
+    };*/
+
+    function getRecent(institution) {
+        getRecentList(institution).then((result) => {
+            let data = JSON.parse(result.body);
+            let views = [];
+            for(let key in data){
+                views.push(data[key]);
+            }
+            setRecentViews(views);
+        }).catch((error) => {
+            console.error(error);
+        });;
+    }
+
+    function getRecentList(institution) {
+        return API.post("sgx", "/get-recent-list", {
+          body: "{\"institution\":\""+institution+"\"}"
+        });
+    }
     
     return (
         <div className={classes.container}>
@@ -76,17 +117,25 @@ export default function HomeFrame(props) {
                             </IconButton>
                             <div style={{color: 'white', marginTop: 20}}>New Model</div>
                         </div>
-                        {[0, 1, 2, 3].map((text, index) => (
-                            <RecentCard data={data()} key={index} client={props.client} server={props.server} sendMessage={props.sendMessage}/>
-                        ))}
+                        {loadView
+                        ?
+                        recentViews.map((view, index) => (
+                            <RecentCard data={view} key={index} client={props.client} server={props.server} sendMessage={props.sendMessage}/>
+                        ))
+                        : <></>
+                        }
                     </div>
                 </div>
                 <div style={{marginTop: 50}}>
                     <h2 style={{color: 'white', textAlign: 'left', fontWeight: 'normal'}}>RECENTLY VIEWED MODELS</h2>
                     <div className={classes.recentRow}>
-                        {[0, 1, 2, 3, 4].map((text, index) => (
-                            <RecentCard data={data()} key={index} client={props.client} server={props.server} sendMessage={props.sendMessage}/>
-                        ))}
+                        {loadView
+                        ?
+                        recentViews.map((view, index) => (
+                            <RecentCard data={view} key={index} client={props.client} server={props.server} sendMessage={props.sendMessage}/>
+                        ))
+                        : <></>
+                        }
                     </div>
                 </div>
             </Paper>
