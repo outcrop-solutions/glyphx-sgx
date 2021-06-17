@@ -1,6 +1,7 @@
 #include "glyphvieweroptions.h"
 #include <exception>
 #include "application.h"
+#include "glyphbuilderapplication.h"
 #include <QtCore/QDir>
 #include <QtCore/QSettings>
 

@@ -61,7 +61,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_showErrorFromTransform(true),
 	m_showHomePage(true),
     m_viewer( nullptr ),
-    m_dataEngineConnection(nullptr)
+    m_dataEngineConnection(nullptr),
+	lastModified(0)
 {
 	SGX_PROFILE_SCOPE
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -226,6 +227,7 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
 
 		QFile dir(location + filename.split(".zip")[0]);
+		lastModified = 0;
 
 		if (!dir.exists()) {
 			DownloadManager downloadManager(m_dataEngineConnection);
@@ -235,9 +237,9 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 			QFileInfo info(dir);
 
 			qint64 lastMod = jMap["LastModified"].toLongLong();
-			qint64 mod = info.lastModified().toSecsSinceEpoch();
+			lastModified = info.lastModified().toSecsSinceEpoch();
 
-			if ((lastMod - mod) > 0) {
+			if ((lastMod - lastModified) > 0) {
 				QDir d(location + filename.split(".zip")[0]);
 				d.removeRecursively();
 				DownloadManager downloadManager(m_dataEngineConnection);
@@ -1196,30 +1198,40 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 
 		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-		
+
+		QFile dir(QString::fromStdString(dirPath));
+		QFileInfo info(dir);
+		qint64 mod = info.lastModified().toSecsSinceEpoch();
+		bool needsUpdate = (lastModified - mod) > 0;
+
 		DataEngine::GlyphEngine ge;
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 
-		for (const auto& filter : filters) {
-			auto query = filter.second.GenerateQuery(filter.first);
-			if (query.length() > 0)
-			{
-				ge.SetQueryForDatasource(QString::fromStdString(boost::uuids::to_string(filter.first.GetDatasourceID())),
-					QString::fromStdWString(filter.first.GetTable()),
-					query);
+		if (!dir.exists() || needsUpdate) {
+			//qint64 size = QFile(QString::fromStdString(dirPath + "sourcedata.db")).size();
+			//QMessageBox::information(this, tr("Server message"), QString::number(size));
+
+			for (const auto& filter : filters) {
+				auto query = filter.second.GenerateQuery(filter.first);
+				if (query.length() > 0)
+				{
+					ge.SetQueryForDatasource(QString::fromStdString(boost::uuids::to_string(filter.first.GetDatasourceID())),
+						QString::fromStdWString(filter.first.GetTable()),
+						query);
+				}
 			}
+
+			//if (ge.IsUpdateNeeded()){
+
+			DownloadBaseImages(ge);
+			ge.generateGlyphs(this);
 		}
 
-		//if (ge.IsUpdateNeeded()){
-
-		DownloadBaseImages(ge);
-		ge.generateGlyphs(this);
-		//}
 		std::vector<std::string> images = ge.getBaseImages();
-		for (const auto& image : images){
+		for (const auto& image : images) {
 			m_currentBaseImages << QString::fromStdString(image);
 		}
-		
+
 		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
 
 		m_interactiveLegend->reset();

@@ -225,6 +225,7 @@ private:
 
 	QWebSocket m_webSocket;
 	int counter;
+	qint64 lastModified;
 };
 
 #endif // GLYPHVIEWERWINDOW_H

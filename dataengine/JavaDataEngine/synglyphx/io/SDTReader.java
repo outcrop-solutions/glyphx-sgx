@@ -78,19 +78,19 @@ public class SDTReader {
 		
 		//double start = System.currentTimeMillis();
 		functionSetup();
-		Thread thread = new Thread(){
-    		public void run(){
-    			double start = System.currentTimeMillis();
-    			if(!app.equals("Web")){
-	      			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
-	      			writer.writeSDTInfo(timestamp);
-	      			writer.writeTableIndex();
-	      		}
-      			double end = System.currentTimeMillis();
-      			Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
-    		}
-  		};
-  		thread.start();
+		//Thread thread = new Thread(){
+    		//public void run(){
+		double start = System.currentTimeMillis();
+		if(!app.equals("Web")){
+  			SQLiteWriter writer = new SQLiteWriter(dataPaths, outDir, rootIds, templates);
+  			writer.writeSDTInfo(timestamp);
+  			writer.writeTableIndex();
+  		}
+		double end = System.currentTimeMillis();
+		Logger.getInstance().addT(String.valueOf((end-start)/1000.00));
+    		//}
+  		//};
+  		//thread.start();
 
 		mapping = new Mapper();
 		mapping.addNodeTemplates(templates, count);
@@ -98,11 +98,11 @@ public class SDTReader {
 		mapping.setDefaults(tagFieldDefault, tagValueDefault, scaleZeroDefault);
 		mapping.setLinkTemplates(linkReader.getLinkTemps());
 		mapping.generateGlyphTrees(dataPaths, rootIds, outDir, colorStr, app, base_objects);
-		try{
+		/*try{
 			thread.join();
 		}catch(InterruptedException ie){
 	        ie.printStackTrace();
-		}
+		}*/
 		//double end = System.currentTimeMillis();
 		//System.out.print("Time to generate cache: ");
 		//System.out.println((end-start)/1000.00);

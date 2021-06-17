@@ -25,7 +25,7 @@ public class DataFrame {
 	private HashMap<String, Thread> percentRankThreads = null;
 	private HashMap<String, HashMap<Double, Double>> percentRankFields = null;
 	private String[] headerString;
-	private Thread parse2SQLite;
+	//private Thread parse2SQLite;
 	private Connection conn;
 
 	public DataFrame(){
@@ -356,20 +356,20 @@ public class DataFrame {
 	}
 
 	public void createSQLiteTable4CSV(String path) throws Exception{
-		parse2SQLite = new Thread(){
-    		public void run(){
-    			createTable(path);
-    		}
-  		};
-  		parse2SQLite.start();
+		//parse2SQLite = new Thread(){
+    		//public void run(){
+    	createTable(path);
+    		//}
+  		//};
+  		//parse2SQLite.start();
 	}
 
 	public void wait4CSV2SQLite(){
-		try{
+		/*try{
 			parse2SQLite.join();
 		}catch(InterruptedException ie){
 	        ie.printStackTrace();
-		}
+		}*/
 	}
 
 	public Connection getConn(){
