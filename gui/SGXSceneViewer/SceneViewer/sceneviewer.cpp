@@ -217,6 +217,18 @@ namespace SynGlyphX
 			QObject::connect(hudButton, &QToolButton::pressed, this, [this]() { enableHUDAxes(!hudAxesEnabled()); });
 			hudButton->move(QPoint(0, 180 * mult));
 
+			QToolButton* saveButton = new QToolButton(this);
+			saveButton->setAttribute(Qt::WA_TranslucentBackground);
+			saveButton->setStyleSheet(style);
+			QIcon saveIcon;
+			saveIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
+			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			saveButton->setIcon(saveIcon);
+			saveButton->setIconSize(QSize(24 * mult, 24 * mult));
+			saveButton->setToolTip("Snapshot");
+			QObject::connect(saveButton, &QToolButton::pressed, this, [this]() { emit saveSnapshot(); });
+			saveButton->move(QPoint(0, 220 * mult));
+
 			QToolButton* camButton = new QToolButton(this);
 			camButton->setAttribute(Qt::WA_TranslucentBackground);
 			camButton->setStyleSheet(style_red);
@@ -227,7 +239,32 @@ namespace SynGlyphX
 			camButton->setIconSize(QSize(24 * mult, 24 * mult));
 			camButton->setToolTip("Reset Camera Position");
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
-			camButton->move(QPoint(0, 220 * mult));
+			camButton->move(QPoint(0, 260 * mult));
+/*
+			QToolButton* acamButton = new QToolButton(this);
+			acamButton->setAttribute(Qt::WA_TranslucentBackground);
+			acamButton->setStyleSheet(style_red);
+			QIcon acamIcon;
+			acamIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
+			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+			acamButton->setIcon(camIcon);
+			acamButton->setIconSize(QSize(24 * mult, 24 * mult));
+			acamButton->setToolTip("Set Camera Position");
+			QObject::connect(acamButton, &QToolButton::pressed, this, [this]() { std::vector<double> position{ -289.296, -263.176, 285.157, 0.623141, 0.566878, -0.538836 }; setCameraPosition(position); });
+			acamButton->move(QPoint(0, 300 * mult));
+*/
+			//":GlyphViewer/Resources/rotate_up.png"
+			orthoTopButton = CreateMenuBubble(style, "T", "Ortho Top");
+			QObject::connect(orthoTopButton, &QToolButton::pressed, this, [this]() { orthogonal_view(0); });
+			//orthoTopButton->move(QPoint(0, 300 * mult));
+
+			orthoXButton = CreateMenuBubble(style, "X", "Ortho X");
+			QObject::connect(orthoXButton, &QToolButton::pressed, this, [this]() { orthogonal_view(1); });
+			//orthoXButton->move(QPoint(0, 340 * mult));
+
+			orthoYButton = CreateMenuBubble(style, "Y", "Ortho Y");
+			QObject::connect(orthoYButton, &QToolButton::pressed, this, [this]() { orthogonal_view(2); });
+			//orthoYButton->move(QPoint(0, 380 * mult));
 
 		}
 		else
@@ -330,6 +367,22 @@ namespace SynGlyphX
 			base_textures.clear();
 			geomDB.reset();
 		}
+	}
+
+	QToolButton* SceneViewer::CreateMenuBubble(QString style, QString icon, QString tooltip) {
+
+		QToolButton* button = new QToolButton(this);
+		button->setAttribute(Qt::WA_TranslucentBackground);
+		button->setStyleSheet(style);
+		//QIcon ico;
+		//ico.addFile(icon, QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
+		//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
+		//button->setIcon(ico);
+		button->setText(icon);
+		button->setIconSize(QSize(24 * mult, 24 * mult));
+		button->setToolTip(tooltip);
+
+		return button;
 	}
 
 	QToolButton* SceneViewer::CreateNavigationButton(const QString& toolTip, bool autoRepeat) {
@@ -506,6 +559,11 @@ namespace SynGlyphX
 
 			topPositionOfButton += nav_button_size;
 			m_moveDownButton->move(QPoint(leftPosOfButtonsInHCenter, topPositionOfButton));
+
+			orthoTopButton->move(QPoint(w / 2, 20 * mult));
+			orthoXButton->move(QPoint((w / 2) - 40, 20 * mult));
+			orthoYButton->move(QPoint((w / 2) + 40, 20 * mult));
+
 		}
 	}
 
@@ -1056,6 +1114,68 @@ namespace SynGlyphX
 
 		scene->clearSelection();
 		selection_changed();
+	}
+
+	std::vector<float> SceneViewer::getCameraPosition() {
+
+		glm::vec3 pos = camera->get_position();
+		glm::vec3 center = scene->getBound().get_center();
+		glm::vec3 cam_dir = glm::normalize(center - pos);
+
+		std::vector<float> position{pos[0], pos[1], pos[2], cam_dir[0], cam_dir[1], cam_dir[2]};
+		return position;
+	}
+
+	void SceneViewer::setCameraPosition(std::vector<double> pos) {
+
+		orbit_cam_control->cancelFlyToTarget();
+		camera->set_position(glm::vec3(pos[0], pos[1], pos[2]));
+		glm::vec3 cam_dir = glm::normalize(glm::vec3(pos[3], pos[4], pos[5]));
+		camera->set_forward(cam_dir);
+		orbit_cam_control->setOrbitTarget(orbit_center, 3.f, true);
+		set_cam_control(orbit_cam_control, true);
+		//set_cam_control(free_cam_control, true);
+/*
+		QString out = QString::number(pos[0]) + ", " + QString::number(pos[1]) + ", " + QString::number(pos[2]) + "\n" +
+			QString::number(pos[3]) + ", " + QString::number(pos[4]) + ", " + QString::number(pos[5]);
+		QMessageBox::information(this, tr("Server message"), out);
+*/
+	}
+
+	void SceneViewer::orthogonal_view(int pos) {
+
+		glm::vec3 position = camera->get_position();
+		std::vector<double> new_pos;
+		auto dist = glm::distance(position, orbit_center);
+
+		if (pos == 0) { //TOP
+			new_pos.push_back(orbit_center[0]);
+			new_pos.push_back(orbit_center[1]);
+			new_pos.push_back(dist);
+
+			new_pos.push_back(-0.01);
+			new_pos.push_back(0.01);
+			new_pos.push_back(-0.99);
+		}
+		else if (pos == 1) { //X
+			new_pos.push_back(orbit_center[0]);
+			new_pos.push_back(dist);
+			new_pos.push_back(orbit_center[2]);
+
+			new_pos.push_back(0);
+			new_pos.push_back(-1);
+			new_pos.push_back(0);
+		}
+		else if (pos == 2) { //Y
+			new_pos.push_back(dist);
+			new_pos.push_back(orbit_center[1]);
+			new_pos.push_back(orbit_center[2]);
+
+			new_pos.push_back(-1);
+			new_pos.push_back(0);
+			new_pos.push_back(0);
+		}
+		setCameraPosition(new_pos);
 	}
 
 	void SceneViewer::updateFrame()

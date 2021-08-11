@@ -23,6 +23,7 @@ import org.w3c.dom.NodeList;
 public class PathBuilder {
 
 	private static String DBNAME = "data.db";
+	private static String CSVNAME = "data.csv";
 	private ArrayList<Node> sdtNames;
 	private ArrayList<File> sdtFiles;
 	private ArrayList<UserFile> userFiles;
@@ -145,7 +146,7 @@ public class PathBuilder {
 		
 	}
 
-	private void findSDT(File base, ArrayList<File> sdtFiles){
+	public void findSDT(File base, ArrayList<File> sdtFiles){
 
 		if(base.isDirectory()){
 			File[] base_files = base.listFiles();
@@ -160,7 +161,7 @@ public class PathBuilder {
 		}
 	}
 
-	private void restructureSDTInnerPaths(File file){
+	public void restructureSDTInnerPaths(File file){
 
 		try{
 			long lastModified = file.lastModified();
@@ -192,6 +193,17 @@ public class PathBuilder {
 						NodeList name_nodes = ((Element)datasource).getElementsByTagName("Name").item(0).getChildNodes();
 						Node name_node = (Node) name_nodes.item(0);
 						name_node.setTextContent((new File(localPath+File.separator+DBNAME)).getPath());
+					}
+					if(((Element)datasource).getAttribute("type").equals("CSV")){
+						NodeList host_nodes = ((Element)datasource).getElementsByTagName("Host").item(0).getChildNodes();
+						Node host_node = (Node) host_nodes.item(0);
+
+						String csvName = restructureFilePath(file, host_node.getTextContent());
+						host_node.setTextContent(csvName);
+
+						NodeList name_nodes = ((Element)datasource).getElementsByTagName("Name").item(0).getChildNodes();
+						Node name_node = (Node) name_nodes.item(0);
+						name_node.setTextContent(csvName);
 					}
 				}
 			}

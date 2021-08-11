@@ -54,7 +54,8 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEn
 	logoLabel->setAlignment(Qt::AlignCenter);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png").scaled(SynGlyphX::Application::DynamicQSize(135, 25)));
+		//logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_homepage.png").scaled(SynGlyphX::Application::DynamicQSize(135, 25)));
+		logoLabel->setPixmap(QPixmap(":SGXGUI/Resources/synglyphx_logo_white_border.png").scaled(SynGlyphX::Application::DynamicQSize(178, 40)));
 	}
 	else {
 
@@ -354,7 +355,7 @@ void HomePageWidget::CreateDashboardWidget() {
 	QLabel* logoImage = new QLabel(m_dashboardWidget);
 	logoImage->setAlignment(Qt::AlignCenter);
 	logoImage->setStyleSheet("QLabel{background-color: white;}");
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
+	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
 		logoImage->setPixmap(QPixmap(":SGXGUI/Resources/GlyphEd/glyphed_logo_large.png").scaled(SynGlyphX::Application::DynamicQSize(584,110)));//584,110
 	}

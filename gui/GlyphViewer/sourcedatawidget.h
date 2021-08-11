@@ -22,6 +22,7 @@
 #include "sourcedatacache.h"
 #include <QtWidgets/QStatusBar>
 #include "datatransformmapping.h"
+#include <QtWidgets/QLabel>
 
 class QTableView;
 
@@ -47,6 +48,7 @@ signals:
 public slots:
 	void CreateSubsetVisualization();
 	void UpdateTables();
+	void SetCount();
 
 protected slots:
 	void SaveCurrentTabToFile();
@@ -70,6 +72,7 @@ protected:
 	QMap<QString, QSqlQueryModel*> m_sqlModels;
 	SourceDataCache::ConstSharedPtr m_sourceDataCache;
 	SynGlyphX::DataTransformMapping::ConstSharedPtr m_dataTransformMapping;
+	QLabel* countLabel;
 
 	virtual const char* getDefaultExportedDataFileName() const { return "selectedsourcedata.csv"; }
 };

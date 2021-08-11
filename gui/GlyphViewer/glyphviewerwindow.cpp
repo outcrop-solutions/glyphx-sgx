@@ -61,8 +61,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_showErrorFromTransform(true),
 	m_showHomePage(true),
     m_viewer( nullptr ),
-    m_dataEngineConnection(nullptr),
-	lastModified(0)
+    m_dataEngineConnection(nullptr)
 {
 	SGX_PROFILE_SCOPE
 	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
@@ -70,6 +69,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphX::GlyphForestInfoModel(this);
+	lastModified = 0;
 
 	m_glyphForestSelectionModel = new SynGlyphX::ItemFocusSelectionModel(m_glyphForestModel, this);
 	m_filteringManager = new FilteringManager(m_mappingModel, m_sourceDataCache, m_glyphForestSelectionModel, this);
@@ -139,6 +139,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::closeVisualization, this, &GlyphViewerWindow::CloseVisualization);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
+	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::saveSnapshot, this, &GlyphViewerWindow::SaveSnapshot);
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
@@ -158,6 +159,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_showHideToolbar->hide();
 	m_showHideToolbar->setVisible(false);
 	m_interactionToolbar->hide();
+	m_interactionToolbar->setVisible(false);
 	menuBar()->hide();
 
 	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
@@ -225,7 +227,9 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 
 		QString filename = jsonMap["message"].split('/')[5].split('?')[0];
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
-
+		QDir loc(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation())));
+		loc.mkdir("Content");
+		
 		QFile dir(location + filename.split(".zip")[0]);
 		lastModified = 0;
 
@@ -252,6 +256,7 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 
 		if (m_currentFilename != "None") {
 			LoadNewVisualization(m_currentFilename);
+
 		}
 
 		SynGlyphX::Application::restoreOverrideCursor();
@@ -277,6 +282,69 @@ QString GlyphViewerWindow::findSdtInDirectory(const QString& directory) {
 		}
 	}
 	return "None";
+}
+
+void GlyphViewerWindow::SaveSnapshot() {
+
+	std::vector<float> pos = m_viewer->getCameraPosition();
+	QString cameraJson = jsonFromCamera(pos);
+
+	//QMessageBox::information(this, tr("Server message"), cameraJson);
+	
+	QList<QString> tables = m_filteringManager->GetTable2FiltersMap().keys();
+	QString json = "\"tables\": {";
+	for (int i = 0; i < tables.size(); i++) {
+		json += jsonFromFilterTable(tables[i]);
+		if (i != tables.size() - 1)
+			json += ",";
+	}
+	json += "}";
+
+	QString snapshot = "{" + cameraJson + "," + json + "}";
+	QFile file("snapshot.json");
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		QTextStream out(&file);
+		out << snapshot;
+		file.close();
+	}
+	//QMessageBox::information(this, tr("Server message"), snapshot);
+	//std::vector<float> position{-289.296, -263.176, 285.157, 0.623141, 0.566878, -0.538836};
+}
+
+QString GlyphViewerWindow::jsonFromCamera(std::vector<float> pos) {
+
+	QString json = "\"camera\": {\"position\": [" + QString::number(pos[0]) + "," + QString::number(pos[1]) + "," + QString::number(pos[2]) + "]," +
+		"\"direction\": [" + QString::number(pos[3]) + "," + QString::number(pos[4]) + "," + QString::number(pos[5]) + "]}";
+	return json;
+}
+
+QString GlyphViewerWindow::jsonFromFilterTable(QString table) {
+
+	QString json = "\"" + table + "\": {";
+	bool hf = m_filteringManager->GetTable2FiltersMap()[table].HasFilters();
+	if (hf) {
+		std::vector<std::pair<QString, QSet<QString>>> dvf = m_filteringManager->GetTable2FiltersMap()[table].GetDistinctValueFilters();
+		for (int i = 0; i < dvf.size(); i++) {
+			QList<QString> values = dvf[i].second.values();
+			json += jsonFromFilterField(dvf[i].first, values);
+			if (i != dvf.size() - 1)
+				json += ",";
+		}
+	}
+	json += "}";
+	return json;
+}
+
+QString GlyphViewerWindow::jsonFromFilterField(QString field, QList<QString> values) {
+
+	QString json = "\"" + field + "\": [";
+	for (int i = 0; i < values.size(); i++) {
+		json += "\"" + values[i] + "\"";
+		if (i != values.size() - 1)
+			json += ",";
+	}
+	json += "]";
+	return json;
 }
 
 void GlyphViewerWindow::CreateLoadingScreen() {
@@ -309,8 +377,8 @@ void GlyphViewerWindow::CreateSceneViewer() {
 
 	m_viewer = new SynGlyphX::SceneViewer( this, SynGlyphX::ViewerMode::Full );
 	m_viewer->setSelectionModel( m_glyphForestModel, m_glyphForestSelectionModel );
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
-		m_viewer->setLogoFile("textures/glyphed.png");
+	//if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
+		//m_viewer->setLogoFile("textures/glyphed.png");
 
 	m_openURLAction = new QAction(tr("Open URL"), this);
 	m_openURLAction->setShortcut(Qt::Key_U);
@@ -2087,7 +2155,8 @@ QString GlyphViewerWindow::GetApplicationDisplayName() const {
 
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		return SynGlyphX::Application::applicationName() + " (" + SynGlyphX::Application::organizationName() + " Inside)";
+		//return SynGlyphX::Application::applicationName() + " (" + SynGlyphX::Application::organizationName() + " Inside)";
+		return SynGlyphX::Application::organizationName() + " " + SynGlyphX::getFullVersionString().c_str();
 	}
 	else {
 

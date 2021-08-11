@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
 	}
 	QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
-	commonDataDir.mkdir("GlyphEd");
+	commonDataDir.mkdir("Glyph Viewer");
 
 	//qInstallMessageHandler(myMessageHandler);
 

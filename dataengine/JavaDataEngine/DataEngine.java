@@ -9,9 +9,11 @@ import synglyphx.io.Logger;
 import synglyphx.util.AESencrp;
 import synglyphx.util.ErrorHandler;
 import synglyphx.user.UnzipUtility;
+import synglyphx.user.PathBuilder;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.File;
 
 public class DataEngine {
 
@@ -212,13 +214,24 @@ public class DataEngine {
 //JDBC END
 
 	public static boolean unZipFile(String file) {
+
 		try{
-			UnzipUtility.unzip(file, file.split(".zip")[0]);
+
+			String path = file.split(".zip")[0];
+			UnzipUtility.unzip(file, path);
 			UnzipUtility.delete(file);
+
+			PathBuilder pb = new PathBuilder(path);
+			ArrayList<File> sdtFiles = new ArrayList<File>();
+			pb.findSDT(new File(path), sdtFiles);
+			for (File f : sdtFiles) {
+				pb.restructureSDTInnerPaths(f);
+			}
+
 		}catch(Exception e){
-			e.printStackTrace();
 			return false;
 		}
+
 
 		return true;
 	}

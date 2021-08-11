@@ -24,7 +24,7 @@ namespace SynGlyphX {
 	
 	void GlyphBuilderApplication::SetupIconsAndLogos() {
 
-		if (IsGlyphEd()) {
+		if (!IsGlyphEd()) {
 
 			SetupIcons(QIcon(":SGXGUI/Resources/GlyphEd/synglyphx_x_ED.ico"));
 			s_splashScreenLocation = ":SGXGUI/Resources/GlyphEd/glyphed_splash.png";
@@ -73,7 +73,7 @@ namespace SynGlyphX {
 	bool GlyphBuilderApplication::IsGlyphEd() {
 
 		auto appfile = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
-		return appfile.contains( "GlyphEd") || appfile.contains("GlyphEdViewer");
+		return true;//appfile.contains( "GlyphEd") || appfile.contains("GlyphEdViewer");
 	}
 
 } //namespace SynGlyphX

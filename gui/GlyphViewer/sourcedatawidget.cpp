@@ -41,6 +41,11 @@ SourceDataWidget::SourceDataWidget(SourceDataCache::ConstSharedPtr sourceDataCac
 
 	buttonsLayout->addStretch(1);
 
+	countLabel = new QLabel(this);
+	countLabel->setText("Count: 0");
+	buttonsLayout->addWidget(countLabel);
+	QObject::connect(m_sourceDataTabs, &QTabWidget::currentChanged, this, &SourceDataWidget::SetCount);
+
 	QPushButton* closeButton = new QPushButton(tr("Close"), this);
 	buttonsLayout->addWidget(closeButton);
 	QObject::connect(closeButton, &QPushButton::clicked, this, &SourceDataWidget::close);
@@ -65,6 +70,23 @@ void SourceDataWidget::closeEvent(QCloseEvent* event) {
 	WriteSettings();
 	emit WindowHidden();
 	QWidget::closeEvent(event);
+}
+
+void SourceDataWidget::SetCount() {
+	
+	if (m_sourceDataTabs->currentIndex() != -1) {
+		QTableView* tableView = m_tableViews[m_sourceDataTabs->currentIndex()];
+		QString sourceDataTablename = tableView->objectName();
+		QSqlQuery query = m_sqlModels[sourceDataTablename]->query();
+		int count = 0;
+		if (query.last())
+		{
+			count = query.at() + 1;
+			query.first();
+			query.previous();
+		}
+		countLabel->setText("Count: " + QString::number(count));
+	}
 }
 
 void SourceDataWidget::DeleteTabs() {

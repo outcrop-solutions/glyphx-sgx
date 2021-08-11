@@ -85,6 +85,8 @@ namespace SynGlyphX
 		GlyphScene& getScene() { return *scene; }
 
 		void resetCamera();
+		std::vector<float> getCameraPosition();
+		void setCameraPosition(std::vector<double> pos);
 		void enableFlyToObject( bool enabled );
 		void enableAnimation( bool enabled ) { animation_enabled = enabled; }
 		bool animationEnabled() { return animation_enabled; }
@@ -133,6 +135,7 @@ namespace SynGlyphX
 	signals:
 		void interactiveLegendToggled();
 		void closeVisualization();
+		void saveSnapshot();
 
 	protected:
 		enum class CenterMode
@@ -153,6 +156,7 @@ namespace SynGlyphX
 
 	private:
 		QToolButton* CreateNavigationButton( const QString& toolTip, bool autoRepeat );
+		QToolButton* CreateMenuBubble(QString style, QString icom, QString tooltip);
 		void checkErrors();
 		bool initialized;
 
@@ -258,10 +262,15 @@ namespace SynGlyphX
 		QToolButton* m_moveUpButton;
 		QToolButton* m_moveDownButton;
 
+		QToolButton* orthoTopButton;
+		QToolButton* orthoXButton;
+		QToolButton* orthoYButton;
+
 		// temporary until we move away from qt selection model
 		SynGlyphX::GlyphForestInfoModel* glyph_forest_model;
 		ItemFocusSelectionModel* item_focus_sm;
 		void selection_changed();
+		void orthogonal_view(int pos);
 
 		std::array<std::string, 3> m_overridePosition;
 

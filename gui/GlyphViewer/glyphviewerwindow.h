@@ -81,6 +81,9 @@ protected:
 
 	void UpdateFilenameWindowTitle(const QString& title) override;
 	QString GetApplicationDisplayName() const override;
+	QString jsonFromCamera(std::vector<float> pos);
+	QString jsonFromFilterTable(QString table);
+	QString jsonFromFilterField(QString field, QList<QString> values);
 
 private slots:
 	void OpenVisualisation();
@@ -111,6 +114,7 @@ private slots:
 	void OnSocketLaunch(QString message);
 	void OnSocketSslErrors(const QList<QSslError> &errors);
 	void OnSocketClosed();
+	void SaveSnapshot();
 
 private:
 	class HUDGenerationInfo {
