@@ -6,5 +6,6 @@
         <file>Resources/rotate_right.png</file>
         <file>Resources/rotate_down.png</file>
         <file>Resources/glyphed_stylesheet.qss</file>
+        <file>qwebchannel.js</file>
     </qresource>
 </RCC>

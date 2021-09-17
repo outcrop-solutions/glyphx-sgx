@@ -142,7 +142,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::saveSnapshot, this, &GlyphViewerWindow::SaveSnapshot);
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
-	m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
+	//m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 	m_pseudoTimeFilterWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
 
 	CreateInteractionToolbar();
@@ -162,6 +162,13 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_interactionToolbar->setVisible(false);
 	menuBar()->hide();
 
+	int ws_port = 12345;
+	l_server = new LocalServer(this);
+	l_server->startServer("WebChannel Filtering Server", ws_port);
+	Core* core = l_server->WebChannelCore();
+
+	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::CreateGlyphDrawer);
+
 	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
 	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), [=](QAbstractSocket::SocketError error) {
 		QMessageBox::information(this, tr("Server message"), QString(error));
@@ -169,6 +176,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_webSocket.open(QUrl("wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production"));
 
 	counter = 1;
+
 }
 
 GlyphViewerWindow::~GlyphViewerWindow()
@@ -205,7 +213,9 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 	jsonMap.insert("message", m);
 
 	if (jsonMap["type"] == "id") {
-		QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com/?server=" + jsonMap["message"];
+		//QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com/?server=" + jsonMap["message"];
+
+		QString address = "http://localhost:3000/";
 		dlg->load(QUrl(address));
 	}
 	else if (jsonMap["type"] == "code") {
@@ -260,6 +270,7 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 		}
 
 		SynGlyphX::Application::restoreOverrideCursor();
+
 	}
 	else {
 		//QMessageBox::information(this, tr("Server message"), jsonMap["type"] + ", " + jsonMap["message"]);
@@ -270,6 +281,35 @@ void GlyphViewerWindow::OnSocketLaunch(QString message) {
 void GlyphViewerWindow::OnSocketClosed() {
 
 	QMessageBox::information(this, tr("Server message"), "Socket closed.");
+}
+
+void GlyphViewerWindow::CreateGlyphDrawer(QString text) {
+
+	QWidget* glyphDrawer = new QWidget(this);
+
+	QRect rec = QApplication::desktop()->screenGeometry();
+
+	glyphDrawer->setMinimumSize(QSize(1793, rec.height()-200));
+	glyphDrawer->move(511, 200);
+
+	glyphDrawer->setWindowFlags(Qt::FramelessWindowHint);
+
+	QVBoxLayout* layout = new QVBoxLayout(this);
+
+	QLabel* syncLabel = new QLabel(this);
+	syncLabel->setAlignment(Qt::AlignCenter);
+	syncLabel->setWordWrap(true);
+	syncLabel->setTextFormat(Qt::RichText);
+	syncLabel->setStyleSheet("QLabel{font-size: 12.5pt; font-weight: bold;}");
+	syncLabel->setText(tr("GlyphX.sdt"));
+	layout->addWidget(syncLabel);
+
+	glyphDrawer->setStyleSheet("QWidget{background-color: #eff2f7;}");
+
+	glyphDrawer->setLayout(layout);
+
+	//glyphDrawer->show();
+
 }
 
 QString GlyphViewerWindow::findSdtInDirectory(const QString& directory) {
@@ -683,6 +723,31 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_showHideToolbar->addAction(act);
 	m_rightDockWidget->hide();
 
+	//int ws_port = 12345;
+	//l_server = new LocalServer(this);
+	//l_server->startServer("WebChannel Filtering Server", ws_port);
+
+	//m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
+	//m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
+	//QWebEngineView* dlg = new QWebEngineView(this);
+	//dlg->setMinimumSize(width, height);
+	//QUrl url = QUrl::fromLocalFile(QDir::currentPath() + "/index.html");
+	//url = QUrl(url.toString() + "?webChannelBaseUrl=ws://localhost:" + QString::number(ws_port));
+	//dlg->load(url);
+	//m_rightDockWidget->setWidget(dlg);
+	/*addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
+	act = m_rightDockWidget->toggleViewAction();
+	m_loadedVisualizationDependentActions.push_back(act);
+	QIcon filterIcon;
+	QPixmap filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
+	QPixmap filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
+	filterIcon.addPixmap(filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
+	filterIcon.addPixmap(filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
+	act->setIcon(filterIcon);
+	//m_viewMenu->addAction(act);
+	//m_showHideToolbar->addAction(act);
+	m_rightDockWidget->hide();*/
+
 	QObject::connect(m_filteringWidget, &FilteringWidget::LoadSubsetVisualization, this, [this](QString filename){ LoadNewVisualization(filename); }, Qt::QueuedConnection);
 
 	m_bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
@@ -1023,7 +1088,7 @@ void GlyphViewerWindow::ClearAllData() {
 	m_glyphForestModel->ClearAndReset();
 	m_mappingModel->ClearAndReset();
 	m_legendsWidget->ClearLegends();
-	m_filteringWidget->OnNewVisualization();
+	//m_filteringWidget->OnNewVisualization();
 	m_interactiveLegendDock->close();
 	m_hudGenerationInfo.clear();
 }
@@ -1312,8 +1377,8 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		m_columnsModel->Reset();
 
 		//This must be done before LoadFilesIntoModel is called
-		m_filteringWidget->SetElasticListFields(m_mappingModel->GetDataMapping()->GetElasticListFields());
-		m_filteringWidget->OnNewVisualization();
+		//m_filteringWidget->SetElasticListFields(m_mappingModel->GetDataMapping()->GetElasticListFields());
+		//m_filteringWidget->OnNewVisualization();
 
 		LoadFilesIntoModel();
 		
@@ -1588,12 +1653,12 @@ void GlyphViewerWindow::ChangeOptions(const GlyphViewerOptions& oldOptions, cons
 
 		if (oldOptions.GetLoadSubsetVisualization() != newOptions.GetLoadSubsetVisualization()) {
 
-			m_filteringWidget->SetLoadSubsetVisualization(newOptions.GetLoadSubsetVisualization());
+			//m_filteringWidget->SetLoadSubsetVisualization(newOptions.GetLoadSubsetVisualization());
 		}
 
 		if (oldOptions.GetLoadSubsetVisualizationInNewInstance() != newOptions.GetLoadSubsetVisualizationInNewInstance()) {
 
-			m_filteringWidget->SetLoadSubsetVisualizationInNewInstance(newOptions.GetLoadSubsetVisualizationInNewInstance());
+			//m_filteringWidget->SetLoadSubsetVisualizationInNewInstance(newOptions.GetLoadSubsetVisualizationInNewInstance());
 		}
 
 		if (oldOptions.GetShowMessageWhenImagesDidNotDownload() != newOptions.GetShowMessageWhenImagesDidNotDownload()) {
@@ -1764,8 +1829,8 @@ GlyphViewerOptions GlyphViewerWindow::CollectOptions() {
 	}
 
 	options.SetHideUnselectedGlyphTrees(m_linkedWidgetsManager->GetFilterView());
-	options.SetLoadSubsetVisualization(m_filteringWidget->GetLoadSubsetVisualization());
-	options.SetLoadSubsetVisualizationInNewInstance(m_filteringWidget->GetLoadSubsetVisualizationInNewInstance());
+	//options.SetLoadSubsetVisualization(m_filteringWidget->GetLoadSubsetVisualization());
+	//options.SetLoadSubsetVisualizationInNewInstance(m_filteringWidget->GetLoadSubsetVisualizationInNewInstance());
 
 	options.SetShowMessageWhenImagesDidNotDownload(m_showErrorFromTransform);
 	options.SetShowHomePage(m_showHomePage);
@@ -1894,7 +1959,7 @@ void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 
 void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 
-	m_filteringWidget->CloseSourceDataWidgets();
+	//m_filteringWidget->CloseSourceDataWidgets();
 
 	SynGlyphX::MainWindow::closeEvent(event);
 }

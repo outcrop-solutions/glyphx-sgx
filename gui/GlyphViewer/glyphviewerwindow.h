@@ -38,6 +38,7 @@
 #include "SettingsStoredFileList.h"
 #include <QtWebSockets/QWebSocket>
 #include <QtWebEngineWidgets/QWebEngineView>
+#include "LocalServer.h"
 
 class HomePageWidget;
 class FrontEndFilterListWidget; 
@@ -115,6 +116,7 @@ private slots:
 	void OnSocketSslErrors(const QList<QSslError> &errors);
 	void OnSocketClosed();
 	void SaveSnapshot();
+	void CreateGlyphDrawer(QString text);
 
 private:
 	class HUDGenerationInfo {
@@ -217,6 +219,7 @@ private:
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
 	QWebEngineView* dlg;
+	LocalServer *l_server;
 
 	HomePageWidget* m_homePage;
 
