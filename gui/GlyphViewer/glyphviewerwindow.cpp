@@ -166,14 +166,19 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	l_server = new LocalServer(this);
 	l_server->startServer("WebChannel Filtering Server", ws_port);
 	Core* core = l_server->WebChannelCore();
+	CreateGlyphDrawer();
+	core->SetDrawerWidget(glyphDrawer);
 
-	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::CreateGlyphDrawer);
+	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
 
-	QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
+	QString address = "http://localhost:3000/";
+	dlg->load(QUrl(address));
+
+	/*QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
 	QObject::connect(&m_webSocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), [=](QAbstractSocket::SocketError error) {
 		QMessageBox::information(this, tr("Server message"), QString(error));
 	});
-	m_webSocket.open(QUrl("wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production"));
+	m_webSocket.open(QUrl("wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production"));*/
 
 	counter = 1;
 
@@ -188,7 +193,7 @@ void GlyphViewerWindow::closeJVM(){
 	
 	m_dataEngineConnection->destroyJVM();
 }
-
+/*
 void GlyphViewerWindow::OnSocketConnect() {
 
 	QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived,
@@ -282,33 +287,53 @@ void GlyphViewerWindow::OnSocketClosed() {
 
 	QMessageBox::information(this, tr("Server message"), "Socket closed.");
 }
+*/
+void GlyphViewerWindow::CreateGlyphDrawer() {
 
-void GlyphViewerWindow::CreateGlyphDrawer(QString text) {
-
-	QWidget* glyphDrawer = new QWidget(this);
+	glyphDrawer = new QWidget(this);
 
 	QRect rec = QApplication::desktop()->screenGeometry();
 
-	glyphDrawer->setMinimumSize(QSize(1793, rec.height()-200));
-	glyphDrawer->move(511, 200);
+	//glyphDrawer->setMinimumSize(QSize(1793, rec.height()-200));
+	//glyphDrawer->move(511, 200);
 
 	glyphDrawer->setWindowFlags(Qt::FramelessWindowHint);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
-	QLabel* syncLabel = new QLabel(this);
+	/*QLabel* syncLabel = new QLabel(this);
 	syncLabel->setAlignment(Qt::AlignCenter);
 	syncLabel->setWordWrap(true);
 	syncLabel->setTextFormat(Qt::RichText);
 	syncLabel->setStyleSheet("QLabel{font-size: 12.5pt; font-weight: bold;}");
-	syncLabel->setText(tr("GlyphX.sdt"));
-	layout->addWidget(syncLabel);
+	syncLabel->setText(tr("GlyphX.sdt"));*/
 
-	glyphDrawer->setStyleSheet("QWidget{background-color: #eff2f7;}");
+	layout->setMargin(0);
+	layout->setSpacing(0);
+	layout->addWidget(m_viewer);
+
+	glyphDrawer->setStyleSheet("QWidget{background-color: #0f172a;}");
 
 	glyphDrawer->setLayout(layout);
 
-	//glyphDrawer->show();
+	glyphDrawer->hide();
+
+}
+
+void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
+
+	l_server->WebChannelCore()->GetDrawerPosition();
+
+	glyphDrawer->show();
+
+	//Add Viewer window to glyphDrawer and point it to a cached location
+	QTimer::singleShot(100, this, [this]() {
+		QString cache_location = "C:/Users/bryan/AppData/Local/SynGlyphX/GlyphCache/cache/cache_9cc71daa-4e1e-4429-a59d-360a12747a34/";
+		std::vector<std::string> bimgs = { "base_image_3", "base_image_4", "base_image_5", "base_image_6", "base_image_7" };
+		m_viewer->show();
+		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), bimgs, false);
+	});
+	//m_viewer->setAxisNames(compass.at(0).c_str(), compass.at(1).c_str(), compass.at(2).c_str());
 
 }
 

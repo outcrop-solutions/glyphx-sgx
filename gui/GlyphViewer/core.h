@@ -13,12 +13,14 @@ class Core : public QObject
 public:
 	Core(QWidget *prt, QObject *parent = nullptr);
 
+	void SetDrawerWidget(QWidget *drawer) { glyphDrawer = drawer; };
+
 signals:
     /*
         This signal is emitted from the C++ side and the text displayed on the HTML client side.
     */
 	void KeepAlive(const QString &text);
-    void GetDrawerPosition(const QString &text);
+    void GetDrawerPosition();
 	void OP(const QString &text);
 
 public slots:
@@ -36,6 +38,7 @@ public slots:
 
 private:
 	QWidget *parent;
+	QWidget *glyphDrawer;
 };
 
 #endif // CORE_H

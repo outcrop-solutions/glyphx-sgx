@@ -111,12 +111,12 @@ private slots:
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
 	void SwitchVisualizationGroup();
-	void OnSocketConnect();
-	void OnSocketLaunch(QString message);
-	void OnSocketSslErrors(const QList<QSslError> &errors);
-	void OnSocketClosed();
+	//void OnSocketConnect();
+	//void OnSocketLaunch(QString message);
+	//void OnSocketSslErrors(const QList<QSslError> &errors);
+	//void OnSocketClosed();
 	void SaveSnapshot();
-	void CreateGlyphDrawer(QString text);
+	void LoadProjectIntoGlyphDrawer(QString text);
 
 private:
 	class HUDGenerationInfo {
@@ -155,6 +155,7 @@ private:
 	void CreateInteractionToolbar();
 	void UpdateAxisNamesAndSourceDataPosition();
 	QString findSdtInDirectory(const QString& directory);
+	void CreateGlyphDrawer();
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -230,6 +231,7 @@ private:
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 
+	QWidget* glyphDrawer;
 	QWebSocket m_webSocket;
 	int counter;
 	qint64 lastModified;

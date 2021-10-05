@@ -93,6 +93,11 @@ namespace SynGlyphX
 			m_downRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_down.png"));
 			QObject::connect(m_downRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn(glm::vec2(0.f, buttonRotateRate)); });
 
+			m_upRotateButton->hide();
+			m_leftRotateButton->hide();
+			m_rightRotateButton->hide();
+			m_downRotateButton->hide();
+
 			auto move = [&](const glm::vec3& dir, float amt)
 			{
 				if (cur_cam_control == free_cam_control)
@@ -116,6 +121,11 @@ namespace SynGlyphX
 			m_moveDownButton = CreateNavigationButton(tr("Move Down"), true);
 			m_moveDownButton->setIcon(QIcon(":SGXGUI/Resources/down_arrow.png"));
 			QObject::connect(m_moveDownButton, &QToolButton::pressed, this, [this, move]() { move(camera->get_world_up(), -buttonMoveUpDownRate); });
+
+			m_moveForwardButton->hide();
+			m_moveBackwardButton->hide();
+			m_moveUpButton->hide();
+			m_moveDownButton->hide();
 
 			QString style = QString("QToolButton {"
 				"    border: " + QString::number(1 * mult) + "px;"
@@ -340,13 +350,16 @@ namespace SynGlyphX
 		resetCamera();
 
 		//auto scene_ptr = scene;
-		scene->enumGroups([&](const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx) {
+		if (useSuperimposed){
+			scene->enumGroups([&](const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx) {
 			auto pos = nodes[0]->getCachedPosition();
 			float radius = nodes[0]->getCachedCombinedBound().get_radius();
 			group_manager->create(group_idx, pos, radius);
-		});
+			});
+		}
 
 		timer.print_ms_to_debug("full scene read");
+
 	}
 
 	void SceneViewer::clearScene()
@@ -606,6 +619,7 @@ namespace SynGlyphX
 		hal::rasterizer_state rast{ true, true, false };
 		context->set_rasterizer_state(rast);
 
+		background_color = glm::vec4(0.059, 0.09, 0.165, 1);
 		context->clear(hal::clear_type::color_depth, background_color);
 
 		// Compute some axis information beforehand since we'll need it in a few places.
