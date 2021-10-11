@@ -327,12 +327,12 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 	glyphDrawer->show();
 
 	//Add Viewer window to glyphDrawer and point it to a cached location
-	QTimer::singleShot(100, this, [this]() {
+	//QTimer::singleShot(250, this, [this]() {
 		QString cache_location = "C:/Users/bryan/AppData/Local/SynGlyphX/GlyphCache/cache/cache_9cc71daa-4e1e-4429-a59d-360a12747a34/";
 		std::vector<std::string> bimgs = { "base_image_3", "base_image_4", "base_image_5", "base_image_6", "base_image_7" };
 		m_viewer->show();
 		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), bimgs, false);
-	});
+	//});
 	//m_viewer->setAxisNames(compass.at(0).c_str(), compass.at(1).c_str(), compass.at(2).c_str());
 
 }
