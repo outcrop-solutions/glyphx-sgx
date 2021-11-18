@@ -51,7 +51,10 @@
 #include "version.h"
 #include "filesystem.h"
 #include <QtWebEngineWidgets/QWebEngineProfile>
+#include <QtCore/QUuid>
 #include "DownloadManager.h"
+#include "BaseImage.h"
+//#include "Engine.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -168,8 +171,11 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	Core* core = l_server->WebChannelCore();
 	CreateGlyphDrawer();
 	core->SetDrawerWidget(glyphDrawer);
+	core->SetViewerWidget(m_viewer);
 
 	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
+	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
+	QObject::connect(core, &Core::RD, this, &GlyphViewerWindow::ReloadGlyphDrawer);
 
 	QString address = "http://localhost:3000/";
 	dlg->load(QUrl(address));
@@ -181,6 +187,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	m_webSocket.open(QUrl("wss://ggi3cm7i62.execute-api.us-east-1.amazonaws.com/production"));*/
 
 	counter = 1;
+
+	//GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
+	//glyphEngine->initiate();
 
 }
 
@@ -318,22 +327,106 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 
 	glyphDrawer->hide();
 
+	/*int x = 512;
+	int y = 512;
+	int w = 1785;
+	int h = 825;
+
+	glyphDrawer->setMinimumSize(QSize(w, h));
+	glyphDrawer->move(x, y);*/
+
 }
 
 void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
+	QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+	QStringList url_split = text.split("?")[0].split("/");
+	QString filename = url_split[url_split.size() - 1];
+
+	QFile dir(location + filename.split(".zip")[0]);
+
+	if (!dir.exists()) {
+		DownloadManager downloadManager(m_dataEngineConnection);
+		downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
+	}
+
 	l_server->WebChannelCore()->GetDrawerPosition();
 
 	glyphDrawer->show();
+	m_viewer->show();
 
-	//Add Viewer window to glyphDrawer and point it to a cached location
-	//QTimer::singleShot(250, this, [this]() {
-		QString cache_location = "C:/Users/bryan/AppData/Local/SynGlyphX/GlyphCache/cache/cache_9cc71daa-4e1e-4429-a59d-360a12747a34/";
-		std::vector<std::string> bimgs = { "base_image_3", "base_image_4", "base_image_5", "base_image_6", "base_image_7" };
-		m_viewer->show();
-		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), bimgs, false);
-	//});
-	//m_viewer->setAxisNames(compass.at(0).c_str(), compass.at(1).c_str(), compass.at(2).c_str());
+	QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
+	m_mappingModel->LoadDataTransformFile(sdt);
+	boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+
+	std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+	std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+
+	cache_location = QString::fromStdString(cacheDirectoryPath);
+
+	QStringList legend_list;
+	m_viewer->setupLegendWindow(cache_location, legend_list);
+
+	if (!QFile(cache_location + "scene/glyphs.sgc").exists()) {
+
+		QDir().mkdir(cache_location);
+		QDir().mkdir(cache_location + "/scene");
+
+		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+
+		DataEngine::GlyphEngine ge;
+		ge.initiate(m_dataEngineConnection->getEnv(), sdt.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
+
+		if (ge.IsUpdateNeeded()) {
+			//DownloadBaseImages(ge);
+			ge.generateGlyphs(this);
+		}
+
+		compass = ge.getCompassValues();
+
+		/*bool show = true;
+		for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
+			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
+				show = false;
+			}
+		}
+		m_viewer->enableSceneAxes(show);*/
+
+	}
+	
+	std::vector<std::string> base_images;
+	QDir scene(cache_location + "scene/");
+	QFileInfoList files = scene.entryInfoList();
+
+	for (QFileInfo file : files) {
+		QString base = file.baseName();
+		if (base.contains("base_image")) {
+			base_images.push_back(base.toStdString());
+		}
+	}
+	
+	m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images, false);
+	m_viewer->setFilteredGlyphOpacity(0.0f);
+
+	m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
+
+}
+
+void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
+	/*
+	QString IndexColumnName = "rowid";
+	QString tableName = "0bc27e1c-b48b-474e-844d-4ec1b0f94613";
+	QString columnName = "0";
+	float min = 0.0;
+	float max = 2000.0;
+	QString test = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE (\"" + columnName + "\" BETWEEN " + QString::number(min, 'f') + " AND " + QString::number(max, 'f') + ")";
+	*/
+	SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
+	m_viewer->setFilteredResults(myset, true);
+	
+}
+
+void GlyphViewerWindow::ReloadGlyphDrawer(QString text) {
 
 }
 

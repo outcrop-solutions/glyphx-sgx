@@ -38,7 +38,8 @@ bool DownloadManager::DownloadFile(const QUrl &url, const QString &filename) {
 	if (reply->error() != QNetworkReply::NoError) {
 		qDebug() << (reply->errorString().toStdString()).c_str();
 		//std::cout << "Network Error: " << reply->errorString().toStdString() << std::endl;
-		throw DownloadException(("Network Error: " + reply->errorString().toStdString()).c_str());
+		std::string url_string = url.toString().toStdString();
+		throw DownloadException(("Network Error: " + reply->errorString().toStdString() + "\n_" + url_string + "_").c_str());
 	}
 
 	QByteArray data = reply->readAll();

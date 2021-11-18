@@ -587,6 +587,24 @@ SynGlyphX::IndexSet SourceDataCache::GetIndexesFromTableThatPassFilters(const QS
 	return indexSet;
 }
 
+SynGlyphX::IndexSet SourceDataCache::GetIndexesBasedOnQuery(const QString& queryString) const {
+
+	QSqlQuery query(m_db);
+	query.prepare(queryString);
+	if (!query.exec()) {
+
+		throw std::runtime_error((QObject::tr("Failed to get selected indexes from cache: ") + m_db.lastError().text()).toStdString().c_str());
+	}
+
+	SynGlyphX::IndexSet indexSet;
+	while (query.next()) {
+
+		indexSet.insert(query.value(0).toULongLong() - 1);
+	}
+
+	return indexSet;
+}
+
 QString SourceDataCache::CreateKeywordFilterString(const QString& columnName, const KeywordFilter& filter) const {
 
 	QString filterString = "\"" + columnName + "\"";

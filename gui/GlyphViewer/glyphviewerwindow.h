@@ -39,6 +39,7 @@
 #include <QtWebSockets/QWebSocket>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "LocalServer.h"
+#include <QtCore/QThread>
 
 class HomePageWidget;
 class FrontEndFilterListWidget; 
@@ -117,6 +118,11 @@ private slots:
 	//void OnSocketClosed();
 	void SaveSnapshot();
 	void LoadProjectIntoGlyphDrawer(QString text);
+	void UpdateGlyphDrawerFilter(QString text);
+	void ReloadGlyphDrawer(QString text);
+
+signals:
+	void operate(const QString &);
 
 private:
 	class HUDGenerationInfo {
@@ -202,6 +208,9 @@ private:
 	bool m_showHomePage;
 	QString m_defaultProject;
 	QStringList m_currentBaseImages;
+	QString uid;
+	QString cache_location;
+	std::vector<std::string> compass;
 
 	QComboBox* m_groupsComboBox;
 

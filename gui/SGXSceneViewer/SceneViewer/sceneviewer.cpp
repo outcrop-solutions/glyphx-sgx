@@ -324,6 +324,7 @@ namespace SynGlyphX
 
 	void SceneViewer::loadScene(const char* sceneFile, const char* countFile, std::vector<std::string> baseImages, bool useSuperimposed)
 	{
+
 		hal::debug::profile_timer timer;
 
 		makeCurrent();
@@ -614,7 +615,7 @@ namespace SynGlyphX
 
 		glyph_renderer->enableSelectionEffect(selection_effect_enabled);
 		glyph_renderer->enableAnimation(animation_enabled);
-		glyph_renderer->setFilterAlpha(glm::lerp(0.1f, 0.8f, filtered_glyph_opacity));
+		glyph_renderer->setFilterAlpha(glm::lerp(0.0f, 0.8f, filtered_glyph_opacity));
 
 		hal::rasterizer_state rast{ true, true, false };
 		context->set_rasterizer_state(rast);
