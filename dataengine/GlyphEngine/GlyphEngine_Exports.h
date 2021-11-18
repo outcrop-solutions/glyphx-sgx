@@ -16,7 +16,7 @@
 ///
 
 #include "SgxConfig.h"
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef GlyphEngine_EXPORTS
 #define GLYPHENGINE __declspec(dllexport)
 #else

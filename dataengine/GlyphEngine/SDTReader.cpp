@@ -93,6 +93,25 @@ namespace GlyphEngine
 
 	}
 
+	DataSource::SharedPtr SDTReader::GetDataSource()
+	{
+		if (sizeof(m_datasources) == 1)
+		{
+			auto it = m_datasources.begin();
+			return it->second;
+		}
+		return nullptr;
+	}
+
+	DataMappingGlyph* SDTReader::GetGlyphTemplate()
+	{
+		if (sizeof(m_glyphs) == 1)
+		{
+			auto it = m_glyphs.begin();
+			return it->second;
+		}
+		return nullptr;
+	}
 
 }
 

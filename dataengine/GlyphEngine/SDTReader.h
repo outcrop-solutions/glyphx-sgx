@@ -23,13 +23,16 @@ namespace GlyphEngine
 	class GLYPHENGINE SDTReader {
 
 	public:
-		typedef std::unordered_map<boost::uuids::uuid, GlyphEngine::DataSource::SharedPtr, GlyphEngine::UUIDHash> DatasourceMap;
+		typedef std::unordered_map<boost::uuids::uuid, DataSource::SharedPtr, UUIDHash> DatasourceMap;
 		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyph*, UUIDHash> DataMappingGlyphMap;
 
 		SDTReader();
 		~SDTReader(){};
 
 		void ReadSDTFile(const std::string& filename);
+		std::vector<BaseImage> GetBaseImages() { return m_baseObjects; };
+		DataSource::SharedPtr GetDataSource();
+		DataMappingGlyph* GetGlyphTemplate();
 
 	private:
 		void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);

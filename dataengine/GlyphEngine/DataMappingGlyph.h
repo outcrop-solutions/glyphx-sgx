@@ -29,6 +29,10 @@ namespace GlyphEngine {
 	public:
 
 		DataMappingGlyph(const boost::property_tree::wptree& propertyTree);
+		int GetLabel() { return label; };
+
+	private:
+		int label;
 
 	};
 }

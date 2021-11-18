@@ -5,7 +5,7 @@ namespace GlyphEngine {
 
 	DataMappingGlyph::DataMappingGlyph(const boost::property_tree::wptree& propertyTree)
 	{
-		int label = propertyTree.get_optional<int>(L"<xmlattr>.label").get_value_or(0);
+		label = propertyTree.get_optional<int>(L"<xmlattr>.label").get_value_or(0);
 		bool merge = propertyTree.get_optional<bool>(L"<xmlattr>.merge").get_value_or(false);
 
 		const boost::property_tree::wptree& positionPropertyTree = propertyTree.get_child(L"Position");
