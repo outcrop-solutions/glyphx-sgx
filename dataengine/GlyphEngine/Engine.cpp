@@ -17,14 +17,15 @@ namespace GlyphEngine
 		std::string sdtname = "C:/ProgramData/SynGlyphX/Content/mcgee_sku_model/mcgee_sku_model/dark-mode-model - Copy.sdt";
 
 		reader = new SDTReader();
-		reader->ReadSDTFile(sdtname); //Are we done here? Test
+		reader->ReadSDTFile(sdtname);
 
-		DataSource::SharedPtr dataSource = reader->GetDataSource();
-		std::vector<BaseImage> baseImages = reader->GetBaseImages();
-		DataMappingGlyph* glyph = reader->GetGlyphTemplate();
+		Data *dataSource = reader->GetDataSource();
+		std::wstring filename = dataSource->GetHost();
 
-		std::wstring filename = dataSource->GetFormattedName();
+		std::vector<BaseObject> baseImages = reader->GetBaseImages();
 		size_t count = baseImages.size();
+
+		GlyphObject* glyph = reader->GetGlyphTemplate();
 		int label = glyph->GetLabel();
 
 		QString fn = "data.txt";
@@ -35,7 +36,6 @@ namespace GlyphEngine
 			stream << QString::number(count) << endl;
 			stream << QString::number(label) << endl;
 		}
-
 
 	}
 

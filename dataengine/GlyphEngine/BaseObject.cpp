@@ -1,50 +1,30 @@
-#include "BaseImage.h"
-#include "DownloadedMapProperties.h"
-#include "UserDefinedBaseImageProperties.h"
-#include "DefaultBaseImageProperties.h"
+#include "BaseObject.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/bimap/list_of.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 namespace GlyphEngine
 {
-	const boost::bimap<BaseImage::Type, std::wstring> BaseImage::s_baseImageTypeStrings = boost::assign::list_of < boost::bimap<BaseImage::Type, std::wstring>::relation >
-		(BaseImage::Type::Default, L"Default")
-		(BaseImage::Type::DownloadedMap, L"Downloaded Map")
-		(BaseImage::Type::UserImage, L"Local Image");
 
-	BaseImage::BaseImage(BaseImageProperties::ConstSharedPtr properties) :
-		m_position({ {0.0, 0.0, 0.0} }),
-		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
-		m_type(Type::Default),
-		m_properties(nullptr),
-		m_worldSize({ {360.0, 180.0} }),
-		m_gridLineCounts({ { 0, 0 } }),
-		m_gridLinesColor(GlyphColor::s_black)
-	{
-		SetProperties(properties);
-	}
-
-	BaseImage::BaseImage(const BaseImage::PropertyTree& propertyTree) :
+	BaseObject::BaseObject(const BaseObject::PropertyTree& propertyTree) :
 		m_position({ { 0.0, 0.0, 0.0 } }),
 		m_rotationAngles({ { 0.0, 0.0, 0.0 } }),
-		m_type(s_baseImageTypeStrings.right.at(propertyTree.get<std::wstring>(L"<xmlattr>.type"))),
-		m_properties(nullptr),
+		m_type(BaseObject::Type::UserImage),
 		m_worldSize({ { 360.0, 180.0 } }),
 		m_gridLineCounts({ { 0, 0 } }),
-		m_gridLinesColor(GlyphColor::s_black) {
+		m_gridLinesColor(ObjectColor::ColorArray({ { 255, 255, 255 } })) {
 
 		if (m_type == Type::DownloadedMap) {
 
-			m_properties = std::unique_ptr<DownloadedMapProperties>(new DownloadedMapProperties(propertyTree));
+			//m_properties = std::unique_ptr<DownloadedMapProperties>(new DownloadedMapProperties(propertyTree));
 		}
 		else if (m_type == Type::UserImage) {
 
-			m_properties = std::unique_ptr<UserDefinedBaseImageProperties>(new UserDefinedBaseImageProperties(propertyTree));
+			//m_properties = std::unique_ptr<UserDefinedBaseObjectProperties>(new UserDefinedBaseObjectProperties(propertyTree));
 		}
 		else {
 
-			m_properties = std::unique_ptr<DefaultBaseImageProperties>(new DefaultBaseImageProperties(propertyTree));
+			//m_properties = std::unique_ptr<DefaultBaseObjectProperties>(new DefaultBaseObjectProperties(propertyTree));
 		}
 
 		boost::optional<const boost::property_tree::wptree&> positionPropertyTree = propertyTree.get_child_optional(L"Position");
@@ -73,7 +53,7 @@ namespace GlyphEngine
 		boost::optional<const boost::property_tree::wptree&> gridLinesPropertyTree = propertyTree.get_child_optional(L"GridLines");
 		if (gridLinesPropertyTree.is_initialized()) {
 
-			m_gridLinesColor = gridLinesPropertyTree.get().get<GlyphColor>(L"Color");
+			m_gridLinesColor = gridLinesPropertyTree.get().get<ObjectColor>(L"Color");
 			boost::optional<bool> showGridLines = gridLinesPropertyTree.get().get_optional<bool>(L"<xmlattr>.show");
 			if (!showGridLines.is_initialized()) {
 
@@ -91,29 +71,26 @@ namespace GlyphEngine
 		}
 	}
 
-	BaseImage::BaseImage(const BaseImage& baseImage) :
+	BaseObject::BaseObject(const BaseObject& baseImage) :
 		m_position(baseImage.m_position),
 		m_rotationAngles(baseImage.m_rotationAngles),
 		m_type(baseImage.m_type),
-		m_properties(nullptr),
 		m_worldSize(baseImage.m_worldSize),
 		m_gridLineCounts(baseImage.m_gridLineCounts),
 		m_gridLinesColor(baseImage.m_gridLinesColor) {
 
-		SetProperties(baseImage.GetProperties());
 	}
 
-	BaseImage::~BaseImage()
+	BaseObject::~BaseObject()
 	{
 
 	}
 
-	BaseImage& BaseImage::operator=(const BaseImage& baseImage) {
+	BaseObject& BaseObject::operator=(const BaseObject& baseImage) {
 
 		m_position = baseImage.m_position;
 		m_rotationAngles = baseImage.m_rotationAngles;
 		m_type = baseImage.m_type;
-		SetProperties(baseImage.GetProperties());
 		m_worldSize = baseImage.m_worldSize;
 		m_gridLineCounts = baseImage.m_gridLineCounts;
 		m_gridLinesColor = baseImage.m_gridLinesColor;
@@ -121,7 +98,7 @@ namespace GlyphEngine
 		return *this;
 	}
 
-	bool BaseImage::operator==(const BaseImage& baseImage) const {
+	bool BaseObject::operator==(const BaseObject& baseImage) const {
 
 		if (m_type != baseImage.m_type) {
 
@@ -153,39 +130,39 @@ namespace GlyphEngine
 			return false;
 		}
 
-		if (m_type == BaseImage::Type::DownloadedMap) {
+		if (m_type == BaseObject::Type::DownloadedMap) {
 
-			auto downloadedMapProperties = std::dynamic_pointer_cast<const DownloadedMapProperties>(m_properties);
-			return downloadedMapProperties->operator==(*std::dynamic_pointer_cast<const DownloadedMapProperties>(baseImage.m_properties).get());
+			//auto downloadedMapProperties = std::dynamic_pointer_cast<const DownloadedMapProperties>(m_properties);
+			//return downloadedMapProperties->operator==(*std::dynamic_pointer_cast<const DownloadedMapProperties>(baseImage.m_properties).get());
 		}
-		else if (m_type == BaseImage::Type::UserImage) {
+		else if (m_type == BaseObject::Type::UserImage) {
 
-			auto userImageProperties = std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(m_properties);
-			return userImageProperties->operator==(*std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(baseImage.m_properties).get());
+			//auto userImageProperties = std::dynamic_pointer_cast<const UserDefinedBaseObjectProperties>(m_properties);
+			//return userImageProperties->operator==(*std::dynamic_pointer_cast<const UserDefinedBaseObjectProperties>(baseImage.m_properties).get());
 		}
 		else {
 
-			auto defaultProperties = std::dynamic_pointer_cast<const DefaultBaseImageProperties>(m_properties);
-			return defaultProperties->operator==(*std::dynamic_pointer_cast<const DefaultBaseImageProperties>(baseImage.m_properties).get());
+			//auto defaultProperties = std::dynamic_pointer_cast<const DefaultBaseObjectProperties>(m_properties);
+			//return defaultProperties->operator==(*std::dynamic_pointer_cast<const DefaultBaseObjectProperties>(baseImage.m_properties).get());
 		}
 	}
 
-	bool BaseImage::operator!=(const BaseImage& baseImage) const {
+	bool BaseObject::operator!=(const BaseObject& baseImage) const {
 
 		return !operator==(baseImage);
 	}
 
-	BaseImage::Type BaseImage::GetType() const {
+	BaseObject::Type BaseObject::GetType() const {
 
 		return m_type;
 	}
-
-	BaseImageProperties::ConstSharedPtr BaseImage::GetProperties() const {
+	/*
+	BaseObjectProperties::ConstSharedPtr BaseObject::GetProperties() const {
 
 		return m_properties;
 	}
 
-	void BaseImage::SetProperties(BaseImageProperties::ConstSharedPtr properties) {
+	void BaseObject::SetProperties(BaseObjectProperties::ConstSharedPtr properties) {
 
 		if (properties != nullptr) {
 
@@ -197,34 +174,34 @@ namespace GlyphEngine
 				return;
 			}
 
-			auto userDefinedProperties = std::dynamic_pointer_cast<const UserDefinedBaseImageProperties>(properties);
+			auto userDefinedProperties = std::dynamic_pointer_cast<const UserDefinedBaseObjectProperties>(properties);
 			if (userDefinedProperties != nullptr) {
 
-				m_properties = std::make_shared<UserDefinedBaseImageProperties>(*userDefinedProperties.get());
+				m_properties = std::make_shared<UserDefinedBaseObjectProperties>(*userDefinedProperties.get());
 				m_type = Type::UserImage;
 				return;
 			}
 
-			auto defaultProperties = std::dynamic_pointer_cast<const DefaultBaseImageProperties>(properties);
+			auto defaultProperties = std::dynamic_pointer_cast<const DefaultBaseObjectProperties>(properties);
 			if (defaultProperties != nullptr) {
 
-				m_properties = std::make_shared<DefaultBaseImageProperties>(*defaultProperties.get());
+				m_properties = std::make_shared<DefaultBaseObjectProperties>(*defaultProperties.get());
 				m_type = Type::Default;
 				return;
 			}
 		}
 		else {
 
-			m_properties = std::make_shared<DefaultBaseImageProperties>();
+			m_properties = std::make_shared<DefaultBaseObjectProperties>();
 			m_type = Type::Default;
 		}
 	}
-
-	void BaseImage::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
+	*/
+	void BaseObject::ExportToPropertyTree(PropertyTree& parentPropertyTree) const {
 
 		PropertyTree& propertyTree = parentPropertyTree.add(L"BaseObject", L"");
-		propertyTree.put(L"<xmlattr>.type", s_baseImageTypeStrings.left.at(m_type));
-		m_properties->ExportToPropertyTree(propertyTree);
+		propertyTree.put(L"<xmlattr>.type", m_type);
+		//m_properties->ExportToPropertyTree(propertyTree);
 
 		PropertyTree& positionPropertyTree = propertyTree.add(L"Position", L"");
 		positionPropertyTree.put(L"X", m_position[0]);
@@ -246,52 +223,52 @@ namespace GlyphEngine
 		gridLinesPropertyTree.put(L"Color", m_gridLinesColor);
 	}
 
-	void BaseImage::SetPosition(const Vector3& position) {
+	void BaseObject::SetPosition(const Vector3& position) {
 
 		m_position = position;
 	}
 
-	const Vector3& BaseImage::GetPosition() const {
+	const Vector3& BaseObject::GetPosition() const {
 
 		return m_position;
 	}
 
-	void BaseImage::SetRotation(const Vector3& angles) {
+	void BaseObject::SetRotation(const Vector3& angles) {
 
 		m_rotationAngles = angles;
 	}
 
-	const Vector3& BaseImage::GetRotationAngles() const {
+	const Vector3& BaseObject::GetRotationAngles() const {
 
 		return m_rotationAngles;
 	}
 
-	void BaseImage::SetWorldSize(const DoubleSize& worldSize) {
+	void BaseObject::SetWorldSize(const DoubleSize& worldSize) {
 
 		m_worldSize = worldSize;
 	}
 
-	const DoubleSize& BaseImage::GetWorldSize() const {
+	const DoubleSize& BaseObject::GetWorldSize() const {
 
 		return m_worldSize;
 	}
 
-	void BaseImage::SetGridLineCounts(const IntSize& gridLineCounts) {
+	void BaseObject::SetGridLineCounts(const IntSize& gridLineCounts) {
 
 		m_gridLineCounts = gridLineCounts;
 	}
 
-	IntSize BaseImage::GetGridLineCounts() const {
+	IntSize BaseObject::GetGridLineCounts() const {
 
 		return m_gridLineCounts;
 	}
 
-	void BaseImage::SetGridLinesColor(const GlyphColor& color) {
+	void BaseObject::SetGridLinesColor(const ObjectColor& color) {
 
 		m_gridLinesColor = color;
 	}
 
-	GlyphColor BaseImage::GetGridLinesColor() const {
+	ObjectColor BaseObject::GetGridLinesColor() const {
 
 		return m_gridLinesColor;
 	}

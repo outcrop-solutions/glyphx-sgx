@@ -15,8 +15,8 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef GLYPHCOLOR_H
-#define GLYPHCOLOR_H
+#ifndef OBJECTCOLOR_H
+#define OBJECTCOLOR_H
 
 #include "GlyphEngine_Exports.h"
 #include <array>
@@ -24,30 +24,30 @@
 
 namespace GlyphEngine {
 
-	class GLYPHENGINE GlyphColor
+	class GLYPHENGINE ObjectColor
 	{
 	public:
 		enum Space {RGB, HSV};
 
 		typedef std::array<short, 3> ColorArray;
 
-		GlyphColor(Space space = Space::RGB);
-		GlyphColor(const ColorArray& color, Space space = Space::RGB);
-		//GlyphColor(const boost::property_tree::wptree& propertyTree, Space space = Space::RGB);
-		GlyphColor(const GlyphColor& color);
-		~GlyphColor();
+		ObjectColor(Space space = Space::RGB);
+		ObjectColor(const ColorArray& color, Space space = Space::RGB);
+		//ObjectColor(const boost::property_tree::wptree& propertyTree, Space space = Space::RGB);
+		ObjectColor(const ObjectColor& color);
+		~ObjectColor();
 
-		GlyphColor& operator=(const GlyphColor& color);
+		ObjectColor& operator=(const ObjectColor& color);
 		void Set(unsigned int index, short value);
 		void Set(short red, short green, short blue);
 		void SetF( float r, float g, float b );
 		short operator[](unsigned int index) const;
-		bool operator==(const GlyphColor& color) const;
-		bool operator!=(const GlyphColor& color) const;
-		GlyphColor& operator+=(const GlyphColor& color);
-		GlyphColor& operator-=(const GlyphColor& color);
-		const GlyphColor operator+(const GlyphColor& color) const;
-		const GlyphColor operator-(const GlyphColor& color) const;
+		bool operator==(const ObjectColor& color) const;
+		bool operator!=(const ObjectColor& color) const;
+		ObjectColor& operator+=(const ObjectColor& color);
+		ObjectColor& operator-=(const ObjectColor& color);
+		const ObjectColor operator+(const ObjectColor& color) const;
+		const ObjectColor operator-(const ObjectColor& color) const;
 
 		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
 
@@ -56,28 +56,26 @@ namespace GlyphEngine {
 
 		Space GetSpace() const;
 
-		static GlyphColor ConvertRGBtoHSV(const GlyphColor& color);
-		static GlyphColor ConvertHSVtoRGB(const GlyphColor& color);
+		static ObjectColor ConvertRGBtoHSV(const ObjectColor& color);
+		static ObjectColor ConvertHSVtoRGB(const ObjectColor& color);
 
-		static const GlyphColor s_black;
-		static const GlyphColor s_white;
 
 	private:
 		ColorArray m_color;
 		Space m_space;
 	};
 
-	//This translator is so that GlyphColor can be automatically used by boost::property_tree
-	class GLYPHENGINE GlyphColorTranslator
+	//This translator is so that ObjectColor can be automatically used by boost::property_tree
+	class GLYPHENGINE ObjectColorTranslator
 	{
 	public:
 		typedef std::wstring internal_type;
-		typedef GlyphColor external_type;
+		typedef ObjectColor external_type;
 
-		GlyphColorTranslator();
+		ObjectColorTranslator();
 
-		boost::optional<GlyphColor> get_value(std::wstring const &v);
-		boost::optional<std::wstring> put_value(GlyphColor const& v);
+		boost::optional<ObjectColor> get_value(std::wstring const &v);
+		boost::optional<std::wstring> put_value(ObjectColor const& v);
 
 	private:
 		
@@ -90,12 +88,12 @@ namespace boost {
 	namespace property_tree {
 
 		template<>
-		struct translator_between<std::wstring, GlyphEngine::GlyphColor>
+		struct translator_between<std::wstring, GlyphEngine::ObjectColor>
 		{
-			typedef GlyphEngine::GlyphColorTranslator type;
+			typedef GlyphEngine::ObjectColorTranslator type;
 		};
 	}
 } //namespace boost
 
 
-#endif //GLYPHCOLOR_H
+#endif //OBJECTCOLOR_H

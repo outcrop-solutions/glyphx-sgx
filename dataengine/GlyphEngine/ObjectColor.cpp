@@ -1,4 +1,4 @@
-#include "GlyphColor.h"
+#include "ObjectColor.h"
 #include <stdexcept>
 #include <string>
 #include <sstream>
@@ -7,38 +7,35 @@
 
 namespace GlyphEngine {
 
-	const GlyphColor GlyphColor::s_black(GlyphColor::ColorArray({ { 0, 0, 0 } }));
-	const GlyphColor GlyphColor::s_white(GlyphColor::ColorArray({ { 255, 255, 255 } }));
-
-	GlyphColor::GlyphColor(Space space) :
-        m_color(GlyphColor::ColorArray({ { 0, 0, 0 } })),
+	ObjectColor::ObjectColor(Space space) :
+        m_color(ObjectColor::ColorArray({ { 0, 0, 0 } })),
 		m_space(space)
 	{
 	}
 
-	GlyphColor::GlyphColor(const ColorArray& color, Space space) :
+	ObjectColor::ObjectColor(const ColorArray& color, Space space) :
 		m_color(color),
         m_space(space) {
 
 	}
 
-	/*GlyphColor::GlyphColor(const boost::property_tree::wptree& propertyTree, Space space) :
+	/*ObjectColor::ObjectColor(const boost::property_tree::wptree& propertyTree, Space space) :
 		m_space(space),
 		m_color({ { propertyTree.get<short>(L"R"), propertyTree.get<short>(L"G"), propertyTree.get<short>(L"B") } }) {
 
 	}*/
 
-	GlyphColor::GlyphColor(const GlyphColor& color) : 
+	ObjectColor::ObjectColor(const ObjectColor& color) : 
         m_color(color.m_color),
         m_space(color.m_space) {
 
 	}
 
-	GlyphColor::~GlyphColor()
+	ObjectColor::~ObjectColor()
 	{
 	}
 
-	GlyphColor& GlyphColor::operator=(const GlyphColor& color) {
+	ObjectColor& ObjectColor::operator=(const ObjectColor& color) {
 
 		m_color = color.m_color;
 		m_space = color.m_space;
@@ -46,7 +43,7 @@ namespace GlyphEngine {
 		return *this;
 	}
 
-	void GlyphColor::Set(unsigned int index, short value) {
+	void ObjectColor::Set(unsigned int index, short value) {
 
 		if ((value < -255) || (value > 255)) {
 
@@ -65,21 +62,21 @@ namespace GlyphEngine {
 		}
 	}
 
-	void GlyphColor::Set(short red, short green, short blue) {
+	void ObjectColor::Set(short red, short green, short blue) {
 
 		Set(0, red);
 		Set(1, green);
 		Set(2, blue);
 	}
 
-	void GlyphColor::SetF( float r, float g, float b )
+	void ObjectColor::SetF( float r, float g, float b )
 	{
 		Set( 0, short( r * 255.f ) );
 		Set( 1, short( g * 255.f ) );
 		Set( 2, short( b * 255.f ) );
 	}
 
-	short GlyphColor::operator[](unsigned int index) const {
+	short ObjectColor::operator[](unsigned int index) const {
 
 		if (index < 3) {
 
@@ -90,17 +87,17 @@ namespace GlyphEngine {
 		}
 	}
 
-	bool GlyphColor::operator==(const GlyphColor& color) const {
+	bool ObjectColor::operator==(const ObjectColor& color) const {
 
 		return ((m_color == color.m_color) && (m_space == color.m_space));
 	}
 
-	bool GlyphColor::operator!=(const GlyphColor& color) const {
+	bool ObjectColor::operator!=(const ObjectColor& color) const {
 
 		return (!operator==(color));
 	}
 
-	GlyphColor& GlyphColor::operator+=(const GlyphColor& color) {
+	ObjectColor& ObjectColor::operator+=(const ObjectColor& color) {
 
 		m_color[0] += color.m_color[0];
 		m_color[1] += color.m_color[1];
@@ -109,7 +106,7 @@ namespace GlyphEngine {
 		return *this;
 	}
 
-	GlyphColor& GlyphColor::operator-=(const GlyphColor& color) {
+	ObjectColor& ObjectColor::operator-=(const ObjectColor& color) {
 
 		m_color[0] -= color.m_color[0];
 		m_color[1] -= color.m_color[1];
@@ -118,24 +115,24 @@ namespace GlyphEngine {
 		return *this;
 	}
 
-	const GlyphColor GlyphColor::operator+(const GlyphColor& color) const {
+	const ObjectColor ObjectColor::operator+(const ObjectColor& color) const {
 
-		return GlyphColor(*this) += color;
+		return ObjectColor(*this) += color;
 	}
 
-	const GlyphColor GlyphColor::operator-(const GlyphColor& color) const {
+	const ObjectColor ObjectColor::operator-(const ObjectColor& color) const {
 
-		return GlyphColor(*this) -= color;
+		return ObjectColor(*this) -= color;
 	}
 
-	void GlyphColor::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
+	void ObjectColor::ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const {
 
 		propertyTree.put<short>(L"R", m_color[0]);
 		propertyTree.put<short>(L"G", m_color[1]);
 		propertyTree.put<short>(L"B", m_color[2]);
 	}
 
-	std::wstring GlyphColor::ToHexString(unsigned int length) const {
+	std::wstring ObjectColor::ToHexString(unsigned int length) const {
 
 		if ((length > 3) || (length == 0)) {
 			throw std::invalid_argument("To create hex string length must be between 1 and 3");
@@ -155,7 +152,7 @@ namespace GlyphEngine {
 		return stream.str();
 	}
 
-	void GlyphColor::FromHexString(const std::wstring& hexString) {
+	void ObjectColor::FromHexString(const std::wstring& hexString) {
 
 		if ((hexString.length() <= 10) && (hexString.length() % 2 == 0)) {
 
@@ -169,12 +166,12 @@ namespace GlyphEngine {
 		}
 	}
 
-	GlyphColor::Space GlyphColor::GetSpace() const {
+	ObjectColor::Space ObjectColor::GetSpace() const {
 
 		return m_space;
 	}
 
-	GlyphColor GlyphColor::ConvertRGBtoHSV(const GlyphColor& color) {
+	ObjectColor ObjectColor::ConvertRGBtoHSV(const ObjectColor& color) {
 
 		float red = color[0] / 255.0f;
 		float green = color[1] / 255.0f;
@@ -215,7 +212,7 @@ namespace GlyphEngine {
 			hue /= 6.0f;
 		}
 
-		GlyphColor hsvColor(GlyphColor::Space::HSV);
+		ObjectColor hsvColor(ObjectColor::Space::HSV);
 
 		//Copy alpha since it isn't a part of RGB->HSV conversion
 		hsvColor.Set(static_cast<short>(hue * 255), static_cast<short>(saturation * 255), static_cast<short>(value * 255));
@@ -223,7 +220,7 @@ namespace GlyphEngine {
 		return hsvColor;
 	}
 
-	GlyphColor GlyphColor::ConvertHSVtoRGB(const GlyphColor& color) {
+	ObjectColor ObjectColor::ConvertHSVtoRGB(const ObjectColor& color) {
 
 		float hue = color[0] / 255.0f;
 		float saturation = color[1] / 255.0f;
@@ -235,7 +232,7 @@ namespace GlyphEngine {
 		float q = value * (1.0f - f * saturation);
 		float t = value * (1.0f - ((1.0f - f) * saturation));
 
-		GlyphColor rgbColor;
+		ObjectColor rgbColor;
 
 		switch (int( i ) % 6) {
 
@@ -251,12 +248,12 @@ namespace GlyphEngine {
 		return rgbColor;
 	}
 
-	GlyphColorTranslator::GlyphColorTranslator() {
+	ObjectColorTranslator::ObjectColorTranslator() {
 
 
 	}
 
-	boost::optional<GlyphColor> GlyphColorTranslator::get_value(std::wstring const &v) {
+	boost::optional<ObjectColor> ObjectColorTranslator::get_value(std::wstring const &v) {
 
 		int firstComma = (int)v.find_first_of(L',');
 		int secondComma = (int)v.find_last_of(L',');
@@ -265,7 +262,7 @@ namespace GlyphEngine {
 
 			if ((firstComma > 0) && (secondComma > firstComma + 1) && (secondComma < (int( v.length() ) - 1))) {
 
-				GlyphColor color;
+				ObjectColor color;
 				color.Set(0, boost::lexical_cast<short>(v.substr(0, firstComma)));
 				color.Set(1, boost::lexical_cast<short>(v.substr(firstComma + 1, secondComma - firstComma - 1)));
 				color.Set(2, boost::lexical_cast<short>(v.substr(secondComma + 1, v.length() - secondComma - 1)));
@@ -281,7 +278,7 @@ namespace GlyphEngine {
 		return boost::none;
 	}
 
-	boost::optional<std::wstring> GlyphColorTranslator::put_value(GlyphColor const& v) {
+	boost::optional<std::wstring> ObjectColorTranslator::put_value(ObjectColor const& v) {
 
 		return (boost::lexical_cast<std::wstring>(v[0]) + L',' + boost::lexical_cast<std::wstring>(v[1]) + L',' + boost::lexical_cast<std::wstring>(v[2]));
 	}

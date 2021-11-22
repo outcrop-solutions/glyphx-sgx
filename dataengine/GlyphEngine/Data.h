@@ -15,68 +15,48 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
-#ifndef INPUTFIELD_H
-#define INPUTFIELD_H
+#ifndef DATA_H
+#define DATA_H
 
 #include "GlyphEngine_Exports.h"
-#include "InputTable.h"
-#include <unordered_set>
+#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <string>
+#include <unordered_set>
 #include <boost/bimap.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/functional/hash.hpp>
 
 namespace GlyphEngine {
 
-	class GLYPHENGINE InputField : public InputTable
+	class GLYPHENGINE Data
 	{
-
 	public:
-		enum Type {
-			Null = 0,
-			Integer,
-			Real,
-			Text,
-			DateTime,
-			Other
+
+		enum SourceType {
+			File,
+			DatabaseServer
 		};
 
-		typedef boost::shared_ptr<InputField> SharedPtr;
-		typedef boost::shared_ptr<const InputField> ConstSharedPtr;
+		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
 
-		InputField();
-		InputField(const boost::uuids::uuid& datasourceID, const std::wstring& table, const std::wstring field, Type type);
-		InputField(const boost::property_tree::wptree& propertyTree);
-		InputField(const InputField& inputField);
-		~InputField();
+		Data(const boost::property_tree::wptree& datasourcePropertyTree);
+        ~Data();
 
-		InputField& operator=(const InputField& inputField);
-		bool operator==(const InputField& inputField) const;
-		bool operator!=(const InputField& inputField) const;
+		const SourceType GetSourceType() const;
 
-		const std::wstring& GetField() const;
+		const std::wstring& GetId() const;
+        const std::wstring& GetHost() const;
+        const std::wstring& GetUsername() const;
+        const std::wstring& GetPassword() const;
 
-		virtual bool IsValid() const;
-
-		void ExportToPropertyTree(boost::property_tree::wptree& propertyTree, const std::wstring& name = std::wstring()) const;
-		void ExportToPropertyTreeInternal(boost::property_tree::wptree& propertyTree) const;
-
-		bool IsNumeric() const;
-		Type GetType() const;
-
-		static const boost::bimap<Type, std::wstring> s_fieldTypeStrings;
-
-		virtual HashID GetHashID() const;
-
-	private:
-		std::wstring m_field;
-		Type m_type;
+    protected:
+		std::wstring m_id;
+        std::wstring m_host;
+        std::wstring m_username;
+        std::wstring m_password;
+		SourceType m_source;
 
 	};
 
-	typedef std::unordered_set<InputField, InputTableHash> FieldGroup;
-
 } 
 
-#endif //INPUTFIELD_H
-
+#endif //DATA_H

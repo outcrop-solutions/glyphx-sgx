@@ -338,6 +338,23 @@ namespace DataEngine
 		return true;
 	}
 
+	bool IsThreadAlive(QString name) {
+		/*
+		jmethodID methodId = jniEnv->GetStaticMethodID(jcls,
+			"isThreadAlive", "(Ljava/lang/String;)Z");
+
+		if (methodId != NULL) {
+			jstring jname = jniEnv->NewStringUTF(name.toStdString().c_str());
+			bool update = (jboolean)jniEnv->CallStaticBooleanMethod(jcls, methodId, jname);
+			if (jniEnv->ExceptionCheck()) {
+				jniEnv->ExceptionDescribe();
+				jniEnv->ExceptionClear();
+			}
+			return update;
+		}*/
+		return true;
+	}
+
 	std::vector<double> GlyphEngine::getNWandSE(){
 
 		std::vector<double> points;
@@ -383,6 +400,7 @@ namespace DataEngine
 			}
 
 		}
+		
 		if (err_code == 1){
 			//throw std::runtime_error("Failed to generate glyphs");
             SynGlyphX::Application::restoreOverrideCursor();

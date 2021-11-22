@@ -1,6 +1,4 @@
 #include "SDTReader.h"
-#include "FileDataSource.h"
-#include "DatabaseServerDataSource.h"
 #include <boost/property_tree/xml_parser.hpp>
 
 namespace GlyphEngine
@@ -24,6 +22,16 @@ namespace GlyphEngine
 
 		m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
 
+		ImportBaseObjects(dataTransformPropertyTree);
+
+		ImportDataSources(dataTransformPropertyTree);
+
+		ImportGlyphs(dataTransformPropertyTree);
+
+	}
+
+	void SDTReader::ImportBaseObjects(const boost::property_tree::wptree& dataTransformPropertyTree)
+	{
 		boost::optional<const boost::property_tree::wptree&> baseObjectsPropertyTree = dataTransformPropertyTree.get_child_optional(L"BaseObjects");
 		if (baseObjectsPropertyTree.is_initialized()) {
 
@@ -31,47 +39,38 @@ namespace GlyphEngine
 
 				if (baseObjectPropertyTree.first == L"BaseObject") {
 
-					m_baseObjects.push_back(BaseImage(baseObjectPropertyTree.second));
+					m_baseObjects.push_back(BaseObject(baseObjectPropertyTree.second));
 				}
 			}
 		}
 		else {
 
-			m_baseObjects.push_back(BaseImage(dataTransformPropertyTree.get_child(L"BaseImage")));
+			m_baseObjects.push_back(BaseObject(dataTransformPropertyTree.get_child(L"BaseImage")));
 		}
+	}
+	
+	void SDTReader::ImportDataSources(const boost::property_tree::wptree& dataTransformPropertyTree)
+	{
 
 		boost::optional<const boost::property_tree::wptree&> datasourcesPropertyTree = dataTransformPropertyTree.get_child_optional(L"Datasources");
 		if (datasourcesPropertyTree.is_initialized()) {
 
 			for (const boost::property_tree::wptree::value_type& datasourcePropertyTree : datasourcesPropertyTree.get()) {
 
-				std::wstring fileSourceString = GlyphEngine::DataSource::s_sourceTypeStrings.left.at(GlyphEngine::DataSource::SourceType::File);
-				DataSource::SharedPtr newDataSource = nullptr;
-				if ((datasourcePropertyTree.first == fileSourceString) || (datasourcePropertyTree.first == L"Datasource")) {
+				if (datasourcePropertyTree.first == L"Datasource") {
 
-					DataSource::SourceType source = DataSource::s_sourceTypeStrings.right.at(datasourcePropertyTree.second.get_optional<std::wstring>(L"<xmlattr>.source").get_value_or(fileSourceString));
-
-					if (source == DataSource::SourceType::File) {
-
-						newDataSource = std::make_shared<FileDataSource>(datasourcePropertyTree.second);
-					}
-					else if (source == DataSource::SourceType::DatabaseServer) {
-
-						newDataSource = std::make_shared<DatabaseServerDataSource>(datasourcePropertyTree.second);
-					}
-				}
-
-				if (newDataSource != nullptr) {
-
-					m_datasources.insert(std::pair<boost::uuids::uuid, DataSource::SharedPtr>(datasourcePropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id"), newDataSource));
+					m_dataSource = new Data(datasourcePropertyTree.second);
 				}
 			}
 		}
-
+	}
+	
+	void SDTReader::ImportGlyphs(const boost::property_tree::wptree& dataTransformPropertyTree)
+	{
 		for (const boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
 
 			if (glyphPropertyTree.first == L"Glyph") {
-				DataMappingGlyph *glyph = new DataMappingGlyph(glyphPropertyTree.second);
+				m_glyph = new GlyphObject(glyphPropertyTree.second);
 				//This is for backwards compatibility, TODO: remove in future versions
 				boost::optional<const boost::property_tree::wptree&> inputFieldsPropertyTree = glyphPropertyTree.second.get_child_optional(L"InputFields");
 				if (inputFieldsPropertyTree.is_initialized()) {
@@ -80,37 +79,28 @@ namespace GlyphEngine
 
 						if (inputfieldProperties.first == L"InputField") {
 
-							InputField inputfield(inputfieldProperties.second);
-							m_inputFieldManager.SetInputField(m_inputFieldManager.GenerateInputFieldID(inputfield), inputfield);
+							//InputField inputfield(inputfieldProperties.second);
+							//m_inputFieldManager.SetInputField(m_inputFieldManager.GenerateInputFieldID(inputfield), inputfield);
 						}
 					}
 				}
-				boost::uuids::uuid treeID = glyphPropertyTree.second.get<boost::uuids::uuid>(L"<xmlattr>.id");
-				m_glyphs.insert(std::pair<boost::uuids::uuid, DataMappingGlyph*>(treeID, glyph));
-
 			}
 		}
+	}
+	
+	std::vector<BaseObject> SDTReader::GetBaseImages()
+	{ 
+		return m_baseObjects; 
+	};
 
+	Data* SDTReader::GetDataSource()
+	{
+		return m_dataSource;
 	}
 
-	DataSource::SharedPtr SDTReader::GetDataSource()
+	GlyphObject* SDTReader::GetGlyphTemplate()
 	{
-		if (sizeof(m_datasources) == 1)
-		{
-			auto it = m_datasources.begin();
-			return it->second;
-		}
-		return nullptr;
-	}
-
-	DataMappingGlyph* SDTReader::GetGlyphTemplate()
-	{
-		if (sizeof(m_glyphs) == 1)
-		{
-			auto it = m_glyphs.begin();
-			return it->second;
-		}
-		return nullptr;
+		return m_glyph;
 	}
 
 }

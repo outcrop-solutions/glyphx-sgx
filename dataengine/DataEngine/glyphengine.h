@@ -66,6 +66,7 @@ namespace DataEngine
 		void SetQueryForDatasource(QString id, QString table, QString query);
 		int SizeOfQuery(QString id, QString table, QString query);
 		bool DownloadFiles(QString bucket_name, QString file_name, QString location);
+		bool IsThreadAlive(QString name);
 		~GlyphEngine(){};
 
 	};

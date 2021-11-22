@@ -3,10 +3,9 @@
 #define SDTREADER_H
 
 #include "GlyphEngine_Exports.h"
-#include "BaseImage.h"
-#include "DataSource.h"
-#include "InputFieldManager.h"
-#include "DataMappingGlyph.h"
+#include "BaseObject.h"
+#include "GlyphObject.h"
+#include "Data.h"
 #include <iostream>
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -23,25 +22,28 @@ namespace GlyphEngine
 	class GLYPHENGINE SDTReader {
 
 	public:
-		typedef std::unordered_map<boost::uuids::uuid, DataSource::SharedPtr, UUIDHash> DatasourceMap;
-		typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyph*, UUIDHash> DataMappingGlyphMap;
+		//typedef std::unordered_map<boost::uuids::uuid, DataSource::SharedPtr, UUIDHash> DatasourceMap;
+		//typedef std::unordered_map<boost::uuids::uuid, DataMappingGlyph*, UUIDHash> DataMappingGlyphMap;
 
 		SDTReader();
 		~SDTReader(){};
 
 		void ReadSDTFile(const std::string& filename);
-		std::vector<BaseImage> GetBaseImages() { return m_baseObjects; };
-		DataSource::SharedPtr GetDataSource();
-		DataMappingGlyph* GetGlyphTemplate();
+		std::vector<BaseObject> GetBaseImages();
+		Data* GetDataSource();
+		GlyphObject* GetGlyphTemplate();
 
 	private:
 		void ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree);
+		void ImportBaseObjects(const boost::property_tree::wptree& dataTransformPropertyTree);
+		void ImportDataSources(const boost::property_tree::wptree& dataTransformPropertyTree);
+		void ImportGlyphs(const boost::property_tree::wptree& dataTransformPropertyTree);
+
 
 		boost::uuids::uuid m_id;
-		std::vector<BaseImage> m_baseObjects;
-		DatasourceMap m_datasources;
-		InputFieldManager m_inputFieldManager;
-		DataMappingGlyphMap m_glyphs;
+		std::vector<BaseObject> m_baseObjects;
+		Data *m_dataSource;
+		GlyphObject *m_glyph;
 
 	};
 }

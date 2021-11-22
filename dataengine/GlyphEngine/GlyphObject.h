@@ -15,53 +15,27 @@
 /// TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.                
 ///
 #pragma once
+#ifndef GLYPHOBJECT_H
+#define GLYPHOBJECT_H
 
 #include "GlyphEngine_Exports.h"
 #include <boost/property_tree/ptree_fwd.hpp>
-SGX_PRAGMA_WARNING_PUSH
-SGX_PRAGMA_WARNING_DISABLE(4512)
-#include <boost/bimap.hpp>
-SGX_PRAGMA_WARNING_POP
-#include "BaseImageProperties.h"
+#include <boost/uuid/uuid_io.hpp>
+
 
 namespace GlyphEngine {
 
-	class GLYPHENGINE DefaultBaseImageProperties : public BaseImageProperties
+	class GLYPHENGINE GlyphObject
 	{
 	public:
-		enum Type {
 
-			World = 0,
-			WorldGrayscale,
-			Black,
-			Gray,
-			White,
-			Clear
-		};
-
-		typedef std::shared_ptr<DefaultBaseImageProperties> SharedPtr;
-		typedef std::shared_ptr<const DefaultBaseImageProperties> ConstSharedPtr;
-
-		DefaultBaseImageProperties(Type defaultBaseImage = Type::Clear);
-		DefaultBaseImageProperties(const boost::property_tree::wptree& propertyTree);
-		DefaultBaseImageProperties(const DefaultBaseImageProperties& properties);
-		virtual ~DefaultBaseImageProperties();
-
-		bool operator==(const DefaultBaseImageProperties& properties) const;
-		bool operator!=(const DefaultBaseImageProperties& properties) const;
-
-		virtual bool IsGeographic() const;
-		virtual void ExportToPropertyTree(boost::property_tree::wptree& propertyTree) const;
-
-		Type GetDefaultBaseImageType() const;
-		void SetDefaultBaseImageType(Type type);
-
-		static std::wstring GetBasefilename(Type defaultBaseImage = Type::Clear);
-
-		static const boost::bimap<Type, std::wstring> s_typeStrings;
+		GlyphObject(const boost::property_tree::wptree& propertyTree);
+		int GetLabel();
 
 	private:
-		Type m_defaultBaseImage;
-	};
+		int m_label;
 
-} //namespace SynGlyphX
+	};
+}
+
+#endif //GLYPHOBJECT_H

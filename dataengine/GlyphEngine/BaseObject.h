@@ -3,9 +3,8 @@
 #define BASEIMAGE_H
 
 #include "GlyphEngine_Exports.h"
-#include "UtilityTypes.h"
-#include "BaseImageProperties.h"
-#include "GlyphColor.h"
+#include "utility_types.h"
+#include "ObjectColor.h"
 SGX_PRAGMA_WARNING_PUSH
 SGX_PRAGMA_WARNING_DISABLE(4512)
 #include <boost/bimap.hpp>
@@ -15,7 +14,7 @@ SGX_PRAGMA_WARNING_POP
 
 namespace GlyphEngine
 {
-	class GLYPHENGINE BaseImage {
+	class GLYPHENGINE BaseObject {
 
 	public:
 		typedef boost::property_tree::wptree PropertyTree;
@@ -26,19 +25,19 @@ namespace GlyphEngine
 			UserImage
 		};
 
-		BaseImage(BaseImageProperties::ConstSharedPtr properties = nullptr);
-		BaseImage(const PropertyTree& propertyTree);
-		BaseImage(const BaseImage& baseImage);
-		~BaseImage();
+		//BaseObject(BaseImageProperties::ConstSharedPtr properties = nullptr);
+		BaseObject(const PropertyTree& propertyTree);
+		BaseObject(const BaseObject& baseImage);
+		~BaseObject();
 
-		BaseImage& operator=(const BaseImage& baseImage);
-		bool operator==(const BaseImage& baseImage) const;
-		bool operator!=(const BaseImage& baseImage) const;
+		BaseObject& operator=(const BaseObject& baseImage);
+		bool operator==(const BaseObject& baseImage) const;
+		bool operator!=(const BaseObject& baseImage) const;
 
 		Type GetType() const;
 
-		BaseImageProperties::ConstSharedPtr GetProperties() const;
-		void SetProperties(BaseImageProperties::ConstSharedPtr properties);
+		//BaseImageProperties::ConstSharedPtr GetProperties() const;
+		//void SetProperties(BaseImageProperties::ConstSharedPtr properties);
 
 		void SetPosition(const Vector3& position);
 		const Vector3& GetPosition() const;
@@ -52,21 +51,21 @@ namespace GlyphEngine
 		void SetGridLineCounts(const IntSize& gridLineCounts);
 		IntSize GetGridLineCounts() const;
 
-		void SetGridLinesColor(const GlyphColor& color);
-		GlyphColor GetGridLinesColor() const;
+		void SetGridLinesColor(const ObjectColor& color);
+		ObjectColor GetGridLinesColor() const;
 
 		void ExportToPropertyTree(PropertyTree& parentPropertyTree) const;
 
-		static const boost::bimap<Type, std::wstring> s_baseImageTypeStrings;
+		//static const boost::bimap<Type, std::wstring> s_baseImageTypeStrings;
 
 	private:
 		Vector3 m_position;
 		Vector3 m_rotationAngles;
 		Type m_type;
-		std::shared_ptr<BaseImageProperties> m_properties;
+		//std::shared_ptr<BaseImageProperties> m_properties;
 		DoubleSize m_worldSize;
 		IntSize m_gridLineCounts;
-		GlyphColor m_gridLinesColor;
+		ObjectColor m_gridLinesColor;
 	};
 }
 #endif // BASEIMAGE_H
