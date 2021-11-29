@@ -31,6 +31,7 @@ signals:
     void GetDrawerPosition();
 	void OP(const QString &text);
 	void UF(const QString &text);
+	void CS(const QString &text);
 	void RD(const QString &text);
 
 public slots:

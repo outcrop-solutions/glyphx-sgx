@@ -51,10 +51,12 @@
 #include "version.h"
 #include "filesystem.h"
 #include <QtWebEngineWidgets/QWebEngineProfile>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
 #include <QtCore/QUuid>
 #include "DownloadManager.h"
 #include "BaseImage.h"
-//#include "Engine.h"
+#include "Engine.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -175,6 +177,7 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
 	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
+	QObject::connect(core, &Core::CS, this, &GlyphViewerWindow::ChangeModelState);
 	QObject::connect(core, &Core::RD, this, &GlyphViewerWindow::ReloadGlyphDrawer);
 
 	QString address = "http://localhost:3000/";
@@ -188,8 +191,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	counter = 1;
 
-	//GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
-	//glyphEngine->initiate();
+	GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
+	glyphEngine->initiate();
 
 }
 
@@ -424,6 +427,23 @@ void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 	SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
 	m_viewer->setFilteredResults(myset, true);
 	
+}
+
+void GlyphViewerWindow::ChangeModelState(QString text) {
+
+	QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+	QJsonObject obj = doc.object();
+	//QJsonObject camera = obj.value("camera").toObject();
+	//QJsonObject query = obj.value("query").toObject();
+
+	/*
+	std::vector<double> pos;
+	pos = 0,1,2
+	dir = 3,4,5
+	m_viewer->setCameraPosition(pos);
+	*/
+	//SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
+	//m_viewer->setFilteredResults(myset, true);
 }
 
 void GlyphViewerWindow::ReloadGlyphDrawer(QString text) {

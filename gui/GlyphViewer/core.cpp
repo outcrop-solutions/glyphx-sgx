@@ -41,16 +41,14 @@ void Core::OpenProject(const QString &text)
 
 void Core::ToggleDrawer(const QString &text)
 {
-	/*if (glyphDrawer->isHidden())
+	if (glyphDrawer->isHidden())
 		glyphDrawer->show();
 	else
-		glyphDrawer->hide();*/
+		glyphDrawer->hide();
 }
 
 void Core::ResizeEvent(const QString &text)
 {
-	//QMessageBox::information(parent, tr("Client message"), text);
-
 	QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 	QJsonObject obj = doc.object();
 	QJsonObject projects = obj.value("filterSidebar").toObject();
@@ -61,30 +59,22 @@ void Core::ResizeEvent(const QString &text)
 	int w = comments.value("left").toInt() - x;
 	int h = projects.value("height").toInt();
 
-	/*int x = 512;
-	int y = 64;
-	int w = 1966;
-	int h = 800;*/
-
 	glyphDrawer->setMinimumSize(QSize(w, h));
 	glyphDrawer->move(x, y);
-
 }
 
 void Core::UpdateFilter(const QString &text)
 {
-	//QMessageBox::information(parent, tr("Client message"), text);
 	emit UF(text);
 }
 
 void Core::ChangeState(const QString &text)
 {
-	//QMessageBox::information(parent, tr("Client message"), text);
+	emit CS(text);
 }
 
 void Core::ReloadDrawer(const QString &text)
 {
-	//QMessageBox::information(parent, tr("Client message"), text);
 	emit RD(text);
 }
 

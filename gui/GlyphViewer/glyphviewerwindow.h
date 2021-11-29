@@ -119,6 +119,7 @@ private slots:
 	void SaveSnapshot();
 	void LoadProjectIntoGlyphDrawer(QString text);
 	void UpdateGlyphDrawerFilter(QString text);
+	void ChangeModelState(QString text);
 	void ReloadGlyphDrawer(QString text);
 
 signals:
