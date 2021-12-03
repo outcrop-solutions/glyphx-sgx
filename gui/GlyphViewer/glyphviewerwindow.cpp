@@ -191,8 +191,8 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 
 	counter = 1;
 
-	GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
-	glyphEngine->initiate();
+	//GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
+	//glyphEngine->initiate();
 
 }
 

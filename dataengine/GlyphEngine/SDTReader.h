@@ -38,7 +38,7 @@ namespace GlyphEngine
 		void ImportBaseObjects(const boost::property_tree::wptree& dataTransformPropertyTree);
 		void ImportDataSources(const boost::property_tree::wptree& dataTransformPropertyTree);
 		void ImportGlyphs(const boost::property_tree::wptree& dataTransformPropertyTree);
-
+		void ImportInputFields(const boost::property_tree::wptree& dataTransformPropertyTree);
 
 		boost::uuids::uuid m_id;
 		std::vector<BaseObject> m_baseObjects;

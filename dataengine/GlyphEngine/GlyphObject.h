@@ -25,6 +25,32 @@
 
 namespace GlyphEngine {
 
+	struct Placement {
+		std::wstring min, diff, bind, type;
+		void create(std::wstring m, std::wstring d, std::wstring b, std::wstring t)
+		{
+			min = m;
+			diff = d;
+			bind = b;
+			type = t;
+		}
+	};
+
+	struct Position {
+		Placement x, y, z;
+	};
+
+	struct Color {
+		Placement rgb, tp;
+	};
+
+	struct Geometry {
+		std::wstring value, type, surface, ratio;
+		Geometry(std::wstring v, std::wstring t, std::wstring s, std::wstring r) :
+			value(v), type(t), surface(s), ratio(r)
+		{}
+	};
+
 	class GLYPHENGINE GlyphObject
 	{
 	public:
@@ -33,8 +59,18 @@ namespace GlyphEngine {
 		int GetLabel();
 
 	private:
-		int m_label;
+		void ImportPosition(const boost::property_tree::wptree& positionPropertyTree);
+		void ImportScale(const boost::property_tree::wptree& scalePropertyTree);
+		void ImportColor(const boost::property_tree::wptree& colorPropertyTree);
+		void ImportTag(const boost::property_tree::wptree& tagPropertyTree);
+		void ImportGeometry(const boost::property_tree::wptree& geometryPropertyTree);
 
+		int m_label;
+		std::wstring m_tag;
+		Position m_position;
+		Position m_scale;
+		Color m_color;
+		Geometry *m_geometry;
 	};
 }
 

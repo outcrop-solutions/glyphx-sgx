@@ -23,9 +23,19 @@
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
 #include <boost/bimap.hpp>
 
 namespace GlyphEngine {
+
+	struct InputField {
+		std::wstring name, field, type;
+		InputField(std::wstring n, std::wstring f, std::wstring t) {
+			name = n;
+			field = f;
+			type = t;
+		}
+	};
 
 	class GLYPHENGINE Data
 	{
@@ -36,10 +46,15 @@ namespace GlyphEngine {
 			DatabaseServer
 		};
 
+		typedef std::unordered_map<std::wstring, InputField> InputFieldMap;
 		typedef boost::bimap<SourceType, std::wstring> SourceTypeBimap;
 
 		Data(const boost::property_tree::wptree& datasourcePropertyTree);
         ~Data();
+
+		void AddInputField(const boost::property_tree::wptree& datasourcePropertyTree);
+
+		int GetInputFieldCount();
 
 		const SourceType GetSourceType() const;
 
@@ -53,7 +68,10 @@ namespace GlyphEngine {
         std::wstring m_host;
         std::wstring m_username;
         std::wstring m_password;
+		std::wstring m_table;
 		SourceType m_source;
+		InputFieldMap m_inputFields;
+
 
 	};
 

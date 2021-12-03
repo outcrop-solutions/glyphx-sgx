@@ -1,5 +1,6 @@
 #include "SDTReader.h"
 #include <boost/property_tree/xml_parser.hpp>
+#include <QDebug>
 
 namespace GlyphEngine
 {
@@ -27,6 +28,8 @@ namespace GlyphEngine
 		ImportDataSources(dataTransformPropertyTree);
 
 		ImportGlyphs(dataTransformPropertyTree);
+
+		ImportInputFields(dataTransformPropertyTree);
 
 	}
 
@@ -68,21 +71,22 @@ namespace GlyphEngine
 	void SDTReader::ImportGlyphs(const boost::property_tree::wptree& dataTransformPropertyTree)
 	{
 		for (const boost::property_tree::wptree::value_type& glyphPropertyTree : dataTransformPropertyTree.get_child(L"Glyphs")) {
-
 			if (glyphPropertyTree.first == L"Glyph") {
 				m_glyph = new GlyphObject(glyphPropertyTree.second);
-				//This is for backwards compatibility, TODO: remove in future versions
-				boost::optional<const boost::property_tree::wptree&> inputFieldsPropertyTree = glyphPropertyTree.second.get_child_optional(L"InputFields");
-				if (inputFieldsPropertyTree.is_initialized()) {
+			}
+		}
+	}
 
-					for (const boost::property_tree::wptree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
+	void SDTReader::ImportInputFields(const boost::property_tree::wptree& dataTransformPropertyTree)
+	{
+		boost::optional<const boost::property_tree::wptree&> inputFieldsPropertyTree = dataTransformPropertyTree.get_child_optional(L"InputFields");
+		if (inputFieldsPropertyTree.is_initialized()) {
 
-						if (inputfieldProperties.first == L"InputField") {
+			for (const boost::property_tree::wptree::value_type& inputfieldProperties : inputFieldsPropertyTree.get()) {
 
-							//InputField inputfield(inputfieldProperties.second);
-							//m_inputFieldManager.SetInputField(m_inputFieldManager.GenerateInputFieldID(inputfield), inputfield);
-						}
-					}
+				if (inputfieldProperties.first == L"InputField") {
+
+					m_dataSource->AddInputField(inputfieldProperties.second);
 				}
 			}
 		}

@@ -20,7 +20,7 @@
 
 #include "GlyphEngine_Exports.h"
 #include <array>
-#include<boost/property_tree/ptree_fwd.hpp>
+#include <boost/property_tree/ptree_fwd.hpp>
 
 namespace GlyphEngine {
 
