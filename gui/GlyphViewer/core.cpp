@@ -12,25 +12,28 @@ Core::Core(QWidget *prt, QObject *parent)
 
 void Core::SendDrawerPosition(const QString &text)
 {
-	//QMessageBox::information(parent, tr("Client message"), text);
+	try {
+		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject obj = doc.object();
+		QJsonObject projects = obj.value("filterSidebar").toObject();
+		QJsonObject comments = obj.value("commentsSidebar").toObject();
 
-	QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
-	QJsonObject obj = doc.object();
-	QJsonObject projects = obj.value("filterSidebar").toObject();
-	QJsonObject comments = obj.value("commentsSidebar").toObject();
+		int x = projects.value("right").toInt();
+		int y = projects.value("y").toInt();
+		int w = comments.value("left").toInt() - x;
+		int h = projects.value("height").toInt();
 
-	int x = projects.value("right").toInt();
-	int y = projects.value("y").toInt();
-	int w = comments.value("left").toInt() - x;
-	int h = projects.value("height").toInt();
+		/*int x = 512;
+		int y = 64;
+		int w = 1966;
+		int h = 800;*/
 
-	/*int x = 512;
-	int y = 64;
-	int w = 1966;
-	int h = 800;*/
-
-	glyphDrawer->setMinimumSize(QSize(w, h));
-	glyphDrawer->move(x, y);
+		glyphDrawer->setMinimumSize(QSize(w, h));
+		glyphDrawer->move(x, y);
+	}
+	catch (...) {
+		QMessageBox::information(parent, tr("Error message"), "Failed to resize drawer.");
+	}
 
 }
 
@@ -49,18 +52,24 @@ void Core::ToggleDrawer(const QString &text)
 
 void Core::ResizeEvent(const QString &text)
 {
-	QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
-	QJsonObject obj = doc.object();
-	QJsonObject projects = obj.value("filterSidebar").toObject();
-	QJsonObject comments = obj.value("commentsSidebar").toObject();
+	try {
+		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject obj = doc.object();
+		QJsonObject projects = obj.value("filterSidebar").toObject();
+		QJsonObject comments = obj.value("commentsSidebar").toObject();
 
-	int x = projects.value("right").toInt();
-	int y = projects.value("y").toInt();
-	int w = comments.value("left").toInt() - x;
-	int h = projects.value("height").toInt();
+		int x = projects.value("right").toInt();
+		int y = projects.value("y").toInt();
+		int w = comments.value("left").toInt() - x;
+		int h = projects.value("height").toInt();
 
-	glyphDrawer->setMinimumSize(QSize(w, h));
-	glyphDrawer->move(x, y);
+		glyphDrawer->setMinimumSize(QSize(w, h));
+		glyphDrawer->move(x, y);
+	}
+	catch (...) {
+		QMessageBox::information(parent, tr("Error message"), "Failed to resize drawer.");
+	}
+
 }
 
 void Core::UpdateFilter(const QString &text)

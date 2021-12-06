@@ -56,7 +56,7 @@
 #include <QtCore/QUuid>
 #include "DownloadManager.h"
 #include "BaseImage.h"
-#include "Engine.h"
+//#include "Engine.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -342,76 +342,81 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 
 void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
-	QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
-	QStringList url_split = text.split("?")[0].split("/");
-	QString filename = url_split[url_split.size() - 1];
+	try {
+		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+		QStringList url_split = text.split("?")[0].split("/");
+		QString filename = url_split[url_split.size() - 1];
 
-	QFile dir(location + filename.split(".zip")[0]);
+		QFile dir(location + filename.split(".zip")[0]);
 
-	if (!dir.exists()) {
-		DownloadManager downloadManager(m_dataEngineConnection);
-		downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
-	}
-
-	l_server->WebChannelCore()->GetDrawerPosition();
-
-	glyphDrawer->show();
-	m_viewer->show();
-
-	QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
-	m_mappingModel->LoadDataTransformFile(sdt);
-	boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
-
-	std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-	std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
-
-	cache_location = QString::fromStdString(cacheDirectoryPath);
-
-	QStringList legend_list;
-	m_viewer->setupLegendWindow(cache_location, legend_list);
-
-	if (!QFile(cache_location + "scene/glyphs.sgc").exists()) {
-
-		QDir().mkdir(cache_location);
-		QDir().mkdir(cache_location + "/scene");
-
-		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-
-		DataEngine::GlyphEngine ge;
-		ge.initiate(m_dataEngineConnection->getEnv(), sdt.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
-
-		if (ge.IsUpdateNeeded()) {
-			//DownloadBaseImages(ge);
-			ge.generateGlyphs(this);
+		if (!dir.exists()) {
+			DownloadManager downloadManager(m_dataEngineConnection);
+			downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
 		}
 
-		compass = ge.getCompassValues();
+		l_server->WebChannelCore()->GetDrawerPosition();
 
-		/*bool show = true;
-		for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
-			if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
-				show = false;
+		glyphDrawer->show();
+		m_viewer->show();
+
+		QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
+		m_mappingModel->LoadDataTransformFile(sdt);
+		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+
+		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+
+		cache_location = QString::fromStdString(cacheDirectoryPath);
+
+		QStringList legend_list;
+		m_viewer->setupLegendWindow(cache_location, legend_list);
+
+		if (!QFile(cache_location + "scene/glyphs.sgc").exists()) {
+
+			QDir().mkdir(cache_location);
+			QDir().mkdir(cache_location + "/scene");
+
+			std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+
+			DataEngine::GlyphEngine ge;
+			ge.initiate(m_dataEngineConnection->getEnv(), sdt.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
+
+			if (ge.IsUpdateNeeded()) {
+				//DownloadBaseImages(ge);
+				ge.generateGlyphs(this);
+			}
+
+			compass = ge.getCompassValues();
+
+			/*bool show = true;
+			for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
+				if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
+					show = false;
+				}
+			}
+			m_viewer->enableSceneAxes(show);*/
+		}
+
+		std::vector<std::string> base_images;
+		QDir scene(cache_location + "scene/");
+		QFileInfoList files = scene.entryInfoList();
+
+		for (QFileInfo file : files) {
+			QString base = file.baseName();
+			if (base.contains("base_image")) {
+				base_images.push_back(base.toStdString());
 			}
 		}
-		m_viewer->enableSceneAxes(show);*/
+
+		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images, false);
+		m_viewer->setFilteredGlyphOpacity(0.0f);
+
+		m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
 
 	}
-	
-	std::vector<std::string> base_images;
-	QDir scene(cache_location + "scene/");
-	QFileInfoList files = scene.entryInfoList();
-
-	for (QFileInfo file : files) {
-		QString base = file.baseName();
-		if (base.contains("base_image")) {
-			base_images.push_back(base.toStdString());
-		}
+	catch (...) {
+		QMessageBox::information(this, tr("Error message"), "Failed to load model.");
 	}
-	
-	m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images, false);
-	m_viewer->setFilteredGlyphOpacity(0.0f);
-
-	m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
 
 }
 
@@ -424,26 +429,36 @@ void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 	float max = 2000.0;
 	QString test = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE (\"" + columnName + "\" BETWEEN " + QString::number(min, 'f') + " AND " + QString::number(max, 'f') + ")";
 	*/
-	SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
-	m_viewer->setFilteredResults(myset, true);
+	try {
+		SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
+		m_viewer->setFilteredResults(myset, true);
+	}
+	catch (...) {
+		QMessageBox::information(this, tr("Error message"), "Failed to update filter.");
+	}
 	
 }
 
 void GlyphViewerWindow::ChangeModelState(QString text) {
 
-	QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
-	QJsonObject obj = doc.object();
-	//QJsonObject camera = obj.value("camera").toObject();
-	//QJsonObject query = obj.value("query").toObject();
+	try {
+		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject obj = doc.object();
+		QString camera = obj.value("camera").toString();
+		QString query = obj.value("query").toString();
 
-	/*
-	std::vector<double> pos;
-	pos = 0,1,2
-	dir = 3,4,5
-	m_viewer->setCameraPosition(pos);
-	*/
-	//SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
-	//m_viewer->setFilteredResults(myset, true);
+		QStringList nums = camera.remove("[").remove("]").split(",");
+		std::vector<double> pos;
+		for (QString num : nums) {
+			pos.push_back(num.toDouble());
+		}
+		m_viewer->setCameraPosition(pos);
+
+		UpdateGlyphDrawerFilter(query);
+	}
+	catch (...) {
+		QMessageBox::information(this, tr("Error message"), "Failed to change model state.");
+	}
 }
 
 void GlyphViewerWindow::ReloadGlyphDrawer(QString text) {
