@@ -57,7 +57,7 @@ namespace SynGlyphX
 		hud_axes_enabled(true), hud_axes_location(HUDAxesLocation::TopLeft), enable_fly_to_object(false), animation_enabled(true), wireframe(false), glyph_renderer(nullptr),
 		renderer(nullptr), background_color(render::color::black()), filtered_glyph_opacity(0.5f), item_focus_sm(nullptr), mode(_mode), auto_load_default_scene(autoLoadDefaultScene)
 	{
-		setLogoFile("textures/logo.png");
+		setLogoFile("textures/glyphx.png");
 
 		memset(key_states, 0, sizeof(key_states));
 
@@ -177,8 +177,8 @@ namespace SynGlyphX
 			homeButton->setIconSize(QSize(24 * mult, 24 * mult));
 			homeButton->setToolTip("Home");
 			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { emit closeVisualization(); });
-			homeButton->move(QPoint(0, 20 * mult));
-
+			homeButton->move(QPoint(5, 20 * mult));
+			/*
 			QToolButton* legendButton = new QToolButton(this);
 			legendButton->setAttribute(Qt::WA_TranslucentBackground);
 			legendButton->setStyleSheet(style);
@@ -202,7 +202,7 @@ namespace SynGlyphX
 			intLegendButton->setToolTip("Show/Hide Interactive Legend");
 			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
 			intLegendButton->move(QPoint(0, 100 * mult));
-
+			*/
 			QToolButton* axesButton = new QToolButton(this);
 			axesButton->setAttribute(Qt::WA_TranslucentBackground);
 			axesButton->setStyleSheet(style);
@@ -213,7 +213,7 @@ namespace SynGlyphX
 			axesButton->setIconSize(QSize(24 * mult, 24 * mult));
 			axesButton->setToolTip("Show/Hide Axes");
 			QObject::connect(axesButton, &QToolButton::pressed, this, [this]() { enableSceneAxes(!sceneAxesEnabled()); });
-			axesButton->move(QPoint(0, 140 * mult));
+			axesButton->move(QPoint(5, 60 * mult));
 
 			QToolButton* hudButton = new QToolButton(this);
 			hudButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -225,8 +225,8 @@ namespace SynGlyphX
 			hudButton->setIconSize(QSize(24 * mult, 24 * mult));
 			hudButton->setToolTip("Show/Hide Compass");
 			QObject::connect(hudButton, &QToolButton::pressed, this, [this]() { enableHUDAxes(!hudAxesEnabled()); });
-			hudButton->move(QPoint(0, 180 * mult));
-
+			hudButton->move(QPoint(5, 100 * mult));
+			/*
 			QToolButton* saveButton = new QToolButton(this);
 			saveButton->setAttribute(Qt::WA_TranslucentBackground);
 			saveButton->setStyleSheet(style);
@@ -238,18 +238,18 @@ namespace SynGlyphX
 			saveButton->setToolTip("Snapshot");
 			QObject::connect(saveButton, &QToolButton::pressed, this, [this]() { emit saveSnapshot(); });
 			saveButton->move(QPoint(0, 220 * mult));
-
+			*/
 			QToolButton* camButton = new QToolButton(this);
 			camButton->setAttribute(Qt::WA_TranslucentBackground);
 			camButton->setStyleSheet(style_red);
 			QIcon camIcon;
-			camIcon.addFile(":SGXGUI/Resources/Icons/camera_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
+			camIcon.addFile(":SGXGUI/Resources/Icons/camera-reset.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			camButton->setIcon(camIcon);
 			camButton->setIconSize(QSize(24 * mult, 24 * mult));
 			camButton->setToolTip("Reset Camera Position");
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
-			camButton->move(QPoint(0, 260 * mult));
+			camButton->move(QPoint(5, 140 * mult));
 /*
 			QToolButton* acamButton = new QToolButton(this);
 			acamButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -541,7 +541,7 @@ namespace SynGlyphX
 			auto logo_h = logo_size.height();//hal::device::get_texture_height( sgx_logo );
 
 			auto logo_rotate = glm::rotate(glm::mat4(), glm::half_pi<float>(), glm::vec3(1.f, 0.f, 0.f));
-			auto logo_translate = glm::translate(glm::mat4(), glm::vec3(float(w - logo_w*mult), float(logo_h*mult), 0.f));
+			auto logo_translate = glm::translate(glm::mat4(), glm::vec3(float(w - logo_w*mult)-10.f, float(logo_h*mult)+10.f, 0.f));
 			auto logo_scale = glm::scale(glm::mat4(), glm::vec3(logo_w*mult, logo_h*mult, 1.f));
 			auto logo_transform = logo_translate * logo_scale * logo_rotate;
 			logo->set_transform(logo_transform);
@@ -620,7 +620,8 @@ namespace SynGlyphX
 		hal::rasterizer_state rast{ true, true, false };
 		context->set_rasterizer_state(rast);
 
-		background_color = glm::vec4(0.059, 0.09, 0.165, 1);
+		//background_color = glm::vec4(0.059, 0.09, 0.165, 1);
+		background_color = glm::vec4(0.1215, 0.1529, 0.2274, 1);
 		context->clear(hal::clear_type::color_depth, background_color);
 
 		// Compute some axis information beforehand since we'll need it in a few places.
@@ -1173,13 +1174,15 @@ namespace SynGlyphX
 			new_pos.push_back(-0.99);
 		}
 		else if (pos == 1) { //X
+
 			new_pos.push_back(orbit_center[0]);
-			new_pos.push_back(dist);
+			new_pos.push_back(dist*-1);
 			new_pos.push_back(orbit_center[2]);
 
 			new_pos.push_back(0);
-			new_pos.push_back(-1);
+			new_pos.push_back(1);
 			new_pos.push_back(0);
+
 		}
 		else if (pos == 2) { //Y
 			new_pos.push_back(dist);

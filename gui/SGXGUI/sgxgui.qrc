@@ -65,6 +65,8 @@
         <file>Resources/Icons/int_legend_icon.png</file>
         <file>Resources/Icons/legend_icon.png</file>
         <file>Resources/Icons/home_icon.png</file>
+        <file>Resources/glyphx.png</file>
+        <file>Resources/Icons/camera-reset.png</file>
     </qresource>
     <qresource prefix="/qt/etc">
         <file alias="qt.conf">Resources/qt.conf</file>

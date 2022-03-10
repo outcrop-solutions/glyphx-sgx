@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Transform id="9cc71daa-4e1e-4429-a59d-360a12747a34" Timestamp="1641229175">
+	<BaseObjects>
+		<BaseObject type="Default" default="Clear">
+			<Position>
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+			</Position>
+			<Rotation>
+				<AngleX>0</AngleX>
+				<AngleY>0</AngleY>
+				<AngleZ>0</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>180</Width>
+				<Height>180</Height>
+			</WorldSize>
+			<GridLines horizontal="0" vertical="0">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+		<BaseObject type="Local Image" filename="C:\ProgramData\SynGlyphX\Content\mcgee_sku_model__old\mcgee_sku_model\Cube - Dark - Bottom.png">
+			<Position>
+				<X>0</X>
+				<Y>0</Y>
+				<Z>0</Z>
+			</Position>
+			<Rotation>
+				<AngleX>0</AngleX>
+				<AngleY>0</AngleY>
+				<AngleZ>0</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>410</Width>
+				<Height>410</Height>
+			</WorldSize>
+			<GridLines horizontal="0" vertical="0">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+		<BaseObject type="Local Image" filename="C:\ProgramData\SynGlyphX\Content\mcgee_sku_model__old\mcgee_sku_model\Cube - Dark - Top.png">
+			<Position>
+				<X>0</X>
+				<Y>0</Y>
+				<Z>140</Z>
+			</Position>
+			<Rotation>
+				<AngleX>180</AngleX>
+				<AngleY>0</AngleY>
+				<AngleZ>0</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>410</Width>
+				<Height>410</Height>
+			</WorldSize>
+			<GridLines horizontal="0" vertical="0">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+		<BaseObject type="Local Image" filename="C:\ProgramData\SynGlyphX\Content\mcgee_sku_model__old\mcgee_sku_model\Cube - Dark - Front, Back, Left, Right.png">
+			<Position>
+				<X>-205</X>
+				<Y>0</Y>
+				<Z>70</Z>
+			</Position>
+			<Rotation>
+				<AngleX>90</AngleX>
+				<AngleY>90</AngleY>
+				<AngleZ>180</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>410</Width>
+				<Height>140</Height>
+			</WorldSize>
+			<GridLines horizontal="0" vertical="0">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+		<BaseObject type="Local Image" filename="C:\ProgramData\SynGlyphX\Content\mcgee_sku_model__old\mcgee_sku_model\Cube - Dark - Front, Back, Left, Right.png">
+			<Position>
+				<X>205</X>
+				<Y>0</Y>
+				<Z>70</Z>
+			</Position>
+			<Rotation>
+				<AngleX>90</AngleX>
+				<AngleY>270</AngleY>
+				<AngleZ>180</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>410</Width>
+				<Height>140</Height>
+			</WorldSize>
+			<GridLines horizontal="0" vertical="0">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+		<BaseObject type="Local Image" filename="C:\ProgramData\SynGlyphX\Content\mcgee_sku_model__old\mcgee_sku_model\Cube - Dark - Front, Back, Left, Right.png">
+			<Position>
+				<X>0</X>
+				<Y>205</Y>
+				<Z>70</Z>
+			</Position>
+			<Rotation>
+				<AngleX>90</AngleX>
+				<AngleY>180</AngleY>
+				<AngleZ>180</AngleZ>
+			</Rotation>
+			<WorldSize>
+				<Width>410</Width>
+				<Height>140</Height>
+			</WorldSize>
+			<GridLines horizontal="0" vertical="0">
+				<Color>0,0,0</Color>
+			</GridLines>
+		</BaseObject>
+	</BaseObjects>
+	<Datasources>
+		<Datasource source="File" type="CSV" id="0bc27e1c-b48b-474e-844d-4ec1b0f94613">
+			<Host>C:/ProgramData/SynGlyphX/Content/mcgee_sku_model__old/mcgee_sku_model\Mcgee and co - Sheet1.csv</Host>
+			<Name>C:/ProgramData/SynGlyphX/Content/mcgee_sku_model__old/mcgee_sku_model\Mcgee and co - Sheet1.csv</Name>
+		</Datasource>
+	</Datasources>
+	<Glyphs>
+		<Glyph label="0" merge="false" id="6ee8aeef-6413-495c-9d1f-ed6dc4f648d1">
+			<Position>
+				<X>
+					<Min>-205</Min>
+					<Difference>410</Difference>
+					<Binding fieldId="~866246884"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>-205</Min>
+					<Difference>410</Difference>
+					<Binding fieldId="~1781544483"/>
+					<Function type="Text Interpolation"/>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Difference>70</Difference>
+					<Binding fieldId="~821069771"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</Position>
+			<Rotation>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</Rotation>
+			<Scale>
+				<X>
+					<Min>1</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>1</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Difference>100</Difference>
+					<Binding fieldId="~821069771"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</Scale>
+			<Color>
+				<RGB>
+					<Min>0,255,255</Min>
+					<Difference>255,-255,-255</Difference>
+					<Binding fieldId="~821069771"/>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</RGB>
+				<Transparency>
+					<Min>0</Min>
+					<Difference>255</Difference>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Transparency>
+			</Color>
+			<Tag>
+				<Value/>
+				<Function type="None"/>
+			</Tag>
+			<Description>
+				<Value/>
+				<Function type="None"/>
+			</Description>
+			<RotationRate>
+				<X>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</X>
+				<Y>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Y>
+				<Z>
+					<Min>0</Min>
+					<Function type="Linear Interpolation">
+						<MinMax type="BoundField">
+							<Min>0</Min>
+						</MinMax>
+					</Function>
+				</Z>
+			</RotationRate>
+			<Geometry>
+				<Shape>
+					<Value>Cube</Value>
+					<Function type="None"/>
+				</Shape>
+				<Surface>Solid</Surface>
+				<Ratio>0.10000000000000001</Ratio>
+			</Geometry>
+			<VirtualTopology>
+				<Type>
+					<Value>Torus</Value>
+					<Function type="None"/>
+				</Type>
+			</VirtualTopology>
+			<URL>
+				<Value/>
+				<Function type="None"/>
+			</URL>
+		</Glyph>
+	</Glyphs>
+	<Defaults>
+		<TagFieldDefault>Position X</TagFieldDefault>
+		<TagValueDefault>No Tag</TagValueDefault>
+		<ScaleZeroDefault remove="true"/>
+		<SuperimposedGlyphs use="false"/>
+	</Defaults>
+	<SceneProperties>
+		<BackgroundColor>64,65,65</BackgroundColor>
+	</SceneProperties>
+	<FieldGroups/>
+	<InputFields>
+		<InputField name="~866246884" id="0bc27e1c-b48b-474e-844d-4ec1b0f94613" table="OnlyTable" field="0" type="Real"/>
+		<InputField name="~821069771" id="0bc27e1c-b48b-474e-844d-4ec1b0f94613" table="OnlyTable" field="Total Price" type="Real"/>
+		<InputField name="~1781544483" id="0bc27e1c-b48b-474e-844d-4ec1b0f94613" table="OnlyTable" field="Ship Date2" type="Text"/>
+	</InputFields>
+	<ElasticList>
+		<ElasticField field="0" id="0bc27e1c-b48b-474e-844d-4ec1b0f94613" table="OnlyTable"/>
+	</ElasticList>
+	<FieldPropertiesList>
+		<FieldProperties hashid="1766509969" id="ad1584a6-ba6f-46c6-b4e9-0410de4e53be" table="OnlyTable" field="Cost Center2" type="Number" dec="0" sym="" format="N/A N/A"/>
+		<FieldProperties hashid="2817043155" id="efd154ad-376c-44f0-89f7-b8e661375577" table="OnlyTable" field="0" type="Number" dec="0" sym="" format="N/A N/A"/>
+	</FieldPropertiesList>
+</Transform>

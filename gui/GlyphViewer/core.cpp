@@ -23,13 +23,10 @@ void Core::SendDrawerPosition(const QString &text)
 		int w = comments.value("left").toInt() - x;
 		int h = projects.value("height").toInt();
 
-		/*int x = 512;
-		int y = 64;
-		int w = 1966;
-		int h = 800;*/
-
 		glyphDrawer->setMinimumSize(QSize(w, h));
 		glyphDrawer->move(x, y);
+
+		//QMessageBox::information(parent, tr("Error message"), "X: " + QString::number(x) + ", Y: " + QString::number(y) + ", W: " + QString::number(w) + ", H: " + QString::number(h));
 	}
 	catch (...) {
 		QMessageBox::information(parent, tr("Error message"), "Failed to resize drawer.");
@@ -39,13 +36,18 @@ void Core::SendDrawerPosition(const QString &text)
 
 void Core::OpenProject(const QString &text)
 {
-	emit OP(text);
+	if (!text.isEmpty() && !text.isNull())
+	{
+		emit OP(text);
+	}
 }
 
-void Core::ToggleDrawer(const QString &text)
+void Core::ToggleDrawer(const bool flag)
 {
-	if (glyphDrawer->isHidden())
+	if (flag) {
 		glyphDrawer->show();
+		GetDrawerPosition();
+	}
 	else
 		glyphDrawer->hide();
 }
@@ -79,6 +81,7 @@ void Core::UpdateFilter(const QString &text)
 
 void Core::ChangeState(const QString &text)
 {
+	QMessageBox::information(parent, tr("Error message"), text);
 	emit CS(text);
 }
 
@@ -93,4 +96,24 @@ void Core::GetCameraPosition(const QString &text) {
 	QString json = "\"camera\": {\"position\": [" + QString::number(pos[0]) + "," + QString::number(pos[1]) + "," + QString::number(pos[2]) + "]," +
 		"\"direction\": [" + QString::number(pos[3]) + "," + QString::number(pos[4]) + "," + QString::number(pos[5]) + "]}";
 	SendCameraPosition(json);
+}
+
+void Core::GetDrawerStatus(const QString &text) {
+
+	if (glyphDrawer->isHidden()) {
+		SendDrawerStatus("Hidden");
+	}
+	else {
+		SendDrawerStatus("Visible");
+	}
+}
+
+void Core::GetSdtName(const QString &text) {
+
+	emit SN(text);
+}
+
+void Core::CloseModel()
+{
+	emit CM();
 }

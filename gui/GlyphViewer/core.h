@@ -28,11 +28,15 @@ signals:
     */
 	void KeepAlive(const QString &text);
 	void SendCameraPosition(const QString &text);
+	void SendSdtName(const QString &text);
+	void SendDrawerStatus(const QString &text);
     void GetDrawerPosition();
 	void OP(const QString &text);
 	void UF(const QString &text);
 	void CS(const QString &text);
 	void RD(const QString &text);
+	void SN(const QString &text);
+	void CM();
 
 public slots:
 
@@ -41,12 +45,15 @@ public slots:
     */
 	void SendDrawerPosition(const QString &text);
 	void OpenProject(const QString &text);
-	void ToggleDrawer(const QString &text);
+	void ToggleDrawer(const bool flag);
 	void ResizeEvent(const QString &text);
 	void UpdateFilter(const QString &text);
 	void ChangeState(const QString &text);
 	void ReloadDrawer(const QString &text);
 	void GetCameraPosition(const QString &text);
+	void GetSdtName(const QString &text);
+	void GetDrawerStatus(const QString &text);
+	void CloseModel();
 
 private:
 	QWidget *parent;

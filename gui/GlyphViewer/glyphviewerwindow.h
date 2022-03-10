@@ -55,7 +55,7 @@ class GlyphViewerWindow : public SynGlyphX::MainWindow
 	Q_OBJECT
 
 public:
-	GlyphViewerWindow(QWidget *parent = 0);
+	GlyphViewerWindow(QString address, QWidget *parent = 0);
 	~GlyphViewerWindow();
 	void closeJVM();
 
@@ -121,6 +121,8 @@ private slots:
 	void UpdateGlyphDrawerFilter(QString text);
 	void ChangeModelState(QString text);
 	void ReloadGlyphDrawer(QString text);
+	void SendSdtName(QString text);
+	void CloseModel();
 
 signals:
 	void operate(const QString &);
@@ -245,6 +247,8 @@ private:
 	QWebSocket m_webSocket;
 	int counter;
 	qint64 lastModified;
+	QString m_currentSdtName;
+
 };
 
 #endif // GLYPHVIEWERWINDOW_H

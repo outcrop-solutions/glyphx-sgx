@@ -56,12 +56,14 @@
 #include <QtCore/QUuid>
 #include "DownloadManager.h"
 #include "BaseImage.h"
+#include <chrono>
+#include <vector>
 //#include "Engine.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
 
-GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
+GlyphViewerWindow::GlyphViewerWindow(QString address, QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
 	m_showErrorFromTransform(true),
 	m_showHomePage(true),
@@ -179,8 +181,9 @@ GlyphViewerWindow::GlyphViewerWindow(QWidget *parent)
 	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
 	QObject::connect(core, &Core::CS, this, &GlyphViewerWindow::ChangeModelState);
 	QObject::connect(core, &Core::RD, this, &GlyphViewerWindow::ReloadGlyphDrawer);
+	QObject::connect(core, &Core::SN, this, &GlyphViewerWindow::SendSdtName);
+	QObject::connect(core, &Core::CM, this, &GlyphViewerWindow::CloseModel);
 
-	QString address = "http://localhost:3000/";
 	dlg->load(QUrl(address));
 
 	/*QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
@@ -338,9 +341,14 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 	glyphDrawer->setMinimumSize(QSize(w, h));
 	glyphDrawer->move(x, y);*/
 
+	QDir loc(QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation())));
+	loc.mkdir("Content");
+
 }
 
 void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
+
+	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 	try {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
@@ -360,6 +368,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 		m_viewer->show();
 
 		QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
+		m_currentSdtName = sdt;
 		m_mappingModel->LoadDataTransformFile(sdt);
 		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
 
@@ -386,7 +395,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 				ge.generateGlyphs(this);
 			}
 
-			compass = ge.getCompassValues();
+			//compass = ge.getCompassValues();
 
 			/*bool show = true;
 			for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
@@ -413,11 +422,14 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
 		m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
 
+		LoadFilesIntoModel();
+
 	}
 	catch (...) {
-		QMessageBox::information(this, tr("Error message"), "Failed to load model.");
+		QMessageBox::information(this, tr("Error message"), "Failed to load model.\n" + text);
 	}
 
+	SynGlyphX::Application::restoreOverrideCursor();
 }
 
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
@@ -430,12 +442,17 @@ void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 	QString test = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE (\"" + columnName + "\" BETWEEN " + QString::number(min, 'f') + " AND " + QString::number(max, 'f') + ")";
 	*/
 	try {
-		SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(text);
+		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject obj = doc.object();
+		QString query = obj.value("filter").toString();
+
+		SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(query);
 		m_viewer->setFilteredResults(myset, true);
 	}
 	catch (...) {
 		QMessageBox::information(this, tr("Error message"), "Failed to update filter.");
 	}
+	//QMessageBox::information(this, tr("Error message"), text);
 	
 }
 
@@ -459,6 +476,19 @@ void GlyphViewerWindow::ChangeModelState(QString text) {
 	catch (...) {
 		QMessageBox::information(this, tr("Error message"), "Failed to change model state.");
 	}
+}
+
+void GlyphViewerWindow::SendSdtName(QString text) {
+
+	l_server->WebChannelCore()->SendSdtName(m_currentSdtName);
+}
+
+void GlyphViewerWindow::CloseModel() {
+
+	glyphDrawer->hide();
+	ClearAllData();
+	ClearCurrentFile();
+	m_viewer->clearScene();
 }
 
 void GlyphViewerWindow::ReloadGlyphDrawer(QString text) {
@@ -1031,6 +1061,10 @@ void GlyphViewerWindow::RefreshVisualization() {
 void GlyphViewerWindow::CloseVisualization() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+
+	if(!glyphDrawer->isHidden())
+		glyphDrawer->hide();
+	/*
 	m_pseudoTimeFilterWidget->Disable();
 	ClearAllData();
 	EnableLoadedVisualizationDependentActions(false);
@@ -1058,7 +1092,7 @@ void GlyphViewerWindow::CloseVisualization() {
 	m_viewer->clearScene();
 	if (m_showHomePage || SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
 		centerWidgetsContainer->setCurrentIndex(0);
-
+	*/
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
