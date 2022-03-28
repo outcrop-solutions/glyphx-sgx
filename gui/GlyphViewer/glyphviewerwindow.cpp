@@ -53,11 +53,18 @@
 #include <QtWebEngineWidgets/QWebEngineProfile>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
+#include <QtCore/QJsonArray>
 #include <QtCore/QUuid>
 #include "DownloadManager.h"
 #include "BaseImage.h"
 #include <chrono>
 #include <vector>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QtCore/QEventLoop>
+#include <QtWidgets/QTableWidget>
+#include "waitingspinnerwidget.h"
+#include <QTimer>
 //#include "Engine.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
@@ -176,6 +183,10 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QWidget *parent)
 	CreateGlyphDrawer();
 	core->SetDrawerWidget(glyphDrawer);
 	core->SetViewerWidget(m_viewer);
+	drawerDock = new QDockWidget(glyphDrawer);
+	glyphDrawer->addDockWidget(Qt::BottomDockWidgetArea, drawerDock);
+	drawerDock->hide();
+	drawerDockHeightSet = false;
 
 	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
 	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
@@ -305,15 +316,16 @@ void GlyphViewerWindow::OnSocketClosed() {
 */
 void GlyphViewerWindow::CreateGlyphDrawer() {
 
-	glyphDrawer = new QWidget(this);
+	glyphDrawer = new QMainWindow(this);
 
-	QRect rec = QApplication::desktop()->screenGeometry();
+	//QRect rec = QApplication::desktop()->screenGeometry();
 
 	//glyphDrawer->setMinimumSize(QSize(1793, rec.height()-200));
 	//glyphDrawer->move(511, 200);
 
 	glyphDrawer->setWindowFlags(Qt::FramelessWindowHint);
 
+	//QVBoxLayout* layout = new QVBoxLayout(this);
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
 	/*QLabel* syncLabel = new QLabel(this);
@@ -326,6 +338,7 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 	layout->setMargin(0);
 	layout->setSpacing(0);
 	layout->addWidget(m_viewer);
+	glyphDrawer->setCentralWidget(m_viewer);
 
 	glyphDrawer->setStyleSheet("QWidget{background-color: #0f172a;}");
 
@@ -356,6 +369,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 		QString filename = url_split[url_split.size() - 1];
 
 		QFile dir(location + filename.split(".zip")[0]);
+		athenaTableName = filename.split(".zip")[0].remove("_");
 
 		if (!dir.exists()) {
 			DownloadManager downloadManager(m_dataEngineConnection);
@@ -423,6 +437,8 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 		m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
 
 		LoadFilesIntoModel();
+
+		HitAthenaAPI(1);
 
 	}
 	catch (...) {
@@ -1649,6 +1665,7 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 				std::map<std::wstring, SynGlyphX::FieldProperties> fieldProperties = m_filteringManager->GetFieldPropertiesForTable(
 					m_hudGenerationInfo[hudInfoIndex].GetTable().GetDatasourceID(),
 					m_hudGenerationInfo[hudInfoIndex].GetTable().GetTable());
+
 				std::array<std::string, 3> posSourceData;
 				unsigned int j = 0;
 				for (unsigned int i = 0; i < 3; ++i) {
@@ -1659,31 +1676,15 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 						if (fieldProperties.find(fields[i].toStdWString()) != fieldProperties.end()){
 							posSourceData[i] = fieldProperties.at(fields[i].toStdWString()).transformData(posSourceDataVar[j].toString()).replace("%", "%%").toStdString();
 						}
-						else{/*
-							bool convertedToNumber = false;
-							float number = posSourceDataVar[j].toFloat(&convertedToNumber);
-
-							if (convertedToNumber) {
-								// Show numbers with no integral parts as ints for readability
-								float frac = fmodf(number, 1.f);
-								if (frac != 0.f)
-								{
-									// use sprintf so we can control significant digits (std::to_string can be unpredictable with floats)
-									char buf[128];
-									sprintf(buf, "%.3f", number);
-									posSourceData[i] = buf;
-								}
-								else
-									posSourceData[i] = std::to_string(static_cast<int>(number));
-							}
-							else {*/
-
-								posSourceData[i] = posSourceDataVar[j].toString().toStdString();
-							//}
+						else{
+							posSourceData[i] = posSourceDataVar[j].toString().toStdString();
 						}
 						++j;
 					}
 				}
+				
+				GetRowById(indexes.get().second);
+
 				m_viewer->setOverridePositionXYZ(posSourceData);
 			}
 		}
@@ -1697,6 +1698,102 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	m_viewer->setAxisNames(displayNames.contains(0) ? displayNames[0].toStdString().c_str() : "", 
 						   displayNames.contains(1) ? displayNames[1].toStdString().c_str() : "",
 						   displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
+}
+
+QString GlyphViewerWindow::HitAthenaAPI(long id) {
+
+	try {
+		QString url = "https://api.glyphx.co/etl/get-row-by-id";
+		QNetworkRequest request(url);
+		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+		QJsonObject obj;
+		obj["tableName"] = athenaTableName.replace("-", "_");
+		obj["rowNum"] = id + 1;
+		QJsonDocument doc(obj);
+		QByteArray data = doc.toJson();
+
+		QNetworkAccessManager networkManager;
+		QNetworkReply *reply = networkManager.post(request, data);
+
+		QEventLoop loop;
+		QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+		if (reply->isRunning()) {
+			loop.exec();
+		}
+
+		reply->deleteLater();
+
+		if (reply->error() != QNetworkReply::NoError) {
+			qDebug() << (reply->errorString().toStdString()).c_str();
+			throw DownloadException(("Network Error: " + reply->errorString() + "\n_" + url + "_").toStdString().c_str());
+		}
+
+		return QString::fromUtf8(reply->readAll());
+
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::warning(this, tr("Source Data Error"), e.what());
+	}
+	return "";
+}
+
+void GlyphViewerWindow::GetRowById(long id) {
+
+	WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(drawerDock, true, false);
+	spinner->setColor(QColor(254, 205, 8));
+	spinner->setMinimumWidth(glyphDrawer->width());
+	drawerDock->setWidget(spinner);
+	drawerDock->show();
+	spinner->start(); // gets the show on the road!
+
+	QTimer* timer = new QTimer(this);
+	long _revolutionsPerSecond = 1.57079632679489661923;
+	long _numberOfLines = 20;
+	timer->setInterval(1000 / (_numberOfLines * _revolutionsPerSecond));
+	QObject::connect(timer, &QTimer::timeout, spinner, &WaitingSpinnerWidget::rotate);
+	timer->start();
+
+	if (!drawerDockHeightSet) {
+		drawerDock->setFixedHeight(drawerDock->height()*1.5);
+		drawerDockHeightSet = true;
+	}
+	
+	try {
+		QString contents = HitAthenaAPI(id);
+		if (contents.size() == 0) {
+
+			//throw DownloadException("Returned no data");
+			drawerDock->hide();
+		}
+		else {
+
+			QJsonDocument doc = QJsonDocument::fromJson(contents.toUtf8());
+			QJsonArray arr = doc.array();
+			QJsonArray fields = arr.at(0).toObject().value("Data").toArray();
+			QJsonArray values = arr.at(1).toObject().value("Data").toArray();
+
+			QTableWidget *table = new QTableWidget(1, fields.size(), this);
+			table->setStyleSheet(QString::fromUtf8("QWidget{background-color: #0f172a;color: #fff;}"));
+			for (int i = 0; i < fields.size(); i++) {
+				QString field = fields.at(i).toObject().value("VarCharValue").toString();
+				QString value = values.at(i).toObject().value("VarCharValue").toString();
+				QTableWidgetItem *header = new QTableWidgetItem(field);
+				QTableWidgetItem *dataVal = new QTableWidgetItem(value);
+				table->setHorizontalHeaderItem(i, header);
+				table->setItem(0, i, dataVal);
+			}
+			drawerDock->setWidget(table);
+
+		}
+	}
+	catch (const std::exception& e) {
+
+		QMessageBox::warning(this, tr("Source Data Error"), e.what());
+	}
+
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {

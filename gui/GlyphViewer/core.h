@@ -2,6 +2,7 @@
 #define CORE_H
 
 #include <QObject>
+#include <QMainWindow>
 #include "SceneViewer/sceneviewer.h"
 
 namespace SynGlyphX
@@ -19,7 +20,7 @@ class Core : public QObject
 public:
 	Core(QWidget *prt, QObject *parent = nullptr);
 
-	void SetDrawerWidget(QWidget *drawer) { glyphDrawer = drawer; };
+	void SetDrawerWidget(QMainWindow *drawer) { glyphDrawer = drawer; };
 	void SetViewerWidget(SynGlyphX::SceneViewer *m_viewer) { viewer = m_viewer; }
 
 signals:
@@ -57,7 +58,7 @@ public slots:
 
 private:
 	QWidget *parent;
-	QWidget *glyphDrawer;
+	QMainWindow *glyphDrawer;
 	SynGlyphX::SceneViewer *viewer;
 };
 

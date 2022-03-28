@@ -165,6 +165,8 @@ private:
 	void UpdateAxisNamesAndSourceDataPosition();
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
+	void GetRowById(long id);
+	QString HitAthenaAPI(long id);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
@@ -243,11 +245,14 @@ private:
 	static SynGlyphX::SettingsStoredFileList s_subsetFileList;
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 
-	QWidget* glyphDrawer;
+	QMainWindow* glyphDrawer;
+	QDockWidget* drawerDock;
 	QWebSocket m_webSocket;
 	int counter;
 	qint64 lastModified;
 	QString m_currentSdtName;
+	QString athenaTableName;
+	bool drawerDockHeightSet;
 
 };
 

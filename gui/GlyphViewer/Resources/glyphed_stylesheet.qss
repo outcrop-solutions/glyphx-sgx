@@ -66,4 +66,39 @@ QScrollBar::sub-line:vertical {
     subcontrol-origin: margin;
 }
 
+QScrollBar:horizontal {               
+	border: none;
+    background: #fecd08;
+    height: 13px;    
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #fecd08;
+	margin-left:3px;
+	margin-right:3px;
+	margin-top:1.5px;
+	margin-bottom:1.5px;
+    min-height: 12px;
+	border-top: 0.5px solid #fff; 
+	border-right: 1px outset #fff; 
+	border-bottom: 1px solid #c1c1c1;
+	border-left: 0.5px solid #c1c1c1; 
+	border-radius: 4px;
+}
+
+QScrollBar::add-line:horizontal {
+    background: #fecd08;
+    width: px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+    
+QScrollBar::sub-line:horizontal {
+    background: #fecd08;
+    width: 0px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
 

@@ -1088,14 +1088,19 @@ QList<QVariant> SourceDataCache::GetValuesForRow(const SynGlyphX::InputTable& ta
 	QList<QVariant> values;
 
 	QString queryString = "SELECT ";
-	for (const auto& field : fields) {
+	if (fields.size() == 0) {
+		queryString += "*";
+	}
+	else {
+		for (const auto& field : fields) {
 
-		if (!field.isEmpty()) {
+			if (!field.isEmpty()) {
 
-			queryString += "\"" + field + "\"";
-			if (field != fields.last()) {
+				queryString += "\"" + field + "\"";
+				if (field != fields.last()) {
 
-				queryString += ", ";
+					queryString += ", ";
+				}
 			}
 		}
 	}
