@@ -48,8 +48,10 @@ void Core::ToggleDrawer(const bool flag)
 		glyphDrawer->show();
 		GetDrawerPosition();
 	}
-	else
+	else {
 		glyphDrawer->hide();
+		drawerDock->hide();
+	}
 }
 
 void Core::ResizeEvent(const QString &text)
@@ -76,6 +78,7 @@ void Core::ResizeEvent(const QString &text)
 
 void Core::UpdateFilter(const QString &text)
 {
+	//QMessageBox::information(parent, tr("Error message"), text);
 	emit UF(text);
 }
 

@@ -187,6 +187,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QWidget *parent)
 	glyphDrawer->addDockWidget(Qt::BottomDockWidgetArea, drawerDock);
 	drawerDock->hide();
 	drawerDockHeightSet = false;
+	core->SetDockWidget(drawerDock);
 
 	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
 	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
@@ -362,11 +363,22 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
+	drawerDock->hide();
 
 	try {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+		//QStringList url_split = text.split("?")[0].split("/");
+		//QString filename = url_split[url_split.size() - 1];
+		//text = "https://sampleproject04827-staging.s3.amazonaws.com/public/24edf1b7-4bf1-4ba3-8b2c-63a679d44d65/output/_24edf1b7-4bf1-4ba3-8b2c-63a679d44d65.zip";
 		QStringList url_split = text.split("?")[0].split("/");
+		//QString filename = "_24edf1b7-4bf1-4ba3-8b2c-63a679d44d65.zip";
 		QString filename = url_split[url_split.size() - 1];
+		/*
+		QFile file("debug_url.txt");
+		if (file.open(QIODevice::ReadWrite)) {
+			QTextStream stream(&file);
+			stream << text << endl;
+		}*/
 
 		QFile dir(location + filename.split(".zip")[0]);
 		athenaTableName = filename.split(".zip")[0].remove("_");
@@ -375,8 +387,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 			DownloadManager downloadManager(m_dataEngineConnection);
 			downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
 		}
-
-		l_server->WebChannelCore()->GetDrawerPosition();
 
 		glyphDrawer->show();
 		m_viewer->show();
@@ -438,14 +448,16 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
 		LoadFilesIntoModel();
 
-		HitAthenaAPI(1);
-
 	}
 	catch (...) {
 		QMessageBox::information(this, tr("Error message"), "Failed to load model.\n" + text);
 	}
 
 	SynGlyphX::Application::restoreOverrideCursor();
+
+	l_server->WebChannelCore()->GetDrawerPosition();
+
+	HitAthenaAPI(1, true);
 }
 
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
@@ -1078,8 +1090,9 @@ void GlyphViewerWindow::CloseVisualization() {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
-	if(!glyphDrawer->isHidden())
+	if (!glyphDrawer->isHidden()) {
 		glyphDrawer->hide();
+	}
 	/*
 	m_pseudoTimeFilterWidget->Disable();
 	ClearAllData();
@@ -1700,7 +1713,7 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 						   displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
 }
 
-QString GlyphViewerWindow::HitAthenaAPI(long id) {
+QString GlyphViewerWindow::HitAthenaAPI(long id, bool async=false) {
 
 	try {
 		QString url = "https://api.glyphx.co/etl/get-row-by-id";
@@ -1716,13 +1729,14 @@ QString GlyphViewerWindow::HitAthenaAPI(long id) {
 		QNetworkAccessManager networkManager;
 		QNetworkReply *reply = networkManager.post(request, data);
 
-		QEventLoop loop;
-		QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+		if (!async) {
+			QEventLoop loop;
+			QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
 
-		if (reply->isRunning()) {
-			loop.exec();
+			if (reply->isRunning()) {
+				loop.exec();
+			}
 		}
-
 		reply->deleteLater();
 
 		if (reply->error() != QNetworkReply::NoError) {
@@ -1730,7 +1744,7 @@ QString GlyphViewerWindow::HitAthenaAPI(long id) {
 			throw DownloadException(("Network Error: " + reply->errorString() + "\n_" + url + "_").toStdString().c_str());
 		}
 
-		return QString::fromUtf8(reply->readAll());
+		return async ? "" : QString::fromUtf8(reply->readAll());
 
 	}
 	catch (const std::exception& e) {
@@ -1747,7 +1761,7 @@ void GlyphViewerWindow::GetRowById(long id) {
 	spinner->setMinimumWidth(glyphDrawer->width());
 	drawerDock->setWidget(spinner);
 	drawerDock->show();
-	spinner->start(); // gets the show on the road!
+	spinner->start();
 
 	QTimer* timer = new QTimer(this);
 	long _revolutionsPerSecond = 1.57079632679489661923;
@@ -1786,6 +1800,9 @@ void GlyphViewerWindow::GetRowById(long id) {
 				table->setItem(0, i, dataVal);
 			}
 			drawerDock->setWidget(table);
+			if (fields.size() == 0) {
+				drawerDock->hide();
+			}
 
 		}
 	}
