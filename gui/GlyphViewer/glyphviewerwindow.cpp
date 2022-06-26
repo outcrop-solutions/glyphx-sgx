@@ -65,7 +65,7 @@
 #include <QtWidgets/QTableWidget>
 #include "waitingspinnerwidget.h"
 #include <QTimer>
-//#include "Engine.h"
+#include "AwsLogger.h"
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -208,6 +208,8 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QWidget *parent)
 
 	//GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
 	//glyphEngine->initiate();
+
+	AwsLogger::getInstance()->logger("123456", "New session.");
 
 }
 
@@ -364,6 +366,8 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	drawerDock->hide();
+
+	AwsLogger::getInstance()->logger("123456", text);
 
 	try {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
