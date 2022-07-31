@@ -32,7 +32,6 @@
 #include "orbitcameracontroller.h"
 #include "overheadcameracontroller.h"
 #include "superimposedgroupmanager.h"
-#include "scenereader.h"
 
 //temp
 #include <QtCore/qitemselectionmodel.h>
@@ -344,9 +343,9 @@ namespace SynGlyphX
 			base_textures.push_back(texture);
 		}
 
-		SceneReader r;
+		r = new SceneReader();
 		scene->setUseSuperimposed(useSuperimposed);
-		r.read(sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids);
+		r->read(sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids);
 
 		resetCamera();
 

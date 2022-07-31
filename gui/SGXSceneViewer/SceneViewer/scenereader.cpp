@@ -11,10 +11,11 @@
 #include <hal/hal.h>
 #include <render/grid_renderer.h>
 #include "baseimagerenderer.h"
-#include "legacyglyphplacement.h"
+//#include "legacyglyphplacement.h"
 #include "glyphscene.h"
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <algorithm>
 //#include "glm/ext.hpp"
 //#include <hal/debug.h>
 
@@ -265,6 +266,44 @@ namespace SynGlyphX
 		glyphnode->setColor( data.color );
 		glyphnode->setPlacementPolicy( ChoosePlacementPolicy( data ) );
 
+		allScaleZ.append(data.scale.z);
+		colorMapping.insert(data.scale.z, data.color);
+		filteringIndexMap.insert(data.id, data.id);
+
+		//create map with key glm::vec3 and value of list of glyph ids
+		QString uid = QString::number(data.pos.x) + QString::number(data.pos.y);
+		indexToUID.insert(data.id, uid);
+		if (stackedGlyphs.contains(uid)){
+			stackedGlyphs[uid].glyphIds.append(data.id);
+			stackedGlyphs[uid].scaleZ += data.scale.z;
+			stackedGlyphs[uid].posZ += data.pos.z;
+			try {
+				QString str = QString::fromStdString(tag).split(" ")[1];
+				str.chop(1);
+				double val = str.toDouble();
+				stackedGlyphs[uid].tagValue += val;
+			}
+			catch (...) {
+
+			}
+		}
+		else {
+			stackedGlyphs.insert(uid, StackedGlyph());
+			stackedGlyphs[uid].glyphIds.append(data.id);
+			stackedGlyphs[uid].scaleZ = data.scale.z;
+			stackedGlyphs[uid].posZ += data.pos.z;
+			stackedGlyphs[uid].gpd = data;
+			try {
+				QString str = QString::fromStdString(tag).split(" ")[1];
+				str.chop(1);
+				double val = str.toDouble();
+				stackedGlyphs[uid].tagValue = val;
+			}
+			catch (...) {
+
+			}
+		}
+
 		glyphnode->setLocalPosition( data.pos );
 		glyphnode->setLocalRotation( data.rot );
 		glyphnode->setLocalScale( data.scale );
@@ -328,6 +367,103 @@ namespace SynGlyphX
 			next_id = data.id + 1;
 	}
 
+	void SceneReader::create_stacked_glyph(QString uid, GlyphPlacementData data, std::string t, GlyphScene& scene)
+	{
+
+		indexToUID.insert(next_id, uid);
+		data.id = next_id;
+		data.label = next_id;
+		if (data.glyph_index >= 8u)
+			throw std::runtime_error("Glyph element index is too large; only up to 8 glyph types are supported.");
+
+		data.parent_id = 0;
+
+		data.pos.z = stackedGlyphs[uid].posZ;
+		data.scale.z = stackedGlyphs[uid].scaleZ;
+		data.color = colorMapping[findClosest(allScaleZ.size(), stackedGlyphs[uid].scaleZ)];
+
+		//hal::debug::print("id: %d", data.id);
+		//hal::debug::print("id: %d, parent_id: %d, position: %f, %f, %f, topo: %d", data.id, data.parent_id, data.pos.x, data.pos.y, data.pos.z, data.topo);
+
+		std::string tag = t;
+		std::string url = "nourl.html";
+		std::string desc = "";
+
+		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D(data.parent_id) : nullptr;
+		data.is_root = (data.parent_id == 0) || !parent;
+		hal::debug::_assert(data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id);
+
+		auto* glyphnode = scene.allocGlyph(data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1, data.label, data.glyph_index);
+		SetupGeometry(data.geom_type, *glyphnode);
+		glyphnode->setString(GlyphStringType::Tag, scene.createString(tag.c_str()));
+		glyphnode->setString(GlyphStringType::Url, scene.createString(url.c_str()));
+		glyphnode->setString(GlyphStringType::Desc, scene.createString(desc.c_str()));
+		glyphnode->setColor(data.color);
+		glyphnode->setPlacementPolicy(ChoosePlacementPolicy(data));
+
+		glyphnode->setLocalPosition(data.pos);
+		glyphnode->setLocalRotation(data.rot);
+		glyphnode->setLocalScale(data.scale);
+		glyphnode->setTorusRatio(data.ratio);
+
+		if (data.rotation_rates.x != 0.f)
+		{
+			glyphnode->setAnimationAxis(glm::vec3(1.f, 0.f, 0.f));
+			glyphnode->setAnimationRate(data.rotation_rates.x);
+		}
+		else if (data.rotation_rates.y != 0.f)
+		{
+			glyphnode->setAnimationAxis(glm::vec3(0.f, 1.f, 0.f));
+			glyphnode->setAnimationRate(data.rotation_rates.y);
+		}
+		else if (data.rotation_rates.z != 0.f)
+		{
+			glyphnode->setAnimationAxis(glm::vec3(0.f, 0.f, 1.f));
+			glyphnode->setAnimationRate(data.rotation_rates.z);
+		}
+
+		if (data.is_root)
+		{
+			glm::mat4 transform = glm::translate(glm::mat4(), data.pos);
+			glm::vec3 visual_scale(1.f, 1.f, 1.f);
+			transform = glm::rotate(transform, glm::radians(data.rot.y), glm::vec3(0.0f, 0.0f, -1.0f));
+			transform = glm::rotate(transform, glm::radians(data.rot.x), glm::vec3(-1.0f, 0.0f, 0.0f));
+			transform = glm::rotate(transform, glm::radians(data.rot.z), glm::vec3(0.0f, 0.0f, -1.0f));
+			if (data.topo == kNPtopoRod)
+			{
+				visual_scale = glm::vec3(data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f);
+				transform = glm::translate(transform, glm::vec3(0.f, 0.f, 1.f));
+			}
+			else
+			{
+				transform = glm::scale(transform, data.scale);
+			}
+
+			if ((data.geom_type == int(GeomType::CYLINDER) || data.geom_type == int(GeomType::WIRE_CYLINDER)
+				|| data.geom_type == int(GeomType::CONE) || data.geom_type == int(GeomType::WIRE_CONE))
+				|| (data.topo != kNPtopoPin
+					&& (data.geom_type == int(GeomType::PIN)
+						|| data.geom_type == int(GeomType::WIRE_PIN)))) {
+
+				transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.f));
+			}
+
+			glyphnode->setCachedTransform(transform);
+			glyphnode->setVisualScale(visual_scale);
+			++root_count;
+		}
+		else
+		{
+			auto glyph_parent = scene.getGlyph3D(data.parent_id);
+			assert(glyph_parent);	// this expects the file to always have parents before children
+			glyph_parent->setChild(glyphnode);
+		}
+		scene.add(glyphnode);
+
+		if (data.id >= next_id)
+			next_id = data.id + 1;
+	}
+
 	void SceneReader::read_link( GlyphScene& scene )
 	{
 		int id0 = read_int();
@@ -386,7 +522,6 @@ namespace SynGlyphX
 
 	void SceneReader::read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids)
 	{
-
 		QFile srfile("srLog.txt");
 		srfile.open(QIODevice::WriteOnly);
 		QTextStream out(&srfile);
@@ -437,6 +572,29 @@ namespace SynGlyphX
 				read_link( scene );
 			out << "{{Links read}}" << endl;
 
+			std::sort(allScaleZ.begin(), allScaleZ.end());
+
+			for (auto uid : stackedGlyphs.keys()) {
+				out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
+				if (stackedGlyphs[uid].glyphIds.size() > 1) {
+					for (int val : stackedGlyphs[uid].glyphIds) {
+						filteringIndexMap[val] = next_id;
+						const glm::vec4 color = scene.getGlyph3D(val)->getColor();
+						glm::vec4 c = color;
+						c.a = 0;
+						scene.getGlyph3D(val)->setColor(c);
+					}
+					QString tag = "Z: " + QString::number(stackedGlyphs[uid].tagValue);
+					create_stacked_glyph(uid, stackedGlyphs[uid].gpd, tag.toStdString(), scene);
+				}
+			}
+			
+			out << "Filtering map:" << endl;
+			for (auto id : filteringIndexMap.keys()) {
+				out << id << ", " << filteringIndexMap[id] << endl;
+			}
+			
+
 			// Done adding; finish scene setup and clean up.
 			scene.finishAdding();
 			timer.print_ms_to_debug( "read binary scene with %i objects (%i roots), %i links", glyph_count, root_count, link_count );
@@ -445,5 +603,57 @@ namespace SynGlyphX
 		{
 			throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 		}
+	}
+
+	float SceneReader::findClosest(int n, float target)
+	{
+		// Corner cases
+		if (target <= allScaleZ[0])
+			return allScaleZ[0];
+		if (target >= allScaleZ[n - 1])
+			return allScaleZ[n - 1];
+
+		// Doing binary search
+		int i = 0, j = n, mid = 0;
+		while (i < j) {
+			mid = (i + j) / 2;
+
+			if (allScaleZ[mid] == target)
+				return allScaleZ[mid];
+
+			/* If target is less than array element,
+				then search in left */
+			if (target < allScaleZ[mid]) {
+
+				// If target is greater than previous
+				// to mid, return closest of two
+				if (mid > 0 && target > allScaleZ[mid - 1])
+					return getClosest(allScaleZ[mid - 1],
+						allScaleZ[mid], target);
+
+				/* Repeat for left half */
+				j = mid;
+			}
+
+			// If target is greater than mid
+			else {
+				if (mid < n - 1 && target < allScaleZ[mid + 1])
+					return getClosest(allScaleZ[mid],
+						allScaleZ[mid + 1], target);
+				// update i
+				i = mid + 1;
+			}
+		}
+
+		// Only single element left after search
+		return allScaleZ[mid];
+	}
+
+	float SceneReader::getClosest(float val1, float val2, float target)
+	{
+		if (target - val1 >= val2 - target)
+			return val2;
+		else
+			return val1;
 	}
 }

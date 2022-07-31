@@ -166,7 +166,7 @@ private:
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
 	void GetRowById(long id);
-	QString HitAthenaAPI(long id, bool async);
+	QString HitAthenaAPI(QList<int> ids, bool async);
 
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;

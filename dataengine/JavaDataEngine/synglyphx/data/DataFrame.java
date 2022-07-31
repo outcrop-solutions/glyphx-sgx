@@ -124,6 +124,7 @@ public class DataFrame {
 	}
 
 	public double getTIMax(String field){
+		System.out.println(field);
 		try{
 			textInterpolationThreads.get(field).join();
 		}catch(InterruptedException ie){

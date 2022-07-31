@@ -31,6 +31,7 @@
 #include "glyphrenderer.h"
 #include "glyphgeometrydb.h"
 #include "LegendsWidget.h"
+#include "scenereader.h"
 
 namespace SynGlyphX
 {
@@ -83,6 +84,7 @@ namespace SynGlyphX
 		void wheelEvent( QWheelEvent* event ) override;
 
 		GlyphScene& getScene() { return *scene; }
+		SceneReader& reader() { return *r; }
 
 		void resetCamera();
 		std::vector<float> getCameraPosition();
@@ -161,6 +163,8 @@ namespace SynGlyphX
 		bool initialized;
 
 		GlyphScene* scene;
+
+		SceneReader* r;
 
 		QTimer timer;
 		QElapsedTimer elapsed_timer;

@@ -66,6 +66,7 @@
 #include "waitingspinnerwidget.h"
 #include <QTimer>
 #include "AwsLogger.h"
+#include <QHeaderView>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -453,7 +454,8 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 		LoadFilesIntoModel();
 
 	}
-	catch (...) {
+	catch (std::exception& e) {
+		QMessageBox::information(this, tr("Error"), e.what());
 		QMessageBox::information(this, tr("Error message"), "Failed to load model.\n" + text);
 	}
 
@@ -461,7 +463,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 
 	l_server->WebChannelCore()->GetDrawerPosition();
 
-	HitAthenaAPI(1, true);
+	HitAthenaAPI(QList<int>{6}, true);
 }
 
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
@@ -1664,9 +1666,28 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
 	if (!selectedIndexes.empty()) {
 
+		/*QFile srfile("selLog.txt");
+		srfile.open(QIODevice::WriteOnly);
+		QTextStream out(&srfile);
+		out << "{{Selection}}" << endl;*/
+
 		try {
 
 			unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(selectedIndexes.back());
+
+			//out << "og_root: " << rootIndex << endl;
+
+			int index = rootIndex+6;
+			QString uid = m_viewer->reader().getIndexToUID()[index];
+			QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
+			float z = m_viewer->reader().getStackedGlyphMap()[uid].tagValue;
+			rootIndex = ids[0]-6;
+
+			/*out << "index: " << index << endl;
+			out << "uid: " << uid << endl;
+			out << "z: " << z << endl;
+			out << "rootidx: " << rootIndex << endl;*/
+
 			boost::optional<std::pair<unsigned int, unsigned long>> indexes = m_filteringManager->GetGlyphTemplateAndTableIndex(rootIndex);
 
 			if (indexes == boost::none) {
@@ -1701,7 +1722,7 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 				}
 				
 				GetRowById(indexes.get().second);
-
+				posSourceData[2] = QString::number(z).toStdString();
 				m_viewer->setOverridePositionXYZ(posSourceData);
 			}
 		}
@@ -1717,16 +1738,25 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 						   displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
 }
 
-QString GlyphViewerWindow::HitAthenaAPI(long id, bool async=false) {
+QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 
 	try {
 		QString url = "https://api.glyphx.co/etl/get-row-by-id";
 		QNetworkRequest request(url);
 		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
+		QString arr_str = "[";
+		for (int i = 0; i < ids.size(); i++)
+		{
+			arr_str += QString::number(ids[i] - 6 + 1);
+			if (i < ids.size() - 1)
+				arr_str += ",";
+		}
+		arr_str += "]";
+
 		QJsonObject obj;
-		obj["tableName"] = athenaTableName.replace("-", "_");
-		obj["rowNum"] = id + 1;
+		obj["tableName"] = athenaTableName.replace("-", "_"); //"01388c0b_5f5f_49ff_8c15_b6e902604b14";
+		obj["rowNum"] = arr_str;
 		QJsonDocument doc(obj);
 		QByteArray data = doc.toJson();
 
@@ -1775,12 +1805,17 @@ void GlyphViewerWindow::GetRowById(long id) {
 	timer->start();
 
 	if (!drawerDockHeightSet) {
-		drawerDock->setFixedHeight(drawerDock->height()*1.5);
+		drawerDock->setMinimumHeight(this->size().height()*0.1);
 		drawerDockHeightSet = true;
 	}
 	
 	try {
-		QString contents = HitAthenaAPI(id);
+
+		int index = id+6;
+		QString uid = m_viewer->reader().getIndexToUID()[index];
+		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
+		
+		QString contents = HitAthenaAPI(ids);
 		if (contents.size() == 0) {
 
 			//throw DownloadException("Returned no data");
@@ -1791,17 +1826,27 @@ void GlyphViewerWindow::GetRowById(long id) {
 			QJsonDocument doc = QJsonDocument::fromJson(contents.toUtf8());
 			QJsonArray arr = doc.array();
 			QJsonArray fields = arr.at(0).toObject().value("Data").toArray();
-			QJsonArray values = arr.at(1).toObject().value("Data").toArray();
+			QList<QJsonArray> rows;
+			for (int i = 1; i < arr.size(); i++) {
+				rows.append(arr.at(i).toObject().value("Data").toArray());
+			}
 
-			QTableWidget *table = new QTableWidget(1, fields.size(), this);
+			QTableWidget *table = new QTableWidget(rows.size(), fields.size(), this);
+			QHeaderView* header = table->horizontalHeader();
+			header->setSectionResizeMode(QHeaderView::Stretch);
+
 			table->setStyleSheet(QString::fromUtf8("QWidget{background-color: #0f172a;color: #fff;}"));
 			for (int i = 0; i < fields.size(); i++) {
 				QString field = fields.at(i).toObject().value("VarCharValue").toString();
-				QString value = values.at(i).toObject().value("VarCharValue").toString();
 				QTableWidgetItem *header = new QTableWidgetItem(field);
-				QTableWidgetItem *dataVal = new QTableWidgetItem(value);
 				table->setHorizontalHeaderItem(i, header);
-				table->setItem(0, i, dataVal);
+			}
+			for (int r = 0; r < rows.size(); r++) {
+				for (int i = 0; i < fields.size(); i++) {
+					QString value = rows.at(r).at(i).toObject().value("VarCharValue").toString();
+					QTableWidgetItem *dataVal = new QTableWidgetItem(value);
+					table->setItem(r, i, dataVal);
+				}
 			}
 			drawerDock->setWidget(table);
 			if (fields.size() == 0) {
