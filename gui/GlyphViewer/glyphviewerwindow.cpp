@@ -71,7 +71,7 @@
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
 
-GlyphViewerWindow::GlyphViewerWindow(QString address, QWidget *parent)
+GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *parent)
 	: SynGlyphX::MainWindow(4, parent),
 	m_showErrorFromTransform(true),
 	m_showHomePage(true),
@@ -211,6 +211,10 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QWidget *parent)
 	//glyphEngine->initiate();
 
 	AwsLogger::getInstance()->logger("123456", "New session.");
+
+	if (model != nullptr) {
+		QMessageBox::information(this, tr("Model Url"), model);
+	}
 
 }
 
@@ -1755,7 +1759,7 @@ QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 		arr_str += "]";
 
 		QJsonObject obj;
-		obj["tableName"] = athenaTableName.replace("-", "_"); //"01388c0b_5f5f_49ff_8c15_b6e902604b14";
+		obj["tableName"] = "01388c0b_5f5f_49ff_8c15_b6e902604b14"; //athenaTableName.replace("-", "_"); 
 		obj["rowNum"] = arr_str;
 		QJsonDocument doc(obj);
 		QByteArray data = doc.toJson();

@@ -55,7 +55,7 @@ class GlyphViewerWindow : public SynGlyphX::MainWindow
 	Q_OBJECT
 
 public:
-	GlyphViewerWindow(QString address, QWidget *parent = 0);
+	GlyphViewerWindow(QString address, QString model, QWidget *parent = 0);
 	~GlyphViewerWindow();
 	void closeJVM();
 

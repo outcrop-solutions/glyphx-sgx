@@ -22,6 +22,12 @@
         <DirectoryRef Id="APPDIR">
             <Component Id="glyphx.exe" Guid="*">
                 <File Id="glyphx.exe" Source="GlyphX.exe" KeyPath="yes" Checksum="yes"/>
+                <RegistryKey Root="HKCR" Key="glyphx">
+                    <RegistryValue Type="string" Value="URL:GlyphX Launcher"/>
+                    <RegistryValue Name="URL Protocol" Type="string" Value=""/>
+                    <RegistryValue Name="UseOriginalUrlEncoding" Type="integer" Value="1"/>
+                    <RegistryValue Key="shell\open\command" Type="string" Value="[APPDIR]GlyphX.exe --model=%1"/>
+                </RegistryKey>
             </Component>
         </DirectoryRef>
 

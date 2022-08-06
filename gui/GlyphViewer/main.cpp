@@ -137,15 +137,19 @@ int main(int argc, char *argv[])
 
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
+		QString model = nullptr;
 		QString address = "https://app.glyphx.co/";
 		QStringList commandLineArguments = SynGlyphX::Application::arguments();
 		for (QString arg : commandLineArguments) {
 			if (arg.contains("url")) {
 				address = arg.split("=")[1];
 			}
+			else if (arg.contains("model")) {
+				model = arg.split("=")[2];
+			}
 		}
 
-		GlyphViewerWindow w(address);
+		GlyphViewerWindow w(address, model);
 		QFile file(":GlyphViewer/Resources/glyphed_stylesheet.qss"); //For building app 
 		//QFile file("../../../GUI/GlyphViewer/Resources/glyphed_stylesheet.qss"); //For faster style testing
 		file.open(QFile::ReadOnly);
