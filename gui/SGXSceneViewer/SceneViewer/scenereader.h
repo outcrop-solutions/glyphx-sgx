@@ -35,6 +35,10 @@ namespace SynGlyphX
 		QMap<QString, StackedGlyph> getStackedGlyphMap() { return stackedGlyphs; }
 		QMap<int, int> getFilteringIndexMap() { return filteringIndexMap; }
 		QMap<int, QString> getIndexToUID() { return indexToUID; }
+		//float getShortestGlyph() { return allScaleZ.at(0); }
+		//float getTallestGlyph() { return allScaleZ.at(allScaleZ.size()-1); }
+		//int getFirstStackedIndex() { return indexOfFirstStacked; }
+		//int getLastStackedIndex() { return indexOfLastStacked; }
 
 	private:
 		void read_base_image( BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids );
@@ -62,6 +66,8 @@ namespace SynGlyphX
 		QMap<float, render::packed_color> colorMapping;
 		QList<float> allScaleZ;
 		QMap<int, int> filteringIndexMap;
+		//int indexOfFirstStacked;
+		//int indexOfLastStacked;
 		
 	};
 }

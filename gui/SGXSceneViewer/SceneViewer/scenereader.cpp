@@ -369,12 +369,15 @@ namespace SynGlyphX
 
 	void SceneReader::create_stacked_glyph(QString uid, GlyphPlacementData data, std::string t, GlyphScene& scene)
 	{
-
 		indexToUID.insert(next_id, uid);
 		data.id = next_id;
 		data.label = next_id;
 		if (data.glyph_index >= 8u)
 			throw std::runtime_error("Glyph element index is too large; only up to 8 glyph types are supported.");
+
+		/*if (indexOfFirstStacked != -1)
+			indexOfFirstStacked = data.id;
+		indexOfLastStacked = data.id;*/
 
 		data.parent_id = 0;
 
@@ -526,6 +529,9 @@ namespace SynGlyphX
 		srfile.open(QIODevice::WriteOnly);
 		QTextStream out(&srfile);
 		out << "{{In Scene Reader}}" << endl;
+
+		//indexOfFirstStacked = -1;
+		//indexOfLastStacked = -1;
 
 		root_count = 0u;
 		next_filtering_index = 0;

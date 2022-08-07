@@ -1759,7 +1759,7 @@ QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 		arr_str += "]";
 
 		QJsonObject obj;
-		obj["tableName"] = "01388c0b_5f5f_49ff_8c15_b6e902604b14"; //athenaTableName.replace("-", "_"); 
+		obj["tableName"] = athenaTableName; //"01388c0b_5f5f_49ff_8c15_b6e902604b14";
 		obj["rowNum"] = arr_str;
 		QJsonDocument doc(obj);
 		QByteArray data = doc.toJson();

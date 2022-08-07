@@ -1370,11 +1370,54 @@ namespace SynGlyphX
 
 	void SceneViewer::setFilteredResults(const IndexSet& results, bool disableFiltering)
 	{
+		//bool is_z_set = false;
+
+		/*QFile srfile("filterLog.txt");
+		srfile.open(QIODevice::WriteOnly);
+		QTextStream out(&srfile);
+		out << "{{Filtering Log}}" << endl;*/
+
+		//float shortest = r->getShortestGlyph();
+		//float tallest = r->getTallestGlyph();
+
+		//QList<float> scaleZs;
+		QSet<int> stacked_filter;
 		scene->clearFilter();
 		if (!disableFiltering) scene->setFilterApplied();
 		for (auto index : results){
 			scene->setPassedFilter(index);
+			//out << index << endl;
+			//Handle filtering of stacked glyphs if they exist
+			int idx = index+6;
+			int stacked = r->getFilteringIndexMap()[idx];
+			//float scaleZ = r->getStackedGlyphMap()[r->getIndexToUID()[idx + 6]].scaleZ;
+			//scaleZs.append(scaleZ);
+			if (idx != stacked) {
+				stacked_filter.insert(stacked-6);
+			}
 		}
+		//out << "{{Stacked Filter Log}}" << endl;
+		//This handles filters occuring on X and Y axes, need separate solution for Z
+		//if (r->getFirstStackedIndex() != -1) {
+			/*if (is_z_set) {
+				std::sort(scaleZs.begin(), scaleZs.end());
+				float low_comp = shortest == scaleZs.at(0) ? 0 : scaleZs.at(0);
+				float high_comp = tallest == scaleZs.at(scaleZs.size() - 1) ? 1000 : scaleZs.at(scaleZs.size() - 1);
+				for (int idx = r->getFirstStackedIndex(); idx < r->getLastStackedIndex() + 1; idx++) {
+					float scaleZ = r->getStackedGlyphMap()[r->getIndexToUID()[idx]].scaleZ;
+					if (scaleZ >= low_comp && scaleZ <= high_comp) {
+						stacked_filter.insert(idx);
+					}
+					else {
+						stacked_filter.remove(idx);
+					}
+				}
+			}*/
+		foreach(const int &value, stacked_filter) {
+			//out << value << endl;
+			scene->setPassedFilter(value);
+		}
+		//}
 		if (scene->getFilterMode() == FilteredResultsDisplayMode::HideUnfiltered)
 			scene->clearFilteredOutFromSelection();
 	}
