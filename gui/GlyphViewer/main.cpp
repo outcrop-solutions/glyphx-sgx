@@ -145,7 +145,14 @@ int main(int argc, char *argv[])
 				address = arg.split("=")[1];
 			}
 			else if (arg.contains("model")) {
-				model = arg.split("=")[2];
+				QStringList splt = arg.split("=");
+				if (splt.size() > 2) {
+					model = splt[2];
+				}
+				else {
+					model = splt[1];
+				}
+				address += "model=" + model;
 			}
 		}
 
