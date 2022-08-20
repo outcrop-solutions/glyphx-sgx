@@ -33,6 +33,7 @@ namespace SynGlyphX
 
 		void beginAdding( unsigned int count );
 		void add( Glyph3DNode* glyph );
+		void remove(int id) { glyphs.erase(id); }
 		void finishAdding();
 		void clear();
 
@@ -78,6 +79,7 @@ namespace SynGlyphX
 		bool getChanged() { return scene_changed; }
 		void clearChangedFlag() { scene_changed = false; }
 		void flagChanged() { scene_changed = true; }
+		void updateBound() { bound_update_needed = true; }
 
 		bool getSelectionChanged() { return selection_changed; }
 		void clearSelectionChangedFlag() { selection_changed = false; }

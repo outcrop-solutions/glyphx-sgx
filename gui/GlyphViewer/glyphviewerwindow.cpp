@@ -196,6 +196,8 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QObject::connect(core, &Core::RD, this, &GlyphViewerWindow::ReloadGlyphDrawer);
 	QObject::connect(core, &Core::SN, this, &GlyphViewerWindow::SendSdtName);
 	QObject::connect(core, &Core::CM, this, &GlyphViewerWindow::CloseModel);
+	QObject::connect(core, &Core::Settings, this, &GlyphViewerWindow::LoadSettings);
+
 
 	dlg->load(QUrl(address));
 
@@ -210,11 +212,17 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	//GlyphEngine::Engine* glyphEngine = new GlyphEngine::Engine();
 	//glyphEngine->initiate();
 
-	AwsLogger::getInstance()->logger("123456", "New session.");
-
-	if (model != nullptr) {
+	/*if (model != nullptr) {
 		QMessageBox::information(this, tr("Model Url"), model);
-	}
+	}*/
+
+	QSettings qsettings;
+	qsettings.beginGroup("GlyphX_User");
+	QString userID = qsettings.value("userid", "123456").toString();
+	bool summation = true;
+	bool explosion = false;
+
+	AwsLogger::getInstance()->logger(userID, "New session.");
 
 }
 
@@ -367,12 +375,12 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 
 }
 
-void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
+void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	drawerDock->hide();
 
-	AwsLogger::getInstance()->logger("123456", text);
+	AwsLogger::getInstance()->logger(userID, text);
 
 	try {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
@@ -392,7 +400,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 		QFile dir(location + filename.split(".zip")[0]);
 		athenaTableName = filename.split(".zip")[0].remove("_");
 
-		if (!dir.exists()) {
+		if (!dir.exists() || !load_from_cache) {
 			DownloadManager downloadManager(m_dataEngineConnection);
 			downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
 		}
@@ -413,7 +421,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text) {
 		QStringList legend_list;
 		m_viewer->setupLegendWindow(cache_location, legend_list);
 
-		if (!QFile(cache_location + "scene/glyphs.sgc").exists()) {
+		if (!QFile(cache_location + "scene/glyphs.sgc").exists() || !load_from_cache) {
 
 			QDir().mkdir(cache_location);
 			QDir().mkdir(cache_location + "/scene");
@@ -1683,8 +1691,9 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 
 			int index = rootIndex+6;
 			QString uid = m_viewer->reader().getIndexToUID()[index];
-			QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
-			float z = m_viewer->reader().getStackedGlyphMap()[uid].tagValue;
+			QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
+			//float z = m_viewer->reader().getStackedGlyphMap()[uid].tagValue;
+			float z = m_viewer->reader().getStackedGlyphMap()[uid]->currentTagValue;
 			rootIndex = ids[0]-6;
 
 			/*out << "index: " << index << endl;
@@ -1817,7 +1826,8 @@ void GlyphViewerWindow::GetRowById(long id) {
 
 		int index = id+6;
 		QString uid = m_viewer->reader().getIndexToUID()[index];
-		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
+		//QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
+		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->currentGlyphIds;
 		
 		QString contents = HitAthenaAPI(ids);
 		if (contents.size() == 0) {
@@ -2583,3 +2593,17 @@ QString GlyphViewerWindow::GetApplicationDisplayName() const {
 	}
 }
 
+void GlyphViewerWindow::LoadSettings(QMap<QString, QJsonValue> settings) {
+	
+	if (settings.contains("userid")) {
+		QSettings qsettings;
+		qsettings.beginGroup("GlyphX_User");
+		qsettings.setValue("userid", settings["userid"].toString());
+	}
+	if (settings.contains("summation")) {
+		summation = settings["summation"].toBool();
+	}
+	if (settings.contains("explosion")) {
+		explosion = settings["explosion"].toBool();
+	}
+}

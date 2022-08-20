@@ -11,6 +11,7 @@
 #include <QtGui/QPainter>
 #include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/color_space.hpp>
@@ -1370,17 +1371,16 @@ namespace SynGlyphX
 
 	void SceneViewer::setFilteredResults(const IndexSet& results, bool disableFiltering)
 	{
-		//bool is_z_set = false;
-
-		/*QFile srfile("filterLog.txt");
+		QFile srfile("filterLog.txt");
 		srfile.open(QIODevice::WriteOnly);
 		QTextStream out(&srfile);
-		out << "{{Filtering Log}}" << endl;*/
+		out << "{{Filtering Log}}" << endl;
 
-		//float shortest = r->getShortestGlyph();
-		//float tallest = r->getTallestGlyph();
+		out << "Result size: " << results.size() << endl;
 
-		//QList<float> scaleZs;
+		QMap<int, float> stacked_heights;
+		QMap<int, double> stacked_tag;
+		QMap<int, QList<int>> currentIds;
 		QSet<int> stacked_filter;
 		scene->clearFilter();
 		if (!disableFiltering) scene->setFilterApplied();
@@ -1390,31 +1390,57 @@ namespace SynGlyphX
 			//Handle filtering of stacked glyphs if they exist
 			int idx = index+6;
 			int stacked = r->getFilteringIndexMap()[idx];
-			//float scaleZ = r->getStackedGlyphMap()[r->getIndexToUID()[idx + 6]].scaleZ;
-			//scaleZs.append(scaleZ);
 			if (idx != stacked) {
 				stacked_filter.insert(stacked-6);
+
+				float height = scene->getGlyph3D(idx)->getLocalScale().z;
+				if (stacked_heights.contains(stacked)) {
+					stacked_heights[stacked] += height;
+					stacked_tag[stacked] += r->getTagValueMap()[idx];
+					currentIds[stacked].append(idx);
+				}
+				else {
+					stacked_heights[stacked] = height;
+					stacked_tag[stacked] = r->getTagValueMap()[idx];
+					currentIds.insert(stacked, QList<int>{idx});
+				}
 			}
 		}
-		//out << "{{Stacked Filter Log}}" << endl;
-		//This handles filters occuring on X and Y axes, need separate solution for Z
-		//if (r->getFirstStackedIndex() != -1) {
-			/*if (is_z_set) {
-				std::sort(scaleZs.begin(), scaleZs.end());
-				float low_comp = shortest == scaleZs.at(0) ? 0 : scaleZs.at(0);
-				float high_comp = tallest == scaleZs.at(scaleZs.size() - 1) ? 1000 : scaleZs.at(scaleZs.size() - 1);
-				for (int idx = r->getFirstStackedIndex(); idx < r->getLastStackedIndex() + 1; idx++) {
-					float scaleZ = r->getStackedGlyphMap()[r->getIndexToUID()[idx]].scaleZ;
-					if (scaleZ >= low_comp && scaleZ <= high_comp) {
-						stacked_filter.insert(idx);
-					}
-					else {
-						stacked_filter.remove(idx);
-					}
-				}
-			}*/
 		foreach(const int &value, stacked_filter) {
 			//out << value << endl;
+			glm::vec3 scaleZ = scene->getGlyph3D(value + 6)->getLocalScale();
+
+			if (scaleZ.z != stacked_heights[value + 6]) {
+
+				scaleZ.z = stacked_heights[value + 6];
+				scene->getGlyph3D(value + 6)->setLocalScale(scaleZ);
+				Glyph3DNode* glyphnode = scene->getGlyph3D(value + 6);
+				r->setCurrentGlyphIds(value + 6, currentIds[value + 6]);
+
+				//update color
+				glyphnode->setColor(r->getColorMapping()[r->findClosest(r->getAllScaleZ().size(), stacked_heights[value + 6])]);
+
+				//update tag
+				std::string tag = "Z: " + QString::number(stacked_tag[value + 6]).toStdString();
+				glyphnode->setString(GlyphStringType::Tag, scene->createString(tag.c_str()));
+				r->setCurrentTag(value + 6, stacked_tag[value + 6]);
+
+				glm::mat4 transform = glm::translate(glm::mat4(), glyphnode->getLocalPosition());
+				glm::vec3 visual_scale(1.f, 1.f, 1.f);
+				transform = glm::rotate(transform, glm::radians(glyphnode->getLocalRotation().y), glm::vec3(0.0f, 0.0f, -1.0f));
+				transform = glm::rotate(transform, glm::radians(glyphnode->getLocalRotation().x), glm::vec3(-1.0f, 0.0f, 0.0f));
+				transform = glm::rotate(transform, glm::radians(glyphnode->getLocalRotation().z), glm::vec3(0.0f, 0.0f, -1.0f));
+
+				transform = glm::scale(transform, glyphnode->getLocalScale());
+
+				glyphnode->setCachedTransform(transform);
+				glyphnode->setVisualScale(visual_scale);
+
+				//r->getStackedGlyphMap()[r->getIndexToUID()[value+6]].scaleZ)
+
+			}
+
+			//out << "glyph: " << value + 6 << " z: " << scene->getGlyph3D(value + 6)->getLocalScale().z << endl;
 			scene->setPassedFilter(value);
 		}
 		//}

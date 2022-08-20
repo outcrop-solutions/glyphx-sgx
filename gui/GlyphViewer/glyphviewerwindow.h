@@ -117,12 +117,13 @@ private slots:
 	//void OnSocketSslErrors(const QList<QSslError> &errors);
 	//void OnSocketClosed();
 	void SaveSnapshot();
-	void LoadProjectIntoGlyphDrawer(QString text);
+	void LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache);
 	void UpdateGlyphDrawerFilter(QString text);
 	void ChangeModelState(QString text);
 	void ReloadGlyphDrawer(QString text);
 	void SendSdtName(QString text);
 	void CloseModel();
+	void LoadSettings(QMap<QString, QJsonValue> settings);
 
 signals:
 	void operate(const QString &);
@@ -253,6 +254,9 @@ private:
 	QString m_currentSdtName;
 	QString athenaTableName;
 	bool drawerDockHeightSet;
+	QString userID;
+	bool summation;
+	bool explosion;
 
 };
 

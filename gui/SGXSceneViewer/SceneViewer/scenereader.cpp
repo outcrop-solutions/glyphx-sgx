@@ -274,30 +274,32 @@ namespace SynGlyphX
 		QString uid = QString::number(data.pos.x) + QString::number(data.pos.y);
 		indexToUID.insert(data.id, uid);
 		if (stackedGlyphs.contains(uid)){
-			stackedGlyphs[uid].glyphIds.append(data.id);
-			stackedGlyphs[uid].scaleZ += data.scale.z;
-			stackedGlyphs[uid].posZ += data.pos.z;
+			stackedGlyphs[uid]->glyphIds.append(data.id);
+			stackedGlyphs[uid]->scaleZ += data.scale.z;
+			stackedGlyphs[uid]->posZ += data.pos.z;
 			try {
 				QString str = QString::fromStdString(tag).split(" ")[1];
 				str.chop(1);
 				double val = str.toDouble();
-				stackedGlyphs[uid].tagValue += val;
+				stackedGlyphs[uid]->tagValue += val;
+				tagValueMap.insert(data.id, val);
 			}
 			catch (...) {
 
 			}
 		}
 		else {
-			stackedGlyphs.insert(uid, StackedGlyph());
-			stackedGlyphs[uid].glyphIds.append(data.id);
-			stackedGlyphs[uid].scaleZ = data.scale.z;
-			stackedGlyphs[uid].posZ += data.pos.z;
-			stackedGlyphs[uid].gpd = data;
+			stackedGlyphs.insert(uid, new StackedGlyph());
+			stackedGlyphs[uid]->glyphIds.append(data.id);
+			stackedGlyphs[uid]->scaleZ = data.scale.z;
+			stackedGlyphs[uid]->posZ += data.pos.z;
+			stackedGlyphs[uid]->gpd = data;
 			try {
 				QString str = QString::fromStdString(tag).split(" ")[1];
 				str.chop(1);
 				double val = str.toDouble();
-				stackedGlyphs[uid].tagValue = val;
+				stackedGlyphs[uid]->tagValue = val;
+				tagValueMap.insert(data.id, val);
 			}
 			catch (...) {
 
@@ -381,9 +383,9 @@ namespace SynGlyphX
 
 		data.parent_id = 0;
 
-		data.pos.z = stackedGlyphs[uid].posZ;
-		data.scale.z = stackedGlyphs[uid].scaleZ;
-		data.color = colorMapping[findClosest(allScaleZ.size(), stackedGlyphs[uid].scaleZ)];
+		data.pos.z = stackedGlyphs[uid]->posZ;
+		data.scale.z = stackedGlyphs[uid]->scaleZ;
+		data.color = colorMapping[findClosest(allScaleZ.size(), stackedGlyphs[uid]->scaleZ)];
 
 		//hal::debug::print("id: %d", data.id);
 		//hal::debug::print("id: %d, parent_id: %d, position: %f, %f, %f, topo: %d", data.id, data.parent_id, data.pos.x, data.pos.y, data.pos.z, data.topo);
@@ -545,6 +547,13 @@ namespace SynGlyphX
 
 		out << "{{Got scene files}}" << endl;
 
+		indexToUID.clear();
+		stackedGlyphs.clear();
+		colorMapping.clear();
+		allScaleZ.clear();
+		filteringIndexMap.clear();
+		tagValueMap.clear();
+
 		if ( countfile && file )
 		{
 			// Read counts from count file.
@@ -581,24 +590,28 @@ namespace SynGlyphX
 			std::sort(allScaleZ.begin(), allScaleZ.end());
 
 			for (auto uid : stackedGlyphs.keys()) {
-				out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
-				if (stackedGlyphs[uid].glyphIds.size() > 1) {
-					for (int val : stackedGlyphs[uid].glyphIds) {
+				//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
+
+				if (stackedGlyphs[uid]->glyphIds.size() > 1) {
+					for (int val : stackedGlyphs[uid]->glyphIds) {
 						filteringIndexMap[val] = next_id;
 						const glm::vec4 color = scene.getGlyph3D(val)->getColor();
 						glm::vec4 c = color;
 						c.a = 0;
 						scene.getGlyph3D(val)->setColor(c);
 					}
-					QString tag = "Z: " + QString::number(stackedGlyphs[uid].tagValue);
-					create_stacked_glyph(uid, stackedGlyphs[uid].gpd, tag.toStdString(), scene);
+					QString tag = "Z: " + QString::number(stackedGlyphs[uid]->tagValue);
+					create_stacked_glyph(uid, stackedGlyphs[uid]->gpd, tag.toStdString(), scene);
 				}
+
+				stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->glyphIds;
+				stackedGlyphs[uid]->currentTagValue = stackedGlyphs[uid]->tagValue;
 			}
 			
-			out << "Filtering map:" << endl;
+			/*out << "Filtering map:" << endl;
 			for (auto id : filteringIndexMap.keys()) {
 				out << id << ", " << filteringIndexMap[id] << endl;
-			}
+			}*/
 			
 
 			// Done adding; finish scene setup and clean up.
