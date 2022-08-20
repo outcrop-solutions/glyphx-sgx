@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 				else {
 					model = splt[1];
 				}
-				address += "model=" + model;
+				address += "?model=" + model;
 			}
 		}
 
