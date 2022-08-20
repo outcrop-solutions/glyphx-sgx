@@ -34,11 +34,11 @@ void Core::SendDrawerPosition(const QString &text)
 
 }
 
-void Core::OpenProject(const QString &text)
+void Core::OpenProject(const QString &text, const bool load_from_cache)
 {
 	if (!text.isEmpty() && !text.isNull())
 	{
-		emit OP(text);
+		emit OP(text, load_from_cache);
 	}
 }
 
@@ -119,4 +119,32 @@ void Core::GetSdtName(const QString &text) {
 void Core::CloseModel()
 {
 	emit CM();
+}
+
+void Core::LoadSettings(const QString &text)
+{
+	try {
+		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject obj = doc.object();
+
+		QJsonValue summation = true;
+		QJsonValue explosion = false;
+		if (obj.contains("summation")) {
+			summation = obj.value("summation");
+		}
+		if (!summation.toBool() && obj.contains("explosion")) {
+			explosion = obj.value("explosion");
+		}
+
+		QMap<QString, QJsonValue> settings;
+		settings["summation"] = summation;
+		settings["explosion"] = explosion;
+
+		emit Settings(settings);
+
+	}
+	catch (...) {
+		QMessageBox::information(parent, tr("Error message"), "Failed to parse settings.");
+	}
+
 }

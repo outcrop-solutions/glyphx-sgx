@@ -34,12 +34,13 @@ signals:
 	void SendSdtName(const QString &text);
 	void SendDrawerStatus(const QString &text);
     void GetDrawerPosition();
-	void OP(const QString &text);
+	void OP(const QString &text, const bool load_from_cache);
 	void UF(const QString &text);
 	void CS(const QString &text);
 	void RD(const QString &text);
 	void SN(const QString &text);
 	void CM();
+	void Settings(QMap<QString, QJsonValue> settings);
 
 public slots:
 
@@ -47,7 +48,7 @@ public slots:
         This slot is invoked from the HTML client side and the text displayed on the server side.
     */
 	void SendDrawerPosition(const QString &text);
-	void OpenProject(const QString &text);
+	void OpenProject(const QString &text, const bool load_from_cache = true);
 	void ToggleDrawer(const bool flag);
 	void ResizeEvent(const QString &text);
 	void UpdateFilter(const QString &text);
@@ -57,6 +58,7 @@ public slots:
 	void GetSdtName(const QString &text);
 	void GetDrawerStatus(const QString &text);
 	void CloseModel();
+	void LoadSettings(const QString &text);
 
 private:
 	QWidget *parent;
