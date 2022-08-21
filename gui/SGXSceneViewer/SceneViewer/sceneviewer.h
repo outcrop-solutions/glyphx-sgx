@@ -109,6 +109,7 @@ namespace SynGlyphX
 		void setStatusMessage(const char* message) { status_message = message; }
 		void hideAllTags();
 		void enableSuperimposedGlyphGadgets( bool val );
+		void setGroupSettings(bool summ, bool expl) { summation = summ; explosion = expl; };
 
 		void setupLegendWindow(QString cache_location, QStringList legends);
 		void setFilteredResults( const IndexSet& results, bool disableFiltering );
@@ -284,5 +285,7 @@ namespace SynGlyphX
 		ViewerMode mode;
 
 		bool auto_load_default_scene;
+		bool summation;
+		bool explosion;
 	};
 }

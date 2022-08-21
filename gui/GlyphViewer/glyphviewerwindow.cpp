@@ -219,9 +219,8 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QSettings qsettings;
 	qsettings.beginGroup("GlyphX_User");
 	QString userID = qsettings.value("userid", "123456").toString();
-	bool summation = true;
-	bool explosion = false;
-
+	summation = true;
+	explosion = false;
 	AwsLogger::getInstance()->logger(userID, "New session.");
 
 }
@@ -382,6 +381,10 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 	AwsLogger::getInstance()->logger(userID, text);
 
+	QFile srfile("sumLog.txt");
+	srfile.open(QIODevice::WriteOnly);
+	QTextStream out(&srfile);
+
 	try {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
 		//QStringList url_split = text.split("?")[0].split("/");
@@ -457,8 +460,12 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 				base_images.push_back(base.toStdString());
 			}
 		}
-
-		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images, false);
+		QString summ = summation ? "true" : "false";
+		QString expl = explosion ? "true" : "false";
+		out << "summation: " << summ << endl;
+		out << "explosion: " << expl << endl;
+		m_viewer->setGroupSettings(summation, explosion);
+		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images);
 		m_viewer->setFilteredGlyphOpacity(0.0f);
 
 		m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));

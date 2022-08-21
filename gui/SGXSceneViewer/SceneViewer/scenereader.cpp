@@ -272,6 +272,9 @@ namespace SynGlyphX
 
 		//create map with key glm::vec3 and value of list of glyph ids
 		QString uid = QString::number(data.pos.x) + QString::number(data.pos.y);
+		if (!summation) {
+			uid = QString::number(data.id);
+		}
 		indexToUID.insert(data.id, uid);
 		if (stackedGlyphs.contains(uid)){
 			stackedGlyphs[uid]->glyphIds.append(data.id);
@@ -576,6 +579,7 @@ namespace SynGlyphX
 
 			scene.beginAdding( glyph_count + link_count );
 			out << "{{Begin adding}}" << endl;
+			out << "summation: " << summation << endl;
 
 			for ( int i = 0; i < base_image_count; ++i )
 				read_base_image( base_images, base_image_textures, default_base_texture, grids );

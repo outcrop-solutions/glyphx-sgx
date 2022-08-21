@@ -64,6 +64,9 @@ namespace SynGlyphX
 		setMouseTracking(true);
 		setFocusPolicy(Qt::FocusPolicy::StrongFocus);
 
+		summation = true;
+		explosion = false;
+
 		mult = 1;
 		QScreen* screen = QGuiApplication::primaryScreen();
 		QRect screenGeometry = screen->geometry();
@@ -345,13 +348,14 @@ namespace SynGlyphX
 		}
 
 		r = new SceneReader();
-		scene->setUseSuperimposed(useSuperimposed);
+		r->setSummation(summation);
+		scene->setUseSuperimposed(explosion);
 		r->read(sceneFile, countFile, *scene, *base_images, base_textures, default_base_texture, *grids);
 
 		resetCamera();
 
 		//auto scene_ptr = scene;
-		if (useSuperimposed){
+		if (explosion){
 			scene->enumGroups([&](const std::vector<const Glyph3DNode*>& nodes, unsigned int group_idx) {
 			auto pos = nodes[0]->getCachedPosition();
 			float radius = nodes[0]->getCachedCombinedBound().get_radius();
@@ -1408,12 +1412,16 @@ namespace SynGlyphX
 		}
 		foreach(const int &value, stacked_filter) {
 			//out << value << endl;
-			glm::vec3 scaleZ = scene->getGlyph3D(value + 6)->getLocalScale();
+			glm::vec3 scale = scene->getGlyph3D(value + 6)->getLocalScale();
+			glm::vec3 position = scene->getGlyph3D(value + 6)->getLocalPosition();
 
-			if (scaleZ.z != stacked_heights[value + 6]) {
+			if (scale.z != stacked_heights[value + 6]) {
 
-				scaleZ.z = stacked_heights[value + 6];
-				scene->getGlyph3D(value + 6)->setLocalScale(scaleZ);
+				float ratio = stacked_heights[value + 6] / scale.z;
+				scale.z = stacked_heights[value + 6];
+				scene->getGlyph3D(value + 6)->setLocalScale(scale);
+				position.z = position.z * ratio;
+				scene->getGlyph3D(value + 6)->setLocalPosition(position);
 				Glyph3DNode* glyphnode = scene->getGlyph3D(value + 6);
 				r->setCurrentGlyphIds(value + 6, currentIds[value + 6]);
 

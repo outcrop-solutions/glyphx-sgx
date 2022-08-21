@@ -43,9 +43,11 @@ namespace SynGlyphX
 
 		void setCurrentTag(int index, double tagValue) { stackedGlyphs[indexToUID[index]]->currentTagValue = tagValue; }
 		void setCurrentGlyphIds(int index, QList<int> ids) { stackedGlyphs[indexToUID[index]]->currentGlyphIds = ids; }
+		void setSummation(bool summ) { summation = summ; }
 
 		float findClosest(int n, float target);
 		float getClosest(float val1, float val2, float target);
+		
 
 	private:
 		void read_base_image( BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids );
@@ -71,8 +73,8 @@ namespace SynGlyphX
 		QList<float> allScaleZ;
 		QMap<int, int> filteringIndexMap;
 		QMap<int, double> tagValueMap;
-		//int indexOfFirstStacked;
-		//int indexOfLastStacked;
+		
+		bool summation;
 		
 	};
 }
