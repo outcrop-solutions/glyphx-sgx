@@ -221,7 +221,9 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QString userID = qsettings.value("userid", "123456").toString();
 	summation = true;
 	explosion = false;
+	AwsLogger::getInstance()->setCommonDataPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
 	AwsLogger::getInstance()->logger(userID, "New session.");
+	AwsLogger::getInstance()->localLogger("New session.");
 
 }
 
@@ -378,20 +380,16 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	drawerDock->hide();
-
+	
 	AwsLogger::getInstance()->logger(userID, text);
 
-	QFile srfile("sumLog.txt");
+	/*QFile srfile("sumLog.txt");
 	srfile.open(QIODevice::WriteOnly);
-	QTextStream out(&srfile);
+	QTextStream out(&srfile);*/
 
 	try {
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
-		//QStringList url_split = text.split("?")[0].split("/");
-		//QString filename = url_split[url_split.size() - 1];
-		//text = "https://sampleproject04827-staging.s3.amazonaws.com/public/24edf1b7-4bf1-4ba3-8b2c-63a679d44d65/output/_24edf1b7-4bf1-4ba3-8b2c-63a679d44d65.zip";
 		QStringList url_split = text.split("?")[0].split("/");
-		//QString filename = "_24edf1b7-4bf1-4ba3-8b2c-63a679d44d65.zip";
 		QString filename = url_split[url_split.size() - 1];
 		/*
 		QFile file("debug_url.txt");
@@ -462,8 +460,8 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		}
 		QString summ = summation ? "true" : "false";
 		QString expl = explosion ? "true" : "false";
-		out << "summation: " << summ << endl;
-		out << "explosion: " << expl << endl;
+		//out << "summation: " << summ << endl;
+		//out << "explosion: " << expl << endl;
 		m_viewer->setGroupSettings(summation, explosion);
 		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images);
 		m_viewer->setFilteredGlyphOpacity(0.0f);
@@ -475,7 +473,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 	}
 	catch (std::exception& e) {
 		QMessageBox::information(this, tr("Error"), e.what());
-		QMessageBox::information(this, tr("Error message"), "Failed to load model.\n" + text);
+		//QMessageBox::information(this, tr("Error message"), "Failed to load model.\n" + text);
 	}
 
 	SynGlyphX::Application::restoreOverrideCursor();
@@ -486,26 +484,52 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 }
 
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
-	/*
-	QString IndexColumnName = "rowid";
-	QString tableName = "0bc27e1c-b48b-474e-844d-4ec1b0f94613";
-	QString columnName = "0";
-	float min = 0.0;
-	float max = 2000.0;
-	QString test = "SELECT \"" + IndexColumnName + "\" FROM \"" + tableName + "\" WHERE (\"" + columnName + "\" BETWEEN " + QString::number(min, 'f') + " AND " + QString::number(max, 'f') + ")";
-	*/
+	
 	try {
-		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
-		QJsonObject obj = doc.object();
-		QString query = obj.value("filter").toString();
+		QString url = "https://api.glyphx.co/etl/get-filtering-ids";
+		QNetworkRequest request(url);
+		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-		SynGlyphX::IndexSet myset = m_sourceDataCache->GetIndexesBasedOnQuery(query);
+		QJsonDocument filter_doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject filter_obj = filter_doc.object();
+		QString query = filter_obj.value("filter").toString();
+
+		QJsonObject obj;
+		obj["tableName"] = athenaTableName; //"01388c0b_5f5f_49ff_8c15_b6e902604b14";
+		obj["query"] = query;
+		QJsonDocument doc(obj);
+		QByteArray data = doc.toJson();
+
+		QNetworkAccessManager networkManager;
+		QNetworkReply *reply = networkManager.post(request, data);
+
+		QEventLoop loop;
+		QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+		if (reply->isRunning()) {
+			loop.exec();
+		}
+		reply->deleteLater();
+
+		if (reply->error() != QNetworkReply::NoError) {
+			qDebug() << (reply->errorString().toStdString()).c_str();
+			throw DownloadException(("Network Error: " + reply->errorString() + "\n_" + url + "_").toStdString().c_str());
+		}
+
+		QJsonDocument reply_doc = QJsonDocument::fromJson(reply->readAll());
+		QJsonArray ids = reply_doc.array();
+
+		SynGlyphX::IndexSet myset;
+		for (int i = 0; i < ids.size(); i++) {
+			myset.insert(ids.at(i).toInt());
+		}
 		m_viewer->setFilteredResults(myset, true);
+
 	}
-	catch (...) {
-		QMessageBox::information(this, tr("Error message"), "Failed to update filter.");
+	catch (const std::exception& e) {
+
+		QMessageBox::information(this, tr("Error message"), "Failed to update filter. \n" + QString::fromStdString(e.what()));
 	}
-	//QMessageBox::information(this, tr("Error message"), text);
 	
 }
 

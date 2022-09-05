@@ -9,10 +9,15 @@ class AwsLogger : public QObject {
 public:
 	static AwsLogger* getInstance();
 
+	void setCommonDataPath(QString path) { outputDir = path; }
+
 	void logger(QString userId, QString logText);
+	void imageWriter(QString userId, QString name, QByteArray image);
+	void localLogger(QString logText);
 
 private:
 	 static AwsLogger *instance;
+	 QString outputDir;
 
 private slots:
 	void onFinish(QNetworkReply *rep);

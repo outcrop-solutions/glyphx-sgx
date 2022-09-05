@@ -48,15 +48,16 @@ public slots:
         This slot is invoked from the HTML client side and the text displayed on the server side.
     */
 	void SendDrawerPosition(const QString &text);
+	void TakeScreenShot(const QString &text, int x = 0, int y = 0, int w = 0, int h = 0);
 	void OpenProject(const QString &text, const bool load_from_cache = true);
 	void ToggleDrawer(const bool flag);
 	void ResizeEvent(const QString &text);
 	void UpdateFilter(const QString &text);
 	void ChangeState(const QString &text);
 	void ReloadDrawer(const QString &text);
-	void GetCameraPosition(const QString &text);
-	void GetSdtName(const QString &text);
-	void GetDrawerStatus(const QString &text);
+	void GetCameraPosition(const QString &text = "");
+	void GetSdtName(const QString &text = "");
+	void GetDrawerStatus(const QString &text = "");
 	void CloseModel();
 	void LoadSettings(const QString &text);
 
