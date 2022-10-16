@@ -1,8 +1,9 @@
 #include <QtCore/QString>
 #include <QNetworkReply>
+#include "sgxgui_global.h"
 
-class AwsLogger : public QObject {
-	
+class SGXGUI_EXPORT AwsLogger : public QObject {
+
 	// Private constructor so that no objects can be created.
 	AwsLogger() {};
 
@@ -22,6 +23,5 @@ private:
 private slots:
 	void onFinish(QNetworkReply *rep);
 	void httpError(QNetworkReply::NetworkError err);
-
 
 };

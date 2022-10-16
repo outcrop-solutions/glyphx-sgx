@@ -388,68 +388,109 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 	QTextStream out(&srfile);*/
 
 	try {
-		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
-		QStringList url_split = text.split("?")[0].split("/");
-		QString filename = url_split[url_split.size() - 1];
-		/*
-		QFile file("debug_url.txt");
-		if (file.open(QIODevice::ReadWrite)) {
-			QTextStream stream(&file);
-			stream << text << endl;
-		}*/
 
-		QFile dir(location + filename.split(".zip")[0]);
-		athenaTableName = filename.split(".zip")[0].remove("_");
+		if (SynGlyphX::getBuildNumber() < 402)
+		{
+			QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+			QStringList url_split = text.split("?")[0].split("/");
+			QString filename = url_split[url_split.size() - 1];
 
-		if (!dir.exists() || !load_from_cache) {
-			DownloadManager downloadManager(m_dataEngineConnection);
-			downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
-		}
+			QFile dir(location + filename.split(".zip")[0]);
+			athenaTableName = filename.split(".zip")[0].remove("_");
 
-		glyphDrawer->show();
-		m_viewer->show();
-
-		QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
-		m_currentSdtName = sdt;
-		m_mappingModel->LoadDataTransformFile(sdt);
-		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
-
-		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
-
-		cache_location = QString::fromStdString(cacheDirectoryPath);
-
-		QStringList legend_list;
-		m_viewer->setupLegendWindow(cache_location, legend_list);
-
-		if (!QFile(cache_location + "scene/glyphs.sgc").exists() || !load_from_cache) {
-
-			QDir().mkdir(cache_location);
-			QDir().mkdir(cache_location + "/scene");
-
-			std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-
-			DataEngine::GlyphEngine ge;
-			ge.initiate(m_dataEngineConnection->getEnv(), sdt.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
-
-			if (ge.IsUpdateNeeded()) {
-				//DownloadBaseImages(ge);
-				ge.generateGlyphs(this);
+			if (!dir.exists() || !load_from_cache) {
+				DownloadManager downloadManager(m_dataEngineConnection);
+				downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
 			}
 
-			//compass = ge.getCompassValues();
+			glyphDrawer->show();
+			m_viewer->show();
 
-			/*bool show = true;
-			for (const SynGlyphX::BaseImage& baseImage : m_mappingModel->GetDataMapping().get()->GetBaseObjects()) {
-				if (baseImage.GetType() == SynGlyphX::BaseImage::Type::DownloadedMap) {
-					show = false;
+			QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
+			m_currentSdtName = sdt;
+			m_mappingModel->LoadDataTransformFile(sdt);
+			boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+
+			std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+			std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+
+			cache_location = QString::fromStdString(cacheDirectoryPath);
+
+			QStringList legend_list;
+			m_viewer->setupLegendWindow(cache_location, legend_list);
+
+
+			if (!QFile(cache_location + "scene/glyphs.sgc").exists() || !load_from_cache) {
+
+				QDir().mkdir(cache_location);
+				QDir().mkdir(cache_location + "/scene");
+
+				std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
+
+				DataEngine::GlyphEngine ge;
+				ge.initiate(m_dataEngineConnection->getEnv(), sdt.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
+
+				if (ge.IsUpdateNeeded()) {
+					//DownloadBaseImages(ge);
+					ge.generateGlyphs(this);
 				}
 			}
-			m_viewer->enableSceneAxes(show);*/
+		}
+		else {
+
+			QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+			
+			//text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
+			QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+			QJsonObject obj = doc.object();
+			QString userId = obj.value("user_id").toString();
+			QString modelId = obj.value("model_id").toString();
+
+			athenaTableName = modelId;
+
+			if (!QDir(location + "/" + modelId).exists()) {
+				QDir().mkdir(location + "/" + modelId);
+			}
+
+			DownloadManager downloadManager(m_dataEngineConnection);
+	
+			QString sdt = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/model.sdt";
+
+			//***Get SDT file, download it into Content, use it to configure the model***
+			downloadManager.DownloadFile(QUrl(sdt), location + "/" + modelId + "/model.sdt");
+
+			glyphDrawer->show();
+			m_viewer->show();
+
+			m_mappingModel->LoadDataTransformFile(location + "/" + modelId + "/model.sdt");
+			AwsLogger::getInstance()->localLogger("Data Transform file loaded");
+			boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+
+			std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+			std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+
+			cache_location = QString::fromStdString(cacheDirectoryPath);
+
+			QStringList legend_list;
+			m_viewer->setupLegendWindow(cache_location, legend_list);
+
+			if (!QFile(cache_location + "scene/bytes.sgc").exists()) {
+				QDir().mkdir(cache_location);
+				QDir().mkdir(cache_location + "/scene");
+			}
+
+			QString sgc = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgc";
+			QString sgn = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgn";
+			
+			//***Download bytes.sgc and bytes.sgn into cache directory***
+			downloadManager.DownloadFile(QUrl(sgc), cache_location + "scene/bytes.sgc");
+			downloadManager.DownloadFile(QUrl(sgn), cache_location + "scene/bytes.sgn");
+
 		}
 
 		std::vector<std::string> base_images;
 		QDir scene(cache_location + "scene/");
+
 		QFileInfoList files = scene.entryInfoList();
 
 		for (QFileInfo file : files) {
@@ -463,12 +504,19 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		//out << "summation: " << summ << endl;
 		//out << "explosion: " << expl << endl;
 		m_viewer->setGroupSettings(summation, explosion);
-		m_viewer->loadScene((cache_location + "scene/glyphs.sgc").toStdString().c_str(), (cache_location + "scene/glyphs.sgn").toStdString().c_str(), base_images);
+		AwsLogger::getInstance()->localLogger(cache_location);
+		m_viewer->loadScene((cache_location + "scene/bytes.sgc").toStdString().c_str(), (cache_location + "scene/bytes.sgn").toStdString().c_str(), base_images);
 		m_viewer->setFilteredGlyphOpacity(0.0f);
+		AwsLogger::getInstance()->localLogger("Finshed loading from cache.");
 
-		m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
+		if (SynGlyphX::getBuildNumber() < 402)
+		{
+			m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
+		}
 
+		AwsLogger::getInstance()->localLogger("About to load files into model");
 		LoadFilesIntoModel();
+		AwsLogger::getInstance()->localLogger("Loaded files into model");
 
 	}
 	catch (std::exception& e) {

@@ -107,6 +107,9 @@ public class NewCSVWriter {
 			DataOutputStream data = new DataOutputStream(bufout);
 			data.writeInt(0xa042bc3f);	// magic number
 			data.writeInt(FORMAT_VERSION);
+			System.out.println("Starting to print");
+			System.out.println(0xa042bc3f);
+			System.out.println(FORMAT_VERSION);
 
 			Logger.getInstance().add(Paths.get(".").toAbsolutePath().normalize().toString());
         
@@ -128,6 +131,7 @@ public class NewCSVWriter {
 
 				// write texture id
 				data.write( number );
+				System.out.println(number);
 
 				// write transform (todo: why are these stored as strings?! slow af)
 				data.writeFloat( Float.parseFloat( bo.getPosition( 0 ) ) );
@@ -136,17 +140,30 @@ public class NewCSVWriter {
 				data.writeFloat( Float.parseFloat( bo.getRotation( 0 ) ) );
 				data.writeFloat( Float.parseFloat( bo.getRotation( 1 ) ) );
 				data.writeFloat( Float.parseFloat( bo.getRotation( 2 ) ) );
+				System.out.println(Float.parseFloat( bo.getPosition( 0 ) ));
+				System.out.println(Float.parseFloat( bo.getPosition( 1 ) ));
+				System.out.println(Float.parseFloat( bo.getPosition( 2 ) ));
+				System.out.println(Float.parseFloat( bo.getRotation( 0 ) ));
+				System.out.println(Float.parseFloat( bo.getRotation( 1 ) ));
+				System.out.println(Float.parseFloat( bo.getRotation( 2 ) ));
 
 				// write color (byte x 3)
 				data.write( Integer.parseInt( color[0] ) );
 				data.write( Integer.parseInt( color[1] ) );
 				data.write( Integer.parseInt( color[2] ) );
+				System.out.println(Integer.parseInt( color[0] ));
+				System.out.println(Integer.parseInt( color[1] ));
+				System.out.println(Integer.parseInt( color[2] ));
 
 				// write grid parameters
 				data.writeFloat( (float)bo.getGridLineCount( 0 ) );
 				data.writeFloat( (float)bo.getGridLineCount( 1 ) );
 				data.writeInt( bo.getGridSegmentsX() );
 				data.writeInt( bo.getGridSegmentsY() );
+				System.out.println((float)bo.getGridLineCount( 0 ));
+				System.out.println((float)bo.getGridLineCount( 1 ));
+				System.out.println(bo.getGridSegmentsX());
+				System.out.println(bo.getGridSegmentsY());
 
 				++base_image_count;
 			}
@@ -217,6 +234,8 @@ public class NewCSVWriter {
 			        data.writeFloat((float)temp.getSY());
 			        data.writeFloat((float)temp.getSZ());
 			        //COLOR
+			        System.out.println("COLORS");
+                    System.out.println(temp.getCR() + ", " + temp.getCG() + ", " + temp.getCB());
 			        data.write(temp.getCR());
 			        data.write(temp.getCG());
 			        data.write(temp.getCB());

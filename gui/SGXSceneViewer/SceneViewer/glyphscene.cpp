@@ -5,6 +5,7 @@
 #include <render/model.h>
 #include "glyphgeometrydb.h"
 #include "glm/ext.hpp"
+#include "AwsLogger.h"
 
 namespace SynGlyphX
 {
@@ -45,6 +46,7 @@ namespace SynGlyphX
 		hal::debug::profile_timer timer0;
 		updateCachedTransforms();
 		timer0.print_ms_to_debug( "updated cached transforms" );
+		AwsLogger::getInstance()->localLogger("updated cached transforms");
 
 		hal::debug::profile_timer timer2;
 		render::box_bound scene_bound;
@@ -54,6 +56,7 @@ namespace SynGlyphX
 				scene_bound = render::combine_bounds( scene_bound, g.second->getCachedCombinedBound() );
 		}
 		timer2.print_ms_to_debug( "computed scene bound" );
+		AwsLogger::getInstance()->localLogger("computed scene bound");
 
 		if ( octree ) delete octree;
 		octree = new render::octree<Glyph3DNode>( scene_bound, render::octree_settings{ 0.1f, 4u, 16u } );
@@ -63,16 +66,19 @@ namespace SynGlyphX
 			if ( g.second->isRoot() ) octree->insert( g.second, g.second->getCachedCombinedBound() );
 		octree->gather_stats_DEBUG();
 		timer1.print_ms_to_debug( "built octree" );
+		AwsLogger::getInstance()->localLogger("built octree");
 
 		hal::debug::profile_timer timer3;
 		if (m_useSuperimposed) {
 			compute_groups();
 		}
 		timer3.print_ms_to_debug( "computed groups" );
+		AwsLogger::getInstance()->localLogger("computed groups");
 
 		hal::debug::profile_timer timer4;
 		update_groups();
 		timer4.print_ms_to_debug( "updated groups" );
+		AwsLogger::getInstance()->localLogger("updated groups");
 	}
 
 	void GlyphScene::clear()
@@ -299,6 +305,7 @@ namespace SynGlyphX
 	{
 		enumGlyphs( [this]( const Glyph3DNode& node ) {
 			if ( node.isRoot() )
+				//AwsLogger::getInstance()->localLogger(QString::number(node.getID()));
 				node.updateCachedTransforms( db );
 			return true;
 		} );

@@ -170,7 +170,7 @@ void Core::GetSdtName(const QString &text) {
 
 void Core::CloseModel()
 {
-	AwsLogger::getInstance()->localLogger("CloseModel called.\n");
+	AwsLogger::getInstance()->localLogger("CloseModel called.");
 	emit CM();
 }
 

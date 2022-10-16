@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <hal/hal.h>
 #include <render/model.h>
+#include "AwsLogger.h"
 
 namespace SynGlyphX
 {
@@ -43,19 +44,25 @@ namespace SynGlyphX
 
 	void BaseImageRenderer::add( hal::texture* _texture, const glm::mat4& transform, const glm::vec2& dimensions )
 	{
-		hal::device::addref( _texture );
+		try {
+			hal::device::addref(_texture);
 
-		glm::mat4 t = transform * glm::scale( glm::mat4(), glm::vec3( dimensions, 1.f ) );
-		render::model_part* part = new render::model_part( plane, t, "base image" );
+			glm::mat4 t = transform * glm::scale(glm::mat4(), glm::vec3(dimensions, 1.f));
 
-		base_image_info info;
-		info.texture = _texture;
-		info.model = new render::model();
-		info.model->add_part( part );
-		info.bound = render::box_bound::from_points( reinterpret_cast<glm::vec3*>( square_vertices ), sizeof( square_vertices ) / 4u, 4u, t );
-		info.enabled = true;
+			render::model_part* part = new render::model_part(plane, t, "base image");
 
-		base_images.push_back( info );
+			base_image_info info;
+			info.texture = _texture;
+			info.model = new render::model();
+			info.model->add_part(part);
+			info.bound = render::box_bound::from_points(reinterpret_cast<glm::vec3*>(square_vertices), sizeof(square_vertices) / 4u, 4u, t);
+			info.enabled = true;
+
+			base_images.push_back(info);
+		}
+		catch (const std::exception& e) {
+			AwsLogger::getInstance()->localLogger(QString(e.what()));
+		}
 	}
 
 	void BaseImageRenderer::clear()

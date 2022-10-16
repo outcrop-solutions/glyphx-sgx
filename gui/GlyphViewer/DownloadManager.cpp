@@ -64,8 +64,10 @@ bool DownloadManager::SaveToDisk(const QString &filename, const QByteArray &data
 	file.write(data);
 	file.close();
 
-	QString zip(filename.toStdString().c_str());
-	m_dataEngineConnection->UnZipFile(zip);
+	if (filename.contains(".zip")) {
+		QString zip(filename.toStdString().c_str());
+		m_dataEngineConnection->UnZipFile(zip);
+	}
 
 	return true;
 }

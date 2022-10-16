@@ -191,7 +191,7 @@ public class GlyphEngine {
 	 	//start.downloadFiles("viz-group-notredame-source", "Prospect and Segmentation/Prospects Only.sdt", "C:/Users/bryan/OneDrive/Documents/GitHub/sgx/bin/Win64/Release/VizFiles/");
 	 	//start.downloadFiles("viz-group-notredame-source", "Prospect and Segmentation/Color Legend Breakdown.jpg", "C:/Users/bryan/OneDrive/Documents/GitHub/sgx/bin/Win64/Release/VizFiles/");
 	 	//start.downloadFiles("viz-group-notredame-source", "Prospect and Segmentation/Prospects Only Legend with Term.png", "C:/Users/bryan/OneDrive/Documents/GitHub/sgx/bin/Win64/Release/VizFiles/");
-		String sdt = "C:/Users/bryan/Downloads/Failure 627/model_96991b75-582d-468c-ac10-90cd7af4ca26.sdt";
+		String sdt = "C:/ProgramData/SynGlyphX/Content/_e8d3c870-d2c3-4ebb-bd92-22f61f560413/model_e8d3c870-d2c3-4ebb-bd92-22f61f560413.sdt";
 		String out = "C:/ProgramData/SynGlyphX/GlyphCache/cache/test";
 		start.initiate(sdt, out, "GlyphViewer");
 		start.beginGlyphGeneration();

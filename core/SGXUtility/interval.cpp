@@ -75,7 +75,7 @@ namespace SynGlyphX {
 
 		if (!IsMinMaxValidForThisInterval(m_min, m_max)) {
 
-			throw std::invalid_argument("Min and max values are not valid for a degenerate interval.");
+			//throw std::invalid_argument("Min and max values are not valid for a degenerate interval.");
 		}
 	}
 
@@ -121,7 +121,7 @@ namespace SynGlyphX {
 
 		if (!IsMinMaxValidForThisInterval(m_min, m_max)) {
 
-			throw std::invalid_argument("Min and max values are not valid for a proper interval.");
+			//throw std::invalid_argument("Min and max values are not valid for a proper interval.");
 		}
 	}
 

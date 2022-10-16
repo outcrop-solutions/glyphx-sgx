@@ -18,6 +18,7 @@
 #include <algorithm>
 //#include "glm/ext.hpp"
 //#include <hal/debug.h>
+#include "AwsLogger.h"
 
 namespace SynGlyphX
 {
@@ -207,38 +208,49 @@ namespace SynGlyphX
 		auto color = read_packed_solid_color();
 		float grid_cell_w = read_float(), grid_cell_h = read_float();
 		int grid_cells_x = read_int(), grid_cells_y = read_int();
-
+		AwsLogger::getInstance()->localLogger("Read base images bytes");
+		
 		if ( tex_id != 0 )
 		{
 			auto transform = glm::translate( glm::mat4(), pos ) * get_rotation_matrix( rot );
 			glm::vec2 size = glm::vec2( grid_cell_w * grid_cells_x, grid_cell_h * grid_cells_y );
-
+			AwsLogger::getInstance()->localLogger("transform and size");
 			hal::texture* tex = default_base_texture;
 			if ( tex_id > 1u )	// 1 = use default texture
 			{
 				auto offset_tex_id = tex_id - 2u;	// offset to account for 0 = none, 1 = default
 				if ( offset_tex_id < base_image_textures.size() ) tex = base_image_textures[offset_tex_id];
+				AwsLogger::getInstance()->localLogger("tex_id > 1u");
 			}
 			base_images.add( tex, transform, size );
+			AwsLogger::getInstance()->localLogger("base_image add");
 
 			if ( grid_cells_x >= 2 || grid_cells_y >= 2 )
 				grids.add( transform, size, grid_cells_x, grid_cells_y, render::unpack_color( color ) );
+			AwsLogger::getInstance()->localLogger("grids add");
 		}
+		
 	}
 
 	void SceneReader::read_glyph_element( GlyphScene& scene )
 	{
 		GlyphPlacementData data;
 
+		QString outputString;
+
 		data.id = read_int();
 		data.label = read_int();
 
 		data.glyph_index = read_int();
+		outputString += QString::number(data.id) + " , " + QString::number(data.label) + " , " + QString::number(data.glyph_index);
+
 		if (data.glyph_index >= 8u)
 			throw std::runtime_error("Glyph element index is too large; only up to 8 glyph types are supported.");
 
 		data.parent_id = read_int();
+		outputString += " , " + QString::number(data.parent_id);
 		data.pos = read_vec3();
+		outputString += " , " + QString::number(data.pos.x) + " , " + QString::number(data.pos.y) + " , " + QString::number(data.pos.z);
 		data.rot = read_vec3();
 		data.scale = read_vec3();
 		data.color = read_packed_color();
@@ -247,12 +259,17 @@ namespace SynGlyphX
 		data.ratio = read_float();
 		data.rotation_rates = read_vec3();
 
+		glm::vec4 c = render::unpack_color(data.color);
+		outputString += " , " + QString::number(c.r) + " , " + QString::number(c.g) + " , " + QString::number(c.b) + " , " + QString::number(c.a);
+
 		//hal::debug::print("id: %d", data.id);
 		//hal::debug::print("id: %d, parent_id: %d, position: %f, %f, %f, topo: %d", data.id, data.parent_id, data.pos.x, data.pos.y, data.pos.z, data.topo);
 
 		std::string tag = read_string();
 		std::string url = read_string();
 		std::string desc = read_string();
+
+		AwsLogger::getInstance()->localLogger(outputString);
 
 		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D( data.parent_id ) : nullptr;
 		data.is_root = ( data.parent_id == 0 ) || !parent;
@@ -530,10 +547,6 @@ namespace SynGlyphX
 
 	void SceneReader::read( const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids)
 	{
-		QFile srfile("srLog.txt");
-		srfile.open(QIODevice::WriteOnly);
-		QTextStream out(&srfile);
-		out << "{{In Scene Reader}}" << endl;
 
 		//indexOfFirstStacked = -1;
 		//indexOfLastStacked = -1;
@@ -548,8 +561,6 @@ namespace SynGlyphX
 		cfile scene_file( scenefilename );
 		file = scene_file.get();
 
-		out << "{{Got scene files}}" << endl;
-
 		indexToUID.clear();
 		stackedGlyphs.clear();
 		colorMapping.clear();
@@ -557,13 +568,18 @@ namespace SynGlyphX
 		filteringIndexMap.clear();
 		tagValueMap.clear();
 
+		AwsLogger::getInstance()->localLogger(countfilename);
+		AwsLogger::getInstance()->localLogger(scenefilename);
+
 		if ( countfile && file )
 		{
 			// Read counts from count file.
 			int count_magic = read32_endian<int>( countfile );
+			AwsLogger::getInstance()->localLogger(QString::number(count_magic) + " : " + QString::number(COUNT_FILE_MAGIC_NUMBER));
 			if ( count_magic != COUNT_FILE_MAGIC_NUMBER )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 			int count_format_version = read32_endian<int>( countfile );
+			AwsLogger::getInstance()->localLogger(QString::number(count_format_version) + " : " + QString::number(FORMAT_VERSION));
 			if ( count_format_version != FORMAT_VERSION )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 			int base_image_count = read32_endian<int>( countfile );
@@ -571,31 +587,34 @@ namespace SynGlyphX
 			int link_count = read32_endian<int>( countfile );
 
 			auto magic = read32_endian<int>( file );
+			AwsLogger::getInstance()->localLogger(QString::number(magic) + " : " + QString::number(SCENE_FILE_MAGIC_NUMBER));
 			if ( magic != SCENE_FILE_MAGIC_NUMBER )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 			int format_version = read32_endian<int>( file );
+			AwsLogger::getInstance()->localLogger(QString::number(format_version) + " : " + QString::number(FORMAT_VERSION));
 			if ( format_version != FORMAT_VERSION )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 
 			scene.beginAdding( glyph_count + link_count );
-			out << "{{Begin adding}}" << endl;
-			out << "summation: " << summation << endl;
-
+			AwsLogger::getInstance()->localLogger("Passed beginAdding");
+			AwsLogger::getInstance()->localLogger(QString::number(base_image_count));
 			for ( int i = 0; i < base_image_count; ++i )
 				read_base_image( base_images, base_image_textures, default_base_texture, grids );
-			out << "{{Base images read}}" << endl;
+			AwsLogger::getInstance()->localLogger("Read base images");
 			for ( int i = 0; i < glyph_count; ++i )
 				read_glyph_element( scene );
-			out << "{{Glyphs read}}" << endl;
+			AwsLogger::getInstance()->localLogger("Read glyphs");
 			for ( int i = 0; i < link_count; ++i )
 				read_link( scene );
-			out << "{{Links read}}" << endl;
+			AwsLogger::getInstance()->localLogger("Read links");
 
 			std::sort(allScaleZ.begin(), allScaleZ.end());
+			AwsLogger::getInstance()->localLogger("sort allScaleZ");
 
+			AwsLogger::getInstance()->localLogger("# of stackedGlyphs: "+ QString::number(stackedGlyphs.size()));
 			for (auto uid : stackedGlyphs.keys()) {
 				//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
-
+				AwsLogger::getInstance()->localLogger(uid);
 				if (stackedGlyphs[uid]->glyphIds.size() > 1) {
 					for (int val : stackedGlyphs[uid]->glyphIds) {
 						filteringIndexMap[val] = next_id;
@@ -611,7 +630,7 @@ namespace SynGlyphX
 				stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->glyphIds;
 				stackedGlyphs[uid]->currentTagValue = stackedGlyphs[uid]->tagValue;
 			}
-			
+			AwsLogger::getInstance()->localLogger("Calculated stacks");
 			/*out << "Filtering map:" << endl;
 			for (auto id : filteringIndexMap.keys()) {
 				out << id << ", " << filteringIndexMap[id] << endl;
@@ -620,6 +639,7 @@ namespace SynGlyphX
 
 			// Done adding; finish scene setup and clean up.
 			scene.finishAdding();
+			AwsLogger::getInstance()->localLogger("Passed finishAdding");
 			timer.print_ms_to_debug( "read binary scene with %i objects (%i roots), %i links", glyph_count, root_count, link_count );
 		}
 		else
