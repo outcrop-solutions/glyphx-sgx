@@ -20,8 +20,8 @@
 #include <QtWidgets/QDialog>
 #include "datatransformmapping.h"
 #include "DistinctValueFilteringParameters.h"
-#include "dataengineconnection.h"
-#include "glyphengine.h"
+//#include "dataengineconnection.h"
+//#include "glyphengine.h"
 
 class LoadingFilterWidget;
 
@@ -30,7 +30,7 @@ class LoadingFilterDialog : public QDialog
 	Q_OBJECT
 
 public:
-	LoadingFilterDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, const QString& filename, QWidget *parent);
+	LoadingFilterDialog(const QString& filename, QWidget *parent);
 	~LoadingFilterDialog();
 
 	void SetupFilters(const SynGlyphX::DataTransformMapping& mapping);
@@ -40,9 +40,9 @@ public:
 
 private:
 	LoadingFilterWidget* m_loadingFilterWidget;
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	//DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	QString m_filename;
-	DataEngine::GlyphEngine ge;
+	//DataEngine::GlyphEngine ge;
 };
 
 //#pragma once

@@ -79,8 +79,7 @@ namespace SynGlyphX {
 
 	DataTransformModel::DataTransformModel(QObject *parent)
 		: QAbstractItemModel(parent),
-		m_dataMapping(new DataTransformMapping()),
-		m_dataEngineConnection(nullptr)
+		m_dataMapping(new DataTransformMapping())
 	{
 		ClearAndReset();
 	}
@@ -95,10 +94,10 @@ namespace SynGlyphX {
 		return 1;
 	}
 
-	void DataTransformModel::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection){
+	/*void DataTransformModel::SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection){
 	
 		m_dataEngineConnection = dataEngineConnection;
-	}
+	}*/
 
 	void DataTransformModel::SetConnectionID(boost::uuids::uuid connectionID){
 
@@ -1451,8 +1450,8 @@ namespace SynGlyphX {
 				}
 				else if (fileDatasource->GetFileType() == FileDatasource::FileType::CSV) {
 
-					m_dataEngineConnection->loadCSV(SynGlyphX::StringConvert::ToStdString(fileDatasource->GetFilename()).c_str());
-					chosenTables << QString::fromStdWString(SynGlyphX::FileDatasource::SingleTableName);
+					//m_dataEngineConnection->loadCSV(SynGlyphX::StringConvert::ToStdString(fileDatasource->GetFilename()).c_str());
+					//chosenTables << QString::fromStdWString(SynGlyphX::FileDatasource::SingleTableName);
 					//GenerateStats(SynGlyphX::InputTable(datasourceId, FileDatasource::SingleTableName), 0, FileDatasource::FileType::CSV);
 				}
 			}
@@ -1485,21 +1484,21 @@ namespace SynGlyphX {
 				GenerateStats(SynGlyphX::InputTable(datasourceId, chosenTables[i].toStdWString()), i, sourceTypeString);
 			}
 
-			m_dataEngineConnection->closeConnection();
+			//m_dataEngineConnection->closeConnection();
 		}
 		catch (const std::exception&) {
 
-			m_dataEngineConnection->closeConnection();
+			//m_dataEngineConnection->closeConnection();
 			throw;
 		}
 	}
 
 	void DataTransformModel::ConnectToDatabase(const QString& url, const QString& username, const QString& password, const QString& db_type) {
 
-		if (!m_dataEngineConnection->IsConnectionOpen(url)) {
+		/*if (!m_dataEngineConnection->IsConnectionOpen(url)) {
 
 			m_dataEngineConnection->connectToServer(url, username, password, db_type);
-		}
+		}*/
 	}
 
 	QStringList DataTransformModel::GetChosenTables(const QString& schema, const Datasource::TableNames& tables) {
@@ -1508,11 +1507,11 @@ namespace SynGlyphX {
 		QStringList connectionTables;
 		if (schema.isEmpty()) {
 
-			connectionTables = m_dataEngineConnection->getTables();
+			//connectionTables = m_dataEngineConnection->getTables();
 		}
 		else {
 
-			connectionTables = m_dataEngineConnection->getSchemaTableNames(schema);
+			//connectionTables = m_dataEngineConnection->getSchemaTableNames(schema);
 		}
 
 		if (connectionTables.isEmpty()) {
@@ -1536,7 +1535,7 @@ namespace SynGlyphX {
 			}
 		}
 
-		m_dataEngineConnection->setChosenTables(chosenTables);
+		//m_dataEngineConnection->setChosenTables(chosenTables);
 
 		return chosenTables;
 	}
@@ -1606,7 +1605,7 @@ namespace SynGlyphX {
 
 		SynGlyphX::DataStatsModel::TableStats tableStats;
 
-		DataEngine::DataEngineStatement des;
+		/*DataEngine::DataEngineStatement des;
 		des.prepare(m_dataEngineConnection->getEnv(), m_dataEngineConnection->getJcls(), sourceTypeString); 
 
 		SynGlyphX::WStringVector numericCols;
@@ -1635,13 +1634,13 @@ namespace SynGlyphX {
 			fieldStats.append(des.getCount());
 			fieldStats.append(des.getDistinct());
 			tableStats.append(fieldStats);
-
+			
 		}
 
 		if (!numericCols.empty()) {
 
 			m_numericFields.emplace(inputTable, numericCols);
-		}
+		}*/
 		m_tableStatsMap.emplace(inputTable, tableStats);
 	}
 

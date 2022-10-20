@@ -1497,6 +1497,7 @@ namespace SynGlyphX
 
 	void SceneViewer::selection_changed()
 	{
+
 		if (on_selection_changed) on_selection_changed(!scene->empty());
 		if (!scene->selectionEmpty() && enable_fly_to_object) orbit_cam_control->flyToTarget();
 

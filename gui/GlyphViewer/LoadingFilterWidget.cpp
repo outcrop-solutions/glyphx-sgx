@@ -1,7 +1,7 @@
 #include "LoadingFilterWidget.h"
 #include "TitleListWidget.h"
 #include <QtWidgets/QLayout>
-#include "glyphengine.h"
+//#include "glyphengine.h"
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QVBoxLayout>
 #include "datasource.h"
@@ -135,8 +135,8 @@ QSplitter* LoadingFilterWidget::AddFiltersForTable(DataEngine::GlyphEngine& glyp
 				m_filterListWidgets[table] = fieldToWidgetMap;
 			}
 
-			QStringList distinctValuesTable = glyphEngine.DistinctValuesForField(id, tableName, qField);
-			distinctValues.append(distinctValuesTable);
+			//QStringList distinctValuesTable = glyphEngine.DistinctValuesForField(id, tableName, qField);
+			//distinctValues.append(distinctValuesTable);
 		}
 		//m_filterListWidgets[table] = fieldToWidgetMap;
 		distinctValues.removeDuplicates();

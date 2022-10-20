@@ -5,10 +5,9 @@
 
 namespace SynGlyphX {
 
-	SyncProgressDialog::SyncProgressDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent) :
+	SyncProgressDialog::SyncProgressDialog(SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent) :
 		QDialog(parent),
-        m_allViewsFilteringWidget(allViewsFilteringWidget),
-		m_dataEngineConnection(dataEngineConnection)
+        m_allViewsFilteringWidget(allViewsFilteringWidget)
 	{
 
 		setMinimumSize(Application::DynamicQSize(400, 150));
@@ -33,13 +32,13 @@ namespace SynGlyphX {
 		progress->setStyleSheet("QProgressBar{font-size: 12.5pt; font-weight: bold;}");
 		layout->addWidget(progress);
 
-		bool needToSync = m_dataEngineConnection->UserAccessControls()->FileSyncSetup(m_dataEngineConnection->GetGlyphEdPath());
+		/*bool needToSync = m_dataEngineConnection->UserAccessControls()->FileSyncSetup(m_dataEngineConnection->GetGlyphEdPath());
 		if (!needToSync){
 			syncLabel->setText(tr("Loading visualizations and establishing data connection..."));
 		}
 		else{
 			syncLabel->setText(tr("Syncing updated visualizations and data..."));
-		}
+		}*/
 
 		timer = new QTimer();
 		timer->start(250);
@@ -54,13 +53,13 @@ namespace SynGlyphX {
 			parent->window()->rect().center());
 		move(parentWindowCenter - dialogCenter);
 
-		m_dataEngineConnection->UserAccessControls()->StartSyncingFiles();
+		//m_dataEngineConnection->UserAccessControls()->StartSyncingFiles();
 
 	}
 
 	void SyncProgressDialog::handleTimeOut()
 	{
-		if (m_dataEngineConnection->UserAccessControls()->IsDoneSyncing())
+		/*if (m_dataEngineConnection->UserAccessControls()->IsDoneSyncing())
 		{
 			timer->stop();
 
@@ -75,7 +74,7 @@ namespace SynGlyphX {
 		else
 		{
 			progress->setValue(m_dataEngineConnection->UserAccessControls()->GetSyncProgress());
-		}
+		}*/
 	}
 
 }

@@ -22,7 +22,7 @@
 #include "datatransformmapping.h"
 #include "utilitytypes.h"
 #include <QtCore/QAbstractItemModel>
-#include "dataengineconnection.h"
+//#include "dataengineconnection.h"
 #include "datastatsmodel.h"
 #include "FrontEndFilter.h"
 
@@ -162,8 +162,8 @@ namespace SynGlyphX {
 
 		const NumericFieldsByTable& GetNumericFieldsByTable() const;
 
-		const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
-		void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+		//const DataEngine::DataEngineConnection* GetDataEngineConnection() const;
+		//void SetDataEngineConnection(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 
 		void SetConnectionID(boost::uuids::uuid connectionID);
 
@@ -210,7 +210,7 @@ namespace SynGlyphX {
 
 		DataTransformMapping::SharedPtr m_dataMapping;
 		boost::uuids::uuid m_connectionID;
-		DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+		//DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 
 		//Additional data from datasources
 		NumericFieldsByTable m_numericFields;

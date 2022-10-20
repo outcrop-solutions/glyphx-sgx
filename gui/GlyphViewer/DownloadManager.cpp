@@ -7,7 +7,7 @@
 #include <QtCore/QDebug>
 
 
-DownloadManager::DownloadManager(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection) : m_dataEngineConnection(dataEngineConnection)
+DownloadManager::DownloadManager()
 {
 
 }
@@ -63,11 +63,6 @@ bool DownloadManager::SaveToDisk(const QString &filename, const QByteArray &data
 
 	file.write(data);
 	file.close();
-
-	if (filename.contains(".zip")) {
-		QString zip(filename.toStdString().c_str());
-		m_dataEngineConnection->UnZipFile(zip);
-	}
 
 	return true;
 }

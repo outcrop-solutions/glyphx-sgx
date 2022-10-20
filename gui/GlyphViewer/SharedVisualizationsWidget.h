@@ -21,7 +21,7 @@
 #include <unordered_map>
 #include "DistinctValueFilteringParameters.h"
 #include "xmlpropertytreefile.h"
-#include "dataengineconnection.h"
+//#include "dataengineconnection.h"
 #include <containers/ntree.hpp>
 #include <QtCore/QMap>
 
@@ -68,8 +68,8 @@ public:
 	SharedVisualizationsWidget(QWidget *parent);
 	~SharedVisualizationsWidget();
 
-	void Setup(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QProgressBar* prog);
-	void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+	//void Setup(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QProgressBar* prog);
+	//void Reset(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
 	void ClearAll();
 	
 	bool DoCurrentNecessaryFiltersHaveSelection() const;

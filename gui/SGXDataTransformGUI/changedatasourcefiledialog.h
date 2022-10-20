@@ -38,15 +38,14 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, std::shared_ptr<DataEngine::DataEngineConnection> dataEngineConnection, QWidget *parent = 0);
+		ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent = 0);
 		~ChangeDatasourceFileDialog();
 
-		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, std::shared_ptr<SynGlyphX::DataTransformMapping> mapping, std::shared_ptr<DataEngine::DataEngineConnection> dataEngineConnection, QWidget* dialogParent = nullptr);
+		static bool UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, std::shared_ptr<SynGlyphX::DataTransformMapping> mapping, QWidget* dialogParent = nullptr);
 
 	private:
 		virtual bool IsNewFileValid() const;
 		
-		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 		std::unordered_set<std::wstring> m_oldDatasourceTables;
 		FileDatasource m_fileDatasource;
 	};

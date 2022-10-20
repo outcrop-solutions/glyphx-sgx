@@ -5,9 +5,8 @@
 #include <QtWidgets/QMessageBox>
 #include <boost/uuid/uuid_io.hpp>
 
-LoadingFilterDialog::LoadingFilterDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, const QString& filename, QWidget *parent)
+LoadingFilterDialog::LoadingFilterDialog(const QString& filename, QWidget *parent)
 	: QDialog(parent),
-	m_dataEngineConnection(dataEngineConnection),
 	m_filename(filename)
 {
 	setWindowTitle(tr("Select Filters"));
@@ -33,9 +32,9 @@ LoadingFilterDialog::~LoadingFilterDialog()
 
 void LoadingFilterDialog::SetupFilters(const SynGlyphX::DataTransformMapping& mapping) {
 
-	ge.initiate(m_dataEngineConnection->getEnv(), m_filename.toStdString(), "", "", "", "GlyphViewer");
+	//ge.initiate(m_dataEngineConnection->getEnv(), m_filename.toStdString(), "", "", "", "GlyphViewer");
 
-	m_loadingFilterWidget->SetFilters(ge, mapping);
+	//m_loadingFilterWidget->SetFilters(ge, mapping);
 }
 
 MultiTableDistinctValueFilteringParameters LoadingFilterDialog::GetFilterValues() const {
@@ -56,11 +55,11 @@ void LoadingFilterDialog::accept() {
 
 		QString id = QString::fromStdWString(boost::uuids::to_wstring(filtersForTable.first.GetDatasourceID()));
 		QString tableName = QString::fromStdWString(filtersForTable.first.GetTable());
-		if (ge.SizeOfQuery(id, tableName, filtersForTable.second.GenerateQuery(filtersForTable.first)) == 0) {
+		/*if (ge.SizeOfQuery(id, tableName, filtersForTable.second.GenerateQuery(filtersForTable.first)) == 0) {
 
 			QMessageBox::information(this, tr("Did not load visualization"), tr("The selected combination of filters generate zero results.  Please try a different combination of filters."));
 			return;
-		}
+		}*/
 	}
 
 	QDialog::accept();

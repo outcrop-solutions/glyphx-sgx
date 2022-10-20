@@ -9,9 +9,8 @@
 
 namespace SynGlyphX {
 
-	ChangeDatasourceFileDialog::ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
+	ChangeDatasourceFileDialog::ChangeDatasourceFileDialog(const FileDatasource& oldDatasourceFile, const QString& acceptButtonText, QWidget *parent)
 		: ReplaceFilenameDialog(QString::fromStdWString(oldDatasourceFile.GetDBName()), acceptButtonText, parent),
-		m_dataEngineConnection(dataEngineConnection),
         m_fileDatasource(oldDatasourceFile)
 	{
 		setWindowTitle(tr("Change Datasource File"));
@@ -41,7 +40,7 @@ namespace SynGlyphX {
 
 					if (m_fileDatasource.GetFileType() == FileDatasource::FileType::SQLITE3) {
 
-						m_dataEngineConnection->connectToServer(QString("sqlite:") + newDatasource, "", "", "sqlite3");
+						/*m_dataEngineConnection->connectToServer(QString("sqlite:") + newDatasource, "", "", "sqlite3");
 						QStringList newTables = m_dataEngineConnection->getTables();
 						for (const std::wstring& oldTable : m_oldDatasourceTables) {
 
@@ -49,7 +48,7 @@ namespace SynGlyphX {
 
 								return false;
 							}
-						}
+						}*/
 					}
 					
 					return true;
@@ -60,12 +59,12 @@ namespace SynGlyphX {
 
 
 		}
-		m_dataEngineConnection->closeConnection();
+		//m_dataEngineConnection->closeConnection();
 
 		return false;
 	}
 
-	bool ChangeDatasourceFileDialog::UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget* dialogParent) {
+	bool ChangeDatasourceFileDialog::UpdateDatasourceFiles(const std::vector<boost::uuids::uuid>& datasources, const QString& sdtfilename, DataTransformMapping::SharedPtr mapping, QWidget* dialogParent) {
 
 		bool wereMissingFilesUpdated = false;
 		QFileInfo fileInfo(sdtfilename);
@@ -90,7 +89,7 @@ namespace SynGlyphX {
 					acceptButtonText = tr("Ok");
 				}
 
-				ChangeDatasourceFileDialog dialog(*std::dynamic_pointer_cast<FileDatasource>(mapping->GetDatasources().at(datasources[i])), acceptButtonText, dataEngineConnection, dialogParent);
+				ChangeDatasourceFileDialog dialog(*std::dynamic_pointer_cast<FileDatasource>(mapping->GetDatasources().at(datasources[i])), acceptButtonText, dialogParent);
 				dialog.setWindowTitle(tr("Replace Missing Data Source"));
 				if (dialog.exec() == QDialog::Accepted) {
 

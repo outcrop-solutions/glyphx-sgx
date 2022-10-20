@@ -75,13 +75,12 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	: SynGlyphX::MainWindow(4, parent),
 	m_showErrorFromTransform(true),
 	m_showHomePage(true),
-    m_viewer( nullptr ),
-    m_dataEngineConnection(nullptr)
+    m_viewer( nullptr )
 {
 	SGX_PROFILE_SCOPE
-	m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
+	//m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataTransformModel(this);
-	m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
+	//m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
 	m_sourceDataCache = std::make_shared<SourceDataCache>();
 	m_glyphForestModel = new SynGlyphX::GlyphForestInfoModel(this);
 	lastModified = 0;
@@ -113,7 +112,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
 		NetworkDownloader::Instance().SetKeySettingName("MapQuestOpenSettings_GlyphEd");
 
-	try {
+	/*try {
 
 		if (!m_dataEngineConnection->hasJVM()) {
 
@@ -127,7 +126,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 
 		QMessageBox::critical(this, tr("JVM Error"), tr(e.what()));
 		return;
-	}
+	}*/
 
 	CreateLoadingScreen();
 	
@@ -234,7 +233,7 @@ GlyphViewerWindow::~GlyphViewerWindow()
 
 void GlyphViewerWindow::closeJVM(){
 	
-	m_dataEngineConnection->destroyJVM();
+	//m_dataEngineConnection->destroyJVM();
 }
 /*
 void GlyphViewerWindow::OnSocketConnect() {
@@ -380,113 +379,60 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	drawerDock->hide();
-	
-	AwsLogger::getInstance()->logger(userID, text);
-
-	/*QFile srfile("sumLog.txt");
-	srfile.open(QIODevice::WriteOnly);
-	QTextStream out(&srfile);*/
 
 	try {
 
-		if (SynGlyphX::getBuildNumber() < 402)
-		{
-			QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
-			QStringList url_split = text.split("?")[0].split("/");
-			QString filename = url_split[url_split.size() - 1];
+		AwsLogger::getInstance()->localLogger(text);
 
-			QFile dir(location + filename.split(".zip")[0]);
-			athenaTableName = filename.split(".zip")[0].remove("_");
-
-			if (!dir.exists() || !load_from_cache) {
-				DownloadManager downloadManager(m_dataEngineConnection);
-				downloadManager.DownloadFile(QUrl(text.remove(QChar('"'))), location + filename);
-			}
-
-			glyphDrawer->show();
-			m_viewer->show();
-
-			QString sdt = findSdtInDirectory(location + filename.split(".zip")[0]);
-			m_currentSdtName = sdt;
-			m_mappingModel->LoadDataTransformFile(sdt);
-			boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
-
-			std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-			std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
-
-			cache_location = QString::fromStdString(cacheDirectoryPath);
-
-			QStringList legend_list;
-			m_viewer->setupLegendWindow(cache_location, legend_list);
-
-
-			if (!QFile(cache_location + "scene/glyphs.sgc").exists() || !load_from_cache) {
-
-				QDir().mkdir(cache_location);
-				QDir().mkdir(cache_location + "/scene");
-
-				std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
-
-				DataEngine::GlyphEngine ge;
-				ge.initiate(m_dataEngineConnection->getEnv(), sdt.toStdString(), cache_location.toStdString(), baseImageDir, "", "GlyphViewer");
-
-				if (ge.IsUpdateNeeded()) {
-					//DownloadBaseImages(ge);
-					ge.generateGlyphs(this);
-				}
-			}
-		}
-		else {
-
-			QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
+		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
 			
-			//text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
-			QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
-			QJsonObject obj = doc.object();
-			QString userId = obj.value("user_id").toString();
-			QString modelId = obj.value("model_id").toString();
+		text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
+		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+		QJsonObject obj = doc.object();
+		QString userId = obj.value("user_id").toString();
+		QString modelId = obj.value("model_id").toString();
 
-			athenaTableName = modelId;
+		AwsLogger::getInstance()->logger(userID, text);
 
-			if (!QDir(location + "/" + modelId).exists()) {
-				QDir().mkdir(location + "/" + modelId);
-			}
+		athenaTableName = modelId;
 
-			DownloadManager downloadManager(m_dataEngineConnection);
+		if (!QDir(location + "/" + modelId).exists()) {
+			QDir().mkdir(location + "/" + modelId);
+		}
+
+		DownloadManager downloadManager;
 	
-			QString sdt = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/model.sdt";
+		QString sdt = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/model.sdt";
 
-			//***Get SDT file, download it into Content, use it to configure the model***
-			downloadManager.DownloadFile(QUrl(sdt), location + "/" + modelId + "/model.sdt");
+		//***Get SDT file, download it into Content, use it to configure the model***
+		downloadManager.DownloadFile(QUrl(sdt), location + "/" + modelId + "/model.sdt");
 
-			glyphDrawer->show();
-			m_viewer->show();
+		glyphDrawer->show();
+		m_viewer->show();
 
-			m_mappingModel->LoadDataTransformFile(location + "/" + modelId + "/model.sdt");
-			AwsLogger::getInstance()->localLogger("Data Transform file loaded");
-			boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+		m_mappingModel->LoadDataTransformFile(location + "/" + modelId + "/model.sdt");
+		AwsLogger::getInstance()->localLogger("Data Transform file loaded");
+		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
 
-			std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-			std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
+		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
 
-			cache_location = QString::fromStdString(cacheDirectoryPath);
+		cache_location = QString::fromStdString(cacheDirectoryPath);
 
-			QStringList legend_list;
-			m_viewer->setupLegendWindow(cache_location, legend_list);
+		QStringList legend_list;
+		m_viewer->setupLegendWindow(cache_location, legend_list);
 
-			if (!QFile(cache_location + "scene/bytes.sgc").exists()) {
-				QDir().mkdir(cache_location);
-				QDir().mkdir(cache_location + "/scene");
-			}
-
-			QString sgc = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgc";
-			QString sgn = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgn";
-			
-			//***Download bytes.sgc and bytes.sgn into cache directory***
-			downloadManager.DownloadFile(QUrl(sgc), cache_location + "scene/bytes.sgc");
-			downloadManager.DownloadFile(QUrl(sgn), cache_location + "scene/bytes.sgn");
-
+		if (!QFile(cache_location + "scene/bytes.sgc").exists()) {
+			QDir().mkdir(cache_location);
+			QDir().mkdir(cache_location + "/scene");
 		}
+
+		QString sgc = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgc";
+		QString sgn = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgn";
+			
+		//***Download bytes.sgc and bytes.sgn into cache directory***
+		downloadManager.DownloadFile(QUrl(sgc), cache_location + "scene/bytes.sgc");
+		downloadManager.DownloadFile(QUrl(sgn), cache_location + "scene/bytes.sgn");
 
 		std::vector<std::string> base_images;
 		QDir scene(cache_location + "scene/");
@@ -509,11 +455,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		m_viewer->setFilteredGlyphOpacity(0.0f);
 		AwsLogger::getInstance()->localLogger("Finshed loading from cache.");
 
-		if (SynGlyphX::getBuildNumber() < 402)
-		{
-			m_sourceDataCache->Setup(cache_location + QString::fromStdString("sourcedata.db"));
-		}
-
 		AwsLogger::getInstance()->localLogger("About to load files into model");
 		LoadFilesIntoModel();
 		AwsLogger::getInstance()->localLogger("Loaded files into model");
@@ -534,7 +475,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 	
 	try {
-		QString url = "https://api.glyphx.co/etl/get-filtering-ids";
+		QString url = "https://q8gv8df1a2.execute-api.us-east-2.amazonaws.com/prod/etl/get-filtering-ids";
 		QNetworkRequest request(url);
 		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -560,12 +501,13 @@ void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 		reply->deleteLater();
 
 		if (reply->error() != QNetworkReply::NoError) {
-			qDebug() << (reply->errorString().toStdString()).c_str();
+			AwsLogger::getInstance()->localLogger(reply->errorString());
 			throw DownloadException(("Network Error: " + reply->errorString() + "\n_" + url + "_").toStdString().c_str());
 		}
 
 		QJsonDocument reply_doc = QJsonDocument::fromJson(reply->readAll());
 		QJsonArray ids = reply_doc.array();
+		AwsLogger::getInstance()->localLogger("Filter returned " + QString::number(ids.size()) + " ids");
 
 		SynGlyphX::IndexSet myset;
 		for (int i = 0; i < ids.size(); i++) {
@@ -1102,7 +1044,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 				ValidateDataMappingFile(mapping, openFile);
 
 				MultiTableDistinctValueFilteringParameters filters;
-				if (!mapping->GetFrontEndFilters().empty()) {
+				/*if (!mapping->GetFrontEndFilters().empty()) {
 
 					LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
 					loadingFilterDialog.SetupFilters(*mapping);
@@ -1111,7 +1053,7 @@ void GlyphViewerWindow::OpenVisualisation() {
 						return;
 					}
 					filters = loadingFilterDialog.GetFilterValues();
-				}
+				}*/
 
 				//LoadNewVisualization(openFile);
 				LoadNewVisualization(openFile, filters, filters.size() > 0);
@@ -1224,7 +1166,7 @@ void GlyphViewerWindow::CloseVisualization() {
 
 bool GlyphViewerWindow::IsUserLoggedIn() {
 
-	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
+	/*if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd() && !SynGlyphX::GlyphBuilderApplication::AWSEnabled()) {
 		return true;
 	}
 
@@ -1252,7 +1194,8 @@ bool GlyphViewerWindow::IsUserLoggedIn() {
 			}
 		}
 		return false;
-	}
+	}*/
+	return true;
 }
 
 void GlyphViewerWindow::UpdateUserMenu(){
@@ -1279,7 +1222,7 @@ void GlyphViewerWindow::Logout(){
 		m_groupsComboBox->clear();
 	}
 
-	m_dataEngineConnection->UserAccessControls()->ResetConnection();
+	//m_dataEngineConnection->UserAccessControls()->ResetConnection();
 
 	m_homePage->ResetViews();
 	m_homePage->LoggedOut();
@@ -1288,12 +1231,15 @@ void GlyphViewerWindow::Logout(){
 
 void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
-	QSettings settings;
+	/*QSettings settings;
 	settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
 	QString groupName = settings.value("GroupName", "Default").toString();
 	bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
 	bool reqOnStartupChecked = settings.value("ReqOnStartupChecked", true).toBool();
-	settings.endGroup();
+	settings.endGroup();*/
+	QString groupName = "Default";
+	bool onStartupChecked = false;
+	bool reqOnStartupChecked = true;
 
 	QDialog* s = new QDialog(this);
 	s->setWindowTitle(tr("User Settings"));
@@ -1338,7 +1284,7 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 
 	s->setLayout(mainLayout);
 
-	QObject::connect(defButton, &QPushButton::clicked, checkbox, [=](){
+	/*QObject::connect(defButton, &QPushButton::clicked, checkbox, [=](){
 		checkbox->setText("Load " + m_groupsComboBox->currentText() + " on Startup");
 		autoLoadCheckbox->setChecked(false);
 		checkbox->setChecked(true);
@@ -1358,7 +1304,7 @@ void GlyphViewerWindow::CreateUserSettingsDialog(QStringList groups) {
 		st3.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
 		st3.setValue("ReqOnStartupChecked", autoLoadCheckbox->isChecked());
 		st3.endGroup();
-	});
+	});*/
 	QObject::connect(loadButton, &QPushButton::clicked, this, &GlyphViewerWindow::SwitchVisualizationGroup);
 	QObject::connect(buttonBox, &QDialogButtonBox::rejected, s, &QDialog::reject);
 
@@ -1378,18 +1324,18 @@ void GlyphViewerWindow::SwitchVisualizationGroup() {
 	}
 	m_homePage->ResetViews();
 
-	m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
+	//m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
 
-	m_dataEngineConnection->UserAccessControls()->FlushOutFilterSetup();
+	//m_dataEngineConnection->UserAccessControls()->FlushOutFilterSetup();
 
 	m_homePage->ReSyncFilesAndLoadViews();
 
-	QSettings groupSettings;
+	/*QSettings groupSettings;
 	groupSettings.beginGroup(groupName);
 	groupSettings.setValue("LastUserToAccess", m_dataEngineConnection->UserAccessControls()->GetUserID());
 	groupSettings.setValue("DirectoryPath", m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
 	groupSettings.setValue("VisualizationNames", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
-	groupSettings.endGroup();
+	groupSettings.endGroup();*/
 
 	SynGlyphX::Application::restoreOverrideCursor();
 }
@@ -1505,13 +1451,13 @@ bool GlyphViewerWindow::LoadNewVisualization(const QString& filename, MultiTable
 		catch (const std::exception& e) {
 
 			QMessageBox critical_error(QMessageBox::Critical, tr("Failed To Open Project"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok, this);
-			critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
+			//critical_error.setDetailedText(m_dataEngineConnection->JavaErrors());
 			critical_error.setStyleSheet("QLabel{margin-right:75px;},QTextEdit{min-width:500px;}");
 			critical_error.setStandardButtons(QMessageBox::Ok);
 			critical_error.setDefaultButton(QMessageBox::Ok);
 			critical_error.setEscapeButton(QMessageBox::Ok);
 			critical_error.exec();
-			m_dataEngineConnection->ClearJavaErrors();
+			//m_dataEngineConnection->ClearJavaErrors();
 			CloseVisualization();
 			//QMessageBox::critical(this, tr("Failed To Open Visualization"), tr("Failed to open visualization.  Error: ") + e.what(), QMessageBox::Ok);
 			return false;
@@ -1612,7 +1558,7 @@ void GlyphViewerWindow::ValidateDataMappingFile(SynGlyphX::DataTransformMapping:
 	if (!missingFileDatasources.empty()) {
 
 		SynGlyphX::Application::restoreOverrideCursor();
-		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, filename, mapping, m_dataEngineConnection, this);
+		wasDataTransformUpdated = SynGlyphX::ChangeDatasourceFileDialog::UpdateDatasourceFiles(missingFileDatasources, filename, mapping, this);
 		SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 
 		if (!wasDataTransformUpdated) {
@@ -1650,7 +1596,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		qint64 mod = info.lastModified().toSecsSinceEpoch();
 		bool needsUpdate = (lastModified - mod) > 0;
 
-		DataEngine::GlyphEngine ge;
+		/*DataEngine::GlyphEngine ge;
 		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
 
 		if (!dir.exists() || needsUpdate) {
@@ -1702,7 +1648,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		//Hide in scene axes if visualization has downloaded maps
 		const auto& baseObjects = m_mappingModel->GetDataMapping()->GetBaseObjects();
 		m_showHideSceneAxisAction->setChecked(baseObjects.empty() || (baseObjects[0].GetType() != SynGlyphX::BaseImage::Type::DownloadedMap));
-
+		*/
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
 	catch (const std::exception&) {
@@ -1752,88 +1698,91 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 }
 	
 void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
+	
+	try {
+		unsigned int hudInfoIndex = 0;
+		QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
+		if (!selectedIndexes.empty()) {
+			/*
+			try {
 
-	unsigned int hudInfoIndex = 0;
-	QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
-	if (!selectedIndexes.empty()) {
+				unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(selectedIndexes.back());
 
-		/*QFile srfile("selLog.txt");
-		srfile.open(QIODevice::WriteOnly);
-		QTextStream out(&srfile);
-		out << "{{Selection}}" << endl;*/
+				//out << "og_root: " << rootIndex << endl;
 
-		try {
+				int index = rootIndex+6;
+				QString uid = m_viewer->reader().getIndexToUID()[index];
+				QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
+				//float z = m_viewer->reader().getStackedGlyphMap()[uid].tagValue;
+				float z = m_viewer->reader().getStackedGlyphMap()[uid]->currentTagValue;
+				rootIndex = ids[0]-6;
+
+				boost::optional<std::pair<unsigned int, unsigned long>> indexes = m_filteringManager->GetGlyphTemplateAndTableIndex(rootIndex);
+
+				if (indexes == boost::none) {
+					AwsLogger::getInstance()->localLogger("Could not get source data for position X, Y, Z");
+					throw std::runtime_error(tr("Could not get source data for position X, Y, & Z").toStdString().c_str());
+				}
+				else {
+
+					hudInfoIndex = indexes.get().first;
+					const QMap<unsigned int, QString>& fields = m_hudGenerationInfo[hudInfoIndex].GetFields();
+					QList<QVariant> posSourceDataVar = m_sourceDataCache->GetValuesForRow(m_hudGenerationInfo[hudInfoIndex].GetTable(),
+						fields.values(), indexes.get().second);
+					std::map<std::wstring, SynGlyphX::FieldProperties> fieldProperties = m_filteringManager->GetFieldPropertiesForTable(
+						m_hudGenerationInfo[hudInfoIndex].GetTable().GetDatasourceID(),
+						m_hudGenerationInfo[hudInfoIndex].GetTable().GetTable());
+
+					std::array<std::string, 3> posSourceData;
+					unsigned int j = 0;
+					for (unsigned int i = 0; i < 3; ++i) {
+
+						if (fields.contains(i)) {
+
+							//Conversion is being done this way to allow formatting numbers
+							if (fieldProperties.find(fields[i].toStdWString()) != fieldProperties.end()){
+								posSourceData[i] = fieldProperties.at(fields[i].toStdWString()).transformData(posSourceDataVar[j].toString()).replace("%", "%%").toStdString();
+							}
+							else{
+								posSourceData[i] = posSourceDataVar[j].toString().toStdString();
+							}
+							++j;
+						}
+					}
+
+				}
+			}
+			catch (const std::exception& e) {
+
+				QMessageBox::warning(this, tr("Source Data Error"), e.what());
+			}
+			*/
 
 			unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(selectedIndexes.back());
-
-			//out << "og_root: " << rootIndex << endl;
-
-			int index = rootIndex+6;
+			int index = rootIndex + 6;
 			QString uid = m_viewer->reader().getIndexToUID()[index];
 			QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
-			//float z = m_viewer->reader().getStackedGlyphMap()[uid].tagValue;
-			float z = m_viewer->reader().getStackedGlyphMap()[uid]->currentTagValue;
-			rootIndex = ids[0]-6;
+			rootIndex = ids[0] - 6;
 
-			/*out << "index: " << index << endl;
-			out << "uid: " << uid << endl;
-			out << "z: " << z << endl;
-			out << "rootidx: " << rootIndex << endl;*/
+			AwsLogger::getInstance()->localLogger("index: " + QString::number(rootIndex));
 
-			boost::optional<std::pair<unsigned int, unsigned long>> indexes = m_filteringManager->GetGlyphTemplateAndTableIndex(rootIndex);
-
-			if (indexes == boost::none) {
-
-				throw std::runtime_error(tr("Could not get source data for position X, Y, & Z").toStdString().c_str());
-			}
-			else {
-
-				hudInfoIndex = indexes.get().first;
-				const QMap<unsigned int, QString>& fields = m_hudGenerationInfo[hudInfoIndex].GetFields();
-				QList<QVariant> posSourceDataVar = m_sourceDataCache->GetValuesForRow(m_hudGenerationInfo[hudInfoIndex].GetTable(), 
-					fields.values(), indexes.get().second);
-				std::map<std::wstring, SynGlyphX::FieldProperties> fieldProperties = m_filteringManager->GetFieldPropertiesForTable(
-					m_hudGenerationInfo[hudInfoIndex].GetTable().GetDatasourceID(),
-					m_hudGenerationInfo[hudInfoIndex].GetTable().GetTable());
-
-				std::array<std::string, 3> posSourceData;
-				unsigned int j = 0;
-				for (unsigned int i = 0; i < 3; ++i) {
-
-					if (fields.contains(i)) {
-
-						//Conversion is being done this way to allow formatting numbers
-						if (fieldProperties.find(fields[i].toStdWString()) != fieldProperties.end()){
-							posSourceData[i] = fieldProperties.at(fields[i].toStdWString()).transformData(posSourceDataVar[j].toString()).replace("%", "%%").toStdString();
-						}
-						else{
-							posSourceData[i] = posSourceDataVar[j].toString().toStdString();
-						}
-						++j;
-					}
-				}
-				
-				GetRowById(indexes.get().second);
-				posSourceData[2] = QString::number(z).toStdString();
-				m_viewer->setOverridePositionXYZ(posSourceData);
-			}
+			GetRowById(rootIndex);
 		}
-		catch (const std::exception& e) {
 
-			QMessageBox::warning(this, tr("Source Data Error"), e.what());
-		}
+		const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
+		m_viewer->setAxisNames(displayNames.contains(0) ? displayNames[0].toStdString().c_str() : "",
+			displayNames.contains(1) ? displayNames[1].toStdString().c_str() : "",
+			displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
 	}
-
-	const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
-	m_viewer->setAxisNames(displayNames.contains(0) ? displayNames[0].toStdString().c_str() : "", 
-						   displayNames.contains(1) ? displayNames[1].toStdString().c_str() : "",
-						   displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
+	catch (const std::exception& e) {
+		QMessageBox::warning(this, tr("Source Data Error"), e.what());
+	}
 }
 
 QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 
 	try {
-		QString url = "https://api.glyphx.co/etl/get-row-by-id";
+		QString url = "https://q8gv8df1a2.execute-api.us-east-2.amazonaws.com/prod/etl/get-row-by-id";
 		QNetworkRequest request(url);
 		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -1928,23 +1877,49 @@ void GlyphViewerWindow::GetRowById(long id) {
 			QHeaderView* header = table->horizontalHeader();
 			header->setSectionResizeMode(QHeaderView::Stretch);
 
+			const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[0].GetDisplayNames();
+			int x_idx = 0;
+			int y_idx = 1;
+			int z_idx = 2;
 			table->setStyleSheet(QString::fromUtf8("QWidget{background-color: #0f172a;color: #fff;}"));
 			for (int i = 0; i < fields.size(); i++) {
 				QString field = fields.at(i).toObject().value("VarCharValue").toString();
 				QTableWidgetItem *header = new QTableWidgetItem(field);
 				table->setHorizontalHeaderItem(i, header);
+				if (field == displayNames[0]) {
+					x_idx = i;
+				}
+				if (field == displayNames[1]) {
+					y_idx = i;
+				}
+				if (field == displayNames[2]) {
+					z_idx = i;
+				}
 			}
+
+			double valZ = 0;
 			for (int r = 0; r < rows.size(); r++) {
 				for (int i = 0; i < fields.size(); i++) {
 					QString value = rows.at(r).at(i).toObject().value("VarCharValue").toString();
 					QTableWidgetItem *dataVal = new QTableWidgetItem(value);
 					table->setItem(r, i, dataVal);
+					if (i == z_idx) {
+						valZ += value.toDouble();
+					}
 				}
 			}
 			drawerDock->setWidget(table);
 			if (fields.size() == 0) {
 				drawerDock->hide();
 			}
+
+			QString valX = rows.at(0).at(x_idx).toObject().value("VarCharValue").toString();
+			QString valY = rows.at(0).at(y_idx).toObject().value("VarCharValue").toString();
+			std::array<std::string, 3> posSourceData;
+			posSourceData[0] = valX.toStdString();
+			posSourceData[1] = valY.toStdString();
+			posSourceData[2] = QString::number(valZ).toStdString();
+			m_viewer->setOverridePositionXYZ(posSourceData);
 
 		}
 	}
@@ -2382,7 +2357,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 	statusBar()->showMessage("Portable visualization successfully created", 6000);
 }
 
-void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
+/*void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 
 	try {
 
@@ -2398,7 +2373,7 @@ void GlyphViewerWindow::DownloadBaseImages(DataEngine::GlyphEngine& ge) {
 
 		throw;
 	}
-}
+}*/
 
 void GlyphViewerWindow::closeEvent(QCloseEvent* event) {
 

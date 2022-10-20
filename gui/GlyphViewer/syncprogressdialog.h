@@ -25,7 +25,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QListWidget>
-#include "dataengineconnection.h"
+//#include "dataengineconnection.h"
 
 class SharedVisualizationsWidget;
 class QProgressBar;
@@ -37,7 +37,7 @@ namespace SynGlyphX {
 		Q_OBJECT
 
 	public:
-		SyncProgressDialog(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
+		SyncProgressDialog(SharedVisualizationsWidget* allViewsFilteringWidget, QWidget *parent);
 		~SyncProgressDialog(){};
 
 		public slots:
@@ -51,7 +51,7 @@ namespace SynGlyphX {
 		QProgressBar* progress;
 		SharedVisualizationsWidget* m_allViewsFilteringWidget;
 
-		std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
+		//std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	};
 }

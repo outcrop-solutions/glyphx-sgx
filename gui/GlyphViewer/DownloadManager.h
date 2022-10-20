@@ -20,14 +20,13 @@
 
 #include <QtCore/QObject>
 #include <QtNetwork/QNetworkAccessManager>
-#include "dataengineconnection.h"
 
 class DownloadManager
 {
 
 public:
 
-	DownloadManager(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection);
+	DownloadManager();
 	~DownloadManager();
 
 	bool DownloadFile(const QUrl &url, const QString &filename);
@@ -37,7 +36,6 @@ public:
 
 private:
 	bool SaveToDisk(const QString &filename, const QByteArray &data);
-	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 };
 

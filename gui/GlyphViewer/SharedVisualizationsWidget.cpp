@@ -9,7 +9,7 @@
 #include "datatransformmapping.h"
 #include "stringconvert.h"
 #include <QtWidgets/QProgressBar>
-#include "glyphengine.h"
+//#include "glyphengine.h"
 #include <cassert>
 
 void SharedVisualizationsFile::ImportFromPropertyTree(const boost::property_tree::wptree& filePropertyTree) {
@@ -102,7 +102,7 @@ SharedVisualizationsWidget::~SharedVisualizationsWidget()
 
 }
 
-void SharedVisualizationsWidget::Setup(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QProgressBar* prog){
+/*void SharedVisualizationsWidget::Setup(DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QProgressBar* prog){
 
 	IsGlyphEd = true;
 	progress = prog;
@@ -178,7 +178,7 @@ void SharedVisualizationsWidget::Reset(DataEngine::DataEngineConnection::SharedP
 
 		m_loadingFilterWidgetsStack->setVisible(false);
 	}
-}
+}*/
 
 void SharedVisualizationsWidget::ClearAll() {
 

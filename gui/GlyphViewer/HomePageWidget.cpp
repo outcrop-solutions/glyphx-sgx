@@ -29,11 +29,10 @@
 #include "GroupSelectionDialog.h"
 #include "version.h"
 
-HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent)
+HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	: QFrame(parent),
 	m_mainWindow(mainWindow),
-	loggedOn(false),
-    m_dataEngineConnection(dataEngineConnection)
+	loggedOn(false)
 {
 	setFrameStyle(QFrame::Box | QFrame::Sunken);
 	
@@ -300,7 +299,7 @@ void HomePageWidget::CreateHelpWidget() {
 		}
 		else{
 
-			m_mainWindow->SetCurrentUserDirectory(m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
+			/*m_mainWindow->SetCurrentUserDirectory(m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
 			QDir dir(m_dataEngineConnection->UserAccessControls()->GlyphEdPath() + "/guide");
 			if (dir.exists()){
 
@@ -318,7 +317,7 @@ void HomePageWidget::CreateHelpWidget() {
 				l_helpLayout->addStretch();
 				l_helpWidget->setLayout(l_helpLayout);
 				mainLayout->addWidget(l_helpWidget);
-			}
+			}*/
 		}
 	}
 }
@@ -402,7 +401,7 @@ void HomePageWidget::SwitchDashboardLayout() {
 	else {
 
 		loggedOn = false;
-		loginWidget->Clear();
+		//loginWidget->Clear();
 		m_stackedDashboardLayout->setCurrentIndex(1);
 	}
 }
@@ -480,7 +479,7 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 		loggedOutLayout->setColumnStretch(2, 1);
 		loggedOutLayout->setSpacing(15);
 
-		loginWidget = new DataEngine::UserLoginDialog(m_dataEngineConnection, this);
+		/*loginWidget = new DataEngine::UserLoginDialog(m_dataEngineConnection, this);
 		loginWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 		loginWidget->setLineWidth(2);
 		loginWidget->setMidLineWidth(3);
@@ -493,13 +492,13 @@ void HomePageWidget::CreateLowerHalfDashboardWidget() {
 		loggedOutLayout->addWidget(CreateLowerDashboardWidget(), 1, 1, 1, 1);//, Qt::AlignCenter | Qt::AlignTop);//2,1
 
 		loggedOutWidget->setLayout(loggedOutLayout);
-		m_stackedDashboardLayout->addWidget(loggedOutWidget);
+		m_stackedDashboardLayout->addWidget(loggedOutWidget);*/
 	}
 }
 
 void HomePageWidget::SetCustomerLogo() {
 
-
+/*
 	QSettings st1;
 	st1.beginGroup("LogoSettings");
 
@@ -512,25 +511,25 @@ void HomePageWidget::SetCustomerLogo() {
 		reqOnStartupChecked = settings.value("ReqOnStartupChecked", false).toBool();
 		settings.endGroup();
 		if (!onStartupChecked && !reqOnStartupChecked){
-			st1.setValue("LastLogo", /*SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/ucollege.png" :*/ ":SGXGUI/Resources/fathead-syn-inside.jpg");
+			st1.setValue("LastLogo", SynGlyphX::GlyphBuilderApplication::IsGlyphEd() ? ":SGXGUI/Resources/GlyphEd/ucollege.png" : ":SGXGUI/Resources/fathead-syn-inside.jpg");
 		}
 	}
 
 	QString upperRightLogo = QDir::toNativeSeparators(QDir::cleanPath(m_dataEngineConnection->UserAccessControls()->GlyphEdPath()) + "/customer.png");
 	if (!QFileInfo::exists(upperRightLogo)) {
 		upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/fathead-syn-inside.jpg").toString();
-		/*if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
+		if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()){
 			upperRightLogo = st1.value("LastLogo", ":SGXGUI/Resources/GlyphEd/ucollege.png").toString();
-		}*/
+		}
 	}
 	else{
 		st1.setValue("LastLogo", upperRightLogo);
 	}
-	st1.endGroup();
+	st1.endGroup()
 
 	QPixmap p(upperRightLogo);
 	upperRightDashboardImage->SetPixmap(QPixmap(upperRightLogo));
-	upperRightDashboardImage->AddPadding(25, 0, 25, 0);
+	upperRightDashboardImage->AddPadding(25, 0, 25, 0);*/
 }
 
 QWidget* HomePageWidget::CreateLowerDashboardWidget() {
@@ -588,7 +587,7 @@ QWidget* HomePageWidget::CreateLowerDashboardWidget() {
 void HomePageWidget::Login(){
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	if (loginWidget->Login()){
+	/*if (loginWidget->Login()){
 		m_mainWindow->MainWindow::UpdateUserMenu(m_dataEngineConnection->UserAccessControls()->NameOfUser());
 		m_mainWindow->UpdateUserMenu();
 		SwitchDashboardLayout();
@@ -602,7 +601,7 @@ void HomePageWidget::Login(){
 		critical_error.setDefaultButton(QMessageBox::Ok);
 		critical_error.setEscapeButton(QMessageBox::Ok);
 		critical_error.exec();
-	}
+	}*/
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -610,7 +609,7 @@ void HomePageWidget::ContinueWithLogin(){
 
 	if (m_mainWindow->MainWindow::HasValidLicense()){
 
-		QSettings settings;
+		/*QSettings settings;
 		settings.beginGroup(QString::number(m_dataEngineConnection->UserAccessControls()->GetUserID()));
 		QString groupName = settings.value("GroupName", "Default").toString();
 		bool onStartupChecked = settings.value("OnStartupChecked", false).toBool();
@@ -655,7 +654,7 @@ void HomePageWidget::ContinueWithLogin(){
 			groupSettings.setValue("DirectoryPath", m_dataEngineConnection->UserAccessControls()->GlyphEdPath());
 			groupSettings.setValue("VisualizationNames", m_dataEngineConnection->UserAccessControls()->VizualizationNames());
 			groupSettings.endGroup();
-		}
+		}*/
 	}
 	else{
 		m_mainWindow->Logout();
@@ -664,7 +663,7 @@ void HomePageWidget::ContinueWithLogin(){
 
 void HomePageWidget::SyncFilesAndLoadViews(){
 
-	bool showReleaseNow = loggedOn;
+	/*bool showReleaseNow = loggedOn;
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
 	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
@@ -677,14 +676,14 @@ void HomePageWidget::SyncFilesAndLoadViews(){
 	}
 	if (showReleaseNow && releaseDialog){
 		releaseDialog->show();
-	}
+	}*/
 }
 
 void HomePageWidget::ReSyncFilesAndLoadViews(){
 
-	SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
+	/*SynGlyphX::SyncProgressDialog *d = new SynGlyphX::SyncProgressDialog(m_dataEngineConnection, m_allViewsFilteringWidget, this);
 	d->exec();
-	LoggedOut();
+	LoggedOut();*/
 }
 
 void HomePageWidget::ResetViews(){
@@ -912,7 +911,7 @@ void HomePageWidget::OnLoadVisualization() {
 			}
 		}
 
-		DataEngine::GlyphEngine ge;
+		/*DataEngine::GlyphEngine ge;
 		ge.initiate(m_dataEngineConnection->getEnv(), fileToLoad.toStdString(), "", "", "", "GlyphViewer");
 		for (const auto& filtersForTable : filteringParameters) {
 
@@ -924,7 +923,7 @@ void HomePageWidget::OnLoadVisualization() {
 				QMessageBox::information(this, tr("Did not load visualization"), tr("The selected combination of filters generate zero results.  Please try a different combination of filters."));
 				return;
 			}
-		}
+		}*/
 	}
 	else if (whichFilteringWidget == 2) {
 

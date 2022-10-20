@@ -30,8 +30,8 @@
 #include "itemfocusselectionmodel.h"
 #include "antzcsvwriter.h"
 #include "glyphpropertieswidgetscontainer.h"
-#include "dataengineconnection.h"
-#include "glyphengine.h"
+//#include "dataengineconnection.h"
+//#include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendsdisplaywidget.h"
 #include "DistinctValueFilteringParameters.h"
@@ -160,7 +160,7 @@ private:
 	GlyphViewerOptions CollectOptions();
 	bool DoesVisualizationNeedToBeRecreated(const SynGlyphX::DataTransformMapping& mapping) const;
 	void CreateExportToPortableVisualizationSubmenu();
-	void DownloadBaseImages(DataEngine::GlyphEngine& ge);
+	//void DownloadBaseImages(DataEngine::GlyphEngine& ge);
 	void CreateLoadingScreen();
 	void CreateInteractionToolbar();
 	void UpdateAxisNamesAndSourceDataPosition();
@@ -231,7 +231,7 @@ private:
 	FilteringManager* m_filteringManager;
 	FrontEndFilterListWidget* m_FEfilterListWidget;
 	PseudoTimeFilterWidget* m_pseudoTimeFilterWidget;
-	DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
+	//DataEngine::DataEngineConnection::SharedPtr m_dataEngineConnection;
 	SynGlyphX::PortableVisualizationExport m_portableVisualizationExport;
 	SourceDataInfoModel* m_columnsModel;
 	QWebEngineView* dlg;

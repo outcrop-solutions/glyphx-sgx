@@ -19,8 +19,8 @@
 
 #include "sourcedatacache.h"
 #include <QtWidgets/QFrame>
-#include "dataengineconnection.h"
-#include "userlogindialog.h"
+//#include "dataengineconnection.h"
+//#include "userlogindialog.h"
 #include "glyphviewerwindow.h"
 //#include "S3FileManager.h"
 
@@ -48,7 +48,7 @@ class HomePageWidget : public QFrame
 	Q_OBJECT
 
 public:
-	HomePageWidget(GlyphViewerWindow* mainWindow, DataEngine::DataEngineConnection::SharedPtr dataEngineConnection, QWidget *parent);
+	HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent);
 	~HomePageWidget();
 	const QString& GetCurrentProject();
 	void LoadProject(const QString& project);
@@ -104,14 +104,14 @@ private:
 	SynGlyphX::TitleListWidget* m_subsetViewsFilteringWidget;
 	
 	GlyphViewerWindow* m_mainWindow;
-	DataEngine::UserLoginDialog* loginWidget;
+	//DataEngine::UserLoginDialog* loginWidget;
 	bool loggedOn;
 
 	SynGlyphX::ResizeableImageLabel* upperRightDashboardImage;
 
 	//DataEngine::S3FileManager* s3Manager;
 	std::shared_ptr<SynGlyphX::AnnouncementDialog> releaseDialog;
-	std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
+	//std::shared_ptr<DataEngine::DataEngineConnection> m_dataEngineConnection;
 
 	//GlyphEd only.  Will get rid of ASAP
 	SourceDataCache m_sourceDataCache;

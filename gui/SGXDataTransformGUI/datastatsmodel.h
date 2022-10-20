@@ -22,7 +22,7 @@
 #include <QtCore/QAbstractTableModel>
 #include <QtSql/QSqlQuery>
 #include <boost/uuid/uuid.hpp>
-#include "dataengineconnection.h"
+//#include "dataengineconnection.h"
 #include "inputtable.h"
 
 namespace SynGlyphX {
