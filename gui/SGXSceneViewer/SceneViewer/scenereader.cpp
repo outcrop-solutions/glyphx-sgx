@@ -208,26 +208,26 @@ namespace SynGlyphX
 		auto color = read_packed_solid_color();
 		float grid_cell_w = read_float(), grid_cell_h = read_float();
 		int grid_cells_x = read_int(), grid_cells_y = read_int();
-		AwsLogger::getInstance()->localLogger("Read base images bytes");
+		//AwsLogger::getInstance()->localLogger("Read base images bytes");
 		
 		if ( tex_id != 0 )
 		{
 			auto transform = glm::translate( glm::mat4(), pos ) * get_rotation_matrix( rot );
 			glm::vec2 size = glm::vec2( grid_cell_w * grid_cells_x, grid_cell_h * grid_cells_y );
-			AwsLogger::getInstance()->localLogger("transform and size");
+			//AwsLogger::getInstance()->localLogger("transform and size");
 			hal::texture* tex = default_base_texture;
 			if ( tex_id > 1u )	// 1 = use default texture
 			{
 				auto offset_tex_id = tex_id - 2u;	// offset to account for 0 = none, 1 = default
 				if ( offset_tex_id < base_image_textures.size() ) tex = base_image_textures[offset_tex_id];
-				AwsLogger::getInstance()->localLogger("tex_id > 1u");
+				//AwsLogger::getInstance()->localLogger("tex_id > 1u");
 			}
 			base_images.add( tex, transform, size );
-			AwsLogger::getInstance()->localLogger("base_image add");
+			//AwsLogger::getInstance()->localLogger("base_image add");
 
 			if ( grid_cells_x >= 2 || grid_cells_y >= 2 )
 				grids.add( transform, size, grid_cells_x, grid_cells_y, render::unpack_color( color ) );
-			AwsLogger::getInstance()->localLogger("grids add");
+			//AwsLogger::getInstance()->localLogger("grids add");
 		}
 		
 	}
@@ -269,7 +269,7 @@ namespace SynGlyphX
 		std::string url = read_string();
 		std::string desc = read_string();
 
-		AwsLogger::getInstance()->localLogger(outputString);
+		//AwsLogger::getInstance()->localLogger(outputString);
 
 		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D( data.parent_id ) : nullptr;
 		data.is_root = ( data.parent_id == 0 ) || !parent;
@@ -614,7 +614,7 @@ namespace SynGlyphX
 			AwsLogger::getInstance()->localLogger("# of stackedGlyphs: "+ QString::number(stackedGlyphs.size()));
 			for (auto uid : stackedGlyphs.keys()) {
 				//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
-				AwsLogger::getInstance()->localLogger(uid);
+				//AwsLogger::getInstance()->localLogger(uid);
 				if (stackedGlyphs[uid]->glyphIds.size() > 1) {
 					for (int val : stackedGlyphs[uid]->glyphIds) {
 						filteringIndexMap[val] = next_id;
