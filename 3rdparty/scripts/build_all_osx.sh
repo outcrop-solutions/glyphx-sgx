@@ -26,32 +26,32 @@ done
 #./setup_osx.sh -v$opts
 
 # Build an app package from the three packages we built.
-echo Building GlyphIt app package...
-cd ../../bin/OSX64/Release
-cp ../../../misc/osx_resources/distribution.xml .
-cp ../../../misc/osx_resources/readme.txt README.txt
-cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
-productbuild --distribution distribution.xml --package-path . --resources . GlyphIt.pkg
-echo Building demo package...
-cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
-productbuild --distribution distribution.xml --package-path . --resources . GlyphItDemo.pkg
+#echo Building GlyphIt app package...
+#cd ../../bin/OSX64/Release
+#cp ../../../misc/osx_resources/distribution.xml .
+#cp ../../../misc/osx_resources/readme.txt README.txt
+#cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
+#productbuild --distribution distribution.xml --package-path . --resources . GlyphIt.pkg
+#echo Building demo package...
+#cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
+#productbuild --distribution distribution.xml --package-path . --resources . GlyphItDemo.pkg
 
 # Build an app package from the three packages we built.
-echo Building GlyphViewer app package...
-cp ../../../misc/osx_resources/distribution_glyphviewer.xml .
-cp ../../../misc/osx_resources/readme_gv.txt README.txt
-cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
-productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewer.pkg
-echo Building demo package...
-cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
-productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewerDemo.pkg
+#echo Building GlyphViewer app package...
+#cp ../../../misc/osx_resources/distribution_glyphviewer.xml .
+#cp ../../../misc/osx_resources/readme_gv.txt README.txt
+#cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
+#productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewer.pkg
+#echo Building demo package...
+#cp ../../../misc/InstallerFiles/Docs/Demo/license_agreement.rtf LICENSE.rtf
+#productbuild --distribution distribution_glyphviewer.xml --package-path . --resources . GlyphViewerDemo.pkg
 
 # Build GlyphEd package.
-echo Building GlyphEd package...
+echo Building GlyphX package...
 cd ../../../3rdparty/scripts
 #./setup_osx.sh -ebirj8
 cd ../../bin/OSX64/Release
-cp ../../../misc/osx_resources/distribution_glyphed.xml .
-cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement_glyphed.rtf LICENSE.rtf
-cp ../../../misc/osx_resources/readme_ge.txt README.txt
-productbuild --distribution distribution_glyphed.xml --package-path . --resources . GlyphEd.pkg
+cp ../../../misc/osx_resources/distribution_glyphx.xml .
+cp ../../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf LICENSE.rtf
+cp ../../../misc/osx_resources/readme_gx.txt README.txt
+productbuild --distribution distribution_glyphx.xml --package-path . --resources . GlyphX.pkg

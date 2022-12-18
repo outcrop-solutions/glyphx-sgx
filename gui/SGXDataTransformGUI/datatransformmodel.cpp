@@ -13,7 +13,7 @@
 #include "defaultbaseimageproperties.h"
 #include "defaultbaseimagescombobox.h"
 #include "surfaceradiobuttonwidget.h"
-#include "dataenginestatement.h"
+//#include "dataenginestatement.h"
 #include "stringconvert.h"
 #include <set>
 #include "Link.h"

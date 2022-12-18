@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="1">
+    <title>GlyphX</title>
+    <license file="./LICENSE.rtf"/>
+    <readme file="./README.txt"/>
+    <pkg-ref id="com.synglyphx.GlyphX"/>
+    <options customize="never" require-scripts="false"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.synglyphx.GlyphX"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.synglyphx.GlyphX" visible="false">
+        <pkg-ref id="com.synglyphx.GlyphX"/>
+    </choice>
+    <pkg-ref id="com.synglyphx.GlyphX" version="0" onConclusion="none">GlyphX.component.pkg</pkg-ref>
+</installer-gui-script>
