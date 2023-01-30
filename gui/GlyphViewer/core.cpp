@@ -118,6 +118,7 @@ void Core::ResizeEvent(const QString &text)
 		int h = projects.value("height").toInt();
 
 		glyphDrawer->setMinimumSize(QSize(w, h));
+		glyphDrawer->resize(QSize(w, h));
 		glyphDrawer->move(x, y);
 	}
 	catch (...) {

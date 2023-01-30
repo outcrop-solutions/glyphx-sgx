@@ -18,9 +18,9 @@ namespace SynGlyphX
 	{
 		assert( glyph_storage_size != 0u );
 		assert( glyph_storage_next < glyph_storage_size );
-		char* mem = glyph_storage + sizeof( Glyph3DNode ) * glyph_storage_next;
+		char* mem = glyph_storage + sizeof(Glyph3DNode) * glyph_storage_next;
 		++glyph_storage_next;
-		return new ( mem ) Glyph3DNode( _id, _isRoot, _type, _filtering_index, _label, _glyph_index);
+		return new (mem) Glyph3DNode(_id, _isRoot, _type, _filtering_index, _label, _glyph_index);
 	}
 
 	void GlyphScene::add( Glyph3DNode* glyph )
@@ -39,6 +39,15 @@ namespace SynGlyphX
 		glyph_storage = new char[alloc_size];
 		glyph_storage_size = count;
 		glyph_storage_next = 0u;
+	}
+
+	void GlyphScene::addToGlyphAllocation(unsigned int count) 
+	{
+		size_t alloc_size = (glyph_storage_size + count) * sizeof(Glyph3DNode);
+		char * newArray = new char[alloc_size];
+		std::strcpy(newArray, glyph_storage);
+		glyph_storage = newArray;
+		glyph_storage_size += count;
 	}
 
 	void GlyphScene::finishAdding()

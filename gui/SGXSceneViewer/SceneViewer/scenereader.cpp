@@ -391,102 +391,107 @@ namespace SynGlyphX
 
 	void SceneReader::create_stacked_glyph(QString uid, GlyphPlacementData data, std::string t, GlyphScene& scene)
 	{
-		indexToUID.insert(next_id, uid);
-		data.id = next_id;
-		data.label = next_id;
-		if (data.glyph_index >= 8u)
-			throw std::runtime_error("Glyph element index is too large; only up to 8 glyph types are supported.");
+		try {
+			indexToUID.insert(next_id, uid);
+			data.id = next_id;
+			data.label = next_id;
+			if (data.glyph_index >= 8u)
+				throw std::runtime_error("Glyph element index is too large; only up to 8 glyph types are supported.");
 
-		/*if (indexOfFirstStacked != -1)
-			indexOfFirstStacked = data.id;
-		indexOfLastStacked = data.id;*/
+			/*if (indexOfFirstStacked != -1)
+				indexOfFirstStacked = data.id;
+			indexOfLastStacked = data.id;*/
 
-		data.parent_id = 0;
+			data.parent_id = 0;
 
-		data.pos.z = stackedGlyphs[uid]->posZ;
-		data.scale.z = stackedGlyphs[uid]->scaleZ;
-		data.color = colorMapping[findClosest(allScaleZ.size(), stackedGlyphs[uid]->scaleZ)];
+			data.pos.z = stackedGlyphs[uid]->posZ;
+			data.scale.z = stackedGlyphs[uid]->scaleZ;
+			data.color = colorMapping[findClosest(allScaleZ.size(), stackedGlyphs[uid]->scaleZ)];
 
-		//hal::debug::print("id: %d", data.id);
-		//hal::debug::print("id: %d, parent_id: %d, position: %f, %f, %f, topo: %d", data.id, data.parent_id, data.pos.x, data.pos.y, data.pos.z, data.topo);
+			//hal::debug::print("id: %d", data.id);
+			//hal::debug::print("id: %d, parent_id: %d, position: %f, %f, %f, topo: %d", data.id, data.parent_id, data.pos.x, data.pos.y, data.pos.z, data.topo);
 
-		std::string tag = t;
-		std::string url = "nourl.html";
-		std::string desc = "";
+			std::string tag = t;
+			std::string url = "nourl.html";
+			std::string desc = "";
 
-		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D(data.parent_id) : nullptr;
-		data.is_root = (data.parent_id == 0) || !parent;
-		hal::debug::_assert(data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id);
+			Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D(data.parent_id) : nullptr;
+			data.is_root = (data.parent_id == 0) || !parent;
+			//hal::debug::_assert(data.parent_id == 0 || parent, "glyph %i is parented to nonexistent glyph %i", data.id, data.parent_id);
+			auto* glyphnode = scene.allocGlyph(data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1, data.label, data.glyph_index);
+			SetupGeometry(data.geom_type, *glyphnode);
 
-		auto* glyphnode = scene.allocGlyph(data.id, data.is_root, Glyph3DNodeType::GlyphElement, data.is_root ? next_filtering_index++ : -1, data.label, data.glyph_index);
-		SetupGeometry(data.geom_type, *glyphnode);
-		glyphnode->setString(GlyphStringType::Tag, scene.createString(tag.c_str()));
-		glyphnode->setString(GlyphStringType::Url, scene.createString(url.c_str()));
-		glyphnode->setString(GlyphStringType::Desc, scene.createString(desc.c_str()));
-		glyphnode->setColor(data.color);
-		glyphnode->setPlacementPolicy(ChoosePlacementPolicy(data));
-
-		glyphnode->setLocalPosition(data.pos);
-		glyphnode->setLocalRotation(data.rot);
-		glyphnode->setLocalScale(data.scale);
-		glyphnode->setTorusRatio(data.ratio);
-
-		if (data.rotation_rates.x != 0.f)
-		{
-			glyphnode->setAnimationAxis(glm::vec3(1.f, 0.f, 0.f));
-			glyphnode->setAnimationRate(data.rotation_rates.x);
-		}
-		else if (data.rotation_rates.y != 0.f)
-		{
-			glyphnode->setAnimationAxis(glm::vec3(0.f, 1.f, 0.f));
-			glyphnode->setAnimationRate(data.rotation_rates.y);
-		}
-		else if (data.rotation_rates.z != 0.f)
-		{
-			glyphnode->setAnimationAxis(glm::vec3(0.f, 0.f, 1.f));
-			glyphnode->setAnimationRate(data.rotation_rates.z);
-		}
-
-		if (data.is_root)
-		{
-			glm::mat4 transform = glm::translate(glm::mat4(), data.pos);
-			glm::vec3 visual_scale(1.f, 1.f, 1.f);
-			transform = glm::rotate(transform, glm::radians(data.rot.y), glm::vec3(0.0f, 0.0f, -1.0f));
-			transform = glm::rotate(transform, glm::radians(data.rot.x), glm::vec3(-1.0f, 0.0f, 0.0f));
-			transform = glm::rotate(transform, glm::radians(data.rot.z), glm::vec3(0.0f, 0.0f, -1.0f));
-			if (data.topo == kNPtopoRod)
+			glyphnode->setString(GlyphStringType::Tag, scene.createString(tag.c_str()));
+			glyphnode->setString(GlyphStringType::Url, scene.createString(url.c_str()));
+			glyphnode->setString(GlyphStringType::Desc, scene.createString(desc.c_str()));
+			glyphnode->setColor(data.color);
+			glyphnode->setPlacementPolicy(ChoosePlacementPolicy(data));
+		
+			glyphnode->setLocalPosition(data.pos);
+			glyphnode->setLocalRotation(data.rot);
+			glyphnode->setLocalScale(data.scale);
+			glyphnode->setTorusRatio(data.ratio);
+	
+			if (data.rotation_rates.x != 0.f)
 			{
-				visual_scale = glm::vec3(data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f);
-				transform = glm::translate(transform, glm::vec3(0.f, 0.f, 1.f));
+				glyphnode->setAnimationAxis(glm::vec3(1.f, 0.f, 0.f));
+				glyphnode->setAnimationRate(data.rotation_rates.x);
+			}
+			else if (data.rotation_rates.y != 0.f)
+			{
+				glyphnode->setAnimationAxis(glm::vec3(0.f, 1.f, 0.f));
+				glyphnode->setAnimationRate(data.rotation_rates.y);
+			}
+			else if (data.rotation_rates.z != 0.f)
+			{
+				glyphnode->setAnimationAxis(glm::vec3(0.f, 0.f, 1.f));
+				glyphnode->setAnimationRate(data.rotation_rates.z);
+			}
+
+			if (data.is_root)
+			{
+				glm::mat4 transform = glm::translate(glm::mat4(), data.pos);
+				glm::vec3 visual_scale(1.f, 1.f, 1.f);
+				transform = glm::rotate(transform, glm::radians(data.rot.y), glm::vec3(0.0f, 0.0f, -1.0f));
+				transform = glm::rotate(transform, glm::radians(data.rot.x), glm::vec3(-1.0f, 0.0f, 0.0f));
+				transform = glm::rotate(transform, glm::radians(data.rot.z), glm::vec3(0.0f, 0.0f, -1.0f));
+				if (data.topo == kNPtopoRod)
+				{
+					visual_scale = glm::vec3(data.ratio * 2.0f, data.ratio * 2.0f, data.scale.z * 5.f);
+					transform = glm::translate(transform, glm::vec3(0.f, 0.f, 1.f));
+				}
+				else
+				{
+					transform = glm::scale(transform, data.scale);
+				}
+
+				if ((data.geom_type == int(GeomType::CYLINDER) || data.geom_type == int(GeomType::WIRE_CYLINDER)
+					|| data.geom_type == int(GeomType::CONE) || data.geom_type == int(GeomType::WIRE_CONE))
+					|| (data.topo != kNPtopoPin
+						&& (data.geom_type == int(GeomType::PIN)
+							|| data.geom_type == int(GeomType::WIRE_PIN)))) {
+
+					transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.f));
+				}
+
+				glyphnode->setCachedTransform(transform);
+				glyphnode->setVisualScale(visual_scale);
+				++root_count;
 			}
 			else
 			{
-				transform = glm::scale(transform, data.scale);
+				auto glyph_parent = scene.getGlyph3D(data.parent_id);
+				//assert(glyph_parent);	// this expects the file to always have parents before children
+				glyph_parent->setChild(glyphnode);
 			}
+			scene.add(glyphnode);
 
-			if ((data.geom_type == int(GeomType::CYLINDER) || data.geom_type == int(GeomType::WIRE_CYLINDER)
-				|| data.geom_type == int(GeomType::CONE) || data.geom_type == int(GeomType::WIRE_CONE))
-				|| (data.topo != kNPtopoPin
-					&& (data.geom_type == int(GeomType::PIN)
-						|| data.geom_type == int(GeomType::WIRE_PIN)))) {
-
-				transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.f));
-			}
-
-			glyphnode->setCachedTransform(transform);
-			glyphnode->setVisualScale(visual_scale);
-			++root_count;
+			if (data.id >= next_id)
+				next_id = data.id + 1;
 		}
-		else
-		{
-			auto glyph_parent = scene.getGlyph3D(data.parent_id);
-			assert(glyph_parent);	// this expects the file to always have parents before children
-			glyph_parent->setChild(glyphnode);
+		catch (const std::exception& e) {
+			AwsLogger::getInstance()->localLogger(e.what());
 		}
-		scene.add(glyphnode);
-
-		if (data.id >= next_id)
-			next_id = data.id + 1;
 	}
 
 	void SceneReader::read_link( GlyphScene& scene )
@@ -595,7 +600,7 @@ namespace SynGlyphX
 			if ( format_version != FORMAT_VERSION )
 				throw std::runtime_error( "Invalid or corrupt cached scene; try clearing your cache." );
 
-			scene.beginAdding( glyph_count + link_count );
+			scene.beginAdding( glyph_count + link_count);
 			AwsLogger::getInstance()->localLogger("Passed beginAdding");
 			AwsLogger::getInstance()->localLogger(QString::number(base_image_count));
 			for ( int i = 0; i < base_image_count; ++i )
@@ -612,23 +617,23 @@ namespace SynGlyphX
 			AwsLogger::getInstance()->localLogger("sort allScaleZ");
 
 			AwsLogger::getInstance()->localLogger("# of stackedGlyphs: "+ QString::number(stackedGlyphs.size()));
+			scene.addToGlyphAllocation(stackedGlyphs.size());
 			for (auto uid : stackedGlyphs.keys()) {
-				//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
-				//AwsLogger::getInstance()->localLogger(uid);
-				if (stackedGlyphs[uid]->glyphIds.size() > 1) {
-					for (int val : stackedGlyphs[uid]->glyphIds) {
-						filteringIndexMap[val] = next_id;
-						const glm::vec4 color = scene.getGlyph3D(val)->getColor();
-						glm::vec4 c = color;
-						c.a = 0;
-						scene.getGlyph3D(val)->setColor(c);
+					//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
+					//AwsLogger::getInstance()->localLogger(uid);
+					if (stackedGlyphs[uid]->glyphIds.size() > 1) {
+						for (int val : stackedGlyphs[uid]->glyphIds) {
+							filteringIndexMap[val] = next_id;
+							const glm::vec4 color = scene.getGlyph3D(val)->getColor();
+							glm::vec4 c = color;
+							c.a = 0;
+							scene.getGlyph3D(val)->setColor(c);
+						}
+						QString tag = "Z: " + QString::number(stackedGlyphs[uid]->tagValue);
+						create_stacked_glyph(uid, stackedGlyphs[uid]->gpd, tag.toStdString(), scene);
 					}
-					QString tag = "Z: " + QString::number(stackedGlyphs[uid]->tagValue);
-					create_stacked_glyph(uid, stackedGlyphs[uid]->gpd, tag.toStdString(), scene);
-				}
-
-				stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->glyphIds;
-				stackedGlyphs[uid]->currentTagValue = stackedGlyphs[uid]->tagValue;
+					stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->glyphIds;
+					stackedGlyphs[uid]->currentTagValue = stackedGlyphs[uid]->tagValue;
 			}
 			AwsLogger::getInstance()->localLogger("Calculated stacks");
 			/*out << "Filtering map:" << endl;
