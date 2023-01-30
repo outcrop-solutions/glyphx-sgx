@@ -17,11 +17,7 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../GUI/SGXGUI
 							../../GUI/SGXGlyphGUI
 							../../GUI/SGXDataTransformGUI
-							../../GUI/MapDownloading
-							../../DataEngine/DataEngine
-							${JAVA_INCLUDE_DIRS})
-							
-LINK_DIRECTORIES(${JAVA_LINK_DIRS})
+							../../GUI/MapDownloading)
 
 #Enable breakpad if it is available						
 IF (${BREAKPAD_FOUND})
@@ -68,8 +64,7 @@ TARGET_LINK_LIBRARIES(GlyphViewer ${Boost_LIBRARIES}
 									SGXGeospatial
 									SGXGraphics
 									SGXSceneViewer
-									MapDownloading
-									DataEngine)
+									MapDownloading)
 
 IF (${BREAKPAD_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphViewer ${BREAKPAD_LIBRARIES})

@@ -20,7 +20,7 @@
 #ifndef DATAENGINECONNECTION_H
 #define DATAENGINECONNECTION_H
 
-#include <jni.h>
+//#include <jni.h>
 #include <vector>
 #include <boost/uuid/uuid.hpp>
 #include <QtCore/QString>

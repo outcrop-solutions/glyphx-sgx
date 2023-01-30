@@ -56,7 +56,7 @@
 #include <QtCore/QJsonArray>
 #include <QtCore/QUuid>
 #include "DownloadManager.h"
-#include "BaseImage.h"
+#include "baseimage.h"
 #include <chrono>
 #include <vector>
 #include <QtNetwork/QNetworkRequest>

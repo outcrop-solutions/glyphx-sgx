@@ -19,7 +19,7 @@
 #ifndef USERACCESSCONTROLS_H
 #define USERACCESSCONTROLS_H
 
-#include <jni.h>
+//#include <jni.h>
 #include "DataEngine_Exports.h"
 #include <QtCore/QString>
 #include <QtCore/QStringList>

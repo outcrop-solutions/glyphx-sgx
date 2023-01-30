@@ -21,7 +21,7 @@
 #define DATAENGINESTATEMENT_H
 
 #include <iostream>
-#include <jni.h>
+//#include <jni.h>
 #include <QtCore/QMap>
 #include <QtCore/QString>
 #include <QtCore/QStringList>

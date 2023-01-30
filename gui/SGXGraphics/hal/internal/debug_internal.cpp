@@ -70,7 +70,7 @@ namespace SynGlyphX
 #if defined(WIN32)
 				__debugbreak();
 #elif defined(__APPLE__)
-                __asm__("int $3");  // debug break on OSX
+               // __asm__("int $3");  // debug break on OSX
 #endif
 			}
 

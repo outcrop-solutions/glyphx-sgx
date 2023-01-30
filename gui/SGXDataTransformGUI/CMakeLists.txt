@@ -12,17 +12,13 @@ INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							../../Core/SGXFoundation
 							../../Core/SGXDataTransform
 							../../Core/SGXDataMapping
-							../../DataEngine/DataEngine
-							../../ANTzPlus/ANTzBridge
-							${JAVA_INCLUDE_DIRS})
+							../../ANTzPlus/ANTzBridge)
 
 
 file(GLOB SRC_ALL
 	"*.h"
 	"*.cpp"
 )
-
-LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 
 ADD_LIBRARY(SGXDataTransformGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES} 
@@ -32,7 +28,6 @@ TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES}
 							  Qt5::Widgets 
 							  Qt5::Sql
 							  ANTzBridge
-							  DataEngine
 							  SGXImage 
 							  SGXUtility 
 							  SGXGraphics
