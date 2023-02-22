@@ -146,7 +146,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
     //Leave this line in for testing purposes if needed later
     //QDesktopServices::openUrl(QUrl(imageUrl));
 	 
-	QNetworkRequest request(imageUrl);
+	/*QNetworkRequest request(imageUrl);
     QNetworkAccessManager networkManager;
 	QNetworkReply *reply = networkManager.get(request);
 
@@ -179,7 +179,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 		
 		throw DownloadException("Failed to get data into image");
 	}
-
+	
 	if (properties->GetGrayscale()) {
 
 		int depthInBytes = image.depth() / 8;
@@ -194,7 +194,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 			}
 		}
 	}
-
+	
 	if (properties->GetInvert()) {
 
 		image.invertPixels(QImage::InvertMode::InvertRgb);
@@ -204,7 +204,7 @@ GeographicBoundingBox NetworkDownloader::DownloadMap(const std::vector<Geographi
 		
 		throw DownloadException("Failed to save image");
 	}
-
+	*/
     //double lonRadiusInDegrees = std::abs(((MetersPerPixelAtZoom0 * std::cos(pointsBoundingBox.GetCenter().get<1>() * DegToRad) / std::pow(2.0, zoomLevel)) * (imageSize.width() / 2.0)) / MetersPerDegreeLongitude);
 	double lonRadiusInDegrees = (metersPerPixelAtCurrentZoom  * (imageSize[0] / 2.0)) / (MetersPerDegreeLongitude  * cosineAtCenter);
 	//double latRadiusInDegrees = lonRadiusInDegrees * (imageSize.height() / static_cast<double>(imageSize.width()));

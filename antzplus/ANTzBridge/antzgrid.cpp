@@ -47,7 +47,7 @@ namespace SynGlyphXANTz {
 
 		if ((segments[0] == 0) || (segments[1] == 0)) {
 
-			throw std::invalid_argument("Number of segments in ANTzGrid can not be zero");
+			std::_Xinvalid_argument("Number of segments in ANTzGrid can not be zero");
 		}
 
 		m_segments = segments;
@@ -62,7 +62,7 @@ namespace SynGlyphXANTz {
 
 		if ((size[0] <= 0.0) || (size[1] <= 0.0)) {
 
-			throw std::invalid_argument("Size in ANTzGrid can not be zero or negative");
+			std::_Xinvalid_argument("Size in ANTzGrid can not be zero or negative");
 		}
 
 		m_size = size;

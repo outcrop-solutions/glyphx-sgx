@@ -11,7 +11,7 @@ namespace SynGlyphX {
 	{
 		if (buttonNames.empty()) {
 
-			throw std::invalid_argument("Can't create RadioButtonGroupWidget with zero radio buttons");
+			std::_Xinvalid_argument("Can't create RadioButtonGroupWidget with zero radio buttons");
 		}
 
 		QBoxLayout* layout;
@@ -35,7 +35,7 @@ namespace SynGlyphX {
 
 		setLayout(layout);
 
-		QObject::connect(m_buttonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &RadioButtonGroupWidget::ButtonClicked);
+		QObject::connect(m_buttonGroup, reinterpret_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &RadioButtonGroupWidget::ButtonClicked);
 	}
 
 	RadioButtonGroupWidget::~RadioButtonGroupWidget()
@@ -56,7 +56,7 @@ namespace SynGlyphX {
 		QAbstractButton* button = m_buttonGroup->button(id);
 		if (button == nullptr) {
 
-			throw std::invalid_argument("RadioButtonGroupWidget does not have a button with the given id");
+			std::_Xinvalid_argument("RadioButtonGroupWidget does not have a button with the given id");
 		}
 
 		button->setChecked(true);
@@ -78,7 +78,7 @@ namespace SynGlyphX {
 		QAbstractButton* button = m_buttonGroup->button(id);
 		if (button == nullptr) {
 
-			throw std::invalid_argument("RadioButtonGroupWidget does not have a button with the given id");
+			std::_Xinvalid_argument("RadioButtonGroupWidget does not have a button with the given id");
 		}
 
 		button->setEnabled(enabled);

@@ -13,6 +13,6 @@ file(GLOB SRC_ALL
 )
 
 ADD_LIBRARY(SGXDataMapping SHARED ${SRC_ALL})
-TARGET_LINK_LIBRARIES(SGXDataMapping ${Boost_LIBRARIES} SGXImage SGXUtility SGXFoundation Qt5::Core)
+TARGET_LINK_LIBRARIES(SGXDataMapping ${Boost_LIBRARIES} SGXImage SGXUtility SGXFoundation Qt6::Core)
 
 Set_Windows_Properties(SGXDataMapping)

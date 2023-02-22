@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 #include "geographicboundingbox.h"
-#include <QtNetwork/QNetworkAccessManager>
+//#include <QtNetwork/QNetworkAccessManager>
 #include "downloadedmapproperties.h"
 
 typedef boost::geometry::strategy::distance::haversine<double> DistanceStrategy;

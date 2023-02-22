@@ -3,7 +3,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <QtCore/QEventLoop>
-#include <QtCore/QTextCodec>
+//#include <Qt5CoreCompat/QTextCodec>
 
 namespace SynGlyphX {
 
@@ -45,7 +45,7 @@ namespace SynGlyphX {
 		if (dialogData.isEmpty()) {
 			return QString();
 		}
-		return QTextCodec::codecForMib(106)->toUnicode(dialogData);
+		return QString(dialogData);
 	}
 
 	void AnnouncementDialog::AddLabel(QString url){

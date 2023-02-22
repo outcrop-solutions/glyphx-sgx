@@ -30,14 +30,12 @@
 #include "itemfocusselectionmodel.h"
 #include "antzcsvwriter.h"
 #include "glyphpropertieswidgetscontainer.h"
-//#include "dataengineconnection.h"
-//#include "glyphengine.h"
 #include "portablevisualizationexport.h"
 #include "legendsdisplaywidget.h"
 #include "DistinctValueFilteringParameters.h"
 #include "SettingsStoredFileList.h"
 #include <QtWebSockets/QWebSocket>
-#include <QtWebEngineWidgets/QWebEngineView>
+#include <QWebEngineView>
 #include "LocalServer.h"
 #include <QtCore/QThread>
 
@@ -112,10 +110,6 @@ private slots:
 	void OnPropertiesActivated();
 	bool LoadRecentFile(const QString& filename) override;
 	void SwitchVisualizationGroup();
-	//void OnSocketConnect();
-	//void OnSocketLaunch(QString message);
-	//void OnSocketSslErrors(const QList<QSslError> &errors);
-	//void OnSocketClosed();
 	void SaveSnapshot();
 	void LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache);
 	void UpdateGlyphDrawerFilter(QString text);

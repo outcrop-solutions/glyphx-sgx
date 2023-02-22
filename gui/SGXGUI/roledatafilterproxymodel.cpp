@@ -63,8 +63,10 @@ namespace SynGlyphX {
 			if (l.isValid() && r.isValid())
 				return l < r;
 		}
-
-		return (leftData < rightData);
+		bool o1, o2;
+		double ld = leftData.toDouble(&o1);
+		double rd = rightData.toDouble(&o2);
+		return (ld < rd);
 	}
 
 	void RoleDataFilterProxyModel::Clear() {

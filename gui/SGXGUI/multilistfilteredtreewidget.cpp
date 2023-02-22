@@ -15,7 +15,7 @@ namespace SynGlyphX {
 	{
 		if (headers.size() != model->GetMaxDepth()) {
 
-			throw std::invalid_argument("Number of headers in multi-list widget must be the same as depth of associated model.");
+			std::_Xinvalid_argument("Number of headers in multi-list widget must be the same as depth of associated model.");
 		}
 
 		QGridLayout* mainLayout = new QGridLayout(this);

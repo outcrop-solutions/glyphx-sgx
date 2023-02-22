@@ -209,16 +209,17 @@ MultiTableDistinctValueFilteringParameters LoadingFilterWidget::GetFilterValues(
 		DistinctValueFilteringParameters filteringParametersForTable;
 		for (const auto& filterWidget : tableFilterWidgets.second) {
 
-			QSet<QString> filterData = filterWidget.second->GetSelectedLabels().toSet();
+			QStringList temp = filterWidget.second->GetSelectedLabels();
+			QSet<QString> filterData(temp.begin(), temp.end());
 			if (filterData.size() > 0 && m_maskToValueMap.find(filterWidget.first) != m_maskToValueMap.end()){
-				QList<QString> filterDataList = filterData.toList();
+				QList<QString> filterDataList(filterData.begin(), filterData.end());
 				for (int i = 0; i < filterDataList.size(); i++){
 					if (!filterDataList.at(i).isEmpty()){
 						filterDataList.replace(i, m_maskToValueMap.at(filterWidget.first).at(filterDataList.at(i)));
 					}
 				}
 				filterData.clear();
-				filterData = filterDataList.toSet();
+				filterData = QSet<QString>(filterDataList.begin(),filterDataList.end());
 			}
 			filteringParametersForTable.SetDistinctValueFilter(QString::fromStdWString(filterWidget.first), filterData);
 		}

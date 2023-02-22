@@ -25,7 +25,7 @@
 #include "intsizewidget.h"
 #include "networkdownloader.h"
 #include "downloadedmapproperties.h"
-#include "radiobuttongroupwidget.h"
+//#include "radiobuttongroupwidget.h"
 
 class MAPDOWNLOADING_EXPORT MapOptionsWidget : public QWidget
 {
@@ -51,7 +51,7 @@ protected:
     SynGlyphX::IntSizeWidget* m_imageSizeWidget;
 	QCheckBox* m_invertCheckbox;
 	QCheckBox* m_grayscaleCheckbox;
-	SynGlyphX::RadioButtonGroupWidget* m_bestFitRadioButtonWidget;
+	//SynGlyphX::RadioButtonGroupWidget* m_bestFitRadioButtonWidget;
 	QSpinBox* m_marginSpinBox;
 };
 

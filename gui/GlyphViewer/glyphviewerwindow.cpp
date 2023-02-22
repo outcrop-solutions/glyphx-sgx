@@ -5,7 +5,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QStackedWidget>
-#include <QtWidgets/QDesktopWidget>
+//#include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QGroupBox>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
@@ -50,7 +50,7 @@
 #include "FieldProperties.h"
 #include "version.h"
 #include "filesystem.h"
-#include <QtWebEngineWidgets/QWebEngineProfile>
+#include <QtWebEngineCore/QWebEngineProfile>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
@@ -67,6 +67,7 @@
 #include <QTimer>
 #include "AwsLogger.h"
 #include <QHeaderView>
+#include <QLibraryInfo>
 
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
@@ -128,6 +129,8 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 		return;
 	}*/
 
+	//"C:/Users/bryan/OneDrive/Documents/GitHub/sgx/bin/Win64/Debug";
+	//QLibraryInfo::location(QLibraryInfo::LibraryExecutablesPath)
 	CreateLoadingScreen();
 	
 	try {
@@ -223,6 +226,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	AwsLogger::getInstance()->setCommonDataPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
 	AwsLogger::getInstance()->logger(userID, "New session.");
 	AwsLogger::getInstance()->localLogger("New session.");
+	AwsLogger::getInstance()->localLogger(QLibraryInfo::location(QLibraryInfo::LibraryExecutablesPath));
 
 }
 
@@ -351,7 +355,7 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 	syncLabel->setStyleSheet("QLabel{font-size: 12.5pt; font-weight: bold;}");
 	syncLabel->setText(tr("GlyphX.sdt"));*/
 
-	layout->setMargin(0);
+	layout->setContentsMargins(0,0,0,0);
 	layout->setSpacing(0);
 	layout->addWidget(m_viewer);
 	glyphDrawer->setCentralWidget(m_viewer);
@@ -642,6 +646,7 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
 	dlg = new QWebEngineView(this);
+	//dlg->load(QUrl("http://qt-project.org/"));
 	auto wep = dlg->page()->profile();
 	wep->setHttpAcceptLanguage("en-US,en;q=0.9");
 	centerWidgetsContainer->addWidget(dlg);
@@ -727,11 +732,7 @@ void GlyphViewerWindow::CreateMenus() {
 
 	QAction* openVisAction = CreateMenuAction(m_fileMenu, tr("Open Visualization"), QKeySequence::Open);
 	QObject::connect(openVisAction, &QAction::triggered, this, &GlyphViewerWindow::OpenVisualisation);
-	/*
-	QAction* openProjectAction = CreateMenuAction(m_fileMenu, tr("Open Project"));
-	QObject::connect(openProjectAction, &QAction::triggered, this, &GlyphViewerWindow::OpenProject);
-	m_fileMenu->addSeparator();
-	*/
+	
 	QAction* refreshVisualizationAction = nullptr;
 	if (!SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
 	{
@@ -809,10 +810,6 @@ void GlyphViewerWindow::CreateMenus() {
 
 	m_viewMenu->addSeparator();
 
-	//m_toolbarsSubMenu = m_viewMenu->addMenu("Toolbars");
-	//m_toolbarsSubMenu->addAction(m_fileToolbar->toggleViewAction());
-	//m_toolbarsSubMenu->addAction(m_showHideToolbar->toggleViewAction());
-
 	m_viewMenu->addSeparator();
 
 	m_toolsMenu = menuBar()->addMenu(tr("Tools"));
@@ -826,16 +823,6 @@ void GlyphViewerWindow::CreateMenus() {
 	m_remapRootPositionMappingsAction->setIcon(remapIcon);
 	QObject::connect(m_remapRootPositionMappingsAction, &QAction::triggered, this, &GlyphViewerWindow::RemapRootPositionMappings);
 	m_loadedVisualizationDependentActions.push_back(m_remapRootPositionMappingsAction);
-	/*
-	m_interactiveLegendAction = m_toolsMenu->addAction(tr("Show Interactive Legend"));
-	QIcon legendIcon;
-	QPixmap legend_off(":SGXGUI/Resources/Icons/icon-onoff.png");
-	QPixmap legend_on(":SGXGUI/Resources/Icons/icon-onoff-a.png");
-	legendIcon.addPixmap(legend_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
-	legendIcon.addPixmap(legend_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	m_interactiveLegendAction->setIcon(legendIcon);
-	QObject::connect(m_interactiveLegendAction, &QAction::triggered, this, &GlyphViewerWindow::ToggleInteractiveLegend);
-	m_loadedVisualizationDependentActions.push_back(m_interactiveLegendAction);*/
 
 	m_toolsMenu->addSeparator();
 
@@ -973,31 +960,6 @@ void GlyphViewerWindow::CreateDockWidgets() {
 	m_showHideToolbar->addAction(act);
 	m_rightDockWidget->hide();
 
-	//int ws_port = 12345;
-	//l_server = new LocalServer(this);
-	//l_server->startServer("WebChannel Filtering Server", ws_port);
-
-	//m_rightDockWidget = new QDockWidget(tr("Filtering"), this);
-	//m_filteringWidget = new FilteringWidget(m_columnsModel, m_filteringManager, m_rightDockWidget);
-	//QWebEngineView* dlg = new QWebEngineView(this);
-	//dlg->setMinimumSize(width, height);
-	//QUrl url = QUrl::fromLocalFile(QDir::currentPath() + "/index.html");
-	//url = QUrl(url.toString() + "?webChannelBaseUrl=ws://localhost:" + QString::number(ws_port));
-	//dlg->load(url);
-	//m_rightDockWidget->setWidget(dlg);
-	/*addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
-	act = m_rightDockWidget->toggleViewAction();
-	m_loadedVisualizationDependentActions.push_back(act);
-	QIcon filterIcon;
-	QPixmap filter_off(":SGXGUI/Resources/Icons/icon-filter.png");
-	QPixmap filter_on(":SGXGUI/Resources/Icons/icon-filter-a.png");
-	filterIcon.addPixmap(filter_off.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::Off);
-	filterIcon.addPixmap(filter_on.scaled(SynGlyphX::Application::DynamicQSize(42, 32)), QIcon::Normal, QIcon::On);
-	act->setIcon(filterIcon);
-	//m_viewMenu->addAction(act);
-	//m_showHideToolbar->addAction(act);
-	m_rightDockWidget->hide();*/
-
 	QObject::connect(m_filteringWidget, &FilteringWidget::LoadSubsetVisualization, this, [this](QString filename){ LoadNewVisualization(filename); }, Qt::QueuedConnection);
 
 	m_bottomDockWidget = new QDockWidget(tr("Time Animated Filter"), this);
@@ -1020,12 +982,10 @@ void GlyphViewerWindow::CreateDockWidgets() {
 
 }
 
-
-
 void GlyphViewerWindow::OpenProject() {
 	QString openFile = GetFileNameOpenDialog("ProjectDir", tr("Open Project"), "", tr("SynGlyphX Project Files (*.xdt)"));
-	if (!openFile.isEmpty())
-		m_homePage->LoadProject(openFile);
+	//if (!openFile.isEmpty())
+		//m_homePage->LoadProject(openFile);
 
 }
 
@@ -1044,16 +1004,6 @@ void GlyphViewerWindow::OpenVisualisation() {
 				ValidateDataMappingFile(mapping, openFile);
 
 				MultiTableDistinctValueFilteringParameters filters;
-				/*if (!mapping->GetFrontEndFilters().empty()) {
-
-					LoadingFilterDialog loadingFilterDialog(m_dataEngineConnection, openFile, this);
-					loadingFilterDialog.SetupFilters(*mapping);
-					if (loadingFilterDialog.exec() == QDialog::Rejected) {
-
-						return;
-					}
-					filters = loadingFilterDialog.GetFilterValues();
-				}*/
 
 				//LoadNewVisualization(openFile);
 				LoadNewVisualization(openFile, filters, filters.size() > 0);
@@ -1224,8 +1174,8 @@ void GlyphViewerWindow::Logout(){
 
 	//m_dataEngineConnection->UserAccessControls()->ResetConnection();
 
-	m_homePage->ResetViews();
-	m_homePage->LoggedOut();
+	//m_homePage->ResetViews();
+	//m_homePage->LoggedOut();
 	SynGlyphX::Application::restoreOverrideCursor();
 }
 
@@ -1322,13 +1272,13 @@ void GlyphViewerWindow::SwitchVisualizationGroup() {
 	if (MainWindow::HasOpenFile()){
 		CloseVisualization();
 	}
-	m_homePage->ResetViews();
+	//m_homePage->ResetViews();
 
 	//m_dataEngineConnection->UserAccessControls()->SetChosenGroup(groupName);
 
 	//m_dataEngineConnection->UserAccessControls()->FlushOutFilterSetup();
 
-	m_homePage->ReSyncFilesAndLoadViews();
+	//m_homePage->ReSyncFilesAndLoadViews();
 
 	/*QSettings groupSettings;
 	groupSettings.beginGroup(groupName);
@@ -1595,60 +1545,6 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		QFileInfo info(dir);
 		qint64 mod = info.lastModified().toSecsSinceEpoch();
 		bool needsUpdate = (lastModified - mod) > 0;
-
-		/*DataEngine::GlyphEngine ge;
-		ge.initiate(m_dataEngineConnection->getEnv(), filename.toStdString(), dirPath, baseImageDir, "", "GlyphViewer");
-
-		if (!dir.exists() || needsUpdate) {
-			//qint64 size = QFile(QString::fromStdString(dirPath + "sourcedata.db")).size();
-			//QMessageBox::information(this, tr("Server message"), QString::number(size));
-
-			for (const auto& filter : filters) {
-				auto query = filter.second.GenerateQuery(filter.first);
-				if (query.length() > 0)
-				{
-					ge.SetQueryForDatasource(QString::fromStdString(boost::uuids::to_string(filter.first.GetDatasourceID())),
-						QString::fromStdWString(filter.first.GetTable()),
-						query);
-				}
-			}
-
-			//if (ge.IsUpdateNeeded()){
-
-			DownloadBaseImages(ge);
-			ge.generateGlyphs(this);
-		}
-
-		std::vector<std::string> images = ge.getBaseImages();
-		for (const auto& image : images) {
-			m_currentBaseImages << QString::fromStdString(image);
-		}
-
-		QString localOutputDir = QString::fromStdString(dirPath + "scene/");
-
-		m_interactiveLegend->reset();
-
-		SGX_BEGIN_PROFILE(loadScene);
-		m_viewer->loadScene((localOutputDir + "glyphs.sgc").toStdString().c_str(), (localOutputDir + "glyphs.sgn").toStdString().c_str(), images, m_mappingModel->GetDataMapping()->GetDefaults().GetUseSuperimposedGlyphs());
-		SGX_END_PROFILE(loadScene);
-
-		m_sourceDataCache->Setup( QString::fromStdString( dirPath + "sourcedata.db" ) );
-		m_columnsModel->Reset();
-
-		//This must be done before LoadFilesIntoModel is called
-		//m_filteringWidget->SetElasticListFields(m_mappingModel->GetDataMapping()->GetElasticListFields());
-		//m_filteringWidget->OnNewVisualization();
-
-		LoadFilesIntoModel();
-		
-		auto bgcolor = m_mappingModel->GetDataMapping()->GetSceneProperties().GetBackgroundColor();
-		if ( m_viewer ) m_viewer->setBackgroundColor( glm::vec4( float( bgcolor[0] ) / 255.f, float( bgcolor[1] ) / 255.f, float( bgcolor[2] ) / 255.f, 1.f ) );
-		m_legendsWidget->SetLegends(m_mappingModel->GetDataMapping()->GetLegends());
-
-		//Hide in scene axes if visualization has downloaded maps
-		const auto& baseObjects = m_mappingModel->GetDataMapping()->GetBaseObjects();
-		m_showHideSceneAxisAction->setChecked(baseObjects.empty() || (baseObjects[0].GetType() != SynGlyphX::BaseImage::Type::DownloadedMap));
-		*/
 		SynGlyphX::Application::restoreOverrideCursor();
 	}
 	catch (const std::exception&) {
@@ -2171,8 +2067,8 @@ void GlyphViewerWindow::ReadSettings() {
 	ChangeOptions(CollectOptions(), options);
 	if (m_showHomePage || SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 		dynamic_cast<QStackedWidget*>(centralWidget())->setCurrentIndex(0); 
-		if (!options.GetDefaultProject().isEmpty())
-			m_homePage->LoadProject(options.GetDefaultProject());
+		//if (!options.GetDefaultProject().isEmpty())
+			//m_homePage->LoadProject(options.GetDefaultProject());
 	}
 	else
 		dynamic_cast<QStackedWidget*>(centralWidget())->setCurrentIndex(1);

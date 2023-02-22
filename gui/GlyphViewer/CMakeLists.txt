@@ -47,11 +47,11 @@ ENDIF()
 
 ADD_EXECUTABLE(GlyphViewer ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})
 TARGET_LINK_LIBRARIES(GlyphViewer ${Boost_LIBRARIES} 
-									Qt5::Core 
-									Qt5::Gui 
-									Qt5::OpenGL 
-									Qt5::Widgets 
-									Qt5::Sql
+									Qt6::Core 
+									Qt6::Gui 
+									Qt6::OpenGL 
+									Qt6::Widgets 
+									Qt6::Sql
 									ANTzCore 
 									ANTzBridge 
 									SGXUtility 

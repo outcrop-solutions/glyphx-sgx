@@ -1,7 +1,7 @@
 #include "FilteringTable.h"
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 #include <set>
 #include <functional>
 #include <QtWidgets/QVBoxLayout>

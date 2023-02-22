@@ -1,6 +1,6 @@
 #include "AppServices.h"
 #include "mainwindow.h"
-#include <QtWidgets/QUndoStack>
+#include <QtGui/QUndoStack>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QObject>
 

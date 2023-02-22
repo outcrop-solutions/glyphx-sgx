@@ -5,7 +5,7 @@
 #include <QtCore/QJsonObject>
 #include <QWindow>
 #include <QScreen>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QBuffer>
 #include "AwsLogger.h"
 #include <QSettings>
@@ -55,7 +55,7 @@ void Core::TakeScreenShot(const QString &text, int x, int y, int w, int h)
 	QScreen* screen = window->screen();
 
 	QImage img = screen->grabWindow(
-		QDesktopWidget().winId(),
+		glyphDrawer->winId(),
 		crop_rect.left(),
 		crop_rect.top()+60,
 		crop_rect.width(),
@@ -92,7 +92,7 @@ void Core::OpenProject(const QString &text, const bool load_from_cache)
 
 void Core::ToggleDrawer(const bool flag)
 {
-	AwsLogger::getInstance()->localLogger("ToggleDrawer called.\n Flag value: " + QString(flag));
+	AwsLogger::getInstance()->localLogger("ToggleDrawer called.\n Flag value: " + flag);
 	if (flag) {
 		glyphDrawer->show();
 		GetDrawerPosition();

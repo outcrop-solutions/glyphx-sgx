@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QtCore/QSettings>
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 #include <QtCore/QFileInfo>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -11,7 +11,7 @@
 #include "licensingdialog.h"
 #include "helpdialog.h"
 #include <QtCore/QStandardPaths>
-#include <QtWidgets/QUndoStack>
+#include <QtGui/QUndoStack>
 #include "singlewidgetdialog.h"
 #include <QtWidgets/QToolButton>
 #include <QtWebEngineWidgets/QWebEngineView>

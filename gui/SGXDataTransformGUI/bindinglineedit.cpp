@@ -5,10 +5,10 @@
 #include "inputfieldmimedata.h"
 #include <QtWidgets/QHBoxLayout>
 #include "datatransformmapping.h"
-#include <QtWidgets/QUndoCommand>
+#include <QtGui/QUndoCommand>
 #include <QtCore/QPointer>
 #include "AppGlobal.h"
-#include <QtWidgets/QUndoStack>
+#include <QtGui/QUndoStack>
 #include "datatransformmodel.h" //refactor to exclude this
 #include "GlyphTreesViewMementoBase.h"
 

@@ -20,8 +20,8 @@
 #include "Alias.h"
 #include "baseimage.h"
 #include "AppGlobal.h"
-#include <QtWidgets/QUndoStack>
-#include <QtWidgets/QUndoCommand>
+#include <QtGui/QUndoStack>
+#include <QtGui/QUndoCommand>
 #include "AppGlobal.h"
 #include "FrontEndFilter.h"
 
@@ -846,7 +846,7 @@ namespace SynGlyphX {
 			std::vector<std::wstring> tables = iT->second->GetTableNames();
 			for (unsigned int i = 0; i < tables.size(); ++i) {
 
-				GenerateStats(SynGlyphX::InputTable(iT->first, tables.at(i)), QSqlQuery(db));
+				//GenerateStats(SynGlyphX::InputTable(iT->first, tables.at(i)), QSqlQuery(db));
 			}
 			//AddDatasourceInfoFromDataEngine(iT->first, iT->second);
 		}
@@ -1225,7 +1225,7 @@ namespace SynGlyphX {
 	Qt::ItemFlags DataTransformModel::flags(const QModelIndex& index) const {
 
 		if (!index.isValid()) {
-			return 0;
+			return Qt::ItemFlags(0);
 		}
 
 		Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;

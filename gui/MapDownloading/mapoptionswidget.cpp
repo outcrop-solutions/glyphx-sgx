@@ -61,9 +61,9 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 	QStringList bestFitOptions;
 	bestFitOptions.push_back(tr("Fixed Size"));
 	bestFitOptions.push_back(tr("Best Fit Closest To Size"));
-	m_bestFitRadioButtonWidget = new SynGlyphX::RadioButtonGroupWidget(bestFitOptions, Qt::Horizontal, this);
-	mapSizeLayout->addWidget(m_bestFitRadioButtonWidget);
-	QObject::connect(m_bestFitRadioButtonWidget, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &MapOptionsWidget::OnSizeOptionChanged);
+	//m_bestFitRadioButtonWidget = new SynGlyphX::RadioButtonGroupWidget(bestFitOptions, Qt::Horizontal, this);
+	//mapSizeLayout->addWidget(m_bestFitRadioButtonWidget);
+	//QObject::connect(m_bestFitRadioButtonWidget, &SynGlyphX::RadioButtonGroupWidget::ButtonClicked, this, &MapOptionsWidget::OnSizeOptionChanged);
 
 	QLabel *marginLabel = new QLabel(tr("Margin:"), this);
 	mapSizeLayout->addWidget(marginLabel);
@@ -84,7 +84,7 @@ MapOptionsWidget::MapOptionsWidget(QWidget *parent)
 
 	m_mapServiceComboBox->setCurrentIndex(0);
 	OnMapSourceChanged();
-	m_bestFitRadioButtonWidget->SetCheckedButton(1);
+	//m_bestFitRadioButtonWidget->SetCheckedButton(1);
 
     //ReadSettings();
 
@@ -107,7 +107,7 @@ void MapOptionsWidget::SetWidget(SynGlyphX::DownloadedMapProperties::ConstShared
 	m_imageSizeWidget->SetSize(QSize(properties->GetSize()[0], properties->GetSize()[1]));
 	m_invertCheckbox->setChecked(properties->GetInvert());
 	m_grayscaleCheckbox->setChecked(properties->GetGrayscale());
-	m_bestFitRadioButtonWidget->SetCheckedButton(properties->GetUseBestFit() ? 1 : 0);
+	//m_bestFitRadioButtonWidget->SetCheckedButton(properties->GetUseBestFit() ? 1 : 0);
 	m_marginSpinBox->setValue(properties->GetMargin());
 }
 
@@ -141,7 +141,7 @@ SynGlyphX::DownloadedMapProperties::SharedPtr MapOptionsWidget::GetProperties() 
 	downloadedMapProperties->SetSize({ { static_cast<unsigned int>(m_imageSizeWidget->GetSize().width()), static_cast<unsigned int>(m_imageSizeWidget->GetSize().height()) } });
 	downloadedMapProperties->SetInvert(m_invertCheckbox->isChecked());
 	downloadedMapProperties->SetGrayscale(m_grayscaleCheckbox->isChecked());
-	downloadedMapProperties->SetUseBestFit(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);
+	//downloadedMapProperties->SetUseBestFit(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);
 	downloadedMapProperties->SetMargin(static_cast<unsigned int>(m_marginSpinBox->value()));
 
 	return downloadedMapProperties;
@@ -161,5 +161,5 @@ void MapOptionsWidget::OnMapSourceChanged() {
 
 void MapOptionsWidget::OnSizeOptionChanged() {
 
-	m_marginSpinBox->setEnabled(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);
+	//m_marginSpinBox->setEnabled(m_bestFitRadioButtonWidget->GetCheckedButton() == 1);
 }

@@ -21,7 +21,7 @@
 #include <QtWidgets/QFormLayout>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "syncprogressdialog.h"
-#include <QtWidgets/QDesktopWidget>
+//#include <QtWidgets/QDesktopWidget>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include "AnnouncementDialog.h"
@@ -89,7 +89,7 @@ HomePageWidget::HomePageWidget(GlyphViewerWindow* mainWindow, QWidget *parent)
 	QObject::connect(&GlyphViewerWindow::GetRecentFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnRecentListUpdated);
 	QObject::connect(&GlyphViewerWindow::GetSubsetFileListInstance(), &SynGlyphX::SettingsStoredFileList::FileListChanged, this, &HomePageWidget::OnSubsetListUpdated);
 
-	QObject::connect(m_optionsButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
+	QObject::connect(m_optionsButtonGroup, reinterpret_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &HomePageWidget::OnNewOptionSelected);
 	m_optionsButtonGroup->button(0)->setChecked(true);
 	OnNewOptionSelected(0);
 

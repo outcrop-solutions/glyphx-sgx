@@ -3,45 +3,14 @@
 #include <QtWidgets/QSplashScreen>
 #include <QtCore/QTimer>
 #include <QtCore/QDir>
-#include "licensingdialog.h"
 #include "application.h"
-#ifdef USE_BREAKPAD
-#include "exception_handler.h"
-#endif
-
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QDesktopWidget>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include "nonmappablegeometryproperties.h"
 #include "GVGlobal.h"
 #include "version.h"
-
-/*
-void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-	QString txt;
-	switch (type) {
-	case QtDebugMsg:
-		txt = QString("Debug: %1\n").arg(msg);
-		break;
-	case QtWarningMsg:
-		txt = QString("Warning: %1\n").arg(msg);
-		break;
-	case QtCriticalMsg:
-		txt = QString("Critical: %1\n").arg(msg);
-		break;
-	case QtFatalMsg:
-		txt = QString("Fatal: %1\n").arg(msg);
-		break;
-	}
-	QFile outFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + QDir::separator() + "sgx_gv_log.txt");
-	outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-	QTextStream ts(&outFile);
-	ts << txt;
-}
-*/
 
 int main(int argc, char *argv[])
 {
@@ -66,46 +35,12 @@ int main(int argc, char *argv[])
 	fmt.setDepthBufferSize(24);
 	fmt.setSwapBehavior(QSurfaceFormat::SwapBehavior::DoubleBuffer);
 	fmt.setSamples(4);
-	/*	fmt.setOption( QSurfaceFormat::StereoBuffers );
-		fmt.setStereo( true );*/
 	QSurfaceFormat::setDefaultFormat(fmt);
 
-	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getFullVersionString().c_str());
+	SynGlyphX::GlyphBuilderApplication::Setup("GlyphX", SynGlyphX::getFullVersionString().c_str());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
-
-		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
-	}
 	QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
-	commonDataDir.mkdir("Glyph Viewer");
-
-	//qInstallMessageHandler(myMessageHandler);
-
-#ifdef USE_BREAKPAD
-	const QString dumpPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Minidumps";
-	std::wstring pathAsStr = dumpPath.toStdWString();
-	boost::filesystem::path dir(pathAsStr);
-	try {
-
-		boost::filesystem::create_directory(dir);
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox::critical(nullptr, SynGlyphX::GlyphBuilderApplication::tr("Minidump Failure"), SynGlyphX::GlyphBuilderApplication::tr("Failed to create directory for crash reporting") + e.what());
-	}
-
-	google_breakpad::ExceptionHandler *pHandler = new google_breakpad::ExceptionHandler(
-		pathAsStr,
-		0,
-		0,
-		0,
-		google_breakpad::ExceptionHandler::HANDLER_ALL,
-		MiniDumpNormal,
-		L"",
-		0);
-#endif
+	commonDataDir.mkdir("GlyphX");
 
 	SynGlyphX::GlyphBuilderApplication::SetupIconsAndLogos();
 
@@ -115,20 +50,13 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<SynGlyphX::IntMinDiff>("IntMinDiff");
 	qRegisterMetaType<SynGlyphX::DoubleMinDiff>("DoubleMinDiff");
 	qRegisterMetaType<SynGlyphX::InputField>("InputField");
-	/*
-#ifdef USE_LICENSING
-	if (!SynGlyphX::LicensingDialog::CheckLicense()) {
 
-		return 0;
-	}
-#endif
-	*/
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
-	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
+	splash.showMessage("Loading GlyphX", Qt::AlignHCenter | Qt::AlignBottom);
 
 	a.processEvents();
 
@@ -175,13 +103,11 @@ int main(int argc, char *argv[])
 
 			if (!w.LoadNewVisualization(QDir::toNativeSeparators(visualizationToLoad.canonicalPath()))) {
 
-				w.closeJVM();
 				return 2;
 			}
 		}
 
 		return a.exec();
-		w.closeJVM();
 	}
 	catch (const std::exception& e) {
 

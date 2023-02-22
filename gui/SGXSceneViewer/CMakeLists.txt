@@ -27,10 +27,11 @@ endif()
 ADD_LIBRARY(SGXSceneViewer SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXSceneViewer
 	${Boost_LIBRARIES}
-	Qt5::Core
-	Qt5::Gui
-	Qt5::OpenGL
-	Qt5::Widgets
+	Qt6::Core
+	Qt6::Gui
+	Qt6::OpenGL
+	Qt6::OpenGLWidgets
+	Qt6::Widgets
 	SGXUtility 
 	SGXFoundation
 	SGXGraphics

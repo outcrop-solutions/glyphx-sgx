@@ -49,7 +49,7 @@ namespace SynGlyphX {
 		unsigned int columnCount = m_headerView->model()->columnCount();
 		if (columnCount != widgets.count()) {
 
-			throw std::invalid_argument("VScrollGridWidget rows must match the number of headers");
+			std::_Xinvalid_argument("VScrollGridWidget rows must match the number of headers");
 		}
 
 		for (unsigned int i = 0; i < columnCount; ++i) {

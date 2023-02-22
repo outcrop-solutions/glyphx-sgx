@@ -1,7 +1,7 @@
 #include "treeview.h"
 #include "sharedactionlist.h"
 #include <QtGui/QMouseEvent>
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 
 namespace SynGlyphX {
 

@@ -19,7 +19,7 @@
 #define SHAREDACTIONLIST_H
 
 #include "sgxgui_global.h"
-#include <QtWidgets/QAction>
+#include <QtGui/QAction>
 
 class QObject;
 

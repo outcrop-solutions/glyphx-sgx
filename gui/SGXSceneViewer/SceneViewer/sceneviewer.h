@@ -19,8 +19,8 @@
 #pragma once
 
 #include "../platform.h"
-#include <QtWidgets/QOpenGLWidget>
-#include <QtWidgets/QToolButton>
+#include <QtOpenGLWidgets/QOpenGLWidget>
+//#include <QtWidgets/QToolButton>
 #include <QtCore/QTimer>
 #include <QtCore/QElapsedTimer>
 #include <QtGui/QFont>
@@ -158,8 +158,8 @@ namespace SynGlyphX
 		void updateFrame();
 
 	private:
-		QToolButton* CreateNavigationButton( const QString& toolTip, bool autoRepeat );
-		QToolButton* CreateMenuBubble(QString style, QString icom, QString tooltip);
+		//QToolButton* CreateNavigationButton( const QString& toolTip, bool autoRepeat );
+		//QToolButton* CreateMenuBubble(QString style, QString icom, QString tooltip);
 		void checkErrors();
 		bool initialized;
 
@@ -258,7 +258,7 @@ namespace SynGlyphX
 		LegendsWidget* legendsWidget;
 
 		//Navigation buttons.
-		QToolButton* m_upRotateButton;
+		/*QToolButton* m_upRotateButton;
 		QToolButton* m_leftRotateButton;
 		QToolButton* m_rightRotateButton;
 		QToolButton* m_downRotateButton;
@@ -269,7 +269,7 @@ namespace SynGlyphX
 
 		QToolButton* orthoTopButton;
 		QToolButton* orthoXButton;
-		QToolButton* orthoYButton;
+		QToolButton* orthoYButton;*/
 
 		// temporary until we move away from qt selection model
 		SynGlyphX::GlyphForestInfoModel* glyph_forest_model;

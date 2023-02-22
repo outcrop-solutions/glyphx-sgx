@@ -788,7 +788,7 @@ SourceDataCache::DistinctValueIndexMap SourceDataCache::GetIndexesOrderedByDisti
 		throw std::runtime_error((QObject::tr("Failed to get ordered indexes: ") + m_db.lastError().text()).toStdString().c_str());
 	}
 
-	QString previousDistinctValue(QString::null);
+	QString previousDistinctValue = nullptr;
 	while (query.next()) {
 
 		QString currentDistinctValue = query.value(0).toString();

@@ -27,10 +27,10 @@ file(GLOB SRC_ALL
 ADD_LIBRARY(ANTzSingleGlyphGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(ANTzSingleGlyphGUI ${Boost_LIBRARIES} 
 										 ${OPENGL_LIBRARIES} 
-										 Qt5::Core
-										 Qt5::Gui
-										 Qt5::OpenGL
-										 Qt5::Widgets
+										 Qt6::Core
+										 Qt6::Gui
+										 Qt6::OpenGL
+										 Qt6::Widgets
 										 SOIL 
 										 SGXImage 
 										 SGXUtility 

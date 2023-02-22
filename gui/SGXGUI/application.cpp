@@ -3,7 +3,7 @@
 #include <QtCore/QDir>
 #include <QtGui/QIcon>
 #include <QtCore/QStandardPaths>
-#include <QtWidgets/QDesktopWidget>
+//#include <QtWidgets/QDesktopWidget>
 
 namespace SynGlyphX {
 

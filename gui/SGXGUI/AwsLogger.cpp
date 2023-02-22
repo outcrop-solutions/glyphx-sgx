@@ -26,7 +26,8 @@ void AwsLogger::logger(QString userId, QString logText) {
 		request.setHeader(request.ContentTypeHeader, "application/json");
 
 		QByteArray postData;
-		postData.append("{\r\n  \"userId\": \"" + userId + "\",\r\n  \"log\": \"" + logText.remove("\"") + "\"\r\n}");
+		QString params = "{\r\n  \"userId\": \"" + userId + "\",\r\n  \"log\": \"" + logText.remove("\"") + "\"\r\n}";
+		postData.append(params.toStdString());
 
 		QNetworkReply* reply = mgr->post(request, postData);
 		QEventLoop loop;
@@ -54,7 +55,8 @@ void AwsLogger::imageWriter(QString userId, QString name, QByteArray image) {
 		request.setHeader(request.ContentTypeHeader, "application/json");
 
 		QByteArray postData;
-		postData.append("{\r\n  \"userId\": \"" + userId + "\",\r\n  \"name\": \"" + name.remove("\"") + "\",\r\n  \"image\": \"" + image.toBase64().data() + "\"\r\n}");
+		QString params = "{\r\n  \"userId\": \"" + userId + "\",\r\n  \"name\": \"" + name.remove("\"") + "\",\r\n  \"image\": \"" + image.toBase64().data() + "\"\r\n}";
+		postData.append(params.toStdString());
 
 		QNetworkReply* reply = mgr->post(request, postData);
 		QEventLoop loop;
@@ -80,7 +82,7 @@ void AwsLogger::localLogger(QString logText) {
 		QFile file(dir.absolutePath()+"/logs/log.txt");
 		if (file.open(QIODevice::WriteOnly | QIODevice::Append)) {
 			QTextStream stream(&file);
-			stream << "[" + QDateTime::currentDateTime().toString() + "] " + logText << endl;
+			stream << "[" + QDateTime::currentDateTime().toString() + "] " + logText << "\n";
 		}
 
 	}
@@ -94,6 +96,6 @@ void AwsLogger::onFinish(QNetworkReply *rep)
 	QFile file("debug_url.txt");
 	if (file.open(QIODevice::ReadWrite)) {
 		QTextStream stream(&file);
-		stream << rep->readAll() << endl;
+		stream << rep->readAll() << "\n";
 	}
 }

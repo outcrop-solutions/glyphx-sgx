@@ -60,7 +60,7 @@ namespace SynGlyphX {
 
 		if (!IsLibraryLoaded()) {
 
-			throw std::runtime_error("Can not get address when no library is loaded.");
+			std::_Xruntime_error("Can not get address when no library is loaded.");
 		}
 
 #ifdef WIN32

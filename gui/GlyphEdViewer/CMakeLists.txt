@@ -51,11 +51,11 @@ ENDIF()
 
 ADD_EXECUTABLE(GlyphEdViewer ${GUI_TYPE} ${SRC_ALL} ${RESOURCES_SRC})
 TARGET_LINK_LIBRARIES(GlyphEdViewer ${Boost_LIBRARIES} 
-									Qt5::Core 
-									Qt5::Gui 
-									Qt5::OpenGL 
-									Qt5::Widgets 
-									Qt5::WebSockets
+									Qt6::Core 
+									Qt6::Gui 
+									Qt6::OpenGL 
+									Qt6::Widgets 
+									Qt6::WebSockets
 									SGXUtility 
 									SGXFoundation 
 									SGXDataMapping 

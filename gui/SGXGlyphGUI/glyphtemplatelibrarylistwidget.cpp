@@ -1,6 +1,6 @@
 #include "glyphtemplatelibrarylistwidget.h"
 #include "glyphbuilderapplication.h"
-#include <QtWidgets/QFileSystemModel>
+#include <QtGui/QFileSystemModel>
 
 namespace SynGlyphX {
 

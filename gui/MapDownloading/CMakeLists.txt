@@ -14,10 +14,10 @@ file(GLOB SRC_ALL
 
 ADD_LIBRARY(MapDownloading SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(MapDownloading ${Boost_LIBRARIES} 
-							  Qt5::Core
-							  Qt5::Gui
-							  Qt5::Network
-							  Qt5::Widgets 
+							  Qt6::Core
+							  Qt6::Gui
+							  Qt6::Network
+							  Qt6::Widgets 
 							  SGXImage 
 							  SGXUtility 
 							  SGXGUI 

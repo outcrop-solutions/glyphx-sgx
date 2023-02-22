@@ -22,11 +22,11 @@ file(GLOB SRC_ALL
 
 ADD_LIBRARY(SGXDataTransformGUI SHARED ${SRC_ALL})
 TARGET_LINK_LIBRARIES(SGXDataTransformGUI ${Boost_LIBRARIES} 
-							  Qt5::Core
-							  Qt5::Gui
-							  Qt5::Network
-							  Qt5::Widgets 
-							  Qt5::Sql
+							  Qt6::Core
+							  Qt6::Gui
+							  Qt6::Network
+							  Qt6::Widgets 
+							  Qt6::Sql
 							  ANTzBridge
 							  SGXImage 
 							  SGXUtility 

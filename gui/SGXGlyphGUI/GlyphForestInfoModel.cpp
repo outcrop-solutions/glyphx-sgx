@@ -196,7 +196,7 @@ namespace SynGlyphX {
 	Qt::ItemFlags GlyphForestInfoModel::flags( const QModelIndex& index ) const {
 
 		if ( !index.isValid() ) {
-			return 0;
+			return Qt::ItemFlags(0);
 		}
 
 		Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -233,7 +233,7 @@ namespace SynGlyphX {
 				return i;
 			}
 		}
-		throw( std::invalid_argument( "GlyphForestInfoModel::FindHeaderIndex: couldn't find header in list" ) );
+		std::_Xinvalid_argument( "GlyphForestInfoModel::FindHeaderIndex: couldn't find header in list" );
 	}
 
 	QModelIndex GlyphForestInfoModel::IndexFromCSVID( int id ) const {

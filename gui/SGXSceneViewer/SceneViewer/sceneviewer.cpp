@@ -80,7 +80,7 @@ namespace SynGlyphX
 
 		if (mode == ViewerMode::Full)
 		{
-			m_upRotateButton = CreateNavigationButton(tr("Rotate Up"), true);
+			/*m_upRotateButton = CreateNavigationButton(tr("Rotate Up"), true);
 			m_upRotateButton->setIcon(QIcon(":GlyphViewer/Resources/rotate_up.png"));
 			QObject::connect(m_upRotateButton, &QToolButton::pressed, this, [this]() { cur_cam_control->turn(glm::vec2(0.f, -buttonRotateRate)); });
 
@@ -100,7 +100,7 @@ namespace SynGlyphX
 			m_leftRotateButton->hide();
 			m_rightRotateButton->hide();
 			m_downRotateButton->hide();
-
+			*/
 			auto move = [&](const glm::vec3& dir, float amt)
 			{
 				if (cur_cam_control == free_cam_control)
@@ -108,7 +108,7 @@ namespace SynGlyphX
 				else if (cur_cam_control == orbit_cam_control)
 					cur_cam_control->move(glm::vec3(0.f, 0.f, amt));
 			};
-
+			/*
 			m_moveForwardButton = CreateNavigationButton(tr("Move Forward"), true);
 			m_moveForwardButton->setIcon(QIcon(":SGXGUI/Resources/plus.png"));
 			QObject::connect(m_moveForwardButton, &QToolButton::pressed, this, [this, move]() { move(camera->get_forward(), camera_mode() == camera_mode_t::free ? buttonMoveForwardBackRate : -buttonMoveForwardBackRate); });
@@ -129,8 +129,8 @@ namespace SynGlyphX
 			m_moveBackwardButton->hide();
 			m_moveUpButton->hide();
 			m_moveDownButton->hide();
-
-			QString style = QString("QToolButton {"
+			*/
+			/*QString style = QString("QToolButton {"
 				"    border: " + QString::number(1 * mult) + "px;"
 				"    width: " + QString::number(36 * mult) + "px; min-width: " + QString::number(36 * mult) + "px; max-width: " + QString::number(36 * mult) + "px;"
 				"    height: " + QString::number(36 * mult) + "px; min-height: " + QString::number(36 * mult) + "px; max-height: " + QString::number(36 * mult) + "px;"
@@ -168,11 +168,11 @@ namespace SynGlyphX
 				"QToolButton:disabled {"
 				"    background-color: red; "
 				"    color: grey; "
-				"}");
-
+				"}");*/
+			/*
 			QToolButton* homeButton = new QToolButton(this);
 			homeButton->setAttribute(Qt::WA_TranslucentBackground);
-			homeButton->setStyleSheet(style);
+			//homeButton->setStyleSheet(style);
 			QIcon homeIcon;
 			homeIcon.addFile(":SGXGUI/Resources/Icons/home_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -180,7 +180,7 @@ namespace SynGlyphX
 			homeButton->setIconSize(QSize(24 * mult, 24 * mult));
 			homeButton->setToolTip("Home");
 			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { emit closeVisualization(); });
-			homeButton->move(QPoint(5, 20 * mult));
+			homeButton->move(QPoint(5, 20 * mult));*/
 			/*
 			QToolButton* legendButton = new QToolButton(this);
 			legendButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -206,9 +206,10 @@ namespace SynGlyphX
 			QObject::connect(intLegendButton, &QToolButton::pressed, this, [this]() { emit interactiveLegendToggled(); });
 			intLegendButton->move(QPoint(0, 100 * mult));
 			*/
+			/*
 			QToolButton* axesButton = new QToolButton(this);
 			axesButton->setAttribute(Qt::WA_TranslucentBackground);
-			axesButton->setStyleSheet(style);
+			//axesButton->setStyleSheet(style);
 			QIcon axesIcon;
 			axesIcon.addFile(":SGXGUI/Resources/Icons/axes_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//axesIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -220,7 +221,7 @@ namespace SynGlyphX
 
 			QToolButton* hudButton = new QToolButton(this);
 			hudButton->setAttribute(Qt::WA_TranslucentBackground);
-			hudButton->setStyleSheet(style);
+			//hudButton->setStyleSheet(style);
 			QIcon hudIcon;
 			hudIcon.addFile(":SGXGUI/Resources/Icons/compass_icon.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -240,11 +241,11 @@ namespace SynGlyphX
 			saveButton->setIconSize(QSize(24 * mult, 24 * mult));
 			saveButton->setToolTip("Snapshot");
 			QObject::connect(saveButton, &QToolButton::pressed, this, [this]() { emit saveSnapshot(); });
-			saveButton->move(QPoint(0, 220 * mult));
-			*/
-			QToolButton* camButton = new QToolButton(this);
+			saveButton->move(QPoint(0, 220 * mult));*/
+
+			/*QToolButton * camButton = new QToolButton(this);
 			camButton->setAttribute(Qt::WA_TranslucentBackground);
-			camButton->setStyleSheet(style_red);
+			//camButton->setStyleSheet(style_red);
 			QIcon camIcon;
 			camIcon.addFile(":SGXGUI/Resources/Icons/camera-reset.png", QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -252,7 +253,7 @@ namespace SynGlyphX
 			camButton->setIconSize(QSize(24 * mult, 24 * mult));
 			camButton->setToolTip("Reset Camera Position");
 			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
-			camButton->move(QPoint(5, 140 * mult));
+			camButton->move(QPoint(5, 140 * mult));*/
 /*
 			QToolButton* acamButton = new QToolButton(this);
 			acamButton->setAttribute(Qt::WA_TranslucentBackground);
@@ -267,6 +268,7 @@ namespace SynGlyphX
 			acamButton->move(QPoint(0, 300 * mult));
 */
 			//":GlyphViewer/Resources/rotate_up.png"
+			/*QString style;
 			orthoTopButton = CreateMenuBubble(style, "T", "Ortho Top");
 			QObject::connect(orthoTopButton, &QToolButton::pressed, this, [this]() { orthogonal_view(0); });
 			//orthoTopButton->move(QPoint(0, 300 * mult));
@@ -278,12 +280,12 @@ namespace SynGlyphX
 			orthoYButton = CreateMenuBubble(style, "Y", "Ortho Y");
 			QObject::connect(orthoYButton, &QToolButton::pressed, this, [this]() { orthogonal_view(2); });
 			//orthoYButton->move(QPoint(0, 380 * mult));
-
+			*/
 		}
 		else
 		{
-			m_moveUpButton = m_moveDownButton = m_moveBackwardButton = m_moveForwardButton = nullptr;
-			m_upRotateButton = m_downRotateButton = m_leftRotateButton = m_rightRotateButton = nullptr;
+			//m_moveUpButton = m_moveDownButton = m_moveBackwardButton = m_moveForwardButton = nullptr;
+			//m_upRotateButton = m_downRotateButton = m_leftRotateButton = m_rightRotateButton = nullptr;
 		}
 
 		desired_selection_dist = flyToObjectDistance;
@@ -387,11 +389,11 @@ namespace SynGlyphX
 		}
 	}
 
-	QToolButton* SceneViewer::CreateMenuBubble(QString style, QString icon, QString tooltip) {
+	/*QToolButton* SceneViewer::CreateMenuBubble(QString style, QString icon, QString tooltip) {
 
 		QToolButton* button = new QToolButton(this);
 		button->setAttribute(Qt::WA_TranslucentBackground);
-		button->setStyleSheet(style);
+		//button->setStyleSheet(style);
 		//QIcon ico;
 		//ico.addFile(icon, QSize(60 * mult, 60 * mult), QIcon::Normal, QIcon::Off);
 		//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
@@ -414,7 +416,7 @@ namespace SynGlyphX
 		navButton->setAutoRepeatInterval(10);
 
 		return navButton;
-	}
+	}*/
 
 	void SceneViewer::initializeGL()
 	{
@@ -556,7 +558,7 @@ namespace SynGlyphX
 
 			unsigned int leftPosOfButtonsInHCenter = w - 10 - (2 * nav_button_size);
 			unsigned int topPositionOfButton = logo_h*mult + (2 * 10);
-
+			/*
 			m_upRotateButton->move(QPoint(leftPosOfButtonsInHCenter, topPositionOfButton));
 
 			topPositionOfButton += nav_button_size;
@@ -580,7 +582,7 @@ namespace SynGlyphX
 
 			orthoTopButton->move(QPoint(w / 2, 20 * mult));
 			orthoXButton->move(QPoint((w / 2) - 40, 20 * mult));
-			orthoYButton->move(QPoint((w / 2) + 40, 20 * mult));
+			orthoYButton->move(QPoint((w / 2) + 40, 20 * mult));*/
 
 		}
 	}
@@ -1290,8 +1292,8 @@ namespace SynGlyphX
 					set_cam_control(free_cam_control);
 					if (mode == ViewerMode::Full)
 					{
-						m_moveUpButton->setEnabled(true);
-						m_moveDownButton->setEnabled(true);
+						//m_moveUpButton->setEnabled(true);
+						//m_moveDownButton->setEnabled(true);
 					}
 				}
 				else
@@ -1354,8 +1356,8 @@ namespace SynGlyphX
 
 					if (mode == ViewerMode::Full)
 					{
-						m_moveUpButton->setEnabled(false);
-						m_moveDownButton->setEnabled(false);
+						//m_moveUpButton->setEnabled(false);
+						//m_moveDownButton->setEnabled(false);
 					}
 				}
 
@@ -1378,9 +1380,9 @@ namespace SynGlyphX
 		QFile srfile("filterLog.txt");
 		srfile.open(QIODevice::WriteOnly);
 		QTextStream out(&srfile);
-		out << "{{Filtering Log}}" << endl;
+		//out << "{{Filtering Log}}" << endl;
 
-		out << "Result size: " << results.size() << endl;
+		//out << "Result size: " << results.size() << endl;
 
 		QMap<int, float> stacked_heights;
 		QMap<int, double> stacked_tag;
