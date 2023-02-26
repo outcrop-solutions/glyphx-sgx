@@ -11,7 +11,7 @@ SET meshes=meshes
 SET shaders=shaders
 SET fonts=fonts
 SET textures=textures
-SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
+SET qtdlllist=Qt6Core Qt6Gui Qt6Network Qt6OpenGL Qt6Sql Qt6Widgets Qt6WebEngineCore Qt6WebEngine Qt6WebEngineWidgets Qt6Quick Qt6WebChannel Qt6Qml Qt6WebSockets Qt6OpenGLWidgets Qt6QuickWidgets Qt6PrintSupport Qt6QmlModels Qt6Positioning
 
 if not exist %basedir% (mkdir %basedir%)
 
@@ -26,10 +26,7 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		rem echo %%p 
 		rem echo %%c 
 
-		robocopy /z /e ..\tools\vc120redist_64\ %basedir%\%%p\%%c *.dll
-		
-		robocopy /z /e ..\..\portable\%antztemplate% %basedir%\%%p\%%c\%antztemplate%
-		robocopy /z /e ..\..\portable\%antzmactemplate% %basedir%\%%p\%%c\%antzmactemplate%
+		robocopy /z /e ..\tools\vc140redist\ %basedir%\%%p\%%c *.dll
 		
 		robocopy /z /e ..\..\Misc\InstallerFiles\%defaultbaseimages% %basedir%\%%p\%%c\%defaultbaseimages%
 		
@@ -39,18 +36,6 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e ..\..\Misc\InstallerFiles\%shaders% %basedir%\%%p\%%c\%shaders%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%fonts% %basedir%\%%p\%%c\%fonts%
 		robocopy /z /e ..\..\Misc\InstallerFiles\%textures% %basedir%\%%p\%%c\%textures%
-
-		mkdir %basedir%\%%p\%%c\jre
-		mkdir %basedir%\%%p\%%c\jre\bin
-		mkdir %basedir%\%%p\%%c\jre\lib
-		
-		robocopy /z /e ..\..\DataEngine\jdk\jre\bin %basedir%\%%p\%%c\jre\bin *.dll
-		robocopy /z /e ..\..\DataEngine\jdk\jre\lib %basedir%\%%p\%%c\jre\lib
-		
-		mkdir %basedir%\%%p\%%c\database-drivers
-		robocopy /z /e "..\..\DataEngine\JavaDataEngine\database-drivers" %basedir%\%%p\%%c\database-drivers
-		
-		copy /B /Y "..\..\DataEngine\JavaDataEngine\ConvertHash.dll" %basedir%\%%p\%%c\ConvertHash.dll
 		
 		IF /I %%c==debug (
 		
@@ -58,19 +43,19 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 			
 				copy /B /Y "%QTDIR%\bin\%%dd.dll" "%basedir%\%%p\%%c\%%dd.dll"
 			)
+			copy /B /Y "%QTDIR%\bin\QtWebEngineProcessd.exe" "%basedir%\%%p\%%c\QtWebEngineProcessd.exe"
 		) ELSE (
 			
 			FOR %%d IN (%qtdlllist%) DO (
 			
 				copy /B /Y "%QTDIR%\bin\%%d.dll" "%basedir%\%%p\%%c\%%d.dll"
 			)
+			copy /B /Y "%QTDIR%\bin\QtWebEngineProcess.exe" "%basedir%\%%p\%%c\QtWebEngineProcess.exe"
 		)
 		
 		mkdir %basedir%\%%p\%%c\qt_plugins
 		robocopy /z /e "%QTDIR%\plugins" %basedir%\%%p\%%c\qt_plugins
 		
-		copy /B /Y "%QTDIR%\bin\QtWebEngineProcess.exe" "%basedir%\%%p\%%c\QtWebEngineProcess.exe"
-
 		robocopy /z /e "%QTDIR%\resources" "%basedir%\%%p\%%c"
 
 		robocopy /z /e ..\tools\graphics\%%p\ %basedir%\%%p\%%c

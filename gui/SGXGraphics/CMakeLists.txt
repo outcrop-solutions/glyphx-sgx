@@ -30,9 +30,9 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 endif()
 
-set(SGXGRAPHICS_LIBS SGXGraphics glew freetype)
+set(SGXGRAPHICS_LIBS SGXGraphics glew32 freetype)
 if(${WIN32})
-	LIST(APPEND SGXGRAPHICS_LIBS assimp-vc120-mt)		#diff naming convention for assimp on pc
+	LIST(APPEND SGXGRAPHICS_LIBS assimp-vc142-mt)		#diff naming convention for assimp on pc
 elseif(${APPLE})
 	LIST(APPEND SGXGRAPHICS_LIBS z assimp)		#need zlib on apple
 endif()

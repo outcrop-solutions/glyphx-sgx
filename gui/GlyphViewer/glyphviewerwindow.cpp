@@ -646,18 +646,10 @@ void GlyphViewerWindow::CreateLoadingScreen() {
 	QStackedWidget* centerWidgetsContainer = dynamic_cast<QStackedWidget*>(centralWidget());
 
 	dlg = new QWebEngineView(this);
-	//dlg->load(QUrl("http://qt-project.org/"));
 	auto wep = dlg->page()->profile();
 	wep->setHttpAcceptLanguage("en-US,en;q=0.9");
 	centerWidgetsContainer->addWidget(dlg);
-	//QString address = "http://sgxprototype.s3-website-us-east-1.amazonaws.com";
-	//dlg->load(QUrl(address));
 
-	/*m_homePage = new HomePageWidget(this, m_dataEngineConnection, centerWidgetsContainer);
-	m_homePage->setObjectName("home_page");
-	centerWidgetsContainer->addWidget(m_homePage);
-	QObject::connect(m_homePage, &HomePageWidget::LoadRecentFile, this, &GlyphViewerWindow::LoadRecentFile);
-	QObject::connect(m_homePage, &HomePageWidget::LoadVisualization, this, &GlyphViewerWindow::LoadNewVisualization);*/
 }
 
 void GlyphViewerWindow::CreateSceneViewer() {
