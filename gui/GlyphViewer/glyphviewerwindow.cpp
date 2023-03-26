@@ -386,7 +386,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
 			
-		text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
+		//text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
 		QString userId = obj.value("user_id").toString();

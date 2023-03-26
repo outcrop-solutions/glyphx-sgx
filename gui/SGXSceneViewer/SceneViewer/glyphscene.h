@@ -32,6 +32,7 @@ namespace SynGlyphX
 		const char* createString( const char* text );
 
 		void beginAdding( unsigned int count );
+		void addToGlyphAllocation( unsigned int count );
 		void add( Glyph3DNode* glyph );
 		void remove(int id) { glyphs.erase(id); }
 		void finishAdding();
