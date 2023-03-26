@@ -18,7 +18,7 @@ cd $script_path
 
 build=None
 app=None
-qt=5.14
+qt=5.15.7
 appcount=0
 do_build=0
 do_install=0
@@ -84,9 +84,9 @@ if [ $do_build = 1 ]; then
 	fi
 	echo Running cmake...
 	mkdir xcode 2>/dev/null
-	cd xcode
-	rm CMakeCache.txt 2>/dev/null
-	cmake ../gui -G Xcode >/dev/null
+	cd bin/osx
+	# rm CMakeCache.txt 2>/dev/null
+	# cmake ../../gui -G Xcode >/dev/null
 
 	echo Building...
 	xcodebuild -target $app -configuration $build -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 >/dev/null
@@ -111,7 +111,7 @@ cp ../../bin/OSX64/$build/*.dylib ../../bin/OSX64/$build/$app.app/Contents/Frame
 # from the console if you need to see its output for some reason (or remove the two redirections starting
 # with >).
 echo Deploying Qt...
-/Users/Shared/Qt$qt.0/$qt/clang_64/bin/macdeployqt ../../bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
+/opt/homebrew/opt/qt@5/bin/macdeployqt ../../bin/OSX64/$build/$app.app >/dev/null 2>/dev/null
 
 echo Deploying miscellaneous data files...
 cp -R ../../Misc/InstallerFiles/* ../../bin/OSX64/$build/$app.app/Contents/MacOS

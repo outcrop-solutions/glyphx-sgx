@@ -1,18 +1,18 @@
 
 #include "AwsManager.h"
-#include "aws/core/Aws.h"
-#include "aws/s3/S3Client.h"
-#include "aws/core/auth/AWSCredentialsProvider.h"
-#include "aws/s3/model/ListObjectsRequest.h"
-#include "aws/s3/model/GetObjectRequest.h"
-#include "aws/core/utils/StringUtils.h"
+//#include "aws/core/Aws.h"
+//#include "aws/s3/S3Client.h"
+//#include "aws/core/auth/AWSCredentialsProvider.h"
+//#include "aws/s3/model/ListObjectsRequest.h"
+//#include "aws/s3/model/GetObjectRequest.h"
+//#include "aws/core/utils/StringUtils.h"
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
 namespace GlyphEd
 {
-	const Aws::String accessKey = "AKIAJ34ZO27XXF4KRB4A";
-	const Aws::String secretKey = "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";
+	//const Aws::String accessKey = "AKIAJ34ZO27XXF4KRB4A";
+	//const Aws::String secretKey = "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";
 
 	AwsManager::AwsManager() {
 
@@ -24,7 +24,7 @@ namespace GlyphEd
 
 	void AwsManager::ConfigureClient() {
 
-		Aws::SDKOptions options;
+		/*Aws::SDKOptions options;
 		Aws::InitAPI(options);
 
 		Aws::Auth::AWSCredentials credentials;
@@ -64,7 +64,7 @@ namespace GlyphEd
 			}
 
 		}
-		Aws::ShutdownAPI(options);
+		Aws::ShutdownAPI(options);*/
 	}
 
 }

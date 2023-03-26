@@ -55,13 +55,13 @@ namespace SynGlyphX
 		unsigned int vertex_format::element_offset_in_bytes( const stream_semantic& semantic, const unsigned int index ) const
 		{
 			unsigned int offset = 0;
-			bool bfound = false;
+			//bool bfound = false;
 			for ( unsigned int i = 0; i < static_cast<unsigned int>( streams.size() ); ++i )
 			{
 				const stream_info& stream = streams[i];
 				if ( stream.semantic == semantic && stream.index == index )
 				{
-					bfound = true;
+					//bfound = true;
 					break;
 				}
 				else
@@ -69,7 +69,7 @@ namespace SynGlyphX
 					offset += element_size_in_bytes( stream.data_type ) * stream.count;
 				}
 			}
-			assert( bfound );
+			//assert( bfound );
 			return offset;
 		}
 
