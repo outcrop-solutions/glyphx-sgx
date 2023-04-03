@@ -401,8 +401,9 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		}
 
 		DownloadManager downloadManager;
-	
-		QString sdt = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/model.sdt";
+	     //TODO: Put this back
+		//QString sdt = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/model.sdt";
+		QString sdt = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sdt";
 
 		//***Get SDT file, download it into Content, use it to configure the model***
 		downloadManager.DownloadFile(QUrl(sdt), location + "/" + modelId + "/model.sdt");
@@ -426,9 +427,12 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 			QDir().mkdir(cache_location);
 			QDir().mkdir(cache_location + "/scene");
 		}
+		//TODO: Put this back 
+		//QString sgc = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgc";
+		QString sgc = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgc";
 
-		QString sgc = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgc";
-		QString sgn = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgn";
+		//QString sgn = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgn";
+		QString sgn = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgn";
 			
 		//***Download bytes.sgc and bytes.sgn into cache directory***
 		downloadManager.DownloadFile(QUrl(sgc), cache_location + "scene/bytes.sgc");
@@ -1855,7 +1859,8 @@ void GlyphViewerWindow::GetRowById(long id) {
 		int index = id+6;
 		QString uid = m_viewer->reader().getIndexToUID()[index];
 		//QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
-		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->currentGlyphIds;
+		//QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->currentGlyphIds;
+		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
 		
 		QString contents = HitAthenaAPI(ids);
 		if (contents.size() == 0) {
@@ -1864,7 +1869,7 @@ void GlyphViewerWindow::GetRowById(long id) {
 			drawerDock->hide();
 		}
 		else {
-
+			//TODO: Here we will need to modify this code to parse our updated object
 			QJsonDocument doc = QJsonDocument::fromJson(contents.toUtf8());
 			QJsonArray arr = doc.array();
 			QJsonArray fields = arr.at(0).toObject().value("Data").toArray();

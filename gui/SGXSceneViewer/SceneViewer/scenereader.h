@@ -8,7 +8,10 @@
 #include <render/types.h>
 #include <QtCore/QMap>
 #include <QtCore/QList>
+#include <QString>
+#include <QJsonObject>
 #include "legacyglyphplacement.h"
+
 
 namespace SynGlyphX
 {
@@ -22,7 +25,6 @@ namespace SynGlyphX
 	public:
 
 		struct StackedGlyph {
-
 			QList<int> glyphIds;
 			QList<int> currentGlyphIds;
 			float posZ;
@@ -30,7 +32,13 @@ namespace SynGlyphX
 			GlyphPlacementData gpd;
 			double tagValue;
 			double currentTagValue;
-
+			QString columnX;
+			QString dataX;
+			QString columnY;
+			QString dataY;
+			QString columnZ;
+			QString dataZ;
+			QList<int> rowIds;
 		};
 
 		void read(const char* scenefilename, const char* countfilename, GlyphScene& scene, BaseImageRenderer& base_images, const std::vector<hal::texture*>& base_image_textures, hal::texture* default_base_texture, render::grid_renderer& grids);
@@ -62,6 +70,9 @@ namespace SynGlyphX
 		glm::vec3 read_vec3();
 		render::packed_color read_packed_color();
 		render::packed_color read_packed_solid_color();
+		QString getColumnName(QString column, QJsonObject object);
+		QString getColumnValue(QString column, QJsonObject object);
+		QList<int> getRowIds(QJsonObject object);
 		FILE* file;
 
 		unsigned int root_count;
