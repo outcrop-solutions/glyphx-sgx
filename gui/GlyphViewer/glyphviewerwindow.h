@@ -40,6 +40,7 @@
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "LocalServer.h"
 #include <QtCore/QThread>
+#include <QJsonObject>
 
 class HomePageWidget;
 class FrontEndFilterListWidget; 
@@ -253,6 +254,12 @@ private:
 	qint64 lastModified;
 	QString m_currentSdtName;
 	QString athenaTableName;
+	QString apiLocation;
+	QString userId;
+	QString workspaceId;
+	QString projectId;
+	QJsonObject session;
+
 	bool drawerDockHeightSet;
 	QString userID;
 	bool summation;

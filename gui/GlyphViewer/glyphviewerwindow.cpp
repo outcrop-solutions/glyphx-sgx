@@ -389,29 +389,37 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		//text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-		QString userId = obj.value("user_id").toString();
-		QString modelId = obj.value("model_id").toString();
 
+		projectId = obj.value("projectId").toString();
+		workspaceId = obj.value("workspaceId").toString();
+		//TODO: Put this back
+		//QString sdt = obj.value("sdtUrl").toString();
+		//QString sgc = obj.value("sgcUrl").toString();
+		//QString sgn = obj.value("sgnUrl").toString();
+		QString sdt = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sdt";
+		QString sgc = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgc";
+		QString sgn = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgn";
+		athenaTableName = obj.value("viewName").toString();
+		session = obj.value("session").toObject();
+		userId = session.value("user").toObject().value("userId").toString();
+		
 		AwsLogger::getInstance()->logger(userID, text);
 
-		athenaTableName = modelId;
+	
 
-		if (!QDir(location + "/" + modelId).exists()) {
-			QDir().mkdir(location + "/" + modelId);
+		if (!QDir(location + "/" + projectId).exists()) {
+			QDir().mkdir(location + "/" + projectId);
 		}
 
 		DownloadManager downloadManager;
-	     //TODO: Put this back
-		//QString sdt = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/model.sdt";
-		QString sdt = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sdt";
-
+	     
 		//***Get SDT file, download it into Content, use it to configure the model***
-		downloadManager.DownloadFile(QUrl(sdt), location + "/" + modelId + "/model.sdt");
+		downloadManager.DownloadFile(QUrl(sdt), location + "/" + projectId + "/model.sdt");
 
 		glyphDrawer->show();
 		m_viewer->show();
 
-		m_mappingModel->LoadDataTransformFile(location + "/" + modelId + "/model.sdt");
+		m_mappingModel->LoadDataTransformFile(location + "/" + projectId + "/model.sdt");
 		AwsLogger::getInstance()->localLogger("Data Transform file loaded");
 		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
 
@@ -427,12 +435,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 			QDir().mkdir(cache_location);
 			QDir().mkdir(cache_location + "/scene");
 		}
-		//TODO: Put this back 
-		//QString sgc = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgc";
-		QString sgc = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgc";
-
-		//QString sgn = "https://glyphx-model-output-bucket.s3.amazonaws.com/" + userId + "/" + modelId + "/bytes.sgn";
-		QString sgn = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgn";
 			
 		//***Download bytes.sgc and bytes.sgn into cache directory***
 		downloadManager.DownloadFile(QUrl(sgc), cache_location + "scene/bytes.sgc");
@@ -472,8 +474,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 	SynGlyphX::Application::restoreOverrideCursor();
 
 	l_server->WebChannelCore()->GetDrawerPosition();
-
-	HitAthenaAPI(QList<int>{6}, true);
 }
 
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
@@ -1786,22 +1786,25 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 
 	try {
-		QString url = "https://q8gv8df1a2.execute-api.us-east-2.amazonaws.com/prod/etl/get-row-by-id";
+		//TODO: this needs to be dynamic
+		QString url = apiLocation + "/api/data";
 		QNetworkRequest request(url);
 		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
 		QString arr_str = "[";
 		for (int i = 0; i < ids.size(); i++)
 		{
-			arr_str += QString::number(ids[i] - 6 + 1);
+			arr_str += QString::number(ids[i]);
 			if (i < ids.size() - 1)
 				arr_str += ",";
 		}
 		arr_str += "]";
-
+		
 		QJsonObject obj;
-		obj["tableName"] = athenaTableName; //"01388c0b_5f5f_49ff_8c15_b6e902604b14";
-		obj["rowNum"] = arr_str;
+		obj["tableName"] = athenaTableName; 
+		obj["rowIds"] = arr_str;
+		obj["session"] = session;
+
 		QJsonDocument doc(obj);
 		QByteArray data = doc.toJson();
 
@@ -1858,8 +1861,6 @@ void GlyphViewerWindow::GetRowById(long id) {
 
 		int index = id+6;
 		QString uid = m_viewer->reader().getIndexToUID()[index];
-		//QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid].glyphIds;
-		//QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->currentGlyphIds;
 		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
 		
 		QString contents = HitAthenaAPI(ids);
@@ -1869,13 +1870,18 @@ void GlyphViewerWindow::GetRowById(long id) {
 			drawerDock->hide();
 		}
 		else {
-			//TODO: Here we will need to modify this code to parse our updated object
+			
 			QJsonDocument doc = QJsonDocument::fromJson(contents.toUtf8());
 			QJsonArray arr = doc.array();
-			QJsonArray fields = arr.at(0).toObject().value("Data").toArray();
+			QJsonArray fields;
+			QJsonObject firstObject = arr.at(0).toObject();
+			for (QJsonObject::const_iterator it = firstObject.constBegin(); it != firstObject.constEnd(); ++it) {
+				fields.push_back(it.key());
+			
+			}
 			QList<QJsonArray> rows;
-			for (int i = 1; i < arr.size(); i++) {
-				rows.append(arr.at(i).toObject().value("Data").toArray());
+			for (int i = 0; i < arr.size(); i++) {
+				rows.append(arr.at(i).toArray());
 			}
 
 			QTableWidget *table = new QTableWidget(rows.size(), fields.size(), this);
