@@ -221,8 +221,8 @@ namespace SynGlyphX {
 
 		const boost::property_tree::wptree& dataTransformPropertyTree = filePropertyTree.get_child(L"Transform");
 
-		m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
-
+		//m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
+		m_id = UUIDGenerator::GetNewRandomUUID();
 		boost::optional<const boost::property_tree::wptree&> baseObjectsPropertyTree = dataTransformPropertyTree.get_child_optional(L"BaseObjects");
 		if (baseObjectsPropertyTree.is_initialized()) {
 

@@ -680,8 +680,8 @@ namespace SynGlyphX
 			for (auto uid : stackedGlyphs.keys()) {
 					//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
 					//AwsLogger::getInstance()->localLogger(uid);
-					if (stackedGlyphs[uid]->glyphIds.size() > 1) {
-						for (int val : stackedGlyphs[uid]->glyphIds) {
+					if (stackedGlyphs[uid]->currentGlyphIds.size() > 1) {
+						for (int val : stackedGlyphs[uid]->currentGlyphIds) {
 							filteringIndexMap[val] = next_id;
 							const glm::vec4 color = scene.getGlyph3D(val)->getColor();
 							glm::vec4 c = color;
@@ -691,7 +691,7 @@ namespace SynGlyphX
 						QString tag = "Z: " + QString::number(stackedGlyphs[uid]->tagValue);
 						create_stacked_glyph(uid, stackedGlyphs[uid]->gpd, tag.toStdString(), scene);
 					}
-					stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->glyphIds;
+					stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->currentGlyphIds;
 					stackedGlyphs[uid]->currentTagValue = stackedGlyphs[uid]->tagValue;
 			}
 			AwsLogger::getInstance()->localLogger("Calculated stacks");

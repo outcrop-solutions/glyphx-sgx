@@ -393,16 +393,16 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		projectId = obj.value("projectId").toString();
 		workspaceId = obj.value("workspaceId").toString();
 		//TODO: Put this back
-		//QString sdt = obj.value("sdtUrl").toString();
-		//QString sgc = obj.value("sgcUrl").toString();
-		//QString sgn = obj.value("sgnUrl").toString();
-		QString sdt = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sdt";
+		QString sdt = obj.value("sdtUrl").toString();
+		QString sgc = obj.value("sgcUrl").toString();
+		QString sgn = obj.value("sgnUrl").toString();
+	/*	QString sdt = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sdt";
 		QString sgc = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgc";
 		QString sgn = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgn";
-		athenaTableName = obj.value("viewName").toString();
-		session = obj.value("session").toObject();
+	*/	athenaTableName = obj.value("viewName").toString();
+		session = obj.value("sessionInformation").toObject();
 		userId = session.value("user").toObject().value("userId").toString();
-		
+		apiLocation = obj.value("apiLocation").toString();
 		AwsLogger::getInstance()->logger(userID, text);
 
 	
@@ -1766,11 +1766,11 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 			int index = rootIndex + 6;
 			QString uid = m_viewer->reader().getIndexToUID()[index];
 			QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
-			rootIndex = ids[0] - 6;
+			
 
 			AwsLogger::getInstance()->localLogger("index: " + QString::number(rootIndex));
 
-			GetRowById(rootIndex);
+			GetRowById(ids);
 		}
 
 		const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
@@ -1787,7 +1787,7 @@ QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 
 	try {
 		//TODO: this needs to be dynamic
-		QString url = apiLocation + "/api/data";
+		QString url = apiLocation + "/data";
 		QNetworkRequest request(url);
 		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -1836,7 +1836,7 @@ QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 	return "";
 }
 
-void GlyphViewerWindow::GetRowById(long id) {
+void GlyphViewerWindow::GetRowById(QList<int> ids) {
 
 	WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(drawerDock, true, false);
 	spinner->setColor(QColor(254, 205, 8));
@@ -1859,10 +1859,6 @@ void GlyphViewerWindow::GetRowById(long id) {
 	
 	try {
 
-		int index = id+6;
-		QString uid = m_viewer->reader().getIndexToUID()[index];
-		QList<int> ids = m_viewer->reader().getStackedGlyphMap()[uid]->glyphIds;
-		
 		QString contents = HitAthenaAPI(ids);
 		if (contents.size() == 0) {
 
@@ -1876,12 +1872,26 @@ void GlyphViewerWindow::GetRowById(long id) {
 			QJsonArray fields;
 			QJsonObject firstObject = arr.at(0).toObject();
 			for (QJsonObject::const_iterator it = firstObject.constBegin(); it != firstObject.constEnd(); ++it) {
-				fields.push_back(it.key());
+				auto fKey = it.key();
+				fields.push_back(fKey);
 			
 			}
+
 			QList<QJsonArray> rows;
 			for (int i = 0; i < arr.size(); i++) {
-				rows.append(arr.at(i).toArray());
+
+				auto object1 = arr.at(i);
+				auto object = object1.toObject();
+				auto object2 = object1.toString().toStdString();
+				QJsonArray valueArray;
+				for (int k = 0; k < fields.size(); k++) {
+					auto key = fields[k].toString();
+					auto jsonValue = object.value(key);
+					valueArray.append(jsonValue);
+
+				}
+		
+				rows.append(valueArray);
 			}
 
 			QTableWidget *table = new QTableWidget(rows.size(), fields.size(), this);
@@ -1889,12 +1899,12 @@ void GlyphViewerWindow::GetRowById(long id) {
 			header->setSectionResizeMode(QHeaderView::Stretch);
 
 			const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[0].GetDisplayNames();
-			int x_idx = 0;
-			int y_idx = 1;
-			int z_idx = 2;
+			int x_idx = -1;
+			int y_idx = -1;
+			int z_idx = -1;
 			table->setStyleSheet(QString::fromUtf8("QWidget{background-color: #0f172a;color: #fff;}"));
 			for (int i = 0; i < fields.size(); i++) {
-				QString field = fields.at(i).toObject().value("VarCharValue").toString();
+				QString field = fields.at(i).toString();
 				QTableWidgetItem *header = new QTableWidgetItem(field);
 				table->setHorizontalHeaderItem(i, header);
 				if (field == displayNames[0]) {
@@ -1911,7 +1921,7 @@ void GlyphViewerWindow::GetRowById(long id) {
 			double valZ = 0;
 			for (int r = 0; r < rows.size(); r++) {
 				for (int i = 0; i < fields.size(); i++) {
-					QString value = rows.at(r).at(i).toObject().value("VarCharValue").toString();
+					QString value = rows.at(r).at(i).toVariant().toString();
 					QTableWidgetItem *dataVal = new QTableWidgetItem(value);
 					table->setItem(r, i, dataVal);
 					if (i == z_idx) {
@@ -1924,8 +1934,9 @@ void GlyphViewerWindow::GetRowById(long id) {
 				drawerDock->hide();
 			}
 
-			QString valX = rows.at(0).at(x_idx).toObject().value("VarCharValue").toString();
-			QString valY = rows.at(0).at(y_idx).toObject().value("VarCharValue").toString();
+			auto q = rows.at(0).at(x_idx);
+			QString valX = rows.at(0).at(x_idx).toVariant().toString();
+			QString valY = rows.at(0).at(y_idx).toVariant().toString();
 			std::array<std::string, 3> posSourceData;
 			posSourceData[0] = valX.toStdString();
 			posSourceData[1] = valY.toStdString();
