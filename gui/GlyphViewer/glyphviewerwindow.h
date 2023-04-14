@@ -168,8 +168,7 @@ private:
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
 	void DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue );
-	QString HitAthenaAPI(QList<int> ids, bool async);
-
+	
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
 	QMenu* m_toolbarsSubMenu;
@@ -253,12 +252,10 @@ private:
 	int counter;
 	qint64 lastModified;
 	QString m_currentSdtName;
-	QString athenaTableName;
-	QString apiLocation;
-	QString userId;
 	QString workspaceId;
 	QString projectId;
-	QJsonObject session;
+	QString athenaTableName;
+	
 
 	bool drawerDockHeightSet;
 	QString userID;

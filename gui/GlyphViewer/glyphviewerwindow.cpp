@@ -391,17 +391,12 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 		projectId = obj.value("projectId").toString();
 		workspaceId = obj.value("workspaceId").toString();
-		//TODO: Put this back
+		
 		QString sdt = obj.value("sdtUrl").toString();
 		QString sgc = obj.value("sgcUrl").toString();
 		QString sgn = obj.value("sgnUrl").toString();
-	/*	QString sdt = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sdt";
-		QString sgc = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgc";
-		QString sgn = "https://jps-test-bucket.s3.us-east-2.amazonaws.com/testdata/model.sgn";
-	*/	athenaTableName = obj.value("viewName").toString();
-		session = obj.value("sessionInformation").toObject();
-		userId = session.value("user").toObject().value("userId").toString();
-		apiLocation = obj.value("apiLocation").toString();
+		athenaTableName = obj.value("viewName").toString();
+				
 		AwsLogger::getInstance()->logger(userID, text);
 
 	
@@ -1730,58 +1725,6 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	}
 }
 
-QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
-
-	try {
-		//TODO: this needs to be dynamic
-		QString url = apiLocation + "/data";
-		QNetworkRequest request(url);
-		request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-		QString arr_str = "[";
-		for (int i = 0; i < ids.size(); i++)
-		{
-			arr_str += QString::number(ids[i]);
-			if (i < ids.size() - 1)
-				arr_str += ",";
-		}
-		arr_str += "]";
-		
-		QJsonObject obj;
-		obj["tableName"] = athenaTableName; 
-		obj["rowIds"] = arr_str;
-		obj["session"] = session;
-
-		QJsonDocument doc(obj);
-		QByteArray data = doc.toJson();
-
-		QNetworkAccessManager networkManager;
-		QNetworkReply *reply = networkManager.post(request, data);
-
-		if (!async) {
-			QEventLoop loop;
-			QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-
-			if (reply->isRunning()) {
-				loop.exec();
-			}
-		}
-		reply->deleteLater();
-
-		if (reply->error() != QNetworkReply::NoError) {
-			qDebug() << (reply->errorString().toStdString()).c_str();
-			throw DownloadException(("Network Error: " + reply->errorString() + "\n_" + url + "_").toStdString().c_str());
-		}
-
-		return async ? "" : QString::fromUtf8(reply->readAll());
-
-	}
-	catch (const std::exception& e) {
-
-		QMessageBox::warning(this, tr("Source Data Error"), e.what());
-	}
-	return "";
-}
 
 void GlyphViewerWindow::DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue){
 	
