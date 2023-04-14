@@ -197,7 +197,6 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QObject::connect(core, &Core::CM, this, &GlyphViewerWindow::CloseModel);
 	QObject::connect(core, &Core::Settings, this, &GlyphViewerWindow::LoadSettings);
 
-
 	dlg->load(QUrl(address));
 
 	/*QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
@@ -1769,7 +1768,7 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 			
 
 			AwsLogger::getInstance()->localLogger("index: " + QString::number(rootIndex));
-
+			l_server->WebChannelCore()->SendRowIdsToClient(ids);
 			GetRowById(ids);
 		}
 
@@ -1837,7 +1836,7 @@ QString GlyphViewerWindow::HitAthenaAPI(QList<int> ids, bool async=false) {
 }
 
 void GlyphViewerWindow::GetRowById(QList<int> ids) {
-
+	
 	WaitingSpinnerWidget* spinner = new WaitingSpinnerWidget(drawerDock, true, false);
 	spinner->setColor(QColor(254, 205, 8));
 	spinner->setMinimumWidth(glyphDrawer->width());
