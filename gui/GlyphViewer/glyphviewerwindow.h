@@ -167,7 +167,7 @@ private:
 	void UpdateAxisNamesAndSourceDataPosition();
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
-	void GetRowById(QList<int> ids);
+	void DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue );
 	QString HitAthenaAPI(QList<int> ids, bool async);
 
 	QMenu* m_fileMenu;
