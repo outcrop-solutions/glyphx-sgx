@@ -141,7 +141,7 @@ namespace SynGlyphX {
 		void SetBaseObject(unsigned int index, const BaseImage& baseObject);
 		const std::vector<BaseImage>& GetBaseObjects() const;
 
-		const boost::uuids::uuid& GetID() const;
+		const std::string GetID() const;
 		void ResetID();
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
@@ -217,7 +217,7 @@ namespace SynGlyphX {
 		MultiTableFrontEndFilters m_frontEndFilters;
 		std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
 		std::map<std::wstring, FieldProperties> m_fieldProperties;
-		boost::uuids::uuid m_id;
+		std::wstring m_id;
     };
 
 } //namespace SynGlyphX

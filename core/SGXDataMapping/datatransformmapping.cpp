@@ -12,6 +12,8 @@
 #include "legend.h"
 #include "baseimage.h"
 #include "datamappingglyphgraph.h"
+#include <locale>
+#include <codecvt>
 
 namespace SynGlyphX {
 
@@ -98,7 +100,7 @@ namespace SynGlyphX {
 	DataTransformMapping::DataTransformMapping() :
 		XMLPropertyTreeFile(true),
 		m_inputFieldManager(this),
-        m_id(UUIDGenerator::GetNewRandomUUID())
+        m_id(boost::uuids::to_wstring(UUIDGenerator::GetNewRandomUUID()))
     {
 		//There will always be at least one base object
 		m_baseObjects.push_back(BaseImage(nullptr));
@@ -118,7 +120,7 @@ namespace SynGlyphX {
 		m_frontEndFilters(mapping.m_frontEndFilters),
 		m_elasticListMap(mapping.m_elasticListMap),
 		m_fieldProperties(mapping.m_fieldProperties),
-        m_id(UUIDGenerator::GetNewRandomUUID()) {
+        m_id(boost::uuids::to_wstring(UUIDGenerator::GetNewRandomUUID())) {
 
 	}
 
@@ -221,8 +223,8 @@ namespace SynGlyphX {
 
 		const boost::property_tree::wptree& dataTransformPropertyTree = filePropertyTree.get_child(L"Transform");
 
-		//m_id = dataTransformPropertyTree.get<boost::uuids::uuid>(L"<xmlattr>.id");
-		m_id = UUIDGenerator::GetNewRandomUUID();
+		m_id = dataTransformPropertyTree.get<std::wstring>(L"<xmlattr>.id");
+		
 		boost::optional<const boost::property_tree::wptree&> baseObjectsPropertyTree = dataTransformPropertyTree.get_child_optional(L"BaseObjects");
 		if (baseObjectsPropertyTree.is_initialized()) {
 
@@ -479,7 +481,7 @@ namespace SynGlyphX {
 	void DataTransformMapping::ExportToPropertyTree(boost::property_tree::wptree& filePropertyTree) const {
 
 		boost::property_tree::wptree& dataTransformPropertyTreeRoot = filePropertyTree.add(L"Transform", L"");
-		dataTransformPropertyTreeRoot.put(L"<xmlattr>.id", m_id);
+		dataTransformPropertyTreeRoot.put(L"<xmlattr>.id", &m_id);
 
 		boost::property_tree::wptree& baseObjectsPropertyTree = dataTransformPropertyTreeRoot.add(L"BaseObjects", L"");
 		for (const BaseImage& baseObject : m_baseObjects) {
@@ -668,7 +670,7 @@ namespace SynGlyphX {
 		m_inputFieldManager.Clear();
 		m_frontEndFilters.clear();
 		m_elasticListMap.clear();
-		m_id = UUIDGenerator::GetNewRandomUUID();
+		m_id = boost::uuids::to_wstring(UUIDGenerator::GetNewRandomUUID());
 
 		if (addADefaultBaseObjectAfterClear) {
 
@@ -900,14 +902,18 @@ namespace SynGlyphX {
 			glyphTree.second->ClearInputFieldBindings(inputfield);
 	}
 
-	const boost::uuids::uuid& DataTransformMapping::GetID() const {
+	const std::string DataTransformMapping::GetID() const {
+		// Create a std::wstring_convert object with a UTF-8 codecvt facet
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 
-		return m_id;
+		// Convert the std::wstring to a std::string
+		std::string id_str = converter.to_bytes(m_id);
+		return id_str;
 	}
 
 	void DataTransformMapping::ResetID() {
 
-		m_id = UUIDGenerator::GetNewRandomUUID();
+		m_id.clear();
 	}
 
 	void DataTransformMapping::UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name) {
