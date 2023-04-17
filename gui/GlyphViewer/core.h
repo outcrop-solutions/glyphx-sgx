@@ -24,6 +24,7 @@ public:
 	void SetDrawerWidget(QMainWindow *drawer) { glyphDrawer = drawer; };
 	void SetDockWidget(QDockWidget *dock) { drawerDock = dock; };
 	void SetViewerWidget(SynGlyphX::SceneViewer *m_viewer) { viewer = m_viewer; }
+	
 
 signals:
     /*
@@ -41,6 +42,7 @@ signals:
 	void SN(const QString &text);
 	void CM();
 	void Settings(QMap<QString, QJsonValue> settings);
+	void SendRowIds(const QString &text);
 
 public slots:
 
@@ -60,6 +62,8 @@ public slots:
 	void GetDrawerStatus(const QString &text = "");
 	void CloseModel();
 	void LoadSettings(const QString &text);
+	void SendRowIdsToClient(const QList<int>& rowIds);
+	
 
 private:
 	QWidget *parent;

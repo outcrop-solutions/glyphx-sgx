@@ -200,3 +200,16 @@ void Core::LoadSettings(const QString &text)
 	}
 
 }
+
+void Core::SendRowIdsToClient(const QList<int>& rowIds) {
+	QString arr_str = "[";
+	for (int i = 0; i < rowIds.size(); i++)
+	{
+		arr_str += QString::number(rowIds[i]);
+		if (i < rowIds.size() - 1)
+			arr_str += ",";
+	}
+	arr_str += "]";
+	QString json = "{\"rowIds\":" + arr_str + "}";
+	emit SendRowIds(json);
+}
