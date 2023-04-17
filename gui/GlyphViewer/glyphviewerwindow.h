@@ -40,6 +40,7 @@
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "LocalServer.h"
 #include <QtCore/QThread>
+#include <QJsonObject>
 
 class HomePageWidget;
 class FrontEndFilterListWidget; 
@@ -166,7 +167,7 @@ private:
 	void UpdateAxisNamesAndSourceDataPosition();
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
-	void GetRowById(long id);
+	void GetRowById(QList<int> ids);
 	QString HitAthenaAPI(QList<int> ids, bool async);
 
 	QMenu* m_fileMenu;
@@ -253,6 +254,12 @@ private:
 	qint64 lastModified;
 	QString m_currentSdtName;
 	QString athenaTableName;
+	QString apiLocation;
+	QString userId;
+	QString workspaceId;
+	QString projectId;
+	QJsonObject session;
+
 	bool drawerDockHeightSet;
 	QString userID;
 	bool summation;
