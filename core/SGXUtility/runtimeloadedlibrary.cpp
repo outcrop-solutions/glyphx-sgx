@@ -1,4 +1,5 @@
 #include "runtimeloadedlibrary.h"
+#include <stdexcept>
 
 #ifndef WIN32
 #include <dlfcn.h> 
