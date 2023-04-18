@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		QString model = nullptr;
-		QString address = "https://app.glyphx.co/";
+		QString address = "https://app.glyphx.co/auth/login";
 		QStringList commandLineArguments = SynGlyphX::Application::arguments();
 		for (QString arg : commandLineArguments) {
 			if (arg.contains("url")) {
