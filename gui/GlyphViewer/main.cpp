@@ -126,9 +126,10 @@ int main(int argc, char *argv[])
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	
 	splash.show();
 
-	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
+	splash.showMessage("Loading Glyph Viewer",  Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
 
 	a.processEvents();
 
