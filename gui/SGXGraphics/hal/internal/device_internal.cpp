@@ -95,10 +95,16 @@ namespace SynGlyphX
 				hal::log::error( "Failed to initialize GLEW.", reinterpret_cast<const char*>( glewGetErrorString( glew_result ) ) );
 				return false;
 			}
+			else {
+				hal::log::error("GLEW IS LOADED");
+			}
 			if ( !glewIsSupported( "GL_VERSION_3_3" ) )
 			{
 				hal::log::error( "GLEW reports GL 3.3 is not supported by this context." );
 				return false;
+			}
+			else {
+				hal::log::error("GLEW IS SUPPORTED");
 			}
 			assert( !default_context );
 			while ( glGetError() );	// workaround in case GLEW threw up any GL errors in its init (it raises 'invalid enumerant' occasionally)

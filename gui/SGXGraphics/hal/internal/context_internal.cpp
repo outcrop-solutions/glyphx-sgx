@@ -465,7 +465,7 @@ namespace SynGlyphX
 
 		const glm::vec2 context_internal::get_kerning( hal::font* f, char left, char right )
 		{
-			glm::vec2 result;
+			glm::vec2 result = glm::vec2(0,0);
 			if ( FT_HAS_KERNING( f->face ) )
 			{
 				auto l = FT_Get_Char_Index( f->face, left );

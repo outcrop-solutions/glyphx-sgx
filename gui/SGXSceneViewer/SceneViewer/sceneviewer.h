@@ -20,6 +20,7 @@
 
 #include "../platform.h"
 #include <QtOpenGLWidgets/QOpenGLWidget>
+#include <QOpenGLExtraFunctions>
 //#include <QtWidgets/QToolButton>
 #include <QtCore/QTimer>
 #include <QtCore/QElapsedTimer>
@@ -58,7 +59,7 @@ namespace SynGlyphX
 		SingleGlyph_AllowSelection
 	};
 
-	class SGXSCENEVIEWER_API SceneViewer : public QOpenGLWidget
+	class SGXSCENEVIEWER_API SceneViewer : public QOpenGLWidget, protected QOpenGLExtraFunctions
 	{
 		Q_OBJECT
 

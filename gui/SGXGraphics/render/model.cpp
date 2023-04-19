@@ -69,7 +69,7 @@ namespace SynGlyphX
 					auto wv1 = glm::vec3( world_transform * glm::vec4( v1, 1.f ) );
 					auto wv2 = glm::vec3( world_transform * glm::vec4( v2, 1.f ) );
 					glm::vec3 barypos;
-					if ( glm::intersectRayTriangle( ray_origin, ray_dir, wv0, wv1, wv2, barypos ) )
+					if ( glm::intersectLineTriangle( ray_origin, ray_dir, wv0, wv1, wv2, barypos ) )
 					{
 						auto isect = ray_origin + ray_dir * barypos.z;
 						if ( barypos.z < best_dist )

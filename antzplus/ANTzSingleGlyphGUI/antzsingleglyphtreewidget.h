@@ -27,7 +27,7 @@
 #include "datamappingglyphgraph.h"
 #include "minmaxglyphtreemodel.h"
 #include <QtCore/QItemSelectionModel>
-#include <QtGui/QOpenGLTexture>
+#include <QOpenGLTexture>
 #include "defaultbaseimageproperties.h"
 
 namespace SynGlyphXANTz {

@@ -30,13 +30,13 @@ int main(int argc, char *argv[])
 	fmt.setMinorVersion(3);
 
 	// Now that we have our own font rendering instead of relying on QPainter, we can use a core profile!
-	fmt.setProfile(QSurfaceFormat::OpenGLContextProfile::CoreProfile);
-
+	fmt.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
+	
 	fmt.setDepthBufferSize(24);
 	fmt.setSwapBehavior(QSurfaceFormat::SwapBehavior::DoubleBuffer);
 	fmt.setSamples(4);
 	QSurfaceFormat::setDefaultFormat(fmt);
-
+	
 	SynGlyphX::GlyphBuilderApplication::Setup("GlyphX", SynGlyphX::getFullVersionString().c_str());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());

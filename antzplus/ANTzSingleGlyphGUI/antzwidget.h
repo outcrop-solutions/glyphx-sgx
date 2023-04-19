@@ -19,8 +19,8 @@
 #define ANTZWIDGET_H
 
 #include "antzsingleglyphgui_global.h"
-#include <QtWidgets/QOpenGLWidget>
-#include <QtGui/QOpenGLTexture>
+#include <QtOpenGLWidgets/QOpenGLWidget>
+#include <QOpenGLTexture>
 #include <QtCore/QTimer>
 #include "data/nptypes.h"
 

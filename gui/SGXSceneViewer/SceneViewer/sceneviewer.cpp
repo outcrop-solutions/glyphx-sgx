@@ -536,7 +536,7 @@ namespace SynGlyphX
 	{
 		hal::device::set_external_default_render_target(defaultFramebufferObject());
 
-		glm::mat4 view, proj;
+		//glm::mat4 view, proj;
 		camera->update_viewport_size(w, h);
 		ui_camera->update_viewport_size(w, h);
 
@@ -1334,7 +1334,7 @@ namespace SynGlyphX
 						zoom = drag_info(button::left).drag_delta_y * mouse_zoom_speed;
 
 					// Keyboard camera rotation
-					glm::vec2 orbit;
+					glm::vec2 orbit = glm::vec2(0,0);
 					if (key_states[uint8_t('d')])
 						orbit.x -= 1.f;
 					else if (key_states[uint8_t('a')])

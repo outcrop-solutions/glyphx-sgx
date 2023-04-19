@@ -79,6 +79,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
     m_viewer( nullptr )
 {
 	SGX_PROFILE_SCOPE
+	
 	//m_dataEngineConnection = std::make_shared<DataEngine::DataEngineConnection>();
 	m_mappingModel = new SynGlyphX::DataTransformModel(this);
 	//m_mappingModel->SetDataEngineConnection(m_dataEngineConnection);
@@ -104,16 +105,16 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 
 	CreateMenus();
 	CreateDockWidgets();
-
+	
 	QStackedWidget* centerWidgetsContainer = new QStackedWidget(this);
 	centerWidgetsContainer->setContentsMargins(0, 0, 0, 0);
 	centerWidgetsContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setCentralWidget(centerWidgetsContainer);
 
-	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
+	/*if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd())
 		NetworkDownloader::Instance().SetKeySettingName("MapQuestOpenSettings_GlyphEd");
 
-	/*try {
+	try {
 
 		if (!m_dataEngineConnection->hasJVM()) {
 
@@ -143,7 +144,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 		QMessageBox::critical(nullptr, tr("3D view error"), tr("3D view failed to create: ") + e.what());
 		throw;
 	}
-
+	
 	try {
 
 		m_cacheManager.SetBaseCacheDirectory(GlyphViewerOptions::GetDefaultCacheDirectory().toStdWString());
@@ -153,7 +154,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 		QMessageBox::critical(nullptr, tr("Cache Directory Error"), tr("Cache Directory Error: ") + e.what());
 		throw;
 	}
-
+	
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::closeVisualization, this, &GlyphViewerWindow::CloseVisualization);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::saveSnapshot, this, &GlyphViewerWindow::SaveSnapshot);
@@ -178,7 +179,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	m_interactionToolbar->hide();
 	m_interactionToolbar->setVisible(false);
 	menuBar()->hide();
-
+	
 	int ws_port = 12345;
 	l_server = new LocalServer(this);
 	l_server->startServer("WebChannel Filtering Server", ws_port);
@@ -199,8 +200,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QObject::connect(core, &Core::SN, this, &GlyphViewerWindow::SendSdtName);
 	QObject::connect(core, &Core::CM, this, &GlyphViewerWindow::CloseModel);
 	QObject::connect(core, &Core::Settings, this, &GlyphViewerWindow::LoadSettings);
-
-
+	
 	dlg->load(QUrl(address));
 
 	/*QObject::connect(&m_webSocket, &QWebSocket::connected, this, &GlyphViewerWindow::OnSocketConnect);
