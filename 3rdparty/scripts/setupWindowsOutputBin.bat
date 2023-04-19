@@ -74,5 +74,7 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		robocopy /z /e "%QTDIR%\resources" "%basedir%\%%p\%%c"
 
 		robocopy /z /e ..\tools\graphics\%%p\ %basedir%\%%p\%%c
+
+		robocopy /z /e ..\bin\%%p\%%c\ %basdir%\%%p\%%c
 	)
 )
