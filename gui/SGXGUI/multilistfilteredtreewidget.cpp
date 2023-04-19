@@ -6,7 +6,7 @@
 #include "abstracttreemodel.h"
 #include "checkboxheaderview.h"
 #include <QtCore/QAbstractItemModel>
-
+#include <stdexcept>
 namespace SynGlyphX {
 
 	MultiListFilteredTreeWidget::MultiListFilteredTreeWidget(const QStringList& headers, AbstractTreeModel* model, QWidget *parent)

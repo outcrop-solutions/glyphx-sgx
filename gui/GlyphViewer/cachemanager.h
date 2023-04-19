@@ -30,7 +30,7 @@ public:
 
 	void SetBaseCacheDirectory(const std::wstring& newbaseCacheDirectory);
 	std::wstring GetBaseCacheDirectory() const;
-	std::wstring GetCacheDirectory(const boost::uuids::uuid& id) const;
+	std::wstring GetCacheDirectory(const std::string id) const;
 
 private:
 	boost::filesystem::path m_baseCacheDirectoryPath;
