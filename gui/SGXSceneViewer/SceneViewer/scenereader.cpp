@@ -25,7 +25,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QStringList>
-
+#include <stdexcept>
 namespace SynGlyphX
 {
 	namespace

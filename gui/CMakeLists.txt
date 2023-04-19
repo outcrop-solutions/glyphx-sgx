@@ -39,8 +39,11 @@ IF (${WIN32})
 	#Suppress C4251 'needs to have dll-interface' warnings
 	#Suppress C4503 'decorated name lengths exceeded' because it doesn't tell us anything useful and boost::bimap emits a lot of it
 	#Suppress C4201 'nonstandard extension used : nameless struct/union' because GLM emits a lot of it
-	#Suppress C4996 'This function or variable may be unsafe.'
-	add_definitions( "/wd4251 /wd4503 /wd4201 /wd4996" )
+	#Suppress C4275  non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2' 
+        #Suppress C4834  discarding return value of function with 'nodiscard' attribute
+        #Suppress C4996  Your code uses a function, class member, variable, or typedef that's marked deprecated.
+        #Suppress C5040  
+	add_definitions( "/wd4251 /wd4503 /wd4201 /wd4275 /wd4834 /wd4996 /wd5040" )
 	add_definitions( "/EHsc" )		# Enable unwind semantics (for exception handling)
 	SET(GUI_TYPE WIN32)
 ELSEIF (${APPLE})
