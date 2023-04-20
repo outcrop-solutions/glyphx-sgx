@@ -98,7 +98,7 @@ void Core::ToggleDrawer(const bool flag)
 	}
 	else {
 		glyphDrawer->hide();
-		drawerDock->hide();
+		
 	}
 }
 

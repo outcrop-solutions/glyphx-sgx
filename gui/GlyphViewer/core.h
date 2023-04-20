@@ -22,7 +22,6 @@ public:
 	Core(QWidget *prt, QObject *parent = nullptr);
 
 	void SetDrawerWidget(QMainWindow *drawer) { glyphDrawer = drawer; };
-	void SetDockWidget(QDockWidget *dock) { drawerDock = dock; };
 	void SetViewerWidget(SynGlyphX::SceneViewer *m_viewer) { viewer = m_viewer; }
 	
 
@@ -68,7 +67,6 @@ public slots:
 private:
 	QWidget *parent;
 	QMainWindow *glyphDrawer;
-	QDockWidget *drawerDock;
 	SynGlyphX::SceneViewer *viewer;
 };
 

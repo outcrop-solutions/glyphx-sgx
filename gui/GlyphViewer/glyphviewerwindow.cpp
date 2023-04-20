@@ -183,12 +183,8 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	CreateGlyphDrawer();
 	core->SetDrawerWidget(glyphDrawer);
 	core->SetViewerWidget(m_viewer);
-	drawerDock = new QDockWidget(glyphDrawer);
-	glyphDrawer->addDockWidget(Qt::BottomDockWidgetArea, drawerDock);
-	drawerDock->hide();
-	drawerDockHeightSet = false;
-	core->SetDockWidget(drawerDock);
-
+	
+	
 	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
 	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
 	QObject::connect(core, &Core::CS, this, &GlyphViewerWindow::ChangeModelState);
@@ -377,7 +373,7 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-	drawerDock->hide();
+
 
 	try {
 
@@ -1729,17 +1725,14 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 void GlyphViewerWindow::DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue){
 	
 	
-	if (!drawerDockHeightSet) {
-		drawerDock->setMinimumHeight(this->size().height()*0.1);
-		drawerDockHeightSet = true;
-	}
+
 	
 	std::array<std::string, 3> posSourceData;
 	posSourceData[0] = xValue.toStdString();
 	posSourceData[1] = yValue.toStdString();
 	posSourceData[2] = zValue.toStdString();
 	m_viewer->setOverridePositionXYZ(posSourceData);
-	drawerDock->show();
+
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {
