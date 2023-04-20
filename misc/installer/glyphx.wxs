@@ -5,7 +5,7 @@
     <Product Id="*" UpgradeCode="{f5a32348-7df6-48ef-84ac-89e863efaa03}" Version="$(var.version)" Language="1033" Name="GlyphX" Manufacturer="GlyphX">
         <Package InstallerVersion="300" Compressed="yes" Platform="x64"/>
         <Media Id="1" Cabinet="glyphx.cab" EmbedCab="yes" />
-        <Icon Id="glyphx.ico" SourceFile="synglyphx_x.ico" />
+        <Icon Id="glyphx.ico" SourceFile="glyphx.ico" />
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFiles64Folder">
                 <Directory Id="APPDIR" Name="GlyphX"/>
@@ -73,7 +73,7 @@
         <UIRef Id="WixUI_InstallDir" />
         <Property Id="WIXUI_INSTALLDIR" Value="APPDIR" />
         <WixVariable Id="WixUIBannerBmp" Value="banner.png" />
-        <WixVariable Id="WixUIDialogBmp" Value="background-gv.png" />
+        <WixVariable Id="WixUIDialogBmp" Value="background.png" />
         <WixVariable Id="WixUILicenseRtf" Value="../../misc/InstallerFiles/Docs/EULA/license_agreement.rtf" />
 
     </Product>
