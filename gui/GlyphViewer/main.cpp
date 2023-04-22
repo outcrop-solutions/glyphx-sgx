@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	
 	splash.show();
 
 	splash.showMessage("Loading GlyphX", Qt::AlignHCenter | Qt::AlignBottom);
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		QString model = nullptr;
-		QString address = "https://app.glyphx.co/";
+		QString address = "https://app.glyphx.co/auth/login";
 		QStringList commandLineArguments = SynGlyphX::Application::arguments();
 		for (QString arg : commandLineArguments) {
 			if (arg.contains("url")) {

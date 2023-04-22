@@ -67,6 +67,8 @@
         <file>Resources/Icons/home_icon.png</file>
         <file>Resources/glyphx.png</file>
         <file>Resources/Icons/camera-reset.png</file>
+        <file>Resources/splash.png</file>
+        <file>Resources/glyphx.ico</file>
     </qresource>
     <qresource prefix="/qt/etc">
         <file alias="qt.conf">Resources/qt.conf</file>

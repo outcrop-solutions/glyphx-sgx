@@ -22,13 +22,12 @@ void Core::SendDrawerPosition(const QString &text)
 	try {
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-		QJsonObject projects = obj.value("filterSidebar").toObject();
-		QJsonObject comments = obj.value("commentsSidebar").toObject();
 
-		int x = projects.value("right").toInt();
-		int y = projects.value("y").toInt();
-		int w = comments.value("left").toInt() - x;
-		int h = projects.value("height").toInt();
+		int x = obj.value("x").toInt();
+		int y = obj.value("y").toInt();
+		int w = obj.value("w").toInt();
+		int h = obj.value("h").toInt();
+
 
 		glyphDrawer->setMinimumSize(QSize(w, h));
 		glyphDrawer->move(x, y);
@@ -109,13 +108,11 @@ void Core::ResizeEvent(const QString &text)
 	try {
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-		QJsonObject projects = obj.value("filterSidebar").toObject();
-		QJsonObject comments = obj.value("commentsSidebar").toObject();
 
-		int x = projects.value("right").toInt();
-		int y = projects.value("y").toInt();
-		int w = comments.value("left").toInt() - x;
-		int h = projects.value("height").toInt();
+		int x = obj.value("x").toInt();
+		int y = obj.value("y").toInt();
+		int w = obj.value("w").toInt();
+		int h = obj.value("h").toInt();
 
 		glyphDrawer->setMinimumSize(QSize(w, h));
 		glyphDrawer->resize(QSize(w, h));
@@ -202,4 +199,17 @@ void Core::LoadSettings(const QString &text)
 		QMessageBox::information(parent, tr("Error message"), "Failed to parse settings.");
 	}
 
+}
+
+void Core::SendRowIdsToClient(const QList<int>& rowIds) {
+	QString arr_str = "[";
+	for (int i = 0; i < rowIds.size(); i++)
+	{
+		arr_str += QString::number(rowIds[i]);
+		if (i < rowIds.size() - 1)
+			arr_str += ",";
+	}
+	arr_str += "]";
+	QString json = "{\"rowIds\":" + arr_str + "}";
+	emit SendRowIds(json);
 }

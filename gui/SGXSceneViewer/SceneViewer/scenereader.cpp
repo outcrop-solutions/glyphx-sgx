@@ -19,7 +19,13 @@
 //#include "glm/ext.hpp"
 //#include <hal/debug.h>
 #include "AwsLogger.h"
-
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonArray>
+#include <QString>
+#include <QByteArray>
+#include <QStringList>
+#include <stdexcept>
 namespace SynGlyphX
 {
 	namespace
@@ -231,6 +237,36 @@ namespace SynGlyphX
 		}
 		
 	}
+	QString SceneReader::getColumnName(QString column, QJsonObject object) {
+		QJsonObject fieldObject = object.value(column).toObject();
+
+		QStringList keys = fieldObject.keys();
+		QString colName = keys[0];
+
+		return colName;
+
+	}
+	QString SceneReader::getColumnValue(QString column, QJsonObject object) {
+		QJsonObject fieldObject = object.value(column).toObject();
+
+		QStringList keys = fieldObject.keys();
+		QString colName = keys[0];
+
+		QString value = fieldObject.value(colName).toString();
+
+		return value;
+
+	}
+	QList<int> SceneReader::getRowIds(QJsonObject object) {
+		QJsonArray rowIdArray = object.value("rowId").toArray();
+		QVariantList rowIdList = rowIdArray.toVariantList();
+		QList<int> rowIdIntList;
+		for (QVariant v : rowIdList) {
+			rowIdIntList.append(v.toInt());
+		}
+
+		return rowIdIntList;
+	}
 
 	void SceneReader::read_glyph_element( GlyphScene& scene )
 	{
@@ -269,7 +305,21 @@ namespace SynGlyphX
 		std::string url = read_string();
 		std::string desc = read_string();
 
+		QString descQString = QString::fromStdString(desc);
+		QByteArray descArray = descQString.toUtf8();
+		//There is a \0 in the last element that is messing things up
+		descArray.chop(1);
+		QJsonDocument descDoc = QJsonDocument::fromJson(descArray);
 		//AwsLogger::getInstance()->localLogger(outputString);
+		QJsonObject descRootObject = descDoc.object();
+
+		QString xColName = getColumnName("x", descRootObject);
+		QString xColValue = getColumnValue("x", descRootObject);
+		QString yColName = getColumnName("y", descRootObject);
+		QString yColValue = getColumnValue("y", descRootObject);
+		QString zColName = getColumnName("z", descRootObject);
+		QString zColValue = getColumnValue("z", descRootObject);
+		QList<int> rowIds = getRowIds(descRootObject);
 
 		Glyph3DNode* parent = data.parent_id ? scene.getGlyph3D( data.parent_id ) : nullptr;
 		data.is_root = ( data.parent_id == 0 ) || !parent;
@@ -309,11 +359,20 @@ namespace SynGlyphX
 			}
 		}
 		else {
+			//TODO: Parse my JSON and Add my rowIds here.  Later We will add the string representations of the x,y and z values for display when 
+			//selecting but this will get us started.
 			stackedGlyphs.insert(uid, new StackedGlyph());
 			stackedGlyphs[uid]->glyphIds.append(data.id);
 			stackedGlyphs[uid]->scaleZ = data.scale.z;
 			stackedGlyphs[uid]->posZ += data.pos.z;
 			stackedGlyphs[uid]->gpd = data;
+			stackedGlyphs[uid]->columnX = xColName;
+			stackedGlyphs[uid]->columnY = yColName;
+			stackedGlyphs[uid]->columnZ = zColName;
+			stackedGlyphs[uid]->dataX = xColValue;
+			stackedGlyphs[uid]->dataY = yColValue;
+			stackedGlyphs[uid]->dataZ = zColValue;
+			stackedGlyphs[uid]->glyphIds = rowIds;
 			try {
 				QString str = QString::fromStdString(tag).split(" ")[1];
 				str.chop(1);
@@ -621,8 +680,8 @@ namespace SynGlyphX
 			for (auto uid : stackedGlyphs.keys()) {
 					//out << "Group: " << uid << ", " << stackedGlyphs[uid].posZ << ", " << stackedGlyphs[uid].scaleZ << ", " << stackedGlyphs[uid].tagValue << endl;
 					//AwsLogger::getInstance()->localLogger(uid);
-					if (stackedGlyphs[uid]->glyphIds.size() > 1) {
-						for (int val : stackedGlyphs[uid]->glyphIds) {
+					if (stackedGlyphs[uid]->currentGlyphIds.size() > 1) {
+						for (int val : stackedGlyphs[uid]->currentGlyphIds) {
 							filteringIndexMap[val] = next_id;
 							const glm::vec4 color = scene.getGlyph3D(val)->getColor();
 							glm::vec4 c = color;
@@ -632,7 +691,7 @@ namespace SynGlyphX
 						QString tag = "Z: " + QString::number(stackedGlyphs[uid]->tagValue);
 						create_stacked_glyph(uid, stackedGlyphs[uid]->gpd, tag.toStdString(), scene);
 					}
-					stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->glyphIds;
+					stackedGlyphs[uid]->currentGlyphIds = stackedGlyphs[uid]->currentGlyphIds;
 					stackedGlyphs[uid]->currentTagValue = stackedGlyphs[uid]->tagValue;
 			}
 			AwsLogger::getInstance()->localLogger("Calculated stacks");

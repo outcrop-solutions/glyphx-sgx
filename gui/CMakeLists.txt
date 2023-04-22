@@ -39,8 +39,10 @@ IF (${WIN32})
 	#Suppress C4251 'needs to have dll-interface' warnings
 	#Suppress C4503 'decorated name lengths exceeded' because it doesn't tell us anything useful and boost::bimap emits a lot of it
 	#Suppress C4201 'nonstandard extension used : nameless struct/union' because GLM emits a lot of it
-	#Suppress C4996 'This function or variable may be unsafe.'
-	#Suppress C5040 'dynamic exception specifications are valid only in C++14 and earlier'
+	#Suppress C4275  non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2' 
+    #Suppress C4834  discarding return value of function with 'nodiscard' attribute
+    #Suppress C4996  Your code uses a function, class member, variable, or typedef that's marked deprecated.
+    #Suppress C5040  
 	add_definitions( "/wd4251 /wd4503 /wd4201 /wd4275 /wd4834 /wd4996 /wd5040" )
 	add_definitions( "/EHsc" )		# Enable unwind semantics (for exception handling)
 	SET(GUI_TYPE WIN32)
@@ -108,7 +110,7 @@ IF (${WIN32})
 		set(CMAKE_LIBRARY_PATH "C:\\Program Files (x86)\\Windows Kits\\8.0\\Lib\\win8\\um\\x64")
 	endif()
 ELSEIF(APPLE)
-	set(CMAKE_PREFIX_PATH "/Users/bryanholster/Qt5.15.7")
+	set(CMAKE_PREFIX_PATH /opt/homebrew/Cellar/qt@5/5.15.8)
 ELSE()
 	set(CMAKE_PREFIX_PATH "${THIRDPARTYDIR}/Qt5.6.0/5.6/gcc_64")
 ENDIF()

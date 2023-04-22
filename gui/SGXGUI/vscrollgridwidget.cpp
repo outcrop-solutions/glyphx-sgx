@@ -4,7 +4,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QGridLayout>
-
+#include <stdexcept>
 namespace SynGlyphX {
 
 	VScrollGridWidget::VScrollGridWidget(const QStringList& headerLabels, QWidget *parent)

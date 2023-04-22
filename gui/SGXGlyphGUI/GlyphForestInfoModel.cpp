@@ -2,7 +2,7 @@
 #include <QtGui/QDesktopServices>
 #include <QtCore/QUrl>
 #include <cassert>
-
+#include <stdexcept>
 namespace SynGlyphX {
 
 	GlyphForestInfoModel::GlyphForestInfoModel( QObject *parent )

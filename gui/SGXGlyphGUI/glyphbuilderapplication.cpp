@@ -33,8 +33,8 @@ namespace SynGlyphX {
 		}
 		else {
 
-			SetupIcons(QIcon(":SGXGUI/Resources/synglyphx_x.ico"));
-			s_splashScreenLocation = ":SGXGUI/Resources/synglyphx_splash.png";
+			SetupIcons(QIcon(":SGXGUI/Resources/glyphx.ico"));
+			s_splashScreenLocation = ":SGXGUI/Resources/splash.png";
 			s_logoLocations[LogoType::NoBorder] = ":SGXGUI/Resources/synglyphx_logo_white_border.png";
 			s_logoLocations[LogoType::WhiteBorder] = ":SGXGUI/Resources/synglyphx_logo_white_border.png";
 		}
