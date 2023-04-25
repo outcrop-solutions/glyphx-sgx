@@ -77,7 +77,8 @@ int main(int argc, char *argv[])
 #endif
 	*/
 	//Setup and show the splash screen
-	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
+	auto splashLocation = SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation();
+	QPixmap pixmap(splashLocation);
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
 	splash.show();
 
