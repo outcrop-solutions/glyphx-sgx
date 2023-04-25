@@ -247,7 +247,6 @@ private:
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 
 	QMainWindow* glyphDrawer;
-	QDockWidget* drawerDock;
 	QWebSocket m_webSocket;
 	int counter;
 	qint64 lastModified;
@@ -256,8 +255,6 @@ private:
 	QString projectId;
 	QString athenaTableName;
 	
-
-	bool drawerDockHeightSet;
 	QString userID;
 	bool summation;
 	bool explosion;

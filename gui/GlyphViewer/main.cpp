@@ -72,14 +72,14 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getFullVersionString().c_str());
+	SynGlyphX::GlyphBuilderApplication::Setup("GlyphX", SynGlyphX::getFullVersionString().c_str());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
+		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphX");
 	}
 	QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
-	commonDataDir.mkdir("Glyph Viewer");
+	commonDataDir.mkdir("GlyphX");
 
 	//qInstallMessageHandler(myMessageHandler);
 
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 	
 	splash.show();
 
-	splash.showMessage("Loading Glyph Viewer",  Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
+	splash.showMessage("Loading GlyphX",  Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
 
 	a.processEvents();
 
