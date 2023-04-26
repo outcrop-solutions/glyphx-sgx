@@ -65,12 +65,7 @@ namespace SynGlyphX {
 			}
 			else if (!isDirectory) {
 
-#ifdef __linux__
-				
-				boost::filesystem::copy_file(iT->path(), destinationPath / iT->path().filename(), boost::filesystem::copy_options::overwrite_existing);
-#else
 				boost::filesystem::copy_file(iT->path(), destinationPath / iT->path().filename(), boost::filesystem::copy_option::overwrite_if_exists);
-#endif
 			}
 		}
 	}
@@ -96,12 +91,7 @@ namespace SynGlyphX {
 			}
 		}
 
-#ifdef __linux__
-				
-		boost::filesystem::copy_file(sourcePath, destinationPath, boost::filesystem::copy_options::overwrite_existing);
-#else
 		boost::filesystem::copy_file(sourcePath, destinationPath, boost::filesystem::copy_option::overwrite_if_exists);
-#endif
 	}
 
 	std::wstring Filesystem::IsFileInDirectory(const std::wstring& filename, const std::wstring& directory) {
