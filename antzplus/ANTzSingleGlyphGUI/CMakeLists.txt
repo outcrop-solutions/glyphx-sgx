@@ -3,15 +3,15 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
 							${GLM_INCLUDE_DIR}
-							../../3rdParty/include/SOIL_20080707
-							../../GUI/SGXGlyphGUI
-							../../GUI/SGXGUI
-							../../ANTzPlus/ANTzBridge
-							../../ANTzPlus/ANTzCore
-							../../Core/SGXDataMapping
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../Core/SGXImage)
+							../../3rdparty/include/SOIL_20080707
+							../../gui/SGXGlyphGUI
+							../../gui/SGXGUI
+							../../antzplus/ANTzBridge
+							../../antzplus/ANTzCore
+							../../core/SGXDataMapping
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../core/SGXImage)
 
 #zSpace is only available on windows							
 #IF (${ZSPACE_FOUND})
