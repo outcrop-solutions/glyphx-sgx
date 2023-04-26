@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${OPENGL_INCLUDE_DIR}
-							../../3rdParty/include/SOIL_20080707)
+							../../3rdparty/include/SOIL_20080707)
 
 SET(SRC_COMMON 	npctrl.c
 				npdata.c
