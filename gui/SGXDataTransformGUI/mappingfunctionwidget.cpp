@@ -4,7 +4,7 @@
 #include "valuemappingdialog.h"
 #include "interpolationmappingdialog.h"
 #include <QtWidgets/QApplication>
-#include <QtGUi/QFocusEvent>
+#include <QtGui/QFocusEvent>
 
 const QStringList MappingFunctionWidget::s_numericColorFunctions = MappingFunctionWidget::CreateNumericColorFunctionList();
 const QStringList MappingFunctionWidget::s_enumerationFunctions = MappingFunctionWidget::CreateEnumerationFunctionList();
