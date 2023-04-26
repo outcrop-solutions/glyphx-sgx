@@ -3,11 +3,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${QT_INCLUDE_DIR}
 							${STLPLUS_INCLUDE_DIR}
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../Core/SGXDataMapping
-							../../Core/SGXImage
-							../../GUI/SGXGUI)
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../core/SGXDataMapping
+							../../core/SGXImage
+							../../gui/SGXGUI)
 
 
 file(GLOB SRC_ALL
