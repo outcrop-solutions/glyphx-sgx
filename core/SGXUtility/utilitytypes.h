@@ -22,6 +22,9 @@
 #include <vector>
 #include <unordered_map>
 #include <set>
+#ifdef __linux__
+#include <string>
+#endif
 
 namespace SynGlyphX {
 

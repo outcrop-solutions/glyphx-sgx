@@ -21,7 +21,9 @@
 #include <vector>
 #include "sgxutility.h"
 #include "utilitytypes.h"
-
+#ifdef __linux__
+#include <string>
+#endif
 namespace SynGlyphX {
 
 	class SGXUTILITY_API CSVFileHandler

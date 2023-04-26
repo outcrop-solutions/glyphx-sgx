@@ -1,8 +1,14 @@
 
 #pragma once
-
+#ifdef __linux__
+#include <stdint.h>
+#include <unistd.h>
+#endif
 namespace SynGlyphX
 {
+#ifdef __linux__
+	extern "C++" {
+#endif
 	template<typename T> inline T endian32( T v )
 	{
 		static_assert( sizeof( v ) == 4, "endian32 template requires 32-bit parameter type" );
@@ -23,4 +29,7 @@ namespace SynGlyphX
 		swab( in, out, 2 );
 		return *reinterpret_cast<T*>( out );
 	}
+#ifdef __linux__
+	}
+#endif
 }
