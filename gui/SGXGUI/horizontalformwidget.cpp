@@ -2,7 +2,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QApplication>
-#include <QtGUi/QFocusEvent>
+#include <QtGui/QFocusEvent>
 
 namespace SynGlyphX {
 
