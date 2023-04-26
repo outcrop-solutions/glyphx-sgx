@@ -2,11 +2,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${GLM_INCLUDE_DIR}
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../GUI/SGXGraphics
-							../../GUI/SGXGlyphGUI
-							../../GUI/SGXGUI
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../gui/SGXGraphics
+							../../gui/SGXGlyphGUI
+							../../gui/SGXGUI
 )
 
 
