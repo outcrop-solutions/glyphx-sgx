@@ -1,10 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
-							../../GUI/SGXGUI
-							../../Core/SGXGeospatial
-							../../Core/SGXImage
-							../../Core/SGXUtility)
+							../../gui/SGXGUI
+							../../core/SGXGeospatial
+							../../core/SGXImage
+							../../core/SGXUtility)
 
 
 file(GLOB SRC_ALL
