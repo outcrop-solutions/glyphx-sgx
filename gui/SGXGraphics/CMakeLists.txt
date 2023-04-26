@@ -5,11 +5,11 @@ INCLUDE_DIRECTORIES(BEFORE  ${GLM_INCLUDE_DIR}
 							${ASSIMP_INCLUDE_DIR}
 							${STB_IMAGE_INCLUDE_DIR}
 							${FREETYPE_INCLUDE_DIR}
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../Core/SGXDataMapping
-							../../Core/SGXImage
-							../../GUI/SGXGUI)
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../core/SGXDataMapping
+							../../core/SGXImage
+							../../gui/SGXGUI)
 
 
 file(GLOB SRC_ALL
@@ -30,7 +30,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 endif()
 
-set(SGXGRAPHICS_LIBS SGXGraphics glew freetype)
+set(SGXGRAPHICS_LIBS SGXGraphics GLEW freetype)
 if(${WIN32})
 	LIST(APPEND SGXGRAPHICS_LIBS assimp-vc120-mt)		#diff naming convention for assimp on pc
 elseif(${APPLE})
