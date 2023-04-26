@@ -5,6 +5,9 @@
 #include <string>
 #include "uuid.h"
 
+#ifdef __linux__
+#include <limits>
+#endif
 namespace SynGlyphX
 {
 	// Hash functionality to replace our previous use of boost::hash for stored hashes. That
