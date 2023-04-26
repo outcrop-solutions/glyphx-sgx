@@ -1,8 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
-							../../Core/SGXFoundation
-							../../Core/SGXUtility)
+							../../core/SGXFoundation
+							../../core/SGXUtility)
 
 
 file(GLOB SRC_ALL
