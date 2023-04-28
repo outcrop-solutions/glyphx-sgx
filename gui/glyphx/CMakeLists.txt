@@ -85,8 +85,11 @@ endif()
 if(UNIX)
     add_custom_command(TARGET GlyphX POST_BUILD
         COMMAND echo "This is a post-build command for Linux" 
-	COMMAND pwd
 	COMMAND ln -snf ${THIRDPARTYDIR}/textures ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/textures
+	COMMAND ln -snf ${THIRDPARTYDIR}/meshes ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/meshes
+	COMMAND ln -snf ${THIRDPARTYDIR}/fonts ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fonts
+	COMMAND ln -snf ${THIRDPARTYDIR}/shaders ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders
+	COMMAND ln -snf ${THIRDPARTYDIR}/DefaultBaseImages  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DefaultBaseImages 
 	COMMAND ln -snf  /usr/share/qt/resources ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources
 	COMMAND ln -snf  /usr/share/qt/translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/translations
     )
