@@ -1,0 +1,21 @@
+{
+  "configurations": {
+    "debug": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "name": "Debug",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/linux64/GlyphX",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/bin/linux64",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+      }
+    }
+  }
+}
+
