@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
-
+message("The third party direcrtory is ${THIRDPARTYDIR}")
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
 							${GLM_INCLUDE_DIR}
@@ -27,10 +27,6 @@ IF (${BREAKPAD_FOUND})
 	add_definitions(-DUSE_BREAKPAD)
 ENDIF()
 
-IF (${ZSPACE_FOUND})
-	INCLUDE_DIRECTORIES(AFTER ${ZSPACE_INCLUDE_DIR} ../../GUI/SGXzSpaceGUI)
-	add_definitions(-DUSE_ZSPACE)
-ENDIF()
 
 IF (${LICENSING_FOUND})
 	include_directories(AFTER ${LICENSE_INCLUDE_DIR})
@@ -86,6 +82,14 @@ if(${APPLE})
 	#message("Setting custom Info.plist template for GlyphX...")
 	set_target_properties(GlyphX PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/../../Misc/osx_resources/GV.Info.plist.in)
 endif()
-
+if(UNIX)
+    add_custom_command(TARGET GlyphX POST_BUILD
+        COMMAND echo "This is a post-build command for Linux" 
+	COMMAND pwd
+	COMMAND ln -snf ${THIRDPARTYDIR}/textures ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/textures
+	COMMAND ln -snf  /usr/share/qt/resources ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources
+	COMMAND ln -snf  /usr/share/qt/translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/translations
+    )
+endif()
 Set_Windows_Properties(GlyphX)
 

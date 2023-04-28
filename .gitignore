@@ -392,3 +392,4 @@ jdk/
 3rdparty/include/aws-sdk-cpp/aws/transfer/TransferManager.h
 3rdparty/include/aws-sdk-cpp/aws/transfer/TransferHandle.h
 3rdparty/include/aws-sdk-cpp/aws/transfer/Transfer_EXPORTS.h
+project/
