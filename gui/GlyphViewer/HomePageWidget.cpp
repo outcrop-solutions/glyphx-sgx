@@ -1021,36 +1021,9 @@ void HomePageWidget::OnRecentViewClicked(QListWidgetItem *item) {
 
 void HomePageWidget::CheckForNewRelease() {
 
-	QString os_path =
 #ifdef WIN32
-		"releases/windows";
+	QString os_path = "releases/windows";
 #elif __APPLE__
-		"releases/mac";
+	QString os_path = "releases/mac";
 #endif
-	/*
-	bool isGlyphIt = QFile("DataMapper.exe").exists();
-	QString appName = (QFileInfo(QCoreApplication::applicationFilePath()).fileName().toLower().replace(".exe","") == "glyphed") ? "glyphed" : "glyphit";
-	std::vector<DataEngine::S3File*> files = s3Manager->GetFilesFromDirectory(appName.toStdString(), os_path.toStdString().c_str());
-	std::string releaseName;
-	for (const auto& file : files){ if (file->GetName().find("newrelease") != std::string::npos){ releaseName = file->GetName(); } }
-	if (!releaseName.empty())
-	{
-		std::vector<std::string> x;
-		boost::split(x, releaseName, boost::is_any_of("_"));
-		std::string installName = appName.toStdString();
-		if (appName != "glyphed" && !isGlyphIt) { installName = "glyphviewer"; }
-
-		if (x.at(1) != SynGlyphX::getAppVersionString() && std::string(SynGlyphX::getAppVersionString()).find("t") == std::string::npos) {
-			for (const auto& file : files) {
-				if (file->GetName().find(installName + "_" + x.at(1) + ".") != std::string::npos) {
-					releaseDialog = std::make_shared<SynGlyphX::AnnouncementDialog>("New Release Available", this);
-					releaseDialog->AddLabel("https://s3.amazonaws.com/" + appName + "/" + os_path + "/" + releaseName.c_str());
-					releaseDialog->ReplaceLabelText("***", QString::fromStdString(file->GetUrl()));
-					releaseDialog->ReplaceLabelText("_._.__", x.at(1).c_str());
-					releaseDialog->AddWebView("https://s3.amazonaws.com/" + appName + "/" + os_path + "/changes/changes_" + x.at(1).c_str() + "_.html");
-					releaseDialog->resize(400, 250);
-				}
-			}
-		}
-	}*/
 }

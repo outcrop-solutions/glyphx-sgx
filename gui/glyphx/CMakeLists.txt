@@ -3,21 +3,21 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
 							${GLM_INCLUDE_DIR}
-							../../ANTzPlus/ANTzCore
-							../../ANTzPlus/ANTzBridge
-							../../ANTzPlus/ANTzGUI
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../Core/SGXDataMapping
-							../../Core/SGXDataTransform
-							../../Core/SGXImage
-							../../Core/SGXGeospatial
-							../../GUI/SGXGraphics
-							../../GUI/SGXSceneViewer
-							../../GUI/SGXGUI
-							../../GUI/SGXGlyphGUI
-							../../GUI/SGXDataTransformGUI
-							../../GUI/MapDownloading
+							../../antzplus/ANTzCore
+							../../antzplus/ANTzBridge
+							../../antzplus/ANTzGUI
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../core/SGXDataMapping
+							../../core/SGXDataTransform
+							../../core/SGXImage
+							../../core/SGXGeospatial
+							../../gui/SGXGraphics
+							../../gui/SGXSceneViewer
+							../../gui/SGXGUI
+							../../gui/SGXGlyphGUI
+							../../gui/SGXDataTransformGUI
+							../../gui/MapDownloading
 							${AWS_INCLUDE_DIR})
 							
 
@@ -78,9 +78,6 @@ IF (${ZSPACE_FOUND})
 	TARGET_LINK_LIBRARIES(GlyphX SGXzSpaceGUI)
 ENDIF()	
 
-IF (${LICENSING_FOUND})
-	TARGET_LINK_LIBRARIES(GlyphX rlmez)
-ENDIF()
 
 if(${APPLE})
 #	find_library(APP_SERVICES_LIBRARY ApplicationServices)

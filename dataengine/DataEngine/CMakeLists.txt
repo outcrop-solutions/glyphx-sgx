@@ -2,18 +2,18 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
 
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
-							../../GUI/SGXGUI
-							../../Core/SGXGeospatial
-							../../Core/SGXImage
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../Core/SGXDataMapping
-							../../GUI/MapDownloading
+							../../gui/SGXGUI
+							../../core/SGXGeospatial
+							../../core/SGXImage
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../core/SGXDataMapping
+							../../gui/MapDownloading
 							${AWS_INCLUDE_DIR}
 							${JAVA_INCLUDE_DIRS})
 
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
-#message("JAVA_LINK_DIRS = ${JAVA_LINK_DIRS}")
+message("JAVA_LINK_DIRS = ${JAVA_LINK_DIRS}")
 
 file(GLOB SRC_ALL
 	"*.h"

@@ -33,7 +33,7 @@ endif()
 set(SGXGRAPHICS_LIBS SGXGraphics GLEW freetype)
 if(${WIN32})
 	LIST(APPEND SGXGRAPHICS_LIBS assimp-vc120-mt)		#diff naming convention for assimp on pc
-elseif(${APPLE})
+else()
 	LIST(APPEND SGXGRAPHICS_LIBS z assimp)		#need zlib on apple
 endif()
 

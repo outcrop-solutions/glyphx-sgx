@@ -41,7 +41,7 @@
 #include "LinksDialog.h"
 #include "QueryBuilderDialog.h"
 #include "DMGlobal.h"
-#include <QtWidgets/QUndoview>
+#include <QtWidgets/QUndoView>
 #include <QtCore/QStandardPaths>
 #include "FilterSetupWidget.h"
 #include "ProjectEditDialog.h"

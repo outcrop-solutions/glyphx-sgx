@@ -1,23 +1,23 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.3)
-
+FIND_PACKAGE(JNI REQUIRED)
 INCLUDE_DIRECTORIES(BEFORE  ${Boost_INCLUDE_DIRS}
 							${STLPLUS_INCLUDE_DIR}
-							../../ANTzPlus/ANTzCore
-							../../ANTzPlus/ANTzBridge
-							../../ANTzPlus/ANTzSingleGlyphGUI
-							../../Core/SGXUtility
-							../../Core/SGXFoundation
-							../../Core/SGXDataMapping
-							../../Core/SGXImage
-							../../Core/SGXGeospatial
-							../../GUI/SGXGUI
-							../../GUI/SGXGlyphGUI
-							../../Core/SGXDataTransform
-							../../GUI/SGXDataTransformGUI
-							../../GUI/MapDownloading
-							../../DataEngine/DataEngine
-							${JAVA_INCLUDE_DIRS})
-							
+							../../antzplus/ANTzCore
+							../../antzplus/ANTzBridge
+							../../antzplus/ANTzSingleGlyphGUI
+							../../core/SGXUtility
+							../../core/SGXFoundation
+							../../core/SGXDataMapping
+							../../core/SGXImage
+							../../core/SGXGeospatial
+							../../gui/SGXGUI
+							../../gui/SGXGlyphGUI
+							../../core/SGXDataTransform
+							../../gui/SGXDataTransformGUI
+							../../gui/MapDownloading
+							../../dataengine/DataEngine
+							${JNI_INCLUDE_DIRS})
+						message(STATUS "JAVA_INCLUDE_DIRS: ${JNI_INCLUDE_DIRS}")							
 LINK_DIRECTORIES(${JAVA_LINK_DIRS})
 
 #Enable breakpad if it is available						
