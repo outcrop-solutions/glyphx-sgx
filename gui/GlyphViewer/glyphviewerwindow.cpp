@@ -455,6 +455,23 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		LoadFilesIntoModel();
 		AwsLogger::getInstance()->localLogger("Loaded files into model");
 
+		QJsonObject cameraObj = obj.value("camera").toObject();
+		if (cameraObj != QJsonObject()) {
+			QJsonObject pos = cameraObj.value("pos").toObject();
+			if (pos != QJsonObject()) {
+				double posX = pos.value("x").toDouble();
+				double posY = pos.value("y").toDouble();
+				double posZ = pos.value("z").toDouble();
+				QJsonObject dir = cameraObj.value("dir").toObject();
+				if (dir != QJsonObject()) {
+					double dirX = dir.value("x").toDouble();
+					double dirY = dir.value("y").toDouble();
+					double dirZ = dir.value("z").toDouble();
+					UpdateCameraPosition(posX, posY, posZ, dirX, dirY, dirZ);
+				}
+
+			}
+		}
 	}
 	catch (std::exception& e) {
 		QMessageBox::information(this, tr("Error"), e.what());
@@ -517,22 +534,41 @@ void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 	
 }
 
+void GlyphViewerWindow::UpdateCameraPosition(double x, double y, double z, double dirX, double dirY, double dirZ) {
+	std::vector<double> pos;
+	pos.push_back(x);
+	pos.push_back(y);
+	pos.push_back(z);
+	pos.push_back(dirX);
+	pos.push_back(dirY);
+	pos.push_back(dirZ);
+	m_viewer->setCameraPosition(pos);
+}
+
 void GlyphViewerWindow::ChangeModelState(QString text) {
 
 	try {
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-		QString camera = obj.value("camera").toString();
-		QString query = obj.value("query").toString();
+		QJsonObject cameraObj = obj.value("camera").toObject();
 
-		QStringList nums = camera.remove("[").remove("]").split(",");
-		std::vector<double> pos;
-		for (QString num : nums) {
-			pos.push_back(num.toDouble());
+		if (cameraObj != QJsonObject()) {
+			QJsonObject pos = cameraObj.value("pos").toObject();
+			if (pos != QJsonObject()) {
+				double posX = pos.value("x").toDouble();
+				double posY = pos.value("y").toDouble();
+				double posZ = pos.value("z").toDouble();
+				QJsonObject dir = cameraObj.value("dir").toObject();
+				if (dir != QJsonObject()) {
+					double dirX = dir.value("x").toDouble();
+					double dirY = dir.value("y").toDouble();
+					double dirZ = dir.value("z").toDouble();
+					UpdateCameraPosition(posX, posY, posZ, dirX, dirY, dirZ);
+				}
+
+			}
 		}
-		m_viewer->setCameraPosition(pos);
 
-		UpdateGlyphDrawerFilter(query);
 	}
 	catch (...) {
 		QMessageBox::information(this, tr("Error message"), "Failed to change model state.");

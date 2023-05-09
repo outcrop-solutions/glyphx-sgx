@@ -38,6 +38,7 @@
 #include <QtCore/qitemselectionmodel.h>
 #include "itemfocusselectionmodel.h"
 #include "GlyphForestInfoModel.h"
+#include <QPaintEngine>
 
 namespace SynGlyphX
 {
@@ -610,8 +611,6 @@ namespace SynGlyphX
 	{
 		QPainter painter(this);	// for some reason rendering breaks if I remove this, even though we're not using it anywhere except for calling the constructor.
 									// assuming there's some kind of weird opengl state setting happening in the constructor (or maybe the destructor). 
-									// todo: investigate, fix, remove. might need to look at the Qt source if all else fails.
-
 		hal::device::begin_frame();
 		assert(elapsed_timer.isValid());
 
