@@ -168,7 +168,8 @@ private:
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
 	void DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue );
-	
+	void UpdateCameraPosition(double x, double y, double z, double dirX, double dirY, double dirZ);
+
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
 	QMenu* m_toolbarsSubMenu;
