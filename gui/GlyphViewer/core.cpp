@@ -95,10 +95,12 @@ void Core::ToggleDrawer(const bool flag)
 	AwsLogger::getInstance()->localLogger("ToggleDrawer called.\n Flag value: " + QString(flag));
 	if (flag) {
 		glyphDrawer->show();
+		SendDrawerStatus("true");
 		GetDrawerPosition();
 	}
 	else {
 		glyphDrawer->hide();
+		SendDrawerStatus("false");
 		
 	}
 }
