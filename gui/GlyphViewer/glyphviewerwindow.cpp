@@ -1732,26 +1732,36 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	try {
 		unsigned int hudInfoIndex = 0;
 		QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
+		QList<int> ids;
 		if (!selectedIndexes.empty()) {
 			
+			for (const QModelIndex& index : selectedIndexes) {
+				unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(index);
+				int index = rootIndex + 6;
+				QString uid = m_viewer->reader().getIndexToUID()[index];
+				auto selectedGlyph = m_viewer->reader().getStackedGlyphMap()[uid];
+				ids += selectedGlyph->glyphIds;
+
+			}
+			//Get the xyz for the last selected glyph
 			unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(selectedIndexes.back());
 			int index = rootIndex + 6;
 			QString uid = m_viewer->reader().getIndexToUID()[index];
 			auto selectedGlyph = m_viewer->reader().getStackedGlyphMap()[uid];
-			QList<int> ids = selectedGlyph->glyphIds;
 			
-
-			AwsLogger::getInstance()->localLogger("index: " + QString::number(rootIndex));
-			l_server->WebChannelCore()->SendRowIdsToClient(ids);
+	
+	       		
 			DisplayXyzLabels(selectedGlyph->columnX, selectedGlyph->dataX, selectedGlyph->columnY, selectedGlyph->dataY, selectedGlyph->columnZ, selectedGlyph->dataZ);
 			
 		}
-
+		
 		const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
 		m_viewer->setAxisNames(displayNames.contains(0) ? displayNames[0].toStdString().c_str() : "",
 			displayNames.contains(1) ? displayNames[1].toStdString().c_str() : "",
 			displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
+		l_server->WebChannelCore()->SendRowIdsToClient(ids);
 	}
+	
 	catch (const std::exception& e) {
 		QMessageBox::warning(this, tr("Source Data Error"), e.what());
 	}
