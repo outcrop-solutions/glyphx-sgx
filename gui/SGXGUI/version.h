@@ -14,7 +14,7 @@ namespace SynGlyphX
 	// EXACTLY which build everyone is using).
 	// @todo - eventually we should automate incrementing this.
 
-	inline unsigned int getBuildNumber() { return 0002u; }
+	inline unsigned int getBuildNumber() { return 0001u; }
 
 	// Combine the two above strings.
 	inline std::string getFullVersionString()
