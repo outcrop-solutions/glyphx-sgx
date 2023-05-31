@@ -180,7 +180,7 @@ namespace SynGlyphX
 			homeButton->setIcon(homeIcon);
 			homeButton->setIconSize(QSize(24 * mult, 24 * mult));
 			homeButton->setToolTip("Home");
-			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { emit closeVisualization(); });
+			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
 			homeButton->move(QPoint(5, 20 * mult));
 			/*
 			QToolButton* legendButton = new QToolButton(this);
