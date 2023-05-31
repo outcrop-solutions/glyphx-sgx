@@ -32,6 +32,7 @@ void Core::SendDrawerPosition(const QString &text)
 
 		glyphDrawer->setMinimumSize(QSize(w, h));
 		glyphDrawer->move(x, y);
+		glyphDrawer->resize(QSize(w, h));
 
 		//QTimer::singleShot(1000, this, SLOT(TakeScreenShot("", x, y, w, h)));
 
@@ -102,10 +103,12 @@ void Core::ToggleDrawer(const bool flag)
 	AwsLogger::getInstance()->localLogger("ToggleDrawer called.\n Flag value: " + QString(flag));
 	if (flag) {
 		glyphDrawer->show();
+		SendDrawerStatus("true");
 		GetDrawerPosition();
 	}
 	else {
 		glyphDrawer->hide();
+		SendDrawerStatus("false");
 		
 	}
 }
@@ -116,8 +119,7 @@ void Core::ResizeEvent(const QString &text)
 	try {
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-
-		int x = obj.value("x").toInt();
+				int x = obj.value("x").toInt();
 		int y = obj.value("y").toInt();
 		int w = obj.value("w").toInt();
 		int h = obj.value("h").toInt();
