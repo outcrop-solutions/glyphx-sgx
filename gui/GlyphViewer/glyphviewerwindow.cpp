@@ -154,6 +154,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::closeVisualization, this, &GlyphViewerWindow::CloseVisualization);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::saveSnapshot, this, &GlyphViewerWindow::SaveSnapshot);
+	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::takeScreenShot, this, &GlyphViewerWindow::TakeScreenShot);
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 	//m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
@@ -629,6 +630,15 @@ void GlyphViewerWindow::SaveSnapshot() {
 	}
 	//QMessageBox::information(this, tr("Server message"), snapshot);
 	//std::vector<float> position{-289.296, -263.176, 285.157, 0.623141, 0.566878, -0.538836};
+}
+
+void GlyphViewerWindow::TakeScreenShot() {
+	auto x = glyphDrawer->x();
+	auto y = glyphDrawer->y();
+	auto h = glyphDrawer->height();
+	auto w = glyphDrawer->width();
+
+	l_server->WebChannelCore()->TakeScreenShot();
 }
 
 QString GlyphViewerWindow::jsonFromCamera(std::vector<float> pos) {

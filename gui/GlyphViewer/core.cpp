@@ -9,7 +9,8 @@
 #include <QBuffer>
 #include "AwsLogger.h"
 #include <QSettings>
-
+#include <QJsonArray>
+#include <QJsonDocument>
 Core::Core(QWidget *prt, QObject *parent)
 	: QObject(parent), parent(prt)
 {
@@ -42,37 +43,44 @@ void Core::SendDrawerPosition(const QString &text)
 
 }
 
-void Core::TakeScreenShot(const QString &text, int x, int y, int w, int h)
+void Core::TakeScreenShot()
 {
-	AwsLogger::getInstance()->localLogger("TakeScreenShot called.\n" + text);
-	QRect crop_rect = glyphDrawer->frameGeometry();
+		
+	QPixmap pixmap = glyphDrawer->grab();
 
-	if (x != 0 || y != 0 || w != 0 || h != 0)
-		crop_rect = QRect(x, y, w, h);
+	// Save the screenshot as a PNG image
+	//QString fileName = "widget_screenshot.png";
+	//pixmap.save(fileName, "PNG");
 
-	auto window = parent->windowHandle();
-	QScreen* screen = window->screen();
 
-	QImage img = screen->grabWindow(
-		QDesktopWidget().winId(),
-		crop_rect.left(),
-		crop_rect.top()+60,
-		crop_rect.width(),
-		crop_rect.height()).toImage();
+	// Convert QPixmap to QImage
+	QImage image = pixmap.toImage();
 
-	QString name = "capture.png";
-	if (!text.isEmpty())
-		name = text;
-
-	QByteArray ba;
-	QBuffer buffer(&ba);
+	// Convert QImage to QByteArray
+	QByteArray byteArray;
+	QBuffer buffer(&byteArray);
 	buffer.open(QIODevice::WriteOnly);
-	img.save(&buffer, "PNG");
+	image.save(&buffer, "PNG");
+	buffer.close();
 
+	// Base64 encode the QByteArray
+	QString base64Data = QString::fromLatin1(byteArray.toBase64());
+
+	// Create JSON object
+	QJsonObject jsonObject;
+	jsonObject["imageData"] = base64Data;
+
+	// Convert JSON object to QJsonDocument
+	QJsonDocument jsonDoc(jsonObject);
+
+	// Convert QJsonDocument to QString
+	QString jsonString = QString::fromUtf8(jsonDoc.toJson());
+	emit SendScreenShot(jsonString);
+	
 	QSettings qsettings;
 	qsettings.beginGroup("GlyphX_User");
 	QString userID = qsettings.value("userid", "123456").toString();
-	AwsLogger::getInstance()->imageWriter(userID, name, ba);
+	
 
 	/*QImage desk;
 	desk.loadFromData(ba, "PNG");
