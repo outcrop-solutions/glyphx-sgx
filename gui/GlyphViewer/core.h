@@ -50,7 +50,7 @@ public slots:
         This slot is invoked from the HTML client side and the text displayed on the server side.
     */
 	void SendDrawerPosition(const QString &text);
-	void TakeScreenShot();
+	void TakeScreenShot(const QString &text = "");
 	void OpenProject(const QString &text, const bool load_from_cache = true);
 	void ToggleDrawer(const bool flag);
 	void ResizeEvent(const QString &text);

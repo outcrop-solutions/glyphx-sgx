@@ -44,7 +44,7 @@ void Core::SendDrawerPosition(const QString &text)
 
 }
 
-void Core::TakeScreenShot()
+void Core::TakeScreenShot(const QString &text)
 {
 		
 	QPixmap pixmap = glyphDrawer->grab();
