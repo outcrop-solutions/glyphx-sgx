@@ -154,7 +154,6 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::closeVisualization, this, &GlyphViewerWindow::CloseVisualization);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::saveSnapshot, this, &GlyphViewerWindow::SaveSnapshot);
-	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::takeScreenShot, this, &GlyphViewerWindow::TakeScreenShot);
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 	//m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
@@ -184,8 +183,12 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	CreateGlyphDrawer();
 	core->SetDrawerWidget(glyphDrawer);
 	core->SetViewerWidget(m_viewer);
-	
-	
+	drawerDock = new QDockWidget(glyphDrawer);
+	glyphDrawer->addDockWidget(Qt::BottomDockWidgetArea, drawerDock);
+	drawerDock->hide();
+	drawerDockHeightSet = false;
+	core->SetDockWidget(drawerDock);
+
 	QObject::connect(core, &Core::OP, this, &GlyphViewerWindow::LoadProjectIntoGlyphDrawer);
 	QObject::connect(core, &Core::UF, this, &GlyphViewerWindow::UpdateGlyphDrawerFilter);
 	QObject::connect(core, &Core::CS, this, &GlyphViewerWindow::ChangeModelState);
@@ -374,7 +377,7 @@ void GlyphViewerWindow::CreateGlyphDrawer() {
 void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache) {
 
 	SynGlyphX::Application::SetOverrideCursorAndProcessEvents(Qt::WaitCursor);
-
+	drawerDock->hide();
 
 	try {
 
@@ -456,23 +459,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 		LoadFilesIntoModel();
 		AwsLogger::getInstance()->localLogger("Loaded files into model");
 
-		QJsonObject cameraObj = obj.value("camera").toObject();
-		if (cameraObj != QJsonObject()) {
-			QJsonObject pos = cameraObj.value("pos").toObject();
-			if (pos != QJsonObject()) {
-				double posX = pos.value("x").toDouble();
-				double posY = pos.value("y").toDouble();
-				double posZ = pos.value("z").toDouble();
-				QJsonObject dir = cameraObj.value("dir").toObject();
-				if (dir != QJsonObject()) {
-					double dirX = dir.value("x").toDouble();
-					double dirY = dir.value("y").toDouble();
-					double dirZ = dir.value("z").toDouble();
-					UpdateCameraPosition(posX, posY, posZ, dirX, dirY, dirZ);
-				}
-
-			}
-		}
 	}
 	catch (std::exception& e) {
 		QMessageBox::information(this, tr("Error"), e.what());
@@ -535,41 +521,22 @@ void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
 	
 }
 
-void GlyphViewerWindow::UpdateCameraPosition(double x, double y, double z, double dirX, double dirY, double dirZ) {
-	std::vector<double> pos;
-	pos.push_back(x);
-	pos.push_back(y);
-	pos.push_back(z);
-	pos.push_back(dirX);
-	pos.push_back(dirY);
-	pos.push_back(dirZ);
-	m_viewer->setCameraPosition(pos);
-}
-
 void GlyphViewerWindow::ChangeModelState(QString text) {
 
 	try {
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-		QJsonObject cameraObj = obj.value("camera").toObject();
+		QString camera = obj.value("camera").toString();
+		QString query = obj.value("query").toString();
 
-		if (cameraObj != QJsonObject()) {
-			QJsonObject pos = cameraObj.value("pos").toObject();
-			if (pos != QJsonObject()) {
-				double posX = pos.value("x").toDouble();
-				double posY = pos.value("y").toDouble();
-				double posZ = pos.value("z").toDouble();
-				QJsonObject dir = cameraObj.value("dir").toObject();
-				if (dir != QJsonObject()) {
-					double dirX = dir.value("x").toDouble();
-					double dirY = dir.value("y").toDouble();
-					double dirZ = dir.value("z").toDouble();
-					UpdateCameraPosition(posX, posY, posZ, dirX, dirY, dirZ);
-				}
-
-			}
+		QStringList nums = camera.remove("[").remove("]").split(",");
+		std::vector<double> pos;
+		for (QString num : nums) {
+			pos.push_back(num.toDouble());
 		}
+		m_viewer->setCameraPosition(pos);
 
+		UpdateGlyphDrawerFilter(query);
 	}
 	catch (...) {
 		QMessageBox::information(this, tr("Error message"), "Failed to change model state.");
@@ -630,15 +597,6 @@ void GlyphViewerWindow::SaveSnapshot() {
 	}
 	//QMessageBox::information(this, tr("Server message"), snapshot);
 	//std::vector<float> position{-289.296, -263.176, 285.157, 0.623141, 0.566878, -0.538836};
-}
-
-void GlyphViewerWindow::TakeScreenShot() {
-	auto x = glyphDrawer->x();
-	auto y = glyphDrawer->y();
-	auto h = glyphDrawer->height();
-	auto w = glyphDrawer->width();
-
-	l_server->WebChannelCore()->TakeScreenShot();
 }
 
 QString GlyphViewerWindow::jsonFromCamera(std::vector<float> pos) {
@@ -1739,39 +1697,29 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 	
 void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	
-try {
+	try {
 		unsigned int hudInfoIndex = 0;
 		QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
-		QList<int> ids;
 		if (!selectedIndexes.empty()) {
 			
-			for (const QModelIndex& index : selectedIndexes) {
-				unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(index);
-				int index = rootIndex + 6;
-				QString uid = m_viewer->reader().getIndexToUID()[index];
-				auto selectedGlyph = m_viewer->reader().getStackedGlyphMap()[uid];
-				ids += selectedGlyph->glyphIds;
-
-			}
-			//Get the xyz for the last selected glyph
 			unsigned long rootIndex = SynGlyphX::ItemFocusSelectionModel::GetRootRow(selectedIndexes.back());
 			int index = rootIndex + 6;
 			QString uid = m_viewer->reader().getIndexToUID()[index];
 			auto selectedGlyph = m_viewer->reader().getStackedGlyphMap()[uid];
+			QList<int> ids = selectedGlyph->glyphIds;
 			
-	
-	       		
+
+			AwsLogger::getInstance()->localLogger("index: " + QString::number(rootIndex));
+			l_server->WebChannelCore()->SendRowIdsToClient(ids);
 			DisplayXyzLabels(selectedGlyph->columnX, selectedGlyph->dataX, selectedGlyph->columnY, selectedGlyph->dataY, selectedGlyph->columnZ, selectedGlyph->dataZ);
 			
 		}
-		
+
 		const QMap<unsigned int, QString>& displayNames = m_hudGenerationInfo[hudInfoIndex].GetDisplayNames();
 		m_viewer->setAxisNames(displayNames.contains(0) ? displayNames[0].toStdString().c_str() : "",
 			displayNames.contains(1) ? displayNames[1].toStdString().c_str() : "",
 			displayNames.contains(2) ? displayNames[2].toStdString().c_str() : "");
-		l_server->WebChannelCore()->SendRowIdsToClient(ids);
 	}
-	
 	catch (const std::exception& e) {
 		QMessageBox::warning(this, tr("Source Data Error"), e.what());
 	}
@@ -1780,12 +1728,18 @@ try {
 
 void GlyphViewerWindow::DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue){
 	
+	
+	if (!drawerDockHeightSet) {
+		drawerDock->setMinimumHeight(this->size().height()*0.1);
+		drawerDockHeightSet = true;
+	}
+	
 	std::array<std::string, 3> posSourceData;
 	posSourceData[0] = xValue.toStdString();
 	posSourceData[1] = yValue.toStdString();
 	posSourceData[2] = zValue.toStdString();
 	m_viewer->setOverridePositionXYZ(posSourceData);
-
+	drawerDock->show();
 }
 
 void GlyphViewerWindow::ChangeMapDownloadSettings() {

@@ -22,6 +22,7 @@ public:
 	Core(QWidget *prt, QObject *parent = nullptr);
 
 	void SetDrawerWidget(QMainWindow *drawer) { glyphDrawer = drawer; };
+	void SetDockWidget(QDockWidget *dock) { drawerDock = dock; };
 	void SetViewerWidget(SynGlyphX::SceneViewer *m_viewer) { viewer = m_viewer; }
 	
 
@@ -42,7 +43,6 @@ signals:
 	void CM();
 	void Settings(QMap<QString, QJsonValue> settings);
 	void SendRowIds(const QString &text);
-	void SendScreenShot(const QString& text);
 
 public slots:
 
@@ -50,7 +50,7 @@ public slots:
         This slot is invoked from the HTML client side and the text displayed on the server side.
     */
 	void SendDrawerPosition(const QString &text);
-	void TakeScreenShot(const QString &text = "");
+	void TakeScreenShot(const QString &text, int x = 0, int y = 0, int w = 0, int h = 0);
 	void OpenProject(const QString &text, const bool load_from_cache = true);
 	void ToggleDrawer(const bool flag);
 	void ResizeEvent(const QString &text);
@@ -68,6 +68,7 @@ public slots:
 private:
 	QWidget *parent;
 	QMainWindow *glyphDrawer;
+	QDockWidget *drawerDock;
 	SynGlyphX::SceneViewer *viewer;
 };
 

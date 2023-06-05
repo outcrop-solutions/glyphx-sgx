@@ -9,8 +9,7 @@
 #include <QBuffer>
 #include "AwsLogger.h"
 #include <QSettings>
-#include <QJsonArray>
-#include <QJsonDocument>
+
 Core::Core(QWidget *prt, QObject *parent)
 	: QObject(parent), parent(prt)
 {
@@ -32,7 +31,6 @@ void Core::SendDrawerPosition(const QString &text)
 
 		glyphDrawer->setMinimumSize(QSize(w, h));
 		glyphDrawer->move(x, y);
-		glyphDrawer->resize(QSize(w, h));
 
 		//QTimer::singleShot(1000, this, SLOT(TakeScreenShot("", x, y, w, h)));
 
@@ -44,44 +42,37 @@ void Core::SendDrawerPosition(const QString &text)
 
 }
 
-void Core::TakeScreenShot(const QString &text)
+void Core::TakeScreenShot(const QString &text, int x, int y, int w, int h)
 {
-		
-	QPixmap pixmap = glyphDrawer->grab();
+	AwsLogger::getInstance()->localLogger("TakeScreenShot called.\n" + text);
+	QRect crop_rect = glyphDrawer->frameGeometry();
 
-	// Save the screenshot as a PNG image
-	//QString fileName = "widget_screenshot.png";
-	//pixmap.save(fileName, "PNG");
+	if (x != 0 || y != 0 || w != 0 || h != 0)
+		crop_rect = QRect(x, y, w, h);
 
+	auto window = parent->windowHandle();
+	QScreen* screen = window->screen();
 
-	// Convert QPixmap to QImage
-	QImage image = pixmap.toImage();
+	QImage img = screen->grabWindow(
+		QDesktopWidget().winId(),
+		crop_rect.left(),
+		crop_rect.top()+60,
+		crop_rect.width(),
+		crop_rect.height()).toImage();
 
-	// Convert QImage to QByteArray
-	QByteArray byteArray;
-	QBuffer buffer(&byteArray);
+	QString name = "capture.png";
+	if (!text.isEmpty())
+		name = text;
+
+	QByteArray ba;
+	QBuffer buffer(&ba);
 	buffer.open(QIODevice::WriteOnly);
-	image.save(&buffer, "PNG");
-	buffer.close();
+	img.save(&buffer, "PNG");
 
-	// Base64 encode the QByteArray
-	QString base64Data = QString::fromLatin1(byteArray.toBase64());
-
-	// Create JSON object
-	QJsonObject jsonObject;
-	jsonObject["imageData"] = base64Data;
-
-	// Convert JSON object to QJsonDocument
-	QJsonDocument jsonDoc(jsonObject);
-
-	// Convert QJsonDocument to QString
-	QString jsonString = QString::fromUtf8(jsonDoc.toJson());
-	emit SendScreenShot(jsonString);
-	
 	QSettings qsettings;
 	qsettings.beginGroup("GlyphX_User");
 	QString userID = qsettings.value("userid", "123456").toString();
-	
+	AwsLogger::getInstance()->imageWriter(userID, name, ba);
 
 	/*QImage desk;
 	desk.loadFromData(ba, "PNG");
@@ -103,13 +94,11 @@ void Core::ToggleDrawer(const bool flag)
 	AwsLogger::getInstance()->localLogger("ToggleDrawer called.\n Flag value: " + QString(flag));
 	if (flag) {
 		glyphDrawer->show();
-		SendDrawerStatus("true");
 		GetDrawerPosition();
 	}
 	else {
 		glyphDrawer->hide();
-		SendDrawerStatus("false");
-		
+		drawerDock->hide();
 	}
 }
 
@@ -119,7 +108,8 @@ void Core::ResizeEvent(const QString &text)
 	try {
 		QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
 		QJsonObject obj = doc.object();
-				int x = obj.value("x").toInt();
+
+		int x = obj.value("x").toInt();
 		int y = obj.value("y").toInt();
 		int w = obj.value("w").toInt();
 		int h = obj.value("h").toInt();

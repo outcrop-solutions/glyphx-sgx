@@ -38,7 +38,6 @@
 #include <QtCore/qitemselectionmodel.h>
 #include "itemfocusselectionmodel.h"
 #include "GlyphForestInfoModel.h"
-#include <QPaintEngine>
 
 namespace SynGlyphX
 {
@@ -179,8 +178,8 @@ namespace SynGlyphX
 			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			homeButton->setIcon(homeIcon);
 			homeButton->setIconSize(QSize(24 * mult, 24 * mult));
-			homeButton->setToolTip("Reset Camera Position");
-			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
+			homeButton->setToolTip("Home");
+			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { emit closeVisualization(); });
 			homeButton->move(QPoint(5, 20 * mult));
 			/*
 			QToolButton* legendButton = new QToolButton(this);
@@ -251,8 +250,8 @@ namespace SynGlyphX
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			camButton->setIcon(camIcon);
 			camButton->setIconSize(QSize(24 * mult, 24 * mult));
-			camButton->setToolTip("Take a Screenshot");
-			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { emit takeScreenShot(); });
+			camButton->setToolTip("Reset Camera Position");
+			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
 			camButton->move(QPoint(5, 140 * mult));
 /*
 			QToolButton* acamButton = new QToolButton(this);
@@ -611,6 +610,8 @@ namespace SynGlyphX
 	{
 		QPainter painter(this);	// for some reason rendering breaks if I remove this, even though we're not using it anywhere except for calling the constructor.
 									// assuming there's some kind of weird opengl state setting happening in the constructor (or maybe the destructor). 
+									// todo: investigate, fix, remove. might need to look at the Qt source if all else fails.
+
 		hal::device::begin_frame();
 		assert(elapsed_timer.isValid());
 
