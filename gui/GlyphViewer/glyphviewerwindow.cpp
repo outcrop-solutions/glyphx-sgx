@@ -67,7 +67,7 @@
 #include <QTimer>
 #include "AwsLogger.h"
 #include <QHeaderView>
-
+#include <QBuffer>
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
 
@@ -154,6 +154,7 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::closeVisualization, this, &GlyphViewerWindow::CloseVisualization);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::interactiveLegendToggled, this, &GlyphViewerWindow::ToggleInteractiveLegend);
 	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::saveSnapshot, this, &GlyphViewerWindow::SaveSnapshot);
+	QObject::connect(m_viewer, &SynGlyphX::SceneViewer::takeScreenShot, this, &GlyphViewerWindow::TakeScreenShot);
 
 	m_linkedWidgetsManager = new LinkedWidgetsManager(m_viewer, this);
 	//m_filteringWidget->SetupLinkedWidgets(*m_linkedWidgetsManager);
@@ -378,7 +379,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 	try {
 
 		AwsLogger::getInstance()->localLogger(text);
-
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
 			
 		//text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
@@ -411,10 +411,10 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 		m_mappingModel->LoadDataTransformFile(location + "/" + projectId + "/model.sdt");
 		AwsLogger::getInstance()->localLogger("Data Transform file loaded");
-		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+		std::string sdt_modelid = m_mappingModel->GetDataMapping()->GetID();
 
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+		std::string cacheDirectoryPath = dcd + ("/cache_" + sdt_modelid + "/");
 
 		cache_location = QString::fromStdString(cacheDirectoryPath);
 
@@ -629,6 +629,39 @@ void GlyphViewerWindow::SaveSnapshot() {
 	}
 	//QMessageBox::information(this, tr("Server message"), snapshot);
 	//std::vector<float> position{-289.296, -263.176, 285.157, 0.623141, 0.566878, -0.538836};
+}
+
+void GlyphViewerWindow::TakeScreenShot() {
+	QPixmap screenshot = glyphDrawer->grab();
+
+	QFileDialog dialog;
+	dialog.setFileMode(QFileDialog::AnyFile);
+	dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+	// Set the default file extension to ".png"
+	QString defaultFileName = "screenshot.png";
+	dialog.selectFile(defaultFileName);
+
+	// Display the file dialog and wait for the user's selection
+	if (dialog.exec())
+	{
+		// Get the selected file path
+		QString filePath = dialog.selectedFiles().first();
+
+		// Save the screenshot to the selected file
+		QFile file(filePath);
+		if (file.open(QIODevice::WriteOnly))
+		{
+			screenshot.save(&file, "PNG");
+			file.close();
+			qDebug() << "Screenshot saved successfully.";
+		}
+		else
+		{
+			qDebug() << "Failed to save screenshot.";
+		}
+	}
+
 }
 
 QString GlyphViewerWindow::jsonFromCamera(std::vector<float> pos) {
@@ -1616,7 +1649,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		m_mappingModel->LoadDataTransformFile(filename);
 
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
+		std::string cacheDirectoryPath = dcd + ("/cache_" + m_mappingModel->GetDataMapping()->GetID());
 
 		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
@@ -1729,7 +1762,7 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 	
 void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	
-	try {
+try {
 		unsigned int hudInfoIndex = 0;
 		QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
 		QList<int> ids;
@@ -1769,9 +1802,6 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 
 
 void GlyphViewerWindow::DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue){
-	
-	
-
 	
 	std::array<std::string, 3> posSourceData;
 	posSourceData[0] = xValue.toStdString();
@@ -2173,7 +2203,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 
 		// compute the cache path and copy the cache to the output
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ( "/cache_" + boost::uuids::to_string( m_mappingModel->GetDataMapping()->GetID() ) );
+		std::string cacheDirectoryPath = dcd + ( "/cache_" +  m_mappingModel->GetDataMapping()->GetID() );
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
 		//m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );

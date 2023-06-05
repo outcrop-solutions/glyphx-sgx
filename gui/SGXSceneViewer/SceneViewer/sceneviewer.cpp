@@ -179,8 +179,8 @@ namespace SynGlyphX
 			//legendIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			homeButton->setIcon(homeIcon);
 			homeButton->setIconSize(QSize(24 * mult, 24 * mult));
-			homeButton->setToolTip("Home");
-			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { emit closeVisualization(); });
+			homeButton->setToolTip("Reset Camera Position");
+			QObject::connect(homeButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
 			homeButton->move(QPoint(5, 20 * mult));
 			/*
 			QToolButton* legendButton = new QToolButton(this);
@@ -251,8 +251,8 @@ namespace SynGlyphX
 			//camIcon.addFile(":SGXGUI/Resources/Icons/icon-legend-a.png", QSize(), QIcon::Normal, QIcon::On);
 			camButton->setIcon(camIcon);
 			camButton->setIconSize(QSize(24 * mult, 24 * mult));
-			camButton->setToolTip("Reset Camera Position");
-			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { resetCamera(); });
+			camButton->setToolTip("Take a Screenshot");
+			QObject::connect(camButton, &QToolButton::pressed, this, [this]() { emit takeScreenShot(); });
 			camButton->move(QPoint(5, 140 * mult));
 /*
 			QToolButton* acamButton = new QToolButton(this);

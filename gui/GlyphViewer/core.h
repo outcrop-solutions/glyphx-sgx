@@ -42,6 +42,8 @@ signals:
 	void CM();
 	void Settings(QMap<QString, QJsonValue> settings);
 	void SendRowIds(const QString &text);
+	void SendScreenShot(const QString& text);
+	void SendCsvResult(const QString& text);
 
 public slots:
 
@@ -49,7 +51,7 @@ public slots:
         This slot is invoked from the HTML client side and the text displayed on the server side.
     */
 	void SendDrawerPosition(const QString &text);
-	void TakeScreenShot(const QString &text, int x = 0, int y = 0, int w = 0, int h = 0);
+	void TakeScreenShot(const QString &text = "");
 	void OpenProject(const QString &text, const bool load_from_cache = true);
 	void ToggleDrawer(const bool flag);
 	void ResizeEvent(const QString &text);
@@ -62,6 +64,7 @@ public slots:
 	void CloseModel();
 	void LoadSettings(const QString &text);
 	void SendRowIdsToClient(const QList<int>& rowIds);
+	void SendCsv(const QString& data);
 	
 
 private:

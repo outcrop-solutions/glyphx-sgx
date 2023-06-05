@@ -118,6 +118,7 @@ private slots:
 	//void OnSocketSslErrors(const QList<QSslError> &errors);
 	//void OnSocketClosed();
 	void SaveSnapshot();
+	void TakeScreenShot();
 	void LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache);
 	void UpdateGlyphDrawerFilter(QString text);
 	void ChangeModelState(QString text);

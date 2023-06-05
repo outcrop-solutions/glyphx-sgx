@@ -1,5 +1,5 @@
 #include "tablechoicemodel.h"
-
+#include <stdexcept>
 const quintptr TableChoiceModel::s_rootID = std::numeric_limits<quintptr>::max();
 
 TableChoiceModel::TableChoiceModel(bool includeCheckboxes, QObject *parent)
