@@ -412,10 +412,10 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 
 		m_mappingModel->LoadDataTransformFile(location + "/" + projectId + "/model.sdt");
 		AwsLogger::getInstance()->localLogger("Data Transform file loaded");
-		boost::uuids::uuid uuid = m_mappingModel->GetDataMapping()->GetID();
+		std::string sdt_modelid = m_mappingModel->GetDataMapping()->GetID();
 
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(uuid) + "/");
+		std::string cacheDirectoryPath = dcd + ("/cache_" + sdt_modelid + "/");
 
 		cache_location = QString::fromStdString(cacheDirectoryPath);
 
@@ -1626,7 +1626,7 @@ void GlyphViewerWindow::LoadDataTransform(const QString& filename, const MultiTa
 		m_mappingModel->LoadDataTransformFile(filename);
 
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ("/cache_" + boost::uuids::to_string(m_mappingModel->GetDataMapping()->GetID()));
+		std::string cacheDirectoryPath = dcd + ("/cache_" + m_mappingModel->GetDataMapping()->GetID());
 
 		std::string dirPath = cacheDirectoryPath + "/";
 		std::string baseImageDir = SynGlyphX::GlyphBuilderApplication::GetDefaultBaseImagesLocation().toStdString();
@@ -1739,7 +1739,7 @@ void GlyphViewerWindow::LoadFilesIntoModel() {
 	
 void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 	
-	try {
+try {
 		unsigned int hudInfoIndex = 0;
 		QModelIndexList selectedIndexes = m_glyphForestSelectionModel->selectedIndexes();
 		QList<int> ids;
@@ -1779,9 +1779,6 @@ void GlyphViewerWindow::UpdateAxisNamesAndSourceDataPosition() {
 
 
 void GlyphViewerWindow::DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue){
-	
-	
-
 	
 	std::array<std::string, 3> posSourceData;
 	posSourceData[0] = xValue.toStdString();
@@ -2183,7 +2180,7 @@ void GlyphViewerWindow::CreatePortableVisualization(SynGlyphX::PortableVisualiza
 
 		// compute the cache path and copy the cache to the output
 		std::string dcd = GlyphViewerOptions::GetDefaultCacheDirectory().toStdString();
-		std::string cacheDirectoryPath = dcd + ( "/cache_" + boost::uuids::to_string( m_mappingModel->GetDataMapping()->GetID() ) );
+		std::string cacheDirectoryPath = dcd + ( "/cache_" +  m_mappingModel->GetDataMapping()->GetID() );
 		std::string dirPath = cacheDirectoryPath + "/";
 		QString cachePath = QString::fromStdString( dirPath + "scene/" );
 		//m_portableVisualizationExport.CopyContentsOfSourceDirectory( platform, cachePath );

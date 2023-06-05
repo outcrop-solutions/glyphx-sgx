@@ -19,6 +19,8 @@
 #include <boost/type_traits/decay.hpp>
 #include <boost/type_traits/integral_constant.hpp>
 #include <sstream>
+#include <fstream>
+#include <iostream>
 #include <string>
 #include <locale>
 #include <limits>
@@ -30,6 +32,7 @@ namespace boost { namespace property_tree
     struct customize_stream
     {
         static void insert(std::basic_ostream<Ch, Traits>& s, const E& e) {
+           
             s << e;
         }
         static void extract(std::basic_istream<Ch, Traits>& s, E& e) {

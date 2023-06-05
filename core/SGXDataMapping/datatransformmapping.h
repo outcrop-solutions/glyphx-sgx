@@ -140,8 +140,12 @@ namespace SynGlyphX {
 		void RemoveBaseObject(unsigned int index);
 		void SetBaseObject(unsigned int index, const BaseImage& baseObject);
 		const std::vector<BaseImage>& GetBaseObjects() const;
-
-		const boost::uuids::uuid& GetID() const;
+		
+		//The new GlyphEngine sets the model id to a mongoDB ObjectId not a UUID.
+		//We now these to be std::strings so to save us from 
+		//having to do conversions down stream everytime we want to use 
+		//this for the cache path, we will handle the converions here.
+		const std::string GetID() const;
 		void ResetID();
 
 		void UpdateDatasourceName(const boost::uuids::uuid& id, const std::wstring& name);
@@ -217,7 +221,7 @@ namespace SynGlyphX {
 		MultiTableFrontEndFilters m_frontEndFilters;
 		std::map<std::wstring, std::vector<std::wstring>> m_elasticListMap;
 		std::map<std::wstring, FieldProperties> m_fieldProperties;
-		boost::uuids::uuid m_id;
+		std::wstring m_id;
     };
 
 } //namespace SynGlyphX
