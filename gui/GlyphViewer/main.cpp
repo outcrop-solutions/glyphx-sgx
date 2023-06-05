@@ -72,14 +72,14 @@ int main(int argc, char *argv[])
 
 	//QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-	SynGlyphX::GlyphBuilderApplication::Setup("Glyph Viewer", SynGlyphX::getFullVersionString().c_str());
+	SynGlyphX::GlyphBuilderApplication::Setup("GlyphX", SynGlyphX::getFullVersionString().c_str());
 	SynGlyphX::GlyphBuilderApplication a(argc, argv);
 	if (SynGlyphX::GlyphBuilderApplication::IsGlyphEd()) {
 
-		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphEd");
+		SynGlyphX::GlyphBuilderApplication::setApplicationName("GlyphX");
 	}
 	QDir commonDataDir(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation());
-	commonDataDir.mkdir("Glyph Viewer");
+	commonDataDir.mkdir("GlyphX");
 
 	//qInstallMessageHandler(myMessageHandler);
 
@@ -126,9 +126,10 @@ int main(int argc, char *argv[])
 	//Setup and show the splash screen
 	QPixmap pixmap(SynGlyphX::GlyphBuilderApplication::GetSplashScreenLocation());
 	QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
+	
 	splash.show();
 
-	splash.showMessage("Loading Glyph Viewer", Qt::AlignHCenter | Qt::AlignBottom);
+	splash.showMessage("Loading GlyphX",  Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
 
 	a.processEvents();
 
@@ -138,7 +139,7 @@ int main(int argc, char *argv[])
 		QTimer::singleShot(1500, &splash, SLOT(close()));
 
 		QString model = nullptr;
-		QString address = "https://app.glyphx.co/";
+		QString address = "https://app.glyphx.co/auth/login";
 		QStringList commandLineArguments = SynGlyphX::Application::arguments();
 		for (QString arg : commandLineArguments) {
 			if (arg.contains("url")) {

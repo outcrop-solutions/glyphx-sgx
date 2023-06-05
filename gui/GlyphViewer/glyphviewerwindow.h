@@ -118,6 +118,7 @@ private slots:
 	//void OnSocketSslErrors(const QList<QSslError> &errors);
 	//void OnSocketClosed();
 	void SaveSnapshot();
+	void TakeScreenShot();
 	void LoadProjectIntoGlyphDrawer(QString text, bool load_from_cache);
 	void UpdateGlyphDrawerFilter(QString text);
 	void ChangeModelState(QString text);
@@ -168,7 +169,8 @@ private:
 	QString findSdtInDirectory(const QString& directory);
 	void CreateGlyphDrawer();
 	void DisplayXyzLabels(QString xName, QString xValue, QString yName, QString yValue, QString zName, QString zValue );
-	
+	void UpdateCameraPosition(double x, double y, double z, double dirX, double dirY, double dirZ);
+
 	QMenu* m_fileMenu;
 	QMenu* m_toolsMenu;
 	QMenu* m_toolbarsSubMenu;
@@ -247,7 +249,6 @@ private:
 	static QMap<QString, MultiTableDistinctValueFilteringParameters> s_recentFilters;
 
 	QMainWindow* glyphDrawer;
-	QDockWidget* drawerDock;
 	QWebSocket m_webSocket;
 	int counter;
 	qint64 lastModified;
@@ -256,8 +257,6 @@ private:
 	QString projectId;
 	QString athenaTableName;
 	
-
-	bool drawerDockHeightSet;
 	QString userID;
 	bool summation;
 	bool explosion;
