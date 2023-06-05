@@ -11,7 +11,7 @@ SET meshes=meshes
 SET shaders=shaders
 SET fonts=fonts
 SET textures=textures
-SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml Qt5WebSockets Qt5PrintSupport Qt5QmlModels Qt5QuickWidgets Qt5Positioning 
+SET qtdlllist=Qt5Core Qt5Gui Qt5Network Qt5OpenGL Qt5Sql Qt5Widgets Qt5WebEngineCore Qt5WebEngine Qt5WebEngineWidgets Qt5Quick Qt5WebChannel Qt5Qml
 
 if not exist %basedir% (mkdir %basedir%)
 
@@ -55,11 +55,12 @@ FOR /F "tokens=*" %%p IN ('dir /b /a:d ..\bin\*') DO (
 		IF /I %%c==debug (
 		
 			FOR %%d IN (%qtdlllist%) DO (
-			        
+			
 				copy /B /Y "%QTDIR%\bin\%%dd.dll" "%basedir%\%%p\%%c\%%dd.dll"
 			)
 		) ELSE (
-		       FOR %%d IN (%qtdlllist%) DO (
+			
+			FOR %%d IN (%qtdlllist%) DO (
 			
 				copy /B /Y "%QTDIR%\bin\%%d.dll" "%basedir%\%%p\%%c\%%d.dll"
 			)

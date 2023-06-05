@@ -139,7 +139,6 @@ namespace SynGlyphX
 		void interactiveLegendToggled();
 		void closeVisualization();
 		void saveSnapshot();
-		void takeScreenShot();
 
 	protected:
 		enum class CenterMode
