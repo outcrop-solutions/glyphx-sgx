@@ -11,6 +11,9 @@
 #include <QSettings>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
 Core::Core(QWidget *prt, QObject *parent)
 	: QObject(parent), parent(prt)
 {
@@ -222,4 +225,36 @@ void Core::SendRowIdsToClient(const QList<int>& rowIds) {
 	arr_str += "]";
 	QString json = "{\"rowIds\":" + arr_str + "}";
 	emit SendRowIds(json);
+}
+
+void Core::SendCsv(const QString& data) {
+	QFileDialog dialog;
+	dialog.setFileMode(QFileDialog::AnyFile);
+	dialog.setAcceptMode(QFileDialog::AcceptSave);
+	if (dialog.exec())
+	{
+		// Get the selected file path
+		QString filePath = dialog.selectedFiles().first();
+
+		// Create and open the file for writing
+		QFile file(filePath);
+		if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			// Write some data to the file
+			QTextStream stream(&file);
+			stream << data;
+			file.close();
+			SendCsvResult("{\"result\": \"ok\"}");
+		}
+		else
+		{
+			auto errorString = file.errorString();
+
+			SendCsvResult("{\"result\": \"fail\", \"error\":\"" + errorString + "\"}");
+		}
+	}
+	else {
+
+		SendCsvResult("{\"result\": \"cancelled\"}");
+	}
 }

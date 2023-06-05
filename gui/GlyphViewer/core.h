@@ -43,6 +43,7 @@ signals:
 	void Settings(QMap<QString, QJsonValue> settings);
 	void SendRowIds(const QString &text);
 	void SendScreenShot(const QString& text);
+	void SendCsvResult(const QString& text);
 
 public slots:
 
@@ -63,6 +64,7 @@ public slots:
 	void CloseModel();
 	void LoadSettings(const QString &text);
 	void SendRowIdsToClient(const QList<int>& rowIds);
+	void SendCsv(const QString& data);
 	
 
 private:
