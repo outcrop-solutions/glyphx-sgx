@@ -67,7 +67,7 @@
 #include <QTimer>
 #include "AwsLogger.h"
 #include <QHeaderView>
-
+#include <QBuffer>
 SynGlyphX::SettingsStoredFileList GlyphViewerWindow::s_subsetFileList("subsetFileList");
 QMap<QString, MultiTableDistinctValueFilteringParameters> GlyphViewerWindow::s_recentFilters;
 
@@ -379,7 +379,6 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 	try {
 
 		AwsLogger::getInstance()->localLogger(text);
-
 		QString location = QDir::toNativeSeparators(QDir::cleanPath(SynGlyphX::GlyphBuilderApplication::GetCommonDataLocation()) + "/Content/");
 			
 		//text = "{\"user_id\":\"1234-1234-1234\", \"model_id\":\"e8d3c870-d2c3-4ebb-bd92-22f61f560413\"}";
@@ -633,12 +632,36 @@ void GlyphViewerWindow::SaveSnapshot() {
 }
 
 void GlyphViewerWindow::TakeScreenShot() {
-	auto x = glyphDrawer->x();
-	auto y = glyphDrawer->y();
-	auto h = glyphDrawer->height();
-	auto w = glyphDrawer->width();
+	QPixmap screenshot = glyphDrawer->grab();
 
-	l_server->WebChannelCore()->TakeScreenShot();
+	QFileDialog dialog;
+	dialog.setFileMode(QFileDialog::AnyFile);
+	dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+	// Set the default file extension to ".png"
+	QString defaultFileName = "screenshot.png";
+	dialog.selectFile(defaultFileName);
+
+	// Display the file dialog and wait for the user's selection
+	if (dialog.exec())
+	{
+		// Get the selected file path
+		QString filePath = dialog.selectedFiles().first();
+
+		// Save the screenshot to the selected file
+		QFile file(filePath);
+		if (file.open(QIODevice::WriteOnly))
+		{
+			screenshot.save(&file, "PNG");
+			file.close();
+			qDebug() << "Screenshot saved successfully.";
+		}
+		else
+		{
+			qDebug() << "Failed to save screenshot.";
+		}
+	}
+
 }
 
 QString GlyphViewerWindow::jsonFromCamera(std::vector<float> pos) {
