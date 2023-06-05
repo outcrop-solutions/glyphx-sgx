@@ -38,9 +38,9 @@ std::wstring CacheManager::GetBaseCacheDirectory() const {
 	return m_baseCacheDirectoryPath.wstring();
 }
 
-std::wstring CacheManager::GetCacheDirectory(const boost::uuids::uuid& id) const {
+std::wstring CacheManager::GetCacheDirectory(const std::string id) const {
 
-	boost::filesystem::path cacheDirectoryPath = m_baseCacheDirectoryPath / (L"cache_" + boost::uuids::to_wstring(id));
+	boost::filesystem::path cacheDirectoryPath = m_baseCacheDirectoryPath / ("cache_" + id);
 
 	if (boost::filesystem::exists(cacheDirectoryPath)) {
 
