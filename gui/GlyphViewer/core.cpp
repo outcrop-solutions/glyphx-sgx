@@ -97,8 +97,7 @@ void Core::OpenProject(const QString &text, const bool load_from_cache)
 	AwsLogger::getInstance()->localLogger("OpenProject called.\n" + text);
 	if (!text.isEmpty() && !text.isNull())
 	{
-		auto children = glyphDrawer->children();
-		
+			
 		emit OP(text, load_from_cache);
 	}
 }
