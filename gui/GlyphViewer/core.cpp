@@ -97,6 +97,7 @@ void Core::OpenProject(const QString &text, const bool load_from_cache)
 	AwsLogger::getInstance()->localLogger("OpenProject called.\n" + text);
 	if (!text.isEmpty() && !text.isNull())
 	{
+			
 		emit OP(text, load_from_cache);
 	}
 }
@@ -231,6 +232,8 @@ void Core::SendCsv(const QString& data) {
 	QFileDialog dialog;
 	dialog.setFileMode(QFileDialog::AnyFile);
 	dialog.setAcceptMode(QFileDialog::AcceptSave);
+	QString defaultFileName = "glyphxDataExport.csv";
+	dialog.selectFile(defaultFileName);
 	if (dialog.exec())
 	{
 		// Get the selected file path

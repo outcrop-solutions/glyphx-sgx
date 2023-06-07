@@ -44,7 +44,8 @@ signals:
 	void SendRowIds(const QString &text);
 	void SendScreenShot(const QString& text);
 	void SendCsvResult(const QString& text);
-
+	void OpenProjectComplete(const QString& text);
+	
 public slots:
 
     /*

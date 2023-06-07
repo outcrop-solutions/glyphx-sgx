@@ -481,6 +481,7 @@ void GlyphViewerWindow::LoadProjectIntoGlyphDrawer(QString text, bool load_from_
 	SynGlyphX::Application::restoreOverrideCursor();
 
 	l_server->WebChannelCore()->GetDrawerPosition();
+	l_server->WebChannelCore()->OpenProjectComplete(text);
 }
 
 void GlyphViewerWindow::UpdateGlyphDrawerFilter(QString text) {
