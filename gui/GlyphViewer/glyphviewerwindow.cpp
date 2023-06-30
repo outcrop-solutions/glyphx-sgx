@@ -177,7 +177,8 @@ GlyphViewerWindow::GlyphViewerWindow(QString address, QString model, QWidget *pa
 	m_interactionToolbar->setVisible(false);
 	menuBar()->hide();
 
-	int ws_port = 12345;
+	int ws_port = 63630;
+
 	l_server = new LocalServer(this);
 	l_server->startServer("WebChannel Filtering Server", ws_port);
 	Core* core = l_server->WebChannelCore();
